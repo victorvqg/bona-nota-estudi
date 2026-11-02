@@ -46,6 +46,10 @@ tr.clic{cursor:pointer}tr.clic:hover td{background:#ffffff0a}
 .ev-entra{background:#1d4ed855}.ev-fitxa{background:#0ea5e955}.ev-test{background:#7c3aed66}.ev-joc{background:#db277755}.ev-examen{background:#dc262666}.ev-oberta{background:#ea580c55}.ev-valora{background:#16a34a55}.ev-temps{background:#47556966}
 .sessio{border-top:1px solid var(--vora);padding:14px 16px}
 .sessio h3{margin:0 0 8px;font-size:15px}
+.est-assig{margin:6px 0 12px}
+.fest{display:grid;grid-template-columns:minmax(150px,200px) 1fr 44px;gap:8px;align-items:center;margin:4px 0;font-weight:800;font-size:14px}
+.bfe{height:10px;background:#ffffff14;border-radius:6px;overflow:hidden}.bfe i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:6px}
+.fest b{text-align:right;color:#fde68a}
 .sessio h3 small{color:var(--suau);font-weight:700}
 .linia{display:flex;gap:10px;font-size:14px;padding:3px 0}
 .linia time{color:var(--suau);font-weight:800;min-width:46px}
@@ -102,10 +106,11 @@ function descriu(l){const d=l.detall||{};switch(l.event){
  default:return esc(JSON.stringify(d))}}
 const xipEv=e=>`<span class="xip ev-${esc(e)}">${esc(e)}</span>`;
 
-function nens(){const m={};LOGS.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[k]={nom:l.nom,assigs:new Set(),ses:new Set(),ap:new Set(),ult:l.ts,temps:0,tests:[],jocs:0,exam:[],punts:{}});
+function nens(){const m={};LOGS.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[k]={nom:l.nom,assigs:new Set(),ses:new Set(),ap:new Set(),ult:l.ts,temps:0,tests:[],jocs:0,exam:[],punts:{},fonts:{},fts:{}});
  n.assigs.add(l.assig);n.ses.add(l.sessio);n.ap.add(l.aparell);if(l.ts>n.ult)n.ult=l.ts;const d=l.detall||{};
  if(l.event==="temps")n.temps+=d.s||0;if(l.event==="test")n.tests.push(d.pc);if(l.event==="joc")n.jocs++;if(l.event==="examen")n.exam.push(d.pc);
- if(d.punts!=null&&(n.punts[l.assig]==null||d.punts>n.punts[l.assig]))n.punts[l.assig]=d.punts});
+ if(d.punts!=null&&(n.punts[l.assig]==null||d.punts>n.punts[l.assig]))n.punts[l.assig]=d.punts;
+ if(d.fonts&&(!n.fts[l.assig]||l.ts>n.fts[l.assig])){n.fonts[l.assig]={f:d.fonts,p:d.punts||0};n.fts[l.assig]=l.ts}});
  return Object.entries(m).map(([k,n])=>({k,...n})).sort((a,b)=>b.ult.localeCompare(a.ult))}
 const mitj=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
 
@@ -145,8 +150,13 @@ function vistaLog(c){
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+t],{type:"text/csv"}));a.download=`bona-nota-log-${new Date().toISOString().slice(0,10)}.csv`;a.click()};
  pintaT();
 }
+const FONTS_EST=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos"]];
+function blocEstrelles(n){const as=[...n.assigs].filter(a=>n.punts[a]!=null);if(!as.length)return"";
+ return `<div class="sessio"><h3>⭐ D'on surten les estrelles</h3>${as.map(a=>{const fo=(n.fonts[a]||{}).f||{},p=n.punts[a]||0,tot=FONTS_EST.reduce((s,[k])=>s+(fo[k]||0),0),ab=Math.max(0,p-tot),mx=Math.max(1,ab,...FONTS_EST.map(([k])=>fo[k]||0));
+  const fila=(ic,nom,v)=>`<div class="fest"><span>${ic} ${nom}</span><div class="bfe"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
+  return `<div class="est-assig"><b>${esc(ASSIGS[a]||a)}</b> <span class="xip">⭐ ${p}</span>${FONTS_EST.filter(([k])=>fo[k]).map(([k,ic,nom])=>fila(ic,nom,fo[k])).join("")}${ab?fila("⏳","D'abans (sense detall)",ab):""}</div>`}).join("")}</div>`}
 function detall(k){const ls=LOGS.filter(l=>clauNen(l)===k),n=nens().find(x=>x.k===k);
- $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="taula">${blocSessions(ls)}</div>`;
+ $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="taula">${blocEstrelles(n)}${blocSessions(ls)}</div>`;
  $("#torna").onclick=pinta;
 }
 $("#refresca").onclick=carrega;$("#dies").onchange=carrega;$("#surt").onclick=()=>{CRED=null;LOGS=[];sessionStorage.removeItem("bn_admin");login()};
