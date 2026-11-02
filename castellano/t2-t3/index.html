@@ -29,6 +29,10 @@ nav{max-width:960px;margin:0 auto;padding:0 10px 8px;display:flex;gap:6px;overfl
 nav::-webkit-scrollbar{display:none}
 nav button{border:0;background:transparent;color:#dbeafe;padding:7px 13px;border-radius:999px;font-weight:800;cursor:pointer;white-space:nowrap;font-size:15px}
 nav button.on{background:#fff;color:var(--blau2)}
+nav a.surt{display:inline-flex;align-items:center;gap:4px;color:#fff;text-decoration:none;font-weight:900;font-size:15px;padding:5px 12px;border-radius:999px;border:2px solid #ffffff66;white-space:nowrap;margin-right:4px}
+nav a.surt:hover,nav a.surt:focus-visible{background:#ffffff26;border-color:#fff;outline:none}
+.surt-gran{display:block;text-align:center;margin-top:16px;color:var(--suau);font-weight:800;text-decoration:none}
+.surt-gran:hover{color:var(--blau2)}
 main{max-width:960px;margin:0 auto;padding:18px 16px 40px}
 /* elements bàsics */
 h2.sec{font-size:21px;margin:26px 0 12px;display:flex;align-items:center;gap:8px}
@@ -263,6 +267,7 @@ body.tremola main{animation:tremola .4s}
   <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci">🔊</button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts" onclick="obreEstrelles(event)" style="cursor:pointer">⭐ 0</span>
  </div>
  <nav id="nav">
+  <a class="surt" href="../../" title="Tornar al menú de tots els mons">🚪 Mons</a>
   <button data-v="inici" onclick="vista('inici')">🏠 Inici</button>
   <button data-v="temes" onclick="vista('temes')">📖 Temes</button>
   <button data-v="jocs" onclick="vista('jocs')">🎮 Jocs</button>
@@ -737,7 +742,7 @@ function benvinguda(){
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=50}).length;
  app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
  ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
- <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form></div>`;
+ <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form><a class="surt-gran" href="../../">🚪 Tornar al menú de tots els mons</a></div>`;
  app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>entra(b.dataset.n));
  const i=document.getElementById("nom");if(!noms.length)i.focus();
  document.getElementById("fn").onsubmit=e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}
@@ -767,7 +772,7 @@ function inici(){
  h+=`${blocsTemes()}
  <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
  <h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>
- <div class="fila">${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
+ <div class="fila">${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><a class="btn sec" href="../../" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
  app.innerHTML=h;
 }
 function pintaTemes(){app.innerHTML=blocsTemes()}
