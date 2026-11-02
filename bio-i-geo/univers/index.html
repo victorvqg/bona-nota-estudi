@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biologia i Geologia — Bloc 1: Univers, Terra i cèl·lula · 1r ESO | Bona Nota</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+ --fosc:#1f2d3d;--blau:#3b82f6;--blau2:#2563eb;--verd:#16a34a;--verd-cl:#dcfce7;--verm:#dc2626;--verm-cl:#fee2e2;
+ --groc:#f59e0b;--groc-cl:#fef3c7;--lila:#7c3aed;--fons:#eef2f8;--card:#fff;--txt:#1e293b;--suau:#64748b;--vora:#e2e8f0;
+ --r:18px;--om:0 1px 2px #0f172a0d,0 6px 18px #0f172a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Nunito,system-ui,Arial,sans-serif;background:var(--fons);color:var(--txt);font-size:16.5px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit}
+/* capçalera */
+header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%,var(--g3,#0ea5e9));color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 14px #1e3a8a40}
+.hd{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.logo{font-weight:900;font-size:19px;letter-spacing:.2px;display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0}
+.logo span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo .tt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.logo .tt small{font-size:13px;font-weight:700;opacity:.85}
+@media(max-width:520px){.logo{font-size:16px}.logo #hola{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
+.benv .tema{margin:4px 0 0;font-weight:900;color:var(--blau2)}
+.pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap}
+nav{max-width:960px;margin:0 auto;padding:0 10px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{border:0;background:transparent;color:#dbeafe;padding:7px 13px;border-radius:999px;font-weight:800;cursor:pointer;white-space:nowrap;font-size:15px}
+nav button.on{background:#fff;color:var(--blau2)}
+main{max-width:960px;margin:0 auto;padding:18px 16px 40px}
+/* elements bàsics */
+h2.sec{font-size:21px;margin:26px 0 12px;display:flex;align-items:center;gap:8px}
+h2.sec:first-child{margin-top:4px}
+.box{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--om);margin-bottom:14px}
+.btn{border:0;border-radius:12px;padding:11px 18px;font-weight:800;font-size:15.5px;cursor:pointer;background:var(--blau);color:#fff;box-shadow:0 3px 0 var(--blau2);transition:transform .08s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--blau2)}
+.btn.sec{background:#fff;color:var(--fosc);box-shadow:0 0 0 2px var(--vora) inset,0 3px 0 var(--vora)}
+.btn.verd{background:var(--verd);box-shadow:0 3px 0 #15803d}
+.btn.verm{background:var(--verm);box-shadow:0 3px 0 #991b1b}
+.btn:disabled{opacity:.45;cursor:default}
+.fila{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.prog{color:var(--suau);font-size:14.5px;font-weight:700}
+/* hero */
+.hero{background:linear-gradient(135deg,#fff,#eff6ff);border-radius:22px;padding:20px 22px;box-shadow:var(--om);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hero .av{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:32px;flex:none}
+.hero h1{margin:0;font-size:24px}
+.hero p{margin:2px 0 0;color:var(--suau)}
+.hero .stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.mini{background:#fff;border:2px solid var(--vora);border-radius:14px;padding:6px 12px;text-align:center;min-width:78px}
+.mini b{display:block;font-size:20px;line-height:1.2}
+.mini small{color:var(--suau);font-weight:700;font-size:12px}
+.continua{margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--groc-cl);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
+.continua b{flex:1}
+/* graella de temes */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.tile{background:var(--card);border-radius:var(--r);padding:16px;cursor:pointer;box-shadow:var(--om);transition:transform .15s,box-shadow .15s;position:relative;display:flex;flex-direction:column;gap:6px;min-height:150px}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 24px #0f172a1f}
+.tile .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.tile b{font-size:16.5px;line-height:1.25}
+.tile small{color:var(--suau);font-weight:600}
+.tile .peu{margin-top:auto;display:flex;align-items:center;gap:8px}
+.barra{flex:1;height:8px;background:#eef2f7;border-radius:6px;overflow:hidden}
+.barra i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#22c55e,#16a34a)}
+.pc{font-size:13px;font-weight:800;color:var(--suau);min-width:34px;text-align:right}
+.segell{position:absolute;top:12px;right:12px;font-size:20px}
+.num{position:absolute;top:14px;right:14px;font-size:12px;font-weight:900;color:#94a3b8}
+.etq{display:inline-block;font-size:11.5px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca}
+.etq.ap{background:#ecfdf5;color:#047857}
+/* pantalla tema */
+.cap-tema{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.cap-tema .ic{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.cap-tema h2{margin:0;font-size:22px;line-height:1.2}
+.passos{display:flex;gap:8px;margin:12px 0 16px}
+.passos button{flex:1;border:0;background:#fff;border-radius:14px;padding:10px 6px;font-weight:800;cursor:pointer;color:var(--suau);box-shadow:var(--om);font-size:15px}
+.passos button.on{background:var(--fosc);color:#fff}
+.passos button.fet::after{content:" ✓";color:#22c55e}
+.idea{background:var(--verd-cl);border:2px solid #86efac;border-radius:14px;padding:12px 16px;font-weight:800}
+.idea small{display:block;font-size:11.5px;letter-spacing:.6px;color:#15803d;font-weight:900}
+.truc{background:var(--groc-cl);border:2px solid #fcd34d;border-radius:14px;padding:12px 16px;margin-top:12px}
+.compte{background:var(--verm-cl);border-left:6px solid var(--verm);border-radius:0 14px 14px 0;padding:10px 14px;margin-top:12px}
+ul.pts{padding-left:0;list-style:none;margin:14px 0 0}
+ul.pts li{position:relative;padding:8px 0 8px 30px;border-bottom:1px dashed var(--vora)}
+ul.pts li:last-child{border-bottom:0}
+ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--blau)}
+/* targetes */
+.flash{perspective:1000px;height:240px;cursor:pointer;margin:12px auto;max-width:540px}
+.flash .in{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.flash.gir .in{transform:rotateY(180deg)}
+.flash .cara{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;font-weight:800;box-shadow:0 10px 26px #0f172a22}
+.flash .davant{background:#fff;border:3px solid #bfdbfe}
+.flash .darrere{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;transform:rotateY(180deg);font-weight:700;font-size:18.5px}
+.flash .cara small{position:absolute;bottom:12px;font-size:12.5px;font-weight:700;opacity:.6}
+.punts-fc{display:flex;justify-content:center;gap:6px;margin-top:4px}
+.punts-fc i{width:9px;height:9px;border-radius:50%;background:#cbd5e1}
+.punts-fc i.on{background:var(--blau);transform:scale(1.3)}
+/* test */
+.pregunta{font-size:19px;font-weight:800;margin:8px 0 12px;line-height:1.35}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid var(--vora);background:#fff;border-radius:14px;padding:12px 14px;margin:8px 0;font-size:16.5px;cursor:pointer;transition:border-color .12s,background .12s;color:var(--txt)}
+.opt .ll{width:30px;height:30px;border-radius:9px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none;color:var(--suau)}
+.opt:hover:not(:disabled){border-color:#93c5fd;background:#f8fbff}
+.opt.ok{background:var(--verd-cl);border-color:#22c55e}.opt.ok .ll{background:#22c55e;color:#fff}
+.opt.ko{background:var(--verm-cl);border-color:#ef4444}.opt.ko .ll{background:#ef4444;color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:14px;background:#eff6ff;border:2px solid #bfdbfe}
+.fb.ok{background:var(--verd-cl);border-color:#86efac}.fb.ko{background:#fff7ed;border-color:#fdba74}
+.barra-test{height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.barra-test i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,#2563eb);transition:width .3s}
+.gran{font-size:56px;text-align:center;line-height:1}
+.valor{display:flex;justify-content:center;gap:12px;margin-top:10px}
+.valor button{border:2px solid var(--vora);background:#fff;border-radius:16px;padding:10px 14px;font-size:30px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.valor button small{font-size:12.5px;font-weight:800;color:var(--suau)}
+.valor button.on{border-color:var(--blau);background:#eff6ff}
+/* jocs */
+.chip{display:inline-block;border:2px solid #cbd5e1;border-radius:12px;padding:9px 14px;margin:5px;cursor:pointer;background:#fff;font-weight:800;user-select:none;transition:.12s}
+.chip:hover{border-color:#93c5fd}
+.chip.sel{background:var(--fosc);border-color:var(--fosc);color:#fff}
+.chip.ok{background:var(--verd);border-color:var(--verd);color:#fff;cursor:default}
+.chip.ko{animation:tremola .35s;border-color:#ef4444}
+@keyframes tremola{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pila{display:flex;flex-direction:column-reverse;gap:5px;margin:12px 0}
+.pila div{border-radius:12px;padding:10px 14px;font-weight:800;animation:apareix .3s}
+@keyframes apareix{from{opacity:0;transform:translateY(8px)}}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.mh{display:none}table.an{font-size:14px}.col2{grid-template-columns:1fr}.hero .stats{margin-left:0}}
+.cub{border:3px dashed #cbd5e1;border-radius:16px;min-height:110px;padding:10px;cursor:pointer;background:#f8fafc}
+.cub:hover{border-color:#93c5fd;background:#f0f7ff}
+.cub h4{margin:0 0 8px}
+textarea{width:100%;font:inherit;padding:12px 14px;border-radius:14px;border:2px solid var(--vora);resize:vertical;background:#fcfdff}
+textarea:focus,input:focus{outline:none;border-color:#93c5fd;box-shadow:0 0 0 4px #bfdbfe66}
+label.chk{display:flex;gap:10px;align-items:flex-start;margin:8px 0;cursor:pointer;padding:8px 10px;border-radius:10px;background:#fff;border:2px solid var(--vora)}
+label.chk input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--verd)}
+details summary{cursor:pointer;font-weight:800;color:var(--blau2)}
+/* benvinguda */
+.benv{max-width:460px;margin:30px auto;text-align:center}
+.benv .gran{font-size:70px}
+.benv input{width:100%;font:inherit;font-size:20px;font-weight:800;text-align:center;padding:14px;border-radius:16px;border:3px solid var(--vora);margin:14px 0}
+/* analítica */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.kpi{background:#fff;border-radius:16px;padding:14px;box-shadow:var(--om)}
+.kpi small{color:var(--suau);font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+.kpi b{display:block;font-size:26px;line-height:1.2;margin-top:2px}
+.kpi span{font-size:13px;color:var(--suau);font-weight:700}
+table.an{width:100%;border-collapse:collapse;font-size:15px}
+table.an th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--suau);padding:8px 6px;border-bottom:2px solid var(--vora)}
+table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.semaf{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.valoracio{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px solid #c7d2fe;border-radius:18px;padding:16px 18px}
+.valoracio h3{margin:0 0 6px}
+.llista-err li{margin:6px 0}
+.modal{position:fixed;inset:0;background:#0f172a80;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal .box{max-width:420px;text-align:center}
+.peu-pag{text-align:center;color:#94a3b8;font-size:13px;margin:26px 0 8px}
+.confeti{position:fixed;top:-20px;font-size:22px;z-index:60;pointer-events:none;animation:cau 1.8s linear forwards}
+@keyframes cau{to{transform:translateY(105vh) rotate(540deg);opacity:.2}}
+
+.perfils{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.perfil{display:flex;align-items:center;gap:12px;text-align:left;border:2px solid var(--vora);background:#fff;border-radius:16px;padding:10px 14px;cursor:pointer;font-family:inherit;font-size:16px;color:var(--txt)}
+.perfil:hover{border-color:#93c5fd;background:#f8fbff}.perfil.on{border-color:var(--blau)}
+.perfil small{display:block;color:var(--suau);font-weight:700}
+.av2{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;flex:none;text-transform:uppercase}
+/* arcade */
+.arc{position:fixed;inset:0;z-index:80;background:radial-gradient(circle at 50% 40%,#1e1b4b,#020617 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;animation:arcIn .25s ease-out;overflow:hidden}
+@keyframes arcIn{from{opacity:0;transform:scale(1.15)}}
+.arc canvas{position:absolute;inset:0;width:100%;height:100%}
+.arc .flash{position:absolute;inset:0;background:#fff;animation:flash .5s ease-out forwards;pointer-events:none}
+@keyframes flash{from{opacity:.9}to{opacity:0}}
+.arc .t1{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(22px,7vw,46px);color:#facc15;text-shadow:4px 4px 0 #b91c1c,0 0 24px #facc15aa;text-align:center;line-height:1.35;animation:bota .6s cubic-bezier(.3,1.6,.5,1) both,pampalluga 1s steps(2) .6s infinite}
+@keyframes bota{from{transform:translateY(-120px) scale(.4)}}
+@keyframes pampalluga{50%{color:#fde68a}}
+.arc .t2{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(12px,3.4vw,18px);color:#a5f3fc;margin-top:22px;text-align:center;line-height:1.8}
+.arc .t3{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(28px,9vw,54px);color:#fff;margin-top:14px;text-shadow:0 0 18px #38bdf8}
+.arc .estr{position:relative;font-size:clamp(34px,10vw,56px);margin-top:10px;letter-spacing:6px}
+.arc .estr span{display:inline-block;animation:estr .45s cubic-bezier(.3,1.8,.5,1) both;filter:drop-shadow(0 0 10px #facc15)}
+@keyframes estr{from{transform:scale(0) rotate(-180deg)}}
+.arc .t4{position:relative;font-family:'Press Start 2P',monospace;font-size:11px;color:#94a3b8;margin-top:26px;animation:pampalluga2 1.2s steps(2) infinite}
+@keyframes pampalluga2{50%{opacity:0}}
+.arc .rec{position:relative;font-family:'Press Start 2P',monospace;font-size:12px;color:#020617;background:#4ade80;padding:8px 12px;margin-top:16px;transform:rotate(-3deg);animation:bota .5s .9s both}
+.nivell{margin-top:14px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#f5f3ff,#eef2ff);border:2px solid #c4b5fd;border-radius:16px;padding:12px 16px;cursor:pointer}
+.nivell .nic{font-size:38px;line-height:1;flex:none}
+.nivell b{display:block;font-size:17px}
+.nivell small{color:var(--suau);font-weight:700}
+.nivell .barra{margin:6px 0 4px;height:10px}
+.nivell .barra i{background:linear-gradient(90deg,#a78bfa,#7c3aed)}
+.rangs{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.rang{border:2px solid var(--vora);border-radius:14px;padding:10px 8px;text-align:center;background:#fff}
+.rang span{display:block;font-size:30px;line-height:1.1}
+.rang b{display:block;font-size:14px}
+.rang small{color:var(--suau);font-weight:700;font-size:12px}
+.rang.bloc{opacity:.45;filter:grayscale(1)}
+.rang.ara{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px #ddd6fe}
+.arc.niv{background:radial-gradient(circle at 50% 40%,#3b0764,#020617 75%)}
+.arc.niv .t1{color:#e9d5ff;text-shadow:4px 4px 0 #7c3aed,0 0 24px #c084fcaa}
+.arc.niv .nic{position:relative;font-size:clamp(64px,20vw,110px);margin-top:12px;animation:estr .6s cubic-bezier(.3,1.8,.5,1) .3s both;filter:drop-shadow(0 0 18px #c084fc)}
+.vol{display:flex;align-items:center;gap:4px;background:#ffffff26;border:1px solid #ffffff40;border-radius:999px;padding:2px 10px 2px 4px;flex:none}
+.so-btn{background:none;border:0;color:#fff;font-size:17px;cursor:pointer;padding:3px 4px;line-height:1}
+.vol input{width:76px;accent-color:#fff;cursor:pointer;margin:0}
+.vol b{font-size:13px;min-width:9px;text-align:center}
+@media(max-width:520px){.vol input{width:54px}.vol{padding-right:7px}}
+body.tremola main{animation:tremola .4s}
+.arc.ko{background:radial-gradient(circle at 50% 40%,#3b0a0a,#0b0202 75%)}
+.arc.ko .t1{color:#f87171;text-shadow:4px 4px 0 #450a0a,0 0 20px #ef444466;animation:cau1 .7s cubic-bezier(.5,1.8,.5,1) both,parpelleja 1.4s steps(2) .8s infinite}
+@keyframes cau1{from{transform:translateY(-140px) rotate(-8deg);opacity:0}}
+@keyframes parpelleja{50%{opacity:.55}}
+.arc.ko .t3{color:#fca5a5;text-shadow:none}
+.arc.ko .cor{position:relative;font-size:clamp(44px,13vw,70px);margin-top:8px;animation:trenca 1.1s ease-in .4s both}
+@keyframes trenca{0%{transform:scale(0)}35%{transform:scale(1.2)}55%{transform:scale(1) rotate(0)}70%{transform:rotate(-12deg)}85%{transform:rotate(10deg)}100%{transform:rotate(0)}}
+.arc.ko .t2{color:#fde68a}
+.pluja{position:absolute;top:-30px;width:3px;height:22px;background:linear-gradient(#94a3b800,#94a3b8aa);animation:plou linear infinite}
+@keyframes plou{to{transform:translateY(110vh)}}
+</style>
+</head>
+<body>
+<header>
+ <div class="hd">
+  <div class="logo" onclick="vista('inici')"><span id="logoic">📚</span><span class="tt"><span id="hola"></span><small id="qui"></small></span></div>
+  <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci">🔊</button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts">⭐ 0</span>
+ </div>
+ <nav id="nav">
+  <button data-v="inici" onclick="vista('inici')">🏠 Inici</button>
+  <button data-v="temes" onclick="vista('temes')">📖 Temes</button>
+  <button data-v="jocs" onclick="vista('jocs')">🎮 Jocs</button>
+  <button data-v="obertes" onclick="vista('obertes')">✍️ Obertes</button>
+  <button data-v="analitica" onclick="vista('analitica')">📊 Com vaig</button>
+  <button data-v="usuari" onclick="benvinguda()">👥 Canviar d'usuari</button>
+ </nav>
+</header>
+<main id="app"></main>
+<div class="peu-pag" id="peu"></div>
+
+<script>
+const ASSIG={
+ id:"biogeo",
+ nom:"Biologia i Geologia", tema:"Bloc 1: Univers, Terra i cèl·lula", curs:"1r ESO", ic:"🔭",
+ color:["#1e3a8a","#2563eb","#0ea5e9"],
+ peu:"Bona Nota · Apunts de Biologia i Geologia: la ciència i l'Univers · la Terra i la cèl·lula",
+ blocs:[{titol:"🔭 La ciència i l'Univers",n:7},{titol:"🌍 La Terra i la cèl·lula",n:4}],
+ jocs:[
+  {id:"planetes",tipus:"ordena",ic:"🪐",titol:"Els planetes en ordre",sub:"Del més proper al Sol al més llunyà",col:"#e0f2fe",
+   enunciat:"🪐 Posa els planetes en ordre",instr:"Toca els planetes començant pel <b>més proper al Sol</b>.",base:"☀️ SOL",
+   items:[["Mercuri","interior","#fde68a"],["Venus","interior","#fde68a"],["Terra","interior","#fde68a"],["Mart","interior","#fde68a"],["Júpiter","exterior · després del cinturó d'asteroides","#bae6fd"],["Saturn","exterior","#bae6fd"],["Urà","exterior","#bae6fd"],["Neptú","exterior · després ve el cinturó de Kuiper","#bae6fd"]],
+   final:"Truc: «Mi Vella Tia Mari, Jugant Sempre Unes Nines». La coma és el cinturó d'asteroides!"},
+  {id:"passos",tipus:"ordena",ic:"🔬",titol:"Els passos del mètode",sub:"Ordena com treballa un científic",col:"#dcfce7",
+   enunciat:"🔬 Ordena els passos del mètode científic",instr:"Toca els passos en l'ordre en què els fa un científic.",
+   items:[["Observació","veig un fenomen i defineixo el problema","#dcfce7"],["Hipòtesi","proposo una explicació provisional","#dcfce7"],["Experimentació","obtinc dades i les comparo amb la hipòtesi","#dcfce7"],["Anàlisi","estudio les dades i en trec conclusions","#dcfce7"],["Comunicació","explico els resultats als altres","#dcfce7"]],
+   final:"Truc: «Ocells Hi Entren A Casa»."},
+  {id:"cossos",tipus:"parelles",ic:"☄️",titol:"Cossos celestes",sub:"Uneix cada cos amb la seva definició",col:"#ede9fe",
+   enunciat:"☄️ Uneix cada cos celeste amb la seva definició",instr:"Toca un nom a l'esquerra i després la definició que li correspon a la dreta.",
+   pars:[["Estrella","Té llum pròpia"],["Planeta","Gira al voltant d'una estrella i no fa llum"],["Satèl·lit natural","Gira al voltant d'un planeta"],["Asteroide","Fet sobretot de roca i metalls"],["Cometa","Gel, pols i roca, òrbita molt allargada"],["Meteoroide","Trosset petit: l'«estrella fugaç»"],["Planeta nan","Rodó, però no és el principal de la seva òrbita"]],
+   final:"Truc: Cometa = conglaçat (gel). Asteroide = roca i metall."},
+  {id:"celules",tipus:"classifica",ic:"🌿",titol:"Animal o vegetal?",sub:"Classifica les característiques",col:"#fef3c7",
+   enunciat:"🌿 Cèl·lula animal o vegetal?",instr:"Toca una característica i després la caixa on va.",
+   caixes:[["a","🦁 Cèl·lula animal"],["v","🌿 Cèl·lula vegetal"]],
+   items:[["Forma irregular i arrodonida","a"],["Forma regular, prismàtica","v"],["Té paret cel·lular de cel·lulosa","v"],["Té cloroplasts","v"],["Té centrosoma","a"],["Un vàcuol gegant","v"],["Vàcuols molt petits (vesícules)","a"],["Algunes es desplacen","a"],["Nucli desplaçat cap a un costat","v"],["Nucli gairebé sempre al centre","a"]],
+   final:"Les plantes porten «armadura» (paret) i «panells solars» (cloroplasts)."},
+  {id:"figura",tipus:"figura",ic:"🌌",titol:"Llegeix el dibuix",sub:"Galàxies i sistema solar",col:"#e0e7ff",
+   enunciat:"🌌 Mira el dibuix i respon",figura:"svgFigura",
+   q:[["Quina forma té la galàxia A?",["Espiral","El·líptica","Irregular"],0,"Té un disc al centre i braços corbats, com un remolí."],
+      ["Quina forma té la galàxia C?",["Espiral","El·líptica","Irregular"],1,"Té forma d'ou."],
+      ["Quina de les tres galàxies té la mateixa forma que la Via Làctia?",["La A","La B","La C"],0,"La Via Làctia és una galàxia espiral."],
+      ["Al sistema solar del dibuix, com es diu el planeta número 3?",["Mart","Terra","Venus"],1,"Mercuri, Venus, Terra… la Terra és el tercer."],
+      ["Què és la franja X, entre el planeta 4 i el 5?",["El cinturó de Kuiper","El cinturó d'asteroides","La Via Làctia"],1,"Entre Mart i Júpiter hi ha el cinturó d'asteroides. El de Kuiper és més enllà de Neptú (franja Y)."],
+      ["Quins planetes són interiors?",["Els números 1, 2, 3 i 4","Els números 5, 6, 7 i 8","Només el número 3"],0,"Mercuri, Venus, Terra i Mart: petits, de roca i a prop del Sol."]]}
+ ]
+};
+const T=[
+ {id:"ciencia",ic:"💡",col:"#16a34a",titol:"Què és la ciència",font:"Resum · secció 1",
+  idea:"La ciència és una activitat humana que vol entendre la realitat que ens envolta fent servir el mètode científic.",
+  pts:["<b>Activitat humana</b>: no és un llibre ple de respostes, és una cosa que fa la gent, preguntant i comprovant.",
+   "<b>Descriure</b> fenòmens: explicar què passa.","<b>Explicar</b> la realitat: entendre per què passa.","<b>Predir</b>: saber què passarà abans que passi.",
+   "<b>Ampliar</b> els coneixements i <b>generalitzar i unificar</b>: trobar regles que serveixin per a molts casos.",
+   "<b>Reconèixer els límits</b> del coneixement: saber què encara no sabem."],
+  truc:"Pensa en el temps de demà: el descrius (núvols), l'expliques (ve un front fred) i el predius (demà plourà). Tres objectius en una pregunta!",
+  compte:"Són 6 objectius. Predir no és endevinar: és saber què passarà gràcies al que ja coneixes.",
+  fc:[["Què és la ciència?","Una activitat humana que vol entendre la realitat fent servir el mètode científic."],["Quants objectius té la ciència?","6"],["Què vol dir «predir»?","Saber què passarà abans que passi."],["Què vol dir «reconèixer els límits»?","Saber què encara no sabem."],["Descriure o explicar: quin respon «per què passa»?","Explicar."]],
+  q:[["Què és la ciència?",["Un llibre amb totes les respostes","Una activitat humana que vol entendre la realitat amb el mètode científic","Una opinió dels savis"],1,"La ciència la fa la gent preguntant i comprovant."],
+     ["Quin d'aquests és un objectiu de la ciència?",["Predir","Convèncer els altres","Guanyar premis"],0,"Els 6: descriure, explicar, predir, ampliar, generalitzar i unificar, reconèixer els límits."],
+     ["«Demà plourà.» Quin objectiu és?",["Descriure","Explicar","Predir"],2,"Dir el que passarà abans que passi és predir."],
+     ["«Saber què encara no sabem» és…",["Reconèixer els límits del coneixement","Generalitzar","Descriure"],0,"La ciència també accepta el que no sap."]]},
+ {id:"caract",ic:"🧪",col:"#0d9488",titol:"Característiques del mètode",font:"Resum · secció 2",
+  idea:"El mètode científic és empíric, racional, reproduïble, falsable i provisional.",
+  pts:["<b>Empíric</b>: es basa en dades i observacions, no en el que «em sembla».","<b>Racional</b>: fa servir la raó i és objectiu, no depèn dels gustos.",
+   "<b>Reproduïble</b>: altres persones poden repetir l'experiment i comprovar-ne els resultats.","<b>Falsable</b>: un experiment nou pot demostrar que la idea és incorrecta.",
+   "<b>Provisional</b>: pot canviar si s'obtenen dades millors.","Que sigui falsable i provisional no és un defecte: vol dir que la ciència es corregeix. Exemple: el model geocèntric."],
+  truc:"«En Ramon Rep Fotos Precioses» → Empíric, Racional, Reproduïble, Falsable, Provisional.",
+  compte:"No confonguis falsable (un experiment pot demostrar que és fals) amb provisional (pot canviar amb dades millors).",
+  fc:[["Empíric","Es basa en dades i observacions."],["Racional","Fa servir la raó i és objectiu."],["Reproduïble","Altres poden repetir l'experiment i comprovar-ho."],["Falsable","Un experiment nou pot demostrar que és incorrecte."],["Provisional","Pot canviar si arriben dades millors."],["Un exemple d'idea que va canviar?","El model geocèntric."]],
+  q:[["Un company repeteix el teu experiment a casa i li surt igual. Quina característica és?",["Reproduïble","Provisional","Racional"],0,"Reproduïble: altres el poden repetir i comprovar."],
+     ["«Pot canviar si s'obtenen dades millors.» Quina característica és?",["Falsable","Provisional","Empíric"],1,"Provisional. Falsable vol dir que un experiment pot demostrar que és fals."],
+     ["Mesures la planta amb un regle en lloc de dir «em sembla que ha crescut». Quina característica és?",["Empíric","Falsable","Reproduïble"],0,"Empíric: es basa en dades i observacions."],
+     ["«La meva planta és més maca» no val en ciència perquè el mètode és…",["Racional (objectiu)","Provisional","Reproduïble"],0,"Racional: no depèn dels gustos."],
+     ["Quina idea va canviar quan van arribar millors observacions?",["El model geocèntric","L'any llum","La Via Làctia"],0,"És l'exemple del resum de ciència provisional."]]},
+ {id:"passos",ic:"🔎",col:"#059669",titol:"Els passos del mètode",font:"Resum · secció 3",
+  idea:"Observo → faig una hipòtesi → experimento → analitzo les dades → comunico els resultats.",
+  pts:["<b>Observació</b>: veig un fenomen i defineixo el problema.","<b>Hipòtesi</b>: una explicació provisional que encara no has comprovat. Sol anar amb «Si…, aleshores…».",
+   "<b>Experimentació</b>: obtinc dades i les comparo amb la hipòtesi.","<b>Anàlisi</b>: estudio les dades i en trec conclusions.","<b>Comunicació</b>: explico els resultats als altres.",
+   "Exemple de la investigadora: dues plantes idèntiques, una amb llum constant i l'altra a la foscor, dues setmanes, mesurant cada tres dies. Resultat: la de llum creix més. Conclusió: la llum afecta positivament el creixement."],
+  truc:"«Ocells Hi Entren A Casa» → Observar, Hipòtesi, Experimentar, Analitzar, Comunicar.",
+  compte:"Observació = el que veus. Hipòtesi = la teva explicació. Resultat = les dades. Conclusió = el que en dedueixes. I una pregunta («Qui juga millor?») no és una hipòtesi!",
+  fc:[["Què és una hipòtesi?","Una explicació provisional que encara no has comprovat."],["Com comença sovint una hipòtesi?","«Si…, aleshores…»"],["Resultat o conclusió: «la planta amb llum ha crescut més»?","Resultat (són les dades)."],["Resultat o conclusió: «la llum ajuda a créixer»?","Conclusió."],["Quin és el primer pas?","Observar."],["Quin és l'últim pas?","Comunicar els resultats."]],
+  q:[["Quin és l'ordre correcte?",["Observació → Hipòtesi → Experimentació → Anàlisi → Comunicació","Hipòtesi → Observació → Experimentació → Anàlisi → Comunicació","Observació → Experimentació → Hipòtesi → Anàlisi → Comunicació"],0,"«Ocells Hi Entren A Casa»."],
+     ["«Si les plantes reben més llum, creixeran més ràpidament.» Què és?",["Una observació","Una hipòtesi","Una conclusió"],1,"És una explicació provisional que encara s'ha de comprovar."],
+     ["«La planta amb llum ha crescut més que la de la foscor.» Què és?",["El resultat","La hipòtesi","L'observació"],0,"Són les dades obtingudes."],
+     ["«Algunes plantes creixen més ràpid a l'estiu que a l'hivern.» Què és?",["Una hipòtesi","Una observació","Una conclusió"],1,"És el que la investigadora veu."],
+     ["«Qui juga millor a futbol?» és…",["Una hipòtesi","El problema (una pregunta)","Una conclusió"],1,"Una pregunta no és una hipòtesi: falta dir què creus que passa."]]},
+ {id:"univers",ic:"🌠",col:"#4f46e5",titol:"L'Univers i l'any llum",font:"Resum · secció 4",
+  idea:"L'Univers és el conjunt de tot el que existeix: la matèria, l'energia, l'espai i el temps.",
+  pts:["<b>Model geocèntric</b>: el va crear Ptolemeu a l'antiga Grècia. Deia que la Terra era el centre i tot girava al seu voltant.","Es va fer servir des del <b>segle II fins al segle XVI</b>.",
+   "<b>Any llum</b>: la distància que recorre la llum en un any, a 300.000 km/s. Uns <b>10 bilions de km</b>.","L'any llum serveix per mesurar distàncies <b>dins d'una galàxia o entre galàxies</b>.",
+   "Sabies que…? La llum del Sol triga uns 8 minuts a arribar a la Terra. (De regal: no cau a l'examen.)"],
+  truc:"Geo vol dir «Terra» (com geografia). Model geocèntric = la Terra al centre. I l'any llum porta «any» però és una distància!",
+  compte:"L'any llum NO és un temps: és una distància.",
+  fc:[["Què és l'Univers?","Tot el que existeix: matèria, energia, espai i temps."],["Qui va crear el model geocèntric?","Ptolemeu, a l'antiga Grècia."],["Què deia el model geocèntric?","Que la Terra era el centre i tot girava al seu voltant."],["Fins quan es va fer servir?","Del segle II al segle XVI."],["Què és un any llum?","La distància que recorre la llum en un any (uns 10 bilions de km)."],["Per a què serveix l'any llum?","Per mesurar distàncies dins i entre galàxies."]],
+  q:[["Què deia el model geocèntric?",["Que el Sol era el centre","Que la Terra era el centre i tot girava al seu voltant","Que la Via Làctia era el centre"],1,"Geo = Terra."],
+     ["Un any llum és…",["Un temps","Una distància","Una velocitat"],1,"És la distància que recorre la llum en un any."],
+     ["Qui va proposar el model geocèntric?",["Ptolemeu","Plutó","Ceres"],0,"Ptolemeu, a l'antiga Grècia."],
+     ["Per a què serveix l'any llum?",["Per mesurar distàncies dins i entre galàxies","Per mesurar quants anys té una estrella","Per mesurar la temperatura del Sol"],0,"Les distàncies a l'espai són tan grans que es mesuren en anys llum."],
+     ["Què inclou l'Univers?",["Només les estrelles","La matèria, l'energia, l'espai i el temps","Només el sistema solar"],1,"L'Univers és tot el que existeix."]]},
+ {id:"galaxies",ic:"🌌",col:"#7c3aed",titol:"Les galàxies i la Via Làctia",font:"Resum · secció 5",
+  idea:"Una galàxia és una agrupació enorme d'estrelles, altres cossos celestes, gas i pols còsmica que giren junts.",
+  pts:["<b>El·líptica</b>: en forma d'ou.","<b>Espiral</b>: disc central del qual surten braços corbats.","<b>Irregular</b>: sense forma definida.",
+   "La nostra galàxia és la <b>Via Làctia</b>: unes <b>300.000 milions d'estrelles</b>. El Sol és només una d'elles.","Vista des de dalt, la Via Làctia té forma d'<b>espiral</b>.",
+   "⚠ Als apunts diu que té «un diàmetre d'uns 100.000» però no diu de què. Probablement són anys llum: pregunta-ho al profe."],
+  truc:"El·líptica = és un ou. Espiral = un remolí, com l'aigua de la banyera quan treus el tap. Irregular = sense forma.",
+  compte:"La Via Làctia és espiral, no el·líptica.",
+  fc:[["Què és una galàxia?","Una agrupació enorme d'estrelles, cossos celestes, gas i pols que giren junts."],["Galàxia en forma d'ou?","El·líptica."],["Galàxia amb braços corbats?","Espiral."],["Galàxia sense forma?","Irregular."],["Com es diu la nostra galàxia?","La Via Làctia."],["Quantes estrelles té la Via Làctia?","Unes 300.000 milions."]],
+  q:[["Quina forma té la Via Làctia?",["El·líptica","Espiral","Irregular"],1,"Vista des de dalt té forma d'espiral."],
+     ["Una galàxia sense forma definida és…",["Irregular","Espiral","El·líptica"],0,"Irregular = sense forma."],
+     ["Quantes estrelles té, aproximadament, la Via Làctia?",["Unes 300.000 milions","Unes 300","Unes 8"],0,"El Sol és només una d'aquestes estrelles."],
+     ["Què és el Sol dins de la Via Làctia?",["El centre de la galàxia","Una de les seves estrelles","Un planeta"],1,"El Sol és una de les 300.000 milions d'estrelles."],
+     ["De què està feta una galàxia?",["Només d'estrelles","D'estrelles, altres cossos celestes, gas i pols","Només de planetes"],1,"Tot això gira junt."]]},
+ {id:"cossos",ic:"☄️",col:"#db2777",titol:"Els cossos celestes",font:"Resum · secció 6",
+  idea:"A l'espai hi ha estrelles, planetes, satèl·lits, asteroides, cometes i meteoroides, i cadascun és diferent.",
+  pts:["<b>Estrella</b>: té llum pròpia. N'hi ha de mides molt diverses.","<b>Planeta</b>: gira al voltant d'una estrella i no té llum pròpia: reflecteix la que rep. Condicions: ① forma esfèrica, ② orbitar una estrella, ③ ser el principal de la seva òrbita.",
+   "<b>Planeta nan</b>: no compleix la 3a condició. Exemple: Plutó (planeta nan des del 2006).","<b>Satèl·lit natural</b>: gira al voltant d'un planeta. Exemple: la Lluna.",
+   "<b>Asteroide</b>: fet sobretot de roca i metalls.","<b>Cometa</b>: gel, pols i roca, amb una òrbita molt allargada.","<b>Meteoroide</b>: trosset petit de roca o metall. Quan crema a l'atmosfera veiem una «estrella fugaç»."],
+  truc:"Cometa = conglaçat (gel). Asteroide = amb roca i metall. Satèl·lit = saltador al voltant d'un planeta, com la Lluna amb la Terra.",
+  compte:"Satèl·lit ≠ planeta: el satèl·lit gira al voltant d'un planeta; el planeta, al voltant d'una estrella.",
+  fc:[["Per què brillen els planetes si no tenen llum pròpia?","Perquè reflecteixen la llum que reben."],["Les 3 condicions per ser planeta?","Forma esfèrica, orbitar una estrella i ser el principal de la seva òrbita."],["Quina condició no compleix Plutó?","La 3a: no és el principal de la seva òrbita."],["De què és un cometa?","Gel, pols i roca."],["De què és un asteroide?","Sobretot de roca i metalls."],["Què veiem quan un meteoroide crema a l'atmosfera?","Una «estrella fugaç»."]],
+  q:[["La Lluna és…",["Un planeta","Un satèl·lit natural","Un asteroide"],1,"Gira al voltant d'un planeta, la Terra."],
+     ["De què està fet un cometa?",["De roca i metalls","De gel, pols i roca","De gas que crema"],1,"Roca i metalls és un asteroide."],
+     ["Per què Plutó és un planeta nan?",["Perquè no és rodó","Perquè no és el principal de la seva òrbita","Perquè no gira al voltant del Sol"],1,"És rodó i gira al voltant del Sol, però comparteix l'òrbita amb molts cossos."],
+     ["Per què veiem brillar els planetes?",["Perquè tenen llum pròpia","Perquè reflecteixen la llum que reben","Perquè són estrelles petites"],1,"Només les estrelles tenen llum pròpia."],
+     ["Una «estrella fugaç» és…",["Un meteoroide que crema a l'atmosfera","Una estrella que cau","Un cometa"],0,"Són trossets petits de roca o metall."]]},
+ {id:"sistema",ic:"☀️",col:"#f59e0b",titol:"El sistema solar",font:"Resum · secció 7",
+  idea:"Al centre hi ha el Sol; al seu voltant, 4 planetes interiors petits i rocosos, 4 exteriors gegants i dos cinturons de cossos petits.",
+  pts:["<b>El Sol</b>: uns 4.600 milions d'anys i uns 5.500 °C a la superfície. Ens dona llum i calor.",
+   "<b>Interiors</b>: Mercuri, Venus, Terra i Mart. Petits, sòlids, de roca, a prop del Sol, pocs satèl·lits, giren lentament i sense anells.",
+   "<b>Exteriors</b>: Júpiter, Saturn, Urà i Neptú. Són els gegants (afegit per Bona Nota: gasosos, lluny del Sol, molts satèl·lits i anells).",
+   "<b>Cinturó d'asteroides</b>: entre Mart i Júpiter. Molts asteroides rocosos.","<b>Cinturó de Kuiper</b>: més enllà de Neptú. Cossos de roca i gel; hi ha Plutó i d'allà venen alguns cometes.",
+   "⚠ Als apunts, el nom de l'objecte més gran del cinturó d'asteroides es llegeix malament (probablement Ceres): pregunta-ho al profe."],
+  truc:"«Mi Vella Tia Mari, Jugant Sempre Unes Nines» → Mercuri, Venus, Terra, Mart | Júpiter, Saturn, Urà, Neptú. La coma és el cinturó d'asteroides!",
+  compte:"El cinturó d'asteroides és entre Mart i Júpiter; el de Kuiper, més enllà de Neptú. No els barregis!",
+  fc:[["Planetes interiors?","Mercuri, Venus, Terra i Mart."],["Planetes exteriors?","Júpiter, Saturn, Urà i Neptú."],["On és el cinturó d'asteroides?","Entre Mart i Júpiter."],["On és el cinturó de Kuiper?","Més enllà de Neptú."],["Quin planeta nan hi ha al cinturó de Kuiper?","Plutó."],["Quants anys té el Sol?","Uns 4.600 milions d'anys."]],
+  q:[["Quin planeta és interior?",["Júpiter","Mart","Saturn"],1,"Interiors: Mercuri, Venus, Terra i Mart."],
+     ["On és el cinturó d'asteroides?",["Entre Mart i Júpiter","Més enllà de Neptú","Entre la Terra i Mart"],0,"Més enllà de Neptú hi ha el de Kuiper."],
+     ["Com són els planetes interiors?",["Petits i de roca","Gegants","Tenen molts anells"],0,"Petits, sòlids, de roca i sense anells."],
+     ["Quin planeta nan hi ha al cinturó de Kuiper?",["Plutó","La Lluna","Mart"],0,"Plutó és al cinturó de Kuiper."],
+     ["Quina temperatura té la superfície del Sol, aproximadament?",["Uns 5.500 °C","Uns 100 °C","Uns 550 °C"],0,"Uns 5.500 °C."]]},
+ {id:"geosfera",ic:"🥚",col:"#b45309",titol:"Les capes de la Terra",font:"Apunts · secció 2",
+  idea:"La geosfera és la part sòlida i rocosa de la Terra, i té tres capes: escorça, mantell i nucli.",
+  pts:["Com més endins, més <b>densitat</b> i més <b>temperatura</b>.","<b>Escorça</b> (la closca de l'ou): la més externa i la més prima. Continental (granits i pissarres) i oceànica (més fina, de basalt).",
+   "<b>Mantell</b> (la clara): la més gruixuda. De <b>peridotita</b>. Mantell superior (amb zones pastoses) i inferior (sòlid).",
+   "<b>Nucli</b> (el rovell): el més profund i calent, de <b>ferro i níquel</b>. Nucli extern líquid i nucli intern sòlid per la pressió.",
+   "Entre capes hi ha <b>discontinuïtats</b>. La de <b>Mohorovicic</b> (Moho) separa l'escorça del mantell."],
+  truc:"L'ou dur: closca = escorça, clara = mantell, rovell = nucli.",
+  compte:"La capa més gruixuda és el mantell; la més prima, l'escorça. I el nucli intern és sòlid, no líquid!",
+  fc:[["Les tres capes de la Terra?","Escorça, mantell i nucli."],["La capa més prima?","L'escorça."],["La capa més gruixuda?","El mantell."],["De què és el nucli?","De ferro i níquel."],["Què separa la Moho?","L'escorça del mantell."],["Escorça oceànica: de quina roca?","De basalt."]],
+  q:[["Quina és la capa més gruixuda?",["L'escorça","El mantell","El nucli"],1,"L'escorça és la més prima."],
+     ["De què està fet el nucli?",["De ferro i níquel","De peridotita","De granit"],0,"La peridotita és del mantell."],
+     ["Com és el nucli intern?",["Líquid","Sòlid","Gasós"],1,"És sòlid per la pressió gegantina, tot i que és molt calent."],
+     ["Què passa com més endins anem?",["Fa més fred","Pugen la densitat i la temperatura","No canvia res"],1,"Com més profund, més calor i més densitat."],
+     ["La discontinuïtat de Mohorovicic separa…",["L'escorça del mantell","El mantell del nucli","El nucli extern de l'intern"],0,"La Moho és entre escorça i mantell."]]},
+ {id:"teoria",ic:"🔬",col:"#0891b2",titol:"La teoria cel·lular",font:"Apunts · secció 3",
+  idea:"Tots els éssers vius estem formats per cèl·lules.",
+  pts:["① La cèl·lula és la <b>unitat estructural</b>: tots els éssers vius estan fets d'una o més cèl·lules.","② És la <b>unitat funcional</b>: fa les funcions vitals (nutrició, relació i reproducció).",
+   "③ Tota cèl·lula ve de la divisió d'una altra <b>cèl·lula preexistent</b>.","Totes les cèl·lules tenen: <b>membrana plasmàtica</b> (la porta de la frontera), <b>citoplasma</b> (líquid on floten els orgànuls) i <b>material genètic (ADN)</b> (el llibre d'instruccions)."],
+  truc:"Les 3 parts de tota cèl·lula: la porta (membrana), la sala (citoplasma) i el llibre d'instruccions (ADN).",
+  compte:"Les funcions vitals són tres: nutrició, relació i reproducció.",
+  fc:[["De què estan fets tots els éssers vius?","De cèl·lules."],["Les 3 funcions vitals?","Nutrició, relació i reproducció."],["D'on ve una cèl·lula?","De la divisió d'una altra cèl·lula."],["Què fa la membrana plasmàtica?","Regula què entra i què surt de la cèl·lula."],["Què és l'ADN?","El llibre d'instruccions de la cèl·lula."]],
+  q:[["Quina part regula les substàncies que entren i surten?",["La membrana plasmàtica","El citoplasma","L'ADN"],0,"És la «porta de la frontera»."],
+     ["D'on prové tota cèl·lula?",["De la divisió d'una altra cèl·lula","De l'aigua","Del no-res"],0,"Tercera idea de la teoria cel·lular."],
+     ["Quines són les funcions vitals?",["Nutrició, relació i reproducció","Menjar, dormir i jugar","Respirar, córrer i créixer"],0,"Les fa la cèl·lula, unitat funcional."],
+     ["Què és el material genètic (ADN)?",["El llibre d'instruccions de la cèl·lula","Un orgànul que fa energia","La paret de la cèl·lula"],0,"Diu com s'ha de construir i funcionar."]]},
+ {id:"animalveg",ic:"🌿",col:"#65a30d",titol:"Cèl·lula animal i vegetal",font:"Apunts · secció 4",
+  idea:"Les cèl·lules eucariotes (amb nucli) poden ser animals o vegetals, i tenen diferències clares.",
+  pts:["<b>Forma</b>: animal irregular i arrodonida; vegetal regular i prismàtica.","<b>Paret cel·lular de cel·lulosa</b>: només la vegetal (li dona rigidesa).",
+   "<b>Cloroplasts</b>: només la vegetal (fotosíntesi amb la clorofil·la).","<b>Vàcuols</b>: animal molt petits (vesícules); vegetal un de gegant.",
+   "<b>Centrosoma</b>: només l'animal.","<b>Nucli</b>: animal al centre; vegetal desplaçat cap a un costat pel vàcuol. Algunes cèl·lules animals es desplacen; les vegetals no."],
+  truc:"La cèl·lula vegetal porta armadura (paret), panells solars (cloroplasts) i una gran cisterna (vàcuol).",
+  compte:"El centrosoma és de l'animal, no de la vegetal.",
+  fc:[["Qui té paret cel·lular?","La cèl·lula vegetal."],["Qui té cloroplasts?","La cèl·lula vegetal."],["Qui té centrosoma?","La cèl·lula animal."],["Com és el vàcuol de la vegetal?","Gegant."],["On és el nucli de la vegetal?","Desplaçat cap a un costat."]],
+  q:[["Quina cèl·lula té cloroplasts?",["L'animal","La vegetal","Totes dues"],1,"Fan la fotosíntesi."],
+     ["Quina cèl·lula té centrosoma?",["L'animal","La vegetal","Cap"],0,"La vegetal no en té."],
+     ["Per què el nucli de la cèl·lula vegetal és a un costat?",["Perquè l'empeny el vàcuol gegant","Perquè té centrosoma","Perquè es desplaça"],0,"El gran vàcuol empeny la resta d'elements."],
+     ["Què dona rigidesa a la cèl·lula vegetal?",["La paret cel·lular de cel·lulosa","El citoplasma","Els mitocondris"],0,"És a fora de la membrana."],
+     ["Quines cèl·lules es poden desplaçar, com els glòbuls blancs?",["Algunes animals","Les vegetals","Cap"],0,"Les vegetals no es desplacen."]]},
+ {id:"organuls",ic:"🛠️",col:"#9333ea",titol:"Els orgànuls",font:"Apunts · secció 5",
+  idea:"Els orgànuls són els petits tallers de la cèl·lula, i cadascun té una feina.",
+  pts:["<b>Mitocondris</b>: les centrals d'energia. Obtenen energia de l'oxigen i el menjar.","<b>Aparell de Golgi</b>: el servei de correus. Envia substàncies a fora dins de bossetes.",
+   "<b>Ribosomes</b>: els obrers que fabriquen proteïnes.","<b>Cloroplasts</b>: només a les plantes. Capten el sol per fabricar aliment."],
+  truc:"Mitocondri = la central elèctrica; Golgi = correus; ribosomes = obrers; cloroplasts = panells solars.",
+  compte:"Els mitocondris són a totes dues cèl·lules; els cloroplasts, només a les vegetals.",
+  fc:[["Les centrals d'energia?","Els mitocondris."],["El servei de correus?","L'aparell de Golgi."],["Qui fabrica proteïnes?","Els ribosomes."],["Qui capta el sol per fer aliment?","Els cloroplasts."]],
+  q:[["Quin orgànul obté energia de l'oxigen i el menjar?",["El mitocondri","El ribosoma","L'aparell de Golgi"],0,"És la central d'energia."],
+     ["Quin orgànul fabrica proteïnes?",["Els ribosomes","Els cloroplasts","Els mitocondris"],0,"Són els petits obrers."],
+     ["L'aparell de Golgi…",["Envia substàncies a fora dins de bossetes","Fa la fotosíntesi","Guarda l'ADN"],0,"És el servei de correus."],
+     ["Els cloroplasts són…",["Només a les cèl·lules vegetals","A totes les cèl·lules","Només a les animals"],0,"Capten el sol per fabricar aliment."]]}
+];
+const OB=[
+ {t:"Què és la ciència",q:"Explica què és la ciència i digues 4 dels seus 6 objectius.",p:["Activitat humana","Vol entendre la realitat","Fa servir el mètode científic","Diu almenys 4 objectius (descriure, explicar, predir, ampliar, generalitzar i unificar, reconèixer els límits)"],
+  m:"La ciència és una activitat humana que vol entendre la realitat que ens envolta fent servir el mètode científic. Els seus objectius són descriure fenòmens, explicar la realitat, predir el que passarà i ampliar els coneixements."},
+ {t:"Característiques del mètode",q:"Explica què vol dir que el mètode científic sigui falsable i provisional. Posa l'exemple del model geocèntric.",p:["Falsable: un experiment nou pot demostrar que és incorrecte","Provisional: pot canviar amb dades millors","El model geocèntric deia que la Terra era el centre","Va canviar quan van arribar millors observacions"],
+  m:"Falsable vol dir que un experiment nou pot demostrar que una idea és incorrecta. Provisional vol dir que la idea pot canviar si tenim dades millors. Per exemple, el model geocèntric deia que la Terra era el centre de tot, però quan van arribar millors observacions es va veure que no era així i es va canviar."},
+ {t:"Característiques del mètode",q:"Escriu les 5 característiques del mètode científic i explica cadascuna amb una frase.",p:["Empíric: es basa en dades","Racional: objectiu, fa servir la raó","Reproduïble: altres ho poden repetir","Falsable: es pot demostrar que és fals","Provisional: pot canviar"],
+  m:"És empíric perquè es basa en dades i observacions. És racional perquè fa servir la raó i no els gustos. És reproduïble perquè altres persones poden repetir l'experiment. És falsable perquè un experiment nou pot demostrar que és incorrecte. I és provisional perquè pot canviar amb dades millors."},
+ {t:"Els passos del mètode",q:"La Laia veu que el gel es fon més de pressa a la cuina que al balcó. Pensa: «Si fa més calor, el gel es fondrà més de pressa». Posa un glaçó al radiador i un altre al balcó. El del radiador es fon en 20 minuts i el del balcó en 45. Dedueix que la calor fa fondre el gel més ràpid. Escriu l'observació, la hipòtesi, l'experiment, el resultat i la conclusió.",
+  p:["Observació: el gel es fon més de pressa a la cuina","Hipòtesi: si fa més calor, es fondrà més de pressa","Experiment: dos glaçons, un al radiador i un al balcó","Resultat: 20 minuts i 45 minuts","Conclusió: la calor fa fondre el gel més ràpid"],
+  m:"L'observació és que el gel es fon més de pressa a la cuina que al balcó. La hipòtesi és «si fa més calor, el gel es fondrà més de pressa». L'experiment és posar un glaçó al radiador i un altre al balcó. El resultat és que el del radiador es fon en 20 minuts i el del balcó en 45. La conclusió és que la calor fa que el gel es fongui més ràpid."},
+ {t:"Els passos del mètode",q:"Explica la diferència entre una observació i una hipòtesi, i entre un resultat i una conclusió. Posa un exemple de l'experiment de les plantes per a cadascuna.",p:["Observació = el que veus (unes plantes creixen més que d'altres)","Hipòtesi = explicació per comprovar (si reben més llum, creixeran més)","Resultat = les dades (la planta amb llum ha crescut més)","Conclusió = el que en dedueixes (la llum ajuda a créixer)"],
+  m:"L'observació és el que veus, per exemple que unes plantes creixen més que d'altres. La hipòtesi és la teva explicació per comprovar: si reben més llum, creixeran més. El resultat són les dades: la planta amb llum ha crescut més. La conclusió és el que en dedueixes: la llum ajuda a créixer."},
+ {t:"L'Univers i l'any llum",q:"Explica què és el model geocèntric, qui el va crear i fins quan es va fer servir. Després explica què és un any llum i per a què serveix.",p:["Model geocèntric: la Terra al centre i tot gira al seu voltant","El va crear Ptolemeu (antiga Grècia)","Es va fer servir del segle II al XVI","Any llum: distància que fa la llum en un any (uns 10 bilions de km)","Serveix per mesurar distàncies dins i entre galàxies"],
+  m:"El model geocèntric deia que la Terra era el centre de l'Univers i que tot girava al seu voltant. El va crear Ptolemeu a l'antiga Grècia i es va fer servir del segle II al XVI. Un any llum és la distància que recorre la llum en un any, uns 10 bilions de km, i serveix per mesurar distàncies dins i entre galàxies."},
+ {t:"Les galàxies i la Via Làctia",q:"Explica què és una galàxia i quines tres formes poden tenir. Després explica com és la Via Làctia.",p:["Agrupació d'estrelles, cossos celestes, gas i pols que giren junts","El·líptica (ou), espiral (braços) i irregular (sense forma)","La Via Làctia és la nostra galàxia, amb unes 300.000 milions d'estrelles","Té forma d'espiral i el Sol és una de les seves estrelles"],
+  m:"Una galàxia és una agrupació enorme d'estrelles, altres cossos celestes, gas i pols que giren junts. Poden ser el·líptiques, en forma d'ou; espirals, amb braços corbats; o irregulars, sense forma. La nostra és la Via Làctia: té unes 300.000 milions d'estrelles, forma d'espiral, i el Sol és una d'aquestes estrelles."},
+ {t:"Els cossos celestes",q:"Escriu les 3 condicions per ser planeta. Explica per què Plutó és un planeta nan. Després explica en què es diferencia un satèl·lit d'un planeta i posa un exemple de cadascun.",p:["Forma esfèrica","Orbita una estrella","És el principal de la seva òrbita","Plutó no compleix la 3a","Satèl·lit gira al voltant d'un planeta (Lluna); planeta al voltant d'una estrella (Terra)"],
+  m:"Per ser planeta has de ser rodó, girar al voltant d'una estrella i ser el principal de la teva òrbita. Plutó és rodó i gira al voltant del Sol, però no és el principal de la seva òrbita, i per això és un planeta nan. Un satèl·lit gira al voltant d'un planeta, com la Lluna; un planeta gira al voltant d'una estrella, com la Terra."},
+ {t:"Els cossos celestes",q:"Explica en què es diferencien un asteroide, un cometa i un meteoroide.",p:["Asteroide: roca i metalls","Cometa: gel, pols i roca","Cometa: òrbita molt allargada","Meteoroide: trosset petit; quan crema veiem una estrella fugaç"],
+  m:"Un asteroide està fet sobretot de roca i metalls. Un cometa està fet de gel, pols i roca i té una òrbita molt allargada. Un meteoroide és un trosset petit de roca o metall, i quan crema a l'atmosfera veiem una estrella fugaç."},
+ {t:"El sistema solar",q:"Escriu els 8 planetes en ordre, separa'ls en interiors i exteriors, i digues on són el cinturó d'asteroides i el cinturó de Kuiper.",p:["Ordre: Mercuri, Venus, Terra, Mart, Júpiter, Saturn, Urà, Neptú","Interiors: Mercuri, Venus, Terra, Mart","Exteriors: Júpiter, Saturn, Urà, Neptú","Cinturó d'asteroides entre Mart i Júpiter","Cinturó de Kuiper més enllà de Neptú"],
+  m:"Els planetes són Mercuri, Venus, Terra, Mart, Júpiter, Saturn, Urà i Neptú. Els interiors són Mercuri, Venus, Terra i Mart, i els exteriors Júpiter, Saturn, Urà i Neptú. El cinturó d'asteroides és entre Mart i Júpiter, i el de Kuiper més enllà de Neptú."},
+ {t:"Les capes de la Terra",q:"Explica les tres capes de la Terra fent servir la comparació de l'ou dur. Digues de què està fet el mantell i de què està fet el nucli.",p:["Escorça = closca, la més prima","Mantell = clara, la més gruixuda","Nucli = rovell, el més profund i calent","Mantell de peridotita","Nucli de ferro i níquel"],
+  m:"La Terra és com un ou dur. L'escorça és la closca: la capa de fora i la més prima. El mantell és la clara: la capa més gruixuda, feta de peridotita. El nucli és el rovell: la part més profunda i calenta, feta de ferro i níquel."},
+ {t:"La teoria cel·lular",q:"Explica les tres idees de la teoria cel·lular i les tres parts que tenen totes les cèl·lules.",p:["Unitat estructural: tots els éssers vius estan fets de cèl·lules","Unitat funcional: fa la nutrició, la relació i la reproducció","Tota cèl·lula ve d'una altra cèl·lula","Membrana plasmàtica, citoplasma i ADN"],
+  m:"La teoria cel·lular diu que tots els éssers vius estan fets de cèl·lules, que la cèl·lula fa les funcions vitals (nutrició, relació i reproducció) i que tota cèl·lula ve de la divisió d'una altra. Totes les cèl·lules tenen membrana plasmàtica, citoplasma i material genètic (ADN)."},
+ {t:"Cèl·lula animal i vegetal",q:"Escriu quatre diferències entre la cèl·lula animal i la cèl·lula vegetal.",p:["Paret cel·lular: només la vegetal","Cloroplasts: només la vegetal","Vàcuol gegant a la vegetal, petits a l'animal","Centrosoma: només l'animal (o forma, o posició del nucli)"],
+  m:"La cèl·lula vegetal té paret cel·lular i cloroplasts, i l'animal no. La vegetal té un vàcuol gegant i l'animal en té de molt petits. L'animal té centrosoma i la vegetal no."}
+];
+// ---- figures (SVG generats per funció) ----
+function svgFigura(){
+ let s=`<svg viewBox="0 0 480 300" width="100%" style="max-width:480px" xmlns="http://www.w3.org/2000/svg" font-family="Nunito,Arial">`;
+ let seed=7;const r=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};const g=()=>{let u=0;for(let i=0;i<6;i++)u+=r();return u-3};
+ const dot=(x,y,o)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.1" fill="#1e293b" opacity="${o}"/>`;
+ // galàxia A espiral
+ s+=`<rect x="4" y="4" width="152" height="118" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>`;
+ for(let i=0;i<50;i++)s+=dot(80+g()*4,63+g()*4,.9);
+ [0,Math.PI].forEach(b=>{for(let i=0;i<130;i++){const t=i/130*2.6*Math.PI,R=6+9*t;s+=dot(80+R*Math.cos(t+b)+g()*1.6,63+.62*R*Math.sin(t+b)+g()*1.2,.75)}});
+ // galàxia B irregular
+ s+=`<rect x="164" y="4" width="152" height="118" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>`;
+ [[-22,-8,10,110],[14,10,9,90],[28,-16,6,45],[-6,20,5,35]].forEach(([ox,oy,sd,n])=>{for(let i=0;i<n;i++)s+=dot(240+ox+g()*sd,63+oy+g()*sd*.8,.7)});
+ // galàxia C el·líptica
+ s+=`<rect x="324" y="4" width="152" height="118" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>`;
+ for(let i=0;i<380;i++){const R=Math.abs(g()*.3),a=r()*6.283;s+=dot(400+58*R*Math.cos(a),63+34*R*Math.sin(a),Math.max(.25,.95-R))}
+ ["A","B","C"].forEach((l,i)=>s+=`<text x="${80+i*160}" y="142" text-anchor="middle" font-size="16" font-weight="900">${l}</text>`);
+ // sistema solar
+ const cy=225;s+=`<circle cx="-20" cy="${cy}" r="55" fill="#fde68a" stroke="#d4a017"/><text x="8" y="${cy+5}" font-size="12" font-weight="800">Sol</text><line x1="40" y1="${cy}" x2="474" y2="${cy}" stroke="#cbd5e1" stroke-dasharray="3,4"/>`;
+ const belt=(x1,x2,l)=>{let b="";for(let i=0;i<60;i++)b+=`<circle cx="${(x1+r()*(x2-x1)).toFixed(1)}" cy="${(cy+g()*8).toFixed(1)}" r="${(0.8+r()*.8).toFixed(1)}" fill="#64748b"/>`;return b+`<text x="${(x1+x2)/2}" y="${cy-30}" text-anchor="middle" font-size="14" font-weight="900">${l}</text>`};
+ s+=belt(138,164,"X")+belt(390,470,"Y");
+ [[60,4],[80,6],[101,6.5],[121,5],[195,21],[257,17],[312,11],[360,11]].forEach(([x,R],i)=>s+=`<circle cx="${x}" cy="${cy}" r="${R}" fill="#bae6fd" stroke="#1e293b"/><text x="${x}" y="${cy+38}" text-anchor="middle" font-size="13" font-weight="900">${i+1}</text>`);
+ s+=`<text x="240" y="296" text-anchor="middle" font-size="10" fill="#64748b">Esquema: les mides i les distàncies no són reals.</text></svg>`;
+ return s;
+}
+
+const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
+["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
+document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
+
+// ====================== ESTAT ======================
+const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null});
+let S=BUIT(),PER={},ACT="";
+try{PER=JSON.parse(localStorage.getItem(CL+"perfils")||"{}")||{};ACT=localStorage.getItem(CL+"actiu")||""}catch(e){}
+try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const o=Object.assign(BUIT(),JSON.parse(v));if(o.nom){PER[o.nom]=o;ACT=o.nom}}}catch(e){}
+if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
+function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
+function desa(){guarda();pintaCap()}
+function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLowerCase())}
+function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
+ ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();vista("inici")}
+function avui(){return new Date().toISOString().slice(0,10)}
+function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
+function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
+// ---- nivells i rangs: es calculen amb les mateixes ⭐ dels tests, jocs i preguntes obertes ----
+const NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","🔍"],[45,"Savi","📜"],[70,"Expert","🎓"],[100,"Mestre","🧠"],[140,"Campió","🏅"],[190,"Heroi","🦸"],[250,"Llegenda","👑"],[330,"Llegenda d'or","🌟"]];
+function nivell(p){let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];
+ return {n:i+1,nom,ic,min,seg,falten:seg?seg[0]-p:0,pc:seg?Math.round((p-min)*100/(seg[0]-min)):100}}
+let NIVPEND=null;
+function suma(n){const a=nivell(S.punts).n;S.punts+=n;if(nivell(S.punts).n>a)NIVPEND=nivell(S.punts);desa()}
+// el «LEVEL UP» surt quan s'acaba el test o el joc (no a mitja pregunta)
+function mostraNivell(){if(!NIVPEND)return;if(document.querySelector(".arc")){setTimeout(mostraNivell,400);return}
+ const v=NIVPEND;NIVPEND=null;so("super");window.NIVELLS_MOSTRATS=(window.NIVELLS_MOSTRATS||0)+1;
+ const d=document.createElement("div");d.className="arc niv";
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">LEVEL UP!</div><div class="nic">${v.ic}</div><div class="t3">NIVELL ${v.n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ARA ETS<br>${v.nom.toUpperCase()}</div>${v.seg?`<div class="t4">PROPER: ${v.seg[2]} ${v.seg[1].toUpperCase()} · ${v.falten} ⭐</div>`:`<div class="t4">HAS ARRIBAT AL NIVELL MÀXIM!</div>`}`;
+ document.body.appendChild(d);const para=focs(d.querySelector("canvas"));const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4500)}
+function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" onclick="vista('analitica')"><span class="nic">${v.ic}</span><div style="flex:1;min-width:0"><b>Nivell ${v.n} · ${v.nom}</b><div class="barra"><i style="width:${v.pc}%"></i></div><small>${v.seg?`Et falten ${v.falten} ⭐ per a ${v.seg[2]} ${v.seg[1]}`:"Nivell màxim! Ets una llegenda 🌟"}</small></div></div>`}
+function pintaCap(){const nv=nivell(S.punts);document.getElementById("punts").textContent=`⭐ ${S.punts} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom} · ${ASSIG.curs}`:ASSIG.curs}
+// temps d'estudi: cada 15 s amb la pestanya visible
+setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;guarda()}},15000);
+const app=document.getElementById("app");
+const barreja=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.intents.map(i=>i.pc)):null};
+const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
+function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
+let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
+function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
+function vista(v){aturaSeg();window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
+
+
+// ====================== SO I EFECTES ARCADE ======================
+// volum dels sons 0-5 (0 = silenci)
+let AC=null,MG=null,VOL=3,VOLant=3;
+try{const v=localStorage.getItem("bn_vol");if(v!==null)VOL=Math.max(0,Math.min(5,+v||0));else if(localStorage.getItem("bn_so")==="0")VOL=0}catch(e){}
+const GVOL=[0,.12,.27,.45,.7,1];
+function audio(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=GVOL[VOL];MG.connect(AC.destination);}if(AC.state==="suspended")AC.resume();return AC}
+function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN");if(b)b.textContent=VOL===0?"🔇":VOL<3?"🔈":VOL<5?"🔉":"🔊";if(r)r.value=VOL;if(n)n.textContent=VOL}
+function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
+function canviaSo(){posaVol(VOL?0:(VOLant||3))}
+function nota(f,t0,d,tipus="square",vol=.12,dest){const o=AC.createOscillator(),g=AC.createGain();o.type=tipus;o.frequency.setValueAtTime(f,AC.currentTime+t0);g.gain.setValueAtTime(vol,AC.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t0+d);o.connect(g).connect(dest||MG);o.start(AC.currentTime+t0);o.stop(AC.currentTime+t0+d+.02)}
+function so(t){if(!VOL)return;try{audio();
+ if(t==="ok"){nota(988,0,.08);nota(1319,.08,.18)}
+ else if(t==="ko"){nota(196,0,.18,"sawtooth",.08);nota(147,.16,.25,"sawtooth",.08)}
+ else if(t==="win"){[523,659,784,1047,784,1047,1319].forEach((f,i)=>nota(f,i*.11,.16));[262,330,392,523].forEach((f,i)=>nota(f,.77+i*.0,.6,"triangle",.1));nota(1568,.77,.6,"square",.08)}
+ else if(t==="super"){[523,659,784,1047,1319,1568,2093].forEach((f,i)=>nota(f,i*.08,.14));[1047,1319,1568,2093].forEach((f,i)=>nota(f,.6+i*.12,.25));nota(2093,1.1,.8,"triangle",.12)}
+ else if(t==="clic"){nota(660,0,.04,"square",.07);nota(990,.04,.06,"square",.06)}
+ else if(t==="gir"){nota(440,0,.05,"square",.06);nota(880,.05,.08,"square",.05)}
+ else if(t==="trist"){[392,370,349].forEach((f,i)=>nota(f,i*.38,.34,"sawtooth",.09));const o=AC.createOscillator(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain(),t0=AC.currentTime+1.14;o.type="sawtooth";o.frequency.setValueAtTime(330,t0);o.frequency.linearRampToValueAtTime(262,t0+1.1);l.frequency.value=6;lg.gain.value=9;l.connect(lg).connect(o.frequency);g.gain.setValueAtTime(.1,t0);g.gain.exponentialRampToValueAtTime(.001,t0+1.3);o.connect(g).connect(MG);o.start(t0);l.start(t0);o.stop(t0+1.35);l.stop(t0+1.35)}
+ else if(t==="coin"){nota(988,0,.06);nota(1319,.06,.3)}
+}catch(e){}}
+function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};mida();
+ const P=[],cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
+ const esclat=(x,y)=>{const col=cols[Math.random()*cols.length|0];for(let i=0;i<46;i++){const a=Math.PI*2*i/46,v=2+Math.random()*4.5;P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,v:1,col,m:3+Math.random()*3})}};
+ let fr=0,viu=true;const pas=()=>{if(!viu)return;fr++;c.fillStyle="#02061733";c.fillRect(0,0,W,H);
+  if(fr%18===1&&fr<200)esclat(W*(.15+Math.random()*.7),H*(.15+Math.random()*.45));
+  for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.vx*=.985;p.v-=.012;if(p.v<=0){P.splice(i,1);continue}c.globalAlpha=p.v;c.fillStyle=p.col;c.fillRect(p.x|0,p.y|0,p.m,p.m)}
+  c.globalAlpha=1;requestAnimationFrame(pas)};pas();return()=>{viu=false}}
+document.addEventListener("click",e=>{const el=e.target.closest("button,.tile,.continua,.flash,label.chk,details summary");if(!el||el.matches(".opt,#so"))return;so(el.matches(".flash")?"gir":"clic")},true);
+let demoN=0;const MODE_DEMO=/[?&]demo\b/.test(location.search);
+function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true],[40,2,5,false],[0,0,5,false]];const c=casos[demoN%5];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%5+1}/5 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
+function fracas(pc,bones,n){
+ so("trist");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ const d=document.createElement("div");d.className="arc ko";
+ let pl="";for(let i=0;i<40;i++)pl+=`<i class="pluja" style="left:${Math.random()*100}%;animation-duration:${.6+Math.random()*.7}s;animation-delay:${Math.random()*1.2}s"></i>`;
+ d.innerHTML=`${pl}<div class="t1">${pc<25?"GAME<br>OVER":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">💔</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}REPASSA I<br>TORNA-HI!</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+}
+function arcade(pc,bones,n,record){
+ if(pc<50)return fracas(pc,bones,n);
+ const sup=pc>=90,nE=pc>=90?3:pc>=70?2:1;
+ so(sup?"super":"win");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ const d=document.createElement("div");d.className="arc";
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record?`<div class="rec">★ NOU RÈCORD ★</div>`:""}<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ document.body.appendChild(d);[0,1,2].slice(0,nE).forEach(i=>setTimeout(()=>so("coin"),500+i*250+700));
+ const para=focs(d.querySelector("canvas"));
+ const tanca=()=>{para();d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+}
+
+// ====================== BENVINGUDA ======================
+function benvinguda(){
+ marcaNav("usuari");
+ const noms=Object.keys(PER);
+ const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=50}).length;
+ app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
+ ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
+ <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form></div>`;
+ app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>entra(b.dataset.n));
+ const i=document.getElementById("nom");if(!noms.length)i.focus();
+ document.getElementById("fn").onsubmit=e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}
+  n=n.charAt(0).toUpperCase()+n.slice(1);
+  if(existeix(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);
+   const sug=suggeriments(n);
+   document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙈 Ja hi ha algú que es diu <b>${Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())}</b>. Si ets tu, toca el teu nom a la llista de dalt. Si no, tria un altre nom, un àlies o afegeix-hi un número:<div style="margin-top:8px">${sug.map(x=>`<span class="chip sug">${x}</span>`).join("")}</div></div>`;
+   document.querySelectorAll(".sug").forEach(c=>c.onclick=()=>entra(c.textContent));return}
+  entra(n)};
+ i.oninput=()=>{i.style.borderColor="";document.getElementById("nomAvis").innerHTML=""};
+}
+
+// ====================== INICI ======================
+function tileTema(t,i){
+ const m=millor(t.id),f=m??0,ap=m!==null&&m>=50;
+ return `<div class="tile" onclick="obre(${i})"><div class="ic" style="background:${t.col}1f">${t.ic}</div>${ap?`<span class="segell">${m>=90?"🏆":"✅"}</span>`:`<span class="num">${i+1}/${T.length}</span>`}<b>${t.titol}</b><small>${t.font}</small><div class="peu"><div class="barra"><i style="width:${f}%"></i></div><span class="pc">${m===null?"—":f+"%"}</span></div></div>`;
+}
+function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<50})}
+function blocsTemes(){let i=0;return ASSIG.blocs.map(b=>{const h=`<h2 class="sec">${b.titol}</h2><div class="grid">${T.slice(i,i+b.n).map((t,k)=>tileTema(t,i+k)).join("")}</div>`;i+=b.n;return h}).join("")}
+function inici(){
+ marcaDia();
+ const aprov=T.filter(t=>(millor(t.id)??0)>=50).length, sp=seguentPendent();
+ const res=resumGlobal();
+ let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
+ if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
+ h+=`${blocsTemes()}
+ <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
+ <h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>
+ <div class="fila">${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
+ app.innerHTML=h;
+}
+function pintaTemes(){app.innerHTML=blocsTemes()}
+function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
+const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"]];
+function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
+function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
+function joc(id){aturaSeg();window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa()}
+
+// ====================== TEMA ======================
+let tema,pest="fitxa";
+function obre(i){aturaSeg();tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
+function pintaTema(){
+ window.scrollTo(0,0);
+ const t=tema,e=ET(t.id),idx=T.indexOf(t);
+ app.innerHTML=`<div class="cap-tema"><div class="ic" style="background:${t.col}22">${t.ic}</div><div><div class="prog">Tema ${idx+1} de ${T.length} · ${t.font}</div><h2>${t.titol}</h2></div></div>
+ <div class="passos">${[["fitxa","📄 Fitxa",e.fitxa],["targetes","🃏 Targetes",e.fc>=t.fc.length],["test","✅ Test",e.intents.length>0]].map(([k,n,f])=>`<button class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
+ if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else test(t.q.map((x,i)=>i),0,0,t.id);
+}
+function fitxa(){
+ const t=tema;ET(t.id).fitxa=true;desa();
+ document.getElementById("zona").innerHTML=`<div class="box"><div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+}
+function targetes(n){
+ const t=tema,c=t.fc[n],e=ET(t.id);e.fc=Math.max(e.fc,n+1);desa();
+ document.getElementById("zona").innerHTML=`<div class="prog" style="text-align:center">Targeta ${n+1} de ${t.fc.length}</div>
+ <div class="flash" onclick="this.classList.toggle('gir')"><div class="in"><div class="cara davant">${c[0]}<small>toca per girar</small></div><div class="cara darrere">${c[1]}<small>toca per tornar</small></div></div></div>
+ <div class="punts-fc">${t.fc.map((x,i)=>`<i class="${i==n?'on':''}"></i>`).join("")}</div>
+ <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="targetes(${n-1})">← Anterior</button>
+ ${n<t.fc.length-1?`<button class="btn" onclick="targetes(${n+1})">Següent →</button>`:`<button class="btn verd" onclick="pest='test';pintaTema()">Fes el test ✅</button>`}</div>`;
+}
+
+// ====================== TEST ======================
+function test(ordre,k,bones,clau,pool,cb){
+ const z=document.getElementById("zona"),llista=pool||tema.q,esTema=!pool;
+ if(k>=ordre.length){
+  const pc=Math.round(bones*100/ordre.length);
+  if(cb){cb(pc,bones,ordre.length);return}
+  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();
+  const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=50;
+  arcade(pc,bones,ordre.length,ant!==null&&pc>ant);
+  const msg=pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat, repassa una miqueta":"Cal repassar més, ànims!";
+  z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
+  <p class="prog" style="margin-top:14px">Com t'ha anat aquest tema?</p>
+  <div class="valor">${[["😕","Costa"],["🙂","Bé"],["😃","Fàcil"]].map(([em,tx],i)=>`<button class="${e.valoracio===i?'on':''}" onclick="valora(${i},this)">${em}<small>${tx}</small></button>`).join("")}</div>
+  ${teSeg&&aprova?`<p id="compte" class="prog" style="margin-top:16px">Passem a <b>${T[idx+1].ic} ${T[idx+1].titol}</b> en <span id="seg-s">8</span> s…</p>`:""}
+  ${!teSeg&&aprova?`<p>🎉 Has acabat tots els temes! Prova les preguntes obertes o l'examen sorpresa.</p>`:""}
+  ${!aprova?`<p>Repassa la fitxa i torna-hi: quan aprovis passaràs al tema següent.</p>`:""}
+  <div class="fila">${teSeg&&aprova?`<button class="btn verd" onclick="aturaSeg();obre(${idx+1})">Tema següent →</button>`:""}<button class="btn ${teSeg&&aprova?'sec':''}" onclick="aturaSeg();pest='test';pintaTema()">Torna-hi</button><button class="btn sec" onclick="aturaSeg();pest='fitxa';pintaTema()">Repassa la fitxa</button></div></div>`;
+  if(teSeg&&aprova){let s=8;temp=setInterval(()=>{s--;const el=document.getElementById("seg-s");if(!el){aturaSeg();return}el.textContent=s;if(s<=0){aturaSeg();obre(idx+1)}},1000)}
+  return;
+ }
+ const q=llista[ordre[k]];
+ const ops=barreja(q[1].map((o,i)=>[o,i]));
+ z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
+ <div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="fb"></div></div>`;
+ z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+  const ok=+b.dataset.i===q[2];
+  z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
+  if(ok){suma(1);so("ok")}else{so("ko");b.classList.add("ko");const tid=q.tid||(esTema?tema.id:null);if(tid){const e=ET(tid);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
+ });
+}
+function valora(i,b){ET(tema.id).valoracio=i;desa();b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
+function resultatJoc(id,titol){return (pc,b,n)=>{const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
+function examen(){
+ const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=q.slice();c.tema=t.titol;c.tid=t.id;pool.push(c)}));
+ const ordre=barreja(pool.map((x,i)=>i)).slice(0,15);
+ app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
+ test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
+}
+
+// ====================== JOCS GENÈRICS ======================
+// tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
+function fiJoc(j,n,errors){const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
+ document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
+function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
+function jocOrdena(j){
+ let pos=0,errors=0;const it=j.items;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="xips" style="margin-top:10px"></div><div class="pila" id="pila">${j.base?`<div style="background:#bbf7d0">${j.base}</div>`:""}</div><div id="zona"></div></div>`;
+ const x=document.getElementById("xips");
+ barreja(it.map((c,i)=>i)).forEach(i=>{const s=document.createElement("span");s.className="chip";s.textContent=it[i][0];
+  s.onclick=()=>{if(s.classList.contains("ok"))return;
+   if(i===pos){s.classList.add("ok");const d=document.createElement("div");d.style.background=it[i][2]||"#eef2ff";d.innerHTML=`${i+1} · ${it[i][0]}${it[i][1]?` <small style="font-weight:600;color:#475569">— ${it[i][1]}</small>`:""}`;document.getElementById("pila").appendChild(d);pos++;suma(1);so("ok");if(pos===it.length)fiJoc(j,it.length,errors)}
+   else{errors++;sacseja(s)}};x.appendChild(s)});
+}
+function jocFigura(j){
+ const svg=typeof window[j.figura]==="function"?window[j.figura]():j.figura;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box" style="text-align:center">${svg}</div><div id="zona"></div>`;
+ test(j.q.map((x,i)=>i),0,0,j.id,j.q,resultatJoc(j.id));
+}
+function jocParelles(j){
+ const PAR=j.pars;let sel=null,fet=0,errors=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div class="col2" style="margin-top:12px"><div id="esq"></div><div id="dre"></div></div><div id="zona"></div></div>`;
+ const E=document.getElementById("esq"),D=document.getElementById("dre");
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][0];s.dataset.i=i;s.onclick=()=>{if(s.classList.contains("ok"))return;E.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};E.appendChild(s)});
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][1];
+  s.onclick=()=>{if(!sel||s.classList.contains("ok"))return;
+   if(+sel.dataset.i===i){sel.classList.remove("sel");sel.classList.add("ok");s.classList.add("ok");sel=null;fet++;suma(1);so("ok");if(fet===PAR.length)fiJoc(j,PAR.length,errors)}
+   else{errors++;sacseja(s)}};D.appendChild(s)});
+}
+function jocClassifica(j){
+ const F=j.items;let sel=null,fet=0,errors=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="fr" style="margin:10px 0"></div><div class="col2">${j.caixes.map(([k,t])=>`<div class="cub" data-k="${k}"><h4>${t}</h4></div>`).join("")}</div><div id="zona"></div></div>`;
+ const fr=document.getElementById("fr");
+ barreja(F).forEach(f=>{const s=document.createElement("span");s.className="chip";s.textContent=f[0];s.dataset.k=f[1];s.onclick=()=>{fr.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};fr.appendChild(s)});
+ app.querySelectorAll(".cub").forEach(c=>c.onclick=()=>{
+  if(!sel)return;
+  if(sel.dataset.k===c.dataset.k){sel.classList.remove("sel");sel.classList.add("ok");sel.onclick=null;c.appendChild(sel);sel=null;fet++;suma(1);so("ok");if(fet===F.length)fiJoc(j,F.length,errors)}
+  else{errors++;sacseja(sel)}});
+}
+
+// ====================== PREGUNTES OBERTES ======================
+function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}
+function obertes(n){
+ window.scrollTo(0,0);marcaNav("obertes");
+ const o=OB[n],fet=S.ob[n];
+ app.innerHTML=`<h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
+ <div class="box" style="margin-top:10px"><div class="pregunta">${o.q}</div>
+ <textarea id="resp" rows="7" placeholder="Escriu aquí la teva resposta amb les teves paraules…"></textarea>
+ <div class="fila"><button class="btn" id="veu">Comprova la meva resposta</button></div><div id="corr"></div></div>
+ <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="obertes(${n-1})">← Anterior</button><button class="btn sec" ${n==OB.length-1?'disabled':''} onclick="obertes(${n+1})">Següent →</button></div>`;
+ document.getElementById("veu").onclick=()=>{
+  const txt=document.getElementById("resp").value.trim();
+  if(txt.length<15){document.getElementById("corr").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de comprovar-ho.</div>`;return}
+  document.getElementById("veu").disabled=true;document.getElementById("resp").readOnly=true;
+  document.getElementById("corr").innerHTML=`<div class="fb"><b>Marca les idees que has posat a la teva resposta:</b>${o.p.map(x=>`<label class="chk"><input type="checkbox" class="pk"><span>${x}</span></label>`).join("")}
+  <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p></details>
+  <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
+  document.getElementById("nota").onclick=()=>{
+   const k=[...document.querySelectorAll(".pk")].filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
+   const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
+   document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> · a l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
+  };
+ };
+}
+
+// ====================== ANALÍTICA ======================
+function resumGlobal(){
+ let int=0,suma_=0;T.forEach(t=>{const e=S.temes[t.id];if(e&&e.intents.length){int+=e.intents.length;suma_+=e.intents.reduce((a,b)=>a+b.pc,0)}});
+ return {intents:int,encert:int?Math.round(suma_/int):null};
+}
+function color(pc){return pc===null?"#cbd5e1":pc>=80?"#22c55e":pc>=50?"#f59e0b":"#ef4444"}
+function analitica(){
+ const g=resumGlobal(),aprov=T.filter(t=>(millor(t.id)??0)>=50);
+ const fetsT=T.filter(t=>millor(t.id)!==null);
+ const forts=T.filter(t=>(millor(t.id)??0)>=80),febles=fetsT.filter(t=>millor(t.id)<60),pend=T.filter(t=>millor(t.id)===null);
+ const obN=Object.keys(S.ob).length,obM=obN?Math.round(Object.values(S.ob).reduce((a,b)=>a+b,0)/obN):null;
+ const exU=S.examens.length?S.examens[S.examens.length-1].pc:null;
+ // errors més repetits
+ const errs=[];T.forEach(t=>{const e=S.temes[t.id];if(e)Object.entries(e.fallades).forEach(([q,c])=>errs.push([q,c,t]))});errs.sort((a,b)=>b[1]-a[1]);
+ const val=["😕 Costa","🙂 Bé","😃 Fàcil"];
+ // valoració global
+ let nivTxt,txt;
+ if(!fetsT.length){nivTxt="🚀 Tot just comencem";txt=`${S.nom} encara no ha fet cap test. El millor és començar pel primer tema: fitxa → targetes → test.`}
+ else{
+  const e=g.encert;
+  nivTxt=e>=85?"🌟 Excel·lent":e>=70?"👏 Molt bé":e>=50?"👍 Va bé, cal repassar":"💪 Cal reforçar";
+  txt=`${S.nom} ha treballat ${fetsT.length} de ${T.length} temes amb un ${e}% d'encerts de mitjana als tests.`;
+  if(forts.length)txt+=` Domina sobretot: ${forts.map(t=>t.titol.toLowerCase()).join(", ")}.`;
+  if(febles.length)txt+=` On més li costa: ${febles.map(t=>t.titol.toLowerCase()).join(", ")}.`;
+  if(obN)txt+=` A les preguntes obertes recull de mitjana el ${obM}% de les idees clau${obM<60?", i és on més cal practicar explicar-se amb les seves paraules":""}.`;
+  if(exU!==null)txt+=` A l'últim examen sorpresa va treure un ${exU}%.`;
+ }
+ const reco=[];
+ if(pend.length)reco.push(`Començar els temes pendents: <b>${pend.slice(0,3).map(t=>t.titol).join("</b>, <b>")}</b>${pend.length>3?"…":""}.`);
+ febles.forEach(t=>reco.push(`Tornar a llegir la fitxa de <b>${t.titol}</b> i repetir el test.`));
+ if(errs.length)reco.push(`Repassar les preguntes que més falla (llista de sota): les pot fer en veu alta amb papa o mama.`);
+ if(fetsT.length>=4&&obN<4)reco.push(`Fer més <b>preguntes obertes</b>: a l'examen valen 3 punts.`);
+ if(aprov.length===T.length&&exU===null)reco.push(`Fer l'<b>examen sorpresa</b> per comprovar-ho tot barrejat.`);
+ if(!reco.length)reco.push("Mantenir el ritme: un examen sorpresa cada dos o tres dies abans de l'examen.");
+ app.innerHTML=`<h2 class="sec">📊 Com va ${S.nom}</h2>
+ <div class="kpis">
+  <div class="kpi"><small>Temes aprovats</small><b>${aprov.length}/${T.length}</b><span>${pend.length} sense fer</span></div>
+  <div class="kpi"><small>Encert als tests</small><b style="color:${color(g.encert)}">${g.encert===null?"—":g.encert+"%"}</b><span>${g.intents} tests fets</span></div>
+  <div class="kpi"><small>Preguntes obertes</small><b>${obN}/${OB.length}</b><span>${obM===null?"cap encara":obM+"% d'idees"}</span></div>
+  <div class="kpi"><small>Temps d'estudi</small><b>${fmtT(S.temps)}</b><span>${S.dies.length} dia${S.dies.length==1?"":"s"}</span></div>
+  <div class="kpi"><small>Nivell</small><b>${nivell(S.punts).ic} ${nivell(S.punts).n}</b><span>${nivell(S.punts).nom}</span></div>
+  <div class="kpi"><small>Estrelles</small><b>⭐ ${S.punts}</b><span>${S.examens.length} examen${S.examens.length==1?"":"s"} sorpresa</span></div>
+ </div>
+ <div class="valoracio" style="margin-top:14px"><h3>${nivTxt}</h3><p style="margin:0">${txt}</p><p style="margin:10px 0 4px"><b>Què li recomano ara:</b></p><ul style="margin:0;padding-left:20px">${reco.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+ <h2 class="sec">🏅 Nivells</h2><div class="box">${cartaNivell().replace('class="nivell"','class="nivell" style="margin:0 0 12px"')}<div class="rangs">${NIVELLS.map(([min,nom,ic],i)=>{const n=nivell(S.punts).n;return `<div class="rang ${i+1<n?'':i+1===n?'ara':'bloc'}"><span>${ic}</span><b>${i+1}. ${nom}</b><small>${min} ⭐</small></div>`}).join("")}</div><p class="prog" style="margin:10px 0 0">Cada encert als tests, als jocs i a les preguntes obertes suma ⭐, i les ⭐ fan pujar de nivell.</p></div>
+ <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
+ ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
+ </table><p class="prog" style="margin:8px 0 0"><span class="semaf" style="background:#22c55e"></span>80% o més · <span class="semaf" style="background:#f59e0b"></span>50-79% · <span class="semaf" style="background:#ef4444"></span>menys del 50% · <span class="semaf" style="background:#cbd5e1"></span>sense fer</p></div>
+ <h2 class="sec">❌ Preguntes que més falla</h2><div class="box">${errs.length?`<ol class="llista-err">${errs.slice(0,8).map(([q,c,t])=>`<li>${q} <span class="etq">${t.ic} ${t.titol}</span> <b>×${c}</b></li>`).join("")}</ol>`:`<p class="prog" style="margin:0">Encara cap error registrat. 👌</p>`}</div>
+ <h2 class="sec">✍️ Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
+ <h2 class="sec">🎮 Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
+ <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat en aquest navegador i aquest aparell. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
+ <div class="fila"><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><button class="btn verm" onclick="demanaReset()">🗑️ Esborrar el progrés</button></div>`;
+}
+function demanaReset(){
+ const m=document.createElement("div");m.className="modal";
+ m.innerHTML=`<div class="box"><div class="gran">⚠️</div><h3>Esborrar tot el progrés de ${S.nom}?</h3><p class="prog">Només s'esborra el progrés de ${S.nom}; els altres noms no es toquen. No es pot desfer.</p><div class="fila"><button class="btn sec" id="no">No, deixa-ho</button><button class="btn verm" id="si">Sí, esborra-ho</button></div></div>`;
+ document.body.appendChild(m);
+ m.querySelector("#no").onclick=()=>m.remove();
+ m.querySelector("#si").onclick=()=>{delete PER[S.nom];S=BUIT();try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.removeItem(CL+"actiu")}catch(e){}m.remove();pintaCap();benvinguda()};
+}
+
+pintaCap();pintaSo();vista("inici");
+</script>
+</body>
+</html>
