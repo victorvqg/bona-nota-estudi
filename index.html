@@ -258,7 +258,7 @@ footer b{color:var(--groc)}
 <div class="hs-pop" id="hsPop" hidden role="dialog" aria-modal="true" aria-label="Rànquing">
  <div class="hs-caixa"><button class="hs-tanca" id="hsTanca" aria-label="Tanca">✕</button>
   <p class="hs-tit">★ HIGH SCORES ★</p>
-  <div class="hs-tabs" id="hsTabs" role="tablist"><button class="hs-tab on" role="tab" data-t="punts">⭐ Estrelles</button><button class="hs-tab" role="tab" data-t="temps">⏱ Temps</button><button class="hs-tab" role="tab" data-t="nivell">🏅 Nivell</button></div>
+  <div class="hs-tabs" id="hsTabs" role="tablist"><button class="hs-tab on" role="tab" data-t="punts">⭐ Estrelles</button><button class="hs-tab" role="tab" data-t="temps">⏱ Temps</button><button class="hs-tab" role="tab" data-t="nivell">🏅 Nivell</button><button class="hs-tab" role="tab" data-t="setmana">📈 Setmana</button></div>
   <div id="hs"></div>
   <p class="hs-peu">INSERT COIN ▶ JUGA I PUJA AL PODI!<small>Compta tots els mons dels últims 120 dies. Les estrelles tenen un límit diari per jugar net.</small></p>
  </div>
@@ -296,7 +296,7 @@ const fT=s=>{const m=Math.round(s/60);return m<1?"<1 MIN":m>=60?`${Math.floor(m/
 // cada nom té sempre el mateix animal i el mateix color (surt del nom, igual a tots els aparells)
 const AVS=["🦊","🐸","🦁","🐼","🐯","🐙","🦄","🐲","🦖","🐧","🐨","🦉","🐺","🐻","🦈","🐵","🐰","🐷","🦝","🐳"],AVC=["#7c3aed","#2563eb","#059669","#db2777","#ea580c","#0891b2","#4f46e5","#16a34a","#c026d3","#0284c7"];
 function avatar(nom){let h=7;for(const c of nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;return {e:AVS[h%AVS.length],c:AVC[Math.floor(h/97)%AVC.length]}}
-const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ⭐`})},temps:{k:"temps_s",v:r=>({v:fT(r.temps_s)})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${NIV[n][2]} ${n+1}`,s:NIV[n][1]}}}};
+const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ⭐`})},temps:{k:"temps_s",v:r=>({v:fT(r.temps_s)})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${NIV[n][2]} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ⭐`,s:"últims 7 dies"})}};
 function carregaHs(){const hs=document.getElementById("hs");
  if(HSD&&Date.now()-HST<60000){pintaHs();return}
  hs.innerHTML=`<div class="hs-buit">CARREGANT…</div>`;
@@ -332,6 +332,7 @@ function notaH(f,t0,d,tipus="square",vol=.09){const o=ACH.createOscillator(),g=A
 const MELO={ // una musiqueta curta diferent per a cada pestanya
  punts:[[784,0,.1],[988,.09,.1],[1175,.18,.1],[1568,.27,.28],[1319,.27,.28,"triangle"]],        // estrelles: arpegi brillant
  temps:[[880,0,.06],[660,.1,.06],[880,.2,.06],[660,.3,.06],[1047,.42,.12],[1319,.54,.26]],      // temps: tic-tac i ding
+ setmana:[[523,0,.08],[659,.08,.08],[784,.16,.08],[1047,.24,.08],[1319,.32,.08],[1568,.4,.3],[784,.4,.3,"triangle"]], // setmana: escala que puja
  nivell:[[392,0,.12],[523,.12,.12],[659,.24,.12],[784,.36,.12],[1047,.5,.34],[523,.5,.34,"triangle"],[659,.5,.34,"triangle"]] // nivell: fanfàrria
 };
 function musiqueta(t){if(!soOk())return;try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();(MELO[t]||MELO.punts).forEach(([f,t0,d,ty])=>notaH(f,t0,d,ty))}catch(e){}}
@@ -341,6 +342,7 @@ const EST={or:["linear-gradient(135deg,#fff7c2,#facc15 45%,#b45309)","#facc15"],
  lila:["linear-gradient(135deg,#ede9fe,#a78bfa 50%,#5b21b6)","#a78bfa"],verd:["linear-gradient(135deg,#dcfce7,#4ade80 50%,#15803d)","#4ade80"],tar:["linear-gradient(135deg,#ffedd5,#fb923c 50%,#c2410c)","#fb923c"]};
 const FXT={punts:{mix:["or","or","or","plata","tar"],r:"ESTRELLES!",tx:"linear-gradient(#fff7c2,#facc15 55%,#d97706)",gl:"#facc15"},
  temps:{mix:["plata","plata","cian","cian","or"],r:"TEMPS!",tx:"linear-gradient(#ffffff,#cbd5e1 50%,#22d3ee)",gl:"#67e8f9"},
+ setmana:{mix:["verd","verd","or","cian","plata"],r:"QUI PUJA MÉS!",tx:"linear-gradient(#dcfce7,#4ade80 55%,#15803d)",gl:"#4ade80"},
  nivell:{mix:["or","plata","rosa","cian","lila","verd","tar"],r:"NIVELL!",tx:"linear-gradient(90deg,#f472b6,#facc15,#4ade80,#22d3ee,#a78bfa)",gl:"#c4b5fd"}};
 function estrella(box,x,y,tipus,m){const e=document.createElement("span"),[bg,gl]=EST[tipus];e.className="hs-est";e.style.cssText=`left:${x-m/2}px;top:${y-m/2}px;--m:${m}px;--bg:${bg};--gl:${gl}`;e.innerHTML="<i></i>";box.appendChild(e);return e}
 function espurna(box,x,y,c,m,ret){setTimeout(()=>{const e=document.createElement("span");e.className="hs-espurna";e.style.cssText=`left:${x-m/2}px;top:${y-m/2}px;--m:${m}px;--c:${c}`;box.appendChild(e);setTimeout(()=>e.remove(),950)},ret)}

@@ -564,7 +564,7 @@ try{PER=JSON.parse(localStorage.getItem(CL+"perfils")||"{}")||{};ACT=localStorag
 try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const o=Object.assign(BUIT(),JSON.parse(v));if(o.nom){PER[o.nom]=o;ACT=o.nom}}}catch(e){}
 if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
 function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
-function desa(){guarda();pintaCap()}
+function desa(){S.mod=Date.now();guarda();pintaCap();nuvolProg()}
 // ---- registre d'activitat per al panell admin (Supabase: només escriptura; llegir-ho només pot l'admin) ----
 const BN_LOG={url:"https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/bn_log",key:"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb"};
 const SESSIO=Math.random().toString(36).slice(2,12);let APARELL="",TPEND=0;
@@ -578,7 +578,7 @@ addEventListener("pagehide",buidaTemps);
 function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLowerCase())}
 function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
  ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
-function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();registra("entra",{nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici")}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();registra("entra",{nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans)}
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
@@ -745,8 +745,8 @@ function benvinguda(){
   if(existeix(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);
    const sug=suggeriments(n);
    document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙈 Ja hi ha algú que es diu <b>${Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())}</b>. Si ets tu, toca el teu nom a la llista de dalt. Si no, tria un altre nom, un àlies o afegeix-hi un número:<div style="margin-top:8px">${sug.map(x=>`<span class="chip sug">${x}</span>`).join("")}</div></div>`;
-   document.querySelectorAll(".sug").forEach(c=>c.onclick=()=>entra(c.textContent));return}
-  entra(n)};
+   document.querySelectorAll(".sug").forEach(c=>c.onclick=()=>nouNom(c.textContent));return}
+  nouNom(n)};
  i.oninput=()=>{i.style.borderColor="";document.getElementById("nomAvis").innerHTML=""};
 }
 
@@ -763,7 +763,7 @@ function inici(){
  const res=resumGlobal();
  let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
  <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
- h+=cartaRepas();
+ h+=cartaPin()+cartaRepas();
  // joc destacat (opcional): ASSIG.destacat = id del joc → botó gran a l'inici
  {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd)h+=`<div class="continua" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
@@ -881,6 +881,60 @@ const BUIDES=new Set("aquest aquesta aquests aquestes perque quan com amb sense 
 function ideaDetectada(punt,text){const t=normT(text).replace(/[^a-z0-9 ]/g," "),paus=new Set(t.split(/\s+/).filter(w=>w.length>=4).map(w=>w.slice(0,5)));
  const claus=normT(punt.replace(/<[^>]+>/g,"")).replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>=5&&!BUIDES.has(w));
  return claus.some(w=>paus.has(w.slice(0,5)))}
+
+
+// ====================== PIN I PROGRÉS AL NÚVOL ======================
+// Cada nom pot tenir un PIN de 4 xifres. Amb el PIN, el progrés de cada món es guarda a Supabase
+// i es pot recuperar en un altre aparell. Sense PIN tot funciona igual, però només en aquest aparell.
+const SB_RPC=BN_LOG.url.replace("/bn_log","/rpc/");
+function rpc(f,body,keep){return fetch(SB_RPC+f,{method:"POST",keepalive:!!keep,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json"},body:JSON.stringify(body)})
+ .then(async r=>{const t=await r.text();if(!r.ok){const m=/massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/nom no permes/.test(t)?"nom":"xarxa";throw m}return t?JSON.parse(t):null})}
+function pins(){try{return JSON.parse(localStorage.getItem("bn_pins")||"{}")||{}}catch(e){return {}}}
+function pinDe(n){return pins()[(n||"").trim().toLowerCase()]||null}
+function desaPin(n,p){const x=pins();x[n.trim().toLowerCase()]=p;try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}
+let NUV_T=null,NUV_OK=null;
+function nuvolProg(){if(!S.nom||!pinDe(S.nom)||/^file:/.test(location.protocol))return;clearTimeout(NUV_T);NUV_T=setTimeout(()=>nuvolPuja(),8000)}
+function nuvolPuja(keep){const p=pinDe(S.nom);if(!S.nom||!p||/^file:/.test(location.protocol))return Promise.resolve();clearTimeout(NUV_T);
+ return rpc("bn_progres_desa",{p_nom:S.nom,p_pin:p,p_assig:ASSIG.id,p_estat:S,p_mod:S.mod||Date.now()},keep).then(()=>{NUV_OK=Date.now()}).catch(()=>{})}
+addEventListener("pagehide",()=>{if(NUV_T)nuvolPuja(true)});
+// baixa el progrés del núvol si és més nou que el d'aquest aparell
+function nuvolBaixa(nom,pin,llindar){return rpc("bn_progres_llegeix",{p_nom:nom,p_pin:pin,p_assig:ASSIG.id}).then(r=>{
+ if(r&&r.estat&&(r.mod||0)>(llindar??S.mod??0)){const n=S.nom;S=Object.assign(BUIT(),r.estat);S.nom=n;S.mod=r.mod;guarda();pintaCap();return true}return false})}
+// pantalla del PIN. mode: "crea" (nom nou), "entra" (el nom ja té PIN), "posa" (perfil d'aquest aparell sense PIN)
+function pantallaPin(nom,mode,despres){marcaNav("usuari");
+ const tit={crea:`🔐 Tria un PIN per a <b>${nom}</b>`,entra:`🔐 <b>${nom}</b> ja té PIN`,posa:`🔐 Protegeix <b>${nom}</b> amb un PIN`}[mode];
+ const txt={crea:"4 números que només sàpigues tu (i papa o mama). Amb el PIN podràs continuar on ho has deixat des d'un altre mòbil, tauleta o ordinador.",
+  entra:"Si ets tu (per exemple, des d'un altre aparell), escriu el teu PIN i recuperaràs el progrés. Si no ets tu, torna enrere i tria un altre nom.",
+  posa:"Amb un PIN, el teu progrés queda guardat al núvol i el pots recuperar des d'un altre aparell."}[mode];
+ app.innerHTML=`<div class="box benv"><div class="gran">🔐</div><h2 style="margin:8px 0 6px">${tit}</h2><p class="prog">${txt}</p>
+ <form id="fp"><input id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="• • • •" style="letter-spacing:12px;font-size:28px">
+ <div id="pinAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">${mode==="entra"?"Entra amb el PIN":"Desa el PIN"} 🔑</button></form>
+ <div class="fila">${mode==="entra"?`<button class="btn sec" id="pinEnrere">← Tria un altre nom</button>`:`<button class="btn sec" id="pinNo">Ara no (només en aquest aparell)</button>`}</div></div>`;
+ const i=document.getElementById("pin"),av=document.getElementById("pinAvis");i.focus();
+ const err=m=>{so("ko");sacseja(i);av.innerHTML=`<div class="fb ko">${m}</div>`};
+ i.oninput=()=>{i.value=i.value.replace(/\D/g,"").slice(0,4);av.innerHTML=""};
+ const en=document.getElementById("pinEnrere");if(en)en.onclick=()=>benvinguda();
+ const no=document.getElementById("pinNo");if(no)no.onclick=()=>despres(false);
+ document.getElementById("fp").onsubmit=e=>{e.preventDefault();const p=i.value;if(!/^\d{4}$/.test(p))return err("El PIN són 4 números.");
+  av.innerHTML=`<p class="prog">Un moment…</p>`;
+  if(mode==="entra")rpc("bn_progres_llegeix",{p_nom:nom,p_pin:p,p_assig:ASSIG.id}).then(r=>{desaPin(nom,p);so("coin");despres(true,r)})
+   .catch(m=>err(m==="pin"?"❌ PIN incorrecte. Torna-ho a provar.":m==="bloc"?"⏳ Massa intents. Espera 15 minuts i torna-ho a provar.":"📡 No hi ha connexió. Prova-ho més tard."));
+  else rpc("bn_perfil_crea",{p_nom:nom,p_pin:p}).then(r=>{if(r==="existeix")return pantallaPin(nom,"entra",despres);desaPin(nom,p);so("coin");despres(true,null)})
+   .catch(m=>err(m==="nom"?"🙅 Aquest nom no es pot fer servir.":"📡 No hi ha connexió. Pots continuar sense PIN i posar-lo més tard."))}}
+// nom nou escrit a la pantalla d'entrada: si ja existeix al núvol, demana el PIN; si no, en proposa un
+function nouNom(n){if(/^file:/.test(location.protocol)||window.BN_NO_LOG)return entra(n);
+ app.querySelector("#nomAvis").innerHTML=`<p class="prog">Un moment…</p>`;
+ rpc("bn_perfil_existeix",{p_nom:n}).then(ex=>{
+  if(ex)pantallaPin(n,"entra",(ok,r)=>{entra(n);if(r&&r.estat){const nm=S.nom;S=Object.assign(BUIT(),r.estat);S.nom=nm;S.mod=r.mod;guarda();vista("inici")}});
+  else pantallaPin(n,"crea",()=>entra(n))}).catch(()=>entra(n))}
+// perfil d'aquest aparell: si té PIN, sincronitza; si no, carta per posar-n'hi
+function sincronitzaEntrada(modAbans){const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;nuvolBaixa(S.nom,p,modAbans||0).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");else nuvolPuja()}).catch(m=>{if(m==="pin"){const x=pins();delete x[S.nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}})}
+function cartaPin(){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return "";
+ if(pinDe(S.nom))return `<p class="prog" style="text-align:center;margin:10px 0 0">☁️ Progrés guardat al núvol amb PIN${NUV_OK?" · desat fa un moment":""}</p>`;
+ return `<div class="continua" style="background:#eef2ff;border-color:#a5b4fc" onclick="posaPin()"><span style="font-size:28px">🔐</span><b>Posa't un PIN i no perdràs mai el progrés (també en un altre aparell)</b><span class="btn">Posa'l →</span></div>`}
+function posaPin(){const n=S.nom;rpc("bn_perfil_existeix",{p_nom:n}).then(ex=>{
+ if(ex)pantallaPin(n,"entra",(ok,r)=>{if(r&&r.estat&&(r.mod||0)>(S.mod||0)){S=Object.assign(BUIT(),r.estat);S.nom=n;S.mod=r.mod;guarda()}else nuvolPuja();vista("inici")});
+ else pantallaPin(n,"posa",ok=>{if(ok)nuvolPuja();vista("inici")})}).catch(()=>{})}
 
 // ====================== EFECTES SUAUS ======================
 let SUAU=false;try{SUAU=localStorage.getItem("bn_suau")==="1"||(localStorage.getItem("bn_suau")===null&&matchMedia("(prefers-reduced-motion:reduce)").matches)}catch(e){}
@@ -1090,7 +1144,7 @@ function demanaReset(){
  m.innerHTML=`<div class="box"><div class="gran">⚠️</div><h3>Esborrar tot el progrés de ${S.nom}?</h3><p class="prog">Només s'esborra el progrés de ${S.nom}; els altres noms no es toquen. No es pot desfer.</p><div class="fila"><button class="btn sec" id="no">No, deixa-ho</button><button class="btn verm" id="si">Sí, esborra-ho</button></div></div>`;
  document.body.appendChild(m);
  m.querySelector("#no").onclick=()=>m.remove();
- m.querySelector("#si").onclick=()=>{delete PER[S.nom];S=BUIT();try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.removeItem(CL+"actiu")}catch(e){}m.remove();pintaCap();benvinguda()};
+ m.querySelector("#si").onclick=()=>{if(pinDe(S.nom)){const n=S.nom;S=BUIT();S.nom=n;S.mod=Date.now();nuvolPuja()}delete PER[S.nom];S=BUIT();try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.removeItem(CL+"actiu")}catch(e){}m.remove();pintaCap();benvinguda()};
 }
 
 aplicaSuau();if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../../sw.js").catch(()=>{});

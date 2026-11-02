@@ -1,0 +1,7 @@
+-- Bona Nota · PIN per nom i progrés al núvol + columna «setmana» del rànquing (aplicat el 2 nov 2026 com a migració «bn_perfils_pin_i_setmana»)
+-- Taules privades (bn_priv): perfils(k, nom, pin bcrypt), progres(k, assig, estat jsonb, mod), intents(k, n, ts)
+-- Funcions públiques: bn_perfil_existeix(nom) · bn_perfil_crea(nom, pin) · bn_progres_desa(nom, pin, assig, estat, mod) · bn_progres_llegeix(nom, pin, assig)
+-- Seguretat: PIN de 4 xifres xifrat amb bcrypt; 5 errors en 15 minuts bloquegen el nom 15 minuts; 1 s d'espera a cada error.
+-- bn_admin_usuari: 'esborra' també esborra PIN i progrés; 'canvia' també mou PIN i progrés; nova acció 'treupin'; 'estat' retorna 1 (amagat) + 2 (té PIN).
+-- bn_ranking(): afegeix «setmana» = estrelles guanyades els últims 7 dies.
+-- El SQL complet és el de la migració aplicada (vegeu l'historial de migracions de Supabase).
