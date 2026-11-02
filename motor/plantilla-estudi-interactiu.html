@@ -252,7 +252,7 @@ function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width
   for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.vx*=.985;p.v-=.012;if(p.v<=0){P.splice(i,1);continue}c.globalAlpha=p.v;c.fillStyle=p.col;c.fillRect(p.x|0,p.y|0,p.m,p.m)}
   c.globalAlpha=1;requestAnimationFrame(pas)};pas();return()=>{viu=false}}
 document.addEventListener("click",e=>{const el=e.target.closest("button,.tile,.continua,.flash,label.chk,details summary");if(!el||el.matches(".opt,#so"))return;so(el.matches(".flash")?"gir":"clic")},true);
-let demoN=0;
+let demoN=0;const MODE_DEMO=/[?&]demo\b/.test(location.search);
 function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true]];const c=casos[demoN%3];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%3+1}/3 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
 function arcade(pc,bones,n,record){
  if(pc<50)return;
@@ -302,7 +302,7 @@ function inici(){
  h+=`${blocsTemes()}
  <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
  <h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>
- <div class="fila"><button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button><button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
+ <div class="fila">${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
  app.innerHTML=h;
 }
 function pintaTemes(){app.innerHTML=blocsTemes()}
