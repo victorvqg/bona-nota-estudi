@@ -209,6 +209,9 @@ try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const 
 if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
 function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
 function desa(){guarda();pintaCap()}
+function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLowerCase())}
+function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
+ ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
 function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();vista("inici")}
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
@@ -269,10 +272,17 @@ function benvinguda(){
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=50}).length;
  app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2>
  ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
- <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form></div>`;
+ <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form></div>`;
  app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>entra(b.dataset.n));
  const i=document.getElementById("nom");if(!noms.length)i.focus();
- document.getElementById("fn").onsubmit=e=>{e.preventDefault();const n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}entra(n)};
+ document.getElementById("fn").onsubmit=e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}
+  n=n.charAt(0).toUpperCase()+n.slice(1);
+  if(existeix(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);
+   const sug=suggeriments(n);
+   document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙈 Ja hi ha algú que es diu <b>${Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())}</b>. Si ets tu, toca el teu nom a la llista de dalt. Si no, tria un altre nom, un àlies o afegeix-hi un número:<div style="margin-top:8px">${sug.map(x=>`<span class="chip sug">${x}</span>`).join("")}</div></div>`;
+   document.querySelectorAll(".sug").forEach(c=>c.onclick=()=>entra(c.textContent));return}
+  entra(n)};
+ i.oninput=()=>{i.style.borderColor="";document.getElementById("nomAvis").innerHTML=""};
 }
 
 // ====================== INICI ======================
