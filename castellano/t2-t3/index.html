@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lengua Castellana — Temas 2 y 3 · 1r ESO | Bona Nota</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+ --fosc:#1f2d3d;--blau:#3b82f6;--blau2:#2563eb;--verd:#16a34a;--verd-cl:#dcfce7;--verm:#dc2626;--verm-cl:#fee2e2;
+ --groc:#f59e0b;--groc-cl:#fef3c7;--lila:#7c3aed;--fons:#eef2f8;--card:#fff;--txt:#1e293b;--suau:#64748b;--vora:#e2e8f0;
+ --r:18px;--om:0 1px 2px #0f172a0d,0 6px 18px #0f172a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Nunito,system-ui,Arial,sans-serif;background:var(--fons);color:var(--txt);font-size:16.5px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit}
+/* capçalera */
+header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%,var(--g3,#0ea5e9));color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 14px #1e3a8a40}
+.hd{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.logo{font-weight:900;font-size:19px;letter-spacing:.2px;display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0}
+.logo span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo .tt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.logo .tt small{font-size:13px;font-weight:700;opacity:.85}
+@media(max-width:520px){.logo{font-size:16px}.logo #hola{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
+.benv .tema{margin:4px 0 0;font-weight:900;color:var(--blau2)}
+.pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap}
+nav{max-width:960px;margin:0 auto;padding:0 10px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{border:0;background:transparent;color:#dbeafe;padding:7px 13px;border-radius:999px;font-weight:800;cursor:pointer;white-space:nowrap;font-size:15px}
+nav button.on{background:#fff;color:var(--blau2)}
+main{max-width:960px;margin:0 auto;padding:18px 16px 40px}
+/* elements bàsics */
+h2.sec{font-size:21px;margin:26px 0 12px;display:flex;align-items:center;gap:8px}
+h2.sec:first-child{margin-top:4px}
+.box{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--om);margin-bottom:14px}
+.btn{border:0;border-radius:12px;padding:11px 18px;font-weight:800;font-size:15.5px;cursor:pointer;background:var(--blau);color:#fff;box-shadow:0 3px 0 var(--blau2);transition:transform .08s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--blau2)}
+.btn.sec{background:#fff;color:var(--fosc);box-shadow:0 0 0 2px var(--vora) inset,0 3px 0 var(--vora)}
+.btn.verd{background:var(--verd);box-shadow:0 3px 0 #15803d}
+.btn.verm{background:var(--verm);box-shadow:0 3px 0 #991b1b}
+.btn:disabled{opacity:.45;cursor:default}
+.fila{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.prog{color:var(--suau);font-size:14.5px;font-weight:700}
+/* hero */
+.hero{background:linear-gradient(135deg,#fff,#eff6ff);border-radius:22px;padding:20px 22px;box-shadow:var(--om);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hero .av{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:32px;flex:none}
+.hero h1{margin:0;font-size:24px}
+.hero p{margin:2px 0 0;color:var(--suau)}
+.hero .stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.mini{background:#fff;border:2px solid var(--vora);border-radius:14px;padding:6px 12px;text-align:center;min-width:78px}
+.mini b{display:block;font-size:20px;line-height:1.2}
+.mini small{color:var(--suau);font-weight:700;font-size:12px}
+.continua{margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--groc-cl);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
+.continua b{flex:1}
+/* graella de temes */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.tile{background:var(--card);border-radius:var(--r);padding:16px;cursor:pointer;box-shadow:var(--om);transition:transform .15s,box-shadow .15s;position:relative;display:flex;flex-direction:column;gap:6px;min-height:150px}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 24px #0f172a1f}
+.tile .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.tile b{font-size:16.5px;line-height:1.25}
+.tile small{color:var(--suau);font-weight:600}
+.tile .peu{margin-top:auto;display:flex;align-items:center;gap:8px}
+.barra{flex:1;height:8px;background:#eef2f7;border-radius:6px;overflow:hidden}
+.barra i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#22c55e,#16a34a)}
+.pc{font-size:13px;font-weight:800;color:var(--suau);min-width:34px;text-align:right}
+.segell{position:absolute;top:12px;right:12px;font-size:20px}
+.num{position:absolute;top:14px;right:14px;font-size:12px;font-weight:900;color:#94a3b8}
+.etq{display:inline-block;font-size:11.5px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca}
+.etq.ap{background:#ecfdf5;color:#047857}
+/* pantalla tema */
+.cap-tema{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.cap-tema .ic{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.cap-tema h2{margin:0;font-size:22px;line-height:1.2}
+.passos{display:flex;gap:8px;margin:12px 0 16px}
+.passos button{flex:1;border:0;background:#fff;border-radius:14px;padding:10px 6px;font-weight:800;cursor:pointer;color:var(--suau);box-shadow:var(--om);font-size:15px}
+.passos button.on{background:var(--fosc);color:#fff}
+.passos button.fet::after{content:" ✓";color:#22c55e}
+.idea{background:var(--verd-cl);border:2px solid #86efac;border-radius:14px;padding:12px 16px;font-weight:800}
+.idea small{display:block;font-size:11.5px;letter-spacing:.6px;color:#15803d;font-weight:900}
+.truc{background:var(--groc-cl);border:2px solid #fcd34d;border-radius:14px;padding:12px 16px;margin-top:12px}
+.compte{background:var(--verm-cl);border-left:6px solid var(--verm);border-radius:0 14px 14px 0;padding:10px 14px;margin-top:12px}
+ul.pts{padding-left:0;list-style:none;margin:14px 0 0}
+ul.pts li{position:relative;padding:8px 0 8px 30px;border-bottom:1px dashed var(--vora)}
+ul.pts li:last-child{border-bottom:0}
+ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--blau)}
+/* targetes */
+.flash{perspective:1000px;height:240px;cursor:pointer;margin:12px auto;max-width:540px}
+.flash .in{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.flash.gir .in{transform:rotateY(180deg)}
+.flash .cara{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;font-weight:800;box-shadow:0 10px 26px #0f172a22}
+.flash .davant{background:#fff;border:3px solid #bfdbfe}
+.flash .darrere{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;transform:rotateY(180deg);font-weight:700;font-size:18.5px}
+.flash .cara small{position:absolute;bottom:12px;font-size:12.5px;font-weight:700;opacity:.6}
+.punts-fc{display:flex;justify-content:center;gap:6px;margin-top:4px}
+.punts-fc i{width:9px;height:9px;border-radius:50%;background:#cbd5e1}
+.punts-fc i.on{background:var(--blau);transform:scale(1.3)}
+/* test */
+.pregunta{font-size:19px;font-weight:800;margin:8px 0 12px;line-height:1.35}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid var(--vora);background:#fff;border-radius:14px;padding:12px 14px;margin:8px 0;font-size:16.5px;cursor:pointer;transition:border-color .12s,background .12s;color:var(--txt)}
+.opt .ll{width:30px;height:30px;border-radius:9px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none;color:var(--suau)}
+.opt:hover:not(:disabled){border-color:#93c5fd;background:#f8fbff}
+.opt.ok{background:var(--verd-cl);border-color:#22c55e}.opt.ok .ll{background:#22c55e;color:#fff}
+.opt.ko{background:var(--verm-cl);border-color:#ef4444}.opt.ko .ll{background:#ef4444;color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:14px;background:#eff6ff;border:2px solid #bfdbfe}
+.fb.ok{background:var(--verd-cl);border-color:#86efac}.fb.ko{background:#fff7ed;border-color:#fdba74}
+.barra-test{height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.barra-test i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,#2563eb);transition:width .3s}
+.gran{font-size:56px;text-align:center;line-height:1}
+.valor{display:flex;justify-content:center;gap:12px;margin-top:10px}
+.valor button{border:2px solid var(--vora);background:#fff;border-radius:16px;padding:10px 14px;font-size:30px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.valor button small{font-size:12.5px;font-weight:800;color:var(--suau)}
+.valor button.on{border-color:var(--blau);background:#eff6ff}
+/* jocs */
+.chip{display:inline-block;border:2px solid #cbd5e1;border-radius:12px;padding:9px 14px;margin:5px;cursor:pointer;background:#fff;font-weight:800;user-select:none;transition:.12s}
+.chip:hover{border-color:#93c5fd}
+.chip.sel{background:var(--fosc);border-color:var(--fosc);color:#fff}
+.chip.ok{background:var(--verd);border-color:var(--verd);color:#fff;cursor:default}
+.chip.ko{animation:tremola .35s;border-color:#ef4444}
+@keyframes tremola{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pila{display:flex;flex-direction:column-reverse;gap:5px;margin:12px 0}
+.pila div{border-radius:12px;padding:10px 14px;font-weight:800;animation:apareix .3s}
+@keyframes apareix{from{opacity:0;transform:translateY(8px)}}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.mh{display:none}table.an{font-size:14px}.col2{grid-template-columns:1fr}.hero .stats{margin-left:0}}
+.cub{border:3px dashed #cbd5e1;border-radius:16px;min-height:110px;padding:10px;cursor:pointer;background:#f8fafc}
+.cub:hover{border-color:#93c5fd;background:#f0f7ff}
+.cub h4{margin:0 0 8px}
+textarea{width:100%;font:inherit;padding:12px 14px;border-radius:14px;border:2px solid var(--vora);resize:vertical;background:#fcfdff}
+textarea:focus,input:focus{outline:none;border-color:#93c5fd;box-shadow:0 0 0 4px #bfdbfe66}
+label.chk{display:flex;gap:10px;align-items:flex-start;margin:8px 0;cursor:pointer;padding:8px 10px;border-radius:10px;background:#fff;border:2px solid var(--vora)}
+label.chk input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--verd)}
+details summary{cursor:pointer;font-weight:800;color:var(--blau2)}
+/* benvinguda */
+.benv{max-width:460px;margin:30px auto;text-align:center}
+.benv .gran{font-size:70px}
+.benv input{width:100%;font:inherit;font-size:20px;font-weight:800;text-align:center;padding:14px;border-radius:16px;border:3px solid var(--vora);margin:14px 0}
+/* analítica */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.kpi{background:#fff;border-radius:16px;padding:14px;box-shadow:var(--om)}
+.kpi small{color:var(--suau);font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+.kpi b{display:block;font-size:26px;line-height:1.2;margin-top:2px}
+.kpi span{font-size:13px;color:var(--suau);font-weight:700}
+table.an{width:100%;border-collapse:collapse;font-size:15px}
+table.an th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--suau);padding:8px 6px;border-bottom:2px solid var(--vora)}
+table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.semaf{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.valoracio{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px solid #c7d2fe;border-radius:18px;padding:16px 18px}
+.valoracio h3{margin:0 0 6px}
+.llista-err li{margin:6px 0}
+.modal{position:fixed;inset:0;background:#0f172a80;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal .box{max-width:420px;text-align:center}
+.peu-pag{text-align:center;color:#94a3b8;font-size:13px;margin:26px 0 8px}
+.confeti{position:fixed;top:-20px;font-size:22px;z-index:60;pointer-events:none;animation:cau 1.8s linear forwards}
+@keyframes cau{to{transform:translateY(105vh) rotate(540deg);opacity:.2}}
+
+.perfils{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.perfil{display:flex;align-items:center;gap:12px;text-align:left;border:2px solid var(--vora);background:#fff;border-radius:16px;padding:10px 14px;cursor:pointer;font-family:inherit;font-size:16px;color:var(--txt)}
+.perfil:hover{border-color:#93c5fd;background:#f8fbff}.perfil.on{border-color:var(--blau)}
+.perfil small{display:block;color:var(--suau);font-weight:700}
+.av2{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;flex:none;text-transform:uppercase}
+/* arcade */
+.arc{position:fixed;inset:0;z-index:80;background:radial-gradient(circle at 50% 40%,#1e1b4b,#020617 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;animation:arcIn .25s ease-out;overflow:hidden}
+@keyframes arcIn{from{opacity:0;transform:scale(1.15)}}
+.arc canvas{position:absolute;inset:0;width:100%;height:100%}
+.arc .flash{position:absolute;inset:0;background:#fff;animation:flash .5s ease-out forwards;pointer-events:none}
+@keyframes flash{from{opacity:.9}to{opacity:0}}
+.arc .t1{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(22px,7vw,46px);color:#facc15;text-shadow:4px 4px 0 #b91c1c,0 0 24px #facc15aa;text-align:center;line-height:1.35;animation:bota .6s cubic-bezier(.3,1.6,.5,1) both,pampalluga 1s steps(2) .6s infinite}
+@keyframes bota{from{transform:translateY(-120px) scale(.4)}}
+@keyframes pampalluga{50%{color:#fde68a}}
+.arc .t2{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(12px,3.4vw,18px);color:#a5f3fc;margin-top:22px;text-align:center;line-height:1.8}
+.arc .t3{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(28px,9vw,54px);color:#fff;margin-top:14px;text-shadow:0 0 18px #38bdf8}
+.arc .estr{position:relative;font-size:clamp(34px,10vw,56px);margin-top:10px;letter-spacing:6px}
+.arc .estr span{display:inline-block;animation:estr .45s cubic-bezier(.3,1.8,.5,1) both;filter:drop-shadow(0 0 10px #facc15)}
+@keyframes estr{from{transform:scale(0) rotate(-180deg)}}
+.arc .t4{position:relative;font-family:'Press Start 2P',monospace;font-size:11px;color:#94a3b8;margin-top:26px;animation:pampalluga2 1.2s steps(2) infinite}
+@keyframes pampalluga2{50%{opacity:0}}
+.arc .rec{position:relative;font-family:'Press Start 2P',monospace;font-size:12px;color:#020617;background:#4ade80;padding:8px 12px;margin-top:16px;transform:rotate(-3deg);animation:bota .5s .9s both}
+.nivell{margin-top:14px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#f5f3ff,#eef2ff);border:2px solid #c4b5fd;border-radius:16px;padding:12px 16px;cursor:pointer}
+.nivell .nic{font-size:38px;line-height:1;flex:none}
+.nivell b{display:block;font-size:17px}
+.nivell small{color:var(--suau);font-weight:700}
+.nivell .barra{margin:6px 0 4px;height:10px}
+.nivell .barra i{background:linear-gradient(90deg,#a78bfa,#7c3aed)}
+.rangs{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.rang{border:2px solid var(--vora);border-radius:14px;padding:10px 8px;text-align:center;background:#fff}
+.rang span{display:block;font-size:30px;line-height:1.1}
+.rang b{display:block;font-size:14px}
+.rang small{color:var(--suau);font-weight:700;font-size:12px}
+.rang.bloc{opacity:.45;filter:grayscale(1)}
+.rang.ara{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px #ddd6fe}
+.arc.niv{background:radial-gradient(circle at 50% 40%,#3b0764,#020617 75%)}
+.arc.niv .t1{color:#e9d5ff;text-shadow:4px 4px 0 #7c3aed,0 0 24px #c084fcaa}
+.arc.niv .nic{position:relative;font-size:clamp(64px,20vw,110px);margin-top:12px;animation:estr .6s cubic-bezier(.3,1.8,.5,1) .3s both;filter:drop-shadow(0 0 18px #c084fc)}
+.vol{display:flex;align-items:center;gap:4px;background:#ffffff26;border:1px solid #ffffff40;border-radius:999px;padding:2px 10px 2px 4px;flex:none}
+.so-btn{background:none;border:0;color:#fff;font-size:17px;cursor:pointer;padding:3px 4px;line-height:1}
+.vol input{width:76px;accent-color:#fff;cursor:pointer;margin:0}
+.vol b{font-size:13px;min-width:9px;text-align:center}
+@media(max-width:520px){.vol input{width:54px}.vol{padding-right:7px}}
+body.tremola main{animation:tremola .4s}
+.arc.ko{background:radial-gradient(circle at 50% 40%,#3b0a0a,#0b0202 75%)}
+.arc.ko .t1{color:#f87171;text-shadow:4px 4px 0 #450a0a,0 0 20px #ef444466;animation:cau1 .7s cubic-bezier(.5,1.8,.5,1) both,parpelleja 1.4s steps(2) .8s infinite}
+@keyframes cau1{from{transform:translateY(-140px) rotate(-8deg);opacity:0}}
+@keyframes parpelleja{50%{opacity:.55}}
+.arc.ko .t3{color:#fca5a5;text-shadow:none}
+.arc.ko .cor{position:relative;font-size:clamp(44px,13vw,70px);margin-top:8px;animation:trenca 1.1s ease-in .4s both}
+@keyframes trenca{0%{transform:scale(0)}35%{transform:scale(1.2)}55%{transform:scale(1) rotate(0)}70%{transform:rotate(-12deg)}85%{transform:rotate(10deg)}100%{transform:rotate(0)}}
+.arc.ko .t2{color:#fde68a}
+.pluja{position:absolute;top:-30px;width:3px;height:22px;background:linear-gradient(#94a3b800,#94a3b8aa);animation:plou linear infinite}
+@keyframes plou{to{transform:translateY(110vh)}}
+</style>
+</head>
+<body>
+<header>
+ <div class="hd">
+  <div class="logo" onclick="vista('inici')"><span id="logoic">📚</span><span class="tt"><span id="hola"></span><small id="qui"></small></span></div>
+  <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci">🔊</button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts">⭐ 0</span>
+ </div>
+ <nav id="nav">
+  <button data-v="inici" onclick="vista('inici')">🏠 Inici</button>
+  <button data-v="temes" onclick="vista('temes')">📖 Temes</button>
+  <button data-v="jocs" onclick="vista('jocs')">🎮 Jocs</button>
+  <button data-v="obertes" onclick="vista('obertes')">✍️ Obertes</button>
+  <button data-v="analitica" onclick="vista('analitica')">📊 Com vaig</button>
+  <button data-v="usuari" onclick="benvinguda()">👥 Canviar d'usuari</button>
+ </nav>
+</header>
+<main id="app"></main>
+<div class="peu-pag" id="peu"></div>
+
+<script>
+const ASSIG={
+ id:"castellano",
+ nom:"Lengua Castellana", tema:"Temas 2 y 3", curs:"1r ESO", ic:"📝",
+ color:["#7f1d1d","#dc2626","#f59e0b"],
+ peu:"Bona Nota · Lengua Castellana 1.º ESO (Carmen de Burgos, Barcanova) · Temas 2 y 3: el texto, el sustantivo, la noticia, los géneros literarios, los determinantes y la b",
+ blocs:[{titol:"📄 Tema 2 · El texto y el sustantivo",n:6},{titol:"📰 Tema 3 · La noticia, la literatura y los determinantes",n:9}],
+ jocs:[
+  {id:"concretos",tipus:"classifica",ic:"🤲",titol:"¿Concreto o abstracto?",sub:"¿Se puede tocar o solo pensar?",col:"#fee2e2",
+   enunciat:"🤲 ¿Concreto o abstracto?",instr:"Toca un sustantivo y después la caja donde va. Pregúntate: ¿lo puedo ver, tocar u oír?",
+   caixes:[["c","👀 Concreto (se ve, se toca, se oye)"],["a","💭 Abstracto (idea o sentimiento)"]],
+   items:[["mesa","c"],["tristeza","a"],["mochila","c"],["valentía","a"],["guitarra","c"],["paciencia","a"],["nube","c"],["sinceridad","a"],["enjambre","c"],["miedo","a"]],
+   final:"Truco: prueba del tacto. Y ojo: un enjambre se puede ver, así que es concreto aunque sea colectivo."},
+  {id:"colectivos",tipus:"parelles",ic:"🐑",titol:"Colectivo e individual",sub:"Une cada uno con su grupo",col:"#fef3c7",
+   enunciat:"🐑 Une cada sustantivo individual con su colectivo",instr:"Toca un individual a la izquierda y después su colectivo a la derecha.",
+   pars:[["abeja","enjambre"],["barco","flota"],["oveja","rebaño"],["soldado","ejército"],["pájaro","bandada"],["pino","pinar"],["músico","orquesta"]],
+   final:"Colectivo = muchos metidos en una palabra en singular."},
+  {id:"noticia",tipus:"ordena",ic:"📰",titol:"Las partes de la noticia",sub:"De arriba abajo",col:"#e0f2fe",
+   enunciat:"📰 Ordena las partes de la noticia",instr:"Toca las partes en el orden en que aparecen, <b>de arriba abajo</b>.",
+   items:[["Antetítulo","sitúa el tema (no siempre está)","#e0f2fe"],["Titular","lo esencial, corto y llamativo","#e0f2fe"],["Entradilla","qué, quién, dónde, cuándo y por qué","#fef3c7"],["Autor y fecha","quién firma y cuándo","#e0f2fe"],["Cuerpo","más datos y el cómo, de más a menos importante","#dcfce7"]],
+   final:"Truco: la noticia es un embudo. Arriba lo más gordo; abajo, los detalles. 5 W + 1 H."},
+  {id:"generos",tipus:"parelles",ic:"🎭",titol:"Géneros literarios",sub:"Teatro y narrativa",col:"#ede9fe",
+   enunciat:"🎭 Une cada género con lo que lo caracteriza",instr:"Toca un género a la izquierda y después su descripción a la derecha.",
+   pars:[["Tragedia","Final desgraciado por las pasiones"],["Comedia","Humor y final feliz"],["Drama","Conflicto real, doloroso e intenso"],["Mito","Dioses y héroes que explican creencias"],["Leyenda","Hecho o lugar real con un toque mágico"],["Fábula","Cuento protagonizado por animales"],["Novela","Relato largo dividido en capítulos"]],
+   final:"Lírica = Lo que siento. Dramática = Diálogo en escena. Épica = Érase una vez."},
+  {id:"byv",tipus:"classifica",ic:"🅱️",titol:"¿B o V?",sub:"Las palabras que más se cuelan",col:"#dcfce7",
+   enunciat:"🅱️ ¿Se escribe con B o con V?",instr:"Toca una palabra y después la caja de la letra que falta en el hueco.",
+   caixes:[["b","🅱️ Con B"],["v","✌️ Con V"]],
+   items:[["go_ierno","b"],["apro_ado","b"],["ja_alina","b"],["_arnizar","b"],["canta_amos","b"],["esta_as","b"],["am_ulancia","b"],["ser_ir","v"],["her_ir","v"],["vi_ir","v"]],
+   final:"El catalán nos engaña: aprovat, govern, envernissar llevan v, pero en castellano es aprobado, gobierno, barnizar. Y -aba siempre con b."}
+ ]
+};
+const T=[
+ {id:"texto",ic:"📄",col:"#dc2626",titol:"El texto y sus propiedades",font:"Tema 2 · p. 16",
+  idea:"Un texto es un mensaje, oral o escrito, con sentido completo. Para funcionar tiene que ser adecuado, coherente y cohesionado.",
+  pts:["Un texto puede ser <b>una sola palabra</b> («¡Cuidado!»), una oración, un párrafo, un cuento, un poema...",
+   "<b>Adecuación</b>: se adapta a la situación: a <b>quién</b> va dirigido y con qué <b>intención</b>.",
+   "<b>Coherencia</b>: tiene un <b>tema definido</b> y la información va en un <b>orden lógico</b>.",
+   "<b>Cohesión</b>: las partes están <b>relacionadas</b> entre sí. Para eso usamos los <b>conectores</b>.",
+   "Conectores para añadir o contrastar: <b>además, sin embargo, no obstante, por lo tanto</b>.",
+   "Para explicar con otras palabras: <b>es decir, esto es, mejor dicho</b>. Para ordenar o poner ejemplos: <b>a continuación, para terminar, por ejemplo</b>."],
+  truc:"A-Co-Co: Adecuación (¿a quién le hablo?), Coherencia (¿de qué hablo y en qué orden?), Cohesión (¿con qué pegamento uno las frases?). Los conectores son el pegamento.",
+  compte:"Que un texto sea corto no significa que no sea un texto. «¡Cuidado!» ya es un texto completo.",
+  fc:[["¿Qué es un texto?","Un mensaje oral o escrito con sentido completo."],["Las tres propiedades del texto","Adecuación, coherencia y cohesión."],["Adecuación","Adaptarse a quién lo recibe y a la intención."],["Coherencia","Tema definido y orden lógico."],["Cohesión","Las partes están unidas, sobre todo con conectores."],["Un conector para explicar algo con otras palabras","Es decir (o esto es, mejor dicho)."]],
+  q:[["Un texto tiene un tema definido y la información va en orden lógico. ¿Qué propiedad cumple?",["La coherencia","La adecuación","La cohesión"],0,"Coherencia = tema claro y orden lógico."],
+     ["Escribes al director como si fuera tu colega de clase. ¿Qué propiedad fallas?",["La cohesión","La adecuación","La coherencia"],1,"La adecuación mira a quién va dirigido el texto."],
+     ["¿Puede ser un texto una sola palabra?",["Sí, si tiene sentido completo","No, nunca","Solo si es un poema"],0,"«¡Cuidado!» es un texto completo."],
+     ["¿Para qué sirven los conectores?",["Para unir las partes del texto","Para poner el título","Para separar sílabas"],0,"Dan cohesión: son el pegamento del texto."],
+     ["¿Cuál de estos conectores sirve para explicar algo con otras palabras?",["Sin embargo","Es decir","Además"],1,"Sin embargo contrasta; además añade."]]},
+ {id:"tipos",ic:"🗂️",col:"#ea580c",titol:"Los tipos de textos",font:"Tema 2 · p. 16",
+  idea:"Según lo que quieren conseguir, hay siete tipos de textos.",
+  pts:["<b>Narrativo</b>: cuenta hechos en un lugar y un tiempo (un cuento).","<b>Descriptivo</b>: explica cómo es algo o alguien (el retrato de tu perro).",
+   "<b>Dialogado</b>: dos o más personas intercambian información (una entrevista).","<b>Expositivo</b>: informa sobre un tema para darlo a conocer (tu libro de Naturales).",
+   "<b>Argumentativo</b>: da opiniones e intenta convencer (un artículo de opinión).","<b>Instructivo</b>: aconseja cómo hacer algo (una receta).","<b>Predictivo</b>: predice hechos futuros (el tiempo de mañana)."],
+  truc:"«Nos Dan Dos Exámenes; Ay, Igual Pasamos»: Narrativo, Descriptivo, Dialogado, Expositivo, Argumentativo, Instructivo, Predictivo.",
+  compte:"Expositivo informa; argumentativo opina y quiere convencer. No es lo mismo.",
+  fc:[["¿Cuántos tipos de textos hay?","Siete."],["Una receta es un texto...","Instructivo."],["El pronóstico del tiempo es un texto...","Predictivo."],["Un texto que quiere convencerte es...","Argumentativo."],["Una entrevista es un texto...","Dialogado."]],
+  q:[["Una receta de cocina es un texto...",["Instructivo","Narrativo","Predictivo"],0,"Aconseja cómo hacer algo."],
+     ["«Mañana lloverá en el Pirineo.» ¿Qué tipo de texto es?",["Expositivo","Predictivo","Descriptivo"],1,"Predice un hecho futuro."],
+     ["Un artículo que intenta convencerte de no usar el móvil en la cena es...",["Expositivo","Argumentativo","Dialogado"],1,"Da opiniones y argumentos para convencer."],
+     ["Tu libro de Naturales es sobre todo un texto...",["Expositivo","Narrativo","Instructivo"],0,"Informa sobre un tema para darlo a conocer."],
+     ["Un texto que explica cómo es tu abuela, eligiendo sus detalles, es...",["Narrativo","Descriptivo","Argumentativo"],1,"Describir = decir cómo es algo o alguien."]]},
+ {id:"sustantivo",ic:"🏷️",col:"#d97706",titol:"El sustantivo y sus clases",font:"Tema 2 · p. 56",
+  idea:"El sustantivo nombra personas, lugares, animales, cosas o ideas, y sus clases van por parejas.",
+  pts:["<b>Propios</b>: nombran a un ser único y van con <b>mayúscula</b> (Tarragona, Ebro, Carmen). <b>Comunes</b>: nombran a cualquiera de una clase (ciudad, río, niña).",
+   "<b>Topónimos</b> = nombres propios de lugar (Pirineos, Barcelona). <b>Antropónimos</b> = nombres propios de persona (Alba, Raúl).",
+   "<b>Individuales</b>: en singular nombran a uno solo (abeja, barco, pino). <b>Colectivos</b>: en singular nombran a un grupo (enjambre, flota, pinar).",
+   "<b>Concretos</b>: se pueden ver, tocar, oír (lápiz, perro, montaña). <b>Abstractos</b>: ideas o sentimientos (amor, pereza, sensibilidad).",
+   "Para subrayar sustantivos, subraya <b>solo el sustantivo</b>: no el artículo (la, el) ni el adjetivo (cubiertas, pequeña)."],
+  truc:"Tres preguntas: ¿único o de una clase? ¿uno o un grupo? ¿se toca o se piensa? Topo-nimo = lugar (el topo vive en un lugar). Antropo-nimo = persona.",
+  compte:"Un colectivo NO es abstracto: un rebaño o un ejército se pueden ver. Y en el cuaderno se colaron artículos y adjetivos al subrayar sustantivos: solo el sustantivo.",
+  fc:[["¿Qué es un sustantivo colectivo?","El que nombra en singular a un grupo (enjambre, flota)."],["Colectivo de «ovejas»","Rebaño."],["¿Qué es un topónimo?","El nombre propio de un lugar (Barcelona)."],["¿Qué es un antropónimo?","El nombre propio de una persona (Raúl)."],["«Pereza»: ¿concreto o abstracto?","Abstracto."],["¿Cómo se escriben los propios?","Con mayúscula inicial."]],
+  q:[["«Flota» es un sustantivo...",["Individual","Colectivo","Propio"],1,"Nombra en singular a un conjunto de barcos."],
+     ["¿Cuál de estos sustantivos es abstracto?",["pared","pereza","pato"],1,"La pereza no se puede ver ni tocar."],
+     ["¿Cómo se llaman los nombres propios de persona?",["Topónimos","Antropónimos","Colectivos"],1,"Antropónimo = persona; topónimo = lugar."],
+     ["«Un rebaño de ovejas.» ¿«Rebaño» es concreto o abstracto?",["Abstracto, porque es un grupo","Concreto, porque se puede ver","Ni uno ni otro"],1,"Que sea colectivo no lo hace abstracto."],
+     ["En «Las montañas se extendían cubiertas de nieve», ¿qué palabras son sustantivos?",["montañas y nieve","las, montañas y cubiertas","cubiertas y nieve"],0,"«Las» es un artículo y «cubiertas» un adjetivo."]]},
+ {id:"genero",ic:"⚖️",col:"#ca8a04",titol:"Género, número y concordancia",font:"Tema 2 · p. 57",
+  idea:"El sustantivo tiene género y número, y el determinante y el adjetivo tienen que concordar con él.",
+  pts:["<b>Terminación variable</b>: chico/chica, jefe/jefa, escritor/escritora, actor/<b>actriz</b>, alcalde/<b>alcaldesa</b>.",
+   "<b>Heterónimos</b> (palabras distintas): hombre/mujer, caballo/yegua.","<b>Invariables</b> (lo marca el artículo): el/la pianista, el/la periodista, el/la testigo. Animales: la víbora macho.",
+   "<b>Plural</b>: -s o -es (casas, cárceles). Sin cambio: el/los atlas, la/las crisis. Club → clubes; ley → leyes; jersey → jerséis.",
+   "<b>Concordancia</b>: mismo género y número: la actriz famosa, unos gatos negros.",
+   "Ojo con el catalán: <b>el</b> calor, <b>el</b> olor, <b>la</b> costumbre, <b>el</b> diente, <b>la</b> nariz, <b>la</b> señal."],
+  truc:"En «el atlas» o «la crisis» la palabra no cambia: el chivato es el artículo.",
+  compte:"Barón → baronesa, y al revés baronesa → barón (no «barones», que es el plural).",
+  fc:[["Femenino de «actor»","Actriz."],["Femenino de «caballo» (¿qué tipo es?)","Yegua: heterónimo."],["Femenino de «el pianista»","La pianista (invariable)."],["Plural de «crisis»","Las crisis (no cambia)."],["Masculino de «baronesa»","Barón."],["¿Qué es la concordancia?","Que sustantivo, determinante y adjetivo tengan el mismo género y número."]],
+  q:[["El femenino de «caballo» es «yegua». ¿Qué tipo de cambio es?",["Terminación variable","Heterónimo","Invariable"],1,"Son palabras totalmente distintas."],
+     ["¿Cuál es el masculino de «baronesa»?",["barones","barón","baronés"],1,"«Barones» es el plural de barón."],
+     ["¿Cuál es la forma correcta?",["la calor","el calor","los calor"],1,"En castellano «calor» es masculino."],
+     ["¿Cómo se forma el plural de «club»?",["clubes","clubs nunca","club no tiene plural"],0,"Unas palabras extranjeras añaden -es (clubes) y otras -s (récords)."],
+     ["¿Qué grupo concuerda bien?",["unas gatas negro","unos gatos negros","un gatos negro"],1,"Mismo género y número en todo el grupo."]]},
+ {id:"diccionario",ic:"📕",col:"#65a30d",titol:"Cómo usar el diccionario",font:"Tema 2 · p. 60",
+  idea:"Cada palabra del diccionario es una entrada, y cada significado una acepción numerada. El contexto te dice cuál toca.",
+  pts:["Sustantivos y adjetivos aparecen en <b>masculino singular</b>; los verbos, en <b>infinitivo</b> («corrían» → correr).",
+   "Los diccionarios en línea buscan «por aproximación».","El <b>contexto</b> elige la acepción: «Siéntate en este banco» = asiento.",
+   "Una buena <b>definición</b> empieza con un término general, dice sus características y <b>nunca repite la palabra</b> definida.",
+   "El alfabeto tiene <b>27 letras</b>; <b>ch</b> y <b>ll</b> son dígrafos.","Abreviaturas: <b>m.</b> masculino, <b>f.</b> femenino, <b>adj.</b> adjetivo, <b>v.</b> verbo, <b>pl.</b> plural, <b>coloq.</b> coloquial."],
+  truc:"Para buscar una palabra, devuélvela a casa: quítale el plural, el femenino y la conjugación. «Saltábamos» → saltar.",
+  compte:"«Es cuando...» o «es donde...» no es una buena definición: empieza con una palabra general («Instrumento que...»).",
+  fc:[["¿Qué es una entrada?","Cada palabra que se define en el diccionario."],["¿Qué es una acepción?","Cada uno de los significados numerados de una palabra."],["¿Cómo aparecen los verbos?","En infinitivo."],["¿Cuántas letras tiene el alfabeto?","27."],["¿Qué significa «m.»?","Masculino."]],
+  q:[["Para buscar «corrían» en el diccionario buscas...",["corría","correr","corriendo"],1,"Los verbos aparecen en infinitivo."],
+     ["Cada significado numerado de una palabra se llama...",["entrada","acepción","etimología"],1,"La entrada es la palabra; la acepción, cada significado."],
+     ["¿Qué falla en «estación: es donde paran los trenes»?",["No empieza con un término general","Es demasiado corta","Repite la palabra estación"],0,"Mejor: «Lugar donde se detienen habitualmente los trenes»."],
+     ["¿Cuántas letras tiene el alfabeto castellano?",["27","29","26"],0,"Ch y ll no son letras, son dígrafos."]]},
+ {id:"puntuacion",ic:"✏️",col:"#16a34a",titol:"La coma y el punto y coma",font:"Tema 2 · p. 62",
+  idea:"La coma separa ideas dentro de un enunciado; el punto y coma es una pausa mayor que la coma y menor que el punto.",
+  pts:["Coma en <b>enumeraciones</b>: leche, cereales, fruta y pan.","Coma para encerrar <b>aclaraciones</b>: El público, harto de esperar, protestó.",
+   "Coma tras una <b>circunstancia al principio</b>: A pesar de la lesión, siguió.","Coma que <b>sustituye a un verbo</b>: Yo saldré a las ocho; vosotros, más tarde.",
+   "Coma con el <b>vocativo</b>: Por favor, Eduardo, acércame la sal. Y antes y después de <b>es decir, o sea, sin embargo</b>.",
+   "<b>Punto y coma</b>: oraciones muy relacionadas, enumeraciones que ya llevan comas, y antes de <b>pero, sin embargo</b> si las oraciones son largas. Después, minúscula.",
+   "Saludo de carta con <b>dos puntos</b>: Querido Ángel:"],
+  truc:"Sujeto y verbo son inseparables: nunca una coma entre ellos. Y el vocativo va siempre abrazado por comas.",
+  compte:"«Laura, ha venido» está mal: no se separa el sujeto del verbo. Y no va coma antes de la «y» de una enumeración.",
+  fc:[["¿Qué es el vocativo?","El nombre de la persona a la que hablas, entre comas."],["¿Qué va tras «Querido Ángel» en una carta?","Dos puntos."],["¿Qué letra va después de un punto y coma?","Minúscula."],["¿Coma entre sujeto y verbo?","Nunca."],["«Yo saldré a las ocho; vosotros, más tarde.» ¿Qué hace la coma?","Sustituye al verbo."]],
+  q:[["¿Qué frase está bien puntuada?",["Camarero un café, por favor.","Camarero, un café, por favor.","Camarero, un café por, favor."],1,"«Camarero» es un vocativo y «por favor» va separado."],
+     ["¿Qué frase es incorrecta?",["Laura, ha venido.","Laura ha venido.","Laura, Pedro y Javier han venido."],0,"No se separa el sujeto del verbo con coma."],
+     ["En una carta, tras «Querido Ángel» se escribe...",["coma","dos puntos","punto y coma"],1,"La coma en el saludo es un anglicismo."],
+     ["«Mi hermano llegará el lunes; yo, el martes.» ¿Qué hace la coma de «yo, el martes»?",["Separa una enumeración","Sustituye al verbo «llegaré»","Separa un vocativo"],1,"Evita repetir el verbo."],
+     ["¿Cuál es correcta?",["Pero, ¿de dónde vienes?","Pero ¿de dónde vienes?","Pero ¿de dónde, vienes?"],1,"Tras «pero» no va coma si viene una pregunta."]]},
+ {id:"noticia",ic:"📰",col:"#0891b2",titol:"La noticia",font:"Tema 3 · p. 78",
+  idea:"La noticia cuenta de forma objetiva un hecho de interés público y responde a qué, quién, dónde, cuándo, por qué y cómo.",
+  pts:["Suele ir <b>firmada</b> por un periodista o una agencia y usa <b>fuentes</b> (testigos, administraciones, agencias).",
+   "<b>Antetítulo</b>: sitúa el tema (no siempre está).","<b>Titular</b>: lo esencial en pocas palabras, y que llame la atención.",
+   "<b>Entradilla</b>: los datos más importantes: las <b>5 W</b> (What, Who, Where, When, Why).",
+   "<b>Cuerpo</b>: más datos y el <b>cómo</b> (hoW), en párrafos <b>de más a menos importante</b>. Las destacadas llevan foto."],
+  truc:"La noticia es un embudo: arriba lo más gordo, abajo los detalles. 5 W + 1 H.",
+  compte:"Las 5 W van en la entradilla; el cómo suele ir en el cuerpo.",
+  fc:[["¿Qué parte responde a qué, quién, dónde, cuándo y por qué?","La entradilla."],["¿Qué parte resume lo esencial y llama la atención?","El titular."],["¿Cómo se ordenan los párrafos del cuerpo?","De más a menos importante."],["Las 5 W","What, Who, Where, When, Why."],["¿Qué son las fuentes?","De dónde sale la información: testigos, administraciones, agencias."]],
+  q:[["¿Qué parte de la noticia responde a las 5 W?",["El titular","La entradilla","El antetítulo"],1,"La entradilla da los datos más importantes."],
+     ["¿Cómo se ordenan los párrafos del cuerpo?",["De más a menos interés","De menos a más interés","Por orden alfabético"],0,"Si solo lees el principio, ya sabes lo importante."],
+     ["¿Cómo cuenta los hechos una noticia?",["De forma objetiva","Dando la opinión del periodista","Inventando detalles"],0,"La noticia es objetiva."],
+     ["En la noticia del libro, «CRISIS APÍCOLA EN PORTUGAL» es...",["el antetítulo","el cuerpo","la entradilla"],0,"Va encima del titular «La sequía se traga la miel»."]]},
+ {id:"fake",ic:"🕵️",col:"#0e7490",titol:"Noticias falsas y clickbait",font:"Tema 3 · p. 79",
+  idea:"Una noticia falsa se crea con información falsa o deformada para engañar y manipular. La defensa: contrastar en medios serios.",
+  pts:["Buscan un <b>beneficio económico o político</b>, influir en la opinión y a veces dañar la imagen de alguien.",
+   "Se difunden sobre todo por las <b>redes sociales</b>.",
+   "Pistas: es <b>anónima</b>, te pide que la <b>reenvíes</b>, está <b>mal escrita</b>, abusa de <b>MAYÚSCULAS</b> y ¡¡exclamaciones!!",
+   "Para combatirlas: buscar la información en <b>medios de comunicación serios</b> y contrastarla.",
+   "<b>Clickbait</b> o ciberanzuelo: titular exagerado que te hace pinchar y te lleva a otra cosa. Busca visitas y dinero con publicidad."],
+  truc:"Detector A-R-F-M: Anónima, pide Reenviarla, tiene Faltas y MAYÚSCULAS. Si lo cumple, alarma.",
+  compte:"Que algo sea muy impactante no lo hace verdad: las noticias falsas están hechas para sorprender.",
+  fc:[["¿Para qué se crea una noticia falsa?","Para engañar y manipular, buscando dinero o poder."],["Dos pistas de una noticia falsa","Es anónima y pide que la reenvíes (también faltas y mayúsculas)."],["¿Cómo se combaten?","Contrastando en medios de comunicación serios."],["¿Qué es el clickbait?","Un titular exagerado para que pinches."],["¿Por dónde se difunden sobre todo?","Por las redes sociales."]],
+  q:[["Te llega «¡¡¡MAÑANA NO HAY COLE!!! REENVÍALO». ¿Qué haces?",["Reenviarlo enseguida","Buscarlo en medios serios antes de creerlo","Creerlo porque está en mayúsculas"],1,"Mayúsculas, exclamaciones y «reenvíalo» son pistas de noticia falsa."],
+     ["Las noticias falsas se crean...",["para entretener","para engañar y manipular","para informar mejor"],1,"Buscan un beneficio económico o político."],
+     ["¿Qué es el clickbait?",["Un titular exagerado para que pinches","Una noticia de deportes","Una agencia de noticias"],0,"Busca visitas para ganar dinero con publicidad."],
+     ["¿Cuál de estas es una pista de noticia falsa?",["Va firmada por un periodista","Es anónima","Cita fuentes oficiales"],1,"No dice de dónde viene."]]},
+ {id:"lirica",ic:"🎭",col:"#7c3aed",titol:"Los géneros literarios: lírica y teatro",font:"Tema 3 · p. 82",
+  idea:"Hay tres grandes géneros: la lírica (poesía), la dramática (teatro) y la épica (narrativa).",
+  pts:["<b>Lírica</b>: el autor expresa su mundo interior, sus <b>emociones y sentimientos</b>.",
+   "<b>Lírica culta</b>: de autores cultos, transmitida por escrito. <b>Lírica popular</b>: anónima y oral, versos cortos y sencillos.",
+   "<b>Dramática</b>: se escribe para ser <b>representada</b> por actores ante un público, con <b>diálogos</b> y <b>acotaciones</b> (gestos, vestuario, decorado).",
+   "<b>Tragedia</b>: las pasiones llevan a un final desgraciado. <b>Comedia</b>: humor y final feliz. <b>Drama</b>: conflicto real, doloroso e intenso."],
+  truc:"Lírica = Lo que siento. Dramática = Diálogo en un escenario. Épica = Érase una vez.",
+  compte:"Las acotaciones no las dicen los actores: son las indicaciones del autor entre paréntesis.",
+  fc:[["Los tres géneros literarios","Lírica, dramática y épica."],["¿Qué expresa la lírica?","Emociones y sentimientos."],["¿Qué son las acotaciones?","Indicaciones sobre gestos, movimientos, vestuario y decorado."],["Lírica popular","Anónima y transmitida de boca en boca."],["Teatro con final desgraciado","Tragedia."]],
+  q:[["¿Qué son las acotaciones?",["Las indicaciones del autor sobre gestos, vestuario o decorado","Los versos de un poema","Los capítulos de una novela"],0,"Son propias del teatro."],
+     ["Una obra de teatro con humor y final feliz es...",["una tragedia","una comedia","un drama"],1,"La tragedia acaba mal."],
+     ["La lírica popular suele ser...",["anónima y oral","de autores cultos y escrita","siempre una novela"],0,"Se transmite de boca en boca."],
+     ["¿Qué género expresa sobre todo emociones y sentimientos?",["La lírica","La dramática","La épica"],0,"Lírica = lo que siento."]]},
+ {id:"narrativa",ic:"🐉",col:"#9333ea",titol:"La narrativa: cuento, mito, leyenda y novela",font:"Tema 3 · p. 83",
+  idea:"La narrativa cuenta hechos que les pasan a unos personajes en un tiempo y un lugar, y siempre hay un narrador.",
+  pts:["Hoy se escribe en <b>prosa</b>; «épica» se reserva para textos antiguos en <b>verso</b>.",
+   "<b>Cuento</b>: corto y sencillo, pocos personajes. Las <b>fábulas</b> tienen animales. Recopiladores: Grimm, Perrault, Andersen.",
+   "<b>Mito</b>: dioses, héroes o monstruos que explican las <b>creencias</b> de un pueblo (Hércules, el Minotauro, Medusa).",
+   "<b>Leyenda</b>: lugares, personajes o hechos <b>históricos</b> con elementos sobrenaturales (el Cid, Sant Jordi). Bécquer escribió las suyas.",
+   "<b>Novela</b>: relato <b>extenso</b>, con muchos personajes, dividido en <b>capítulos</b> (policíaca, de terror, histórica, juvenil...)."],
+  truc:"Mito = mandan los dioses. Leyenda = algo real + un toque mágico (Sant Jordi existió... el dragón, ya me dirás).",
+  compte:"No confundas mito y leyenda: el mito va de dioses; la leyenda parte de algo real.",
+  fc:[["¿Qué es una fábula?","Un cuento protagonizado por animales."],["Mito: ¿quién lo protagoniza?","Dioses, héroes o monstruos."],["Leyenda de Cataluña del libro","Sant Jordi."],["¿Cómo se divide una novela?","En capítulos."],["Recopiladores de cuentos populares","Grimm, Perrault, Andersen."]],
+  q:[["Hércules y el Minotauro aparecen en...",["mitos","leyendas","fábulas"],0,"Son seres sobrenaturales de la mitología grecolatina."],
+     ["La historia de Sant Jordi es...",["un mito","una leyenda","una novela"],1,"Parte de un personaje con elementos sobrenaturales."],
+     ["Un cuento protagonizado por animales es...",["una fábula","una tragedia","una leyenda"],0,"Las fábulas suelen dejar una enseñanza."],
+     ["¿Qué narración es más larga y se divide en capítulos?",["El cuento","La novela","La fábula"],1,"La novela es extensa y compleja."]]},
+ {id:"articulos",ic:"🔤",col:"#2563eb",titol:"Los determinantes y los artículos",font:"Tema 3 · p. 88",
+  idea:"El determinante va delante del sustantivo y lo concreta: «casa» es cualquiera; «mi casa» o «esta casa», una en concreto.",
+  pts:["Si va <b>detrás</b> del nombre, <b>deja de ser determinante</b>.","Clases: artículos, demostrativos, posesivos, cuantificadores, relativos, interrogativos y exclamativos.",
+   "<b>Artículo determinado</b> (algo conocido): el, la, lo, los, las. <b>Indeterminado</b> (algo nuevo): un, una, unos, unas.",
+   "Femeninos con <b>a- tónica</b>: <b>el</b> aula, <b>un</b> aula; pero <b>las</b> aulas, <b>una</b> bonita aula.",
+   "<b>Lo</b> + adjetivo: lo bueno, lo difícil. Contracciones: a + el = <b>al</b>; de + el = <b>del</b>.",
+   "Los nombres de persona <b>no llevan artículo</b> en castellano (no «la Marta»); algunos lugares sí: el Teide, los Pirineos."],
+  truc:"El determinante es el portero de la discoteca: siempre está delante de la puerta (el sustantivo).",
+  compte:"El, la, los son artículos, no demostrativos. En el cuaderno se colaron artículos donde se pedían demostrativos y cuantificadores.",
+  fc:[["Artículos determinados","El, la, lo, los, las."],["Artículos indeterminados","Un, una, unos, unas."],["¿Por qué «el aula»?","Por la a tónica (solo en singular)."],["a + el =","al"],["¿Dónde va el determinante?","Delante del sustantivo."]],
+  q:[["¿Por qué decimos «el aula»?",["Porque aula es masculino","Por la a tónica del principio","Por error"],1,"En plural vuelve lo normal: las aulas."],
+     ["¿Cuál de estos es un artículo indeterminado?",["los","unas","esta"],1,"Un, una, unos, unas."],
+     ["«El» y «la» son...",["demostrativos","artículos","posesivos"],1,"Los demostrativos son este, ese, aquel."],
+     ["De + el =",["del","de el siempre","dél"],0,"Volvió muy cansada del partido."],
+     ["¿Qué es correcto en castellano?",["La Marta ha venido","Marta ha venido","El Marta ha venido"],1,"Los nombres de persona no llevan artículo."]]},
+ {id:"demostrativos",ic:"👉",col:"#1d4ed8",titol:"Demostrativos y posesivos",font:"Tema 3 · p. 89",
+  idea:"Los demostrativos sitúan cerca o lejos de quien habla; los posesivos dicen de quién es.",
+  pts:["<b>Cercanía</b>: este, esta, estos, estas. <b>Distancia intermedia</b>: ese, esa, esos, esas. <b>Lejanía</b>: aquel, aquella, aquellos, aquellas.",
+   "Detrás del nombre son <b>adjetivos</b> (el chico ese). <b>Esto, eso, aquello</b> son pronombres.",
+   "<b>Posesivos determinantes</b> (delante): mi, tu, su, mis, tus, sus, nuestro/a/os/as, vuestro/a/os/as.",
+   "Detrás o solos son <b>adjetivos</b>: un amigo <b>mío</b>, los zapatos son <b>tuyos</b>.",
+   "<b>Cuyo, cuya</b>: determinantes relativo-posesivos (Ese chico, cuyo padre es médico...).",
+   "Incorrecto: «detrás nuestro», «debajo suyo». Correcto: detrás de nosotros, alrededor suyo, al lado nuestro."],
+  truc:"Este → aquí. Ese → ahí. Aquel → allí. Señálalo con el dedo mientras lo dices.",
+  compte:"«Mi» va delante y es determinante; «mío» va detrás y es adjetivo.",
+  fc:[["Demostrativo de lejanía","Aquel (aquella, aquellos, aquellas)."],["«El chico ese»: ¿qué es «ese»?","Adjetivo, porque va detrás."],["«Un amigo mío»: ¿qué es «mío»?","Adjetivo."],["¿Se dice «detrás nuestro»?","No: detrás de nosotros."],["¿Qué es «cuyo»?","Un determinante relativo-posesivo."]],
+  q:[["«Pásame ___ vaso que tienes a tu lado.» ¿Qué demostrativo encaja?",["aquel","ese","este"],1,"A tu lado = distancia intermedia."],
+     ["¿Cuál es un demostrativo?",["la","aquella","mi"],1,"La es artículo; mi es posesivo."],
+     ["En «un amigo mío», «mío» es...",["determinante","adjetivo","artículo"],1,"Va detrás del sustantivo."],
+     ["¿Qué expresión es incorrecta?",["detrás de nosotros","detrás nuestro","al lado nuestro"],1,"Los posesivos no acompañan a adverbios."],
+     ["«¿Ves ___ montañas tan lejanas?»",["estas","aquellas","esas"],1,"Lejanía = aquel, aquella, aquellos, aquellas."]]},
+ {id:"cuantificadores",ic:"🔢",col:"#4f46e5",titol:"Cuantificadores, interrogativos y exclamativos",font:"Tema 3 · p. 90",
+  idea:"Los cuantificadores dicen cuántos; los interrogativos preguntan y los exclamativos llaman la atención. Todos van delante del sustantivo.",
+  pts:["<b>Numerales cardinales</b>: cantidad exacta (diez días). Hasta el 30 en una palabra (veintitrés); desde el 31, con «y» (treinta y seis).",
+   "<b>No numerales</b>: cantidad imprecisa: <b>algún, bastante, mucho, poco, otro, varios</b>.",
+   "Ordinales (primero), fraccionarios (medio) y multiplicativos (doble) <b>no son determinantes</b>.",
+   "<b>Interrogativos y exclamativos</b> delante del sustantivo: ¿<b>Qué</b> hora es? ¡<b>Cuánta</b> gente!",
+   "Sin sustantivo detrás son <b>pronombres</b> (¿Quién viene?) o <b>adverbios</b> (¿Dónde vas?).",
+   "Al subrayarlos, solo la palabra que va justo delante del sustantivo: <b>nunca los verbos</b> (habéis, hemos)."],
+  truc:"Mira justo detrás: si hay un sustantivo pegado, es determinante (¿qué hora?). Si no, es pronombre o adverbio (¿quién?, ¿dónde?).",
+  compte:"En el cuaderno se subrayaron también los verbos («habéis», «hemos») y artículos. Solo la palabra que acompaña al sustantivo.",
+  fc:[["Tres cuantificadores no numerales","Algún, mucho, poco (bastante, otro, varios)."],["¿Cómo se escribe 36?","Treinta y seis."],["¿Cómo se escribe 23?","Veintitrés."],["¿«Primero» es determinante?","No, es un ordinal."],["En «¿Cuántos goles habéis marcado?», ¿qué se subraya?","Solo «Cuántos»."]],
+  q:[["En «¿Cuántos goles habéis marcado?», ¿cuál es el determinante interrogativo?",["Cuántos","habéis","goles"],0,"Va delante del sustantivo «goles». «Habéis» es un verbo."],
+     ["¿Cuál es un cuantificador no numeral?",["bastante","la","primero"],0,"Indica una cantidad imprecisa."],
+     ["¿Cómo se escribe el número 36?",["treintaiséis","treinta y seis","treinta seis"],1,"Desde el 31, en dos palabras con «y»."],
+     ["En «¿Quién ha venido?», «quién» es...",["determinante","pronombre","artículo"],1,"No va delante de un sustantivo."],
+     ["En «Algunas niñas juegan con otras compañeras», los cuantificadores no numerales son...",["Algunas y otras","niñas y compañeras","juegan y con"],0,"Los dos van delante de un sustantivo e indican cantidad imprecisa."]]},
+ {id:"polisemia",ic:"🔀",col:"#0f766e",titol:"Polisemia y monosemia",font:"Tema 3 · p. 92",
+  idea:"Una palabra polisémica tiene varios significados y el contexto elige cuál; una monosémica tiene uno solo.",
+  pts:["<b>Canguro</b>: animal, chaqueta con capucha, arnés para bebés y persona que cuida niños.",
+   "<b>Puente</b>: el del río, el del dentista y los días de fiesta juntos.","<b>Monosémicas</b>: rinoceronte, abrelatas, litio.",
+   "Verbos comodín como <b>hacer</b> o <b>dar</b> son polisémicos: mejor cambiarlos por uno preciso.",
+   "Hizo una bufanda → <b>tejió</b>. Hacía poemas → <b>escribía</b>. Hizo dinero → <b>ganó</b>. Haré trece años → <b>cumpliré</b>."],
+  truc:"Poli = muchos (polideportivo). Mono = uno (monociclo).",
+  compte:"Al cambiar «hacer» por otro verbo, no vale volver a poner «hizo»: «hizo una bufanda» → tejió.",
+  fc:[["¿Qué es una palabra polisémica?","La que tiene varios significados."],["Una palabra monosémica","Abrelatas (o rinoceronte, litio)."],["«Hizo una bufanda» → ","Tejió."],["«Mañana haré trece años» →","Cumpliré."],["Dos significados de «banco»","Asiento y entidad donde se guarda dinero (y grupo de peces)."]],
+  q:[["«Un banco de peces pasó junto al barco.» ¿Qué significa «banco»?",["Asiento","Entidad bancaria","Conjunto de peces"],2,"El contexto (peces) decide el significado."],
+     ["¿Qué palabra es monosémica?",["puente","abrelatas","canguro"],1,"Solo tiene un significado."],
+     ["«Con la lana que le sobró, hizo una bufanda.» ¿Qué verbo es más preciso?",["hizo","tejió","dio"],1,"Volver a poner «hizo» no cambia nada."],
+     ["«El mes que viene haré trece años.» Cambia «haré» por...",["cumpliré","construiré","escribiré"],0,"Los años se cumplen."]]},
+ {id:"letrab",ic:"🅱️",col:"#15803d",titol:"El uso de la b",font:"Tema 3 · p. 94",
+  idea:"La b y la v suenan igual, así que necesitamos reglas para saber cuándo va b.",
+  pts:["Después de <b>m</b>: cambio, ambulancia. Delante de <b>l, r</b> u otra consonante: tabla, brazo, objeto.",
+   "Empiezan por <b>al-, ar-</b> (árbol) y por <b>bu-, bus-, bur-</b> (buscar, burbuja).",
+   "Pretérito imperfecto de los verbos en <b>-ar</b> y del verbo <b>ir</b>: cantaba, <b>estábamos</b>, cantabas, iba.",
+   "Verbos <b>haber, deber, beber, caber, saber</b>. Verbos en <b>-bir, -buir</b> (escribir, contribuir), <b>menos hervir, servir y vivir</b>.",
+   "Familias de palabras: prueba → <b>probar, aprobado, aprobación</b>; gobierno → gobernar.",
+   "Grabar (un vídeo) ≠ gravar (con un impuesto)."],
+  truc:"Después de m, siempre b: la ambulancia hace un cambio. Rebeldes con v: hervir, servir y vivir. Y «-aba» siempre con b.",
+  compte:"El catalán engaña: aprovat, govern, envernissar llevan v, pero es aprobado, gobierno, barnizar, jabalina. En el cuaderno salieron «estavamos» y «cantavas»: es estábamos y cantabas.",
+  fc:[["¿Con b o con v: «esta_amos»?","Estábamos (con b y tilde)."],["Traduce «aprovat»","Aprobado."],["Traduce «govern»","Gobierno."],["Las tres excepciones de -bir","Hervir, servir y vivir."],["¿Por qué «ambulancia» va con b?","Porque después de m va b."],["Traduce «envernissar»","Barnizar."]],
+  q:[["¿Cuál está bien escrita?",["estavamos","estábamos","estabamos"],1,"Imperfecto de un verbo en -ar: con b, y con tilde en «nosotros»."],
+     ["¿Cómo se dice «aprovat» en castellano?",["aprovado","aprobado","aprovat"],1,"Prueba → probar → aprobado: toda la familia con b."],
+     ["¿Cuál es la excepción de la regla de -bir?",["escribir","servir","recibir"],1,"Hervir, servir y vivir van con v."],
+     ["¿Cómo se escribe «gavardina» en castellano?",["gavardina","gabardina","gaverdina"],1,"En castellano es con b."],
+     ["¿Por qué «cambio» se escribe con b?",["Porque va después de m","Porque es un verbo","Porque empieza por ca-"],0,"Después de m siempre va b."]]}
+];
+const OB=[
+ {t:"El texto y sus propiedades",q:"Explica qué es un texto y cuáles son sus tres propiedades. Explica cada una con una frase y pon un ejemplo de conector.",p:["Mensaje oral o escrito con sentido completo","Adecuación: se adapta a quién lo recibe y a la intención","Coherencia: tema definido y orden lógico","Cohesión: partes unidas con conectores (ej.: sin embargo, es decir)"],
+  m:"Un texto es un mensaje oral o escrito que tiene sentido completo. Tiene que ser adecuado, es decir, adaptarse a quién va dirigido. Tiene que ser coherente: tener un tema claro y un orden lógico. Y tiene que estar cohesionado: sus partes se unen con conectores como «sin embargo» o «es decir»."},
+ {t:"Los tipos de textos",q:"Escribe los siete tipos de textos y pon un ejemplo de cada uno.",p:["Narrativo y descriptivo con ejemplo","Dialogado y expositivo con ejemplo","Argumentativo e instructivo con ejemplo","Predictivo con ejemplo"],
+  m:"Narrativo, como un cuento; descriptivo, como el retrato de mi perro; dialogado, como una entrevista; expositivo, como mi libro de Naturales; argumentativo, como un artículo de opinión; instructivo, como una receta; y predictivo, como el pronóstico del tiempo."},
+ {t:"El sustantivo y sus clases",q:"Explica la diferencia entre sustantivo propio y común, y entre individual y colectivo. Pon dos ejemplos de cada clase.",p:["Propio: ser único, con mayúscula","Común: cualquiera de una clase","Individual: uno solo en singular","Colectivo: un grupo en singular","Dos ejemplos correctos de cada clase"],
+  m:"Un sustantivo propio nombra a un ser único y va con mayúscula, como Carmen o Tarragona. Un común nombra a cualquiera de una clase, como niña o ciudad. Un individual nombra a uno solo, como abeja o pino, y un colectivo nombra a un grupo en singular, como enjambre o pinar."},
+ {t:"El sustantivo y sus clases",q:"Inventa una oración con un sustantivo propio, uno colectivo y uno abstracto. Di qué clase es cada uno y explica por qué «amistad» es abstracto.",p:["Oración correcta con los tres sustantivos","Clasifica bien el propio y el colectivo","Clasifica bien el abstracto","Amistad: es un sentimiento, no se puede ver ni tocar"],
+  m:"«Lucía vio un rebaño de ovejas con mucha alegría.» Lucía es propio, rebaño es colectivo y alegría es abstracto. Amistad es abstracto porque es un sentimiento: no se puede ver ni tocar, solo se siente."},
+ {t:"Género, número y concordancia",q:"Explica las tres formas de marcar el género de los sustantivos que nombran seres sexuados. Pon dos ejemplos de cada una.",p:["Terminación variable (chico/chica, actor/actriz)","Heterónimos: palabras distintas (caballo/yegua, hombre/mujer)","Invariables: lo marca el artículo (el/la pianista)","Dos ejemplos de cada"],
+  m:"Algunos cambian la terminación, como chico y chica o actor y actriz. Otros son palabras totalmente distintas, los heterónimos, como caballo y yegua u hombre y mujer. Y otros no cambian y el género lo marca el artículo, como el pianista y la pianista o el testigo y la testigo."},
+ {t:"La coma y el punto y coma",q:"Explica cuatro usos de la coma con un ejemplo de cada uno. Después explica para qué sirve el punto y coma.",p:["Cuatro usos de la coma bien explicados","Un ejemplo correcto de cada uso","Punto y coma: pausa mayor que la coma y menor que el punto","Un uso del punto y coma (oraciones relacionadas, enumeraciones con comas...)"],
+  m:"La coma separa las palabras de una enumeración (leche, pan y fruta), encierra aclaraciones (El público, harto de esperar, protestó), separa el vocativo (Por favor, Eduardo, ven) y sustituye un verbo (Yo saldré a las ocho; tú, más tarde). El punto y coma es una pausa mayor que la coma y menor que el punto, y separa oraciones muy relacionadas."},
+ {t:"La noticia",q:"Explica qué es una noticia y cuáles son sus partes. Di qué preguntas responde la entradilla.",p:["Texto periodístico objetivo sobre un hecho de interés público","Antetítulo, titular, entradilla y cuerpo","La entradilla responde qué, quién, dónde, cuándo y por qué","El cuerpo: más datos y el cómo, de más a menos importante"],
+  m:"La noticia es un texto periodístico que cuenta de forma objetiva un hecho de interés público. Tiene antetítulo, titular, entradilla y cuerpo. La entradilla responde a qué, quién, dónde, cuándo y por qué, y el cuerpo da más datos y el cómo, de más a menos importante."},
+ {t:"Noticias falsas y clickbait",q:"Explica qué es una noticia falsa y para qué se crea. Escribe dos pistas para reconocerla y qué debes hacer para comprobar si es cierta.",p:["Información falsa o deformada para engañar y manipular","Busca beneficio económico o político / dañar la imagen de alguien","Dos pistas: anónima, pide reenviarla, faltas, mayúsculas","Contrastar en medios de comunicación serios"],
+  m:"Una noticia falsa tiene información que no es cierta o que se ha deformado para engañar y manipular a la gente. Se crea para ganar dinero o poder. Se reconoce porque suele ser anónima y te pide que la reenvíes. Para comprobarla hay que buscarla en medios serios y contrastarla."},
+ {t:"La narrativa: cuento, mito, leyenda y novela",q:"Explica la diferencia entre un mito y una leyenda, con un ejemplo de cada uno. Después explica qué es una fábula.",p:["Mito: dioses, héroes o monstruos que explican creencias","Ejemplo de mito (Hércules, el Minotauro, Medusa)","Leyenda: hecho, lugar o personaje real con elementos sobrenaturales","Ejemplo de leyenda (Sant Jordi, el Cid)","Fábula: cuento con animales"],
+  m:"Un mito está protagonizado por dioses, héroes o monstruos y explica las creencias de un pueblo, como Hércules. Una leyenda parte de un lugar, un personaje o un hecho real y le añade algo sobrenatural, como Sant Jordi. Una fábula es un cuento protagonizado por animales."},
+ {t:"Demostrativos y posesivos",q:"Escribe los demostrativos de cercanía, distancia intermedia y lejanía. Explica por qué «este» es determinante en «este libro» pero «ese» es adjetivo en «el chico ese».",p:["Cercanía: este, esta, estos, estas","Intermedia: ese, esa, esos, esas","Lejanía: aquel, aquella, aquellos, aquellas","Delante del sustantivo es determinante; detrás, adjetivo"],
+  m:"De cercanía: este, esta, estos, estas. De distancia intermedia: ese, esa, esos, esas. De lejanía: aquel, aquella, aquellos, aquellas. En «este libro» va delante del sustantivo y es determinante; en «el chico ese» va detrás y es adjetivo."},
+ {t:"Cuantificadores, interrogativos y exclamativos",q:"En «¡Cuánta gente ha venido a la fiesta! Algunos amigos trajeron muchos regalos», escribe los determinantes y di de qué tipo es cada uno.",p:["Cuánta: exclamativo","la: artículo determinado","Algunos: cuantificador no numeral","muchos: cuantificador no numeral","No incluye verbos (ha venido, trajeron)"],
+  m:"Cuánta es un determinante exclamativo, la es un artículo determinado, y algunos y muchos son cuantificadores no numerales. «Ha venido» y «trajeron» son verbos, no determinantes."},
+ {t:"Polisemia y monosemia",q:"Explica qué es una palabra polisémica y qué es una monosémica, con un ejemplo de cada una. Después escribe dos oraciones con «banco» con significados distintos.",p:["Polisémica: varios significados; el contexto decide","Monosémica: un solo significado","Un ejemplo de cada","Dos oraciones con «banco» con significados distintos"],
+  m:"Una palabra polisémica tiene varios significados y el contexto dice cuál es, como «puente». Una monosémica tiene uno solo, como «abrelatas». «Nos sentamos en un banco del parque.» «Mi madre ha ido al banco a sacar dinero.»"},
+ {t:"El uso de la b",q:"Escribe cuatro reglas del uso de la b con dos ejemplos cada una. Explica por qué «aprobado» y «gobierno» se escriben con b aunque en catalán sean «aprovat» y «govern».",p:["Cuatro reglas correctas (tras m, bl/br, -aba, haber/deber..., -bir...)","Dos ejemplos de cada regla","Aprobado: familia de prueba/probar, con b","Gobierno: familia de gobernar, con b; el catalán no sirve de guía"],
+  m:"Se escribe b después de m (cambio, ambulancia), delante de l y r (tabla, brazo), en el imperfecto de los verbos en -ar (cantaba, estábamos) y en los verbos en -bir menos hervir, servir y vivir (escribir, recibir). Aprobado va con b porque es de la familia de probar y prueba, y gobierno de la de gobernar. El catalán aquí nos engaña."}
+];
+
+const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
+["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
+document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
+
+// ====================== ESTAT ======================
+const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null});
+let S=BUIT(),PER={},ACT="";
+try{PER=JSON.parse(localStorage.getItem(CL+"perfils")||"{}")||{};ACT=localStorage.getItem(CL+"actiu")||""}catch(e){}
+try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const o=Object.assign(BUIT(),JSON.parse(v));if(o.nom){PER[o.nom]=o;ACT=o.nom}}}catch(e){}
+if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
+function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
+function desa(){guarda();pintaCap()}
+function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLowerCase())}
+function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
+ ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();vista("inici")}
+function avui(){return new Date().toISOString().slice(0,10)}
+function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
+function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
+// ---- nivells i rangs: es calculen amb les mateixes ⭐ dels tests, jocs i preguntes obertes ----
+const NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","🔍"],[45,"Savi","📜"],[70,"Expert","🎓"],[100,"Mestre","🧠"],[140,"Campió","🏅"],[190,"Heroi","🦸"],[250,"Llegenda","👑"],[330,"Llegenda d'or","🌟"]];
+function nivell(p){let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];
+ return {n:i+1,nom,ic,min,seg,falten:seg?seg[0]-p:0,pc:seg?Math.round((p-min)*100/(seg[0]-min)):100}}
+let NIVPEND=null;
+function suma(n){const a=nivell(S.punts).n;S.punts+=n;if(nivell(S.punts).n>a)NIVPEND=nivell(S.punts);desa()}
+// el «LEVEL UP» surt quan s'acaba el test o el joc (no a mitja pregunta)
+function mostraNivell(){if(!NIVPEND)return;if(document.querySelector(".arc")){setTimeout(mostraNivell,400);return}
+ const v=NIVPEND;NIVPEND=null;so("super");window.NIVELLS_MOSTRATS=(window.NIVELLS_MOSTRATS||0)+1;
+ const d=document.createElement("div");d.className="arc niv";
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">LEVEL UP!</div><div class="nic">${v.ic}</div><div class="t3">NIVELL ${v.n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ARA ETS<br>${v.nom.toUpperCase()}</div>${v.seg?`<div class="t4">PROPER: ${v.seg[2]} ${v.seg[1].toUpperCase()} · ${v.falten} ⭐</div>`:`<div class="t4">HAS ARRIBAT AL NIVELL MÀXIM!</div>`}`;
+ document.body.appendChild(d);const para=focs(d.querySelector("canvas"));const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4500)}
+function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" onclick="vista('analitica')"><span class="nic">${v.ic}</span><div style="flex:1;min-width:0"><b>Nivell ${v.n} · ${v.nom}</b><div class="barra"><i style="width:${v.pc}%"></i></div><small>${v.seg?`Et falten ${v.falten} ⭐ per a ${v.seg[2]} ${v.seg[1]}`:"Nivell màxim! Ets una llegenda 🌟"}</small></div></div>`}
+function pintaCap(){const nv=nivell(S.punts);document.getElementById("punts").textContent=`⭐ ${S.punts} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom} · ${ASSIG.curs}`:ASSIG.curs}
+// temps d'estudi: cada 15 s amb la pestanya visible
+setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;guarda()}},15000);
+const app=document.getElementById("app");
+const barreja=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.intents.map(i=>i.pc)):null};
+const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
+function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
+let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
+function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
+function vista(v){aturaSeg();window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
+
+
+// ====================== SO I EFECTES ARCADE ======================
+// volum dels sons 0-5 (0 = silenci)
+let AC=null,MG=null,VOL=3,VOLant=3;
+try{const v=localStorage.getItem("bn_vol");if(v!==null)VOL=Math.max(0,Math.min(5,+v||0));else if(localStorage.getItem("bn_so")==="0")VOL=0}catch(e){}
+const GVOL=[0,.12,.27,.45,.7,1];
+function audio(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=GVOL[VOL];MG.connect(AC.destination);}if(AC.state==="suspended")AC.resume();return AC}
+function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN");if(b)b.textContent=VOL===0?"🔇":VOL<3?"🔈":VOL<5?"🔉":"🔊";if(r)r.value=VOL;if(n)n.textContent=VOL}
+function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
+function canviaSo(){posaVol(VOL?0:(VOLant||3))}
+function nota(f,t0,d,tipus="square",vol=.12,dest){const o=AC.createOscillator(),g=AC.createGain();o.type=tipus;o.frequency.setValueAtTime(f,AC.currentTime+t0);g.gain.setValueAtTime(vol,AC.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t0+d);o.connect(g).connect(dest||MG);o.start(AC.currentTime+t0);o.stop(AC.currentTime+t0+d+.02)}
+function so(t){if(!VOL)return;try{audio();
+ if(t==="ok"){nota(988,0,.08);nota(1319,.08,.18)}
+ else if(t==="ko"){nota(196,0,.18,"sawtooth",.08);nota(147,.16,.25,"sawtooth",.08)}
+ else if(t==="win"){[523,659,784,1047,784,1047,1319].forEach((f,i)=>nota(f,i*.11,.16));[262,330,392,523].forEach((f,i)=>nota(f,.77+i*.0,.6,"triangle",.1));nota(1568,.77,.6,"square",.08)}
+ else if(t==="super"){[523,659,784,1047,1319,1568,2093].forEach((f,i)=>nota(f,i*.08,.14));[1047,1319,1568,2093].forEach((f,i)=>nota(f,.6+i*.12,.25));nota(2093,1.1,.8,"triangle",.12)}
+ else if(t==="clic"){nota(660,0,.04,"square",.07);nota(990,.04,.06,"square",.06)}
+ else if(t==="gir"){nota(440,0,.05,"square",.06);nota(880,.05,.08,"square",.05)}
+ else if(t==="trist"){[392,370,349].forEach((f,i)=>nota(f,i*.38,.34,"sawtooth",.09));const o=AC.createOscillator(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain(),t0=AC.currentTime+1.14;o.type="sawtooth";o.frequency.setValueAtTime(330,t0);o.frequency.linearRampToValueAtTime(262,t0+1.1);l.frequency.value=6;lg.gain.value=9;l.connect(lg).connect(o.frequency);g.gain.setValueAtTime(.1,t0);g.gain.exponentialRampToValueAtTime(.001,t0+1.3);o.connect(g).connect(MG);o.start(t0);l.start(t0);o.stop(t0+1.35);l.stop(t0+1.35)}
+ else if(t==="coin"){nota(988,0,.06);nota(1319,.06,.3)}
+}catch(e){}}
+function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};mida();
+ const P=[],cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
+ const esclat=(x,y)=>{const col=cols[Math.random()*cols.length|0];for(let i=0;i<46;i++){const a=Math.PI*2*i/46,v=2+Math.random()*4.5;P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,v:1,col,m:3+Math.random()*3})}};
+ let fr=0,viu=true;const pas=()=>{if(!viu)return;fr++;c.fillStyle="#02061733";c.fillRect(0,0,W,H);
+  if(fr%18===1&&fr<200)esclat(W*(.15+Math.random()*.7),H*(.15+Math.random()*.45));
+  for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.vx*=.985;p.v-=.012;if(p.v<=0){P.splice(i,1);continue}c.globalAlpha=p.v;c.fillStyle=p.col;c.fillRect(p.x|0,p.y|0,p.m,p.m)}
+  c.globalAlpha=1;requestAnimationFrame(pas)};pas();return()=>{viu=false}}
+document.addEventListener("click",e=>{const el=e.target.closest("button,.tile,.continua,.flash,label.chk,details summary");if(!el||el.matches(".opt,#so"))return;so(el.matches(".flash")?"gir":"clic")},true);
+let demoN=0;const MODE_DEMO=/[?&]demo\b/.test(location.search);
+function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true],[40,2,5,false],[0,0,5,false]];const c=casos[demoN%5];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%5+1}/5 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
+function fracas(pc,bones,n){
+ so("trist");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ const d=document.createElement("div");d.className="arc ko";
+ let pl="";for(let i=0;i<40;i++)pl+=`<i class="pluja" style="left:${Math.random()*100}%;animation-duration:${.6+Math.random()*.7}s;animation-delay:${Math.random()*1.2}s"></i>`;
+ d.innerHTML=`${pl}<div class="t1">${pc<25?"GAME<br>OVER":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">💔</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}REPASSA I<br>TORNA-HI!</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+}
+function arcade(pc,bones,n,record){
+ if(pc<50)return fracas(pc,bones,n);
+ const sup=pc>=90,nE=pc>=90?3:pc>=70?2:1;
+ so(sup?"super":"win");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ const d=document.createElement("div");d.className="arc";
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record?`<div class="rec">★ NOU RÈCORD ★</div>`:""}<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ document.body.appendChild(d);[0,1,2].slice(0,nE).forEach(i=>setTimeout(()=>so("coin"),500+i*250+700));
+ const para=focs(d.querySelector("canvas"));
+ const tanca=()=>{para();d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+}
+
+// ====================== BENVINGUDA ======================
+function benvinguda(){
+ marcaNav("usuari");
+ const noms=Object.keys(PER);
+ const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=50}).length;
+ app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
+ ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
+ <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form></div>`;
+ app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>entra(b.dataset.n));
+ const i=document.getElementById("nom");if(!noms.length)i.focus();
+ document.getElementById("fn").onsubmit=e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}
+  n=n.charAt(0).toUpperCase()+n.slice(1);
+  if(existeix(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);
+   const sug=suggeriments(n);
+   document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙈 Ja hi ha algú que es diu <b>${Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())}</b>. Si ets tu, toca el teu nom a la llista de dalt. Si no, tria un altre nom, un àlies o afegeix-hi un número:<div style="margin-top:8px">${sug.map(x=>`<span class="chip sug">${x}</span>`).join("")}</div></div>`;
+   document.querySelectorAll(".sug").forEach(c=>c.onclick=()=>entra(c.textContent));return}
+  entra(n)};
+ i.oninput=()=>{i.style.borderColor="";document.getElementById("nomAvis").innerHTML=""};
+}
+
+// ====================== INICI ======================
+function tileTema(t,i){
+ const m=millor(t.id),f=m??0,ap=m!==null&&m>=50;
+ return `<div class="tile" onclick="obre(${i})"><div class="ic" style="background:${t.col}1f">${t.ic}</div>${ap?`<span class="segell">${m>=90?"🏆":"✅"}</span>`:`<span class="num">${i+1}/${T.length}</span>`}<b>${t.titol}</b><small>${t.font}</small><div class="peu"><div class="barra"><i style="width:${f}%"></i></div><span class="pc">${m===null?"—":f+"%"}</span></div></div>`;
+}
+function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<50})}
+function blocsTemes(){let i=0;return ASSIG.blocs.map(b=>{const h=`<h2 class="sec">${b.titol}</h2><div class="grid">${T.slice(i,i+b.n).map((t,k)=>tileTema(t,i+k)).join("")}</div>`;i+=b.n;return h}).join("")}
+function inici(){
+ marcaDia();
+ const aprov=T.filter(t=>(millor(t.id)??0)>=50).length, sp=seguentPendent();
+ const res=resumGlobal();
+ let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
+ if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
+ h+=`${blocsTemes()}
+ <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
+ <h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>
+ <div class="fila">${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
+ app.innerHTML=h;
+}
+function pintaTemes(){app.innerHTML=blocsTemes()}
+function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
+const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"]];
+function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
+function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
+function joc(id){aturaSeg();window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa()}
+
+// ====================== TEMA ======================
+let tema,pest="fitxa";
+function obre(i){aturaSeg();tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
+function pintaTema(){
+ window.scrollTo(0,0);
+ const t=tema,e=ET(t.id),idx=T.indexOf(t);
+ app.innerHTML=`<div class="cap-tema"><div class="ic" style="background:${t.col}22">${t.ic}</div><div><div class="prog">Tema ${idx+1} de ${T.length} · ${t.font}</div><h2>${t.titol}</h2></div></div>
+ <div class="passos">${[["fitxa","📄 Fitxa",e.fitxa],["targetes","🃏 Targetes",e.fc>=t.fc.length],["test","✅ Test",e.intents.length>0]].map(([k,n,f])=>`<button class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
+ if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else test(t.q.map((x,i)=>i),0,0,t.id);
+}
+function fitxa(){
+ const t=tema;ET(t.id).fitxa=true;desa();
+ document.getElementById("zona").innerHTML=`<div class="box"><div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+}
+function targetes(n){
+ const t=tema,c=t.fc[n],e=ET(t.id);e.fc=Math.max(e.fc,n+1);desa();
+ document.getElementById("zona").innerHTML=`<div class="prog" style="text-align:center">Targeta ${n+1} de ${t.fc.length}</div>
+ <div class="flash" onclick="this.classList.toggle('gir')"><div class="in"><div class="cara davant">${c[0]}<small>toca per girar</small></div><div class="cara darrere">${c[1]}<small>toca per tornar</small></div></div></div>
+ <div class="punts-fc">${t.fc.map((x,i)=>`<i class="${i==n?'on':''}"></i>`).join("")}</div>
+ <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="targetes(${n-1})">← Anterior</button>
+ ${n<t.fc.length-1?`<button class="btn" onclick="targetes(${n+1})">Següent →</button>`:`<button class="btn verd" onclick="pest='test';pintaTema()">Fes el test ✅</button>`}</div>`;
+}
+
+// ====================== TEST ======================
+function test(ordre,k,bones,clau,pool,cb){
+ const z=document.getElementById("zona"),llista=pool||tema.q,esTema=!pool;
+ if(k>=ordre.length){
+  const pc=Math.round(bones*100/ordre.length);
+  if(cb){cb(pc,bones,ordre.length);return}
+  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();
+  const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=50;
+  arcade(pc,bones,ordre.length,ant!==null&&pc>ant);
+  const msg=pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat, repassa una miqueta":"Cal repassar més, ànims!";
+  z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
+  <p class="prog" style="margin-top:14px">Com t'ha anat aquest tema?</p>
+  <div class="valor">${[["😕","Costa"],["🙂","Bé"],["😃","Fàcil"]].map(([em,tx],i)=>`<button class="${e.valoracio===i?'on':''}" onclick="valora(${i},this)">${em}<small>${tx}</small></button>`).join("")}</div>
+  ${teSeg&&aprova?`<p id="compte" class="prog" style="margin-top:16px">Passem a <b>${T[idx+1].ic} ${T[idx+1].titol}</b> en <span id="seg-s">8</span> s…</p>`:""}
+  ${!teSeg&&aprova?`<p>🎉 Has acabat tots els temes! Prova les preguntes obertes o l'examen sorpresa.</p>`:""}
+  ${!aprova?`<p>Repassa la fitxa i torna-hi: quan aprovis passaràs al tema següent.</p>`:""}
+  <div class="fila">${teSeg&&aprova?`<button class="btn verd" onclick="aturaSeg();obre(${idx+1})">Tema següent →</button>`:""}<button class="btn ${teSeg&&aprova?'sec':''}" onclick="aturaSeg();pest='test';pintaTema()">Torna-hi</button><button class="btn sec" onclick="aturaSeg();pest='fitxa';pintaTema()">Repassa la fitxa</button></div></div>`;
+  if(teSeg&&aprova){let s=8;temp=setInterval(()=>{s--;const el=document.getElementById("seg-s");if(!el){aturaSeg();return}el.textContent=s;if(s<=0){aturaSeg();obre(idx+1)}},1000)}
+  return;
+ }
+ const q=llista[ordre[k]];
+ const ops=barreja(q[1].map((o,i)=>[o,i]));
+ z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
+ <div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="fb"></div></div>`;
+ z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+  const ok=+b.dataset.i===q[2];
+  z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
+  if(ok){suma(1);so("ok")}else{so("ko");b.classList.add("ko");const tid=q.tid||(esTema?tema.id:null);if(tid){const e=ET(tid);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
+ });
+}
+function valora(i,b){ET(tema.id).valoracio=i;desa();b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
+function resultatJoc(id,titol){return (pc,b,n)=>{const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
+function examen(){
+ const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=q.slice();c.tema=t.titol;c.tid=t.id;pool.push(c)}));
+ const ordre=barreja(pool.map((x,i)=>i)).slice(0,15);
+ app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
+ test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
+}
+
+// ====================== JOCS GENÈRICS ======================
+// tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
+function fiJoc(j,n,errors){const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
+ document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
+function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
+function jocOrdena(j){
+ let pos=0,errors=0;const it=j.items;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="xips" style="margin-top:10px"></div><div class="pila" id="pila">${j.base?`<div style="background:#bbf7d0">${j.base}</div>`:""}</div><div id="zona"></div></div>`;
+ const x=document.getElementById("xips");
+ barreja(it.map((c,i)=>i)).forEach(i=>{const s=document.createElement("span");s.className="chip";s.textContent=it[i][0];
+  s.onclick=()=>{if(s.classList.contains("ok"))return;
+   if(i===pos){s.classList.add("ok");const d=document.createElement("div");d.style.background=it[i][2]||"#eef2ff";d.innerHTML=`${i+1} · ${it[i][0]}${it[i][1]?` <small style="font-weight:600;color:#475569">— ${it[i][1]}</small>`:""}`;document.getElementById("pila").appendChild(d);pos++;suma(1);so("ok");if(pos===it.length)fiJoc(j,it.length,errors)}
+   else{errors++;sacseja(s)}};x.appendChild(s)});
+}
+function jocFigura(j){
+ const svg=typeof window[j.figura]==="function"?window[j.figura]():j.figura;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box" style="text-align:center">${svg}</div><div id="zona"></div>`;
+ test(j.q.map((x,i)=>i),0,0,j.id,j.q,resultatJoc(j.id));
+}
+function jocParelles(j){
+ const PAR=j.pars;let sel=null,fet=0,errors=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div class="col2" style="margin-top:12px"><div id="esq"></div><div id="dre"></div></div><div id="zona"></div></div>`;
+ const E=document.getElementById("esq"),D=document.getElementById("dre");
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][0];s.dataset.i=i;s.onclick=()=>{if(s.classList.contains("ok"))return;E.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};E.appendChild(s)});
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][1];
+  s.onclick=()=>{if(!sel||s.classList.contains("ok"))return;
+   if(+sel.dataset.i===i){sel.classList.remove("sel");sel.classList.add("ok");s.classList.add("ok");sel=null;fet++;suma(1);so("ok");if(fet===PAR.length)fiJoc(j,PAR.length,errors)}
+   else{errors++;sacseja(s)}};D.appendChild(s)});
+}
+function jocClassifica(j){
+ const F=j.items;let sel=null,fet=0,errors=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="fr" style="margin:10px 0"></div><div class="col2">${j.caixes.map(([k,t])=>`<div class="cub" data-k="${k}"><h4>${t}</h4></div>`).join("")}</div><div id="zona"></div></div>`;
+ const fr=document.getElementById("fr");
+ barreja(F).forEach(f=>{const s=document.createElement("span");s.className="chip";s.textContent=f[0];s.dataset.k=f[1];s.onclick=()=>{fr.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};fr.appendChild(s)});
+ app.querySelectorAll(".cub").forEach(c=>c.onclick=()=>{
+  if(!sel)return;
+  if(sel.dataset.k===c.dataset.k){sel.classList.remove("sel");sel.classList.add("ok");sel.onclick=null;c.appendChild(sel);sel=null;fet++;suma(1);so("ok");if(fet===F.length)fiJoc(j,F.length,errors)}
+  else{errors++;sacseja(sel)}});
+}
+
+// ====================== PREGUNTES OBERTES ======================
+function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}
+function obertes(n){
+ window.scrollTo(0,0);marcaNav("obertes");
+ const o=OB[n],fet=S.ob[n];
+ app.innerHTML=`<h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
+ <div class="box" style="margin-top:10px"><div class="pregunta">${o.q}</div>
+ <textarea id="resp" rows="7" placeholder="Escriu aquí la teva resposta amb les teves paraules…"></textarea>
+ <div class="fila"><button class="btn" id="veu">Comprova la meva resposta</button></div><div id="corr"></div></div>
+ <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="obertes(${n-1})">← Anterior</button><button class="btn sec" ${n==OB.length-1?'disabled':''} onclick="obertes(${n+1})">Següent →</button></div>`;
+ document.getElementById("veu").onclick=()=>{
+  const txt=document.getElementById("resp").value.trim();
+  if(txt.length<15){document.getElementById("corr").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de comprovar-ho.</div>`;return}
+  document.getElementById("veu").disabled=true;document.getElementById("resp").readOnly=true;
+  document.getElementById("corr").innerHTML=`<div class="fb"><b>Marca les idees que has posat a la teva resposta:</b>${o.p.map(x=>`<label class="chk"><input type="checkbox" class="pk"><span>${x}</span></label>`).join("")}
+  <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p></details>
+  <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
+  document.getElementById("nota").onclick=()=>{
+   const k=[...document.querySelectorAll(".pk")].filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
+   const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
+   document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> · a l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
+  };
+ };
+}
+
+// ====================== ANALÍTICA ======================
+function resumGlobal(){
+ let int=0,suma_=0;T.forEach(t=>{const e=S.temes[t.id];if(e&&e.intents.length){int+=e.intents.length;suma_+=e.intents.reduce((a,b)=>a+b.pc,0)}});
+ return {intents:int,encert:int?Math.round(suma_/int):null};
+}
+function color(pc){return pc===null?"#cbd5e1":pc>=80?"#22c55e":pc>=50?"#f59e0b":"#ef4444"}
+function analitica(){
+ const g=resumGlobal(),aprov=T.filter(t=>(millor(t.id)??0)>=50);
+ const fetsT=T.filter(t=>millor(t.id)!==null);
+ const forts=T.filter(t=>(millor(t.id)??0)>=80),febles=fetsT.filter(t=>millor(t.id)<60),pend=T.filter(t=>millor(t.id)===null);
+ const obN=Object.keys(S.ob).length,obM=obN?Math.round(Object.values(S.ob).reduce((a,b)=>a+b,0)/obN):null;
+ const exU=S.examens.length?S.examens[S.examens.length-1].pc:null;
+ // errors més repetits
+ const errs=[];T.forEach(t=>{const e=S.temes[t.id];if(e)Object.entries(e.fallades).forEach(([q,c])=>errs.push([q,c,t]))});errs.sort((a,b)=>b[1]-a[1]);
+ const val=["😕 Costa","🙂 Bé","😃 Fàcil"];
+ // valoració global
+ let nivTxt,txt;
+ if(!fetsT.length){nivTxt="🚀 Tot just comencem";txt=`${S.nom} encara no ha fet cap test. El millor és començar pel primer tema: fitxa → targetes → test.`}
+ else{
+  const e=g.encert;
+  nivTxt=e>=85?"🌟 Excel·lent":e>=70?"👏 Molt bé":e>=50?"👍 Va bé, cal repassar":"💪 Cal reforçar";
+  txt=`${S.nom} ha treballat ${fetsT.length} de ${T.length} temes amb un ${e}% d'encerts de mitjana als tests.`;
+  if(forts.length)txt+=` Domina sobretot: ${forts.map(t=>t.titol.toLowerCase()).join(", ")}.`;
+  if(febles.length)txt+=` On més li costa: ${febles.map(t=>t.titol.toLowerCase()).join(", ")}.`;
+  if(obN)txt+=` A les preguntes obertes recull de mitjana el ${obM}% de les idees clau${obM<60?", i és on més cal practicar explicar-se amb les seves paraules":""}.`;
+  if(exU!==null)txt+=` A l'últim examen sorpresa va treure un ${exU}%.`;
+ }
+ const reco=[];
+ if(pend.length)reco.push(`Començar els temes pendents: <b>${pend.slice(0,3).map(t=>t.titol).join("</b>, <b>")}</b>${pend.length>3?"…":""}.`);
+ febles.forEach(t=>reco.push(`Tornar a llegir la fitxa de <b>${t.titol}</b> i repetir el test.`));
+ if(errs.length)reco.push(`Repassar les preguntes que més falla (llista de sota): les pot fer en veu alta amb papa o mama.`);
+ if(fetsT.length>=4&&obN<4)reco.push(`Fer més <b>preguntes obertes</b>: a l'examen valen 3 punts.`);
+ if(aprov.length===T.length&&exU===null)reco.push(`Fer l'<b>examen sorpresa</b> per comprovar-ho tot barrejat.`);
+ if(!reco.length)reco.push("Mantenir el ritme: un examen sorpresa cada dos o tres dies abans de l'examen.");
+ app.innerHTML=`<h2 class="sec">📊 Com va ${S.nom}</h2>
+ <div class="kpis">
+  <div class="kpi"><small>Temes aprovats</small><b>${aprov.length}/${T.length}</b><span>${pend.length} sense fer</span></div>
+  <div class="kpi"><small>Encert als tests</small><b style="color:${color(g.encert)}">${g.encert===null?"—":g.encert+"%"}</b><span>${g.intents} tests fets</span></div>
+  <div class="kpi"><small>Preguntes obertes</small><b>${obN}/${OB.length}</b><span>${obM===null?"cap encara":obM+"% d'idees"}</span></div>
+  <div class="kpi"><small>Temps d'estudi</small><b>${fmtT(S.temps)}</b><span>${S.dies.length} dia${S.dies.length==1?"":"s"}</span></div>
+  <div class="kpi"><small>Nivell</small><b>${nivell(S.punts).ic} ${nivell(S.punts).n}</b><span>${nivell(S.punts).nom}</span></div>
+  <div class="kpi"><small>Estrelles</small><b>⭐ ${S.punts}</b><span>${S.examens.length} examen${S.examens.length==1?"":"s"} sorpresa</span></div>
+ </div>
+ <div class="valoracio" style="margin-top:14px"><h3>${nivTxt}</h3><p style="margin:0">${txt}</p><p style="margin:10px 0 4px"><b>Què li recomano ara:</b></p><ul style="margin:0;padding-left:20px">${reco.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+ <h2 class="sec">🏅 Nivells</h2><div class="box">${cartaNivell().replace('class="nivell"','class="nivell" style="margin:0 0 12px"')}<div class="rangs">${NIVELLS.map(([min,nom,ic],i)=>{const n=nivell(S.punts).n;return `<div class="rang ${i+1<n?'':i+1===n?'ara':'bloc'}"><span>${ic}</span><b>${i+1}. ${nom}</b><small>${min} ⭐</small></div>`}).join("")}</div><p class="prog" style="margin:10px 0 0">Cada encert als tests, als jocs i a les preguntes obertes suma ⭐, i les ⭐ fan pujar de nivell.</p></div>
+ <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
+ ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
+ </table><p class="prog" style="margin:8px 0 0"><span class="semaf" style="background:#22c55e"></span>80% o més · <span class="semaf" style="background:#f59e0b"></span>50-79% · <span class="semaf" style="background:#ef4444"></span>menys del 50% · <span class="semaf" style="background:#cbd5e1"></span>sense fer</p></div>
+ <h2 class="sec">❌ Preguntes que més falla</h2><div class="box">${errs.length?`<ol class="llista-err">${errs.slice(0,8).map(([q,c,t])=>`<li>${q} <span class="etq">${t.ic} ${t.titol}</span> <b>×${c}</b></li>`).join("")}</ol>`:`<p class="prog" style="margin:0">Encara cap error registrat. 👌</p>`}</div>
+ <h2 class="sec">✍️ Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
+ <h2 class="sec">🎮 Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
+ <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat en aquest navegador i aquest aparell. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
+ <div class="fila"><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><button class="btn verm" onclick="demanaReset()">🗑️ Esborrar el progrés</button></div>`;
+}
+function demanaReset(){
+ const m=document.createElement("div");m.className="modal";
+ m.innerHTML=`<div class="box"><div class="gran">⚠️</div><h3>Esborrar tot el progrés de ${S.nom}?</h3><p class="prog">Només s'esborra el progrés de ${S.nom}; els altres noms no es toquen. No es pot desfer.</p><div class="fila"><button class="btn sec" id="no">No, deixa-ho</button><button class="btn verm" id="si">Sí, esborra-ho</button></div></div>`;
+ document.body.appendChild(m);
+ m.querySelector("#no").onclick=()=>m.remove();
+ m.querySelector("#si").onclick=()=>{delete PER[S.nom];S=BUIT();try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.removeItem(CL+"actiu")}catch(e){}m.remove();pintaCap();benvinguda()};
+}
+
+pintaCap();pintaSo();vista("inici");
+</script>
+</body>
+</html>
