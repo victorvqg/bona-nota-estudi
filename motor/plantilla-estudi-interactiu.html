@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITOL}}</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+ --fosc:#1f2d3d;--blau:#3b82f6;--blau2:#2563eb;--verd:#16a34a;--verd-cl:#dcfce7;--verm:#dc2626;--verm-cl:#fee2e2;
+ --groc:#f59e0b;--groc-cl:#fef3c7;--lila:#7c3aed;--fons:#eef2f8;--card:#fff;--txt:#1e293b;--suau:#64748b;--vora:#e2e8f0;
+ --r:18px;--om:0 1px 2px #0f172a0d,0 6px 18px #0f172a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Nunito,system-ui,Arial,sans-serif;background:var(--fons);color:var(--txt);font-size:16.5px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit}
+/* capçalera */
+header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%,var(--g3,#0ea5e9));color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 14px #1e3a8a40}
+.hd{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.logo{font-weight:900;font-size:19px;letter-spacing:.2px;display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0}
+.logo span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap}
+nav{max-width:960px;margin:0 auto;padding:0 10px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{border:0;background:transparent;color:#dbeafe;padding:7px 13px;border-radius:999px;font-weight:800;cursor:pointer;white-space:nowrap;font-size:15px}
+nav button.on{background:#fff;color:var(--blau2)}
+main{max-width:960px;margin:0 auto;padding:18px 16px 40px}
+/* elements bàsics */
+h2.sec{font-size:21px;margin:26px 0 12px;display:flex;align-items:center;gap:8px}
+h2.sec:first-child{margin-top:4px}
+.box{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--om);margin-bottom:14px}
+.btn{border:0;border-radius:12px;padding:11px 18px;font-weight:800;font-size:15.5px;cursor:pointer;background:var(--blau);color:#fff;box-shadow:0 3px 0 var(--blau2);transition:transform .08s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--blau2)}
+.btn.sec{background:#fff;color:var(--fosc);box-shadow:0 0 0 2px var(--vora) inset,0 3px 0 var(--vora)}
+.btn.verd{background:var(--verd);box-shadow:0 3px 0 #15803d}
+.btn.verm{background:var(--verm);box-shadow:0 3px 0 #991b1b}
+.btn:disabled{opacity:.45;cursor:default}
+.fila{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.prog{color:var(--suau);font-size:14.5px;font-weight:700}
+/* hero */
+.hero{background:linear-gradient(135deg,#fff,#eff6ff);border-radius:22px;padding:20px 22px;box-shadow:var(--om);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hero .av{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:32px;flex:none}
+.hero h1{margin:0;font-size:24px}
+.hero p{margin:2px 0 0;color:var(--suau)}
+.hero .stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.mini{background:#fff;border:2px solid var(--vora);border-radius:14px;padding:6px 12px;text-align:center;min-width:78px}
+.mini b{display:block;font-size:20px;line-height:1.2}
+.mini small{color:var(--suau);font-weight:700;font-size:12px}
+.continua{margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--groc-cl);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
+.continua b{flex:1}
+/* graella de temes */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.tile{background:var(--card);border-radius:var(--r);padding:16px;cursor:pointer;box-shadow:var(--om);transition:transform .15s,box-shadow .15s;position:relative;display:flex;flex-direction:column;gap:6px;min-height:150px}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 24px #0f172a1f}
+.tile .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.tile b{font-size:16.5px;line-height:1.25}
+.tile small{color:var(--suau);font-weight:600}
+.tile .peu{margin-top:auto;display:flex;align-items:center;gap:8px}
+.barra{flex:1;height:8px;background:#eef2f7;border-radius:6px;overflow:hidden}
+.barra i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#22c55e,#16a34a)}
+.pc{font-size:13px;font-weight:800;color:var(--suau);min-width:34px;text-align:right}
+.segell{position:absolute;top:12px;right:12px;font-size:20px}
+.num{position:absolute;top:14px;right:14px;font-size:12px;font-weight:900;color:#94a3b8}
+.etq{display:inline-block;font-size:11.5px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca}
+.etq.ap{background:#ecfdf5;color:#047857}
+/* pantalla tema */
+.cap-tema{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.cap-tema .ic{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.cap-tema h2{margin:0;font-size:22px;line-height:1.2}
+.passos{display:flex;gap:8px;margin:12px 0 16px}
+.passos button{flex:1;border:0;background:#fff;border-radius:14px;padding:10px 6px;font-weight:800;cursor:pointer;color:var(--suau);box-shadow:var(--om);font-size:15px}
+.passos button.on{background:var(--fosc);color:#fff}
+.passos button.fet::after{content:" ✓";color:#22c55e}
+.idea{background:var(--verd-cl);border:2px solid #86efac;border-radius:14px;padding:12px 16px;font-weight:800}
+.idea small{display:block;font-size:11.5px;letter-spacing:.6px;color:#15803d;font-weight:900}
+.truc{background:var(--groc-cl);border:2px solid #fcd34d;border-radius:14px;padding:12px 16px;margin-top:12px}
+.compte{background:var(--verm-cl);border-left:6px solid var(--verm);border-radius:0 14px 14px 0;padding:10px 14px;margin-top:12px}
+ul.pts{padding-left:0;list-style:none;margin:14px 0 0}
+ul.pts li{position:relative;padding:8px 0 8px 30px;border-bottom:1px dashed var(--vora)}
+ul.pts li:last-child{border-bottom:0}
+ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--blau)}
+/* targetes */
+.flash{perspective:1000px;height:240px;cursor:pointer;margin:12px auto;max-width:540px}
+.flash .in{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.flash.gir .in{transform:rotateY(180deg)}
+.flash .cara{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;font-weight:800;box-shadow:0 10px 26px #0f172a22}
+.flash .davant{background:#fff;border:3px solid #bfdbfe}
+.flash .darrere{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;transform:rotateY(180deg);font-weight:700;font-size:18.5px}
+.flash .cara small{position:absolute;bottom:12px;font-size:12.5px;font-weight:700;opacity:.6}
+.punts-fc{display:flex;justify-content:center;gap:6px;margin-top:4px}
+.punts-fc i{width:9px;height:9px;border-radius:50%;background:#cbd5e1}
+.punts-fc i.on{background:var(--blau);transform:scale(1.3)}
+/* test */
+.pregunta{font-size:19px;font-weight:800;margin:8px 0 12px;line-height:1.35}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid var(--vora);background:#fff;border-radius:14px;padding:12px 14px;margin:8px 0;font-size:16.5px;cursor:pointer;transition:border-color .12s,background .12s;color:var(--txt)}
+.opt .ll{width:30px;height:30px;border-radius:9px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none;color:var(--suau)}
+.opt:hover:not(:disabled){border-color:#93c5fd;background:#f8fbff}
+.opt.ok{background:var(--verd-cl);border-color:#22c55e}.opt.ok .ll{background:#22c55e;color:#fff}
+.opt.ko{background:var(--verm-cl);border-color:#ef4444}.opt.ko .ll{background:#ef4444;color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:14px;background:#eff6ff;border:2px solid #bfdbfe}
+.fb.ok{background:var(--verd-cl);border-color:#86efac}.fb.ko{background:#fff7ed;border-color:#fdba74}
+.barra-test{height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.barra-test i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,#2563eb);transition:width .3s}
+.gran{font-size:56px;text-align:center;line-height:1}
+.valor{display:flex;justify-content:center;gap:12px;margin-top:10px}
+.valor button{border:2px solid var(--vora);background:#fff;border-radius:16px;padding:10px 14px;font-size:30px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.valor button small{font-size:12.5px;font-weight:800;color:var(--suau)}
+.valor button.on{border-color:var(--blau);background:#eff6ff}
+/* jocs */
+.chip{display:inline-block;border:2px solid #cbd5e1;border-radius:12px;padding:9px 14px;margin:5px;cursor:pointer;background:#fff;font-weight:800;user-select:none;transition:.12s}
+.chip:hover{border-color:#93c5fd}
+.chip.sel{background:var(--fosc);border-color:var(--fosc);color:#fff}
+.chip.ok{background:var(--verd);border-color:var(--verd);color:#fff;cursor:default}
+.chip.ko{animation:tremola .35s;border-color:#ef4444}
+@keyframes tremola{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pila{display:flex;flex-direction:column-reverse;gap:5px;margin:12px 0}
+.pila div{border-radius:12px;padding:10px 14px;font-weight:800;animation:apareix .3s}
+@keyframes apareix{from{opacity:0;transform:translateY(8px)}}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.mh{display:none}table.an{font-size:14px}.col2{grid-template-columns:1fr}.hero .stats{margin-left:0}}
+.cub{border:3px dashed #cbd5e1;border-radius:16px;min-height:110px;padding:10px;cursor:pointer;background:#f8fafc}
+.cub:hover{border-color:#93c5fd;background:#f0f7ff}
+.cub h4{margin:0 0 8px}
+textarea{width:100%;font:inherit;padding:12px 14px;border-radius:14px;border:2px solid var(--vora);resize:vertical;background:#fcfdff}
+textarea:focus,input:focus{outline:none;border-color:#93c5fd;box-shadow:0 0 0 4px #bfdbfe66}
+label.chk{display:flex;gap:10px;align-items:flex-start;margin:8px 0;cursor:pointer;padding:8px 10px;border-radius:10px;background:#fff;border:2px solid var(--vora)}
+label.chk input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--verd)}
+details summary{cursor:pointer;font-weight:800;color:var(--blau2)}
+/* benvinguda */
+.benv{max-width:460px;margin:30px auto;text-align:center}
+.benv .gran{font-size:70px}
+.benv input{width:100%;font:inherit;font-size:20px;font-weight:800;text-align:center;padding:14px;border-radius:16px;border:3px solid var(--vora);margin:14px 0}
+/* analítica */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.kpi{background:#fff;border-radius:16px;padding:14px;box-shadow:var(--om)}
+.kpi small{color:var(--suau);font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+.kpi b{display:block;font-size:26px;line-height:1.2;margin-top:2px}
+.kpi span{font-size:13px;color:var(--suau);font-weight:700}
+table.an{width:100%;border-collapse:collapse;font-size:15px}
+table.an th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--suau);padding:8px 6px;border-bottom:2px solid var(--vora)}
+table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.semaf{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.valoracio{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px solid #c7d2fe;border-radius:18px;padding:16px 18px}
+.valoracio h3{margin:0 0 6px}
+.llista-err li{margin:6px 0}
+.modal{position:fixed;inset:0;background:#0f172a80;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal .box{max-width:420px;text-align:center}
+.peu-pag{text-align:center;color:#94a3b8;font-size:13px;margin:26px 0 8px}
+.confeti{position:fixed;top:-20px;font-size:22px;z-index:60;pointer-events:none;animation:cau 1.8s linear forwards}
+@keyframes cau{to{transform:translateY(105vh) rotate(540deg);opacity:.2}}
+
+.perfils{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.perfil{display:flex;align-items:center;gap:12px;text-align:left;border:2px solid var(--vora);background:#fff;border-radius:16px;padding:10px 14px;cursor:pointer;font-family:inherit;font-size:16px;color:var(--txt)}
+.perfil:hover{border-color:#93c5fd;background:#f8fbff}.perfil.on{border-color:var(--blau)}
+.perfil small{display:block;color:var(--suau);font-weight:700}
+.av2{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;flex:none;text-transform:uppercase}
+/* arcade */
+.arc{position:fixed;inset:0;z-index:80;background:radial-gradient(circle at 50% 40%,#1e1b4b,#020617 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;animation:arcIn .25s ease-out;overflow:hidden}
+@keyframes arcIn{from{opacity:0;transform:scale(1.15)}}
+.arc canvas{position:absolute;inset:0;width:100%;height:100%}
+.arc .flash{position:absolute;inset:0;background:#fff;animation:flash .5s ease-out forwards;pointer-events:none}
+@keyframes flash{from{opacity:.9}to{opacity:0}}
+.arc .t1{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(22px,7vw,46px);color:#facc15;text-shadow:4px 4px 0 #b91c1c,0 0 24px #facc15aa;text-align:center;line-height:1.35;animation:bota .6s cubic-bezier(.3,1.6,.5,1) both,pampalluga 1s steps(2) .6s infinite}
+@keyframes bota{from{transform:translateY(-120px) scale(.4)}}
+@keyframes pampalluga{50%{color:#fde68a}}
+.arc .t2{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(12px,3.4vw,18px);color:#a5f3fc;margin-top:22px;text-align:center;line-height:1.8}
+.arc .t3{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(28px,9vw,54px);color:#fff;margin-top:14px;text-shadow:0 0 18px #38bdf8}
+.arc .estr{position:relative;font-size:clamp(34px,10vw,56px);margin-top:10px;letter-spacing:6px}
+.arc .estr span{display:inline-block;animation:estr .45s cubic-bezier(.3,1.8,.5,1) both;filter:drop-shadow(0 0 10px #facc15)}
+@keyframes estr{from{transform:scale(0) rotate(-180deg)}}
+.arc .t4{position:relative;font-family:'Press Start 2P',monospace;font-size:11px;color:#94a3b8;margin-top:26px;animation:pampalluga2 1.2s steps(2) infinite}
+@keyframes pampalluga2{50%{opacity:0}}
+.arc .rec{position:relative;font-family:'Press Start 2P',monospace;font-size:12px;color:#020617;background:#4ade80;padding:8px 12px;margin-top:16px;transform:rotate(-3deg);animation:bota .5s .9s both}
+.so-btn{background:#ffffff26;border:1px solid #ffffff40;color:#fff;border-radius:999px;padding:5px 10px;font-size:16px;cursor:pointer}
+body.tremola main{animation:tremola .4s}
+</style>
+</head>
+<body>
+<header>
+ <div class="hd">
+  <div class="logo" onclick="vista('inici')"><span id="logoic">📚</span> <span id="hola"></span></div>
+  <button class="so-btn" id="so" onclick="canviaSo()" title="So">🔊</button><span class="pill" id="punts">⭐ 0</span>
+ </div>
+ <nav id="nav">
+  <button data-v="inici" onclick="vista('inici')">🏠 Inici</button>
+  <button data-v="temes" onclick="vista('temes')">📖 Temes</button>
+  <button data-v="jocs" onclick="vista('jocs')">🎮 Jocs</button>
+  <button data-v="obertes" onclick="vista('obertes')">✍️ Obertes</button>
+  <button data-v="analitica" onclick="vista('analitica')">📊 Com vaig</button>
+  <button data-v="usuari" onclick="benvinguda()">👥 Canviar d'usuari</button>
+ </nav>
+</header>
+<main id="app"></main>
+<div class="peu-pag" id="peu"></div>
+
+<script>
+/*DADES*/
+const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
+["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
+document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
+
+// ====================== ESTAT ======================
+const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null});
+let S=BUIT(),PER={},ACT="";
+try{PER=JSON.parse(localStorage.getItem(CL+"perfils")||"{}")||{};ACT=localStorage.getItem(CL+"actiu")||""}catch(e){}
+try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const o=Object.assign(BUIT(),JSON.parse(v));if(o.nom){PER[o.nom]=o;ACT=o.nom}}}catch(e){}
+if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
+function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
+function desa(){guarda();pintaCap()}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();vista("inici")}
+function avui(){return new Date().toISOString().slice(0,10)}
+function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
+function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
+function suma(n){S.punts+=n;desa()}
+function pintaCap(){document.getElementById("punts").textContent="⭐ "+S.punts;document.getElementById("hola").textContent=S.nom?`${ASSIG.nom} · ${S.nom}`:`${ASSIG.nom} ${ASSIG.curs}`}
+// temps d'estudi: cada 15 s amb la pestanya visible
+setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;guarda()}},15000);
+const app=document.getElementById("app");
+const barreja=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.intents.map(i=>i.pc)):null};
+const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
+function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
+let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
+function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
+function vista(v){aturaSeg();window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
+
+
+// ====================== SO I EFECTES ARCADE ======================
+let AC=null,soOn=true;try{soOn=localStorage.getItem("bn_so")!=="0"}catch(e){}
+function pintaSo(){const b=document.getElementById("so");if(b)b.textContent=soOn?"🔊":"🔇"}
+function canviaSo(){soOn=!soOn;try{localStorage.setItem("bn_so",soOn?"1":"0")}catch(e){}pintaSo();if(soOn)so("ok")}
+function nota(f,t0,d,tipus="square",vol=.12){const o=AC.createOscillator(),g=AC.createGain();o.type=tipus;o.frequency.setValueAtTime(f,AC.currentTime+t0);g.gain.setValueAtTime(vol,AC.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t0+d);o.connect(g).connect(AC.destination);o.start(AC.currentTime+t0);o.stop(AC.currentTime+t0+d+.02)}
+function so(t){if(!soOn)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();
+ if(t==="ok"){nota(988,0,.08);nota(1319,.08,.18)}
+ else if(t==="ko"){nota(196,0,.18,"sawtooth",.08);nota(147,.16,.25,"sawtooth",.08)}
+ else if(t==="win"){[523,659,784,1047,784,1047,1319].forEach((f,i)=>nota(f,i*.11,.16));[262,330,392,523].forEach((f,i)=>nota(f,.77+i*.0,.6,"triangle",.1));nota(1568,.77,.6,"square",.08)}
+ else if(t==="super"){[523,659,784,1047,1319,1568,2093].forEach((f,i)=>nota(f,i*.08,.14));[1047,1319,1568,2093].forEach((f,i)=>nota(f,.6+i*.12,.25));nota(2093,1.1,.8,"triangle",.12)}
+ else if(t==="clic"){nota(660,0,.04,"square",.07);nota(990,.04,.06,"square",.06)}
+ else if(t==="gir"){nota(440,0,.05,"square",.06);nota(880,.05,.08,"square",.05)}
+ else if(t==="coin"){nota(988,0,.06);nota(1319,.06,.3)}
+}catch(e){}}
+function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};mida();
+ const P=[],cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
+ const esclat=(x,y)=>{const col=cols[Math.random()*cols.length|0];for(let i=0;i<46;i++){const a=Math.PI*2*i/46,v=2+Math.random()*4.5;P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,v:1,col,m:3+Math.random()*3})}};
+ let fr=0,viu=true;const pas=()=>{if(!viu)return;fr++;c.fillStyle="#02061733";c.fillRect(0,0,W,H);
+  if(fr%18===1&&fr<200)esclat(W*(.15+Math.random()*.7),H*(.15+Math.random()*.45));
+  for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.vx*=.985;p.v-=.012;if(p.v<=0){P.splice(i,1);continue}c.globalAlpha=p.v;c.fillStyle=p.col;c.fillRect(p.x|0,p.y|0,p.m,p.m)}
+  c.globalAlpha=1;requestAnimationFrame(pas)};pas();return()=>{viu=false}}
+document.addEventListener("click",e=>{const el=e.target.closest("button,.tile,.continua,.flash,label.chk,details summary");if(!el||el.matches(".opt,#so"))return;so(el.matches(".flash")?"gir":"clic")},true);
+let demoN=0;
+function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true]];const c=casos[demoN%3];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%3+1}/3 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
+function arcade(pc,bones,n,record){
+ if(pc<50)return;
+ const sup=pc>=90,nE=pc>=90?3:pc>=70?2:1;
+ so(sup?"super":"win");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ const d=document.createElement("div");d.className="arc";
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record?`<div class="rec">★ NOU RÈCORD ★</div>`:""}<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ document.body.appendChild(d);[0,1,2].slice(0,nE).forEach(i=>setTimeout(()=>so("coin"),500+i*250+700));
+ const para=focs(d.querySelector("canvas"));
+ const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+}
+
+// ====================== BENVINGUDA ======================
+function benvinguda(){
+ marcaNav("usuari");
+ const noms=Object.keys(PER);
+ const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=50}).length;
+ app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2>
+ ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
+ <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form></div>`;
+ app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>entra(b.dataset.n));
+ const i=document.getElementById("nom");if(!noms.length)i.focus();
+ document.getElementById("fn").onsubmit=e=>{e.preventDefault();const n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}entra(n)};
+}
+
+// ====================== INICI ======================
+function tileTema(t,i){
+ const m=millor(t.id),f=m??0,ap=m!==null&&m>=50;
+ return `<div class="tile" onclick="obre(${i})"><div class="ic" style="background:${t.col}1f">${t.ic}</div>${ap?`<span class="segell">${m>=90?"🏆":"✅"}</span>`:`<span class="num">${i+1}/${T.length}</span>`}<b>${t.titol}</b><small>${t.font}</small><div class="peu"><div class="barra"><i style="width:${f}%"></i></div><span class="pc">${m===null?"—":f+"%"}</span></div></div>`;
+}
+function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<50})}
+function blocsTemes(){let i=0;return ASSIG.blocs.map(b=>{const h=`<h2 class="sec">${b.titol}</h2><div class="grid">${T.slice(i,i+b.n).map((t,k)=>tileTema(t,i+k)).join("")}</div>`;i+=b.n;return h}).join("")}
+function inici(){
+ marcaDia();
+ const aprov=T.filter(t=>(millor(t.id)??0)>=50).length, sp=seguentPendent();
+ const res=resumGlobal();
+ let h=`<div class="hero"><div class="av">🧒</div><div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>`;
+ if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
+ h+=`${blocsTemes()}
+ <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
+ <h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>
+ <div class="fila"><button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button><button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
+ app.innerHTML=h;
+}
+function pintaTemes(){app.innerHTML=blocsTemes()}
+function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
+const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"]];
+function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
+function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
+function joc(id){aturaSeg();window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa()}
+
+// ====================== TEMA ======================
+let tema,pest="fitxa";
+function obre(i){aturaSeg();tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
+function pintaTema(){
+ window.scrollTo(0,0);
+ const t=tema,e=ET(t.id),idx=T.indexOf(t);
+ app.innerHTML=`<div class="cap-tema"><div class="ic" style="background:${t.col}22">${t.ic}</div><div><div class="prog">Tema ${idx+1} de ${T.length} · ${t.font}</div><h2>${t.titol}</h2></div></div>
+ <div class="passos">${[["fitxa","📄 Fitxa",e.fitxa],["targetes","🃏 Targetes",e.fc>=t.fc.length],["test","✅ Test",e.intents.length>0]].map(([k,n,f])=>`<button class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
+ if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else test(t.q.map((x,i)=>i),0,0,t.id);
+}
+function fitxa(){
+ const t=tema;ET(t.id).fitxa=true;desa();
+ document.getElementById("zona").innerHTML=`<div class="box"><div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+}
+function targetes(n){
+ const t=tema,c=t.fc[n],e=ET(t.id);e.fc=Math.max(e.fc,n+1);desa();
+ document.getElementById("zona").innerHTML=`<div class="prog" style="text-align:center">Targeta ${n+1} de ${t.fc.length}</div>
+ <div class="flash" onclick="this.classList.toggle('gir')"><div class="in"><div class="cara davant">${c[0]}<small>toca per girar</small></div><div class="cara darrere">${c[1]}<small>toca per tornar</small></div></div></div>
+ <div class="punts-fc">${t.fc.map((x,i)=>`<i class="${i==n?'on':''}"></i>`).join("")}</div>
+ <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="targetes(${n-1})">← Anterior</button>
+ ${n<t.fc.length-1?`<button class="btn" onclick="targetes(${n+1})">Següent →</button>`:`<button class="btn verd" onclick="pest='test';pintaTema()">Fes el test ✅</button>`}</div>`;
+}
+
+// ====================== TEST ======================
+function test(ordre,k,bones,clau,pool,cb){
+ const z=document.getElementById("zona"),llista=pool||tema.q,esTema=!pool;
+ if(k>=ordre.length){
+  const pc=Math.round(bones*100/ordre.length);
+  if(cb){cb(pc,bones,ordre.length);return}
+  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();
+  const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=50;
+  arcade(pc,bones,ordre.length,ant!==null&&pc>ant);
+  const msg=pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat, repassa una miqueta":"Cal repassar més, ànims!";
+  z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
+  <p class="prog" style="margin-top:14px">Com t'ha anat aquest tema?</p>
+  <div class="valor">${[["😕","Costa"],["🙂","Bé"],["😃","Fàcil"]].map(([em,tx],i)=>`<button class="${e.valoracio===i?'on':''}" onclick="valora(${i},this)">${em}<small>${tx}</small></button>`).join("")}</div>
+  ${teSeg&&aprova?`<p id="compte" class="prog" style="margin-top:16px">Passem a <b>${T[idx+1].ic} ${T[idx+1].titol}</b> en <span id="seg-s">8</span> s…</p>`:""}
+  ${!teSeg&&aprova?`<p>🎉 Has acabat tots els temes! Prova les preguntes obertes o l'examen sorpresa.</p>`:""}
+  ${!aprova?`<p>Repassa la fitxa i torna-hi: quan aprovis passaràs al tema següent.</p>`:""}
+  <div class="fila">${teSeg&&aprova?`<button class="btn verd" onclick="aturaSeg();obre(${idx+1})">Tema següent →</button>`:""}<button class="btn ${teSeg&&aprova?'sec':''}" onclick="aturaSeg();pest='test';pintaTema()">Torna-hi</button><button class="btn sec" onclick="aturaSeg();pest='fitxa';pintaTema()">Repassa la fitxa</button></div></div>`;
+  if(teSeg&&aprova){let s=8;temp=setInterval(()=>{s--;const el=document.getElementById("seg-s");if(!el){aturaSeg();return}el.textContent=s;if(s<=0){aturaSeg();obre(idx+1)}},1000)}
+  return;
+ }
+ const q=llista[ordre[k]];
+ const ops=barreja(q[1].map((o,i)=>[o,i]));
+ z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
+ <div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="fb"></div></div>`;
+ z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+  const ok=+b.dataset.i===q[2];
+  z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
+  if(ok){suma(1);so("ok")}else{so("ko");b.classList.add("ko");const tid=q.tid||(esTema?tema.id:null);if(tid){const e=ET(tid);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
+ });
+}
+function valora(i,b){ET(tema.id).valoracio=i;desa();b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
+function resultatJoc(id,titol){return (pc,b,n)=>{const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
+function examen(){
+ const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=q.slice();c.tema=t.titol;c.tid=t.id;pool.push(c)}));
+ const ordre=barreja(pool.map((x,i)=>i)).slice(0,15);
+ app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
+ test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
+}
+
+// ====================== JOCS GENÈRICS ======================
+// tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
+function fiJoc(j,n,errors){const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
+ document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
+function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
+function jocOrdena(j){
+ let pos=0,errors=0;const it=j.items;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="xips" style="margin-top:10px"></div><div class="pila" id="pila">${j.base?`<div style="background:#bbf7d0">${j.base}</div>`:""}</div><div id="zona"></div></div>`;
+ const x=document.getElementById("xips");
+ barreja(it.map((c,i)=>i)).forEach(i=>{const s=document.createElement("span");s.className="chip";s.textContent=it[i][0];
+  s.onclick=()=>{if(s.classList.contains("ok"))return;
+   if(i===pos){s.classList.add("ok");const d=document.createElement("div");d.style.background=it[i][2]||"#eef2ff";d.innerHTML=`${i+1} · ${it[i][0]}${it[i][1]?` <small style="font-weight:600;color:#475569">— ${it[i][1]}</small>`:""}`;document.getElementById("pila").appendChild(d);pos++;suma(1);so("ok");if(pos===it.length)fiJoc(j,it.length,errors)}
+   else{errors++;sacseja(s)}};x.appendChild(s)});
+}
+function jocFigura(j){
+ const svg=typeof window[j.figura]==="function"?window[j.figura]():j.figura;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box" style="text-align:center">${svg}</div><div id="zona"></div>`;
+ test(j.q.map((x,i)=>i),0,0,j.id,j.q,resultatJoc(j.id));
+}
+function jocParelles(j){
+ const PAR=j.pars;let sel=null,fet=0,errors=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div class="col2" style="margin-top:12px"><div id="esq"></div><div id="dre"></div></div><div id="zona"></div></div>`;
+ const E=document.getElementById("esq"),D=document.getElementById("dre");
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][0];s.dataset.i=i;s.onclick=()=>{if(s.classList.contains("ok"))return;E.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};E.appendChild(s)});
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][1];
+  s.onclick=()=>{if(!sel||s.classList.contains("ok"))return;
+   if(+sel.dataset.i===i){sel.classList.remove("sel");sel.classList.add("ok");s.classList.add("ok");sel=null;fet++;suma(1);so("ok");if(fet===PAR.length)fiJoc(j,PAR.length,errors)}
+   else{errors++;sacseja(s)}};D.appendChild(s)});
+}
+function jocClassifica(j){
+ const F=j.items;let sel=null,fet=0,errors=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="fr" style="margin:10px 0"></div><div class="col2">${j.caixes.map(([k,t])=>`<div class="cub" data-k="${k}"><h4>${t}</h4></div>`).join("")}</div><div id="zona"></div></div>`;
+ const fr=document.getElementById("fr");
+ barreja(F).forEach(f=>{const s=document.createElement("span");s.className="chip";s.textContent=f[0];s.dataset.k=f[1];s.onclick=()=>{fr.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};fr.appendChild(s)});
+ app.querySelectorAll(".cub").forEach(c=>c.onclick=()=>{
+  if(!sel)return;
+  if(sel.dataset.k===c.dataset.k){sel.classList.remove("sel");sel.classList.add("ok");sel.onclick=null;c.appendChild(sel);sel=null;fet++;suma(1);so("ok");if(fet===F.length)fiJoc(j,F.length,errors)}
+  else{errors++;sacseja(sel)}});
+}
+
+// ====================== PREGUNTES OBERTES ======================
+function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}
+function obertes(n){
+ window.scrollTo(0,0);marcaNav("obertes");
+ const o=OB[n],fet=S.ob[n];
+ app.innerHTML=`<h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
+ <div class="box" style="margin-top:10px"><div class="pregunta">${o.q}</div>
+ <textarea id="resp" rows="7" placeholder="Escriu aquí la teva resposta amb les teves paraules…"></textarea>
+ <div class="fila"><button class="btn" id="veu">Comprova la meva resposta</button></div><div id="corr"></div></div>
+ <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="obertes(${n-1})">← Anterior</button><button class="btn sec" ${n==OB.length-1?'disabled':''} onclick="obertes(${n+1})">Següent →</button></div>`;
+ document.getElementById("veu").onclick=()=>{
+  const txt=document.getElementById("resp").value.trim();
+  if(txt.length<15){document.getElementById("corr").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de comprovar-ho.</div>`;return}
+  document.getElementById("veu").disabled=true;document.getElementById("resp").readOnly=true;
+  document.getElementById("corr").innerHTML=`<div class="fb"><b>Marca les idees que has posat a la teva resposta:</b>${o.p.map(x=>`<label class="chk"><input type="checkbox" class="pk"><span>${x}</span></label>`).join("")}
+  <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p></details>
+  <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
+  document.getElementById("nota").onclick=()=>{
+   const k=[...document.querySelectorAll(".pk")].filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);if(pc>=80)confeti();
+   const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
+   document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> · a l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
+  };
+ };
+}
+
+// ====================== ANALÍTICA ======================
+function resumGlobal(){
+ let int=0,suma_=0;T.forEach(t=>{const e=S.temes[t.id];if(e&&e.intents.length){int+=e.intents.length;suma_+=e.intents.reduce((a,b)=>a+b.pc,0)}});
+ return {intents:int,encert:int?Math.round(suma_/int):null};
+}
+function color(pc){return pc===null?"#cbd5e1":pc>=80?"#22c55e":pc>=50?"#f59e0b":"#ef4444"}
+function analitica(){
+ const g=resumGlobal(),aprov=T.filter(t=>(millor(t.id)??0)>=50);
+ const fetsT=T.filter(t=>millor(t.id)!==null);
+ const forts=T.filter(t=>(millor(t.id)??0)>=80),febles=fetsT.filter(t=>millor(t.id)<60),pend=T.filter(t=>millor(t.id)===null);
+ const obN=Object.keys(S.ob).length,obM=obN?Math.round(Object.values(S.ob).reduce((a,b)=>a+b,0)/obN):null;
+ const exU=S.examens.length?S.examens[S.examens.length-1].pc:null;
+ // errors més repetits
+ const errs=[];T.forEach(t=>{const e=S.temes[t.id];if(e)Object.entries(e.fallades).forEach(([q,c])=>errs.push([q,c,t]))});errs.sort((a,b)=>b[1]-a[1]);
+ const val=["😕 Costa","🙂 Bé","😃 Fàcil"];
+ // valoració global
+ let nivell,txt;
+ if(!fetsT.length){nivell="🚀 Tot just comencem";txt=`${S.nom} encara no ha fet cap test. El millor és començar pel primer tema: fitxa → targetes → test.`}
+ else{
+  const e=g.encert;
+  nivell=e>=85?"🌟 Excel·lent":e>=70?"👏 Molt bé":e>=50?"👍 Va bé, cal repassar":"💪 Cal reforçar";
+  txt=`${S.nom} ha treballat ${fetsT.length} de ${T.length} temes amb un ${e}% d'encerts de mitjana als tests.`;
+  if(forts.length)txt+=` Domina sobretot: ${forts.map(t=>t.titol.toLowerCase()).join(", ")}.`;
+  if(febles.length)txt+=` On més li costa: ${febles.map(t=>t.titol.toLowerCase()).join(", ")}.`;
+  if(obN)txt+=` A les preguntes obertes recull de mitjana el ${obM}% de les idees clau${obM<60?", i és on més cal practicar explicar-se amb les seves paraules":""}.`;
+  if(exU!==null)txt+=` A l'últim examen sorpresa va treure un ${exU}%.`;
+ }
+ const reco=[];
+ if(pend.length)reco.push(`Començar els temes pendents: <b>${pend.slice(0,3).map(t=>t.titol).join("</b>, <b>")}</b>${pend.length>3?"…":""}.`);
+ febles.forEach(t=>reco.push(`Tornar a llegir la fitxa de <b>${t.titol}</b> i repetir el test.`));
+ if(errs.length)reco.push(`Repassar les preguntes que més falla (llista de sota): les pot fer en veu alta amb papa o mama.`);
+ if(fetsT.length>=4&&obN<4)reco.push(`Fer més <b>preguntes obertes</b>: a l'examen valen 3 punts.`);
+ if(aprov.length===T.length&&exU===null)reco.push(`Fer l'<b>examen sorpresa</b> per comprovar-ho tot barrejat.`);
+ if(!reco.length)reco.push("Mantenir el ritme: un examen sorpresa cada dos o tres dies abans de l'examen.");
+ app.innerHTML=`<h2 class="sec">📊 Com va ${S.nom}</h2>
+ <div class="kpis">
+  <div class="kpi"><small>Temes aprovats</small><b>${aprov.length}/${T.length}</b><span>${pend.length} sense fer</span></div>
+  <div class="kpi"><small>Encert als tests</small><b style="color:${color(g.encert)}">${g.encert===null?"—":g.encert+"%"}</b><span>${g.intents} tests fets</span></div>
+  <div class="kpi"><small>Preguntes obertes</small><b>${obN}/${OB.length}</b><span>${obM===null?"cap encara":obM+"% d'idees"}</span></div>
+  <div class="kpi"><small>Temps d'estudi</small><b>${fmtT(S.temps)}</b><span>${S.dies.length} dia${S.dies.length==1?"":"s"}</span></div>
+  <div class="kpi"><small>Estrelles</small><b>⭐ ${S.punts}</b><span>${S.examens.length} examen${S.examens.length==1?"":"s"} sorpresa</span></div>
+ </div>
+ <div class="valoracio" style="margin-top:14px"><h3>${nivell}</h3><p style="margin:0">${txt}</p><p style="margin:10px 0 4px"><b>Què li recomano ara:</b></p><ul style="margin:0;padding-left:20px">${reco.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+ <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
+ ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
+ </table><p class="prog" style="margin:8px 0 0"><span class="semaf" style="background:#22c55e"></span>80% o més · <span class="semaf" style="background:#f59e0b"></span>50-79% · <span class="semaf" style="background:#ef4444"></span>menys del 50% · <span class="semaf" style="background:#cbd5e1"></span>sense fer</p></div>
+ <h2 class="sec">❌ Preguntes que més falla</h2><div class="box">${errs.length?`<ol class="llista-err">${errs.slice(0,8).map(([q,c,t])=>`<li>${q} <span class="etq">${t.ic} ${t.titol}</span> <b>×${c}</b></li>`).join("")}</ol>`:`<p class="prog" style="margin:0">Encara cap error registrat. 👌</p>`}</div>
+ <h2 class="sec">✍️ Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
+ <h2 class="sec">🎮 Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
+ <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat en aquest navegador i aquest aparell. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
+ <div class="fila"><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><button class="btn verm" onclick="demanaReset()">🗑️ Esborrar el progrés</button></div>`;
+}
+function demanaReset(){
+ const m=document.createElement("div");m.className="modal";
+ m.innerHTML=`<div class="box"><div class="gran">⚠️</div><h3>Esborrar tot el progrés de ${S.nom}?</h3><p class="prog">Només s'esborra el progrés de ${S.nom}; els altres noms no es toquen. No es pot desfer.</p><div class="fila"><button class="btn sec" id="no">No, deixa-ho</button><button class="btn verm" id="si">Sí, esborra-ho</button></div></div>`;
+ document.body.appendChild(m);
+ m.querySelector("#no").onclick=()=>m.remove();
+ m.querySelector("#si").onclick=()=>{delete PER[S.nom];S=BUIT();try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.removeItem(CL+"actiu")}catch(e){}m.remove();pintaCap();benvinguda()};
+}
+
+pintaCap();pintaSo();vista("inici");
+</script>
+</body>
+</html>
