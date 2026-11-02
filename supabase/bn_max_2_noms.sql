@@ -1,0 +1,3 @@
+-- Bona Nota · màxim 2 noms per aparell (migració «bn_max_2_noms_aparell», 2 nov 2026)
+-- El trigger bn_priv.bn_log_net rebutja registres d'un 3r nom nou des del mateix aparell (camp aparell, últims 120 dies).
+-- Els noms que un aparell ja feia servir abans es mantenen. Índex: bn_log_aparell(aparell, lower(trim(nom))).
