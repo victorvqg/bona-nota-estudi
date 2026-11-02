@@ -28,7 +28,7 @@ body{font-family:Nunito,system-ui,Arial,sans-serif;color:var(--txt);background:r
 header{position:relative;z-index:1;text-align:center;padding:56px 18px 26px}
 .etiqueta{display:inline-flex;align-items:center;gap:8px;background:#ffffff14;border:1px solid #ffffff26;backdrop-filter:blur(6px);padding:7px 14px;border-radius:999px;font-weight:800;font-size:14px;letter-spacing:.3px}
 .etiqueta b{color:var(--groc)}
-h1{font-family:'Press Start 2P',monospace;font-size:clamp(30px,9vw,72px);line-height:1.15;margin:26px 0 0;color:var(--groc);
+h1{font-family:'Press Start 2P',monospace;font-size:clamp(19px,7.4vw,72px);white-space:nowrap;line-height:1.15;margin:26px 0 0;color:var(--groc);
  text-shadow:4px 4px 0 #b91c1c,8px 8px 0 #7f1d1d,0 0 34px #facc1588;letter-spacing:2px;animation:sura 4s ease-in-out infinite}
 h1 span{display:inline-block}
 @keyframes sura{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
@@ -39,6 +39,32 @@ h1 span{display:inline-block}
 @keyframes parpelleja{50%{opacity:0}}
 .flota{position:absolute;font-size:34px;filter:drop-shadow(0 6px 10px #0008);animation:flota 6s ease-in-out infinite;pointer-events:none}
 @keyframes flota{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-16px) rotate(8deg)}}
+
+.intro{margin:24px auto 0;max-width:640px;text-align:left;background:#ffffff12;border:1px solid #ffffff2b;backdrop-filter:blur(6px);border-radius:20px;padding:18px 22px;color:#e0e7ff;font-weight:700;font-size:16px;line-height:1.5}
+.intro h2{margin:0 0 8px;font-size:clamp(17px,2.6vw,21px);color:#fff;font-weight:900}
+.intro p{margin:0 0 10px}.intro b{color:#fde68a}
+.intro ul{margin:0 0 10px;padding-left:4px;list-style:none}.intro li{margin:5px 0}
+.intro .peu-intro{margin:0;color:#c7d2fe;font-size:14.5px}
+
+/* ---- rànquing arcade ---- */
+.hiscore{position:relative;z-index:1;max-width:980px;margin:6px auto 26px;padding:0 18px}
+.hs-caixa{background:#05061a;border:4px solid var(--groc);border-radius:18px;box-shadow:0 0 0 4px #b91c1c,0 0 40px #facc1555,inset 0 0 40px #4c1d9555;padding:20px 18px 18px;position:relative;overflow:hidden}
+.hs-caixa::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#ffffff07 0 2px,transparent 2px 4px)}
+.hs-tit{font-family:'Press Start 2P',monospace;text-align:center;color:var(--groc);font-size:clamp(15px,3.6vw,24px);text-shadow:3px 3px 0 #b91c1c,0 0 18px #facc1599;margin:0 0 6px;animation:parpelleja2 1.6s steps(2) infinite}
+@keyframes parpelleja2{50%{color:#fb923c}}
+.hs-sub{font-family:'Press Start 2P',monospace;text-align:center;color:#67e8f9;font-size:9px;margin:0 0 16px;letter-spacing:1px}
+.hs-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.hs-col h3{font-family:'Press Start 2P',monospace;font-size:11px;color:#f0abfc;margin:0 0 10px;text-align:center;letter-spacing:1px}
+.hs-fila{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;font-family:'Press Start 2P',monospace;font-size:11px;color:#e0e7ff;padding:7px 8px;border-radius:8px;opacity:0;animation:hsEntra .4s steps(4) forwards}
+.hs-fila:nth-child(odd){background:#ffffff08}
+.hs-fila .pos{color:#94a3b8}.hs-fila .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase}.hs-fila .vl{color:#4ade80}
+.hs-fila.p1 .pos,.hs-fila.p1 .nm{color:var(--groc);text-shadow:0 0 10px #facc15aa}.hs-fila.p1{animation:hsEntra .4s steps(4) forwards,hsBrilla 1.2s steps(2) .5s infinite}
+.hs-fila.p2 .pos,.hs-fila.p2 .nm{color:#e2e8f0}.hs-fila.p3 .pos,.hs-fila.p3 .nm{color:#fdba74}
+.hs-fila.jo{outline:2px dashed #22d3ee;outline-offset:-2px}
+@keyframes hsEntra{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+@keyframes hsBrilla{50%{background:#facc1522}}
+.hs-buit{font-family:'Press Start 2P',monospace;font-size:10px;color:#a5b4fc;text-align:center;line-height:1.8;padding:14px 0}
+.hs-peu{font-family:'Press Start 2P',monospace;font-size:8px;color:#64748b;text-align:center;margin:14px 0 0;line-height:1.7}
 
 /* ---- targetes ---- */
 main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
@@ -93,8 +119,18 @@ footer b{color:var(--groc)}
  <span class="flota" style="left:14%;top:250px;animation-delay:-4s">🎮</span>
  <span class="flota" style="right:15%;top:270px;animation-delay:-1s">⭐</span>
  <span class="etiqueta">🎓 <b>1r ESO</b> · estudia jugant</span>
- <h1>BONA<br>NOTA</h1>
- <p class="sub">Fitxes, targetes, tests i jocs per aprovar sense avorrir-te. Tria l'assignatura i comença a sumar estrelles!</p>
+ <h1>BONA NOTA</h1>
+ <div class="intro">
+  <h2>Repassa jugant el que ja has estudiat 🎮📚</h2>
+  <p>Aquesta web serveix per <b>repassar i jugar</b>, no per aprendre el tema des de zero. Primer cal estudiar-lo bé amb els <b>llibres i els apunts de l'Escola Anoia</b>. Després, aquí comproves si ho saps de veritat.</p>
+  <ul>
+   <li><b>📄 Fitxes i 🃏 targetes</b>: el més important de cada tema, en poques línies.</li>
+   <li><b>✅ Tests i 🎮 jocs</b>: cada encert et dona ⭐ estrelles, i amb les estrelles puges de nivell.</li>
+   <li><b>✍️ Preguntes obertes</b>: practica explicar-ho amb les teves paraules, com a l'examen.</li>
+   <li><b>📊 Com vaig</b>: mira on encertes més, on et costa i què et toca repassar.</li>
+  </ul>
+  <p class="peu-intro">Escriu el teu nom per començar. El progrés de cadascú es guarda en el seu aparell.</p>
+ </div>
  <div class="hola" id="hola"></div>
  <div class="start">▶ TRIA EL TEU MÓN ◀</div>
 </header>
@@ -137,6 +173,15 @@ footer b{color:var(--groc)}
  <div class="as prox" aria-hidden="true"><div><span class="ic">🔒</span><b>PRÒXIMAMENT</b><small>Nous mons en camí…</small></div></div>
 </main>
 
+<section class="hiscore" aria-label="Rànquing">
+ <div class="hs-caixa">
+  <p class="hs-tit">★ HIGH SCORES ★</p>
+  <p class="hs-sub">RÀNQUING DE TOTS ELS MONS · ÚLTIMS 120 DIES</p>
+  <div id="hs"><div class="hs-buit">CARREGANT…</div></div>
+  <p class="hs-peu">INSERT COIN ▶ JUGA I PUJA AL RÀNQUING!</p>
+ </div>
+</section>
+
 <footer><b>★</b> Bona Nota · el progrés de cada nen es guarda al seu aparell <b>★</b><br><a class="admin" href="admin/">🔐 admin</a></footer>
 
 <script>
@@ -153,6 +198,21 @@ footer b{color:var(--groc)}
   a.querySelector('.juga span').textContent='CONTINUA ▶';requestAnimationFrame(()=>setTimeout(()=>p.querySelector('.barra i').style.width=pc+'%',500));
  }catch(e){}});
  if(nom)document.getElementById('hola').innerHTML=`Hola de nou, <em>${nom.replace(/[<>&]/g,'')}</em>! 👋`;
+})();
+// rànquing arcade (Supabase · funció bn_ranking)
+(function(){
+ const NIV=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","🔍"],[45,"Savi","📜"],[70,"Expert","🎓"],[100,"Mestre","🧠"],[140,"Campió","🏅"],[190,"Heroi","🦸"],[250,"Llegenda","👑"],[330,"Llegenda d'or","🌟"]];
+ const niv=p=>{let i=0;while(i<NIV.length-1&&p>=NIV[i+1][0])i++;return i};
+ const esc=t=>String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
+ const meu=(document.querySelector('#hola em')||{}).textContent||"";
+ const fT=s=>{const m=Math.round(s/60);return m>=60?`${Math.floor(m/60)}H ${m%60}M`:`${m} MIN`};
+ const POS=["1ST","2ND","3RD","4TH","5TH"];
+ const col=(tit,rows,val)=>`<div class="hs-col"><h3>${tit}</h3>${rows.length?rows.slice(0,5).map((r,i)=>`<div class="hs-fila p${i+1} ${meu&&r.nom.toLowerCase()===meu.toLowerCase()?"jo":""}" style="animation-delay:${i*.12}s"><span class="pos">${POS[i]}</span><span class="nm">${esc(r.nom)}</span><span class="vl">${val(r)}</span></div>`).join(""):`<div class="hs-buit">ENCARA NINGÚ…</div>`}</div>`;
+ fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/bn_ranking",{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:"{}"})
+  .then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(!Array.isArray(d)||!d.length)throw 0;
+   const per=(k)=>d.slice().sort((a,b)=>b[k]-a[k]).filter(r=>r[k]>0);
+   document.getElementById("hs").innerHTML=`<div class="hs-cols">${col("⭐ MÉS ESTRELLES",per("punts"),r=>r.punts)}${col("⏱ MÉS TEMPS",per("temps_s"),r=>fT(r.temps_s))}${col("🏅 MÉS NIVELL",d.slice().sort((a,b)=>b.punts_max-a.punts_max).filter(r=>r.punts_max>0),r=>`${NIV[niv(r.punts_max)][2]} ${niv(r.punts_max)+1}`)}</div>`})
+  .catch(()=>{document.getElementById("hs").innerHTML=`<div class="hs-buit">EL RÀNQUING ARRIBA AVIAT…<br>MENTRESTANT, JUGA I SUMA ⭐!</div>`});
 })();
 </script>
 </body>
