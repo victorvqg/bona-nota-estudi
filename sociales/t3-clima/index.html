@@ -199,7 +199,7 @@ body.tremola main{animation:tremola .4s}
 <header>
  <div class="hd">
   <div class="logo" onclick="vista('inici')"><span id="logoic">📚</span><span class="tt"><span id="hola"></span><small id="qui"></small></span></div>
-  <span class="vol" title="Volum de la música i els sons (0-5)"><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci">🔊</button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts">⭐ 0</span>
+  <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci">🔊</button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts">⭐ 0</span>
  </div>
  <nav id="nav">
   <button data-v="inici" onclick="vista('inici')">🏠 Inici</button>
@@ -412,56 +412,21 @@ const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.i
 const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
 function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
 let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
-function marcaNav(v){musica({usuari:'inici',benvinguda:'inici'}[v]||v);document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
+function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
 function vista(v){aturaSeg();window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
 
 
 // ====================== SO I EFECTES ARCADE ======================
-// volum 0-5 (0 = silenci) per a música i efectes
-let AC=null,MG=null,MUS=null,VOL=3,VOLant=3;
+// volum dels sons 0-5 (0 = silenci)
+let AC=null,MG=null,VOL=3,VOLant=3;
 try{const v=localStorage.getItem("bn_vol");if(v!==null)VOL=Math.max(0,Math.min(5,+v||0));else if(localStorage.getItem("bn_so")==="0")VOL=0}catch(e){}
 const GVOL=[0,.12,.27,.45,.7,1];
-function audio(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=GVOL[VOL];MG.connect(AC.destination);MUS=AC.createGain();MUS.gain.value=.5;MUS.connect(MG);setInterval(tickMusica,60)}if(AC.state==="suspended")AC.resume();return AC}
+function audio(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=GVOL[VOL];MG.connect(AC.destination);}if(AC.state==="suspended")AC.resume();return AC}
 function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN");if(b)b.textContent=VOL===0?"🔇":VOL<3?"🔈":VOL<5?"🔉":"🔊";if(r)r.value=VOL;if(n)n.textContent=VOL}
 function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
 function canviaSo(){posaVol(VOL?0:(VOLant||3))}
 function nota(f,t0,d,tipus="square",vol=.12,dest){const o=AC.createOscillator(),g=AC.createGain();o.type=tipus;o.frequency.setValueAtTime(f,AC.currentTime+t0);g.gain.setValueAtTime(vol,AC.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t0+d);o.connect(g).connect(dest||MG);o.start(AC.currentTime+t0);o.stop(AC.currentTime+t0+d+.02)}
-// ---- música de fons: una cançó en bucle per a cada menú (composicions pròpies, sintetitzades) ----
-// pas = corxera; lead: 32 passos (0 = silenci); baix: 1 nota cada 4 passos
-const CANCONS={
- inici:{bpm:112,ona:"square",v:.045,bona:"triangle",bv:.11,bat:1,
-  lead:[72,0,76,79,77,76,74,0,72,0,74,76,79,0,0,0,81,0,79,77,76,74,72,0,74,0,76,74,72,0,0,0],baix:[48,55,53,55,57,53,55,48]},
- temes:{bpm:84,ona:"triangle",v:.07,bona:"sine",bv:.12,bat:0,
-  lead:[69,0,72,0,76,0,74,72,71,0,72,0,74,0,0,0,72,0,69,0,67,0,69,71,72,0,71,69,67,0,0,0],baix:[45,45,48,48,43,43,45,45]},
- jocs:{bpm:144,ona:"square",v:.04,bona:"square",bv:.05,bat:2,
-  lead:[64,0,67,71,72,71,67,0,64,0,67,71,74,72,71,0,69,0,72,76,77,76,72,0,71,72,74,76,79,0,0,0],baix:[40,40,45,45,41,41,43,43]},
- obertes:{bpm:72,ona:"sine",v:.08,bona:"sine",bv:.1,bat:0,
-  lead:[72,0,0,74,76,0,0,0,74,0,72,0,69,0,0,0,67,0,0,69,72,0,0,0,71,0,69,0,67,0,0,0],baix:[48,48,45,45,41,41,43,43]},
- analitica:{bpm:96,ona:"triangle",v:.065,bona:"triangle",bv:.11,bat:1,
-  lead:[74,0,77,0,81,0,79,77,76,0,72,0,74,0,0,0,72,0,76,0,79,0,77,76,74,0,71,0,72,0,0,0],baix:[50,50,45,45,46,46,43,43]}
-};
-let MNOM=null,mPas=0,mT=0,SOROLL=null;
-const hz=m=>440*2**((m-69)/12);
-function musica(nom){if(!CANCONS[nom]||nom===MNOM)return;MNOM=nom;mPas=0;mT=0}
-function cop(t,tipus){if(!SOROLL){SOROLL=AC.createBuffer(1,AC.sampleRate*.2,AC.sampleRate);const d=SOROLL.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
- if(tipus==="k"){const o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);g.gain.setValueAtTime(.22,t);g.gain.exponentialRampToValueAtTime(.001,t+.14);o.connect(g).connect(MUS);o.start(t);o.stop(t+.16);return}
- const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=SOROLL;f.type="highpass";f.frequency.value=7000;g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.001,t+.05);s.connect(f).connect(g).connect(MUS);s.start(t);s.stop(t+.06)}
-function tickMusica(){
- if(!AC||!MNOM||AC.state!=="running")return;
- const c=CANCONS[MNOM],pas=30/c.bpm;
- if(mT<AC.currentTime)mT=AC.currentTime+.05;
- while(mT<AC.currentTime+.25){
-  if(VOL){const n=c.lead[mPas%32];
-   if(n){let k=1;while(k<3&&!c.lead[(mPas+k)%32])k++;veu(hz(n),mT,k*pas*.92,c.ona,c.v)}
-   if(mPas%4===0)veu(hz(c.baix[(mPas/4|0)%8]),mT,pas*3.6,c.bona,c.bv);
-   if(c.bat){if(mPas%4===0)cop(mT,"k");if(c.bat>1||mPas%2===1)cop(mT,"h")}}
-  mPas++;mT+=pas}
-}
-function veu(f,t,d,tipus,vol){const o=AC.createOscillator(),g=AC.createGain();o.type=tipus;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.02);g.gain.setValueAtTime(vol,t+Math.max(.03,d-.08));g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(MUS);o.start(t);o.stop(t+d+.02)}
-function abaixaMusica(ms){if(!MUS)return;MUS.gain.setTargetAtTime(.08,AC.currentTime,.05);clearTimeout(abaixaMusica.t);abaixaMusica.t=setTimeout(()=>MUS.gain.setTargetAtTime(.5,AC.currentTime,.3),ms)}
-// el navegador només deixa sonar després d'un toc: la música arrenca al primer toc o tecla
-["pointerdown","keydown"].forEach(e=>document.addEventListener(e,()=>{if(VOL)audio()},true));
-function so(t){if(!VOL)return;try{audio();if(t==="win"||t==="super"||t==="trist")abaixaMusica(4300);
+function so(t){if(!VOL)return;try{audio();
  if(t==="ok"){nota(988,0,.08);nota(1319,.08,.18)}
  else if(t==="ko"){nota(196,0,.18,"sawtooth",.08);nota(147,.16,.25,"sawtooth",.08)}
  else if(t==="win"){[523,659,784,1047,784,1047,1319].forEach((f,i)=>nota(f,i*.11,.16));[262,330,392,523].forEach((f,i)=>nota(f,.77+i*.0,.6,"triangle",.1));nota(1568,.77,.6,"square",.08)}
