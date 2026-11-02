@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin · Bona Nota</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--groc:#facc15;--fons:#0b1033;--panell:#141a4a;--vora:#ffffff1f;--txt:#e2e8f0;--suau:#a5b4fc}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,system-ui,Arial,sans-serif;color:var(--txt);background:radial-gradient(1000px 600px at 50% -10%,#3b2a8c,#1a1660 40%,var(--fons) 75%) fixed,var(--fons);min-height:100vh}
+a{color:var(--groc)}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--vora);background:#0b103399;backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}
+.top h1{font-family:'Press Start 2P',monospace;font-size:15px;color:var(--groc);margin:0;text-shadow:2px 2px 0 #b91c1c}
+.top .esp{flex:1}
+.btn{font:inherit;font-weight:900;border:0;border-radius:12px;padding:10px 16px;cursor:pointer;background:linear-gradient(180deg,#22d3ee,#0284c7);color:#fff;box-shadow:0 4px 0 #0c4a6e}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #0c4a6e}
+.btn.sec{background:#ffffff14;box-shadow:none;border:1px solid var(--vora)}
+select,input{font:inherit;font-weight:700;background:#0b1033;color:var(--txt);border:1px solid var(--vora);border-radius:10px;padding:9px 12px}
+main{max-width:1200px;margin:0 auto;padding:20px}
+.login{max-width:380px;margin:12vh auto 0;background:var(--panell);border:1px solid var(--vora);border-radius:22px;padding:30px;box-shadow:0 30px 60px -20px #000c;text-align:center}
+.login h2{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--groc);margin:10px 0 22px;line-height:1.6}
+.login input{width:100%;margin-bottom:12px;padding:13px 14px}
+.login .btn{width:100%;padding:14px}
+.err{color:#fca5a5;font-weight:800;min-height:1.3em;margin-top:10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--panell);border:1px solid var(--vora);border-radius:16px;padding:14px 16px}
+.kpi small{color:var(--suau);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi b{display:block;font-size:28px;font-weight:900;color:#fff;margin-top:4px}
+.pest{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.pest button{font:inherit;font-weight:900;background:#ffffff10;color:var(--txt);border:1px solid var(--vora);border-radius:999px;padding:8px 16px;cursor:pointer}
+.pest button.on{background:var(--groc);color:#1e1b4b;border-color:var(--groc)}
+.caixa{background:var(--panell);border:1px solid var(--vora);border-radius:18px;overflow:hidden}
+.filtres{display:flex;gap:8px;flex-wrap:wrap;padding:12px;border-bottom:1px solid var(--vora)}
+.filtres input{flex:1;min-width:160px}
+.taula{overflow:auto;max-height:70vh}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{position:sticky;top:0;background:#1c2360;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--suau);padding:10px 12px;white-space:nowrap}
+td{padding:9px 12px;border-top:1px solid #ffffff10;vertical-align:top}
+tr.clic{cursor:pointer}tr.clic:hover td{background:#ffffff0a}
+.nom{font-weight:900;color:#fff}
+.xip{display:inline-block;border-radius:999px;padding:2px 9px;font-weight:800;font-size:12px;background:#ffffff14;margin:1px 2px 1px 0;white-space:nowrap}
+.pc{font-weight:900}.v{color:#4ade80}.t{color:#fbbf24}.r{color:#f87171}
+.ev-entra{background:#1d4ed855}.ev-fitxa{background:#0ea5e955}.ev-test{background:#7c3aed66}.ev-joc{background:#db277755}.ev-examen{background:#dc262666}.ev-oberta{background:#ea580c55}.ev-valora{background:#16a34a55}.ev-temps{background:#47556966}
+.sessio{border-top:1px solid var(--vora);padding:14px 16px}
+.sessio h3{margin:0 0 8px;font-size:15px}
+.sessio h3 small{color:var(--suau);font-weight:700}
+.linia{display:flex;gap:10px;font-size:14px;padding:3px 0}
+.linia time{color:var(--suau);font-weight:800;min-width:46px}
+.buit{padding:30px;text-align:center;color:var(--suau);font-weight:800}
+.det-cap{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--vora);flex-wrap:wrap}
+.det-cap h2{margin:0;font-size:22px}
+</style>
+</head>
+<body>
+<div class="top"><h1>🔐 ADMIN · BONA NOTA</h1><span class="esp"></span><span id="eines" hidden>
+ <select id="dies"><option value="1">Avui</option><option value="7" selected>7 dies</option><option value="30">30 dies</option><option value="365">Tot l'any</option></select>
+ <button class="btn sec" id="refresca">↻ Actualitza</button> <button class="btn sec" id="surt">Surt</button></span>
+ <a href="../" class="btn sec" style="text-decoration:none">← Inici</a></div>
+<main id="app"></main>
+
+<script>
+const API="https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb";
+const ASSIGS={socials:"🌍 Socials",biogeo:"🔭 Bio i Geo"};
+const app=document.getElementById("app"),$=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let CRED=null,LOGS=[],VISTA="nens",FILTRE={q:"",assig:"",event:""};
+try{CRED=JSON.parse(sessionStorage.getItem("bn_admin")||"null")}catch(e){}
+
+function login(msg){
+ $("#eines").hidden=true;
+ app.innerHTML=`<form class="login" id="fl"><div style="font-size:46px">🔐</div><h2>ZONA<br>ADMIN</h2>
+ <input type="email" id="em" placeholder="Correu" autocomplete="username" required>
+ <input type="password" id="pw" placeholder="Contrasenya" autocomplete="current-password" required>
+ <button class="btn">Entra ▶</button><div class="err" id="err">${esc(msg||"")}</div></form>`;
+ $("#fl").onsubmit=async e=>{e.preventDefault();$("#err").textContent="Comprovant…";
+  CRED={e:$("#em").value.trim(),p:$("#pw").value};if(await carrega()){try{sessionStorage.setItem("bn_admin",JSON.stringify(CRED))}catch(e){}}};
+}
+async function carrega(){
+ try{const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:+$("#dies").value})});
+  if(!r.ok){CRED=null;sessionStorage.removeItem("bn_admin");login(r.status===404?"El panell encara no està activat a la base de dades.":"Correu o contrasenya incorrectes.");return false}
+  LOGS=await r.json();$("#eines").hidden=false;pinta();return true;
+ }catch(e){login("No hi ha connexió. Torna-ho a provar.");return false}
+}
+
+const fmtT=s=>{s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
+const dataH=ts=>new Date(ts).toLocaleString("ca-ES",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+const hora=ts=>new Date(ts).toLocaleTimeString("ca-ES",{hour:"2-digit",minute:"2-digit"});
+const cpc=pc=>`<span class="pc ${pc>=80?"v":pc>=50?"t":"r"}">${pc}%</span>`;
+const clauNen=l=>l.nom.trim().toLowerCase();
+function descriu(l){const d=l.detall||{};switch(l.event){
+ case"entra":return d.nou?"Perfil nou creat ✨":`Entra · ⭐ ${d.punts??0} · ${d.aprovats??0}/${d.temes??"?"} temes aprovats`;
+ case"fitxa":return `Llegeix la fitxa: <b>${esc(d.titol||d.tema)}</b>`;
+ case"test":return `Test de <b>${esc(d.titol||d.tema)}</b>: ${d.bones}/${d.n} · ${cpc(d.pc)}`;
+ case"joc":return `Joc <b>${esc(d.titol||d.joc)}</b>: ${cpc(d.pc)}`;
+ case"examen":return `🏆 Examen sorpresa: ${cpc(d.pc)}`;
+ case"oberta":return `Pregunta oberta (${esc(d.tema||"")}): ${cpc(d.pc)} de les idees clau`;
+ case"valora":return `Valora <b>${esc(d.titol||d.tema)}</b>: ${esc(d.v)}`;
+ case"temps":return `⏱ ${fmtT(d.s)} estudiant`;
+ default:return esc(JSON.stringify(d))}}
+const xipEv=e=>`<span class="xip ev-${esc(e)}">${esc(e)}</span>`;
+
+function nens(){const m={};LOGS.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[k]={nom:l.nom,assigs:new Set(),ses:new Set(),ap:new Set(),ult:l.ts,temps:0,tests:[],jocs:0,exam:[],punts:{}});
+ n.assigs.add(l.assig);n.ses.add(l.sessio);n.ap.add(l.aparell);if(l.ts>n.ult)n.ult=l.ts;const d=l.detall||{};
+ if(l.event==="temps")n.temps+=d.s||0;if(l.event==="test")n.tests.push(d.pc);if(l.event==="joc")n.jocs++;if(l.event==="examen")n.exam.push(d.pc);
+ if(d.punts!=null&&(n.punts[l.assig]==null||d.punts>n.punts[l.assig]))n.punts[l.assig]=d.punts});
+ return Object.entries(m).map(([k,n])=>({k,...n})).sort((a,b)=>b.ult.localeCompare(a.ult))}
+const mitj=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
+
+function pinta(){
+ const N=nens(),ses=new Set(LOGS.map(l=>l.sessio)).size,temps=LOGS.filter(l=>l.event==="temps").reduce((a,l)=>a+(l.detall.s||0),0),tests=LOGS.filter(l=>l.event==="test").map(l=>l.detall.pc);
+ app.innerHTML=`<div class="kpis">
+  <div class="kpi"><small>Nens</small><b>${N.length}</b></div><div class="kpi"><small>Sessions</small><b>${ses}</b></div>
+  <div class="kpi"><small>Temps d'estudi</small><b>${fmtT(temps)}</b></div><div class="kpi"><small>Tests fets</small><b>${tests.length}</b></div>
+  <div class="kpi"><small>Nota mitjana tests</small><b>${tests.length?mitj(tests)+"%":"—"}</b></div><div class="kpi"><small>Registres</small><b>${LOGS.length}</b></div></div>
+ <div class="pest"><button data-v="nens" class="${VISTA==="nens"?"on":""}">👤 Nens</button><button data-v="sessions" class="${VISTA==="sessions"?"on":""}">🕹 Sessions</button><button data-v="log" class="${VISTA==="log"?"on":""}">📜 Log complet</button></div>
+ <div class="caixa" id="cont"></div>`;
+ app.querySelectorAll(".pest button").forEach(b=>b.onclick=()=>{VISTA=b.dataset.v;pinta()});
+ const c=$("#cont");if(!LOGS.length){c.innerHTML=`<div class="buit">Encara no hi ha cap registre en aquest període.</div>`;return}
+ if(VISTA==="nens")vistaNens(c,N);else if(VISTA==="sessions")vistaSessions(c,LOGS);else vistaLog(c);
+}
+function vistaNens(c,N){
+ c.innerHTML=`<div class="taula"><table><thead><tr><th>Nom</th><th>Assignatures</th><th>Última vegada</th><th>Sessions</th><th>Temps</th><th>Tests</th><th>Mitjana</th><th>Jocs</th><th>Examen (millor)</th><th>⭐ Punts</th><th>Aparells</th></tr></thead><tbody>
+ ${N.map(n=>`<tr class="clic" data-k="${esc(n.k)}"><td class="nom">${esc(n.nom)}</td><td>${[...n.assigs].map(a=>`<span class="xip">${esc(ASSIGS[a]||a)}</span>`).join("")}</td><td>${dataH(n.ult)}</td><td>${n.ses.size}</td><td>${fmtT(n.temps)}</td><td>${n.tests.length}</td><td>${n.tests.length?cpc(mitj(n.tests)):"—"}</td><td>${n.jocs}</td><td>${n.exam.length?cpc(Math.max(...n.exam)):"—"}</td><td>${Object.entries(n.punts).map(([a,p])=>`${esc((ASSIGS[a]||a).split(" ")[0])} ${p}`).join(" · ")||"—"}</td><td>${n.ap.size}</td></tr>`).join("")}</tbody></table></div>`;
+ c.querySelectorAll("tr.clic").forEach(tr=>tr.onclick=()=>detall(tr.dataset.k));
+}
+function blocSessions(ls){const g={};ls.forEach(l=>(g[l.sessio]=g[l.sessio]||[]).push(l));
+ return Object.values(g).map(a=>a.sort((x,y)=>x.ts.localeCompare(y.ts))).sort((a,b)=>b[0].ts.localeCompare(a[0].ts)).map(a=>{
+  const t=a.filter(l=>l.event==="temps").reduce((s,l)=>s+(l.detall.s||0),0);
+  return `<div class="sessio"><h3><span class="nom">${esc(a[0].nom)}</span> · ${esc(ASSIGS[a[0].assig]||a[0].assig)} <small>· ${dataH(a[0].ts)} → ${hora(a[a.length-1].ts)} · ${fmtT(t)} · ${a.length} accions</small></h3>
+  ${a.map(l=>`<div class="linia"><time>${hora(l.ts)}</time><span>${descriu(l)}</span></div>`).join("")}</div>`}).join("")}
+function vistaSessions(c,ls){c.innerHTML=`<div class="taula">${blocSessions(ls)}</div>`}
+function vistaLog(c){
+ const ev=[...new Set(LOGS.map(l=>l.event))],as=[...new Set(LOGS.map(l=>l.assig))];
+ c.innerHTML=`<div class="filtres"><input id="fq" placeholder="Cerca nom o text…" value="${esc(FILTRE.q)}">
+ <select id="fa"><option value="">Totes les assignatures</option>${as.map(a=>`<option value="${esc(a)}" ${FILTRE.assig===a?"selected":""}>${esc(ASSIGS[a]||a)}</option>`).join("")}</select>
+ <select id="fe"><option value="">Tots els tipus</option>${ev.map(e=>`<option ${FILTRE.event===e?"selected":""}>${esc(e)}</option>`).join("")}</select>
+ <button class="btn sec" id="csv">⬇ CSV</button></div><div class="taula" id="tl"></div>`;
+ const files=()=>{const q=FILTRE.q.toLowerCase();return LOGS.filter(l=>(!FILTRE.assig||l.assig===FILTRE.assig)&&(!FILTRE.event||l.event===FILTRE.event)&&(!q||(l.nom+" "+JSON.stringify(l.detall)).toLowerCase().includes(q)))};
+ const pintaT=()=>{const f=files();$("#tl").innerHTML=`<table><thead><tr><th>Data</th><th>Nom</th><th>Assignatura</th><th>Tipus</th><th>Què ha fet</th><th>Aparell</th></tr></thead><tbody>${f.slice(0,1500).map(l=>`<tr><td>${dataH(l.ts)}</td><td class="nom">${esc(l.nom)}</td><td>${esc(ASSIGS[l.assig]||l.assig)}</td><td>${xipEv(l.event)}</td><td>${descriu(l)}</td><td><small>${esc(l.aparell.slice(0,6))}</small></td></tr>`).join("")}</tbody></table>${f.length>1500?`<div class="buit">Es mostren 1.500 de ${f.length}. Fes servir els filtres o el CSV.</div>`:""}`};
+ $("#fq").oninput=e=>{FILTRE.q=e.target.value;pintaT()};$("#fa").onchange=e=>{FILTRE.assig=e.target.value;pintaT()};$("#fe").onchange=e=>{FILTRE.event=e.target.value;pintaT()};
+ $("#csv").onclick=()=>{const cel=v=>`"${String(v??"").replace(/"/g,'""')}"`;const t=[["data","nom","assignatura","tipus","detall","sessio","aparell"],...files().map(l=>[l.ts,l.nom,l.assig,l.event,JSON.stringify(l.detall),l.sessio,l.aparell])].map(r=>r.map(cel).join(";")).join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+t],{type:"text/csv"}));a.download=`bona-nota-log-${new Date().toISOString().slice(0,10)}.csv`;a.click()};
+ pintaT();
+}
+function detall(k){const ls=LOGS.filter(l=>clauNen(l)===k),n=nens().find(x=>x.k===k);
+ $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="taula">${blocSessions(ls)}</div>`;
+ $("#torna").onclick=pinta;
+}
+$("#refresca").onclick=carrega;$("#dies").onchange=carrega;$("#surt").onclick=()=>{CRED=null;LOGS=[];sessionStorage.removeItem("bn_admin");login()};
+CRED?carrega():login();
+</script>
+</body>
+</html>

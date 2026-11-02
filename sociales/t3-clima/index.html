@@ -411,10 +411,20 @@ try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const 
 if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
 function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
 function desa(){guarda();pintaCap()}
+// ---- registre d'activitat per al panell admin (Supabase: només escriptura; llegir-ho només pot l'admin) ----
+const BN_LOG={url:"https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/bn_log",key:"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb"};
+const SESSIO=Math.random().toString(36).slice(2,12);let APARELL="",TPEND=0;
+try{APARELL=localStorage.getItem("bn_aparell")||"";if(!APARELL){APARELL=Math.random().toString(36).slice(2,12);localStorage.setItem("bn_aparell",APARELL)}}catch(e){APARELL="?"}
+function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return;
+ try{fetch(BN_LOG.url,{method:"POST",keepalive:true,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json","Prefer":"return=minimal"},
+  body:JSON.stringify({assig:ASSIG.id,nom:S.nom.slice(0,40),sessio:SESSIO,aparell:APARELL,event,detall:detall||{}})}).catch(()=>{})}catch(e){}}
+function buidaTemps(){if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts});TPEND=0}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")buidaTemps()});
+addEventListener("pagehide",buidaTemps);
 function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLowerCase())}
 function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
  ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
-function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();vista("inici")}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();registra("entra",{nou:!k,punts:S.punts,aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici")}
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
@@ -433,7 +443,7 @@ function mostraNivell(){if(!NIVPEND)return;if(document.querySelector(".arc")){se
 function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" onclick="vista('analitica')"><span class="nic">${v.ic}</span><div style="flex:1;min-width:0"><b>Nivell ${v.n} · ${v.nom}</b><div class="barra"><i style="width:${v.pc}%"></i></div><small>${v.seg?`Et falten ${v.falten} ⭐ per a ${v.seg[2]} ${v.seg[1]}`:"Nivell màxim! Ets una llegenda 🌟"}</small></div></div>`}
 function pintaCap(){const nv=nivell(S.punts);document.getElementById("punts").textContent=`⭐ ${S.punts} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom} · ${ASSIG.curs}`:ASSIG.curs}
 // temps d'estudi: cada 15 s amb la pestanya visible
-setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;guarda()}},15000);
+setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;TPEND+=15;guarda();if(TPEND>=300)buidaTemps()}},15000);
 const app=document.getElementById("app");
 const barreja=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.intents.map(i=>i.pc)):null};
@@ -538,7 +548,7 @@ const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","�
 function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
 function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
 function joc(id){aturaSeg();window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
-function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa()}
+function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id);registra(id==="examen"?"examen":"joc",{joc:id,titol:j?j[2]:id,pc})}
 
 // ====================== TEMA ======================
 let tema,pest="fitxa";
@@ -551,7 +561,7 @@ function pintaTema(){
  if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else test(t.q.map((x,i)=>i),0,0,t.id);
 }
 function fitxa(){
- const t=tema;ET(t.id).fitxa=true;desa();
+ const t=tema;ET(t.id).fitxa=true;desa();registra("fitxa",{tema:t.id,titol:t.titol});
  document.getElementById("zona").innerHTML=`<div class="box"><div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
 }
 function targetes(n){
@@ -569,7 +579,7 @@ function test(ordre,k,bones,clau,pool,cb){
  if(k>=ordre.length){
   const pc=Math.round(bones*100/ordre.length);
   if(cb){cb(pc,bones,ordre.length);return}
-  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();
+  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",{tema:tema.id,titol:tema.titol,pc,bones,n:ordre.length});
   const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=50;
   arcade(pc,bones,ordre.length,ant!==null&&pc>ant);
   const msg=pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat, repassa una miqueta":"Cal repassar més, ànims!";
@@ -595,7 +605,7 @@ function test(ordre,k,bones,clau,pool,cb){
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
  });
 }
-function valora(i,b){ET(tema.id).valoracio=i;desa();b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
+function valora(i,b){ET(tema.id).valoracio=i;desa();registra("valora",{tema:tema.id,titol:tema.titol,v:["Costa","Bé","Fàcil"][i]});b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
 function resultatJoc(id,titol){return (pc,b,n)=>{const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
 function examen(){
  const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=q.slice();c.tema=t.titol;c.tid=t.id;pool.push(c)}));
@@ -663,7 +673,7 @@ function obertes(n){
   <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
   document.getElementById("nota").onclick=()=>{
    const k=[...document.querySelectorAll(".pk")].filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
-   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);registra("oberta",{n,tema:o.t,pc});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
    const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
    document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> · a l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
   };
