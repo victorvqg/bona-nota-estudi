@@ -1,0 +1,2 @@
+-- Bona Nota · ID numèric per nen i recuperació d'estrelles (migracions «bn_perfils_id_numeric» i «bn_punts_maxim», 2 nov 2026)
+-- bn_priv.perfils.id (identity, únic) · bn_perfil_id(nom) · bn_admin_ids(email, pass) · bn_punts_maxim(nom, assig) = màxim d'estrelles registrades al bn_log.

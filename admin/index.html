@@ -87,10 +87,12 @@ function login(msg){
  $("#fl").onsubmit=async e=>{e.preventDefault();$("#err").textContent="Comprovant…";
   CRED={e:$("#em").value.trim(),p:$("#pw").value};if(await carrega()){try{sessionStorage.setItem("bn_admin",JSON.stringify(CRED))}catch(e){}}};
 }
+let IDS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN" style="opacity:.6">sense PIN</span>`;
 async function carrega(){
  try{const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:+$("#dies").value})});
   if(!r.ok){CRED=null;sessionStorage.removeItem("bn_admin");login(r.status===404?"El panell encara no està activat a la base de dades.":"Correu o contrasenya incorrectes.");return false}
-  LOGS=await r.json();$("#eines").hidden=false;pinta();return true;
+  LOGS=await r.json();try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});IDS={};if(ri.ok)(await ri.json()).forEach(x=>IDS[x.k]=x.id)}catch(e){}
+  $("#eines").hidden=false;pinta();return true;
  }catch(e){login("No hi ha connexió. Torna-ho a provar.");return false}
 }
 
@@ -133,7 +135,7 @@ function pinta(){
 }
 function vistaNens(c,N){
  c.innerHTML=`<div class="taula"><table><thead><tr><th>Nom</th><th>Assignatures</th><th>Última vegada</th><th>Sessions</th><th>Temps</th><th>Tests</th><th>Mitjana</th><th>Jocs</th><th>Examen (millor)</th><th>⭐ Punts</th><th>Aparells</th></tr></thead><tbody>
- ${N.map(n=>`<tr class="clic" data-k="${esc(n.k)}"><td class="nom">${esc(n.nom)}</td><td>${[...n.assigs].map(a=>`<span class="xip">${esc(ASSIGS[a]||a)}</span>`).join("")}</td><td>${dataH(n.ult)}</td><td>${n.ses.size}</td><td>${fmtT(n.temps)}</td><td>${n.tests.length}</td><td>${n.tests.length?cpc(mitj(n.tests)):"—"}</td><td>${n.jocs}</td><td>${n.exam.length?cpc(Math.max(...n.exam)):"—"}</td><td>${Object.entries(n.punts).map(([a,p])=>`${esc((ASSIGS[a]||a).split(" ")[0])} ${p}`).join(" · ")||"—"}</td><td>${n.ap.size}</td></tr>`).join("")}</tbody></table></div>`;
+ ${N.map(n=>`<tr class="clic" data-k="${esc(n.k)}"><td class="nom">${esc(n.nom)} ${idDe(n.k)}</td><td>${[...n.assigs].map(a=>`<span class="xip">${esc(ASSIGS[a]||a)}</span>`).join("")}</td><td>${dataH(n.ult)}</td><td>${n.ses.size}</td><td>${fmtT(n.temps)}</td><td>${n.tests.length}</td><td>${n.tests.length?cpc(mitj(n.tests)):"—"}</td><td>${n.jocs}</td><td>${n.exam.length?cpc(Math.max(...n.exam)):"—"}</td><td>${Object.entries(n.punts).map(([a,p])=>`${esc((ASSIGS[a]||a).split(" ")[0])} ${p}`).join(" · ")||"—"}</td><td>${n.ap.size}</td></tr>`).join("")}</tbody></table></div>`;
  c.querySelectorAll("tr.clic").forEach(tr=>tr.onclick=()=>detall(tr.dataset.k));
 }
 function blocSessions(ls){const g={};ls.forEach(l=>(g[l.sessio]=g[l.sessio]||[]).push(l));
@@ -161,7 +163,7 @@ function blocEstrelles(n){const as=[...n.assigs].filter(a=>n.punts[a]!=null);if(
   const fila=(ic,nom,v)=>`<div class="fest"><span>${ic} ${nom}</span><div class="bfe"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
   return `<div class="est-assig"><b>${esc(ASSIGS[a]||a)}</b> <span class="xip">⭐ ${p}</span>${FONTS_EST.filter(([k])=>fo[k]).map(([k,ic,nom])=>fila(ic,nom,fo[k])).join("")}${ab?fila("⏳","D'abans (sense detall)",ab):""}</div>`}).join("")}</div>`}
 function detall(k){const ls=LOGS.filter(l=>clauNen(l)===k),n=nens().find(x=>x.k===k);
- $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="gestio"><button class="btn sec" id="canvia">✏️ Canvia el nom</button><button class="btn sec" id="amaga">🙈 Amaga del rànquing</button><button class="btn sec" id="treupin" hidden>🔑 Treu el PIN</button><button class="btn sec perill" id="esborra">🗑️ Esborra l'usuari</button><div id="gest"></div></div><div class="taula">${blocEstrelles(n)}${blocSessions(ls)}</div>`;
+ $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)} ${idDe(k)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="gestio"><button class="btn sec" id="canvia">✏️ Canvia el nom</button><button class="btn sec" id="amaga">🙈 Amaga del rànquing</button><button class="btn sec" id="treupin" hidden>🔑 Treu el PIN</button><button class="btn sec perill" id="esborra">🗑️ Esborra l'usuari</button><div id="gest"></div></div><div class="taula">${blocEstrelles(n)}${blocSessions(ls)}</div>`;
  $("#torna").onclick=pinta;
  rpcU(n.nom,"estat").then(v=>{if(v&1){$("#amaga").textContent="👁 Torna'l a mostrar al rànquing";$("#amaga").dataset.a="mostra"}if(v&2)$("#treupin").hidden=false}).catch(()=>{});
  $("#treupin").onclick=()=>{$("#gest").innerHTML=`<div class="gest-f"><b>Treure el PIN de ${esc(n.nom)}?</b> El progrés al núvol es manté; el nen podrà posar-se un PIN nou des del seu aparell.<button class="btn perill" id="si">Sí, treu-lo</button><button class="btn sec" id="cancel">No</button></div>`;$("#cancel").onclick=()=>$("#gest").innerHTML="";$("#si").onclick=()=>usuari(n.nom,"treupin")};
