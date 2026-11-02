@@ -46,6 +46,18 @@ h1 span{display:inline-block}
 .intro ul{margin:0 0 10px;padding-left:4px;list-style:none}.intro li{margin:5px 0}
 .intro .peu-intro{margin:0;color:#c7d2fe;font-size:14.5px}
 
+/* canvi de pestanya del rànquing: escombrada, ràfega i bot */
+.hs-wipe{position:absolute;inset:0;z-index:5;pointer-events:none;background:repeating-linear-gradient(90deg,var(--wc,#facc15) 0 14px,transparent 14px 28px);animation:wipe .45s steps(6) forwards}
+@keyframes wipe{0%{clip-path:inset(0 100% 0 0)}50%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 0 0 100%)}}
+.hs-raig{position:absolute;z-index:6;pointer-events:none;font-size:22px;animation:raig .9s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes raig{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rt)) scale(.4);opacity:0}}
+.hs-tab.bota{animation:botaTab .45s cubic-bezier(.3,1.8,.5,1)}
+@keyframes botaTab{30%{transform:translateY(-8px) scale(1.12)}}
+.hs-caixa.sacseja{animation:sacsHs .35s}
+@keyframes sacsHs{25%{transform:translateX(-5px) rotate(-.4deg)}75%{transform:translateX(5px) rotate(.4deg)}}
+.hs-rotul{position:absolute;left:50%;top:44%;z-index:7;pointer-events:none;font-family:'Press Start 2P',monospace;font-size:clamp(16px,5vw,30px);color:#fff;text-shadow:3px 3px 0 #b91c1c,0 0 18px var(--wc,#facc15);white-space:nowrap;animation:rotul 1s ease-out forwards}
+@keyframes rotul{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}25%{transform:translate(-50%,-50%) scale(1.15);opacity:1}70%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-80%) scale(1);opacity:0}}
+@media(prefers-reduced-motion:reduce){.hs-wipe,.hs-raig,.hs-rotul{display:none}.hs-tab.bota,.hs-caixa.sacseja{animation:none}}
 /* ---- rànquing arcade ---- */
 .botons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
 .bt{font:inherit;font-weight:900;font-size:15px;color:#fff;background:#ffffff14;border:2px solid #ffffff33;border-radius:999px;padding:10px 18px;cursor:pointer;backdrop-filter:blur(6px);transition:transform .12s,border-color .2s}
@@ -294,7 +306,27 @@ function pintaHs(){
 }
 function confetiHs(){const box=document.querySelector(".hs-caixa"),cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
  for(let i=0;i<28;i++){const c=document.createElement("i");c.className="conf";c.style.cssText=`left:${Math.random()*100}%;background:${cols[i%7]};width:${6+Math.random()*6}px;height:${8+Math.random()*8}px;animation-duration:${1.4+Math.random()*1.2}s;animation-delay:${Math.random()*.6}s`;box.appendChild(c);setTimeout(()=>c.remove(),3400)}}
-document.getElementById("hsTabs").onclick=e=>{const b=e.target.closest(".hs-tab");if(!b)return;HSTAB=b.dataset.t;document.querySelectorAll(".hs-tab").forEach(x=>x.classList.toggle("on",x===b));if(HSD)pintaHs()};
+// so arcade del rànquing (respecta el 🔊/🔇 de les assignatures: bn_so)
+let ACH=null;const soOk=()=>{try{return localStorage.getItem("bn_so")!=="0"}catch(e){return true}};
+function notaH(f,t0,d,tipus="square",vol=.09){const o=ACH.createOscillator(),g=ACH.createGain(),t=ACH.currentTime+t0;o.type=tipus;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(ACH.destination);o.start(t);o.stop(t+d+.02)}
+const MELO={ // una musiqueta curta diferent per a cada pestanya
+ punts:[[784,0,.1],[988,.09,.1],[1175,.18,.1],[1568,.27,.28],[1319,.27,.28,"triangle"]],        // estrelles: arpegi brillant
+ temps:[[880,0,.06],[660,.1,.06],[880,.2,.06],[660,.3,.06],[1047,.42,.12],[1319,.54,.26]],      // temps: tic-tac i ding
+ nivell:[[392,0,.12],[523,.12,.12],[659,.24,.12],[784,.36,.12],[1047,.5,.34],[523,.5,.34,"triangle"],[659,.5,.34,"triangle"]] // nivell: fanfàrria
+};
+function musiqueta(t){if(!soOk())return;try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();(MELO[t]||MELO.punts).forEach(([f,t0,d,ty])=>notaH(f,t0,d,ty))}catch(e){}}
+const FXT={punts:{e:["⭐","🌟","✨"],c:"#facc15",r:"ESTRELLES!"},temps:{e:["⏱","⏰","⌛"],c:"#22d3ee",r:"TEMPS!"},nivell:{e:["🏅","👑","🎖"],c:"#a78bfa",r:"NIVELL!"}};
+function efecteTab(b){const box=document.querySelector(".hs-caixa"),fx=FXT[b.dataset.t]||FXT.punts;musiqueta(b.dataset.t);
+ b.classList.remove("bota");void b.offsetWidth;b.classList.add("bota");
+ if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+ box.classList.remove("sacseja");void box.offsetWidth;box.classList.add("sacseja");
+ const w=document.createElement("div");w.className="hs-wipe";w.style.setProperty("--wc",fx.c+"55");box.appendChild(w);setTimeout(()=>w.remove(),500);
+ const r=document.createElement("div");r.className="hs-rotul";r.style.setProperty("--wc",fx.c);r.textContent=fx.r;box.appendChild(r);setTimeout(()=>r.remove(),1050);
+ const bb=b.getBoundingClientRect(),cb=box.getBoundingClientRect(),x0=bb.left-cb.left+bb.width/2,y0=bb.top-cb.top+bb.height/2;
+ for(let i=0;i<16;i++){const e=document.createElement("span");e.className="hs-raig";e.textContent=fx.e[i%3];const a=Math.PI*2*i/16,d=90+Math.random()*90;
+  e.style.cssText=`left:${x0-11}px;top:${y0-11}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d+40}px;--rt:${(Math.random()*720-360)|0}deg`;box.appendChild(e);setTimeout(()=>e.remove(),950)}
+}
+document.getElementById("hsTabs").onclick=e=>{const b=e.target.closest(".hs-tab");if(!b)return;if(b.dataset.t!==HSTAB)efecteTab(b);HSTAB=b.dataset.t;document.querySelectorAll(".hs-tab").forEach(x=>x.classList.toggle("on",x===b));if(HSD)pintaHs()};
 </script>
 </body>
 </html>
