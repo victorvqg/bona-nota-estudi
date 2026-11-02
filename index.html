@@ -4,27 +4,143 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bona Nota — Estudia jugant · 1r ESO</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0b1033">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:Nunito,system-ui,Arial,sans-serif;background:#eef2f8;color:#1e293b}
-header{background:linear-gradient(120deg,#312e81,#4f46e5 55%,#06b6d4);color:#fff;padding:34px 18px 40px;text-align:center}
-header h1{font-family:'Press Start 2P',monospace;font-size:clamp(18px,5vw,30px);margin:0;color:#facc15;text-shadow:3px 3px 0 #b91c1c}
-header p{margin:14px 0 0;font-weight:800;opacity:.9}
-main{max-width:860px;margin:-22px auto 30px;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-a.as{display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:18px;padding:18px;text-decoration:none;color:inherit;box-shadow:0 1px 2px #0f172a0d,0 6px 18px #0f172a12;transition:transform .15s}
-a.as:hover{transform:translateY(-3px)}
-.ic{font-size:34px}.as b{font-size:19px}.as small{color:#64748b;font-weight:700}
-.prox{opacity:.5;pointer-events:none}
-footer{text-align:center;color:#94a3b8;font-size:13px;padding:10px 0 24px}
+:root{--groc:#facc15;--vermell:#ef4444;--fons:#0b1033;--txt:#e2e8f0}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:Nunito,system-ui,Arial,sans-serif;color:var(--txt);background:radial-gradient(1200px 700px at 50% -10%,#3b2a8c 0%,#1a1660 35%,var(--fons) 70%) fixed,var(--fons);overflow-x:hidden}
+
+/* ---- cel d'estrelles ---- */
+.cel{position:fixed;inset:0;pointer-events:none;z-index:0}
+.cel i{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;opacity:.7;animation:pampalluga 3s ease-in-out infinite}
+@keyframes pampalluga{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+.graella{position:fixed;left:-50%;right:-50%;bottom:0;height:42vh;z-index:0;pointer-events:none;
+ background-image:linear-gradient(#a855f755 2px,transparent 2px),linear-gradient(90deg,#a855f755 2px,transparent 2px);
+ background-size:60px 60px;transform:perspective(320px) rotateX(62deg);transform-origin:bottom;
+ mask-image:linear-gradient(to top,#000 10%,transparent 90%);-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 90%);
+ animation:avanca 2.4s linear infinite}
+@keyframes avanca{to{background-position:0 60px,0 0}}
+
+/* ---- capçalera ---- */
+header{position:relative;z-index:1;text-align:center;padding:56px 18px 26px}
+.etiqueta{display:inline-flex;align-items:center;gap:8px;background:#ffffff14;border:1px solid #ffffff26;backdrop-filter:blur(6px);padding:7px 14px;border-radius:999px;font-weight:800;font-size:14px;letter-spacing:.3px}
+.etiqueta b{color:var(--groc)}
+h1{font-family:'Press Start 2P',monospace;font-size:clamp(30px,9vw,72px);line-height:1.15;margin:26px 0 0;color:var(--groc);
+ text-shadow:4px 4px 0 #b91c1c,8px 8px 0 #7f1d1d,0 0 34px #facc1588;letter-spacing:2px;animation:sura 4s ease-in-out infinite}
+h1 span{display:inline-block}
+@keyframes sura{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.sub{margin:22px auto 0;max-width:560px;font-size:clamp(16px,2.4vw,20px);font-weight:800;color:#c7d2fe}
+.hola{margin-top:14px;font-weight:900;font-size:18px;color:#fff;min-height:1em}
+.hola em{font-style:normal;color:var(--groc)}
+.start{font-family:'Press Start 2P',monospace;font-size:12px;color:#f0abfc;margin-top:26px;animation:parpelleja 1.1s steps(2) infinite}
+@keyframes parpelleja{50%{opacity:0}}
+.flota{position:absolute;font-size:34px;filter:drop-shadow(0 6px 10px #0008);animation:flota 6s ease-in-out infinite;pointer-events:none}
+@keyframes flota{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-16px) rotate(8deg)}}
+
+/* ---- targetes ---- */
+main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
+.as{--c1:#1e3a8a;--c2:#2563eb;--c3:#0ea5e9;position:relative;display:flex;flex-direction:column;border-radius:24px;text-decoration:none;color:#1e293b;background:#fff;overflow:hidden;
+ box-shadow:0 0 0 3px #ffffff1a,0 18px 40px -12px #000a;transition:transform .25s cubic-bezier(.2,1.4,.4,1),box-shadow .25s;opacity:0;animation:entra .6s cubic-bezier(.2,1.2,.4,1) forwards}
+.as:nth-child(2){animation-delay:.12s}.as:nth-child(3){animation-delay:.24s}.as:nth-child(4){animation-delay:.36s}
+@keyframes entra{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+.as:hover,.as:focus-visible{transform:translateY(-8px) rotate(-.6deg);box-shadow:0 0 0 3px var(--c3),0 0 40px -4px var(--c3),0 26px 50px -14px #000c;outline:none}
+.portada{position:relative;height:150px;background:linear-gradient(135deg,var(--c1),var(--c2) 55%,var(--c3));display:grid;place-items:center;overflow:hidden}
+.portada::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#ffffff30 1.5px,transparent 1.5px);background-size:16px 16px;opacity:.6}
+.portada::after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:#ffffff22;right:-60px;top:-90px}
+.portada .ic{position:relative;font-size:76px;filter:drop-shadow(0 10px 14px #0006);transition:transform .35s cubic-bezier(.2,1.6,.4,1)}
+.as:hover .ic{transform:scale(1.15) rotate(-10deg)}
+.portada .tag{position:absolute;left:14px;top:14px;font-family:'Press Start 2P',monospace;font-size:9px;color:#fff;background:#0006;padding:7px 9px;border-radius:8px;letter-spacing:1px}
+.cos{padding:18px 20px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.cos small.mat{font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--c2)}
+.cos h2{margin:0;font-size:21px;line-height:1.2;font-weight:900}
+.cos p{margin:0;color:#64748b;font-weight:700;font-size:14.5px}
+.xips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.xips span{background:#f1f5f9;border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px;color:#334155}
+.prog{margin-top:6px;display:none}
+.prog.on{display:block}
+.prog .barra{height:10px;border-radius:99px;background:#e2e8f0;overflow:hidden}
+.prog .barra i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--c2),var(--c3));transition:width 1.2s cubic-bezier(.2,1,.3,1)}
+.prog small{display:flex;justify-content:space-between;font-weight:800;color:#475569;font-size:13px;margin-top:5px}
+.juga{margin-top:auto;padding-top:10px}
+.juga span{display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Press Start 2P',monospace;font-size:13px;color:#fff;
+ background:linear-gradient(180deg,var(--c3),var(--c2));padding:15px;border-radius:14px;box-shadow:0 5px 0 var(--c1);transition:transform .1s,box-shadow .1s}
+.as:active .juga span{transform:translateY(4px);box-shadow:0 1px 0 var(--c1)}
+
+.prox{background:transparent;border:3px dashed #ffffff33;box-shadow:none;color:#c7d2fe;display:grid;place-items:center;text-align:center;min-height:300px;pointer-events:none}
+.prox .ic{font-size:56px;opacity:.6;display:block;animation:flota 5s ease-in-out infinite}
+.prox b{font-family:'Press Start 2P',monospace;font-size:12px;display:block;margin:16px 0 8px;color:#f0abfc}
+.prox small{font-weight:800;opacity:.75}
+
+footer{position:relative;z-index:1;text-align:center;color:#a5b4fc;font-size:14px;font-weight:700;padding:10px 18px 36px}
+footer b{color:var(--groc)}
+
+@media (max-width:520px){header{padding-top:40px}.flota{display:none}main{gap:18px}.prox{min-height:170px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.as{opacity:1}}
 </style>
 </head>
 <body>
-<header><h1>BONA NOTA</h1><p>Estudia jugant · 1r ESO · tria l'assignatura</p></header>
+<div class="cel" id="cel" aria-hidden="true"></div>
+<div class="graella" aria-hidden="true"></div>
+
+<header>
+ <span class="flota" style="left:8%;top:70px">🚀</span>
+ <span class="flota" style="right:9%;top:110px;animation-delay:-2s">🏆</span>
+ <span class="flota" style="left:14%;top:250px;animation-delay:-4s">🎮</span>
+ <span class="flota" style="right:15%;top:270px;animation-delay:-1s">⭐</span>
+ <span class="etiqueta">🎓 <b>1r ESO</b> · estudia jugant</span>
+ <h1>BONA<br>NOTA</h1>
+ <p class="sub">Fitxes, targetes, tests i jocs per aprovar sense avorrir-te. Tria l'assignatura i comença a sumar estrelles!</p>
+ <div class="hola" id="hola"></div>
+ <div class="start">▶ TRIA EL TEU MÓN ◀</div>
+</header>
+
 <main>
- <a class="as" href="sociales/t3-clima/"><span class="ic">🌍</span><b>Socials — Tema 3: El clima</b><small>Temps, clima i geografia de l'Anoia · 10 fitxes · 4 jocs</small></a>
- <a class="as" href="bio-i-geo/univers/"><span class="ic">🔭</span><b>Biologia i Geologia — Bloc 1: Univers, Terra i cèl·lula</b><small>La ciència i l'Univers · la Terra i la cèl·lula · 11 fitxes · 5 jocs</small></a>
- <!-- ASSIGNATURES: afegir una targeta per cada carpeta nova -->
+ <a class="as" href="sociales/t3-clima/" data-clau="bn_soc" data-temes="10" style="--c1:#0c4a6e;--c2:#0284c7;--c3:#22d3ee">
+  <div class="portada"><span class="tag">MÓN 1</span><span class="ic">🌍</span></div>
+  <div class="cos">
+   <small class="mat">Ciències socials</small>
+   <h2>Tema 3: El clima</h2>
+   <p>Temps, clima i la geografia de l'Anoia.</p>
+   <div class="xips"><span>📖 10 fitxes</span><span>🎮 4 jocs</span><span>📝 Examen</span></div>
+   <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
+   <div class="juga"><span>JUGA ▶</span></div>
+  </div>
+ </a>
+ <a class="as" href="bio-i-geo/univers/" data-clau="bn_biogeo" data-temes="11" style="--c1:#3b0764;--c2:#7c3aed;--c3:#c084fc">
+  <div class="portada"><span class="tag">MÓN 2</span><span class="ic">🔭</span></div>
+  <div class="cos">
+   <small class="mat">Biologia i Geologia</small>
+   <h2>Bloc 1: Univers, Terra i cèl·lula</h2>
+   <p>La ciència i l'Univers, la Terra i la cèl·lula.</p>
+   <div class="xips"><span>📖 11 fitxes</span><span>🎮 5 jocs</span><span>📝 Examen</span></div>
+   <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
+   <div class="juga"><span>JUGA ▶</span></div>
+  </div>
+ </a>
+ <!-- ASSIGNATURES: afegir una targeta per cada carpeta nova (copiar un <a class="as">, canviar href, data-clau="bn_<id>", data-temes i colors --c1/--c2/--c3) -->
+ <div class="as prox" aria-hidden="true"><div><span class="ic">🔒</span><b>PRÒXIMAMENT</b><small>Nous mons en camí…</small></div></div>
 </main>
-<footer>Bona Nota · el progrés de cada nen es guarda al seu aparell</footer>
+
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda al seu aparell <b>★</b></footer>
+
+<script>
+// estrelles
+(function(){const c=document.getElementById('cel');let h='';for(let i=0;i<90;i++){const s=Math.random()<.15?4:Math.random()<.5?2:3;
+ h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
+// progrés guardat per cada assignatura (mateix navegador)
+(function(){let nom='';
+ document.querySelectorAll('.as[data-clau]').forEach(a=>{try{
+  const cl=a.dataset.clau+'_',per=JSON.parse(localStorage.getItem(cl+'perfils')||'{}')||{},act=localStorage.getItem(cl+'actiu')||'',S=per[act];
+  if(!S)return;nom=nom||S.nom||act;
+  const total=+a.dataset.temes||1,fets=Object.values(S.temes||{}).filter(t=>t&&t.intents&&t.intents.length&&Math.max(...t.intents.map(i=>i.pc))>=50).length,pc=Math.min(100,Math.round(fets/total*100));
+  const p=a.querySelector('.prog');p.classList.add('on');p.querySelector('.pt').textContent=`⭐ ${S.punts||0} punts`;p.querySelector('.pc').textContent=`✅ ${fets}/${total} aprovats`;
+  a.querySelector('.juga span').textContent='CONTINUA ▶';requestAnimationFrame(()=>setTimeout(()=>p.querySelector('.barra i').style.width=pc+'%',500));
+ }catch(e){}});
+ if(nom)document.getElementById('hola').innerHTML=`Hola de nou, <em>${nom.replace(/[<>&]/g,'')}</em>! 👋`;
+})();
+</script>
 </body>
 </html>
