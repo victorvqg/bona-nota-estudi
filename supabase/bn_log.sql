@@ -24,7 +24,7 @@ grant insert on public.bn_log to anon, authenticated;
 
 create schema if not exists bn_priv;
 revoke all on schema bn_priv from public, anon, authenticated;
-create table if not exists bn_priv.admin(email text primary key, hash text not null);
+create table if not exists bn_priv.admin(email text not null, hash text primary key);
 revoke all on bn_priv.admin from public, anon, authenticated;
 
 create or replace function public.bn_admin_logs(p_email text, p_pass text, p_dies int default 30)
@@ -46,4 +46,4 @@ grant execute on function public.bn_admin_logs(text,text,int) to anon, authentic
 -- Contrasenya de l'admin (executar a part, posant-hi la contrasenya; no la deixis en cap fitxer):
 -- insert into bn_priv.admin(email, hash)
 -- values ('victorvqg@gmail.com', extensions.crypt('LA_TEVA_CONTRASENYA', extensions.gen_salt('bf')))
--- on conflict (email) do update set hash = excluded.hash;
+-- (per canviar-la: delete from bn_priv.admin; i torna a fer l insert)
