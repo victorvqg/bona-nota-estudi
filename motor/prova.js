@@ -36,7 +36,7 @@ const {chromium}=require('playwright');
   else if(t==='figura'){const n=await p.evaluate(id=>ASSIG.jocs.find(j=>j.id===id).q.length,id);for(let k=0;k<n;k++){await p.locator('.opt').first().click();await p.click('#seg')}}
   await tanca();
  }
- const jocsFets=await p.evaluate(()=>Object.keys(S.jocs).length);
+ const jocsFets=await p.evaluate(()=>Object.keys(S.jocs).join(","));
  // repàs espaiat: falla 2 preguntes del primer tema i després repassa-les encertant
  await p.evaluate(()=>{aturaSeg();obre(0);pest='test';pintaTema()});
  for(let k=0;k<Math.min(await p.evaluate(()=>tema.q.length),6);k++){await p.evaluate(k=>{const q=tema.q.find(x=>x[0]===document.querySelector('.pregunta').innerHTML);const o=[...document.querySelectorAll('.opt')].find(o=>(k<2)?+o.dataset.i!==q[2]:+o.dataset.i===q[2]);o.click()},k);await p.click('#seg')}

@@ -603,7 +603,7 @@ function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;if(COMBO<3)return;
  const premi=COMBO%10===0?2:COMBO%5===0?1:0;
  const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
  document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
-const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"]];
+const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"]];
 // el resum d'estrelles només surt quan toques el comptador de dalt a la dreta
 // ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
 let COMP=null,COMPT=0;
@@ -736,6 +736,7 @@ function benvinguda(){
  const i=document.getElementById("nom");if(!noms.length)i.focus();
  document.getElementById("fn").onsubmit=e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}
   n=n.charAt(0).toUpperCase()+n.slice(1);
+  if(nomProhibit(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies amb lletres i números (sense paraulotes ni símbols).</div>`;return}
   if(existeix(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);
    const sug=suggeriments(n);
    document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙈 Ja hi ha algú que es diu <b>${Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())}</b>. Si ets tu, toca el teu nom a la llista de dalt. Si no, tria un altre nom, un àlies o afegeix-hi un número:<div style="margin-top:8px">${sug.map(x=>`<span class="chip sug">${x}</span>`).join("")}</div></div>`;
@@ -770,7 +771,7 @@ function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.l
 const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"]];
 function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
 function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
-function joc(id){aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id);registra(id==="examen"?"examen":"joc",{joc:id,titol:j?j[2]:id,pc})}
 
 // ====================== TEMA ======================
@@ -804,7 +805,8 @@ function test(ordre,k,bones,clau,pool,cb){
   if(cb){cb(pc,bones,ordre.length);return}
   const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",{tema:tema.id,titol:tema.titol,pc,bones,n:ordre.length});
   const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=APROVA;
-  if(aprova)arcade(pc,bones,ordre.length,ant!==null&&pc>ant);else fracas(pc,bones,ordre.length);
+  const rec=ant!==null&&pc>ant;if(rec){const f=FONT;FONT=["record"];suma(2);FONT=f}
+  if(aprova)arcade(pc,bones,ordre.length,rec);else fracas(pc,bones,ordre.length);
   const msg=pc>=90?"Excel·lent!":pc>=APROVA?"Tema superat!":pc>=50?`Gairebé! Per passar de tema cal un ${APROVA} %`:"Cal repassar més, ànims!";
   z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
   <p class="prog" style="margin-top:14px">Com t'ha anat aquest tema?</p>
@@ -824,7 +826,7 @@ function test(ordre,k,bones,clau,pool,cb){
   const ok=+b.dataset.i===q[2];
   z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
   const tidR=q.tid||(esTema?tema.id:null);if(tidR)repAnota(tidR,q[0],ok);
-  if(ok){suma(REPAS?0:1);so("ok");ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  if(ok){const nova=REPAS?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);if(!nova&&!REPAS)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">ja encertada avui · sense ⭐</small>`);so("ok");ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
   document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
  });
@@ -837,6 +839,21 @@ function examen(){
  app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
  test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
 }
+
+// ====================== ESTRELLES JUSTES ======================
+// Una pregunta encertada dona ⭐ només la primera vegada de cada dia; cada joc, només la primera partida del dia.
+// Millorar el rècord d'un tema dona +2 ⭐. Les obertes, només per les idees que es detecten al text.
+function diaEst(){if(!S.est||S.est.d!==avui())S.est={d:avui(),q:{},j:{},o:{}};return S.est}
+function estPregunta(k){const e=diaEst();if(e.q[k])return 0;e.q[k]=1;return 1}
+let JOCSTAR=1;
+const NOM_MAL=/(^|[^a-z])(puta|puto|putes|putos|merda|mierda|cabron|cabro|polla|cony|cono|collons|cojones|gilipolles|gilipollas|imbecil|idiota|subnormal|maricon|marica|mongol|mongolo|joputa|zorra|guarra|pene|penis|culo|cul|caca|pipi|pedo|pet|tonto|tonta|burro|fuck|shit|bitch|dick|ass|nazi|hitler|porno|porn|sexo|sex|teta|tetes|tetas|xixa|chocho|verga|follar|folla)([^a-z]|$)|fill ?de ?puta|hijo ?de ?puta|me cago|em cago/;
+const normT=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/·/g,".");
+function nomProhibit(n){const x=normT(n.trim());return !/^[a-z0-9 ._'-]+$/.test(x)||NOM_MAL.test(x)}
+// idees detectades al text d'una oberta: alguna paraula important (5+ lletres) del punt clau, comparant els 5 primers caràcters
+const BUIDES=new Set("aquest aquesta aquests aquestes perque quan com amb sense sobre entre també molt mes menys tots totes cada altre altres seva seves seus quan durant despres abans pero porque cuando sobre entre tambien mucho todos todas otra otro otras otros".split(" "));
+function ideaDetectada(punt,text){const t=normT(text).replace(/[^a-z0-9 ]/g," "),paus=new Set(t.split(/\s+/).filter(w=>w.length>=4).map(w=>w.slice(0,5)));
+ const claus=normT(punt.replace(/<[^>]+>/g,"")).replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>=5&&!BUIDES.has(w));
+ return claus.some(w=>paus.has(w.slice(0,5)))}
 
 // ====================== REPÀS ESPAIAT DELS ERRORS ======================
 // Cada pregunta fallada entra a la capsa 0 (es pot repassar avui mateix).
@@ -866,7 +883,7 @@ function cartaRepas(){const n=repPendents().length,tot=repTots().length;if(!tot)
 
 // ====================== JOCS GENÈRICS ======================
 // tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
-function fiJoc(j,n,errors){const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
+function fiJoc(j,n,errors){diaEst().j[j.id]=1;const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
  document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
 function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
 function jocOrdena(j){
@@ -875,7 +892,7 @@ function jocOrdena(j){
  const x=document.getElementById("xips");
  barreja(it.map((c,i)=>i)).forEach(i=>{const s=document.createElement("span");s.className="chip";s.textContent=it[i][0];
   s.onclick=()=>{if(s.classList.contains("ok"))return;
-   if(i===pos){s.classList.add("ok");const d=document.createElement("div");d.style.background=it[i][2]||"#eef2ff";d.innerHTML=`${i+1} · ${it[i][0]}${it[i][1]?` <small style="font-weight:600;color:#475569">— ${it[i][1]}</small>`:""}`;document.getElementById("pila").appendChild(d);pos++;suma(1);so("ok");if(pos===it.length)fiJoc(j,it.length,errors)}
+   if(i===pos){s.classList.add("ok");const d=document.createElement("div");d.style.background=it[i][2]||"#eef2ff";d.innerHTML=`${i+1} · ${it[i][0]}${it[i][1]?` <small style="font-weight:600;color:#475569">— ${it[i][1]}</small>`:""}`;document.getElementById("pila").appendChild(d);pos++;suma(JOCSTAR);so("ok");if(pos===it.length)fiJoc(j,it.length,errors)}
    else{errors++;sacseja(s)}};x.appendChild(s)});
 }
 function jocFigura(j){
@@ -890,7 +907,7 @@ function jocParelles(j){
  barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][0];s.dataset.i=i;s.onclick=()=>{if(s.classList.contains("ok"))return;E.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};E.appendChild(s)});
  barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][1];
   s.onclick=()=>{if(!sel||s.classList.contains("ok"))return;
-   if(+sel.dataset.i===i){sel.classList.remove("sel");sel.classList.add("ok");s.classList.add("ok");sel=null;fet++;suma(1);so("ok");if(fet===PAR.length)fiJoc(j,PAR.length,errors)}
+   if(+sel.dataset.i===i){sel.classList.remove("sel");sel.classList.add("ok");s.classList.add("ok");sel=null;fet++;suma(JOCSTAR);so("ok");if(fet===PAR.length)fiJoc(j,PAR.length,errors)}
    else{errors++;sacseja(s)}};D.appendChild(s)});
 }
 function jocClassifica(j){
@@ -900,7 +917,7 @@ function jocClassifica(j){
  barreja(F).forEach(f=>{const s=document.createElement("span");s.className="chip";s.textContent=f[0];s.dataset.k=f[1];s.onclick=()=>{fr.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};fr.appendChild(s)});
  app.querySelectorAll(".cub").forEach(c=>c.onclick=()=>{
   if(!sel)return;
-  if(sel.dataset.k===c.dataset.k){sel.classList.remove("sel");sel.classList.add("ok");sel.onclick=null;c.appendChild(sel);sel=null;fet++;suma(1);so("ok");if(fet===F.length)fiJoc(j,F.length,errors)}
+  if(sel.dataset.k===c.dataset.k){sel.classList.remove("sel");sel.classList.add("ok");sel.onclick=null;c.appendChild(sel);sel=null;fet++;suma(JOCSTAR);so("ok");if(fet===F.length)fiJoc(j,F.length,errors)}
   else{errors++;sacseja(sel)}});
 }
 
@@ -922,10 +939,11 @@ function obertes(n){
   <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p></details>
   <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
   document.getElementById("nota").onclick=()=>{
-   const k=[...document.querySelectorAll(".pk")].filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
-   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);registra("oberta",{n,tema:o.t,pc});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
+   const txtR=document.getElementById("resp").value,cks=[...document.querySelectorAll(".pk")],k=cks.filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
+   const det=o.p.filter((pt,i)=>cks[i].checked&&ideaDetectada(pt,txtR)).length,primera=!diaEst().o[n];diaEst().o[n]=1;
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(primera?det:0);registra("oberta",{n,tema:o.t,pc});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
    const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
-   document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> · a l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
+   document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> marcades · n'he trobat <b>${det}</b> escrites al teu text${primera?` → +${det} ⭐`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>A l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
   };
  };
 }

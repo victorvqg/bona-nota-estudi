@@ -1,3 +1,4 @@
+-- ⚠ SUBSTITUÏT per bn_ranking_net.sql (rànquing amb codi de grup, filtre de noms i límit d'estrelles). No el tornis a executar.
 -- Bona Nota · rànquing de la portada (amb noms): estrelles totals, temps d'estudi i estrelles màximes en un món.
 -- Executar una vegada al SQL Editor de Supabase.
 create or replace function public.bn_ranking()
