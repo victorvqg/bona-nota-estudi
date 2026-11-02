@@ -782,24 +782,50 @@ function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremo
 }
 
 // ====================== BENVINGUDA ======================
+// ====================== INICI DE SESSIÓ (NOM + PIN) ======================
+// Per entrar cal el nom i el PIN de 4 xifres. Nom nou → es crea amb aquest PIN (màxim 2 noms per aparell).
+// La sessió es manté oberta en aquest aparell fins que es toca «Canviar d'usuari».
+const SENSE_NUVOL=()=>/^file:/.test(location.protocol)||window.BN_NO_LOG;
 function benvinguda(){
- marcaNav("usuari");
+ marcaNav("usuari");calla();
+ if(S.nom){S=BUIT();try{localStorage.removeItem(CL+"actiu")}catch(e){}pintaCap()}
  const noms=Object.keys(PER),altres=Object.values(nomsAparell()).filter(n=>!noms.some(x=>x.toLowerCase()===n.toLowerCase()));
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=APROVA}).length;
+ const pot=potNouNom("\u0000");
  app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
- ${(noms.length||altres.length)?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${altres.map(n=>`<button class="perfil" data-altre="1" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>✨ Nou en aquest món · ja jugues en un altre</small></span></button>`).join("")}${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div>${potNouNom("\u0000")?`<p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog" style="margin-top:18px">📵 En aquest aparell ja hi ha ${MAX_NOMS} noms: no se'n poden crear més.</p>`}`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
- <form id="fn" ${potNouNom("\u0000")?"":"hidden"}><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form><a class="surt-gran" href="../../">🚪 Tornar al menú de tots els mons</a></div>`;
- app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>b.dataset.altre?nouNom(b.dataset.n):entra(b.dataset.n));
- const i=document.getElementById("nom");if(!noms.length)i.focus();
- document.getElementById("fn").onsubmit=e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}
+ ${(noms.length||altres.length)?`<p class="prog">Qui estudia ara? Toca el teu nom i escriu el PIN.</p><div class="perfils">${noms.map(n=>`<button class="perfil" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}${altres.map(n=>`<button class="perfil" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>✨ Nou en aquest món · ja jugues en un altre</small></span></button>`).join("")}</div>`:`<p class="prog">Escriu el teu nom i tria un PIN de 4 números. La pròxima vegada entraràs amb el mateix nom i PIN, des de qualsevol aparell.</p>`}
+ <form id="fn" autocomplete="off"><input id="nom" maxlength="20" placeholder="El teu nom" ${pot?"":"readonly"}>
+ ${SENSE_NUVOL()?"":`<input id="pinL" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="PIN (4 números)" style="letter-spacing:6px;margin-top:0">`}
+ <div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Entra ▶</button></form>
+ ${pot?"":`<p class="prog" style="margin-top:10px">📵 En aquest aparell ja hi ha ${MAX_NOMS} noms: només pots entrar amb un d'aquests.</p>`}
+ <a class="surt-gran" href="../../">🚪 Tornar al menú de tots els mons</a></div>`;
+ const i=document.getElementById("nom"),pi=document.getElementById("pinL"),av=document.getElementById("nomAvis");
+ const err=(m,el)=>{so("ko");sacseja(el||i);av.innerHTML=`<div class="fb ko" style="text-align:left">${m}</div>`};
+ app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>{i.value=b.dataset.n;app.querySelectorAll(".perfil").forEach(x=>x.classList.toggle("on",x===b));if(pi){pi.value="";pi.focus()}else document.getElementById("fn").requestSubmit()});
+ if(pi)pi.oninput=()=>{pi.value=pi.value.replace(/\D/g,"").slice(0,4);av.innerHTML="";if(pi.value.length===4&&i.value.trim())document.getElementById("fn").requestSubmit()};
+ i.oninput=()=>{i.style.borderColor="";av.innerHTML=""};
+ if(!noms.length&&!altres.length)i.focus();
+ document.getElementById("fn").onsubmit=async e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n)return err("Escriu el teu nom.");
   n=n.charAt(0).toUpperCase()+n.slice(1);
-  if(nomProhibit(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies amb lletres i números (sense paraulotes ni símbols).</div>`;return}
-  if(existeix(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);
-   const sug=suggeriments(n);
-   document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙈 Ja hi ha algú que es diu <b>${Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())}</b>. Si ets tu, toca el teu nom a la llista de dalt. Si no, tria un altre nom, un àlies o afegeix-hi un número:<div style="margin-top:8px">${sug.map(x=>`<span class="chip sug">${x}</span>`).join("")}</div></div>`;
-   document.querySelectorAll(".sug").forEach(c=>c.onclick=()=>nouNom(c.textContent));return}
-  nouNom(n)};
- i.oninput=()=>{i.style.borderColor="";document.getElementById("nomAvis").innerHTML=""};
+  if(nomProhibit(n))return err("🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies amb lletres i números (sense paraulotes ni símbols).");
+  const local=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase()),aparell=!!nomsAparell()[n.toLowerCase()];
+  if(!local&&!aparell&&!potNouNom(n))return err(avisMassaNoms().replace(/^<div[^>]*>|<\/div>$/g,""));
+  if(SENSE_NUVOL())return entra(n);
+  const p=pi.value;if(!/^\d{4}$/.test(p))return err("🔢 Escriu el PIN: 4 números.",pi);
+  av.innerHTML=`<p class="prog">Un moment…</p>`;
+  let ex;try{ex=await rpc("bn_perfil_existeix",{p_nom:n})}catch(x){ex=null}
+  if(ex===null){ // sense connexió: només es pot entrar amb un nom d'aquest aparell i el PIN guardat
+   const pl=pinDe(n);if((local||aparell)&&(!pl||pl===p)){if(!pl)desaPin(n,p);return entra(n)}
+   return err(pl?"❌ PIN incorrecte.":"📡 Cal connexió a internet per crear un nom nou o entrar per primera vegada en aquest aparell.",pl?pi:i)}
+  if(ex){ // el nom ja existeix: comprova el PIN i recupera el progrés
+   try{await rpc("bn_progres_llegeix",{p_nom:n,p_pin:p,p_assig:ASSIG.id});desaPin(n,p);so("coin");
+    entra(n)} // entra() ja baixa el progrés del núvol si és més nou que el d'aquest aparell
+   catch(m){err(m==="pin"?"❌ PIN incorrecte. Torna-ho a provar.":m==="bloc"?"⏳ Massa intents. Espera 15 minuts i torna-ho a provar.":"📡 No hi ha connexió. Prova-ho més tard.",pi)}
+   return}
+  // nom nou (o nom antic d'aquest aparell que encara no tenia PIN): es crea amb aquest PIN
+  try{const r=await rpc("bn_perfil_crea",{p_nom:n,p_pin:p});if(r==="existeix")return err("Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.",pi);
+   desaPin(n,p);so("coin");entra(n);if(!local)setTimeout(()=>{const d=document.createElement("div");d.className="combo";d.innerHTML=`🔐 NOM CREAT!<small>RECORDA EL TEU PIN</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)},400)}
+  catch(m){err(m==="nom"?"🙅 Aquest nom no es pot fer servir.":"📡 No hi ha connexió. Prova-ho més tard.")}};
 }
 
 // ====================== INICI ======================
@@ -982,6 +1008,7 @@ function nouNom(n){if(!potNouNom(n)){const a=app.querySelector("#nomAvis");if(a)
 // perfil d'aquest aparell: si té PIN, sincronitza; si no, carta per posar-n'hi
 function sincronitzaEntrada(modAbans){const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;nuvolBaixa(S.nom,p,modAbans||0).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");else nuvolPuja()}).catch(m=>{if(m==="pin"){const x=pins();delete x[S.nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}})}
 function cartaPin(){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return "";
+ if(!pinDe(S.nom))return "";
  if(pinDe(S.nom))return `<p class="prog" style="text-align:center;margin:10px 0 0">☁️ Progrés guardat al núvol amb PIN${NUV_OK?" · desat fa un moment":""}</p>`;
  return `<div class="continua" style="background:#eef2ff;border-color:#a5b4fc" onclick="posaPin()"><span style="font-size:28px">🔐</span><b>Posa't un PIN i no perdràs mai el progrés (també en un altre aparell)</b><span class="btn">Posa'l →</span></div>`}
 function posaPin(){const n=S.nom;rpc("bn_perfil_existeix",{p_nom:n}).then(ex=>{
