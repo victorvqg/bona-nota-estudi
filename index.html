@@ -197,7 +197,7 @@ footer b{color:var(--groc)}
    <li><b>✍️ Preguntes obertes</b>: practica explicar-ho amb les teves paraules, com a l'examen.</li>
    <li><b>📊 Com vaig</b>: mira on encertes més, on et costa i què et toca repassar.</li>
   </ul>
-  <p class="peu-intro">Escriu el teu nom per començar. El progrés de cadascú es guarda en el seu aparell.</p>
+  <p class="peu-intro">Escriu el teu nom per començar. El progrés de cadascú es guarda amb el seu nom i PIN, i es pot continuar des de qualsevol mòbil, tauleta o ordinador.</p>
  </div>
  <div class="hola" id="hola"></div>
  <div class="start">▶ TRIA EL TEU MÓN ◀</div>
@@ -260,11 +260,11 @@ footer b{color:var(--groc)}
   <p class="hs-tit">★ HIGH SCORES ★</p>
   <div class="hs-tabs" id="hsTabs" role="tablist"><button class="hs-tab on" role="tab" data-t="punts">⭐ Estrelles</button><button class="hs-tab" role="tab" data-t="temps">⏱ Temps</button><button class="hs-tab" role="tab" data-t="nivell">🏅 Nivell</button><button class="hs-tab" role="tab" data-t="setmana">📈 Setmana</button></div>
   <div id="hs"></div>
-  <p class="hs-peu">INSERT COIN ▶ JUGA I PUJA AL PODI!<small>Compta tots els mons dels últims 120 dies. Les estrelles tenen un límit diari per jugar net.</small></p>
+  <p class="hs-peu">HAVE FUN! ▶ JUGA I PUJA AL PODI!<small>Compta tots els mons dels últims 120 dies. Les estrelles tenen un límit diari per jugar net.</small></p>
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda al seu aparell <b>★</b><br><a class="admin" href="admin/">🔐 admin</a></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a></footer>
 
 <script>
 // estrelles
@@ -293,7 +293,7 @@ const NIV=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","�
 const niv=p=>{let i=0;while(i<NIV.length-1&&p>=NIV[i+1][0])i++;return i};
 const esc=t=>String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
 const fT=s=>{const m=Math.round(s/60);return m<1?"<1 MIN":m>=60?`${Math.floor(m/60)}H ${m%60}M`:`${m} MIN`};
-// cada nom té sempre el mateix animal i el mateix color (surt del nom, igual a tots els aparells)
+// cada nom té sempre el mateix animal i el mateix color (surt del nom, igual a tots els dispositius)
 const AVS=["🦊","🐸","🦁","🐼","🐯","🐙","🦄","🐲","🦖","🐧","🐨","🦉","🐺","🐻","🦈","🐵","🐰","🐷","🦝","🐳"],AVC=["#7c3aed","#2563eb","#059669","#db2777","#ea580c","#0891b2","#4f46e5","#16a34a","#c026d3","#0284c7"];
 function avatar(nom){let h=7;for(const c of nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;return {e:AVS[h%AVS.length],c:AVC[Math.floor(h/97)%AVC.length]}}
 const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ⭐`})},temps:{k:"temps_s",v:r=>({v:fT(r.temps_s)})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${NIV[n][2]} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ⭐`,s:"últims 7 dies"})}};

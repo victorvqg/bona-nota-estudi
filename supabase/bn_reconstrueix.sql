@@ -1,0 +1,4 @@
+-- Aplicat a Supabase (migració bn_reconstrueix_del_registre).
+-- bn_priv.reconstrueix(k, assig): refà estrelles, temps, temes (intents, fitxes, valoracions),
+-- jocs i dies a partir de public.bn_log. bn_progres_llegeix (amb PIN) ara retorna també 'log',
+-- i l'app el fusiona amb el progrés: encara que es perdi el dispositiu, el progrés torna.

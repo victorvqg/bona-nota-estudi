@@ -521,12 +521,12 @@ function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||win
 function buidaTemps(){if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")buidaTemps()});
 addEventListener("pagehide",buidaTemps);
-// noms d'aquest aparell, sumant tots els mons (mateix navegador). Màxim 2 noms per aparell.
+// noms d'aquest dispositiu, sumant tots els mons (mateix navegador). Màxim 2 noms per dispositiu.
 const MAX_NOMS=2;
 function nomsAparell(){const m={};try{(JSON.parse(localStorage.getItem("bn_noms_aparell")||"[]")||[]).forEach(n=>{m[n.trim().toLowerCase()]=n});for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c))continue;
  Object.keys(JSON.parse(localStorage.getItem(c)||"{}")||{}).forEach(n=>{m[n.trim().toLowerCase()]=m[n.trim().toLowerCase()]||n})}}catch(e){}return m}
 function potNouNom(n){const m=nomsAparell();return !!m[n.trim().toLowerCase()]||Object.keys(m).length<MAX_NOMS}
-function avisMassaNoms(){const m=Object.values(nomsAparell());return `<div class="fb ko" style="text-align:left">📵 En aquest aparell ja hi ha <b>${m.length} noms</b> (${m.map(x=>`<b>${x}</b>`).join(" i ")}) i no se'n poden crear més. Toca el teu nom${m.length>1?" de la llista":""} per entrar.</div>`}
+function avisMassaNoms(){const m=Object.values(nomsAparell());return `<div class="fb ko" style="text-align:left">📵 En aquest dispositiu ja hi ha <b>${m.length} noms</b> (${m.map(x=>`<b>${x}</b>`).join(" i ")}) i no se'n poden crear més. Toca el teu nom${m.length>1?" de la llista":""} per entrar.</div>`}
 function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLowerCase())}
 function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
  ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
@@ -684,8 +684,8 @@ function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremo
 
 // ====================== BENVINGUDA ======================
 // ====================== INICI DE SESSIÓ (NOM + PIN) ======================
-// Per entrar cal el nom i el PIN de 4 xifres. Nom nou → es crea amb aquest PIN (màxim 2 noms per aparell).
-// La sessió es manté oberta en aquest aparell fins que es toca «Canviar d'usuari».
+// Per entrar cal el nom i el PIN de 4 xifres. Nom nou → es crea amb aquest PIN (màxim 2 noms per dispositiu).
+// La sessió es manté oberta en aquest dispositiu fins que es toca «Canviar d'usuari».
 const SENSE_NUVOL=()=>/^file:/.test(location.protocol)||window.BN_NO_LOG;
 function benvinguda(nomPre){
  marcaNav("usuari");calla();
@@ -694,11 +694,11 @@ function benvinguda(nomPre){
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=APROVA}).length;
  const pot=potNouNom("\u0000");
  app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
- ${(noms.length||altres.length)?`<p class="prog">Qui estudia ara? Toca el teu nom i escriu el PIN.</p><div class="perfils">${noms.map(n=>`<button class="perfil" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b>${PER[n].id?` <span class="etq">#${PER[n].id}</span>`:""}<small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}${altres.map(n=>`<button class="perfil" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>✨ Nou en aquest món · ja jugues en un altre</small></span></button>`).join("")}</div>`:`<p class="prog">Escriu el teu nom i tria un PIN de 4 números. La pròxima vegada entraràs amb el mateix nom i PIN, des de qualsevol aparell.</p>`}
+ ${(noms.length||altres.length)?`<p class="prog">Qui estudia ara? Toca el teu nom i escriu el PIN.</p><div class="perfils">${noms.map(n=>`<button class="perfil" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b>${PER[n].id?` <span class="etq">#${PER[n].id}</span>`:""}<small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}${altres.map(n=>`<button class="perfil" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>✨ Nou en aquest món · ja jugues en un altre</small></span></button>`).join("")}</div>`:`<p class="prog">Escriu el teu nom i tria un PIN de 4 números. La pròxima vegada entraràs amb el mateix nom i PIN, des de qualsevol dispositiu.</p>`}
  <form id="fn" autocomplete="off"><input id="nom" maxlength="20" placeholder="El teu nom" ${pot?"":"readonly"}>
  ${SENSE_NUVOL()?"":`<input id="pinL" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="PIN (4 números)" style="letter-spacing:6px;margin-top:0">`}
  <div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Entra ▶</button></form>
- ${pot?"":`<p class="prog" style="margin-top:10px">📵 En aquest aparell ja hi ha ${MAX_NOMS} noms: només pots entrar amb un d'aquests.</p>`}
+ ${pot?"":`<p class="prog" style="margin-top:10px">📵 En aquest dispositiu ja hi ha ${MAX_NOMS} noms: només pots entrar amb un d'aquests.</p>`}
  <a class="surt-gran" href="../../">🚪 Tornar al menú de tots els mons</a></div>`;
  const i=document.getElementById("nom"),pi=document.getElementById("pinL"),av=document.getElementById("nomAvis");
  const err=(m,el)=>{so("ko");sacseja(el||i);av.innerHTML=`<div class="fb ko" style="text-align:left">${m}</div>`};
@@ -716,15 +716,15 @@ function benvinguda(nomPre){
   const p=pi.value;if(!/^\d{4}$/.test(p))return err("🔢 Escriu el PIN: 4 números.",pi);
   av.innerHTML=`<p class="prog">Un moment…</p>`;
   let ex;try{ex=await rpc("bn_perfil_existeix",{p_nom:n})}catch(x){ex=null}
-  if(ex===null){ // sense connexió: només es pot entrar amb un nom d'aquest aparell i el PIN guardat
+  if(ex===null){ // sense connexió: només es pot entrar amb un nom d'aquest dispositiu i el PIN guardat
    const pl=pinDe(n);if((local||aparell)&&(!pl||pl===p)){if(!pl)desaPin(n,p);return entra(n)}
-   return err(pl?"❌ PIN incorrecte.":"📡 Cal connexió a internet per crear un nom nou o entrar per primera vegada en aquest aparell.",pl?pi:i)}
+   return err(pl?"❌ PIN incorrecte.":"📡 Cal connexió a internet per crear un nom nou o entrar per primera vegada en aquest dispositiu.",pl?pi:i)}
   if(ex){ // el nom ja existeix: comprova el PIN i recupera el progrés
    try{await rpc("bn_progres_llegeix",{p_nom:n,p_pin:p,p_assig:ASSIG.id});desaPin(n,p);so("coin");
-    entra(n)} // entra() ja baixa el progrés del núvol si és més nou que el d'aquest aparell
+    entra(n)} // entra() ja baixa el progrés del núvol si és més nou que el d'aquest dispositiu
    catch(m){err(m==="pin"?"❌ PIN incorrecte. Torna-ho a provar.":m==="bloc"?"⏳ Massa intents. Espera 15 minuts i torna-ho a provar.":"📡 No hi ha connexió. Prova-ho més tard.",pi)}
    return}
-  // nom nou (o nom antic d'aquest aparell que encara no tenia PIN): es crea amb aquest PIN
+  // nom nou (o nom antic d'aquest dispositiu que encara no tenia PIN): es crea amb aquest PIN
   try{const r=await rpc("bn_perfil_crea",{p_nom:n,p_pin:p});if(r==="existeix")return err("Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.",pi);
    desaPin(n,p);so("coin");entra(n);if(!local)setTimeout(()=>{const d=document.createElement("div");d.className="combo";d.innerHTML=`🔐 NOM CREAT!<small>RECORDA EL TEU PIN</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)},400)}
   catch(m){err(m==="nom"?"🙅 Aquest nom no es pot fer servir.":"📡 No hi ha connexió. Prova-ho més tard.")}};
@@ -830,7 +830,7 @@ function examen(){
 }
 
 // ====================== ESCOLTA (lectura en veu alta) ======================
-// Fa servir la veu del mateix aparell. Català per defecte; castellà si l'assignatura és de castellà (ASSIG.veu).
+// Fa servir la veu del mateix dispositiu. Català per defecte; castellà si l'assignatura és de castellà (ASSIG.veu).
 const VEU_LANG=ASSIG.veu||(/castell|spanish|espa/i.test(ASSIG.id+ASSIG.nom)?"es-ES":"ca-ES");
 let VEUS=[],PARLANT=null;
 function triaVeu(){if(!("speechSynthesis" in window))return null;VEUS=speechSynthesis.getVoices();const l=VEU_LANG.slice(0,2);
@@ -865,7 +865,7 @@ function ideaDetectada(punt,text){const t=normT(text).replace(/[^a-z0-9 ]/g," ")
 
 // ====================== PIN I PROGRÉS AL NÚVOL ======================
 // Cada nom pot tenir un PIN de 4 xifres. Amb el PIN, el progrés de cada món es guarda a Supabase
-// i es pot recuperar en un altre aparell. Sense PIN tot funciona igual, però només en aquest aparell.
+// i es pot recuperar en un altre dispositiu. Sense PIN tot funciona igual, però només en aquest dispositiu.
 const SB_RPC=BN_LOG.url.replace("/bn_log","/rpc/");
 function rpc(f,body,keep){return fetch(SB_RPC+f,{method:"POST",keepalive:!!keep,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json"},body:JSON.stringify(body)})
  .then(async r=>{const t=await r.text();if(!r.ok){const m=/massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/nom no permes/.test(t)?"nom":"xarxa";throw m}return t?JSON.parse(t):null})}
@@ -877,8 +877,8 @@ function nuvolProg(){if(!S.nom||!pinDe(S.nom)||/^file:/.test(location.protocol))
 function nuvolPuja(keep){const p=pinDe(S.nom);if(!S.nom||!p||/^file:/.test(location.protocol))return Promise.resolve();clearTimeout(NUV_T);
  return rpc("bn_progres_desa",{p_nom:S.nom,p_pin:p,p_assig:ASSIG.id,p_estat:S,p_mod:S.mod||Date.now()},keep).then(()=>{NUV_OK=Date.now()}).catch(()=>{})}
 addEventListener("pagehide",()=>{if(NUV_T)nuvolPuja(true)});
-// FUSIONA dos progressos (aparell i núvol) sense perdre mai res: números → el més alt, llistes → la més llarga
-// (dies: unió), sí/no → sí si algun és sí, textos → del més recent. Així un aparell nou (buit) no esborra el progrés d'un altre.
+// FUSIONA dos progressos (dispositiu i núvol) sense perdre mai res: números → el més alt, llistes → la més llarga
+// (dies: unió), sí/no → sí si algun és sí, textos → del més recent. Així un dispositiu nou (buit) no esborra el progrés d'un altre.
 function fusiona(a,b){const nouA=(a&&a.mod||0)>=(b&&b.mod||0);
  const f=(x,y,k)=>{if(x===undefined||x===null)return y;if(y===undefined||y===null)return x;
   if(k==="dies"&&Array.isArray(x)&&Array.isArray(y))return [...new Set([...x,...y])].sort();
@@ -888,21 +888,23 @@ function fusiona(a,b){const nouA=(a&&a.mod||0)>=(b&&b.mod||0);
   if(typeof x==="object"&&typeof y==="object"){const o={};new Set([...Object.keys(x),...Object.keys(y)]).forEach(kk=>o[kk]=f(x[kk],y[kk],kk));return o}
   return nouA?x:y};
  const r=f(a||{},b||{},"");r.nom=(a&&a.nom)||(b&&b.nom)||"";r.mod=Math.max(a&&a.mod||0,b&&b.mod||0);return Object.assign(BUIT(),r)}
-// baixa el progrés del núvol i el fusiona amb el d'aquest aparell
+// baixa el progrés del núvol i el fusiona amb el d'aquest dispositiu
 function nuvolBaixa(nom,pin){return rpc("bn_progres_llegeix",{p_nom:nom,p_pin:pin,p_assig:ASSIG.id}).then(r=>{
- if(!r||!r.estat)return false;const abans=JSON.stringify([S.punts,S.temes,S.ob,S.jocs]);const n=S.nom;
- S=fusiona(S,Object.assign({},r.estat,{mod:r.mod}));S.nom=n;S.mod=Date.now();guarda();pintaCap();
- return JSON.stringify([S.punts,S.temes,S.ob,S.jocs])!==abans})}
-// pantalla del PIN. mode: "crea" (nom nou), "entra" (el nom ja té PIN), "posa" (perfil d'aquest aparell sense PIN)
+ if(!r||(!r.estat&&!r.log))return false;const abans=JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps]);const n=S.nom;
+ if(r.estat)S=fusiona(S,Object.assign({},r.estat,{mod:r.mod}));
+ if(r.log)S=fusiona(S,Object.assign({},r.log,{mod:0})); // el registre reconstrueix estrelles, temps, temes i jocs encara que es perdi el dispositiu
+ S.nom=n;S.mod=Date.now();guarda();pintaCap();
+ return JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps])!==abans})}
+// pantalla del PIN. mode: "crea" (nom nou), "entra" (el nom ja té PIN), "posa" (perfil d'aquest dispositiu sense PIN)
 function pantallaPin(nom,mode,despres){marcaNav("usuari");
  const tit={crea:`🔐 Tria un PIN per a <b>${nom}</b>`,entra:`🔐 <b>${nom}</b> ja té PIN`,posa:`🔐 Protegeix <b>${nom}</b> amb un PIN`}[mode];
  const txt={crea:"4 números que només sàpigues tu (i papa o mama). Amb el PIN podràs continuar on ho has deixat des d'un altre mòbil, tauleta o ordinador.",
-  entra:"Si ets tu (per exemple, des d'un altre aparell), escriu el teu PIN i recuperaràs el progrés. Si no ets tu, torna enrere i tria un altre nom.",
-  posa:"Amb un PIN, el teu progrés queda guardat al núvol i el pots recuperar des d'un altre aparell."}[mode];
+  entra:"Si ets tu (per exemple, des d'un altre dispositiu), escriu el teu PIN i recuperaràs el progrés. Si no ets tu, torna enrere i tria un altre nom.",
+  posa:"Amb un PIN, el teu progrés queda guardat al núvol i el pots recuperar des d'un altre dispositiu."}[mode];
  app.innerHTML=`<div class="box benv"><div class="gran">🔐</div><h2 style="margin:8px 0 6px">${tit}</h2><p class="prog">${txt}</p>
  <form id="fp"><input id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="• • • •" style="letter-spacing:12px;font-size:28px">
  <div id="pinAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">${mode==="entra"?"Entra amb el PIN":"Desa el PIN"} 🔑</button></form>
- <div class="fila">${mode==="entra"?`<button class="btn sec" id="pinEnrere">← Tria un altre nom</button>`:`<button class="btn sec" id="pinNo">Ara no (només en aquest aparell)</button>`}</div></div>`;
+ <div class="fila">${mode==="entra"?`<button class="btn sec" id="pinEnrere">← Tria un altre nom</button>`:`<button class="btn sec" id="pinNo">Ara no (només en aquest dispositiu)</button>`}</div></div>`;
  const i=document.getElementById("pin"),av=document.getElementById("pinAvis");i.focus();
  const err=m=>{so("ko");sacseja(i);av.innerHTML=`<div class="fb ko">${m}</div>`};
  i.oninput=()=>{i.value=i.value.replace(/\D/g,"").slice(0,4);av.innerHTML=""};
@@ -920,14 +922,14 @@ function nouNom(n){if(!potNouNom(n)){const a=app.querySelector("#nomAvis");if(a)
  rpc("bn_perfil_existeix",{p_nom:n}).then(ex=>{
   if(ex)pantallaPin(n,"entra",(ok,r)=>entra(n));
   else pantallaPin(n,"crea",()=>entra(n))}).catch(()=>entra(n))}
-// perfil d'aquest aparell: si té PIN, sincronitza; si no, carta per posar-n'hi
+// perfil d'aquest dispositiu: si té PIN, sincronitza; si no, carta per posar-n'hi
 function sincronitzaEntrada(modAbans){const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;rpc("bn_perfil_id",{p_nom:S.nom}).then(id=>{if(id&&S.id!==id){S.id=id;guarda();pintaCap();const h=document.querySelector(".hero h1");if(h&&!h.querySelector(".nid"))h.insertAdjacentHTML("beforeend",` <small class="nid" style="font-size:15px;color:var(--suau)">#${id}</small>`)}}).catch(()=>{});nuvolBaixa(S.nom,p).catch(m=>{if(m==="pin")throw m;return false}).then(nou=>rpc("bn_punts_maxim",{p_nom:S.nom,p_assig:ASSIG.id}).then(mx=>{if(mx>S.punts){S.punts=mx;S.mod=Date.now();guarda();pintaCap();return true}return nou}).catch(()=>nou)).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");nuvolPuja()}).catch(m=>{if(m==="pin"){const x=pins();delete x[S.nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}})}
 function cartaPin(){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return "";
  if(!pinDe(S.nom))return "";
  if(pinDe(S.nom))return `<p class="prog" style="text-align:center;margin:10px 0 0">☁️ Progrés guardat al núvol amb PIN${NUV_OK?" · desat fa un moment":""}</p>`;
- return `<div class="continua" style="background:#eef2ff;border-color:#a5b4fc" onclick="posaPin()"><span style="font-size:28px">🔐</span><b>Posa't un PIN i no perdràs mai el progrés (també en un altre aparell)</b><span class="btn">Posa'l →</span></div>`}
+ return `<div class="continua" style="background:#eef2ff;border-color:#a5b4fc" onclick="posaPin()"><span style="font-size:28px">🔐</span><b>Posa't un PIN i no perdràs mai el progrés (també en un altre dispositiu)</b><span class="btn">Posa'l →</span></div>`}
 function posaPin(){const n=S.nom;rpc("bn_perfil_existeix",{p_nom:n}).then(ex=>{
- if(ex)pantallaPin(n,"entra",(ok,r)=>{if(r&&r.estat){S=fusiona(S,Object.assign({},r.estat,{mod:r.mod}));S.nom=n;S.mod=Date.now();guarda()}nuvolPuja();vista("inici")});
+ if(ex)pantallaPin(n,"entra",(ok,r)=>{if(r&&(r.estat||r.log)){if(r.estat)S=fusiona(S,Object.assign({},r.estat,{mod:r.mod}));if(r.log)S=fusiona(S,Object.assign({},r.log,{mod:0}));S.nom=n;S.mod=Date.now();guarda()}nuvolPuja();vista("inici")});
  else pantallaPin(n,"posa",ok=>{if(ok)nuvolPuja();vista("inici")})}).catch(()=>{})}
 
 // ====================== EFECTES SUAUS ======================
@@ -1130,7 +1132,7 @@ function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElement
  <h2 class="sec">❌ Preguntes que més falla</h2><div class="box"><p class="prog" style="margin:0 0 8px">🔁 Al repàs: <b>${repTots().length}</b> preguntes pendents (${repPendents().length} per avui) · 🏅 apreses del tot: <b>${S.apresos||0}</b></p>${errs.length?`<ol class="llista-err">${errs.slice(0,8).map(([q,c,t])=>`<li>${q} <span class="etq">${t.ic} ${t.titol}</span> <b>×${c}</b></li>`).join("")}</ol>`:`<p class="prog" style="margin:0">Encara cap error registrat. 👌</p>`}</div>
  <h2 class="sec">✍️ Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
  <h2 class="sec">🎮 Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
- <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat en aquest navegador i aquest aparell. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
+ <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat amb el seu nom i PIN. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
  <div class="fila">${btSuau()}<button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><button class="btn verm" onclick="demanaReset()">🗑️ Esborrar el progrés</button></div>`;
 }
 function demanaReset(){
