@@ -20,6 +20,10 @@ header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%
 .hd{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
 .logo{font-weight:900;font-size:19px;letter-spacing:.2px;display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0}
 .logo span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo .tt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.logo .tt small{font-size:13px;font-weight:700;opacity:.85}
+@media(max-width:520px){.logo{font-size:16px}.logo #hola{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
+.benv .tema{margin:4px 0 0;font-weight:900;color:var(--blau2)}
 .pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap}
 nav{max-width:960px;margin:0 auto;padding:0 10px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
@@ -190,7 +194,7 @@ body.tremola main{animation:tremola .4s}
 <body>
 <header>
  <div class="hd">
-  <div class="logo" onclick="vista('inici')"><span id="logoic">📚</span> <span id="hola"></span></div>
+  <div class="logo" onclick="vista('inici')"><span id="logoic">📚</span><span class="tt"><span id="hola"></span><small id="qui"></small></span></div>
   <button class="so-btn" id="so" onclick="canviaSo()" title="So">🔊</button><span class="pill" id="punts">⭐ 0</span>
  </div>
  <nav id="nav">
@@ -227,7 +231,7 @@ function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
 function suma(n){S.punts+=n;desa()}
-function pintaCap(){document.getElementById("punts").textContent="⭐ "+S.punts;document.getElementById("hola").textContent=S.nom?`${ASSIG.nom} · ${S.nom}`:`${ASSIG.nom} ${ASSIG.curs}`}
+function pintaCap(){document.getElementById("punts").textContent="⭐ "+S.punts;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom} · ${ASSIG.curs}`:ASSIG.curs}
 // temps d'estudi: cada 15 s amb la pestanya visible
 setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;guarda()}},15000);
 const app=document.getElementById("app");
@@ -288,7 +292,7 @@ function benvinguda(){
  marcaNav("usuari");
  const noms=Object.keys(PER);
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=50}).length;
- app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2>
+ app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
  ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
  <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form></div>`;
  app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>entra(b.dataset.n));
@@ -314,7 +318,7 @@ function inici(){
  marcaDia();
  const aprov=T.filter(t=>(millor(t.id)??0)>=50).length, sp=seguentPendent();
  const res=resumGlobal();
- let h=`<div class="hero"><div class="av">🧒</div><div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
  <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>`;
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
  h+=`${blocsTemes()}

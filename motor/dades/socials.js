@@ -1,7 +1,7 @@
 // Bona Nota · Estudi interactiu · dades de SOCIALS 1r ESO
 // Font: llibre de Socials (tema 3, Vicens Vives) + apunts-geografia-anoia.md
 const ASSIG={
- id:"socials", clau:"bn_soc", nom:"Socials", curs:"1r ESO", ic:"🌍",
+ id:"socials", clau:"bn_soc", nom:"Socials", tema:"Tema 3: El clima", curs:"1r ESO", ic:"🌍",
  color:["#1e3a8a","#2563eb","#0ea5e9"],
  peu:"Bona Nota · Llibre de Socials (tema 3, Vicens Vives) i apunts de geografia de l'Anoia",
  blocs:[{titol:"📖 Temes del llibre",n:6},{titol:"🏔️ Apunts de l'Anoia",n:4}],

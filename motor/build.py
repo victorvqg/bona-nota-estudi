@@ -8,7 +8,9 @@ plant = (d / "plantilla-estudi-interactiu.html").read_text()
 dades = (d / "dades" / f"{assig}.js").read_text()
 nom = re.search(r'nom:"([^"]+)"', dades).group(1)
 curs = re.search(r'curs:"([^"]+)"', dades).group(1)
-html = plant.replace("/*DADES*/", dades, 1).replace("{{TITOL}}", f"{nom} {curs} — Estudia jugant | Bona Nota")
+mt = re.search(r'tema:"([^"]+)"', dades.split("blocs:")[0])
+tema = f" — {mt.group(1)}" if mt else ""
+html = plant.replace("/*DADES*/", dades, 1).replace("{{TITOL}}", f"{nom}{tema} · {curs} | Bona Nota")
 assert "{{" not in html and "/*DADES*/" not in html
 out = d.parent / (sys.argv[2] if len(sys.argv) > 2 else assig) / "index.html"
 out.parent.mkdir(parents=True, exist_ok=True)
