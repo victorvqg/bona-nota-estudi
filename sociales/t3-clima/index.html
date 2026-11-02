@@ -258,6 +258,29 @@ body.tremola main{animation:tremola .4s}
 .com-guanyar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .com-guanyar span{background:#fff;border:1.5px solid #fcd34d;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800}
 @media(prefers-reduced-motion:reduce){.vola,.espurna,.combo,#punts.boing,.font .bf i{animation:none!important;transition:none!important}}
+
+/* ---- menú fix a baix al mòbil + capçalera neta ---- */
+nav i{font-style:normal;margin-right:5px}
+@media(max-width:600px){
+ nav{position:fixed;left:0;right:0;bottom:0;z-index:40;max-width:none;margin:0;padding:4px 2px calc(4px + env(safe-area-inset-bottom));gap:0;display:grid;grid-template-columns:repeat(7,1fr);overflow:visible;background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb));box-shadow:0 -4px 14px #0f172a40}
+ nav button,nav a.surt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 0 5px;margin:0;border:0;border-radius:12px;font-size:10.5px;font-weight:800;min-height:52px;min-width:0;color:#dbeafe;background:transparent}
+ nav i{font-size:21px;margin:0;line-height:1.1}
+ nav span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ nav .ll-u{font-size:0}nav .ll-u::after{content:"Usuari";font-size:10.5px}
+ nav button.on{background:#ffffff;color:var(--blau2)}
+ nav a.surt{color:#fff}
+ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
+ .vol input,.vol b{display:none}.vol{padding:2px 4px}
+ .peu-pag{margin-bottom:10px}
+}
+/* ---- botó escolta (llegir en veu alta) ---- */
+.escolta{border:2px solid var(--vora);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;color:var(--fosc);display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
+.escolta:hover{border-color:#93c5fd}
+.escolta.parla{background:#eff6ff;border-color:var(--blau);color:var(--blau2);animation:parlaPols 1s ease-in-out infinite}
+@keyframes parlaPols{50%{box-shadow:0 0 0 5px #bfdbfe88}}
+.escolta-fila{display:flex;justify-content:flex-end;margin:-4px 0 8px}
+.flash .escolta{position:absolute;top:10px;right:10px;z-index:2;padding:4px 9px;font-size:13px}
+@media(prefers-reduced-motion:reduce){.escolta.parla{animation:none}}
 </style>
 </head>
 <body>
@@ -267,13 +290,13 @@ body.tremola main{animation:tremola .4s}
   <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci">🔊</button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts" onclick="obreEstrelles(event)" style="cursor:pointer">⭐ 0</span>
  </div>
  <nav id="nav">
-  <a class="surt" href="../../" title="Tornar al menú de tots els mons">🚪 Mons</a>
-  <button data-v="inici" onclick="vista('inici')">🏠 Inici</button>
-  <button data-v="temes" onclick="vista('temes')">📖 Temes</button>
-  <button data-v="jocs" onclick="vista('jocs')">🎮 Jocs</button>
-  <button data-v="obertes" onclick="vista('obertes')">✍️ Obertes</button>
-  <button data-v="analitica" onclick="vista('analitica')">📊 Com vaig</button>
-  <button data-v="usuari" onclick="benvinguda()">👥 Canviar d'usuari</button>
+  <a class="surt" href="../../" title="Tornar al menú de tots els mons"><i>🚪</i><span>Mons</span></a>
+  <button data-v="inici" onclick="vista('inici')"><i>🏠</i><span>Inici</span></button>
+  <button data-v="temes" onclick="vista('temes')"><i>📖</i><span>Temes</span></button>
+  <button data-v="jocs" onclick="vista('jocs')"><i>🎮</i><span>Jocs</span></button>
+  <button data-v="obertes" onclick="vista('obertes')"><i>✍️</i><span>Obertes</span></button>
+  <button data-v="analitica" onclick="vista('analitica')"><i>📊</i><span>Com vaig</span></button>
+  <button data-v="usuari" onclick="benvinguda()"><i>👥</i><span class="ll-u">Canviar d'usuari</span></button>
  </nav>
 </header>
 <main id="app"></main>
@@ -574,7 +597,7 @@ const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${
 function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
 let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
 function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
-function vista(v){aturaSeg();window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
+function vista(v){calla();aturaSeg();window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
 
 
 // ====================== SO I EFECTES ARCADE ======================
@@ -677,7 +700,7 @@ function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS
 
 // ====================== TEMA ======================
 let tema,pest="fitxa";
-function obre(i){aturaSeg();COMBO=0;FONT=["temes",T[i].id];tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
+function obre(i){calla();aturaSeg();COMBO=0;FONT=["temes",T[i].id];tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
 function pintaTema(){
  window.scrollTo(0,0);
  const t=tema,e=ET(t.id),idx=T.indexOf(t);
@@ -687,12 +710,13 @@ function pintaTema(){
 }
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();registra("fitxa",{tema:t.id,titol:t.titol});
- document.getElementById("zona").innerHTML=`<div class="box"><div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+ const txtF=`${t.titol}. Idea clau: ${t.idea}. ${t.pts.join(". ")}. Truc: ${t.truc}. Compte: ${t.compte}`;
+ document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
 }
-function targetes(n){
+function targetes(n){calla();
  const t=tema,c=t.fc[n],e=ET(t.id);e.fc=Math.max(e.fc,n+1);desa();
  document.getElementById("zona").innerHTML=`<div class="prog" style="text-align:center">Targeta ${n+1} de ${t.fc.length}</div>
- <div class="flash" onclick="this.classList.toggle('gir')"><div class="in"><div class="cara davant">${c[0]}<small>toca per girar</small></div><div class="cara darrere">${c[1]}<small>toca per tornar</small></div></div></div>
+ <div class="flash" onclick="this.classList.toggle('gir')"><div class="in"><div class="cara davant">${btEscolta(c[0],"")}${c[0]}<small>toca per girar</small></div><div class="cara darrere">${btEscolta(c[1],"")}${c[1]}<small>toca per tornar</small></div></div></div>
  <div class="punts-fc">${t.fc.map((x,i)=>`<i class="${i==n?'on':''}"></i>`).join("")}</div>
  <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="targetes(${n-1})">← Anterior</button>
  ${n<t.fc.length-1?`<button class="btn" onclick="targetes(${n+1})">Següent →</button>`:`<button class="btn verd" onclick="pest='test';pintaTema()">Fes el test ✅</button>`}</div>`;
@@ -700,6 +724,7 @@ function targetes(n){
 
 // ====================== TEST ======================
 function test(ordre,k,bones,clau,pool,cb){
+ calla();
  const z=document.getElementById("zona"),llista=pool||tema.q,esTema=!pool;
  if(k>=ordre.length){
   const pc=Math.round(bones*100/ordre.length);
@@ -722,7 +747,7 @@ function test(ordre,k,bones,clau,pool,cb){
  const q=llista[ordre[k]];
  const ops=barreja(q[1].map((o,i)=>[o,i]));
  z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
- <div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="fb"></div></div>`;
+ ${potEscoltar()?`<div class="escolta-fila" style="margin:4px 0 -4px">${btEscolta(q[0]+". "+ops.map(([o],j)=>"ABC"[j]+": "+o).join(". "),"")}</div>`:""}<div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="fb"></div></div>`;
  z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
   const ok=+b.dataset.i===q[2];
   z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
@@ -740,6 +765,24 @@ function examen(){
  app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
  test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
 }
+
+// ====================== ESCOLTA (lectura en veu alta) ======================
+// Fa servir la veu del mateix aparell. Català per defecte; castellà si l'assignatura és de castellà (ASSIG.veu).
+const VEU_LANG=ASSIG.veu||(/castell|spanish|espa/i.test(ASSIG.id+ASSIG.nom)?"es-ES":"ca-ES");
+let VEUS=[],PARLANT=null;
+function triaVeu(){if(!("speechSynthesis" in window))return null;VEUS=speechSynthesis.getVoices();const l=VEU_LANG.slice(0,2);
+ return VEUS.find(v=>v.lang.replace("_","-").toLowerCase()===VEU_LANG.toLowerCase())||VEUS.find(v=>v.lang.toLowerCase().startsWith(l))||(l==="ca"?VEUS.find(v=>v.lang.toLowerCase().startsWith("es")):null)||null}
+if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=()=>{VEUS=speechSynthesis.getVoices()};
+const potEscoltar=()=>"speechSynthesis" in window;
+function netText(h){const d=document.createElement("div");d.innerHTML=String(h).replace(/<br\s*\/?>/gi,". ").replace(/<\/li>/gi,". ");return d.textContent.replace(/[★⚠✅💡🔁🧠]/g,"").replace(/\s+/g," ").trim()}
+function calla(){if(potEscoltar())speechSynthesis.cancel();document.querySelectorAll(".escolta.parla").forEach(b=>{b.classList.remove("parla");b.firstChild.textContent="🔊"});PARLANT=null}
+function escolta(btn,text){if(!potEscoltar())return;if(PARLANT===btn){calla();return}calla();
+ const u=new SpeechSynthesisUtterance(netText(text)),v=triaVeu();if(v)u.voice=v;u.lang=v?v.lang:VEU_LANG;u.rate=.92;u.pitch=1.05;
+ u.onend=u.onerror=()=>{if(PARLANT===btn)calla()};PARLANT=btn;btn.classList.add("parla");btn.firstChild.textContent="⏹";speechSynthesis.speak(u);registraEscolta()}
+let ESC_N=0;function registraEscolta(){ESC_N++}
+// botó: <button class="escolta" data-t="clau">; el text es guarda a ESCT[clau]
+const ESCT={};let ESCI=0;
+function btEscolta(text,etq){if(!potEscoltar())return "";const k="e"+(++ESCI);ESCT[k]=text;return `<button class="escolta" type="button" onclick="event.stopPropagation();escolta(this,ESCT['${k}'])" aria-label="Escolta-ho en veu alta"><span>🔊</span>${etq===""?"":`<span>${etq||"Escolta"}</span>`}</button>`}
 
 // ====================== ESTRELLES JUSTES ======================
 // Una pregunta encertada dona ⭐ només la primera vegada de cada dia; cada joc, només la primera partida del dia.
@@ -828,7 +871,7 @@ function obertes(n){
  FONT=["obertes"];window.scrollTo(0,0);marcaNav("obertes");
  const o=OB[n],fet=S.ob[n];
  app.innerHTML=`<h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
- <div class="box" style="margin-top:10px"><div class="pregunta">${o.q}</div>
+ <div class="box" style="margin-top:10px">${potEscoltar()?`<div class="escolta-fila">${btEscolta(o.q,"Escolta")}</div>`:""}<div class="pregunta">${o.q}</div>
  <textarea id="resp" rows="7" placeholder="Escriu aquí la teva resposta amb les teves paraules…"></textarea>
  <div class="fila"><button class="btn" id="veu">Comprova la meva resposta</button></div><div id="corr"></div></div>
  <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="obertes(${n-1})">← Anterior</button><button class="btn sec" ${n==OB.length-1?'disabled':''} onclick="obertes(${n+1})">Següent →</button></div>`;
@@ -837,7 +880,7 @@ function obertes(n){
   if(txt.length<15){document.getElementById("corr").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de comprovar-ho.</div>`;return}
   document.getElementById("veu").disabled=true;document.getElementById("resp").readOnly=true;
   document.getElementById("corr").innerHTML=`<div class="fb"><b>Marca les idees que has posat a la teva resposta:</b>${o.p.map(x=>`<label class="chk"><input type="checkbox" class="pk"><span>${x}</span></label>`).join("")}
-  <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p></details>
+  <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p>${btEscolta(o.m,"Escolta la resposta model")}</details>
   <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
   document.getElementById("nota").onclick=()=>{
    const txtR=document.getElementById("resp").value,cks=[...document.querySelectorAll(".pk")],k=cks.filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);

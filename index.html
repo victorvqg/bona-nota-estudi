@@ -330,7 +330,7 @@ function pintaHs(){
 function confetiHs(){const box=document.querySelector(".hs-caixa"),cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
  for(let i=0;i<28;i++){const c=document.createElement("i");c.className="conf";c.style.cssText=`left:${Math.random()*100}%;background:${cols[i%7]};width:${6+Math.random()*6}px;height:${8+Math.random()*8}px;animation-duration:${1.4+Math.random()*1.2}s;animation-delay:${Math.random()*.6}s`;box.appendChild(c);setTimeout(()=>c.remove(),3400)}}
 // so arcade del rànquing (respecta el 🔊/🔇 de les assignatures: bn_so)
-let ACH=null;const soOk=()=>{try{return localStorage.getItem("bn_so")!=="0"}catch(e){return true}};
+let ACH=null;const soOk=()=>{try{return localStorage.getItem("bn_vol")!=="0"&&localStorage.getItem("bn_so")!=="0"}catch(e){return true}};
 function notaH(f,t0,d,tipus="square",vol=.09){const o=ACH.createOscillator(),g=ACH.createGain(),t=ACH.currentTime+t0;o.type=tipus;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(ACH.destination);o.start(t);o.stop(t+d+.02)}
 const MELO={ // una musiqueta curta diferent per a cada pestanya
  punts:[[784,0,.1],[988,.09,.1],[1175,.18,.1],[1568,.27,.28],[1319,.27,.28,"triangle"]],        // estrelles: arpegi brillant
