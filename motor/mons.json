@@ -1,0 +1,59 @@
+[
+ {
+  "dades": "socials",
+  "carpeta": "sociales/t3-clima",
+  "mon": "1",
+  "materia": "Ciències socials",
+  "titol": "Tema 3: El clima",
+  "desc": "Temps, clima i la geografia de l'Anoia.",
+  "colors": [
+   "#0c4a6e",
+   "#0284c7",
+   "#22d3ee"
+  ],
+  "ic": "🌍"
+ },
+ {
+  "dades": "biogeo",
+  "carpeta": "bio-i-geo/univers",
+  "mon": "2",
+  "materia": "Biologia i Geologia",
+  "titol": "Bloc 1: Univers, Terra i cèl·lula",
+  "desc": "La ciència i l'Univers, la Terra i la cèl·lula.",
+  "colors": [
+   "#3b0764",
+   "#7c3aed",
+   "#c084fc"
+  ],
+  "ic": "🔭"
+ },
+ {
+  "dades": "castellano",
+  "carpeta": "castellano/t2-t3",
+  "mon": "3",
+  "materia": "Lengua Castellana",
+  "titol": "Temas 2 y 3",
+  "desc": "El texto, el sustantivo, la noticia, los géneros literarios, los determinantes y la b.",
+  "colors": [
+   "#7f1d1d",
+   "#dc2626",
+   "#f59e0b"
+  ],
+  "ic": "📝",
+  "llengua": "es"
+ },
+ {
+  "dades": "comarques",
+  "carpeta": "sociales/comarques",
+  "mon": "4",
+  "materia": "Ciències socials",
+  "titol": "Les comarques de Catalunya",
+  "desc": "Les 42 comarques i l'Aran, les seves capitals i les quatre demarcacions.",
+  "colors": [
+   "#7c2d12",
+   "#c2410c",
+   "#f59e0b"
+  ],
+  "ic": "🗺️"
+ }
+]

@@ -15,8 +15,8 @@ const {chromium}=require('playwright');
  const q=await p.evaluate(()=>{const st=s=>String(s).replace(/<[^>]+>/g,'').length;let tot=0,llarga=0;const pocs=[];
   T.forEach(t=>{if(t.q.length<8)pocs.push(t.id+'('+t.q.length+')');t.q.forEach(x=>{tot++;const L=x[1].map(st),c=L[x[2]];if(c===Math.max(...L)&&L.filter(l=>l===c).length===1)llarga++})});
   return {tot,llarga,pc:Math.round(llarga*100/tot),pocs}});
- console.log(`banc: ${q.tot} preguntes · correcta = opció més llarga en el ${q.pc}% (ideal ≤ 40%)`+(q.pocs.length?` · temes amb menys de 8 preguntes: ${q.pocs.join(', ')}`:''));
- if(process.env.ESTRICTE&&(q.pc>40||q.pocs.length))errs.push('banc de preguntes per sota del mínim');
+ console.log(`banc: ${q.tot} preguntes · correcta = opció més llarga en el ${q.pc}% (ideal entre 15 i 40%)`+(q.pocs.length?` · temes amb menys de 8 preguntes: ${q.pocs.join(', ')}`:''));
+ if(process.env.ESTRICTE&&(q.pc>40||q.pc<15||q.pocs.length))errs.push('banc de preguntes per sota del mínim');
  // cada tema: fitxa, targetes, test perfecte
  for(let i=0;i<info.temes;i++){
   await p.evaluate(i=>{aturaSeg();obre(i)},i);await p.evaluate(()=>{pest='targetes';pintaTema()});await p.evaluate(()=>{pest='test';pintaTema()});

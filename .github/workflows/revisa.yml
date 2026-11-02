@@ -1,0 +1,41 @@
+# Bona Nota · revisió automàtica a cada canvi
+# 1) Torna a generar tots els mons i la portada (motor/tot.py) i comprova que el que hi ha pujat coincideix:
+#    si algú ha editat una pàgina generada a mà, o s'ha oblidat de regenerar, falla i diu quins fitxers.
+# 2) Passa la prova automàtica de cada món (tests, jocs, examen, repàs, obertes) en mode estricte:
+#    mínim 8 preguntes per tema i la resposta correcta no pot ser massa sovint la més llarga (ni massa poc).
+name: Revisa Bona Nota
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  revisa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Instal·la Playwright (Chromium)
+        run: |
+          npm install --no-save playwright@1
+          npx playwright install --with-deps chromium
+      - name: Regenera mons i portada
+        run: cd motor && python3 tot.py
+      - name: Les pàgines pujades coincideixen amb el motor
+        run: |
+          if ! git diff --quiet; then
+            echo "::error::Hi ha pàgines que no coincideixen amb el motor + dades. Executa 'python3 motor/tot.py' i torna a pujar. Fitxers:"
+            git diff --stat
+            exit 1
+          fi
+      - name: Prova automàtica de cada món
+        run: |
+          cd motor
+          for c in $(python3 -c "import json;print(' '.join(m['carpeta'] for m in json.load(open('mons.json'))))"); do
+            echo "::group::$c"
+            ESTRICTE=1 node prova.js "$PWD/../$c/index.html"
+            echo "::endgroup::"
+          done
