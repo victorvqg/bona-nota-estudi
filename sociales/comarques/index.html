@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Socials — Les comarques de Catalunya · 1r ESO | Bona Nota</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+ --fosc:#1f2d3d;--blau:#3b82f6;--blau2:#2563eb;--verd:#16a34a;--verd-cl:#dcfce7;--verm:#dc2626;--verm-cl:#fee2e2;
+ --groc:#f59e0b;--groc-cl:#fef3c7;--lila:#7c3aed;--fons:#eef2f8;--card:#fff;--txt:#1e293b;--suau:#64748b;--vora:#e2e8f0;
+ --r:18px;--om:0 1px 2px #0f172a0d,0 6px 18px #0f172a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Nunito,system-ui,Arial,sans-serif;background:var(--fons);color:var(--txt);font-size:16.5px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit}
+/* capçalera */
+header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%,var(--g3,#0ea5e9));color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 14px #1e3a8a40}
+.hd{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.logo{font-weight:900;font-size:19px;letter-spacing:.2px;display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0}
+.logo span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo .tt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.logo .tt small{font-size:13px;font-weight:700;opacity:.85}
+@media(max-width:520px){.logo{font-size:16px}.logo #hola{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
+.benv .tema{margin:4px 0 0;font-weight:900;color:var(--blau2)}
+.pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap}
+nav{max-width:960px;margin:0 auto;padding:0 10px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{border:0;background:transparent;color:#dbeafe;padding:7px 13px;border-radius:999px;font-weight:800;cursor:pointer;white-space:nowrap;font-size:15px}
+nav button.on{background:#fff;color:var(--blau2)}
+nav a.surt{display:inline-flex;align-items:center;gap:4px;color:#fff;text-decoration:none;font-weight:900;font-size:15px;padding:5px 12px;border-radius:999px;border:2px solid #ffffff66;white-space:nowrap;margin-right:4px}
+nav a.surt:hover,nav a.surt:focus-visible{background:#ffffff26;border-color:#fff;outline:none}
+.surt-gran{display:block;text-align:center;margin-top:16px;color:var(--suau);font-weight:800;text-decoration:none}
+.surt-gran:hover{color:var(--blau2)}
+main{max-width:960px;margin:0 auto;padding:18px 16px 40px}
+/* elements bàsics */
+h2.sec{font-size:21px;margin:26px 0 12px;display:flex;align-items:center;gap:8px}
+h2.sec:first-child{margin-top:4px}
+.box{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--om);margin-bottom:14px}
+.btn{border:0;border-radius:12px;padding:11px 18px;font-weight:800;font-size:15.5px;cursor:pointer;background:var(--blau);color:#fff;box-shadow:0 3px 0 var(--blau2);transition:transform .08s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--blau2)}
+.btn.sec{background:#fff;color:var(--fosc);box-shadow:0 0 0 2px var(--vora) inset,0 3px 0 var(--vora)}
+.btn.verd{background:var(--verd);box-shadow:0 3px 0 #15803d}
+.btn.verm{background:var(--verm);box-shadow:0 3px 0 #991b1b}
+.btn:disabled{opacity:.45;cursor:default}
+.fila{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.prog{color:var(--suau);font-size:14.5px;font-weight:700}
+/* hero */
+.hero{background:linear-gradient(135deg,#fff,#eff6ff);border-radius:22px;padding:20px 22px;box-shadow:var(--om);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hero .av{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:32px;flex:none}
+.hero h1{margin:0;font-size:24px}
+.hero p{margin:2px 0 0;color:var(--suau)}
+.hero .stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.mini{background:#fff;border:2px solid var(--vora);border-radius:14px;padding:6px 12px;text-align:center;min-width:78px}
+.mini b{display:block;font-size:20px;line-height:1.2}
+.mini small{color:var(--suau);font-weight:700;font-size:12px}
+.continua{margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--groc-cl);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
+.continua b{flex:1}
+/* graella de temes */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.tile{background:var(--card);border-radius:var(--r);padding:16px;cursor:pointer;box-shadow:var(--om);transition:transform .15s,box-shadow .15s;position:relative;display:flex;flex-direction:column;gap:6px;min-height:150px}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 24px #0f172a1f}
+.tile .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.tile b{font-size:16.5px;line-height:1.25}
+.tile small{color:var(--suau);font-weight:600}
+.tile .peu{margin-top:auto;display:flex;align-items:center;gap:8px}
+.barra{flex:1;height:8px;background:#eef2f7;border-radius:6px;overflow:hidden}
+.barra i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#22c55e,#16a34a)}
+.pc{font-size:13px;font-weight:800;color:var(--suau);min-width:34px;text-align:right}
+.segell{position:absolute;top:12px;right:12px;font-size:20px}
+.num{position:absolute;top:14px;right:14px;font-size:12px;font-weight:900;color:#94a3b8}
+.etq{display:inline-block;font-size:11.5px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca}
+.etq.ap{background:#ecfdf5;color:#047857}
+/* pantalla tema */
+.cap-tema{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.cap-tema .ic{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.cap-tema h2{margin:0;font-size:22px;line-height:1.2}
+.passos{display:flex;gap:8px;margin:12px 0 16px}
+.passos button{flex:1;border:0;background:#fff;border-radius:14px;padding:10px 6px;font-weight:800;cursor:pointer;color:var(--suau);box-shadow:var(--om);font-size:15px}
+.passos button.on{background:var(--fosc);color:#fff}
+.passos button.fet::after{content:" ✓";color:#22c55e}
+.idea{background:var(--verd-cl);border:2px solid #86efac;border-radius:14px;padding:12px 16px;font-weight:800}
+.idea small{display:block;font-size:11.5px;letter-spacing:.6px;color:#15803d;font-weight:900}
+.truc{background:var(--groc-cl);border:2px solid #fcd34d;border-radius:14px;padding:12px 16px;margin-top:12px}
+.compte{background:var(--verm-cl);border-left:6px solid var(--verm);border-radius:0 14px 14px 0;padding:10px 14px;margin-top:12px}
+ul.pts{padding-left:0;list-style:none;margin:14px 0 0}
+ul.pts li{position:relative;padding:8px 0 8px 30px;border-bottom:1px dashed var(--vora)}
+ul.pts li:last-child{border-bottom:0}
+ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--blau)}
+/* targetes */
+.flash{perspective:1000px;height:240px;cursor:pointer;margin:12px auto;max-width:540px}
+.flash .in{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.flash.gir .in{transform:rotateY(180deg)}
+.flash .cara{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;font-weight:800;box-shadow:0 10px 26px #0f172a22}
+.flash .davant{background:#fff;border:3px solid #bfdbfe}
+.flash .darrere{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;transform:rotateY(180deg);font-weight:700;font-size:18.5px}
+.flash .cara small{position:absolute;bottom:12px;font-size:12.5px;font-weight:700;opacity:.6}
+.punts-fc{display:flex;justify-content:center;gap:6px;margin-top:4px}
+.punts-fc i{width:9px;height:9px;border-radius:50%;background:#cbd5e1}
+.punts-fc i.on{background:var(--blau);transform:scale(1.3)}
+/* test */
+.pregunta{font-size:19px;font-weight:800;margin:8px 0 12px;line-height:1.35}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid var(--vora);background:#fff;border-radius:14px;padding:12px 14px;margin:8px 0;font-size:16.5px;cursor:pointer;transition:border-color .12s,background .12s;color:var(--txt)}
+.opt .ll{width:30px;height:30px;border-radius:9px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none;color:var(--suau)}
+.opt:hover:not(:disabled){border-color:#93c5fd;background:#f8fbff}
+.opt.ok{background:var(--verd-cl);border-color:#22c55e}.opt.ok .ll{background:#22c55e;color:#fff}
+.opt.ko{background:var(--verm-cl);border-color:#ef4444}.opt.ko .ll{background:#ef4444;color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:14px;background:#eff6ff;border:2px solid #bfdbfe}
+.fb.ok{background:var(--verd-cl);border-color:#86efac}.fb.ko{background:#fff7ed;border-color:#fdba74}
+.barra-test{height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.barra-test i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,#2563eb);transition:width .3s}
+.gran{font-size:56px;text-align:center;line-height:1}
+.valor{display:flex;justify-content:center;gap:12px;margin-top:10px}
+.valor button{border:2px solid var(--vora);background:#fff;border-radius:16px;padding:10px 14px;font-size:30px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.valor button small{font-size:12.5px;font-weight:800;color:var(--suau)}
+.valor button.on{border-color:var(--blau);background:#eff6ff}
+/* jocs */
+.chip{display:inline-block;border:2px solid #cbd5e1;border-radius:12px;padding:9px 14px;margin:5px;cursor:pointer;background:#fff;font-weight:800;user-select:none;transition:.12s}
+.chip:hover{border-color:#93c5fd}
+.chip.sel{background:var(--fosc);border-color:var(--fosc);color:#fff}
+.chip.ok{background:var(--verd);border-color:var(--verd);color:#fff;cursor:default}
+.chip.ko{animation:tremola .35s;border-color:#ef4444}
+@keyframes tremola{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pila{display:flex;flex-direction:column-reverse;gap:5px;margin:12px 0}
+.pila div{border-radius:12px;padding:10px 14px;font-weight:800;animation:apareix .3s}
+@keyframes apareix{from{opacity:0;transform:translateY(8px)}}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.mh{display:none}table.an{font-size:14px}.col2{grid-template-columns:1fr}.hero .stats{margin-left:0}}
+.cub{border:3px dashed #cbd5e1;border-radius:16px;min-height:110px;padding:10px;cursor:pointer;background:#f8fafc}
+.cub:hover{border-color:#93c5fd;background:#f0f7ff}
+.cub h4{margin:0 0 8px}
+textarea{width:100%;font:inherit;padding:12px 14px;border-radius:14px;border:2px solid var(--vora);resize:vertical;background:#fcfdff}
+textarea:focus,input:focus{outline:none;border-color:#93c5fd;box-shadow:0 0 0 4px #bfdbfe66}
+label.chk{display:flex;gap:10px;align-items:flex-start;margin:8px 0;cursor:pointer;padding:8px 10px;border-radius:10px;background:#fff;border:2px solid var(--vora)}
+label.chk input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--verd)}
+details summary{cursor:pointer;font-weight:800;color:var(--blau2)}
+/* benvinguda */
+.benv{max-width:460px;margin:30px auto;text-align:center}
+.benv .gran{font-size:70px}
+.benv input{width:100%;font:inherit;font-size:20px;font-weight:800;text-align:center;padding:14px;border-radius:16px;border:3px solid var(--vora);margin:14px 0}
+/* analítica */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.kpi{background:#fff;border-radius:16px;padding:14px;box-shadow:var(--om)}
+.kpi small{color:var(--suau);font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+.kpi b{display:block;font-size:26px;line-height:1.2;margin-top:2px}
+.kpi span{font-size:13px;color:var(--suau);font-weight:700}
+table.an{width:100%;border-collapse:collapse;font-size:15px}
+table.an th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--suau);padding:8px 6px;border-bottom:2px solid var(--vora)}
+table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.semaf{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.valoracio{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px solid #c7d2fe;border-radius:18px;padding:16px 18px}
+.valoracio h3{margin:0 0 6px}
+.llista-err li{margin:6px 0}
+.modal{position:fixed;inset:0;background:#0f172a80;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal .box{max-width:420px;text-align:center}
+.peu-pag{text-align:center;color:#94a3b8;font-size:13px;margin:26px 0 8px}
+.confeti{position:fixed;top:-20px;font-size:22px;z-index:60;pointer-events:none;animation:cau 1.8s linear forwards}
+@keyframes cau{to{transform:translateY(105vh) rotate(540deg);opacity:.2}}
+
+.perfils{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.perfil{display:flex;align-items:center;gap:12px;text-align:left;border:2px solid var(--vora);background:#fff;border-radius:16px;padding:10px 14px;cursor:pointer;font-family:inherit;font-size:16px;color:var(--txt)}
+.perfil:hover{border-color:#93c5fd;background:#f8fbff}.perfil.on{border-color:var(--blau)}
+.perfil small{display:block;color:var(--suau);font-weight:700}
+.av2{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;flex:none;text-transform:uppercase}
+/* arcade */
+.arc{position:fixed;inset:0;z-index:80;background:radial-gradient(circle at 50% 40%,#1e1b4b,#020617 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;animation:arcIn .25s ease-out;overflow:hidden}
+@keyframes arcIn{from{opacity:0;transform:scale(1.15)}}
+.arc canvas{position:absolute;inset:0;width:100%;height:100%}
+.arc .flash{position:absolute;inset:0;background:#fff;animation:flash .5s ease-out forwards;pointer-events:none}
+@keyframes flash{from{opacity:.9}to{opacity:0}}
+.arc .t1{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(22px,7vw,46px);color:#facc15;text-shadow:4px 4px 0 #b91c1c,0 0 24px #facc15aa;text-align:center;line-height:1.35;animation:bota .6s cubic-bezier(.3,1.6,.5,1) both,pampalluga 1s steps(2) .6s infinite}
+@keyframes bota{from{transform:translateY(-120px) scale(.4)}}
+@keyframes pampalluga{50%{color:#fde68a}}
+.arc .t2{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(12px,3.4vw,18px);color:#a5f3fc;margin-top:22px;text-align:center;line-height:1.8}
+.arc .t3{position:relative;font-family:'Press Start 2P',monospace;font-size:clamp(28px,9vw,54px);color:#fff;margin-top:14px;text-shadow:0 0 18px #38bdf8}
+.arc .estr{position:relative;font-size:clamp(34px,10vw,56px);margin-top:10px;letter-spacing:6px}
+.arc .estr span{display:inline-block;animation:estr .45s cubic-bezier(.3,1.8,.5,1) both;filter:drop-shadow(0 0 10px #facc15)}
+@keyframes estr{from{transform:scale(0) rotate(-180deg)}}
+.arc .t4{position:relative;font-family:'Press Start 2P',monospace;font-size:11px;color:#94a3b8;margin-top:26px;animation:pampalluga2 1.2s steps(2) infinite}
+@keyframes pampalluga2{50%{opacity:0}}
+.arc .rec{position:relative;font-family:'Press Start 2P',monospace;font-size:12px;color:#020617;background:#4ade80;padding:8px 12px;margin-top:16px;transform:rotate(-3deg);animation:bota .5s .9s both}
+.nivell{margin-top:14px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#f5f3ff,#eef2ff);border:2px solid #c4b5fd;border-radius:16px;padding:12px 16px;cursor:pointer}
+.nivell .nic{font-size:38px;line-height:1;flex:none}
+.nivell b{display:block;font-size:17px}
+.nivell small{color:var(--suau);font-weight:700}
+.nivell .barra{margin:6px 0 4px;height:10px}
+.nivell .barra i{background:linear-gradient(90deg,#a78bfa,#7c3aed)}
+.rangs{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.rang{border:2px solid var(--vora);border-radius:14px;padding:10px 8px;text-align:center;background:#fff}
+.rang span{display:block;font-size:30px;line-height:1.1}
+.rang b{display:block;font-size:14px}
+.rang small{color:var(--suau);font-weight:700;font-size:12px}
+.rang.bloc{opacity:.45;filter:grayscale(1)}
+.rang.ara{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px #ddd6fe}
+.arc.niv{background:radial-gradient(circle at 50% 40%,#3b0764,#020617 75%)}
+.arc.niv .t1{color:#e9d5ff;text-shadow:4px 4px 0 #7c3aed,0 0 24px #c084fcaa}
+.arc.niv .nic{position:relative;font-size:clamp(64px,20vw,110px);margin-top:12px;animation:estr .6s cubic-bezier(.3,1.8,.5,1) .3s both;filter:drop-shadow(0 0 18px #c084fc)}
+.vol{display:flex;align-items:center;gap:4px;background:#ffffff26;border:1px solid #ffffff40;border-radius:999px;padding:2px 10px 2px 4px;flex:none}
+.so-btn{background:none;border:0;color:#fff;font-size:17px;cursor:pointer;padding:3px 4px;line-height:1}
+.vol input{width:76px;accent-color:#fff;cursor:pointer;margin:0}
+.vol b{font-size:13px;min-width:9px;text-align:center}
+@media(max-width:520px){.vol input{width:54px}.vol{padding-right:7px}}
+body.tremola main{animation:tremola .4s}
+.arc.ko{background:radial-gradient(circle at 50% 40%,#3b0a0a,#0b0202 75%)}
+.arc.ko .t1{color:#f87171;text-shadow:4px 4px 0 #450a0a,0 0 20px #ef444466;animation:cau1 .7s cubic-bezier(.5,1.8,.5,1) both,parpelleja 1.4s steps(2) .8s infinite}
+@keyframes cau1{from{transform:translateY(-140px) rotate(-8deg);opacity:0}}
+@keyframes parpelleja{50%{opacity:.55}}
+.arc.ko .t3{color:#fca5a5;text-shadow:none}
+.arc.ko .cor{position:relative;font-size:clamp(44px,13vw,70px);margin-top:8px;animation:trenca 1.1s ease-in .4s both}
+@keyframes trenca{0%{transform:scale(0)}35%{transform:scale(1.2)}55%{transform:scale(1) rotate(0)}70%{transform:rotate(-12deg)}85%{transform:rotate(10deg)}100%{transform:rotate(0)}}
+.arc.ko .t2{color:#fde68a}
+.pluja{position:absolute;top:-30px;width:3px;height:22px;background:linear-gradient(#94a3b800,#94a3b8aa);animation:plou linear infinite}
+@keyframes plou{to{transform:translateY(110vh)}}
+/* estrelles: d'on venen + animació arcade */
+.vola{position:fixed;z-index:90;pointer-events:none;font-family:'Press Start 2P',monospace;font-size:15px;color:#facc15;text-shadow:2px 2px 0 #92400e,0 0 12px #fde047;white-space:nowrap;transition:transform .75s cubic-bezier(.5,-.4,.6,1),opacity .75s ease-in;will-change:transform}
+.vola.puja{animation:vpop .25s cubic-bezier(.3,1.8,.5,1)}
+@keyframes vpop{from{transform:scale(.2)}}
+.espurna{position:fixed;z-index:89;pointer-events:none;width:6px;height:6px;background:#facc15;box-shadow:0 0 6px #fde047;transition:transform .5s ease-out,opacity .5s ease-out}
+#punts.boing{animation:boing .45s cubic-bezier(.3,1.8,.5,1)}
+@keyframes boing{30%{transform:scale(1.35) rotate(-6deg);background:#facc15;color:#422006}}
+.combo{position:fixed;left:50%;top:22%;z-index:91;pointer-events:none;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:clamp(20px,6vw,34px);color:#fb923c;text-shadow:3px 3px 0 #7c2d12,0 0 18px #fdba74;text-align:center;animation:combo 1.3s ease-out forwards;line-height:1.4}
+.combo small{display:block;font-size:.42em;color:#fde68a}
+@keyframes combo{0%{transform:translateX(-50%) scale(.3);opacity:0}15%{transform:translateX(-50%) scale(1.15);opacity:1}30%{transform:translateX(-50%) scale(1)}80%{opacity:1}100%{transform:translateX(-50%) translateY(-40px);opacity:0}}
+.estrelles{margin-top:14px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
+.estrelles h4{margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;font-size:16px}
+.estrelles h4 small{color:var(--suau);font-weight:700;font-size:12.5px}
+.font{display:grid;grid-template-columns:26px minmax(90px,150px) 1fr 44px;gap:8px;align-items:center;margin:5px 0;font-weight:800;font-size:14.5px}
+.font .ic2{font-size:19px;text-align:center}
+.font .bf{height:12px;background:#fde68a66;border-radius:6px;overflow:hidden}
+.font .bf i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transform-origin:left;animation:creix .9s cubic-bezier(.3,1.2,.5,1) both}
+@keyframes creix{from{transform:scaleX(0)}}
+.font b{text-align:right}
+#popEst{position:fixed;top:64px;right:max(12px,calc(50% - 468px));z-index:30;width:min(440px,calc(100vw - 24px));animation:popIn .22s cubic-bezier(.3,1.6,.5,1);filter:drop-shadow(0 10px 24px #0f172a33)}
+#popEst .estrelles{margin:0}
+#popEst .comvas{margin-top:8px}
+.comvas{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;border-radius:16px;padding:12px 16px;box-shadow:var(--om)}
+.comvas .prog{color:#c7d2fe}
+.cv-cap{display:flex;gap:12px;align-items:center}
+.cv-ic{font-size:34px;line-height:1;animation:estr .5s cubic-bezier(.3,1.8,.5,1) both}
+.cv-cap b{display:block;font-family:'Press Start 2P',monospace;font-size:13px;color:#facc15;line-height:1.5}
+.cv-cap small{display:block;color:#e0e7ff;font-weight:700;font-size:13.5px}
+.cv-fila{display:grid;grid-template-columns:110px 150px 1fr;gap:8px;align-items:center;margin:6px 0;font-weight:800;font-size:14px}
+.cv-fila b{color:#fde68a}
+.cv-pista{position:relative;height:16px;background:#ffffff1a;border-radius:8px}
+.cv-pista i{position:absolute;top:3px;width:10px;height:10px;border-radius:50%;background:#e0e7ff99}
+.cv-pista i.jo{top:0;width:16px;height:16px;background:#facc15;box-shadow:0 0 10px #facc15;z-index:1;animation:estr .6s .2s both}
+@media(max-width:520px){.cv-fila{grid-template-columns:96px 1fr;}.cv-fila .cv-pista{grid-column:1/-1}}
+@keyframes popIn{from{transform:translateY(-10px) scale(.92);opacity:0}}
+.estrelles.mini2{padding:8px 14px}
+.mini2 .f1{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0}
+.mini2 .f1 b{font-size:16px;white-space:nowrap}
+.mini2 .xs{display:flex;gap:5px;flex-wrap:nowrap;flex:1;min-width:0;overflow:hidden}
+.mini2 .xs span{background:#fff;border:1.5px solid #fcd34d;border-radius:999px;padding:1px 9px;font-weight:800;font-size:13.5px;white-space:nowrap}
+.mini2 .f1 small{color:var(--suau);font-weight:800;white-space:nowrap}
+.mini2 .f2{margin-top:4px;font-size:12.5px;font-weight:700;color:#92400e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.com-guanyar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.com-guanyar span{background:#fff;border:1.5px solid #fcd34d;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800}
+@media(prefers-reduced-motion:reduce){.vola,.espurna,.combo,#punts.boing,.font .bf i{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+ <div class="hd">
+  <div class="logo" onclick="vista('inici')"><span id="logoic">📚</span><span class="tt"><span id="hola"></span><small id="qui"></small></span></div>
+  <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci">🔊</button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts" onclick="obreEstrelles(event)" style="cursor:pointer">⭐ 0</span>
+ </div>
+ <nav id="nav">
+  <a class="surt" href="../../" title="Tornar al menú de tots els mons">🚪 Mons</a>
+  <button data-v="inici" onclick="vista('inici')">🏠 Inici</button>
+  <button data-v="temes" onclick="vista('temes')">📖 Temes</button>
+  <button data-v="jocs" onclick="vista('jocs')">🎮 Jocs</button>
+  <button data-v="obertes" onclick="vista('obertes')">✍️ Obertes</button>
+  <button data-v="analitica" onclick="vista('analitica')">📊 Com vaig</button>
+  <button data-v="usuari" onclick="benvinguda()">👥 Canviar d'usuari</button>
+ </nav>
+</header>
+<main id="app"></main>
+<div class="peu-pag" id="peu"></div>
+
+<script>
+// Bona Nota · Estudi interactiu · dades de LES COMARQUES DE CATALUNYA (Socials 1r ESO)
+// Font: material «Les comarques de Catalunya» (resum, esquema, examen, full de respostes, orals i connexions)
+const ASSIG={
+ id:"comarques", nom:"Socials", tema:"Les comarques de Catalunya", curs:"1r ESO", ic:"🗺️",
+ color:["#7c2d12","#c2410c","#f59e0b"],
+ peu:"Bona Nota · Material «Les comarques de Catalunya i les seves capitals» (resum, esquema, examen i guia oral)",
+ blocs:[{titol:"🧩 Què és una comarca",n:2},{titol:"📍 Les quatre demarcacions",n:4},{titol:"🧠 Trucs per no fallar",n:1}],
+ jocs:[
+  {id:"capitals",tipus:"parelles",ic:"🏛️",titol:"Comarca i capital",sub:"Comarques · relaciona",col:"#ede9fe",
+   enunciat:"🏛️ Cada comarca amb la seva capital",instr:"Toca una comarca (esquerra) i després la seva capital (dreta).",
+   pars:[["Osona","Vic"],["Bages","Manresa"],["Anoia","Igualada"],["Garrotxa","Olot"],["Alt Empordà","Figueres"],["Selva","Santa Coloma de Farners"],["Pallars Sobirà","Sort"]],
+   final:"Recorda: Vic i Manresa no són comarques, són capitals (d'Osona i del Bages)."},
+  {id:"capcom",tipus:"classifica",ic:"⚡",titol:"Capital o comarca?",sub:"El joc del cotxe",col:"#fef3c7",
+   enunciat:"⚡ Capital o comarca?",instr:"Toca un nom i després la caixa on va. És l'error que més cau a l'examen!",
+   caixes:[["com","🗺️ COMARCA · el territori"],["cap","🏛️ CAPITAL · una ciutat"]],
+   items:[["Vic","cap"],["Osona","com"],["Reus","cap"],["Berguedà","com"],["Manresa","cap"],["Bages","com"],["Tàrrega","cap"],["Garrigues","com"],["Olot","cap"],["Montsià","com"]],
+   final:"Si et demanen una comarca i escrius una ciutat, compta com a malament. Ara ja no et passarà!"},
+  {id:"gironalleida",tipus:"classifica",ic:"🧭",titol:"Girona o Lleida?",sub:"Comarques per demarcació",col:"#dcfce7",
+   enunciat:"🧭 Girona o Lleida?",instr:"Toca una comarca i després la demarcació (província) on és.",
+   caixes:[["gi","🌋 GIRONA · 8 comarques"],["ll","⛰️ LLEIDA · 12 comarques"]],
+   items:[["Garrotxa","gi"],["Ripollès","gi"],["Pla de l'Estany","gi"],["Selva","gi"],["Segrià","ll"],["Noguera","ll"],["Pallars Jussà","ll"],["Solsonès","ll"]],
+   final:"Les 8 de Girona caben en una mà i mitja!"},
+  {id:"tarragona",tipus:"parelles",ic:"🌊",titol:"Tarragona i l'Ebre",sub:"Comarca i capital",col:"#cffafe",
+   enunciat:"🌊 Tarragona: cada comarca amb la seva capital",instr:"Toca una comarca (esquerra) i després la seva capital (dreta).",
+   pars:[["Baix Ebre","Tortosa"],["Montsià","Amposta"],["Ribera d'Ebre","Móra d'Ebre"],["Terra Alta","Gandesa"],["Baix Camp","Reus"],["Alt Camp","Valls"]],
+   final:"Les 4 de l'Ebre: «Baix, Mont, Ribera, Terra»."},
+  {id:"ruta",tipus:"ordena",ic:"🏖️",titol:"Ruta cap a la platja",sub:"De Barcelona cap al nord",col:"#e0f2fe",
+   enunciat:"🏖️ Anem a la platja cap al nord!",instr:"Toca les comarques <b>per ordre</b>, des de Barcelona cap al nord seguint la costa.",base:"🚗 SORTIDA",
+   items:[["Barcelonès","capital: Barcelona","#E3F2FD"],["Maresme","capital: Mataró","#E0F7FA"],["Selva","capital: Santa Coloma de Farners","#E8F5E9"],["Baix Empordà","capital: la Bisbal d'Empordà","#FFF9C4"],["Alt Empordà","capital: Figueres","#FFE0B2"]],
+   final:"El Baix Empordà és el de baix i l'Alt Empordà, el de dalt: per això el trobes després."},
+  {id:"capses",tipus:"figura",ic:"🪆",titol:"Capses dins de capses",sub:"Municipi, comarca, província",col:"#fce7f3",
+   enunciat:"🪆 Capses dins de capses",figura:"svgCapses",
+   q:[["A l'esquema de les capses, què és «Igualada»?",["Un municipi","Una comarca","Una província"],0,"És la capsa més petita: un municipi, un poble o ciutat amb el seu ajuntament."],
+      ["I què és «Anoia», la capsa que conté Igualada?",["Una comarca","Un municipi","Una província"],0,"L'Anoia és una comarca, i Igualada n'és la capital."],
+      ["I «Barcelona», la capsa que conté l'Anoia?",["Una província","Una comarca","Un municipi"],0,"Aquí Barcelona és la província (demarcació), que conté 13 comarques senceres."],
+      ["Si a la capsa de l'Anoia hi posem Òdena i Vilanova del Camí, què són?",["Més municipis de la mateixa comarca","Altres províncies","Altres capitals de comarca"],0,"Són municipis veïns que també formen l'Anoia."]],
+   final:"De petit a gran: municipi → comarca → província → Catalunya."}
+ ]
+};
+
+const T=[
+{id:"comarca",ic:"🧩",col:"#8E44AD",titol:"Què és una comarca",font:"Comarques · la idea clau",
+ idea:"Una comarca és un grup de pobles i ciutats veïns que comparteixen paisatge, feines i una ciutat de referència: la capital de comarca.",
+ pts:["<b>Municipi</b>: un poble o una ciutat amb el seu ajuntament. És la peça més petita del trencaclosques (Igualada és un municipi).",
+  "<b>Comarca</b>: grup de municipis veïns amb paisatge, activitats i una ciutat de referència en comú. Igualada, Òdena, Vilanova del Camí… formen l'Anoia.",
+  "<b>Capital de comarca</b>: la ciutat on hi ha els serveis importants: hospital, mercat, instituts i el <b>consell comarcal</b>.",
+  "<b>Consell comarcal</b>: el «govern» de la comarca. Organitza serveis que un poble sol no podria pagar, com la recollida d'escombraries o el transport escolar.",
+  "De petit a gran: <b>municipi → comarca → província → Catalunya</b>. Exemple: Igualada → Anoia → Barcelona → Catalunya.",
+  "Catalunya té <b>947 municipis</b>, i cada municipi és dins d'una sola comarca.",
+  "Les comarques no es van inventar en un despatx: el 1936 un equip del geògraf <b>Pau Vila</b> va preguntar poble per poble on anava la gent al mercat. <i>De regal: no cau a l'examen.</i>"],
+ truc:"Pensa en capses dins de capses: Catalunya conté províncies, cada província conté comarques i cada comarca conté municipis.",
+ compte:"Vic no és una comarca: és la capital d'Osona. Si et demanen una comarca i escrius una ciutat, compta com a malament.",
+ fc:[["Què és un municipi?","Un poble o una ciutat amb el seu ajuntament propi."],["Què és una comarca?","Un grup de municipis veïns que comparteixen paisatge, feines i una ciutat de referència."],["Què és la capital de comarca?","La ciutat principal, amb hospital, mercat, instituts i el consell comarcal."],["Què fa el consell comarcal?","Organitza serveis que un poble sol no podria pagar: escombraries, transport escolar…"],["Ordena de petit a gran: comarca, Catalunya, municipi, província","Municipi → comarca → província → Catalunya."],["Igualada → ? → Barcelona → Catalunya","Anoia, la comarca d'Igualada."]],
+ q:[["Què és una comarca?",["Un grup de municipis veïns amb una ciutat de referència","Una sola ciutat amb el seu ajuntament","Una de les 4 províncies de Catalunya"],0,"Una comarca agrupa molts municipis veïns. Una ciutat sola és un municipi, i les 4 grans són les províncies."],
+  ["Quin d'aquests noms és una comarca?",["Vic","Osona","Manresa"],1,"Osona és la comarca; Vic n'és la capital. Manresa és la capital del Bages."],
+  ["On sol haver-hi l'hospital comarcal i el consell comarcal?",["A la capital de comarca","Al poble més petit de la comarca","A Barcelona, per a tothom"],0,"La capital de comarca concentra els serveis importants."],
+  ["Quin és l'ordre correcte de petit a gran?",["Comarca → municipi → província","Municipi → comarca → província","Municipi → província → comarca"],1,"El municipi és dins de la comarca, i la comarca és dins de la província."],
+  ["Qui organitza serveis com el transport escolar dels pobles petits?",["L'Ajuntament de Barcelona","El consell comarcal","La província"],1,"El consell comarcal fa els serveis que un poble sol no podria pagar."],
+  ["Quants municipis té Catalunya?", ["947", "42", "4"], 0, "947 municipis. El 42 són les comarques i el 4, les províncies."],
+  ["Igualada, Òdena i Vilanova del Camí formen…", ["la comarca de l'Anoia", "la província de l'Anoia", "el municipi d'Igualada"], 0, "Són municipis veïns de la mateixa comarca, l'Anoia."],
+  ["Un municipi pot ser dins de dues comarques alhora?", ["Sí, si és gran", "No, cada municipi és dins d'una sola comarca", "Només si és capital"], 1, "Cada municipi és dins d'una comarca i només d'una."]]},
+{id:"provincia",ic:"🗺️",col:"#2C3E50",titol:"Comarques, províncies i l'Aran",font:"Comarques · idea clau i errors típics",
+ idea:"Catalunya té 42 comarques i, a més, l'Aran (43 territoris), repartides en 4 províncies: Barcelona, Girona, Lleida i Tarragona.",
+ pts:["Resposta segura a l'examen: <b>«42 comarques i l'Aran»</b>. Per això sovint es parla de <b>43 territoris</b>.",
+  "<b>L'Aran</b> va a part: té llengua pròpia (l'<b>aranès</b>), un règim especial reconegut per llei, i el seu govern és el <b>Conselh Generau</b>, no un consell comarcal.",
+  "<b>Províncies (demarcacions)</b>: només <b>4</b>. Barcelona té 13 comarques; Girona, 8; Lleida, 12; i Tarragona, 10.",
+  "La província és una divisió de l'<b>Estat espanyol</b>; la comarca és la divisió <b>pròpia de Catalunya</b>.",
+  "La província és <b>més gran</b>: conté moltes comarques senceres.",
+  "La comarca més nova és el <b>Lluçanès</b> (capital Prats de Lluçanès), creada el <b>2023</b> amb pobles que abans eren d'Osona.",
+  "La <b>Cerdanya</b> (Puigcerdà) és l'única comarca repartida entre dues províncies: Girona i Lleida."],
+ truc:"Números per recordar: <b>4</b> províncies, <b>42 + 1</b> comarques, <b>947</b> municipis. Com més petita és la peça, més n'hi ha.",
+ compte:"No confonguis comarca amb província: províncies n'hi ha 4, i comarques, 42 i l'Aran. Una província mai és més petita que una comarca.",
+ fc:[["Quantes comarques té Catalunya?","42 comarques i, a més, l'Aran (43 territoris)."],["Quantes províncies té Catalunya? Quines?","4: Barcelona, Girona, Lleida i Tarragona."],["Com es diu el govern de l'Aran?","Conselh Generau."],["Quina és la comarca més nova?","El Lluçanès (2023), capital Prats de Lluçanès. Abans els seus pobles eren d'Osona."],["Quina comarca està repartida entre dues províncies?","La Cerdanya (Puigcerdà), entre Girona i Lleida."],["Què és més gran, una comarca o una província?","La província: conté moltes comarques senceres."]],
+ q:[["Quantes comarques té Catalunya?",["42 i, a més, l'Aran","4","947"],0,"42 comarques i l'Aran. El 4 són les províncies i el 947, els municipis."],
+  ["Quantes províncies (demarcacions) té Catalunya?",["4","8","42"],0,"Barcelona, Girona, Lleida i Tarragona. El 42 són les comarques."],
+  ["Per què l'Aran es compta a part?",["Perquè té llengua pròpia i un règim especial","Perquè és la comarca més gran","Perquè és a la província de Girona"],0,"L'Aran té l'aranès i un govern propi, el Conselh Generau."],
+  ["Quina d'aquestes divisions és la pròpia de Catalunya?",["La província","La comarca","Totes dues"],1,"La província és una divisió de l'Estat espanyol; la comarca és la pròpia de Catalunya."],
+  ["De quina comarca es va separar el Lluçanès el 2023?",["Del Bages","D'Osona","Del Berguedà"],1,"Els pobles del Lluçanès abans eren d'Osona."],
+  ["Quina comarca està repartida entre dues províncies?",["La Cerdanya","La Garrotxa","El Solsonès"],0,"La Cerdanya, entre Girona i Lleida. Capital: Puigcerdà."],
+  ["Quantes comarques té la demarcació de Barcelona?", ["13", "8", "10"], 0, "13. Girona en té 8 i Tarragona, 10."],
+  ["Com es diu la llengua pròpia de l'Aran?", ["Aranès", "Occità de França", "Català"], 0, "L'aranès, que s'ensenya a les escoles."]]},
+{id:"bcn",ic:"🏙️",col:"#2980B9",titol:"Demarcació de Barcelona (13)",font:"Comarques · zoom Barcelona",
+ idea:"Barcelona és la demarcació amb més comarques, 13. Comença pel Barcelonès, al mig de la costa, i ves obrint cap enfora.",
+ pts:["<b>A la costa</b>: Barcelonès (<b>Barcelona</b>), Maresme (<b>Mataró</b>), Baix Llobregat (<b>Sant Feliu de Llobregat</b>) i Garraf (<b>Vilanova i la Geltrú</b>).",
+  "<b>Just a sobre</b>: Vallès Occidental (<b>Sabadell i Terrassa</b>), Vallès Oriental (<b>Granollers</b>) i Alt Penedès (<b>Vilafranca del Penedès</b>).",
+  "<b>La fila del mig</b>: Anoia (<b>Igualada</b>), Bages (<b>Manresa</b>), Moianès (<b>Moià</b>) i Osona (<b>Vic</b>).",
+  "<b>A dalt de tot</b>: Berguedà (<b>Berga</b>), tocant el Pirineu, i el petit Lluçanès (<b>Prats de Lluçanès</b>), separat d'Osona el 2023.",
+  "El <b>Vallès Occidental</b> és l'única comarca amb <b>dues capitals</b>: Sabadell i Terrassa.",
+  "Vigila: la capital no sempre és la ciutat més gran. Al Baix Llobregat és Sant Feliu de Llobregat."],
+ truc:"Regalades: Barcelona → Barcelonès, Moià → Moianès, Berga → Berguedà. El nom s'assembla!",
+ compte:"Manresa NO és una comarca: és la capital del Bages. I Vic és la capital d'Osona. Aquestes dues es confonen molt.",
+ fc:[["Capital del Bages?","Manresa."],["Capital d'Osona?","Vic."],["Capital de l'Anoia?","Igualada."],["Capital del Vallès Oriental?","Granollers."],["Quina comarca té dues capitals?","El Vallès Occidental: Sabadell i Terrassa."],["Capital del Garraf?","Vilanova i la Geltrú."],["Capital del Maresme?","Mataró."]],
+ q:[["Quina és la capital de l'Anoia?",["Manresa","Igualada","Vilafranca del Penedès"],1,"Igualada. Manresa és del Bages, i Vilafranca, de l'Alt Penedès."],
+  ["De quina comarca és capital Vic?",["Osona","Bages","Moianès"],0,"Vic és la capital d'Osona."],
+  ["Quina és la capital del Vallès Oriental?",["Sabadell","Granollers","Mataró"],1,"Granollers. Sabadell és del Vallès Occidental, i Mataró, del Maresme."],
+  ["Quina és la capital del Baix Llobregat?",["Sant Feliu de Llobregat","Cornellà","Barcelona"],0,"Sant Feliu de Llobregat. La capital no sempre és la ciutat més gran."],
+  ["Quina comarca té dues capitals, Sabadell i Terrassa?",["Vallès Oriental","Vallès Occidental","Barcelonès"],1,"El Vallès Occidental és l'únic amb capitalitat compartida."],
+  ["Vilanova i la Geltrú és la capital de…",["el Garraf","l'Alt Penedès","el Maresme"],0,"Del Garraf. L'Alt Penedès té Vilafranca i el Maresme, Mataró."],
+  ["Quina és la capital del Bages?", ["Vic", "Manresa", "Berga"], 1, "Manresa. Vic és d'Osona i Berga, del Berguedà."],
+  ["Vilafranca del Penedès és la capital de…", ["el Baix Penedès", "l'Alt Penedès", "el Garraf"], 1, "De l'Alt Penedès. El Baix Penedès té el Vendrell, i és de Tarragona."]]},
+{id:"gir",ic:"🌋",col:"#C0392B",titol:"Demarcació de Girona (8)",font:"Comarques · zoom Girona",
+ idea:"Girona és la més fàcil de totes: només 8 comarques, amb el Gironès (Girona) al mig de tot.",
+ pts:["<b>Al mig</b>: Gironès (<b>Girona</b>). Un regal.",
+  "<b>Al voltant</b>: Pla de l'Estany (<b>Banyoles</b>, la del llac), Garrotxa (<b>Olot</b>, la dels volcans) i Selva (<b>Santa Coloma de Farners</b>).",
+  "<b>A la costa nord</b>: Alt Empordà (<b>Figueres</b>) a dalt i Baix Empordà (<b>la Bisbal d'Empordà</b>) a sota.",
+  "<b>A la muntanya</b>: Ripollès (<b>Ripoll</b>) i Cerdanya (<b>Puigcerdà</b>), que s'escapa cap a Lleida.",
+  "Ruta cap a la platja des de Barcelona: Barcelonès → Maresme → <b>Selva</b> → <b>Baix Empordà</b> → <b>Alt Empordà</b>."],
+ truc:"Les 8 de Girona caben en una mà i mitja: Gironès, Pla de l'Estany, Garrotxa, Selva, Alt Empordà, Baix Empordà, Ripollès i Cerdanya.",
+ compte:"La capital de la Selva és Santa Coloma de Farners, no Blanes ni Lloret, encara que siguin més grans.",
+ fc:[["Capital de la Garrotxa?","Olot, la dels volcans."],["Capital del Pla de l'Estany?","Banyoles, la del llac."],["Capital de l'Alt Empordà?","Figueres."],["Capital del Baix Empordà?","La Bisbal d'Empordà."],["Capital de la Selva?","Santa Coloma de Farners."],["Capital de la Cerdanya?","Puigcerdà."]],
+ q:[["De quina comarca és capital la ciutat de Girona?",["la Garrotxa","la Selva","el Gironès"],2,"Girona dona nom al Gironès. La Garrotxa té Olot, i la Selva, Santa Coloma de Farners."],
+  ["Quina és la capital de la Selva?",["Blanes","Lloret de Mar","Santa Coloma de Farners"],2,"Santa Coloma de Farners, encara que Blanes i Lloret siguin més grans."],
+  ["Figueres és la capital de…",["l'Alt Empordà","el Baix Empordà","el Ripollès"],0,"De l'Alt Empordà. El Baix Empordà té la Bisbal d'Empordà."],
+  ["Quina comarca té Olot com a capital?",["la Garrotxa","el Pla de l'Estany","la Cerdanya"],0,"Olot és la capital de la Garrotxa, la comarca dels volcans."],
+  ["Quantes comarques té la demarcació de Girona?",["8","12","13"],0,"8. Lleida en té 12 i Barcelona, 13."],
+  ["Quina és la capital de la Cerdanya?", ["Puigcerdà", "Ripoll", "la Seu d'Urgell"], 0, "Puigcerdà. Ripoll és del Ripollès i la Seu d'Urgell, de l'Alt Urgell."],
+  ["Banyoles, la del llac, és la capital de…", ["la Garrotxa", "el Pla de l'Estany", "el Gironès"], 1, "Del Pla de l'Estany."],
+  ["La Bisbal d'Empordà és la capital de…", ["el Baix Empordà", "l'Alt Empordà", "la Selva"], 0, "Del Baix Empordà, el de sota. L'Alt Empordà té Figueres."]]},
+{id:"lle",ic:"⛰️",col:"#16A085",titol:"Demarcació de Lleida (12)",font:"Comarques · zoom Lleida",
+ idea:"Lleida té les comarques més grans i amb menys gent: les del Pirineu, a dalt, i les de la plana de Ponent, a baix.",
+ pts:["<b>Al Pirineu, tocant França</b>: Vall d'Aran (<b>Vielha</b>), Alta Ribagorça (<b>el Pont de Suert</b>), Pallars Sobirà (<b>Sort</b>) i Pallars Jussà (<b>Tremp</b>).",
+  "<b>A la dreta del Pirineu</b>: Alt Urgell (<b>la Seu d'Urgell</b>) i Solsonès (<b>Solsona</b>).",
+  "<b>A la plana (Ponent)</b>: Noguera (<b>Balaguer</b>), Segarra (<b>Cervera</b>), Urgell (<b>Tàrrega</b>), Pla d'Urgell (<b>Mollerussa</b>), Segrià (<b>Lleida</b>) i Garrigues (<b>les Borges Blanques</b>, la terra de l'oli).",
+  "<b>Sobirà</b> vol dir «de dalt» i <b>jussà</b>, «de baix».",
+  "La <b>Noguera</b> és la comarca més gran de Catalunya. <i>De regal: no cau a l'examen.</i>"],
+ truc:"<b>«Sobirà, Sort; Jussà, Tremp»</b>: la S de Sobirà i la de Sort van juntes.",
+ compte:"Hi ha tres «Urgells» diferents! Alt Urgell → la Seu d'Urgell · Urgell → Tàrrega · Pla d'Urgell → Mollerussa.",
+ fc:[["Capital del Segrià?","Lleida."],["Capital del Pallars Sobirà?","Sort."],["Capital del Pallars Jussà?","Tremp."],["Capital de l'Alt Urgell?","La Seu d'Urgell."],["Capital de l'Urgell?","Tàrrega."],["Capital de les Garrigues?","Les Borges Blanques."],["Capital de la Noguera?","Balaguer."]],
+ q:[["Quina és la capital del Pallars Sobirà?",["Tremp","Sort","Vielha"],1,"Sobirà, Sort. Tremp és del Pallars Jussà, i Vielha, de l'Aran."],
+  ["Quina és la capital de l'Alt Urgell?",["la Seu d'Urgell","Tàrrega","Mollerussa"],0,"La Seu d'Urgell. Tàrrega és de l'Urgell, i Mollerussa, del Pla d'Urgell."],
+  ["Tàrrega és la capital de…",["el Pla d'Urgell","l'Urgell","l'Alt Urgell"],1,"De l'Urgell, sense «Alt» ni «Pla»."],
+  ["Quina és la capital del Segrià?",["Lleida","Balaguer","Cervera"],0,"Lleida. Balaguer és de la Noguera, i Cervera, de la Segarra."],
+  ["Què vol dir «jussà», com al Pallars Jussà?",["De dalt","De baix","Del mig"],1,"Jussà vol dir de baix; sobirà, de dalt."],
+  ["Quina és la capital de la Vall d'Aran?",["Vielha","el Pont de Suert","Sort"],0,"Vielha. El Pont de Suert és de l'Alta Ribagorça."],
+  ["Quina és la capital del Pallars Jussà?", ["Sort", "Tremp", "el Pont de Suert"], 1, "Jussà, Tremp. Sort és del Pallars Sobirà."],
+  ["Les Borges Blanques, la terra de l'oli, són la capital de…", ["les Garrigues", "la Segarra", "la Noguera"], 0, "De les Garrigues."]]},
+{id:"tgn",ic:"🍇",col:"#E67E22",titol:"Demarcació de Tarragona (10)",font:"Comarques · zoom Tarragona",
+ idea:"Tarragona es llegeix en dues meitats: a dalt el Camp de Tarragona i a baix les Terres de l'Ebre.",
+ pts:["<b>Camp de Tarragona</b>: Tarragonès (<b>Tarragona</b>), Baix Camp (<b>Reus</b>), Alt Camp (<b>Valls</b>), Conca de Barberà (<b>Montblanc</b>), Priorat (<b>Falset</b>, terra de vins) i Baix Penedès (<b>el Vendrell</b>), tocant Barcelona.",
+  "<b>Terres de l'Ebre</b>, les quatre que envolten el riu: Ribera d'Ebre (<b>Móra d'Ebre</b>), Terra Alta (<b>Gandesa</b>), Baix Ebre (<b>Tortosa</b>) i Montsià (<b>Amposta</b>), on hi ha el delta de l'Ebre.",
+  "Les Terres de l'Ebre són un <b>àmbit funcional</b>: comarques que treballen juntes en transports, carreteres i serveis."],
+ truc:"Les 4 de l'Ebre: <b>«Baix, Mont, Ribera, Terra»</b> → Baix Ebre (Tortosa), Montsià (Amposta), Ribera d'Ebre (Móra d'Ebre) i Terra Alta (Gandesa).",
+ compte:"Montsià → Amposta, no Tortosa: Tortosa és la capital del Baix Ebre.",
+ fc:[["Capital del Montsià?","Amposta."],["Capital del Baix Ebre?","Tortosa."],["Capital del Baix Camp?","Reus."],["Capital de l'Alt Camp?","Valls."],["Capital del Priorat?","Falset."],["Les 4 comarques de les Terres de l'Ebre?","Baix Ebre, Montsià, Ribera d'Ebre i Terra Alta."]],
+ q:[["Quina és la capital de la comarca del Montsià?",["Tortosa","Amposta","Gandesa"],1,"Amposta. Tortosa és del Baix Ebre, i Gandesa, de la Terra Alta."],
+  ["Reus és la capital de…",["el Baix Camp","el Tarragonès","l'Alt Camp"],0,"Del Baix Camp. L'Alt Camp té Valls."],
+  ["Quina d'aquestes comarques NO és de les Terres de l'Ebre?",["Terra Alta","Priorat","Ribera d'Ebre"],1,"El Priorat és del Camp de Tarragona."],
+  ["Quina és la capital de la Terra Alta?",["Gandesa","Móra d'Ebre","Falset"],0,"Gandesa. Móra d'Ebre és de la Ribera d'Ebre, i Falset, del Priorat."],
+  ["El Vendrell és la capital de…",["el Baix Penedès","l'Alt Penedès","el Garraf"],0,"Del Baix Penedès, que toca la demarcació de Barcelona."],
+  ["Quina és la capital del Baix Ebre?", ["Amposta", "Tortosa", "Móra d'Ebre"], 1, "Tortosa. Amposta és del Montsià i Móra d'Ebre, de la Ribera d'Ebre."],
+  ["Valls és la capital de…", ["l'Alt Camp", "el Baix Camp", "la Conca de Barberà"], 0, "De l'Alt Camp. La Conca de Barberà té Montblanc."],
+  ["En quina comarca hi ha el delta de l'Ebre?", ["Montsià", "Priorat", "Terra Alta"], 0, "Al Montsià (capital Amposta), a la desembocadura del riu."]]},
+{id:"trucs",ic:"🧠",col:"#F39C12",titol:"Trucs i paranys de les capitals",font:"Comarques · trucs i errors",
+ idea:"No cal empollar 43 noms a cegues: hi ha capitals regalades, parelles Alt/Baix i uns quants paranys que cal vigilar.",
+ pts:["<b>Regalades</b> (el nom s'assembla): Girona → Gironès, Tarragona → Tarragonès, Barcelona → Barcelonès, Solsona → Solsonès, Ripoll → Ripollès, Moià → Moianès, Berga → Berguedà.",
+  "<b>Parelles Alt/Baix</b>: Alt i Baix Empordà · Alt i Baix Camp · Alt i Baix Penedès. L'«Alt» és el de dalt (interior o muntanya); el «Baix», el de baix (mar o riu avall).",
+  "<b>Paranys</b>: Selva → Santa Coloma de Farners · Montsià → Amposta · Vallès Occidental → Sabadell i Terrassa · i els tres Urgells.",
+  "La capital <b>no sempre és la ciutat més gran</b> de la comarca (passa a la Selva i al Baix Llobregat).",
+  "Estudia per demarcacions: avui Girona, demà Lleida… En quatre dies tens la taula."],
+ truc:"Joc del cotxe «Capital o comarca?»: algú diu un nom (Vic, Osona, Reus, Berguedà…) i en tres segons dius si és comarca o capital, i de què.",
+ compte:"Amposta no s'assembla gens a la seva comarca: és la capital del Montsià.",
+ fc:[["Capital del Solsonès?","Solsona (regalada)."],["Capital del Ripollès?","Ripoll (regalada)."],["Capital del Berguedà?","Berga."],["L'«Alt» és el de dalt o el de baix?","El de dalt: més a prop de la muntanya o de l'interior."],["La parella de l'Alt Camp?","El Baix Camp (Reus). L'Alt Camp té Valls."],["Capital del Pla d'Urgell?","Mollerussa."]],
+ q:[["Quina capital porta un nom semblant al de la seva comarca?",["Solsona (Solsonès)","Amposta (Montsià)","Manresa (Bages)"],0,"Solsona → Solsonès és regalada. Amposta i Manresa no s'assemblen gens a la seva comarca."],
+  ["En una parella Alt/Baix, el «Baix» és normalment…",["el més a prop del mar o riu avall","el més a prop del Pirineu","el més petit dels dos"],0,"L'Alt és el de dalt (interior); el Baix, el de baix (mar o riu avall)."],
+  ["Quina és la capital del Ripollès?",["Ripoll","Olot","Puigcerdà"],0,"Ripoll → Ripollès, regalada. Olot és de la Garrotxa i Puigcerdà, de la Cerdanya."],
+  ["Mollerussa és la capital de…",["l'Urgell","el Pla d'Urgell","l'Alt Urgell"],1,"Del Pla d'Urgell. Vigila els tres Urgells!"],
+  ["La capital d'una comarca és sempre la ciutat més gran?",["Sí, sempre","No: a la Selva és Santa Coloma de Farners","Només a la demarcació de Barcelona"],1,"No sempre: a la Selva, Blanes i Lloret són més grans que Santa Coloma de Farners."],
+  ["Quina parella Alt/Baix és correcta?", ["Alt Camp / Baix Camp", "Alt Garraf / Baix Garraf", "Alt Selva / Baix Selva"], 0, "Les parelles són Empordà, Camp i Penedès."],
+  ["Quina capital NO porta un nom semblant al de la seva comarca?", ["Berga (Berguedà)", "Moià (Moianès)", "Tortosa (Baix Ebre)"], 2, "Tortosa no s'assembla a «Baix Ebre». Berga i Moià sí que són regalades."],
+  ["Quina és la capital del Moianès?", ["Moià", "Manresa", "Vic"], 0, "Moià → Moianès, regalada."]]}
+];
+
+const OB=[
+{t:"Què és una comarca",q:"Explica què és una comarca i què és una capital de comarca. En què es diferencien? Posa un exemple de cadascuna.",
+ p:["Comarca = grup de municipis veïns amb alguna cosa en comú (paisatge, activitats, ciutat de referència)","Capital = la ciutat principal, amb els serveis i el consell comarcal","Diferència: la comarca és tot el territori; la capital, una ciutat de dins","Un exemple correcte (p. ex. Osona és la comarca i Vic, la capital)"],
+ m:"Una comarca és un grup de pobles i ciutats veïns que comparteixen paisatge i activitats, i que depenen d'una mateixa ciutat per anar al mercat, a l'hospital o a l'institut. La capital de comarca és justament aquesta ciutat principal, on hi ha els serveis importants i el consell comarcal. La diferència és que la comarca és tot el territori sencer i la capital és només una ciutat de dins. Per exemple, Osona és una comarca i Vic n'és la capital."},
+{t:"Comarques i províncies",q:"Explica la diferència entre una comarca i una província: quantes n'hi ha de cada una a Catalunya, quina de les dues és més gran, i posa un exemple d'una comarca dient a quina província pertany.",
+ p:["Nombres: 4 províncies i 42 comarques + l'Aran","La província és més gran i conté comarques senceres","Són divisions diferents: la província és de l'Estat, la comarca és pròpia de Catalunya","Un exemple correcte (p. ex. el Gironès és a la província de Girona)"],
+ m:"A Catalunya hi ha 4 províncies (Barcelona, Girona, Lleida i Tarragona) i 42 comarques més l'Aran. La província és molt més gran: dins d'una província hi ha moltes comarques senceres. La província és una divisió de l'Estat espanyol i la comarca és la divisió pròpia de Catalunya. Per exemple, la comarca del Gironès és dins de la província de Girona."},
+{t:"Comarques i províncies",q:"Explica per què l'Aran es compta a part de les altres comarques. Digues com es diu el seu govern i quina llengua s'hi parla.",
+ p:["Té un règim especial reconegut per llei","Té llengua pròpia: l'aranès","El seu govern és el Conselh Generau, no un consell comarcal","Per això es diu «42 comarques i l'Aran»"],
+ m:"L'Aran es compta a part perquè té un règim especial reconegut per llei i una llengua pròpia, l'aranès, que s'ensenya a les escoles. El seu govern no es diu consell comarcal sinó Conselh Generau. Per això, quan et pregunten quantes comarques té Catalunya, la resposta segura és «42 comarques i l'Aran»."},
+{t:"Tarragona",q:"Digues les quatre comarques de les Terres de l'Ebre amb les seves capitals i explica què tenen en comú.",
+ p:["Baix Ebre → Tortosa","Montsià → Amposta","Ribera d'Ebre → Móra d'Ebre","Terra Alta → Gandesa","Totes quatre envolten el riu Ebre (són un àmbit funcional)"],
+ m:"Les Terres de l'Ebre són quatre comarques: el Baix Ebre, amb capital a Tortosa; el Montsià, amb capital a Amposta; la Ribera d'Ebre, amb capital a Móra d'Ebre; i la Terra Alta, amb capital a Gandesa. Totes quatre són a la demarcació de Tarragona i envolten el riu Ebre, i treballen juntes en transports i serveis."},
+{t:"Trucs i paranys",q:"Explica per què Vic i Manresa NO són comarques. Digues de quina comarca és capital cada una i quin error evites si ho saps.",
+ p:["Vic i Manresa són ciutats (capitals), no territoris","Vic és la capital d'Osona","Manresa és la capital del Bages","Evites escriure una ciutat quan et demanen una comarca (compta com a malament)"],
+ m:"Vic i Manresa no són comarques perquè són ciutats: són les capitals de dues comarques. Vic és la capital d'Osona i Manresa és la capital del Bages. Si ho tinc clar, a l'examen no escriuré el nom d'una ciutat quan em demanin una comarca, que és un error que compta com a malament."},
+{t:"Lleida",q:"Hi ha tres comarques que porten «Urgell» al nom. Digues quines són i la capital de cadascuna.",
+ p:["Alt Urgell → la Seu d'Urgell","Urgell → Tàrrega","Pla d'Urgell → Mollerussa","Totes tres són de la demarcació de Lleida"],
+ m:"Les tres comarques amb «Urgell» són l'Alt Urgell, amb capital a la Seu d'Urgell; l'Urgell, amb capital a Tàrrega; i el Pla d'Urgell, amb capital a Mollerussa. Totes tres són de la demarcació de Lleida, però són comarques diferents."},
+{t:"Què és una comarca",q:"Per què creus que una comarca necessita una capital? Explica-ho pensant en un poble petit i posa un exemple d'un servei.",
+ p:["Un poble petit sol no pot tenir hospital, institut o un mercat gran","Els serveis es comparteixen en una ciutat de referència: la capital","A la capital hi ha el consell comarcal","Un exemple de servei (hospital, institut, transport escolar, escombraries…)"],
+ m:"Una comarca necessita una capital perquè un poble petit tot sol no pot tenir un hospital, un institut o un mercat gran. Per això els pobles del voltant comparteixen aquests serveis en una ciutat de referència, que és la capital, on també hi ha el consell comarcal. Per exemple, si vius a la Garrotxa i et fas mal, vas a l'hospital d'Olot."}
+];
+
+// ---- figures pròpies ----
+function svgCapses(){
+ const caixa=(x,y,w,h,f,v,t,ty)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="${f}" stroke="${v}" stroke-width="2.5"/><text x="${x+14}" y="${y+ty}" font-size="15" font-weight="800" fill="${v}">${t}</text>`;
+ let s=`<svg viewBox="0 0 440 300" width="100%" style="max-width:480px" font-family="Nunito,Arial,sans-serif">`;
+ s+=caixa(10,10,420,256,"#f5f3ff","#6d28d9","CATALUNYA",26);
+ s+=caixa(34,42,372,212,"#eff6ff","#1d4ed8","BARCELONA",26);
+ s+=caixa(60,74,320,166,"#ecfdf5","#047857","ANOIA",26);
+ s+=caixa(88,108,150,56,"#fff7ed","#c2410c","IGUALADA",34);
+ s+=`<circle cx="226" cy="136" r="5" fill="#dc2626"/>`;
+ s+=`<rect x="250" y="108" width="112" height="56" rx="14" fill="#fff" stroke="#94a3b8" stroke-dasharray="5,4" stroke-width="2"/><text x="306" y="141" font-size="13" text-anchor="middle" fill="#475569">Òdena</text>`;
+ s+=`<rect x="88" y="176" width="274" height="50" rx="14" fill="#fff" stroke="#94a3b8" stroke-dasharray="5,4" stroke-width="2"/><text x="225" y="206" font-size="13" text-anchor="middle" fill="#475569">Vilanova del Camí, i més pobles…</text>`;
+ return s+`<text x="220" y="290" font-size="12" text-anchor="middle" font-weight="700" fill="#334155">Capses dins de capses (esquema, no és un mapa) · ● capital</text></svg>`;
+}
+
+const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
+["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
+document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
+
+// ====================== ESTAT ======================
+const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null,fonts:{},ftema:{},fjoc:{}});
+let S=BUIT(),PER={},ACT="";
+try{PER=JSON.parse(localStorage.getItem(CL+"perfils")||"{}")||{};ACT=localStorage.getItem(CL+"actiu")||""}catch(e){}
+try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const o=Object.assign(BUIT(),JSON.parse(v));if(o.nom){PER[o.nom]=o;ACT=o.nom}}}catch(e){}
+if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
+function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
+function desa(){guarda();pintaCap()}
+// ---- registre d'activitat per al panell admin (Supabase: només escriptura; llegir-ho només pot l'admin) ----
+const BN_LOG={url:"https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/bn_log",key:"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb"};
+const SESSIO=Math.random().toString(36).slice(2,12);let APARELL="",TPEND=0;
+try{APARELL=localStorage.getItem("bn_aparell")||"";if(!APARELL){APARELL=Math.random().toString(36).slice(2,12);localStorage.setItem("bn_aparell",APARELL)}}catch(e){APARELL="?"}
+function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return;
+ try{fetch(BN_LOG.url,{method:"POST",keepalive:true,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json","Prefer":"return=minimal"},
+  body:JSON.stringify({assig:ASSIG.id,nom:S.nom.slice(0,40),sessio:SESSIO,aparell:APARELL,event,detall:detall||{}})}).catch(()=>{})}catch(e){}}
+function buidaTemps(){if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")buidaTemps()});
+addEventListener("pagehide",buidaTemps);
+function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLowerCase())}
+function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
+ ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}marcaDia();desa();registra("entra",{nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici")}
+function avui(){return new Date().toISOString().slice(0,10)}
+function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
+function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
+// ---- nivells i rangs: es calculen amb les mateixes ⭐ dels tests, jocs i preguntes obertes ----
+const NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","🔍"],[45,"Savi","📜"],[70,"Expert","🎓"],[100,"Mestre","🧠"],[140,"Campió","🏅"],[190,"Heroi","🦸"],[250,"Llegenda","👑"],[330,"Llegenda d'or","🌟"]];
+function nivell(p){let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];
+ return {n:i+1,nom,ic,min,seg,falten:seg?seg[0]-p:0,pc:seg?Math.round((p-min)*100/(seg[0]-min)):100}}
+let NIVPEND=null;
+function suma(n){const a=nivell(S.punts).n;S.punts+=n;if(nivell(S.punts).n>a)NIVPEND=nivell(S.punts);
+ // d'on surt cada estrella: temes (i quin), jocs (i quin), examen, obertes, combo
+ S.fonts=S.fonts||{};S.ftema=S.ftema||{};S.fjoc=S.fjoc||{};const [f,id]=FONT;S.fonts[f]=(S.fonts[f]||0)+n;
+ if(f==="temes"&&id)S.ftema[id]=(S.ftema[id]||0)+n;if(f==="jocs"&&id)S.fjoc[id]=(S.fjoc[id]||0)+n;
+ desa();if(n>0)volaEstrella(n)}
+// ---- animació arcade de cada estrella guanyada: surt d'on has tocat i vola fins al comptador ----
+let FONT=["temes"],ULTX=innerWidth/2,ULTY=innerHeight/2,COMBO=0;
+document.addEventListener("pointerdown",e=>{ULTX=e.clientX;ULTY=e.clientY},true);
+function volaEstrella(n){try{
+ const dest=document.getElementById("punts").getBoundingClientRect(),x0=ULTX,y0=ULTY;
+ const d=document.createElement("div");d.className="vola puja";d.textContent=`+${n} ⭐`;d.style.left=(x0-24)+"px";d.style.top=(y0-28)+"px";document.body.appendChild(d);
+ for(let i=0;i<8;i++){const e=document.createElement("i");e.className="espurna";e.style.left=x0+"px";e.style.top=y0+"px";document.body.appendChild(e);const a=Math.PI*2*i/8,r=26+Math.random()*16;
+  requestAnimationFrame(()=>{e.style.transform=`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) scale(.3)`;e.style.opacity="0"});setTimeout(()=>e.remove(),550)}
+ setTimeout(()=>{d.classList.remove("puja");d.style.transform=`translate(${dest.left+dest.width/2-x0}px,${dest.top+dest.height/2-y0+14}px) scale(.55)`;d.style.opacity=".2"},380);
+ setTimeout(()=>{d.remove();const pl=document.getElementById("punts");pl.classList.remove("boing");void pl.offsetWidth;pl.classList.add("boing");so("coin")},1130);
+}catch(e){}}
+// ratxa d'encerts seguits als tests: COMBO ×3, ×5 (+1 ⭐ de regal), ×10 (+2 ⭐)…
+function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;if(COMBO<3)return;
+ const premi=COMBO%10===0?2:COMBO%5===0?1:0;
+ const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
+ document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
+const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"]];
+// el resum d'estrelles només surt quan toques el comptador de dalt a la dreta
+// ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
+let COMP=null,COMPT=0;
+function elMeu(){const g=resumGlobal(),min=S.temps/60;return {punts:S.punts,encert:g.encert,ritme:min>=2?Math.round(S.punts*10/min):null}}
+function carregaComp(cb){if(/^file:/.test(location.protocol)){cb&&cb();return}if(COMP&&Date.now()-COMPT<120000){cb&&cb();return}
+ fetch(BN_LOG.url.replace("/bn_log","/rpc/bn_comparativa"),{method:"POST",headers:{"apikey":BN_LOG.key,"Content-Type":"application/json"},body:JSON.stringify({p_assig:ASSIG.id})})
+  .then(r=>r.ok?r.json():null).then(d=>{COMP=Array.isArray(d)?d:null;COMPT=Date.now();cb&&cb()}).catch(()=>{cb&&cb()})}
+function veredicte(){const m=elMeu();if(m.encert===null)return {ic:"🚀",t:"Encara no has fet cap test",s:"Fes-ne un i et diré si vas ràpid i bé."};
+ const alt=(COMP||[]).slice(),ij=alt.findIndex(r=>r.punts===m.punts);if(ij>=0)alt.splice(ij,1);
+ const altres=alt.filter(r=>r.temps_s>=120).map(r=>Math.round(r.punts*10/(r.temps_s/60)));
+ // ràpid = més ràpid que almenys la meitat dels altres nens (si n'hi ha 2 o més); si no, 6 ⭐ cada 10 min
+ const be=m.encert>=70,rap=m.ritme!==null&&(altres.length>=2?altres.filter(x=>x<m.ritme).length*2>=altres.length:m.ritme>=6);
+ if(m.ritme===null)return be?{ic:"🎯",t:"Vas bé!",s:`Encertes el ${m.encert}%. Estudia una mica més i et diré si també vas ràpid.`}:{ic:"📚",t:"Cal repassar",s:`Encertes el ${m.encert}%. Llegeix bé les fitxes abans dels tests.`};
+ if(be&&rap)return {ic:"🚀",t:"Vas ràpid i bé!",s:`Encertes el ${m.encert}% i guanyes ${m.ritme} ⭐ cada 10 minuts. Crack!`};
+ if(be)return {ic:"🐢",t:"Vas bé, però a poc a poc",s:`Encertes el ${m.encert}%, molt bé! Guanyes ${m.ritme} ⭐ cada 10 min: prova de fer més tests seguits.`};
+ if(rap)return {ic:"⚡",t:"Vas ràpid, però amb errors",s:`Guanyes ${m.ritme} ⭐ cada 10 min, però encertes el ${m.encert}%. Llegeix amb calma!`};
+ return {ic:"💪",t:"Ves a poc a poc i repassa",s:`Encertes el ${m.encert}%. Torna a la fitxa i a les targetes abans del test.`}}
+function cartaComVas(){const v=veredicte(),m=elMeu();
+ let h=`<div class="comvas"><div class="cv-cap"><span class="cv-ic">${v.ic}</span><div><b>${v.t}</b><small>${v.s}</small></div></div>`;
+ const R=(COMP||[]).filter(r=>r.punts>0||r.tests>0);
+ if(R.length>=2){const altres=R.slice();let i=altres.findIndex(r=>r.punts===m.punts);if(i>=0)altres.splice(i,1);
+  const n=altres.length+1,pos=altres.filter(r=>r.punts>m.punts).length+1,med=["🥇","🥈","🥉"][pos-1]||"🏅";
+  const pct=(vals,mv)=>vals.length&&mv!==null?Math.round(vals.filter(x=>x<mv).length*100/vals.length):null;
+  const enc=altres.filter(r=>r.encert!==null).map(r=>r.encert),rit=altres.filter(r=>r.temps_s>=120).map(r=>Math.round(r.punts*10/(r.temps_s/60)));
+  const pe=pct(enc,m.encert),pr=pct(rit,m.ritme);
+  const punts=(vals,mv,fmt)=>{const all=[...vals.map(v=>[v,0]),[mv,1]].filter(x=>x[0]!==null),mx=Math.max(1,...all.map(x=>x[0]));return `<div class="cv-pista">${all.map(([v,jo])=>`<i class="${jo?"jo":""}" style="left:${Math.round(v*96/mx)}%" title="${jo?"Tu":""}"></i>`).join("")}</div>`};
+  h+=`<div class="cv-comp"><p class="prog" style="margin:10px 0 4px">Comparat amb els altres ${n-1} nens que fan ${ASSIG.nom} (sense noms):</p>
+  <div class="cv-fila"><span>${med} Estrelles</span><b>${pos}r de ${n}</b>${punts(altres.map(r=>r.punts),m.punts)}</div>
+  ${pe!==null?`<div class="cv-fila"><span>🎯 Encert</span><b>millor que el ${pe}%</b>${punts(enc,m.encert)}</div>`:""}
+  ${pr!==null?`<div class="cv-fila"><span>⚡ Rapidesa</span><b>més ràpid que el ${pr}%</b>${punts(rit,m.ritme)}</div>`:""}
+  <p class="prog" style="margin:6px 0 0;font-size:12.5px">🟡 ets tu · ⚪ els altres nens (ningú veu el nom de ningú)</p></div>`}
+ else if(!/^file:/.test(location.protocol))h+=`<p class="prog" style="margin:8px 0 0">${COMP===null?"La comparativa amb els altres nens encara no està activada.":"Encara no hi ha prou nens per comparar-te. Aviat!"}</p>`;
+ return h+`</div>`}
+function obreEstrelles(e){if(e)e.stopPropagation();let d=document.getElementById("popEst");if(d){d.remove();return}
+ d=document.createElement("div");d.id="popEst";const pinta=()=>{d.innerHTML=cartaEstrelles(false)+cartaComVas()};pinta();document.body.appendChild(d);carregaComp(()=>{if(d.isConnected)pinta()});
+ d.onclick=()=>{d.remove();vista("analitica")};setTimeout(()=>document.addEventListener("click",function tanca(ev){if(!d.contains(ev.target)){d.remove()}document.removeEventListener("click",tanca,true)},true),0)}
+function cartaEstrelles(gran){
+ const fo=S.fonts||{},tot=FONTS.reduce((a,[k])=>a+(fo[k]||0),0),abans=Math.max(0,S.punts-tot),mx=Math.max(1,...FONTS.map(([k])=>fo[k]||0),abans);
+ const fila=(ic,nom,v)=>`<div class="font"><span class="ic2">${ic}</span><span>${nom}</span><div class="bf"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
+ if(!gran){ // versió compacta de l'inici: 2 files
+  const xips=FONTS.filter(([k])=>fo[k]).map(([k,ic,nom])=>`<span title="${nom}">${ic} ${fo[k]}</span>`).join("")+(abans?`<span title="D'abans">⏳ ${abans}</span>`:"");
+  return `<div class="estrelles mini2" onclick="vista('analitica')"><div class="f1"><b>⭐ ${S.punts} estrelles</b><span class="xs">${xips||`<span>Fes el primer test! ✨</span>`}</span><small>→</small></div><div class="f2">✅ test +1 · 🎮 joc +1 · ✍️ idea +1 · 🔥 combo ×5 +1 · ×10 +2</div></div>`}
+ let h=`<div class="estrelles" ${gran?"":`onclick="vista('analitica')"`}><h4>⭐ On guanyes les estrelles <small>${S.punts} en total${gran?"":" · toca per veure-ho tot"}</small></h4>`;
+ h+=FONTS.filter(([k])=>gran||fo[k]).map(([k,ic,nom])=>fila(ic,nom,fo[k]||0)).join("")+(abans?fila("⏳","D'abans",abans):"");
+ if(!S.punts)h+=`<p class="prog" style="margin:4px 0 0">Encara cap estrella. Fes el primer test i mira com volen! ✨</p>`;
+ if(gran){
+  const tt=T.filter(t=>(S.ftema||{})[t.id]).sort((a,b)=>S.ftema[b.id]-S.ftema[a.id]).slice(0,5),jj=ASSIG.jocs.filter(j=>(S.fjoc||{})[j.id]).sort((a,b)=>S.fjoc[b.id]-S.fjoc[a.id]).slice(0,5);
+  if(tt.length)h+=`<p style="margin:10px 0 2px"><b>Temes que més ⭐ t'han donat:</b></p>`+tt.map(t=>fila(t.ic,t.titol,S.ftema[t.id])).join("");
+  if(jj.length)h+=`<p style="margin:10px 0 2px"><b>Jocs que més ⭐ t'han donat:</b></p>`+jj.map(j=>fila(j.ic,j.titol,S.fjoc[j.id])).join("");
+ }
+ h+=`<div class="com-guanyar"><span>✅ +1 per encert als tests</span><span>🎮 +1 per encert als jocs</span><span>✍️ +1 per idea a les obertes</span><span>🔥 combo ×5: +1 de regal</span><span>🔥 combo ×10: +2</span></div></div>`;
+ return h}
+// el «LEVEL UP» surt quan s'acaba el test o el joc (no a mitja pregunta)
+function mostraNivell(){if(!NIVPEND)return;if(document.querySelector(".arc")){setTimeout(mostraNivell,400);return}
+ const v=NIVPEND;NIVPEND=null;so("super");window.NIVELLS_MOSTRATS=(window.NIVELLS_MOSTRATS||0)+1;
+ const d=document.createElement("div");d.className="arc niv";
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">LEVEL UP!</div><div class="nic">${v.ic}</div><div class="t3">NIVELL ${v.n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ARA ETS<br>${v.nom.toUpperCase()}</div>${v.seg?`<div class="t4">PROPER: ${v.seg[2]} ${v.seg[1].toUpperCase()} · ${v.falten} ⭐</div>`:`<div class="t4">HAS ARRIBAT AL NIVELL MÀXIM!</div>`}`;
+ document.body.appendChild(d);const para=focs(d.querySelector("canvas"));const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4500)}
+function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" onclick="vista('analitica')"><span class="nic">${v.ic}</span><div style="flex:1;min-width:0"><b>Nivell ${v.n} · ${v.nom}</b><div class="barra"><i style="width:${v.pc}%"></i></div><small>${v.seg?`Et falten ${v.falten} ⭐ per a ${v.seg[2]} ${v.seg[1]}`:"Nivell màxim! Ets una llegenda 🌟"}</small></div></div>`}
+function pintaCap(){const nv=nivell(S.punts);document.getElementById("punts").textContent=`⭐ ${S.punts} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom} · ${ASSIG.curs}`:ASSIG.curs}
+// temps d'estudi: cada 15 s amb la pestanya visible
+setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;TPEND+=15;guarda();if(TPEND>=300)buidaTemps()}},15000);
+const app=document.getElementById("app");
+const barreja=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.intents.map(i=>i.pc)):null};
+const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
+function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
+let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
+function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
+function vista(v){aturaSeg();window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
+
+
+// ====================== SO I EFECTES ARCADE ======================
+// volum dels sons 0-5 (0 = silenci)
+let AC=null,MG=null,VOL=3,VOLant=3;
+try{const v=localStorage.getItem("bn_vol");if(v!==null)VOL=Math.max(0,Math.min(5,+v||0));else if(localStorage.getItem("bn_so")==="0")VOL=0}catch(e){}
+const GVOL=[0,.12,.27,.45,.7,1];
+function audio(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=GVOL[VOL];MG.connect(AC.destination);}if(AC.state==="suspended")AC.resume();return AC}
+function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN");if(b)b.textContent=VOL===0?"🔇":VOL<3?"🔈":VOL<5?"🔉":"🔊";if(r)r.value=VOL;if(n)n.textContent=VOL}
+function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
+function canviaSo(){posaVol(VOL?0:(VOLant||3))}
+function nota(f,t0,d,tipus="square",vol=.12,dest){const o=AC.createOscillator(),g=AC.createGain();o.type=tipus;o.frequency.setValueAtTime(f,AC.currentTime+t0);g.gain.setValueAtTime(vol,AC.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t0+d);o.connect(g).connect(dest||MG);o.start(AC.currentTime+t0);o.stop(AC.currentTime+t0+d+.02)}
+function so(t){if(!VOL)return;try{audio();
+ if(t==="ok"){nota(988,0,.08);nota(1319,.08,.18)}
+ else if(t==="ko"){nota(196,0,.18,"sawtooth",.08);nota(147,.16,.25,"sawtooth",.08)}
+ else if(t==="win"){[523,659,784,1047,784,1047,1319].forEach((f,i)=>nota(f,i*.11,.16));[262,330,392,523].forEach((f,i)=>nota(f,.77+i*.0,.6,"triangle",.1));nota(1568,.77,.6,"square",.08)}
+ else if(t==="super"){[523,659,784,1047,1319,1568,2093].forEach((f,i)=>nota(f,i*.08,.14));[1047,1319,1568,2093].forEach((f,i)=>nota(f,.6+i*.12,.25));nota(2093,1.1,.8,"triangle",.12)}
+ else if(t==="clic"){nota(660,0,.04,"square",.07);nota(990,.04,.06,"square",.06)}
+ else if(t==="gir"){nota(440,0,.05,"square",.06);nota(880,.05,.08,"square",.05)}
+ else if(t==="trist"){[392,370,349].forEach((f,i)=>nota(f,i*.38,.34,"sawtooth",.09));const o=AC.createOscillator(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain(),t0=AC.currentTime+1.14;o.type="sawtooth";o.frequency.setValueAtTime(330,t0);o.frequency.linearRampToValueAtTime(262,t0+1.1);l.frequency.value=6;lg.gain.value=9;l.connect(lg).connect(o.frequency);g.gain.setValueAtTime(.1,t0);g.gain.exponentialRampToValueAtTime(.001,t0+1.3);o.connect(g).connect(MG);o.start(t0);l.start(t0);o.stop(t0+1.35);l.stop(t0+1.35)}
+ else if(t==="coin"){nota(988,0,.06);nota(1319,.06,.3)}
+}catch(e){}}
+function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};mida();
+ const P=[],cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
+ const esclat=(x,y)=>{const col=cols[Math.random()*cols.length|0];for(let i=0;i<46;i++){const a=Math.PI*2*i/46,v=2+Math.random()*4.5;P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,v:1,col,m:3+Math.random()*3})}};
+ let fr=0,viu=true;const pas=()=>{if(!viu)return;fr++;c.fillStyle="#02061733";c.fillRect(0,0,W,H);
+  if(fr%18===1&&fr<200)esclat(W*(.15+Math.random()*.7),H*(.15+Math.random()*.45));
+  for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.vx*=.985;p.v-=.012;if(p.v<=0){P.splice(i,1);continue}c.globalAlpha=p.v;c.fillStyle=p.col;c.fillRect(p.x|0,p.y|0,p.m,p.m)}
+  c.globalAlpha=1;requestAnimationFrame(pas)};pas();return()=>{viu=false}}
+document.addEventListener("click",e=>{const el=e.target.closest("button,.tile,.continua,.flash,label.chk,details summary");if(!el||el.matches(".opt,#so"))return;so(el.matches(".flash")?"gir":"clic")},true);
+let demoN=0;const MODE_DEMO=/[?&]demo\b/.test(location.search);
+function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true],[40,2,5,false],[0,0,5,false]];const c=casos[demoN%5];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%5+1}/5 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
+function fracas(pc,bones,n){
+ so("trist");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ const d=document.createElement("div");d.className="arc ko";
+ let pl="";for(let i=0;i<40;i++)pl+=`<i class="pluja" style="left:${Math.random()*100}%;animation-duration:${.6+Math.random()*.7}s;animation-delay:${Math.random()*1.2}s"></i>`;
+ d.innerHTML=`${pl}<div class="t1">${pc<25?"GAME<br>OVER":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">💔</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}REPASSA I<br>TORNA-HI!</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+}
+function arcade(pc,bones,n,record){
+ if(pc<50)return fracas(pc,bones,n);
+ const sup=pc>=90,nE=pc>=90?3:pc>=70?2:1;
+ so(sup?"super":"win");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ const d=document.createElement("div");d.className="arc";
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record?`<div class="rec">★ NOU RÈCORD ★</div>`:""}<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ document.body.appendChild(d);[0,1,2].slice(0,nE).forEach(i=>setTimeout(()=>so("coin"),500+i*250+700));
+ const para=focs(d.querySelector("canvas"));
+ const tanca=()=>{para();d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+}
+
+// ====================== BENVINGUDA ======================
+function benvinguda(){
+ marcaNav("usuari");
+ const noms=Object.keys(PER);
+ const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=APROVA}).length;
+ app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
+ ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
+ <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form><a class="surt-gran" href="../../">🚪 Tornar al menú de tots els mons</a></div>`;
+ app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>entra(b.dataset.n));
+ const i=document.getElementById("nom");if(!noms.length)i.focus();
+ document.getElementById("fn").onsubmit=e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n){i.style.borderColor="#ef4444";return}
+  n=n.charAt(0).toUpperCase()+n.slice(1);
+  if(existeix(n)){i.style.borderColor="#ef4444";so("ko");sacseja(i);
+   const sug=suggeriments(n);
+   document.getElementById("nomAvis").innerHTML=`<div class="fb ko" style="text-align:left">🙈 Ja hi ha algú que es diu <b>${Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())}</b>. Si ets tu, toca el teu nom a la llista de dalt. Si no, tria un altre nom, un àlies o afegeix-hi un número:<div style="margin-top:8px">${sug.map(x=>`<span class="chip sug">${x}</span>`).join("")}</div></div>`;
+   document.querySelectorAll(".sug").forEach(c=>c.onclick=()=>entra(c.textContent));return}
+  entra(n)};
+ i.oninput=()=>{i.style.borderColor="";document.getElementById("nomAvis").innerHTML=""};
+}
+
+// ====================== INICI ======================
+function tileTema(t,i){
+ const m=millor(t.id),f=m??0,ap=m!==null&&m>=APROVA;
+ return `<div class="tile" onclick="obre(${i})"><div class="ic" style="background:${t.col}1f">${t.ic}</div>${ap?`<span class="segell">${m>=90?"🏆":"✅"}</span>`:`<span class="num">${i+1}/${T.length}</span>`}<b>${t.titol}</b><small>${t.font}</small><div class="peu"><div class="barra"><i style="width:${f}%"></i></div><span class="pc">${m===null?"—":f+"%"}</span></div></div>`;
+}
+function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<APROVA})}
+function blocsTemes(){let i=0;return ASSIG.blocs.map(b=>{const h=`<h2 class="sec">${b.titol}</h2><div class="grid">${T.slice(i,i+b.n).map((t,k)=>tileTema(t,i+k)).join("")}</div>`;i+=b.n;return h}).join("")}
+function inici(){
+ marcaDia();
+ const aprov=T.filter(t=>(millor(t.id)??0)>=APROVA).length, sp=seguentPendent();
+ const res=resumGlobal();
+ let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
+ h+=cartaRepas();
+ if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
+ h+=`${blocsTemes()}
+ <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
+ <h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>
+ <div class="fila">${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><a class="btn sec" href="../../" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
+ app.innerHTML=h;
+}
+function pintaTemes(){app.innerHTML=blocsTemes()}
+function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
+const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"]];
+function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
+function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
+function joc(id){aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id);registra(id==="examen"?"examen":"joc",{joc:id,titol:j?j[2]:id,pc})}
+
+// ====================== TEMA ======================
+let tema,pest="fitxa";
+function obre(i){aturaSeg();COMBO=0;FONT=["temes",T[i].id];tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
+function pintaTema(){
+ window.scrollTo(0,0);
+ const t=tema,e=ET(t.id),idx=T.indexOf(t);
+ app.innerHTML=`<div class="cap-tema"><div class="ic" style="background:${t.col}22">${t.ic}</div><div><div class="prog">Tema ${idx+1} de ${T.length} · ${t.font}</div><h2>${t.titol}</h2></div></div>
+ <div class="passos">${[["fitxa","📄 Fitxa",e.fitxa],["targetes","🃏 Targetes",e.fc>=t.fc.length],["test","✅ Test",e.intents.length>0]].map(([k,n,f])=>`<button class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
+ if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,NTEST),0,0,t.id)}
+}
+function fitxa(){
+ const t=tema;ET(t.id).fitxa=true;desa();registra("fitxa",{tema:t.id,titol:t.titol});
+ document.getElementById("zona").innerHTML=`<div class="box"><div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+}
+function targetes(n){
+ const t=tema,c=t.fc[n],e=ET(t.id);e.fc=Math.max(e.fc,n+1);desa();
+ document.getElementById("zona").innerHTML=`<div class="prog" style="text-align:center">Targeta ${n+1} de ${t.fc.length}</div>
+ <div class="flash" onclick="this.classList.toggle('gir')"><div class="in"><div class="cara davant">${c[0]}<small>toca per girar</small></div><div class="cara darrere">${c[1]}<small>toca per tornar</small></div></div></div>
+ <div class="punts-fc">${t.fc.map((x,i)=>`<i class="${i==n?'on':''}"></i>`).join("")}</div>
+ <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="targetes(${n-1})">← Anterior</button>
+ ${n<t.fc.length-1?`<button class="btn" onclick="targetes(${n+1})">Següent →</button>`:`<button class="btn verd" onclick="pest='test';pintaTema()">Fes el test ✅</button>`}</div>`;
+}
+
+// ====================== TEST ======================
+function test(ordre,k,bones,clau,pool,cb){
+ const z=document.getElementById("zona"),llista=pool||tema.q,esTema=!pool;
+ if(k>=ordre.length){
+  const pc=Math.round(bones*100/ordre.length);
+  if(cb){cb(pc,bones,ordre.length);return}
+  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",{tema:tema.id,titol:tema.titol,pc,bones,n:ordre.length});
+  const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=APROVA;
+  if(aprova)arcade(pc,bones,ordre.length,ant!==null&&pc>ant);else fracas(pc,bones,ordre.length);
+  const msg=pc>=90?"Excel·lent!":pc>=APROVA?"Tema superat!":pc>=50?`Gairebé! Per passar de tema cal un ${APROVA} %`:"Cal repassar més, ànims!";
+  z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
+  <p class="prog" style="margin-top:14px">Com t'ha anat aquest tema?</p>
+  <div class="valor">${[["😕","Costa"],["🙂","Bé"],["😃","Fàcil"]].map(([em,tx],i)=>`<button class="${e.valoracio===i?'on':''}" onclick="valora(${i},this)">${em}<small>${tx}</small></button>`).join("")}</div>
+  ${teSeg&&aprova?`<p id="compte" class="prog" style="margin-top:16px">Passem a <b>${T[idx+1].ic} ${T[idx+1].titol}</b> en <span id="seg-s">8</span> s…</p>`:""}
+  ${!teSeg&&aprova?`<p>🎉 Has acabat tots els temes! Prova les preguntes obertes o l'examen sorpresa.</p>`:""}
+  ${!aprova?`<p>Repassa la fitxa i torna-hi: amb un ${APROVA} % o més passaràs al tema següent. Les preguntes canvien cada vegada!</p>${repPendents().length?`<p><button class="btn verd" onclick="aturaSeg();repas()">🔁 Repassa els errors ara</button></p>`:""}`:""}
+  <div class="fila">${teSeg&&aprova?`<button class="btn verd" onclick="aturaSeg();obre(${idx+1})">Tema següent →</button>`:""}<button class="btn ${teSeg&&aprova?'sec':''}" onclick="aturaSeg();pest='test';pintaTema()">Torna-hi</button><button class="btn sec" onclick="aturaSeg();pest='fitxa';pintaTema()">Repassa la fitxa</button></div></div>`;
+  if(teSeg&&aprova){let s=8;temp=setInterval(()=>{s--;const el=document.getElementById("seg-s");if(!el){aturaSeg();return}el.textContent=s;if(s<=0){aturaSeg();obre(idx+1)}},1000)}
+  return;
+ }
+ const q=llista[ordre[k]];
+ const ops=barreja(q[1].map((o,i)=>[o,i]));
+ z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
+ <div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="fb"></div></div>`;
+ z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+  const ok=+b.dataset.i===q[2];
+  z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
+  const tidR=q.tid||(esTema?tema.id:null);if(tidR)repAnota(tidR,q[0],ok);
+  if(ok){suma(REPAS?0:1);so("ok");ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
+ });
+}
+function valora(i,b){ET(tema.id).valoracio=i;desa();registra("valora",{tema:tema.id,titol:tema.titol,v:["Costa","Bé","Fàcil"][i]});b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
+function resultatJoc(id,titol){return (pc,b,n)=>{const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
+function examen(){
+ const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=q.slice();c.tema=t.titol;c.tid=t.id;pool.push(c)}));
+ const ordre=barreja(pool.map((x,i)=>i)).slice(0,15);
+ app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
+ test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
+}
+
+// ====================== REPÀS ESPAIAT DELS ERRORS ======================
+// Cada pregunta fallada entra a la capsa 0 (es pot repassar avui mateix).
+// Al repàs: encert → capsa 1 (torna d'aquí a 3 dies) → capsa 2 (d'aquí a 7) → après i surt. Error → capsa 0, torna demà.
+const APROVA=70,NTEST=6,REP_DIES=[0,3,7];
+let REPAS=false;
+function diaMes(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function repAnota(tid,txt,ok){S.rep=S.rep||{};const k=tid+"|"+txt,r=S.rep[k];
+ if(!ok){S.rep[k]={tid,q:txt,c:0,prox:REPAS?diaMes(1):avui()};desa();return}
+ if(!REPAS||!r)return;
+ const c=r.c+1;if(c>=REP_DIES.length){delete S.rep[k];S.apresos=(S.apresos||0)+1}else S.rep[k]={...r,c,prox:diaMes(REP_DIES[c])};desa()}
+function repTots(){return Object.values(S.rep||{}).filter(r=>T.some(t=>t.id===r.tid&&t.q.some(q=>q[0]===r.q)))}
+function repPendents(){const d=avui();return repTots().filter(r=>r.prox<=d)}
+function repProper(){const f=repTots().map(r=>r.prox).sort();return f[0]||null}
+function repas(){
+ const pend=barreja(repPendents()).slice(0,10);aturaSeg();COMBO=0;FONT=["repas"];window.scrollTo(0,0);marcaNav("inici");
+ if(!pend.length){const pr=repProper();app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila"><button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
+ const pool=pend.map(r=>{const t=T.find(x=>x.id===r.tid),q=t.q.find(x=>x[0]===r.q).slice();q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
+ REPAS=true;
+ app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Si l'encertes, tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après! 🧠</p><div id="zona"></div>`;
+ test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{REPAS=false;registra("joc",{joc:"repas",titol:"Repàs dels errors",pc});arcade(pc,b,n,false);
+  const queden=repPendents().length,pr=repProper();
+  document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=APROVA?"🧠":"💪"}</div><h2>${b} de ${n} recordades</h2><p>${b?`Molt bé! Les que has encertat tornaran d'aquí a uns dies per assegurar-nos que no se t'obliden.`:""} ${n-b?`Les que has fallat tornaran <b>demà</b>.`:""}</p>${S.apresos?`<p class="prog">Preguntes apreses per sempre: <b>${S.apresos}</b> 🏅</p>`:""}<div class="fila">${queden?`<button class="btn" onclick="repas()">Repassa'n ${queden} més</button>`:""}<button class="btn sec" onclick="vista('inici')">Torna a l'inici</button></div></div>`});
+}
+function cartaRepas(){const n=repPendents().length,tot=repTots().length;if(!tot)return "";
+ return `<div class="continua" style="background:#ecfdf5;border-color:#6ee7b7" onclick="repas()"><span style="font-size:28px">🔁</span><b>${n?`Tens <span style="color:#047857">${n} pregunta${n>1?"s":""}</span> per repassar avui`:`Errors al dia! Proper repàs: ${new Date(repProper()).toLocaleDateString("ca-ES",{day:"numeric",month:"short"})}`}</b><span class="btn ${n?"verd":"sec"}">${n?"Repassa →":"Mira"}</span></div>`}
+
+// ====================== JOCS GENÈRICS ======================
+// tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
+function fiJoc(j,n,errors){const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
+ document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
+function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
+function jocOrdena(j){
+ let pos=0,errors=0;const it=j.items;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="xips" style="margin-top:10px"></div><div class="pila" id="pila">${j.base?`<div style="background:#bbf7d0">${j.base}</div>`:""}</div><div id="zona"></div></div>`;
+ const x=document.getElementById("xips");
+ barreja(it.map((c,i)=>i)).forEach(i=>{const s=document.createElement("span");s.className="chip";s.textContent=it[i][0];
+  s.onclick=()=>{if(s.classList.contains("ok"))return;
+   if(i===pos){s.classList.add("ok");const d=document.createElement("div");d.style.background=it[i][2]||"#eef2ff";d.innerHTML=`${i+1} · ${it[i][0]}${it[i][1]?` <small style="font-weight:600;color:#475569">— ${it[i][1]}</small>`:""}`;document.getElementById("pila").appendChild(d);pos++;suma(1);so("ok");if(pos===it.length)fiJoc(j,it.length,errors)}
+   else{errors++;sacseja(s)}};x.appendChild(s)});
+}
+function jocFigura(j){
+ const svg=typeof window[j.figura]==="function"?window[j.figura]():j.figura;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box" style="text-align:center">${svg}</div><div id="zona"></div>`;
+ test(j.q.map((x,i)=>i),0,0,j.id,j.q,resultatJoc(j.id));
+}
+function jocParelles(j){
+ const PAR=j.pars;let sel=null,fet=0,errors=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div class="col2" style="margin-top:12px"><div id="esq"></div><div id="dre"></div></div><div id="zona"></div></div>`;
+ const E=document.getElementById("esq"),D=document.getElementById("dre");
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][0];s.dataset.i=i;s.onclick=()=>{if(s.classList.contains("ok"))return;E.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};E.appendChild(s)});
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][1];
+  s.onclick=()=>{if(!sel||s.classList.contains("ok"))return;
+   if(+sel.dataset.i===i){sel.classList.remove("sel");sel.classList.add("ok");s.classList.add("ok");sel=null;fet++;suma(1);so("ok");if(fet===PAR.length)fiJoc(j,PAR.length,errors)}
+   else{errors++;sacseja(s)}};D.appendChild(s)});
+}
+function jocClassifica(j){
+ const F=j.items;let sel=null,fet=0,errors=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="fr" style="margin:10px 0"></div><div class="col2">${j.caixes.map(([k,t])=>`<div class="cub" data-k="${k}"><h4>${t}</h4></div>`).join("")}</div><div id="zona"></div></div>`;
+ const fr=document.getElementById("fr");
+ barreja(F).forEach(f=>{const s=document.createElement("span");s.className="chip";s.textContent=f[0];s.dataset.k=f[1];s.onclick=()=>{fr.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};fr.appendChild(s)});
+ app.querySelectorAll(".cub").forEach(c=>c.onclick=()=>{
+  if(!sel)return;
+  if(sel.dataset.k===c.dataset.k){sel.classList.remove("sel");sel.classList.add("ok");sel.onclick=null;c.appendChild(sel);sel=null;fet++;suma(1);so("ok");if(fet===F.length)fiJoc(j,F.length,errors)}
+  else{errors++;sacseja(sel)}});
+}
+
+// ====================== PREGUNTES OBERTES ======================
+function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}
+function obertes(n){
+ FONT=["obertes"];window.scrollTo(0,0);marcaNav("obertes");
+ const o=OB[n],fet=S.ob[n];
+ app.innerHTML=`<h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
+ <div class="box" style="margin-top:10px"><div class="pregunta">${o.q}</div>
+ <textarea id="resp" rows="7" placeholder="Escriu aquí la teva resposta amb les teves paraules…"></textarea>
+ <div class="fila"><button class="btn" id="veu">Comprova la meva resposta</button></div><div id="corr"></div></div>
+ <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="obertes(${n-1})">← Anterior</button><button class="btn sec" ${n==OB.length-1?'disabled':''} onclick="obertes(${n+1})">Següent →</button></div>`;
+ document.getElementById("veu").onclick=()=>{
+  const txt=document.getElementById("resp").value.trim();
+  if(txt.length<15){document.getElementById("corr").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de comprovar-ho.</div>`;return}
+  document.getElementById("veu").disabled=true;document.getElementById("resp").readOnly=true;
+  document.getElementById("corr").innerHTML=`<div class="fb"><b>Marca les idees que has posat a la teva resposta:</b>${o.p.map(x=>`<label class="chk"><input type="checkbox" class="pk"><span>${x}</span></label>`).join("")}
+  <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p></details>
+  <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
+  document.getElementById("nota").onclick=()=>{
+   const k=[...document.querySelectorAll(".pk")].filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);registra("oberta",{n,tema:o.t,pc});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
+   const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
+   document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> · a l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
+  };
+ };
+}
+
+// ====================== ANALÍTICA ======================
+function resumGlobal(){
+ let int=0,suma_=0;T.forEach(t=>{const e=S.temes[t.id];if(e&&e.intents.length){int+=e.intents.length;suma_+=e.intents.reduce((a,b)=>a+b.pc,0)}});
+ return {intents:int,encert:int?Math.round(suma_/int):null};
+}
+function color(pc){return pc===null?"#cbd5e1":pc>=80?"#22c55e":pc>=50?"#f59e0b":"#ef4444"}
+function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElementById("cvA");if(c)c.innerHTML=cartaComVas()}),0);
+ const g=resumGlobal(),aprov=T.filter(t=>(millor(t.id)??0)>=APROVA);
+ const fetsT=T.filter(t=>millor(t.id)!==null);
+ const forts=T.filter(t=>(millor(t.id)??0)>=80),febles=fetsT.filter(t=>millor(t.id)<60),pend=T.filter(t=>millor(t.id)===null);
+ const obN=Object.keys(S.ob).length,obM=obN?Math.round(Object.values(S.ob).reduce((a,b)=>a+b,0)/obN):null;
+ const exU=S.examens.length?S.examens[S.examens.length-1].pc:null;
+ // errors més repetits
+ const errs=[];T.forEach(t=>{const e=S.temes[t.id];if(e)Object.entries(e.fallades).forEach(([q,c])=>errs.push([q,c,t]))});errs.sort((a,b)=>b[1]-a[1]);
+ const val=["😕 Costa","🙂 Bé","😃 Fàcil"];
+ // valoració global
+ let nivTxt,txt;
+ if(!fetsT.length){nivTxt="🚀 Tot just comencem";txt=`${S.nom} encara no ha fet cap test. El millor és començar pel primer tema: fitxa → targetes → test.`}
+ else{
+  const e=g.encert;
+  nivTxt=e>=85?"🌟 Excel·lent":e>=70?"👏 Molt bé":e>=50?"👍 Va bé, cal repassar":"💪 Cal reforçar";
+  txt=`${S.nom} ha treballat ${fetsT.length} de ${T.length} temes amb un ${e}% d'encerts de mitjana als tests.`;
+  if(forts.length)txt+=` Domina sobretot: ${forts.map(t=>t.titol.toLowerCase()).join(", ")}.`;
+  if(febles.length)txt+=` On més li costa: ${febles.map(t=>t.titol.toLowerCase()).join(", ")}.`;
+  if(obN)txt+=` A les preguntes obertes recull de mitjana el ${obM}% de les idees clau${obM<60?", i és on més cal practicar explicar-se amb les seves paraules":""}.`;
+  if(exU!==null)txt+=` A l'últim examen sorpresa va treure un ${exU}%.`;
+ }
+ const reco=[];
+ if(pend.length)reco.push(`Començar els temes pendents: <b>${pend.slice(0,3).map(t=>t.titol).join("</b>, <b>")}</b>${pend.length>3?"…":""}.`);
+ febles.forEach(t=>reco.push(`Tornar a llegir la fitxa de <b>${t.titol}</b> i repetir el test.`));
+ if(errs.length)reco.push(`Repassar les preguntes que més falla (llista de sota): les pot fer en veu alta amb papa o mama.`);
+ if(fetsT.length>=4&&obN<4)reco.push(`Fer més <b>preguntes obertes</b>: a l'examen valen 3 punts.`);
+ if(aprov.length===T.length&&exU===null)reco.push(`Fer l'<b>examen sorpresa</b> per comprovar-ho tot barrejat.`);
+ if(!reco.length)reco.push("Mantenir el ritme: un examen sorpresa cada dos o tres dies abans de l'examen.");
+ app.innerHTML=`<h2 class="sec">📊 Com va ${S.nom}</h2>
+ <div class="kpis">
+  <div class="kpi"><small>Temes aprovats</small><b>${aprov.length}/${T.length}</b><span>${pend.length} sense fer</span></div>
+  <div class="kpi"><small>Encert als tests</small><b style="color:${color(g.encert)}">${g.encert===null?"—":g.encert+"%"}</b><span>${g.intents} tests fets</span></div>
+  <div class="kpi"><small>Preguntes obertes</small><b>${obN}/${OB.length}</b><span>${obM===null?"cap encara":obM+"% d'idees"}</span></div>
+  <div class="kpi"><small>Temps d'estudi</small><b>${fmtT(S.temps)}</b><span>${S.dies.length} dia${S.dies.length==1?"":"s"}</span></div>
+  <div class="kpi"><small>Nivell</small><b>${nivell(S.punts).ic} ${nivell(S.punts).n}</b><span>${nivell(S.punts).nom}</span></div>
+  <div class="kpi"><small>Estrelles</small><b>⭐ ${S.punts}</b><span>${S.examens.length} examen${S.examens.length==1?"":"s"} sorpresa</span></div>
+ </div>
+ <div class="valoracio" style="margin-top:14px"><h3>${nivTxt}</h3><p style="margin:0">${txt}</p><p style="margin:10px 0 4px"><b>Què li recomano ara:</b></p><ul style="margin:0;padding-left:20px">${reco.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+ <h2 class="sec">🏁 Com vas</h2><div id="cvA">${cartaComVas()}</div>
+ <h2 class="sec">⭐ D'on surten les estrelles</h2>${cartaEstrelles(true).replace('class="estrelles"','class="estrelles" style="margin:0 0 6px;cursor:default"')}
+ <h2 class="sec">🏅 Nivells</h2><div class="box">${cartaNivell().replace('class="nivell"','class="nivell" style="margin:0 0 12px"')}<div class="rangs">${NIVELLS.map(([min,nom,ic],i)=>{const n=nivell(S.punts).n;return `<div class="rang ${i+1<n?'':i+1===n?'ara':'bloc'}"><span>${ic}</span><b>${i+1}. ${nom}</b><small>${min} ⭐</small></div>`}).join("")}</div><p class="prog" style="margin:10px 0 0">Cada encert als tests, als jocs i a les preguntes obertes suma ⭐, i les ⭐ fan pujar de nivell.</p></div>
+ <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
+ ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
+ </table><p class="prog" style="margin:8px 0 0"><span class="semaf" style="background:#22c55e"></span>80% o més · <span class="semaf" style="background:#f59e0b"></span>50-79% · <span class="semaf" style="background:#ef4444"></span>menys del 50% · <span class="semaf" style="background:#cbd5e1"></span>sense fer</p></div>
+ <h2 class="sec">❌ Preguntes que més falla</h2><div class="box"><p class="prog" style="margin:0 0 8px">🔁 Al repàs: <b>${repTots().length}</b> preguntes pendents (${repPendents().length} per avui) · 🏅 apreses del tot: <b>${S.apresos||0}</b></p>${errs.length?`<ol class="llista-err">${errs.slice(0,8).map(([q,c,t])=>`<li>${q} <span class="etq">${t.ic} ${t.titol}</span> <b>×${c}</b></li>`).join("")}</ol>`:`<p class="prog" style="margin:0">Encara cap error registrat. 👌</p>`}</div>
+ <h2 class="sec">✍️ Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
+ <h2 class="sec">🎮 Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
+ <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat en aquest navegador i aquest aparell. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
+ <div class="fila"><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><button class="btn verm" onclick="demanaReset()">🗑️ Esborrar el progrés</button></div>`;
+}
+function demanaReset(){
+ const m=document.createElement("div");m.className="modal";
+ m.innerHTML=`<div class="box"><div class="gran">⚠️</div><h3>Esborrar tot el progrés de ${S.nom}?</h3><p class="prog">Només s'esborra el progrés de ${S.nom}; els altres noms no es toquen. No es pot desfer.</p><div class="fila"><button class="btn sec" id="no">No, deixa-ho</button><button class="btn verm" id="si">Sí, esborra-ho</button></div></div>`;
+ document.body.appendChild(m);
+ m.querySelector("#no").onclick=()=>m.remove();
+ m.querySelector("#si").onclick=()=>{delete PER[S.nom];S=BUIT();try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.removeItem(CL+"actiu")}catch(e){}m.remove();pintaCap();benvinguda()};
+}
+
+pintaCap();pintaSo();vista("inici");
+</script>
+</body>
+</html>
