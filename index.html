@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bona Nota — Estudia jugant · 1r ESO</title>
 <meta name="theme-color" content="#0b1033">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icones/icona-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bona Nota">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -362,5 +366,6 @@ function efecteTab(b){const box=document.querySelector(".hs-caixa"),fx=FXT[b.dat
 }
 document.getElementById("hsTabs").onclick=e=>{const b=e.target.closest(".hs-tab");if(!b)return;if(b.dataset.t!==HSTAB)efecteTab(b);HSTAB=b.dataset.t;document.querySelectorAll(".hs-tab").forEach(x=>x.classList.toggle("on",x===b));if(HSD)pintaHs()};
 </script>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
 </body>
 </html>

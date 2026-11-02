@@ -26,5 +26,7 @@ falla si alguna pàgina generada no coincideix (editada a mà o sense regenerar)
 mode estricte (8 preguntes per tema com a mínim; la resposta correcta no pot ser la més llarga en més del 40 %
 ni en menys del 15 % de les preguntes). Mira la pestanya «Actions» del repo.
 
+**App instal·lable:** `manifest.webmanifest`, `icones/` i `sw.js` (generat per `tot.py` amb la llista de mons i una versió nova a cada canvi) permeten afegir Bona Nota a la pantalla d'inici i fer-la servir sense connexió.
+
 Les millores del motor es fan a la plantilla i es regeneren tots els mons amb `tot.py`.
 El progrés de cada nen es guarda al navegador del seu aparell (localStorage), separat per nom.

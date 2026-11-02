@@ -63,3 +63,14 @@ a, b = s.index(ini) + len(ini), s.index(fi)
 s = s[:a] + "\n" + "\n".join(targetes) + "\n " + s[b:]
 idx.write_text(s)
 print(f"✓ portada: {len(mons)} mons")
+
+# 4) service worker (app instal·lable i sense connexió): llista de pàgines i versió segons el contingut
+import hashlib
+fitxers_sw = ["./", "index.html", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png"] + [m["carpeta"] + "/" for m in mons]
+h = hashlib.sha1()
+for f in ["index.html"] + [m["carpeta"] + "/index.html" for m in mons]:
+    h.update((arrel / f).read_bytes())
+versio = h.hexdigest()[:10]
+sw = (d / "sw-plantilla.js").read_text().replace("__VERSIO__", versio).replace("__FITXERS__", json.dumps(fitxers_sw, ensure_ascii=False))
+(arrel / "sw.js").write_text(sw)
+print(f"✓ sw.js versió {versio}")

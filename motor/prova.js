@@ -36,6 +36,16 @@ const {chromium}=require('playwright');
   else if(t==='figura'){const n=await p.evaluate(id=>ASSIG.jocs.find(j=>j.id===id).q.length,id);for(let k=0;k<n;k++){await p.locator('.opt').first().click();await p.click('#seg')}}
   await tanca();
  }
+ // examen de veritat: 10 preguntes encertades → nota 10
+ await p.evaluate(()=>{aturaSeg();joc('examreal')});await p.click('#exGo');
+ for(let k=0;k<10;k++){await p.evaluate(()=>{const q=EXR.qs[EXR.k];[...document.querySelectorAll('.opt')].find(o=>+o.dataset.i===q[2]).click()});await p.waitForTimeout(300)}
+ await p.click('#exFi');await tanca();
+ const nota=await p.evaluate(()=>document.querySelector('.ex-nota')?.textContent||'');if(!/^10/.test(nota))errs.push('examen de veritat: nota '+nota);
+ // efectes suaus i descans
+ await p.evaluate(()=>{canviaSuau()});const su=await p.evaluate(()=>document.body.classList.contains('suau'));await p.evaluate(()=>canviaSuau());
+ await p.evaluate(()=>{descans()});const dsc=await p.locator('.descans').count();await p.click('#dSalta');
+ if(!su||dsc!==1)errs.push('suau/descans: '+su+' '+dsc);
+ console.log(`examen de veritat: ${nota} · efectes suaus i descans ok`);
  const jocsFets=await p.evaluate(()=>Object.keys(S.jocs).join(","));
  // repàs espaiat: falla 2 preguntes del primer tema i després repassa-les encertant
  await p.evaluate(()=>{aturaSeg();obre(0);pest='test';pintaTema()});
