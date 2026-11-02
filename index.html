@@ -46,18 +46,21 @@ h1 span{display:inline-block}
 .intro ul{margin:0 0 10px;padding-left:4px;list-style:none}.intro li{margin:5px 0}
 .intro .peu-intro{margin:0;color:#c7d2fe;font-size:14.5px}
 
-/* canvi de pestanya del rànquing: escombrada, ràfega i bot */
-.hs-wipe{position:absolute;inset:0;z-index:5;pointer-events:none;background:repeating-linear-gradient(90deg,var(--wc,#facc15) 0 14px,transparent 14px 28px);animation:wipe .45s steps(6) forwards}
-@keyframes wipe{0%{clip-path:inset(0 100% 0 0)}50%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 0 0 100%)}}
-.hs-raig{position:absolute;z-index:6;pointer-events:none;font-size:22px;animation:raig .9s cubic-bezier(.2,.8,.3,1) forwards}
-@keyframes raig{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rt)) scale(.4);opacity:0}}
-.hs-tab.bota{animation:botaTab .45s cubic-bezier(.3,1.8,.5,1)}
-@keyframes botaTab{30%{transform:translateY(-8px) scale(1.12)}}
-.hs-caixa.sacseja{animation:sacsHs .35s}
-@keyframes sacsHs{25%{transform:translateX(-5px) rotate(-.4deg)}75%{transform:translateX(5px) rotate(.4deg)}}
-.hs-rotul{position:absolute;left:50%;top:44%;z-index:7;pointer-events:none;font-family:'Press Start 2P',monospace;font-size:clamp(16px,5vw,30px);color:#fff;text-shadow:3px 3px 0 #b91c1c,0 0 18px var(--wc,#facc15);white-space:nowrap;animation:rotul 1s ease-out forwards}
-@keyframes rotul{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}25%{transform:translate(-50%,-50%) scale(1.15);opacity:1}70%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-80%) scale(1);opacity:0}}
-@media(prefers-reduced-motion:reduce){.hs-wipe,.hs-raig,.hs-rotul{display:none}.hs-tab.bota,.hs-caixa.sacseja{animation:none}}
+/* canvi de pestanya del rànquing: estrelles daurades, de plata i de colors */
+.hs-est{position:absolute;z-index:6;pointer-events:none;width:var(--m);height:var(--m);filter:drop-shadow(0 0 6px var(--gl)) drop-shadow(0 2px 2px #0007);will-change:transform,opacity}
+.hs-est i{position:absolute;inset:0;background:var(--bg);clip-path:polygon(50% 0,61.8% 35.4%,100% 38.2%,69.1% 61.8%,80.9% 100%,50% 76.4%,19.1% 100%,30.9% 61.8%,0 38.2%,38.2% 35.4%)}
+.hs-est i::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#fff9 48%,transparent 60%);background-size:250% 100%;animation:brill .7s linear infinite}
+@keyframes brill{from{background-position:120% 0}to{background-position:-120% 0}}
+.hs-espurna{position:absolute;z-index:6;pointer-events:none;width:var(--m);height:var(--m);background:radial-gradient(circle,#fff 0 18%,var(--c) 30%,transparent 70%);clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%);animation:espurna .9s ease-out forwards}
+@keyframes espurna{0%{transform:scale(0) rotate(0)}40%{transform:scale(1.25) rotate(45deg)}100%{transform:scale(0) rotate(90deg);opacity:0}}
+.hs-tab.bota{animation:botaTab .5s cubic-bezier(.3,1.8,.5,1)}
+@keyframes botaTab{30%{transform:translateY(-9px) scale(1.14)}60%{transform:translateY(1px) scale(.97)}}
+.hs-rotul{position:absolute;left:50%;top:27%;z-index:7;pointer-events:none;transform:translate(-50%,-50%);display:flex;gap:.06em;padding:10px 16px;border-radius:14px;background:radial-gradient(ellipse,#070a2acc 40%,transparent 75%);font-family:'Press Start 2P',monospace;font-size:clamp(18px,5.4vw,32px);white-space:nowrap}
+.hs-rotul b{display:inline-block;background:var(--tx);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(3px 3px 0 #7f1d1d) drop-shadow(0 0 12px var(--gl));animation:lletra 1.25s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes lletra{0%{transform:translateY(40px) scale(0) rotate(-25deg);opacity:0}22%{transform:translateY(-14px) scale(1.25) rotate(6deg);opacity:1}38%{transform:translateY(0) scale(1) rotate(0)}78%{transform:none;opacity:1}100%{transform:translateY(-26px) scale(.8);opacity:0}}
+.hs-halo{position:absolute;left:50%;top:27%;z-index:5;pointer-events:none;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:4px solid var(--gl);box-shadow:0 0 22px var(--gl),inset 0 0 18px var(--gl);animation:halo .8s ease-out forwards}
+@keyframes halo{from{transform:scale(.2);opacity:1}to{transform:scale(9);opacity:0}}
+@media(prefers-reduced-motion:reduce){.hs-est,.hs-espurna,.hs-rotul,.hs-halo{display:none}.hs-tab.bota{animation:none}}
 /* ---- rànquing arcade ---- */
 .botons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
 .bt{font:inherit;font-weight:900;font-size:15px;color:#fff;background:#ffffff14;border:2px solid #ffffff33;border-radius:999px;padding:10px 18px;cursor:pointer;backdrop-filter:blur(6px);transition:transform .12s,border-color .2s}
@@ -315,16 +318,34 @@ const MELO={ // una musiqueta curta diferent per a cada pestanya
  nivell:[[392,0,.12],[523,.12,.12],[659,.24,.12],[784,.36,.12],[1047,.5,.34],[523,.5,.34,"triangle"],[659,.5,.34,"triangle"]] // nivell: fanfàrria
 };
 function musiqueta(t){if(!soOk())return;try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();(MELO[t]||MELO.punts).forEach(([f,t0,d,ty])=>notaH(f,t0,d,ty))}catch(e){}}
-const FXT={punts:{e:["⭐","🌟","✨"],c:"#facc15",r:"ESTRELLES!"},temps:{e:["⏱","⏰","⌛"],c:"#22d3ee",r:"TEMPS!"},nivell:{e:["🏅","👑","🎖"],c:"#a78bfa",r:"NIVELL!"}};
+// colors de les estrelles: or, plata i colors vius
+const EST={or:["linear-gradient(135deg,#fff7c2,#facc15 45%,#b45309)","#facc15"],plata:["linear-gradient(135deg,#ffffff,#cbd5e1 45%,#64748b)","#e2e8f0"],
+ rosa:["linear-gradient(135deg,#fce7f3,#f472b6 50%,#9d174d)","#f472b6"],cian:["linear-gradient(135deg,#cffafe,#22d3ee 50%,#0e7490)","#22d3ee"],
+ lila:["linear-gradient(135deg,#ede9fe,#a78bfa 50%,#5b21b6)","#a78bfa"],verd:["linear-gradient(135deg,#dcfce7,#4ade80 50%,#15803d)","#4ade80"],tar:["linear-gradient(135deg,#ffedd5,#fb923c 50%,#c2410c)","#fb923c"]};
+const FXT={punts:{mix:["or","or","or","plata","tar"],r:"ESTRELLES!",tx:"linear-gradient(#fff7c2,#facc15 55%,#d97706)",gl:"#facc15"},
+ temps:{mix:["plata","plata","cian","cian","or"],r:"TEMPS!",tx:"linear-gradient(#ffffff,#cbd5e1 50%,#22d3ee)",gl:"#67e8f9"},
+ nivell:{mix:["or","plata","rosa","cian","lila","verd","tar"],r:"NIVELL!",tx:"linear-gradient(90deg,#f472b6,#facc15,#4ade80,#22d3ee,#a78bfa)",gl:"#c4b5fd"}};
+function estrella(box,x,y,tipus,m){const e=document.createElement("span"),[bg,gl]=EST[tipus];e.className="hs-est";e.style.cssText=`left:${x-m/2}px;top:${y-m/2}px;--m:${m}px;--bg:${bg};--gl:${gl}`;e.innerHTML="<i></i>";box.appendChild(e);return e}
+function espurna(box,x,y,c,m,ret){setTimeout(()=>{const e=document.createElement("span");e.className="hs-espurna";e.style.cssText=`left:${x-m/2}px;top:${y-m/2}px;--m:${m}px;--c:${c}`;box.appendChild(e);setTimeout(()=>e.remove(),950)},ret)}
 function efecteTab(b){const box=document.querySelector(".hs-caixa"),fx=FXT[b.dataset.t]||FXT.punts;musiqueta(b.dataset.t);
  b.classList.remove("bota");void b.offsetWidth;b.classList.add("bota");
  if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
- box.classList.remove("sacseja");void box.offsetWidth;box.classList.add("sacseja");
- const w=document.createElement("div");w.className="hs-wipe";w.style.setProperty("--wc",fx.c+"55");box.appendChild(w);setTimeout(()=>w.remove(),500);
- const r=document.createElement("div");r.className="hs-rotul";r.style.setProperty("--wc",fx.c);r.textContent=fx.r;box.appendChild(r);setTimeout(()=>r.remove(),1050);
- const bb=b.getBoundingClientRect(),cb=box.getBoundingClientRect(),x0=bb.left-cb.left+bb.width/2,y0=bb.top-cb.top+bb.height/2;
- for(let i=0;i<16;i++){const e=document.createElement("span");e.className="hs-raig";e.textContent=fx.e[i%3];const a=Math.PI*2*i/16,d=90+Math.random()*90;
-  e.style.cssText=`left:${x0-11}px;top:${y0-11}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d+40}px;--rt:${(Math.random()*720-360)|0}deg`;box.appendChild(e);setTimeout(()=>e.remove(),950)}
+ const W=box.clientWidth,H=box.clientHeight,bb=b.getBoundingClientRect(),cb=box.getBoundingClientRect(),x0=bb.left-cb.left+bb.width/2,y0=bb.top-cb.top+bb.height/2;
+ // halo i rètol lletra a lletra
+ const h=document.createElement("div");h.className="hs-halo";h.style.setProperty("--gl",fx.gl);box.appendChild(h);setTimeout(()=>h.remove(),850);
+ const r=document.createElement("div");r.className="hs-rotul";r.style.setProperty("--tx",fx.tx);r.style.setProperty("--gl",fx.gl);
+ r.innerHTML=[...fx.r].map((c,i)=>`<b style="animation-delay:${i*45}ms">${c}</b>`).join("");box.appendChild(r);setTimeout(()=>r.remove(),1300+fx.r.length*45);
+ // 1) esclat des del botó: corba amb gravetat, gir i rebot de mida
+ for(let i=0;i<22;i++){const t=fx.mix[i%fx.mix.length],m=14+Math.random()*16,e=estrella(box,x0,y0,t,m);
+  const a=-Math.PI/2+(Math.random()-.5)*2.6,v=140+Math.random()*170,vx=Math.cos(a)*v,vy=Math.sin(a)*v,g=520,T=.9+Math.random()*.6,rot=(Math.random()<.5?-1:1)*(360+Math.random()*540),K=[];
+  for(let k=0;k<=12;k++){const q=k/12,tt=q*T,sc=k<2?.3+k*.7:1-.6*q;K.push({transform:`translate(${vx*tt}px,${vy*tt+.5*g*tt*tt}px) rotate(${rot*q}deg) scale(${sc})`,opacity:q<.75?1:1-(q-.75)/.25})}
+  e.animate(K,{duration:T*1000,delay:i*12,easing:"linear",fill:"both"}).onfinish=()=>e.remove();
+  if(i%4===0)espurna(box,x0+vx*T*.55,y0+vy*T*.55+.5*g*(T*.55)**2,EST[t][1],18,T*550)}
+ // 2) pluja d'estrelles des de dalt, en zig-zag suau
+ for(let i=0;i<16;i++){const t=fx.mix[(i+2)%fx.mix.length],m=10+Math.random()*14,x=Math.random()*W,e=estrella(box,x,-20,t,m),amp=20+Math.random()*30,T=1500+Math.random()*900;
+  e.animate([{transform:"translate(0,0) rotate(0) scale(.6)",opacity:0},{transform:`translate(${amp}px,${H*.3}px) rotate(160deg) scale(1)`,opacity:1,offset:.3},{transform:`translate(${-amp}px,${H*.65}px) rotate(320deg) scale(.9)`,opacity:1,offset:.65},{transform:`translate(${amp/2}px,${H+30}px) rotate(480deg) scale(.7)`,opacity:0}],{duration:T,delay:250+i*70,easing:"cubic-bezier(.4,.1,.6,1)",fill:"both"}).onfinish=()=>e.remove()}
+ // 3) espurnes que pampallugen al voltant del podi
+ for(let i=0;i<10;i++)espurna(box,W*(.15+Math.random()*.7),H*(.3+Math.random()*.4),EST[fx.mix[i%fx.mix.length]][1],14+Math.random()*16,300+i*90);
 }
 document.getElementById("hsTabs").onclick=e=>{const b=e.target.closest(".hs-tab");if(!b)return;if(b.dataset.t!==HSTAB)efecteTab(b);HSTAB=b.dataset.t;document.querySelectorAll(".hs-tab").forEach(x=>x.classList.toggle("on",x===b));if(HSD)pintaHs()};
 </script>
