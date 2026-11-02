@@ -175,6 +175,16 @@ table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middl
 .arc .rec{position:relative;font-family:'Press Start 2P',monospace;font-size:12px;color:#020617;background:#4ade80;padding:8px 12px;margin-top:16px;transform:rotate(-3deg);animation:bota .5s .9s both}
 .so-btn{background:#ffffff26;border:1px solid #ffffff40;color:#fff;border-radius:999px;padding:5px 10px;font-size:16px;cursor:pointer}
 body.tremola main{animation:tremola .4s}
+.arc.ko{background:radial-gradient(circle at 50% 40%,#3b0a0a,#0b0202 75%)}
+.arc.ko .t1{color:#f87171;text-shadow:4px 4px 0 #450a0a,0 0 20px #ef444466;animation:cau1 .7s cubic-bezier(.5,1.8,.5,1) both,parpelleja 1.4s steps(2) .8s infinite}
+@keyframes cau1{from{transform:translateY(-140px) rotate(-8deg);opacity:0}}
+@keyframes parpelleja{50%{opacity:.55}}
+.arc.ko .t3{color:#fca5a5;text-shadow:none}
+.arc.ko .cor{position:relative;font-size:clamp(44px,13vw,70px);margin-top:8px;animation:trenca 1.1s ease-in .4s both}
+@keyframes trenca{0%{transform:scale(0)}35%{transform:scale(1.2)}55%{transform:scale(1) rotate(0)}70%{transform:rotate(-12deg)}85%{transform:rotate(10deg)}100%{transform:rotate(0)}}
+.arc.ko .t2{color:#fde68a}
+.pluja{position:absolute;top:-30px;width:3px;height:22px;background:linear-gradient(#94a3b800,#94a3b8aa);animation:plou linear infinite}
+@keyframes plou{to{transform:translateY(110vh)}}
 </style>
 </head>
 <body>
@@ -242,6 +252,7 @@ function so(t){if(!soOn)return;try{AC=AC||new (window.AudioContext||window.webki
  else if(t==="super"){[523,659,784,1047,1319,1568,2093].forEach((f,i)=>nota(f,i*.08,.14));[1047,1319,1568,2093].forEach((f,i)=>nota(f,.6+i*.12,.25));nota(2093,1.1,.8,"triangle",.12)}
  else if(t==="clic"){nota(660,0,.04,"square",.07);nota(990,.04,.06,"square",.06)}
  else if(t==="gir"){nota(440,0,.05,"square",.06);nota(880,.05,.08,"square",.05)}
+ else if(t==="trist"){[392,370,349].forEach((f,i)=>nota(f,i*.38,.34,"sawtooth",.09));const o=AC.createOscillator(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain(),t0=AC.currentTime+1.14;o.type="sawtooth";o.frequency.setValueAtTime(330,t0);o.frequency.linearRampToValueAtTime(262,t0+1.1);l.frequency.value=6;lg.gain.value=9;l.connect(lg).connect(o.frequency);g.gain.setValueAtTime(.1,t0);g.gain.exponentialRampToValueAtTime(.001,t0+1.3);o.connect(g).connect(AC.destination);o.start(t0);l.start(t0);o.stop(t0+1.35);l.stop(t0+1.35)}
  else if(t==="coin"){nota(988,0,.06);nota(1319,.06,.3)}
 }catch(e){}}
 function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};mida();
@@ -253,9 +264,16 @@ function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width
   c.globalAlpha=1;requestAnimationFrame(pas)};pas();return()=>{viu=false}}
 document.addEventListener("click",e=>{const el=e.target.closest("button,.tile,.continua,.flash,label.chk,details summary");if(!el||el.matches(".opt,#so"))return;so(el.matches(".flash")?"gir":"clic")},true);
 let demoN=0;const MODE_DEMO=/[?&]demo\b/.test(location.search);
-function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true]];const c=casos[demoN%3];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%3+1}/3 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
+function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true],[40,2,5,false],[0,0,5,false]];const c=casos[demoN%5];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%5+1}/5 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
+function fracas(pc,bones,n){
+ so("trist");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ const d=document.createElement("div");d.className="arc ko";
+ let pl="";for(let i=0;i<40;i++)pl+=`<i class="pluja" style="left:${Math.random()*100}%;animation-duration:${.6+Math.random()*.7}s;animation-delay:${Math.random()*1.2}s"></i>`;
+ d.innerHTML=`${pl}<div class="t1">${pc<25?"GAME<br>OVER":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">💔</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}REPASSA I<br>TORNA-HI!</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ document.body.appendChild(d);const tanca=()=>d.remove();d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+}
 function arcade(pc,bones,n,record){
- if(pc<50)return;
+ if(pc<50)return fracas(pc,bones,n);
  const sup=pc>=90,nE=pc>=90?3:pc>=70?2:1;
  so(sup?"super":"win");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
  const d=document.createElement("div");d.className="arc";
