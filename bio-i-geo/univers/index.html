@@ -209,6 +209,28 @@ body.tremola main{animation:tremola .4s}
 .arc.ko .t2{color:#fde68a}
 .pluja{position:absolute;top:-30px;width:3px;height:22px;background:linear-gradient(#94a3b800,#94a3b8aa);animation:plou linear infinite}
 @keyframes plou{to{transform:translateY(110vh)}}
+/* estrelles: d'on venen + animació arcade */
+.vola{position:fixed;z-index:90;pointer-events:none;font-family:'Press Start 2P',monospace;font-size:15px;color:#facc15;text-shadow:2px 2px 0 #92400e,0 0 12px #fde047;white-space:nowrap;transition:transform .75s cubic-bezier(.5,-.4,.6,1),opacity .75s ease-in;will-change:transform}
+.vola.puja{animation:vpop .25s cubic-bezier(.3,1.8,.5,1)}
+@keyframes vpop{from{transform:scale(.2)}}
+.espurna{position:fixed;z-index:89;pointer-events:none;width:6px;height:6px;background:#facc15;box-shadow:0 0 6px #fde047;transition:transform .5s ease-out,opacity .5s ease-out}
+#punts.boing{animation:boing .45s cubic-bezier(.3,1.8,.5,1)}
+@keyframes boing{30%{transform:scale(1.35) rotate(-6deg);background:#facc15;color:#422006}}
+.combo{position:fixed;left:50%;top:22%;z-index:91;pointer-events:none;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:clamp(20px,6vw,34px);color:#fb923c;text-shadow:3px 3px 0 #7c2d12,0 0 18px #fdba74;text-align:center;animation:combo 1.3s ease-out forwards;line-height:1.4}
+.combo small{display:block;font-size:.42em;color:#fde68a}
+@keyframes combo{0%{transform:translateX(-50%) scale(.3);opacity:0}15%{transform:translateX(-50%) scale(1.15);opacity:1}30%{transform:translateX(-50%) scale(1)}80%{opacity:1}100%{transform:translateX(-50%) translateY(-40px);opacity:0}}
+.estrelles{margin-top:14px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
+.estrelles h4{margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;font-size:16px}
+.estrelles h4 small{color:var(--suau);font-weight:700;font-size:12.5px}
+.font{display:grid;grid-template-columns:26px minmax(90px,150px) 1fr 44px;gap:8px;align-items:center;margin:5px 0;font-weight:800;font-size:14.5px}
+.font .ic2{font-size:19px;text-align:center}
+.font .bf{height:12px;background:#fde68a66;border-radius:6px;overflow:hidden}
+.font .bf i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transform-origin:left;animation:creix .9s cubic-bezier(.3,1.2,.5,1) both}
+@keyframes creix{from{transform:scaleX(0)}}
+.font b{text-align:right}
+.com-guanyar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.com-guanyar span{background:#fff;border:1.5px solid #fcd34d;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800}
+@media(prefers-reduced-motion:reduce){.vola,.espurna,.combo,#punts.boing,.font .bf i{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -467,7 +489,7 @@ const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
 
 // ====================== ESTAT ======================
-const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null});
+const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null,fonts:{},ftema:{},fjoc:{}});
 let S=BUIT(),PER={},ACT="";
 try{PER=JSON.parse(localStorage.getItem(CL+"perfils")||"{}")||{};ACT=localStorage.getItem(CL+"actiu")||""}catch(e){}
 try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const o=Object.assign(BUIT(),JSON.parse(v));if(o.nom){PER[o.nom]=o;ACT=o.nom}}}catch(e){}
@@ -496,7 +518,41 @@ const NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador"
 function nivell(p){let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];
  return {n:i+1,nom,ic,min,seg,falten:seg?seg[0]-p:0,pc:seg?Math.round((p-min)*100/(seg[0]-min)):100}}
 let NIVPEND=null;
-function suma(n){const a=nivell(S.punts).n;S.punts+=n;if(nivell(S.punts).n>a)NIVPEND=nivell(S.punts);desa()}
+function suma(n){const a=nivell(S.punts).n;S.punts+=n;if(nivell(S.punts).n>a)NIVPEND=nivell(S.punts);
+ // d'on surt cada estrella: temes (i quin), jocs (i quin), examen, obertes, combo
+ S.fonts=S.fonts||{};S.ftema=S.ftema||{};S.fjoc=S.fjoc||{};const [f,id]=FONT;S.fonts[f]=(S.fonts[f]||0)+n;
+ if(f==="temes"&&id)S.ftema[id]=(S.ftema[id]||0)+n;if(f==="jocs"&&id)S.fjoc[id]=(S.fjoc[id]||0)+n;
+ desa();if(n>0)volaEstrella(n)}
+// ---- animació arcade de cada estrella guanyada: surt d'on has tocat i vola fins al comptador ----
+let FONT=["temes"],ULTX=innerWidth/2,ULTY=innerHeight/2,COMBO=0;
+document.addEventListener("pointerdown",e=>{ULTX=e.clientX;ULTY=e.clientY},true);
+function volaEstrella(n){try{
+ const dest=document.getElementById("punts").getBoundingClientRect(),x0=ULTX,y0=ULTY;
+ const d=document.createElement("div");d.className="vola puja";d.textContent=`+${n} ⭐`;d.style.left=(x0-24)+"px";d.style.top=(y0-28)+"px";document.body.appendChild(d);
+ for(let i=0;i<8;i++){const e=document.createElement("i");e.className="espurna";e.style.left=x0+"px";e.style.top=y0+"px";document.body.appendChild(e);const a=Math.PI*2*i/8,r=26+Math.random()*16;
+  requestAnimationFrame(()=>{e.style.transform=`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) scale(.3)`;e.style.opacity="0"});setTimeout(()=>e.remove(),550)}
+ setTimeout(()=>{d.classList.remove("puja");d.style.transform=`translate(${dest.left+dest.width/2-x0}px,${dest.top+dest.height/2-y0+14}px) scale(.55)`;d.style.opacity=".2"},380);
+ setTimeout(()=>{d.remove();const pl=document.getElementById("punts");pl.classList.remove("boing");void pl.offsetWidth;pl.classList.add("boing");so("coin")},1130);
+}catch(e){}}
+// ratxa d'encerts seguits als tests: COMBO ×3, ×5 (+1 ⭐ de regal), ×10 (+2 ⭐)…
+function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;if(COMBO<3)return;
+ const premi=COMBO%10===0?2:COMBO%5===0?1:0;
+ const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
+ document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
+const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"]];
+function cartaEstrelles(gran){
+ const fo=S.fonts||{},tot=FONTS.reduce((a,[k])=>a+(fo[k]||0),0),abans=Math.max(0,S.punts-tot),mx=Math.max(1,...FONTS.map(([k])=>fo[k]||0),abans);
+ const fila=(ic,nom,v)=>`<div class="font"><span class="ic2">${ic}</span><span>${nom}</span><div class="bf"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
+ let h=`<div class="estrelles" ${gran?"":`onclick="vista('analitica')"`}><h4>⭐ On guanyes les estrelles <small>${S.punts} en total${gran?"":" · toca per veure-ho tot"}</small></h4>`;
+ h+=FONTS.filter(([k])=>gran||fo[k]).map(([k,ic,nom])=>fila(ic,nom,fo[k]||0)).join("")+(abans?fila("⏳","D'abans",abans):"");
+ if(!S.punts)h+=`<p class="prog" style="margin:4px 0 0">Encara cap estrella. Fes el primer test i mira com volen! ✨</p>`;
+ if(gran){
+  const tt=T.filter(t=>(S.ftema||{})[t.id]).sort((a,b)=>S.ftema[b.id]-S.ftema[a.id]).slice(0,5),jj=ASSIG.jocs.filter(j=>(S.fjoc||{})[j.id]).sort((a,b)=>S.fjoc[b.id]-S.fjoc[a.id]).slice(0,5);
+  if(tt.length)h+=`<p style="margin:10px 0 2px"><b>Temes que més ⭐ t'han donat:</b></p>`+tt.map(t=>fila(t.ic,t.titol,S.ftema[t.id])).join("");
+  if(jj.length)h+=`<p style="margin:10px 0 2px"><b>Jocs que més ⭐ t'han donat:</b></p>`+jj.map(j=>fila(j.ic,j.titol,S.fjoc[j.id])).join("");
+ }
+ h+=`<div class="com-guanyar"><span>✅ +1 per encert als tests</span><span>🎮 +1 per encert als jocs</span><span>✍️ +1 per idea a les obertes</span><span>🔥 combo ×5: +1 de regal</span><span>🔥 combo ×10: +2</span></div></div>`;
+ return h}
 // el «LEVEL UP» surt quan s'acaba el test o el joc (no a mitja pregunta)
 function mostraNivell(){if(!NIVPEND)return;if(document.querySelector(".arc")){setTimeout(mostraNivell,400);return}
  const v=NIVPEND;NIVPEND=null;so("super");window.NIVELLS_MOSTRATS=(window.NIVELLS_MOSTRATS||0)+1;
@@ -597,7 +653,7 @@ function inici(){
  const aprov=T.filter(t=>(millor(t.id)??0)>=50).length, sp=seguentPendent();
  const res=resumGlobal();
  let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
- <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
+ <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}${cartaEstrelles(false)}`;
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
  h+=`${blocsTemes()}
  <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
@@ -610,12 +666,12 @@ function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.l
 const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"]];
 function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
 function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
-function joc(id){aturaSeg();window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id);registra(id==="examen"?"examen":"joc",{joc:id,titol:j?j[2]:id,pc})}
 
 // ====================== TEMA ======================
 let tema,pest="fitxa";
-function obre(i){aturaSeg();tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
+function obre(i){aturaSeg();COMBO=0;FONT=["temes",T[i].id];tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
 function pintaTema(){
  window.scrollTo(0,0);
  const t=tema,e=ET(t.id),idx=T.indexOf(t);
@@ -663,7 +719,7 @@ function test(ordre,k,bones,clau,pool,cb){
  z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
   const ok=+b.dataset.i===q[2];
   z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
-  if(ok){suma(1);so("ok")}else{so("ko");b.classList.add("ko");const tid=q.tid||(esTema?tema.id:null);if(tid){const e=ET(tid);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  if(ok){suma(1);so("ok");ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");const tid=q.tid||(esTema?tema.id:null);if(tid){const e=ET(tid);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
   document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
  });
@@ -720,7 +776,7 @@ function jocClassifica(j){
 // ====================== PREGUNTES OBERTES ======================
 function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}
 function obertes(n){
- window.scrollTo(0,0);marcaNav("obertes");
+ FONT=["obertes"];window.scrollTo(0,0);marcaNav("obertes");
  const o=OB[n],fet=S.ob[n];
  app.innerHTML=`<h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
  <div class="box" style="margin-top:10px"><div class="pregunta">${o.q}</div>
@@ -787,6 +843,7 @@ function analitica(){
   <div class="kpi"><small>Estrelles</small><b>⭐ ${S.punts}</b><span>${S.examens.length} examen${S.examens.length==1?"":"s"} sorpresa</span></div>
  </div>
  <div class="valoracio" style="margin-top:14px"><h3>${nivTxt}</h3><p style="margin:0">${txt}</p><p style="margin:10px 0 4px"><b>Què li recomano ara:</b></p><ul style="margin:0;padding-left:20px">${reco.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+ <h2 class="sec">⭐ D'on surten les estrelles</h2>${cartaEstrelles(true).replace('class="estrelles"','class="estrelles" style="margin:0 0 6px;cursor:default"')}
  <h2 class="sec">🏅 Nivells</h2><div class="box">${cartaNivell().replace('class="nivell"','class="nivell" style="margin:0 0 12px"')}<div class="rangs">${NIVELLS.map(([min,nom,ic],i)=>{const n=nivell(S.punts).n;return `<div class="rang ${i+1<n?'':i+1===n?'ara':'bloc'}"><span>${ic}</span><b>${i+1}. ${nom}</b><small>${min} ⭐</small></div>`}).join("")}</div><p class="prog" style="margin:10px 0 0">Cada encert als tests, als jocs i a les preguntes obertes suma ⭐, i les ⭐ fan pujar de nivell.</p></div>
  <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
  ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
