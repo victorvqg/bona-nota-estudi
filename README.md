@@ -3,7 +3,7 @@
 Pàgines d'estudi interactives per assignatura, publicades amb GitHub Pages.
 
 - Inici: `index.html` (menú d'assignatures)
-- Cada assignatura: `<assignatura>/index.html` (generat, no s'edita a mà)
+- Cada tema: `<assignatura>/<tema>/index.html` (generat, no s'edita a mà). Ex.: `sociales/t3-clima/`
 - Motor comú: `motor/plantilla-estudi-interactiu.html`
 - Contingut de cada assignatura: `motor/dades/<assignatura>.js`
 
@@ -11,8 +11,8 @@ Pàgines d'estudi interactives per assignatura, publicades amb GitHub Pages.
 
 ```
 cd motor
-python3 build.py naturals                      # genera ../naturals/index.html
-node prova.js $PWD/../naturals/index.html      # prova automàtica (Playwright)
+python3 build.py naturals naturales/t2-terra       # genera ../naturales/t2-terra/index.html
+node prova.js $PWD/../naturales/t2-terra/index.html   # prova automàtica (Playwright)
 ```
 
 Després, afegir la targeta a `index.html` i fer commit + push. GitHub Pages publica en 1-2 minuts.
