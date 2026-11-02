@@ -1,3 +1,5 @@
+-- ⚠ ACTUALITZACIÓ (2 nov 2026): el codi de grup s'ha tret a petició. Vegeu bn_ranking_sense_codi.sql:
+--   bn_ranking(p_codi default null) ja no demana codi i la fila codi_grup s'ha esborrat.
 -- Bona Nota · rànquing net (paquet 2)
 -- 1) Filtre de noms: rebutja paraulotes i caràcters estranys en entrar al registre.
 -- 2) Límit d'estrelles: com a màxim +150 per registre i +300 en 24 h per nom i assignatura

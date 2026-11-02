@@ -66,7 +66,7 @@ tr.clic{cursor:pointer}tr.clic:hover td{background:#ffffff0a}
 <body>
 <div class="top"><h1>🔐 ADMIN · BONA NOTA</h1><span class="esp"></span><span id="eines" hidden>
  <select id="dies"><option value="1">Avui</option><option value="7" selected>7 dies</option><option value="30">30 dies</option><option value="365">Tot l'any</option></select>
- <button class="btn sec" id="codiBt">🔐 Codi</button> <button class="btn sec" id="refresca">↻ Actualitza</button> <button class="btn sec" id="surt">Surt</button></span>
+ <button class="btn sec" id="refresca">↻ Actualitza</button> <button class="btn sec" id="surt">Surt</button></span>
  <a href="../" class="btn sec" style="text-decoration:none">← Inici</a></div>
 <main id="app"></main>
 
@@ -172,9 +172,6 @@ function detall(k){const ls=LOGS.filter(l=>clauNen(l)===k),n=nens().find(x=>x.k=
   $("#cancel").onclick=()=>$("#gest").innerHTML="";$("#si").onclick=()=>usuari(n.nom,"esborra")};
 }
 async function rpcU(nom,accio,nou){const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:accio,p_nou:nou||null})});if(!r.ok)throw r.status;return r.json()}
-async function gestCodi(){const c=$("#cont");let actual="?";try{const r=await fetch(API.replace("bn_admin_logs","bn_admin_codi"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});if(r.ok)actual=await r.json()}catch(e){}
- c.innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>🔐 Codi del grup</h2></div><div class="gestio"><p>Codi actual del rànquing: <b style="font-size:20px;letter-spacing:2px">${esc(actual)}</b></p><p class="gest-n">Els nens l'han d'escriure una vegada a la portada per veure el rànquing amb noms. Si el canvies, l'hauran de tornar a escriure.</p><form id="fcod" class="gest-f"><input id="nouCodi" maxlength="30" placeholder="Codi nou (mínim 3 lletres)"><button class="btn">Canvia el codi</button></form><div id="gest"></div></div>`;
- $("#torna").onclick=pinta;$("#fcod").onsubmit=async e=>{e.preventDefault();const v=$("#nouCodi").value.trim();if(v.length<3)return;try{await rpcU("-","codi",v);gestCodi()}catch(x){$("#gest").innerHTML=`<p class="err">No s'ha pogut canviar (${x}).</p>`}}}
 async function usuari(nom,accio,nou){$("#gest").innerHTML=`<p class="gest-n">Un moment…</p>`;
  try{const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:accio,p_nou:nou||null})});
   if(r.status===404){$("#gest").innerHTML=`<p class="err">Aquesta opció encara no està activada a la base de dades (falta executar supabase/bn_admin_usuari.sql).</p>`;return}
@@ -182,7 +179,7 @@ async function usuari(nom,accio,nou){$("#gest").innerHTML=`<p class="gest-n">Un 
   const n=await r.json();await carrega();if(accio==="amaga"||accio==="mostra")detall(nom.trim().toLowerCase());if(accio==="canvia"){const k=nou.trim().toLowerCase();if(nens().some(x=>x.k===k))detall(k)}
   const av=document.createElement("div");av.className="avis-ok";av.textContent=accio==="esborra"?`🗑️ ${nom} esborrat (${n} registres)`:accio==="amaga"?`🙈 ${nom} ja no surt al rànquing`:accio==="mostra"?`👁 ${nom} torna a sortir al rànquing`:`✏️ ${nom} → ${nou} (${n} registres)`;document.body.appendChild(av);setTimeout(()=>av.remove(),3500);
  }catch(e){$("#gest").innerHTML=`<p class="err">No hi ha connexió.</p>`}}
-$("#refresca").onclick=carrega;$("#codiBt").onclick=()=>{if(CRED)gestCodi()};$("#dies").onchange=carrega;$("#surt").onclick=()=>{CRED=null;LOGS=[];sessionStorage.removeItem("bn_admin");login()};
+$("#refresca").onclick=carrega;$("#dies").onchange=carrega;$("#surt").onclick=()=>{CRED=null;LOGS=[];sessionStorage.removeItem("bn_admin");login()};
 CRED?carrega():login();
 </script>
 </body>
