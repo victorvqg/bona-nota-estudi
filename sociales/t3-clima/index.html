@@ -177,6 +177,22 @@ table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middl
 .arc .t4{position:relative;font-family:'Press Start 2P',monospace;font-size:11px;color:#94a3b8;margin-top:26px;animation:pampalluga2 1.2s steps(2) infinite}
 @keyframes pampalluga2{50%{opacity:0}}
 .arc .rec{position:relative;font-family:'Press Start 2P',monospace;font-size:12px;color:#020617;background:#4ade80;padding:8px 12px;margin-top:16px;transform:rotate(-3deg);animation:bota .5s .9s both}
+.nivell{margin-top:14px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#f5f3ff,#eef2ff);border:2px solid #c4b5fd;border-radius:16px;padding:12px 16px;cursor:pointer}
+.nivell .nic{font-size:38px;line-height:1;flex:none}
+.nivell b{display:block;font-size:17px}
+.nivell small{color:var(--suau);font-weight:700}
+.nivell .barra{margin:6px 0 4px;height:10px}
+.nivell .barra i{background:linear-gradient(90deg,#a78bfa,#7c3aed)}
+.rangs{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.rang{border:2px solid var(--vora);border-radius:14px;padding:10px 8px;text-align:center;background:#fff}
+.rang span{display:block;font-size:30px;line-height:1.1}
+.rang b{display:block;font-size:14px}
+.rang small{color:var(--suau);font-weight:700;font-size:12px}
+.rang.bloc{opacity:.45;filter:grayscale(1)}
+.rang.ara{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px #ddd6fe}
+.arc.niv{background:radial-gradient(circle at 50% 40%,#3b0764,#020617 75%)}
+.arc.niv .t1{color:#e9d5ff;text-shadow:4px 4px 0 #7c3aed,0 0 24px #c084fcaa}
+.arc.niv .nic{position:relative;font-size:clamp(64px,20vw,110px);margin-top:12px;animation:estr .6s cubic-bezier(.3,1.8,.5,1) .3s both;filter:drop-shadow(0 0 18px #c084fc)}
 .vol{display:flex;align-items:center;gap:4px;background:#ffffff26;border:1px solid #ffffff40;border-radius:999px;padding:2px 10px 2px 4px;flex:none}
 .so-btn{background:none;border:0;color:#fff;font-size:17px;cursor:pointer;padding:3px 4px;line-height:1}
 .vol input{width:76px;accent-color:#fff;cursor:pointer;margin:0}
@@ -402,8 +418,20 @@ function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLow
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
-function suma(n){S.punts+=n;desa()}
-function pintaCap(){document.getElementById("punts").textContent="⭐ "+S.punts;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom} · ${ASSIG.curs}`:ASSIG.curs}
+// ---- nivells i rangs: es calculen amb les mateixes ⭐ dels tests, jocs i preguntes obertes ----
+const NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","🔍"],[45,"Savi","📜"],[70,"Expert","🎓"],[100,"Mestre","🧠"],[140,"Campió","🏅"],[190,"Heroi","🦸"],[250,"Llegenda","👑"],[330,"Llegenda d'or","🌟"]];
+function nivell(p){let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];
+ return {n:i+1,nom,ic,min,seg,falten:seg?seg[0]-p:0,pc:seg?Math.round((p-min)*100/(seg[0]-min)):100}}
+let NIVPEND=null;
+function suma(n){const a=nivell(S.punts).n;S.punts+=n;if(nivell(S.punts).n>a)NIVPEND=nivell(S.punts);desa()}
+// el «LEVEL UP» surt quan s'acaba el test o el joc (no a mitja pregunta)
+function mostraNivell(){if(!NIVPEND)return;if(document.querySelector(".arc")){setTimeout(mostraNivell,400);return}
+ const v=NIVPEND;NIVPEND=null;so("super");window.NIVELLS_MOSTRATS=(window.NIVELLS_MOSTRATS||0)+1;
+ const d=document.createElement("div");d.className="arc niv";
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">LEVEL UP!</div><div class="nic">${v.ic}</div><div class="t3">NIVELL ${v.n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ARA ETS<br>${v.nom.toUpperCase()}</div>${v.seg?`<div class="t4">PROPER: ${v.seg[2]} ${v.seg[1].toUpperCase()} · ${v.falten} ⭐</div>`:`<div class="t4">HAS ARRIBAT AL NIVELL MÀXIM!</div>`}`;
+ document.body.appendChild(d);const para=focs(d.querySelector("canvas"));const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4500)}
+function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" onclick="vista('analitica')"><span class="nic">${v.ic}</span><div style="flex:1;min-width:0"><b>Nivell ${v.n} · ${v.nom}</b><div class="barra"><i style="width:${v.pc}%"></i></div><small>${v.seg?`Et falten ${v.falten} ⭐ per a ${v.seg[2]} ${v.seg[1]}`:"Nivell màxim! Ets una llegenda 🌟"}</small></div></div>`}
+function pintaCap(){const nv=nivell(S.punts);document.getElementById("punts").textContent=`⭐ ${S.punts} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom} · ${ASSIG.curs}`:ASSIG.curs}
 // temps d'estudi: cada 15 s amb la pestanya visible
 setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;guarda()}},15000);
 const app=document.getElementById("app");
@@ -451,7 +479,7 @@ function fracas(pc,bones,n){
  const d=document.createElement("div");d.className="arc ko";
  let pl="";for(let i=0;i<40;i++)pl+=`<i class="pluja" style="left:${Math.random()*100}%;animation-duration:${.6+Math.random()*.7}s;animation-delay:${Math.random()*1.2}s"></i>`;
  d.innerHTML=`${pl}<div class="t1">${pc<25?"GAME<br>OVER":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">💔</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}REPASSA I<br>TORNA-HI!</div><div class="t4">TOCA PER CONTINUAR</div>`;
- document.body.appendChild(d);const tanca=()=>d.remove();d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+ document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
 }
 function arcade(pc,bones,n,record){
  if(pc<50)return fracas(pc,bones,n);
@@ -461,7 +489,7 @@ function arcade(pc,bones,n,record){
  d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record?`<div class="rec">★ NOU RÈCORD ★</div>`:""}<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div><div class="t4">TOCA PER CONTINUAR</div>`;
  document.body.appendChild(d);[0,1,2].slice(0,nE).forEach(i=>setTimeout(()=>so("coin"),500+i*250+700));
  const para=focs(d.querySelector("canvas"));
- const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
+ const tanca=()=>{para();d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
 }
 
 // ====================== BENVINGUDA ======================
@@ -470,7 +498,7 @@ function benvinguda(){
  const noms=Object.keys(PER);
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=50}).length;
  app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
- ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
+ ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
  <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form></div>`;
  app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>entra(b.dataset.n));
  const i=document.getElementById("nom");if(!noms.length)i.focus();
@@ -496,7 +524,7 @@ function inici(){
  const aprov=T.filter(t=>(millor(t.id)??0)>=50).length, sp=seguentPendent();
  const res=resumGlobal();
  let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
- <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>`;
+ <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
  h+=`${blocsTemes()}
  <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
@@ -635,7 +663,7 @@ function obertes(n){
   <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
   document.getElementById("nota").onclick=()=>{
    const k=[...document.querySelectorAll(".pk")].filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
-   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);if(pc>=80)confeti();
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(k);if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
    const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
    document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> · a l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
   };
@@ -658,11 +686,11 @@ function analitica(){
  const errs=[];T.forEach(t=>{const e=S.temes[t.id];if(e)Object.entries(e.fallades).forEach(([q,c])=>errs.push([q,c,t]))});errs.sort((a,b)=>b[1]-a[1]);
  const val=["😕 Costa","🙂 Bé","😃 Fàcil"];
  // valoració global
- let nivell,txt;
- if(!fetsT.length){nivell="🚀 Tot just comencem";txt=`${S.nom} encara no ha fet cap test. El millor és començar pel primer tema: fitxa → targetes → test.`}
+ let nivTxt,txt;
+ if(!fetsT.length){nivTxt="🚀 Tot just comencem";txt=`${S.nom} encara no ha fet cap test. El millor és començar pel primer tema: fitxa → targetes → test.`}
  else{
   const e=g.encert;
-  nivell=e>=85?"🌟 Excel·lent":e>=70?"👏 Molt bé":e>=50?"👍 Va bé, cal repassar":"💪 Cal reforçar";
+  nivTxt=e>=85?"🌟 Excel·lent":e>=70?"👏 Molt bé":e>=50?"👍 Va bé, cal repassar":"💪 Cal reforçar";
   txt=`${S.nom} ha treballat ${fetsT.length} de ${T.length} temes amb un ${e}% d'encerts de mitjana als tests.`;
   if(forts.length)txt+=` Domina sobretot: ${forts.map(t=>t.titol.toLowerCase()).join(", ")}.`;
   if(febles.length)txt+=` On més li costa: ${febles.map(t=>t.titol.toLowerCase()).join(", ")}.`;
@@ -682,9 +710,11 @@ function analitica(){
   <div class="kpi"><small>Encert als tests</small><b style="color:${color(g.encert)}">${g.encert===null?"—":g.encert+"%"}</b><span>${g.intents} tests fets</span></div>
   <div class="kpi"><small>Preguntes obertes</small><b>${obN}/${OB.length}</b><span>${obM===null?"cap encara":obM+"% d'idees"}</span></div>
   <div class="kpi"><small>Temps d'estudi</small><b>${fmtT(S.temps)}</b><span>${S.dies.length} dia${S.dies.length==1?"":"s"}</span></div>
+  <div class="kpi"><small>Nivell</small><b>${nivell(S.punts).ic} ${nivell(S.punts).n}</b><span>${nivell(S.punts).nom}</span></div>
   <div class="kpi"><small>Estrelles</small><b>⭐ ${S.punts}</b><span>${S.examens.length} examen${S.examens.length==1?"":"s"} sorpresa</span></div>
  </div>
- <div class="valoracio" style="margin-top:14px"><h3>${nivell}</h3><p style="margin:0">${txt}</p><p style="margin:10px 0 4px"><b>Què li recomano ara:</b></p><ul style="margin:0;padding-left:20px">${reco.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+ <div class="valoracio" style="margin-top:14px"><h3>${nivTxt}</h3><p style="margin:0">${txt}</p><p style="margin:10px 0 4px"><b>Què li recomano ara:</b></p><ul style="margin:0;padding-left:20px">${reco.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+ <h2 class="sec">🏅 Nivells</h2><div class="box">${cartaNivell().replace('class="nivell"','class="nivell" style="margin:0 0 12px"')}<div class="rangs">${NIVELLS.map(([min,nom,ic],i)=>{const n=nivell(S.punts).n;return `<div class="rang ${i+1<n?'':i+1===n?'ara':'bloc'}"><span>${ic}</span><b>${i+1}. ${nom}</b><small>${min} ⭐</small></div>`}).join("")}</div><p class="prog" style="margin:10px 0 0">Cada encert als tests, als jocs i a les preguntes obertes suma ⭐, i les ⭐ fan pujar de nivell.</p></div>
  <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
  ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
  </table><p class="prog" style="margin:8px 0 0"><span class="semaf" style="background:#22c55e"></span>80% o més · <span class="semaf" style="background:#f59e0b"></span>50-79% · <span class="semaf" style="background:#ef4444"></span>menys del 50% · <span class="semaf" style="background:#cbd5e1"></span>sense fer</p></div>
