@@ -258,7 +258,7 @@ footer b{color:var(--groc)}
  document.querySelectorAll('.as[data-clau]').forEach(a=>{try{
   const cl=a.dataset.clau+'_',per=JSON.parse(localStorage.getItem(cl+'perfils')||'{}')||{},act=localStorage.getItem(cl+'actiu')||'',S=per[act];
   if(!S)return;nom=nom||S.nom||act;
-  const total=+a.dataset.temes||1,fets=Object.values(S.temes||{}).filter(t=>t&&t.intents&&t.intents.length&&Math.max(...t.intents.map(i=>i.pc))>=50).length,pc=Math.min(100,Math.round(fets/total*100));
+  const total=+a.dataset.temes||1,fets=Object.values(S.temes||{}).filter(t=>t&&t.intents&&t.intents.length&&Math.max(...t.intents.map(i=>i.pc))>=70).length,pc=Math.min(100,Math.round(fets/total*100));
   const p=a.querySelector('.prog');p.classList.add('on');p.querySelector('.pt').textContent=`⭐ ${S.punts||0} punts`;p.querySelector('.pc').textContent=`✅ ${fets}/${total} aprovats`;
   a.querySelector('.juga span').textContent='CONTINUA ▶';requestAnimationFrame(()=>setTimeout(()=>p.querySelector('.barra i').style.width=pc+'%',500));
  }catch(e){}});

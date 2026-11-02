@@ -692,7 +692,7 @@ function arcade(pc,bones,n,record){
 function benvinguda(){
  marcaNav("usuari");
  const noms=Object.keys(PER);
- const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=50}).length;
+ const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=APROVA}).length;
  app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
  ${noms.length?`<p class="prog">Qui estudia ara? Toca el teu nom.</p><div class="perfils">${noms.map(n=>`<button class="perfil ${n===S.nom?'on':''}" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}</div><p class="prog" style="margin-top:18px">…o entra amb un altre nom:</p>`:`<p class="prog">Com et dius? Cada nom té el seu propi progrés.</p>`}
  <form id="fn"><input id="nom" maxlength="20" placeholder="Escriu el teu nom" autocomplete="off"><div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Som-hi! 🚀</button></form><a class="surt-gran" href="../../">🚪 Tornar al menú de tots els mons</a></div>`;
@@ -710,17 +710,18 @@ function benvinguda(){
 
 // ====================== INICI ======================
 function tileTema(t,i){
- const m=millor(t.id),f=m??0,ap=m!==null&&m>=50;
+ const m=millor(t.id),f=m??0,ap=m!==null&&m>=APROVA;
  return `<div class="tile" onclick="obre(${i})"><div class="ic" style="background:${t.col}1f">${t.ic}</div>${ap?`<span class="segell">${m>=90?"🏆":"✅"}</span>`:`<span class="num">${i+1}/${T.length}</span>`}<b>${t.titol}</b><small>${t.font}</small><div class="peu"><div class="barra"><i style="width:${f}%"></i></div><span class="pc">${m===null?"—":f+"%"}</span></div></div>`;
 }
-function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<50})}
+function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<APROVA})}
 function blocsTemes(){let i=0;return ASSIG.blocs.map(b=>{const h=`<h2 class="sec">${b.titol}</h2><div class="grid">${T.slice(i,i+b.n).map((t,k)=>tileTema(t,i+k)).join("")}</div>`;i+=b.n;return h}).join("")}
 function inici(){
  marcaDia();
- const aprov=T.filter(t=>(millor(t.id)??0)>=50).length, sp=seguentPendent();
+ const aprov=T.filter(t=>(millor(t.id)??0)>=APROVA).length, sp=seguentPendent();
  const res=resumGlobal();
  let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
  <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
+ h+=cartaRepas();
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
  h+=`${blocsTemes()}
  <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
@@ -744,7 +745,7 @@ function pintaTema(){
  const t=tema,e=ET(t.id),idx=T.indexOf(t);
  app.innerHTML=`<div class="cap-tema"><div class="ic" style="background:${t.col}22">${t.ic}</div><div><div class="prog">Tema ${idx+1} de ${T.length} · ${t.font}</div><h2>${t.titol}</h2></div></div>
  <div class="passos">${[["fitxa","📄 Fitxa",e.fitxa],["targetes","🃏 Targetes",e.fc>=t.fc.length],["test","✅ Test",e.intents.length>0]].map(([k,n,f])=>`<button class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
- if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else test(t.q.map((x,i)=>i),0,0,t.id);
+ if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,NTEST),0,0,t.id)}
 }
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();registra("fitxa",{tema:t.id,titol:t.titol});
@@ -766,15 +767,15 @@ function test(ordre,k,bones,clau,pool,cb){
   const pc=Math.round(bones*100/ordre.length);
   if(cb){cb(pc,bones,ordre.length);return}
   const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",{tema:tema.id,titol:tema.titol,pc,bones,n:ordre.length});
-  const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=50;
-  arcade(pc,bones,ordre.length,ant!==null&&pc>ant);
-  const msg=pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat, repassa una miqueta":"Cal repassar més, ànims!";
+  const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=APROVA;
+  if(aprova)arcade(pc,bones,ordre.length,ant!==null&&pc>ant);else fracas(pc,bones,ordre.length);
+  const msg=pc>=90?"Excel·lent!":pc>=APROVA?"Tema superat!":pc>=50?`Gairebé! Per passar de tema cal un ${APROVA} %`:"Cal repassar més, ànims!";
   z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
   <p class="prog" style="margin-top:14px">Com t'ha anat aquest tema?</p>
   <div class="valor">${[["😕","Costa"],["🙂","Bé"],["😃","Fàcil"]].map(([em,tx],i)=>`<button class="${e.valoracio===i?'on':''}" onclick="valora(${i},this)">${em}<small>${tx}</small></button>`).join("")}</div>
   ${teSeg&&aprova?`<p id="compte" class="prog" style="margin-top:16px">Passem a <b>${T[idx+1].ic} ${T[idx+1].titol}</b> en <span id="seg-s">8</span> s…</p>`:""}
   ${!teSeg&&aprova?`<p>🎉 Has acabat tots els temes! Prova les preguntes obertes o l'examen sorpresa.</p>`:""}
-  ${!aprova?`<p>Repassa la fitxa i torna-hi: quan aprovis passaràs al tema següent.</p>`:""}
+  ${!aprova?`<p>Repassa la fitxa i torna-hi: amb un ${APROVA} % o més passaràs al tema següent. Les preguntes canvien cada vegada!</p>${repPendents().length?`<p><button class="btn verd" onclick="aturaSeg();repas()">🔁 Repassa els errors ara</button></p>`:""}`:""}
   <div class="fila">${teSeg&&aprova?`<button class="btn verd" onclick="aturaSeg();obre(${idx+1})">Tema següent →</button>`:""}<button class="btn ${teSeg&&aprova?'sec':''}" onclick="aturaSeg();pest='test';pintaTema()">Torna-hi</button><button class="btn sec" onclick="aturaSeg();pest='fitxa';pintaTema()">Repassa la fitxa</button></div></div>`;
   if(teSeg&&aprova){let s=8;temp=setInterval(()=>{s--;const el=document.getElementById("seg-s");if(!el){aturaSeg();return}el.textContent=s;if(s<=0){aturaSeg();obre(idx+1)}},1000)}
   return;
@@ -786,7 +787,8 @@ function test(ordre,k,bones,clau,pool,cb){
  z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
   const ok=+b.dataset.i===q[2];
   z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
-  if(ok){suma(1);so("ok");ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");const tid=q.tid||(esTema?tema.id:null);if(tid){const e=ET(tid);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  const tidR=q.tid||(esTema?tema.id:null);if(tidR)repAnota(tidR,q[0],ok);
+  if(ok){suma(REPAS?0:1);so("ok");ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
   document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
  });
@@ -799,6 +801,32 @@ function examen(){
  app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
  test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
 }
+
+// ====================== REPÀS ESPAIAT DELS ERRORS ======================
+// Cada pregunta fallada entra a la capsa 0 (es pot repassar avui mateix).
+// Al repàs: encert → capsa 1 (torna d'aquí a 3 dies) → capsa 2 (d'aquí a 7) → après i surt. Error → capsa 0, torna demà.
+const APROVA=70,NTEST=6,REP_DIES=[0,3,7];
+let REPAS=false;
+function diaMes(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function repAnota(tid,txt,ok){S.rep=S.rep||{};const k=tid+"|"+txt,r=S.rep[k];
+ if(!ok){S.rep[k]={tid,q:txt,c:0,prox:REPAS?diaMes(1):avui()};desa();return}
+ if(!REPAS||!r)return;
+ const c=r.c+1;if(c>=REP_DIES.length){delete S.rep[k];S.apresos=(S.apresos||0)+1}else S.rep[k]={...r,c,prox:diaMes(REP_DIES[c])};desa()}
+function repTots(){return Object.values(S.rep||{}).filter(r=>T.some(t=>t.id===r.tid&&t.q.some(q=>q[0]===r.q)))}
+function repPendents(){const d=avui();return repTots().filter(r=>r.prox<=d)}
+function repProper(){const f=repTots().map(r=>r.prox).sort();return f[0]||null}
+function repas(){
+ const pend=barreja(repPendents()).slice(0,10);aturaSeg();COMBO=0;FONT=["repas"];window.scrollTo(0,0);marcaNav("inici");
+ if(!pend.length){const pr=repProper();app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila"><button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
+ const pool=pend.map(r=>{const t=T.find(x=>x.id===r.tid),q=t.q.find(x=>x[0]===r.q).slice();q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
+ REPAS=true;
+ app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Si l'encertes, tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après! 🧠</p><div id="zona"></div>`;
+ test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{REPAS=false;registra("joc",{joc:"repas",titol:"Repàs dels errors",pc});arcade(pc,b,n,false);
+  const queden=repPendents().length,pr=repProper();
+  document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=APROVA?"🧠":"💪"}</div><h2>${b} de ${n} recordades</h2><p>${b?`Molt bé! Les que has encertat tornaran d'aquí a uns dies per assegurar-nos que no se t'obliden.`:""} ${n-b?`Les que has fallat tornaran <b>demà</b>.`:""}</p>${S.apresos?`<p class="prog">Preguntes apreses per sempre: <b>${S.apresos}</b> 🏅</p>`:""}<div class="fila">${queden?`<button class="btn" onclick="repas()">Repassa'n ${queden} més</button>`:""}<button class="btn sec" onclick="vista('inici')">Torna a l'inici</button></div></div>`});
+}
+function cartaRepas(){const n=repPendents().length,tot=repTots().length;if(!tot)return "";
+ return `<div class="continua" style="background:#ecfdf5;border-color:#6ee7b7" onclick="repas()"><span style="font-size:28px">🔁</span><b>${n?`Tens <span style="color:#047857">${n} pregunta${n>1?"s":""}</span> per repassar avui`:`Errors al dia! Proper repàs: ${new Date(repProper()).toLocaleDateString("ca-ES",{day:"numeric",month:"short"})}`}</b><span class="btn ${n?"verd":"sec"}">${n?"Repassa →":"Mira"}</span></div>`}
 
 // ====================== JOCS GENÈRICS ======================
 // tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
@@ -873,7 +901,7 @@ function resumGlobal(){
 }
 function color(pc){return pc===null?"#cbd5e1":pc>=80?"#22c55e":pc>=50?"#f59e0b":"#ef4444"}
 function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElementById("cvA");if(c)c.innerHTML=cartaComVas()}),0);
- const g=resumGlobal(),aprov=T.filter(t=>(millor(t.id)??0)>=50);
+ const g=resumGlobal(),aprov=T.filter(t=>(millor(t.id)??0)>=APROVA);
  const fetsT=T.filter(t=>millor(t.id)!==null);
  const forts=T.filter(t=>(millor(t.id)??0)>=80),febles=fetsT.filter(t=>millor(t.id)<60),pend=T.filter(t=>millor(t.id)===null);
  const obN=Object.keys(S.ob).length,obM=obN?Math.round(Object.values(S.ob).reduce((a,b)=>a+b,0)/obN):null;
@@ -916,7 +944,7 @@ function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElement
  <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
  ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
  </table><p class="prog" style="margin:8px 0 0"><span class="semaf" style="background:#22c55e"></span>80% o més · <span class="semaf" style="background:#f59e0b"></span>50-79% · <span class="semaf" style="background:#ef4444"></span>menys del 50% · <span class="semaf" style="background:#cbd5e1"></span>sense fer</p></div>
- <h2 class="sec">❌ Preguntes que més falla</h2><div class="box">${errs.length?`<ol class="llista-err">${errs.slice(0,8).map(([q,c,t])=>`<li>${q} <span class="etq">${t.ic} ${t.titol}</span> <b>×${c}</b></li>`).join("")}</ol>`:`<p class="prog" style="margin:0">Encara cap error registrat. 👌</p>`}</div>
+ <h2 class="sec">❌ Preguntes que més falla</h2><div class="box"><p class="prog" style="margin:0 0 8px">🔁 Al repàs: <b>${repTots().length}</b> preguntes pendents (${repPendents().length} per avui) · 🏅 apreses del tot: <b>${S.apresos||0}</b></p>${errs.length?`<ol class="llista-err">${errs.slice(0,8).map(([q,c,t])=>`<li>${q} <span class="etq">${t.ic} ${t.titol}</span> <b>×${c}</b></li>`).join("")}</ol>`:`<p class="prog" style="margin:0">Encara cap error registrat. 👌</p>`}</div>
  <h2 class="sec">✍️ Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
  <h2 class="sec">🎮 Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
  <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat en aquest navegador i aquest aparell. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
