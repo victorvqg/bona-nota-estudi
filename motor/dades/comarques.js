@@ -9,13 +9,13 @@ const QMAPA=COM.map(([n,nom,cap,d])=>{const alt=COM.filter(c=>c[3]===d&&c[0]!==n
  .map(q=>[Math.random(),q]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
 
 const ASSIG={
- id:"comarques", nom:"Socials", tema:"Les comarques de Catalunya", curs:"1r ESO", ic:"🗺️",
+ id:"comarques", destacat:"mapa43", nom:"Socials", tema:"Les comarques de Catalunya", curs:"1r ESO", ic:"🗺️",
  color:["#7c2d12","#c2410c","#f59e0b"],
  peu:"Bona Nota · Material «Les comarques de Catalunya i les seves capitals» (resum, esquema, examen i guia oral)",
  blocs:[{titol:"🧩 Què és una comarca",n:2},{titol:"📍 Les quatre demarcacions",n:4},{titol:"🧠 Trucs per no fallar",n:1}],
  jocs:[
-  {id:"mapa43",tipus:"figura",ic:"🧭",titol:"El mapa de les 43",sub:"Totes les comarques al mapa",col:"#ffedd5",
-   enunciat:"🧭 El mapa de les 43 comarques",figura:"figMapa",q:QMAPA,
+  {id:"mapa43",tipus:"figura",ic:"🗺️",titol:"MAPA",sub:"Les 43 comarques al mapa: endevina-les totes",col:"#ffedd5",
+   enunciat:"🗺️ MAPA · les 43 comarques",figura:"figMapa",q:QMAPA,
    final:"Si en falles moltes d'una zona, torna al tema d'aquella demarcació i repeteix el mapa."},
   {id:"capitals",tipus:"parelles",ic:"🏛️",titol:"Comarca i capital",sub:"Comarques · relaciona",col:"#ede9fe",
    enunciat:"🏛️ Cada comarca amb la seva capital",instr:"Toca una comarca (esquerra) i després la seva capital (dreta).",

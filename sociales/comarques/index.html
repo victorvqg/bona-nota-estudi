@@ -314,13 +314,13 @@ const QMAPA=COM.map(([n,nom,cap,d])=>{const alt=COM.filter(c=>c[3]===d&&c[0]!==n
  .map(q=>[Math.random(),q]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
 
 const ASSIG={
- id:"comarques", nom:"Socials", tema:"Les comarques de Catalunya", curs:"1r ESO", ic:"🗺️",
+ id:"comarques", destacat:"mapa43", nom:"Socials", tema:"Les comarques de Catalunya", curs:"1r ESO", ic:"🗺️",
  color:["#7c2d12","#c2410c","#f59e0b"],
  peu:"Bona Nota · Material «Les comarques de Catalunya i les seves capitals» (resum, esquema, examen i guia oral)",
  blocs:[{titol:"🧩 Què és una comarca",n:2},{titol:"📍 Les quatre demarcacions",n:4},{titol:"🧠 Trucs per no fallar",n:1}],
  jocs:[
-  {id:"mapa43",tipus:"figura",ic:"🧭",titol:"El mapa de les 43",sub:"Totes les comarques al mapa",col:"#ffedd5",
-   enunciat:"🧭 El mapa de les 43 comarques",figura:"figMapa",q:QMAPA,
+  {id:"mapa43",tipus:"figura",ic:"🗺️",titol:"MAPA",sub:"Les 43 comarques al mapa: endevina-les totes",col:"#ffedd5",
+   enunciat:"🗺️ MAPA · les 43 comarques",figura:"figMapa",q:QMAPA,
    final:"Si en falles moltes d'una zona, torna al tema d'aquella demarcació i repeteix el mapa."},
   {id:"capitals",tipus:"parelles",ic:"🏛️",titol:"Comarca i capital",sub:"Comarques · relaciona",col:"#ede9fe",
    enunciat:"🏛️ Cada comarca amb la seva capital",instr:"Toca una comarca (esquerra) i després la seva capital (dreta).",
@@ -737,6 +737,8 @@ function inici(){
  let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
  <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
  h+=cartaRepas();
+ // joc destacat (opcional): ASSIG.destacat = id del joc → botó gran a l'inici
+ {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd)h+=`<div class="continua" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
  h+=`${blocsTemes()}
  <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
