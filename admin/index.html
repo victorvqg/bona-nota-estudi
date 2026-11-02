@@ -46,6 +46,11 @@ tr.clic{cursor:pointer}tr.clic:hover td{background:#ffffff0a}
 .ev-entra{background:#1d4ed855}.ev-fitxa{background:#0ea5e955}.ev-test{background:#7c3aed66}.ev-joc{background:#db277755}.ev-examen{background:#dc262666}.ev-oberta{background:#ea580c55}.ev-valora{background:#16a34a55}.ev-temps{background:#47556966}
 .sessio{border-top:1px solid var(--vora);padding:14px 16px}
 .sessio h3{margin:0 0 8px;font-size:15px}
+.gestio{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--vora)}
+.btn.perill{background:#7f1d1d;border-color:#ef4444;box-shadow:none}
+#gest{flex-basis:100%}.gest-f{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.gest-f input{flex:1;min-width:180px}
+.gest-n{color:var(--suau);font-weight:700;font-size:13px;margin:6px 0 0}
+.avis-ok{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#14532d;border:2px solid #4ade80;color:#fff;font-weight:900;padding:12px 18px;border-radius:14px;z-index:99}
 .est-assig{margin:6px 0 12px}
 .fest{display:grid;grid-template-columns:minmax(150px,200px) 1fr 44px;gap:8px;align-items:center;margin:4px 0;font-weight:800;font-size:14px}
 .bfe{height:10px;background:#ffffff14;border-radius:6px;overflow:hidden}.bfe i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:6px}
@@ -156,9 +161,21 @@ function blocEstrelles(n){const as=[...n.assigs].filter(a=>n.punts[a]!=null);if(
   const fila=(ic,nom,v)=>`<div class="fest"><span>${ic} ${nom}</span><div class="bfe"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
   return `<div class="est-assig"><b>${esc(ASSIGS[a]||a)}</b> <span class="xip">⭐ ${p}</span>${FONTS_EST.filter(([k])=>fo[k]).map(([k,ic,nom])=>fila(ic,nom,fo[k])).join("")}${ab?fila("⏳","D'abans (sense detall)",ab):""}</div>`}).join("")}</div>`}
 function detall(k){const ls=LOGS.filter(l=>clauNen(l)===k),n=nens().find(x=>x.k===k);
- $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="taula">${blocEstrelles(n)}${blocSessions(ls)}</div>`;
+ $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="gestio"><button class="btn sec" id="canvia">✏️ Canvia el nom</button><button class="btn sec perill" id="esborra">🗑️ Esborra l'usuari</button><div id="gest"></div></div><div class="taula">${blocEstrelles(n)}${blocSessions(ls)}</div>`;
  $("#torna").onclick=pinta;
+ $("#canvia").onclick=()=>{$("#gest").innerHTML=`<form id="fc" class="gest-f"><input id="nou" maxlength="40" value="${esc(n.nom)}"><button class="btn">Desa</button><button type="button" class="btn sec" id="cancel">Cancel·la</button></form><p class="gest-n">Canvia el nom al registre i al rànquing. Si poses el nom d'un altre nen, s'ajunten.</p>`;
+  $("#nou").focus();$("#cancel").onclick=()=>$("#gest").innerHTML="";
+  $("#fc").onsubmit=async e=>{e.preventDefault();const nou=$("#nou").value.trim().replace(/\s+/g," ");if(!nou)return;await usuari(n.nom,"canvia",nou)}};
+ $("#esborra").onclick=()=>{$("#gest").innerHTML=`<div class="gest-f"><b>Segur que vols esborrar tot el registre de ${esc(n.nom)}? No es pot desfer.</b><button class="btn perill" id="si">Sí, esborra</button><button class="btn sec" id="cancel">No</button></div>`;
+  $("#cancel").onclick=()=>$("#gest").innerHTML="";$("#si").onclick=()=>usuari(n.nom,"esborra")};
 }
+async function usuari(nom,accio,nou){$("#gest").innerHTML=`<p class="gest-n">Un moment…</p>`;
+ try{const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:accio,p_nou:nou||null})});
+  if(r.status===404){$("#gest").innerHTML=`<p class="err">Aquesta opció encara no està activada a la base de dades (falta executar supabase/bn_admin_usuari.sql).</p>`;return}
+  if(!r.ok){$("#gest").innerHTML=`<p class="err">No s'ha pogut fer (${r.status}).</p>`;return}
+  const n=await r.json();await carrega();if(accio==="canvia"){const k=nou.trim().toLowerCase();if(nens().some(x=>x.k===k))detall(k)}
+  const av=document.createElement("div");av.className="avis-ok";av.textContent=accio==="esborra"?`🗑️ ${nom} esborrat (${n} registres)`:`✏️ ${nom} → ${nou} (${n} registres)`;document.body.appendChild(av);setTimeout(()=>av.remove(),3500);
+ }catch(e){$("#gest").innerHTML=`<p class="err">No hi ha connexió.</p>`}}
 $("#refresca").onclick=carrega;$("#dies").onchange=carrega;$("#surt").onclick=()=>{CRED=null;LOGS=[];sessionStorage.removeItem("bn_admin");login()};
 CRED?carrega():login();
 </script>
