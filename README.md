@@ -21,8 +21,9 @@ La llista oficial de mons és `motor/mons.json`.
 
 ## 🎮 Com funciona (per als nens)
 
-- **Entrar:** cada nen entra amb el seu **nom i un PIN**. Amb el PIN, el progrés es desa al núvol i el pot recuperar
-  des d'un altre aparell. En un mateix aparell hi poden entrar com a màxim 2 noms.
+- **Entrar:** a la portada, el nen escriu el seu **nom i un PIN** i de seguida **tria el món**. Dins dels mons ja no
+  li torna a demanar res. Amb el PIN, el progrés es desa al núvol i el pot recuperar des d'un altre aparell.
+  En un mateix aparell hi poden entrar com a màxim 2 noms. «No ets tu?» (a la portada) o «Canviar d'usuari» (dins d'un món) canvien de nen.
 - **Cada tema té 3 passos:** 📄 fitxa → 🃏 targetes → ✅ test.
   El test fa 6 preguntes a l'atzar del tema. Amb un **70 %** s'aprova i es passa sol al tema següent.
 - **Repàs dels errors:** el que falla torna a sortir avui, i el que encerta torna d'aquí a 3 dies i després a 7 dies.

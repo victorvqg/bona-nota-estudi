@@ -559,7 +559,7 @@ function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLower
 function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
  ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
 function apuntaNom(n){try{const l=JSON.parse(localStorage.getItem("bn_noms_aparell")||"[]")||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem("bn_noms_aparell",JSON.stringify(l))}}catch(e){}}
-function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);marcaDia();desa();registra("entra",{nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
@@ -750,7 +750,7 @@ function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremo
 const SENSE_NUVOL=()=>/^file:/.test(location.protocol)||window.BN_NO_LOG;
 function benvinguda(nomPre){
  marcaNav("usuari");calla();
- if(S.nom){S=BUIT();try{localStorage.removeItem(CL+"actiu")}catch(e){}pintaCap()}
+ if(S.nom){S=BUIT();try{localStorage.removeItem(CL+"actiu");localStorage.removeItem("bn_jugador")}catch(e){}pintaCap()}
  const noms=Object.keys(PER),altres=Object.values(nomsAparell()).filter(n=>!noms.some(x=>x.toLowerCase()===n.toLowerCase()));
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=APROVA}).length;
  const pot=potNouNom("\u0000");
@@ -1205,7 +1205,10 @@ function demanaReset(){
 }
 
 aplicaSuau();if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../../sw.js").catch(()=>{});
-pintaCap();pintaSo();vista("inici");carregaPuntsMons();
+pintaCap();pintaSo();
+(function(){let G="";try{G=localStorage.getItem("bn_jugador")||""}catch(e){}
+ if(G&&(pinDe(G)||SENSE_NUVOL())&&(!S.nom||S.nom.toLowerCase()!==G.toLowerCase())&&potNouNom(G)){entra(G);return}
+ vista("inici");carregaPuntsMons()})();
 </script>
 </body>
 </html>

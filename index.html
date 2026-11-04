@@ -275,6 +275,34 @@ h1 span{display:inline-block}
 @media(prefers-reduced-motion:reduce){.hs-tk{animation:none;padding-left:12px}.pd.p1::before,.hs-tu::after,.premi .ic,.mov.up,.mov.nou{animation:none}.hs-fila,.premi,.ht-fila{animation:none}}
 
 /* ---- targetes ---- */
+/* entrada amb nom i PIN a la portada; després, «tria el teu món» */
+.entrada{position:relative;z-index:2;margin:22px auto 0;max-width:420px;display:flex;flex-direction:column;gap:10px;background:#ffffff12;border:2px solid #facc15;border-radius:20px;padding:18px 18px 14px;box-shadow:0 0 30px #facc1533;backdrop-filter:blur(6px)}
+.entrada[hidden]{display:none}
+.entrada label{font-weight:900;font-size:20px;color:#fff}
+.en-noms{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.en-noms:empty{display:none}
+.en-noms button{font:inherit;font-weight:900;font-size:15px;color:#1e1b4b;background:#fde68a;border:0;border-radius:999px;padding:7px 14px;cursor:pointer;box-shadow:0 3px 0 #b45309}
+.en-noms button.on{background:#22d3ee;box-shadow:0 3px 0 #0e7490}
+.en-camps{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:8px}
+.en-camps input{min-width:0;font:inherit;font-weight:900;font-size:18px;text-align:center;color:#1e1b4b;background:#fff;border:3px solid #c7d2fe;border-radius:14px;padding:11px 8px}
+#enPin{letter-spacing:5px}
+.en-camps input:focus{outline:none;border-color:#facc15;box-shadow:0 0 0 4px #facc1555}
+.en-bt{font-family:'Press Start 2P',monospace;font-size:14px;color:#1e1b4b;background:#facc15;border:0;border-radius:14px;padding:14px;cursor:pointer;box-shadow:0 4px 0 #b91c1c}
+.en-bt:active{transform:translateY(2px);box-shadow:0 2px 0 #b91c1c}
+.en-avis:empty{display:none}
+.en-avis{font-weight:800;font-size:14.5px;color:#fecaca;background:#7f1d1d99;border-radius:10px;padding:8px 10px}
+.en-avis.ok{color:#d9f99d;background:#14532d99}
+.en-peu{margin:0;font-size:13px;font-weight:700;color:#c7d2fe}
+.entrada.tremola{animation:tremolaEn .4s}
+@keyframes tremolaEn{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.hola .canvia{font:inherit;font-weight:800;font-size:13px;color:#c7d2fe;background:none;border:1px solid #ffffff40;border-radius:999px;padding:3px 10px;margin-left:8px;cursor:pointer;vertical-align:middle}
+.tria{margin-top:18px;font-family:'Press Start 2P',monospace;font-size:clamp(12px,3vw,16px);color:#facc15;text-shadow:2px 2px 0 #b91c1c;animation:triaBota 1.2s ease-in-out infinite}
+.tria[hidden]{display:none}
+@keyframes triaBota{50%{transform:translateY(6px)}}
+main.bloc .as{filter:grayscale(.5) brightness(.75)}
+main.ilumina .as{opacity:1;animation:ilumina 1.2s ease-out 2}
+@keyframes ilumina{50%{box-shadow:0 0 0 4px #facc15,0 0 40px #facc15}}
+@media(prefers-reduced-motion:reduce){.tria,main.ilumina .as,.entrada.tremola{animation:none}}
 main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
 .as{--c1:#1e3a8a;--c2:#2563eb;--c3:#0ea5e9;position:relative;display:flex;flex-direction:column;border-radius:24px;text-decoration:none;color:#1e293b;background:#fff;overflow:hidden;
  box-shadow:0 0 0 3px #ffffff1a,0 18px 40px -12px #000a;transition:transform .25s cubic-bezier(.2,1.4,.4,1),box-shadow .25s;opacity:0;animation:entra .6s cubic-bezier(.2,1.2,.4,1) forwards}
@@ -344,7 +372,15 @@ footer b{color:var(--groc)}
   <p class="peu-intro">Escriu el teu nom per començar. El progrés de cadascú es guarda amb el seu nom i PIN, i es pot continuar des de qualsevol mòbil, tauleta o ordinador.</p>
  </div>
  <div class="hola" id="hola"></div>
- <div class="start">▶ TRIA EL TEU MÓN ◀</div>
+ <form class="entrada" id="entrada" autocomplete="off" hidden>
+  <label for="enNom">👋 Com et dius?</label>
+  <div class="en-noms" id="enNoms"></div>
+  <div class="en-camps"><input id="enNom" maxlength="20" placeholder="El teu nom"><input id="enPin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="PIN"></div>
+  <div class="en-avis" id="enAvis" role="status"></div>
+  <button class="en-bt" type="submit">Entra ▶</button>
+  <p class="en-peu">El PIN són 4 números. El primer cop, inventa-te'n un i recorda'l: amb el PIN continues des de qualsevol aparell.</p>
+ </form>
+ <div class="tria" id="tria" hidden>👇 Ara tria el teu món 👇</div>
 </header>
 
 <main>
@@ -416,16 +452,56 @@ footer b{color:var(--groc)}
 (function(){const c=document.getElementById('cel');let h='';for(let i=0;i<90;i++){const s=Math.random()<.15?4:Math.random()<.5?2:3;
  h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
 // progrés guardat per cada assignatura (mateix navegador)
-(function(){let nom='';
+(function(){let nom='',G='';try{G=localStorage.getItem('bn_jugador')||''}catch(e){}
  document.querySelectorAll('.as[data-clau]').forEach(a=>{try{
-  const cl=a.dataset.clau+'_',per=JSON.parse(localStorage.getItem(cl+'perfils')||'{}')||{},act=localStorage.getItem(cl+'actiu')||'',S=per[act];
-  if(!S)return;nom=nom||S.nom||act;
+  const cl=a.dataset.clau+'_',per=JSON.parse(localStorage.getItem(cl+'perfils')||'{}')||{},S=G?per[Object.keys(per).find(x=>x.toLowerCase()===G.toLowerCase())]:null;
+  if(!S)return;nom=nom||S.nom;
   const total=+a.dataset.temes||1,fets=Object.values(S.temes||{}).filter(t=>t&&t.intents&&t.intents.length&&Math.max(...t.intents.map(i=>i.pc))>=70).length,pc=Math.min(100,Math.round(fets/total*100));
   const p=a.querySelector('.prog');p.classList.add('on');p.querySelector('.pt').textContent=`⭐ ${S.punts||0} punts`;p.querySelector('.pc').textContent=`✅ ${fets}/${total} aprovats`;
   a.querySelector('.juga span').textContent='CONTINUA ▶';requestAnimationFrame(()=>setTimeout(()=>p.querySelector('.barra i').style.width=pc+'%',500));
  }catch(e){}});
- if(nom)document.getElementById('hola').innerHTML=`Hola de nou, <em>${nom.replace(/[<>&]/g,'')}</em>! 👋`;
+ iniciEntrada();
 })();
+// ---- entrada: el nen escriu el nom (i el PIN) i de seguida tria el món ----
+function jugador(){try{return localStorage.getItem('bn_jugador')||''}catch(e){return ''}}
+function pinsP(){try{return JSON.parse(localStorage.getItem('bn_pins')||'{}')||{}}catch(e){return {}}}
+function nomsDispositiu(){const m={};try{(JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[]).forEach(n=>{m[n.trim().toLowerCase()]=n});
+ for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c))continue;Object.keys(JSON.parse(localStorage.getItem(c)||'{}')||{}).forEach(n=>{m[n.trim().toLowerCase()]=m[n.trim().toLowerCase()]||n})}}catch(e){}return m}
+const rpcP=(f,body)=>fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:JSON.stringify(body)})
+ .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/nom no permes/.test(t)?"nom":"xarxa"}return t?JSON.parse(t):null});
+function pintaHola(){const G=jugador(),h=document.getElementById('hola'),f=document.getElementById('entrada'),t=document.getElementById('tria'),m=document.querySelector('main');
+ if(G){h.innerHTML=`Hola, <em>${G.replace(/[<>&]/g,'')}</em>! 👋 <button class="canvia" id="enCanvia" type="button">No ets tu?</button>`;f.hidden=true;t.hidden=false;m.classList.remove('bloc');
+  document.getElementById('enCanvia').onclick=()=>{try{localStorage.removeItem('bn_jugador')}catch(e){}location.reload()}}
+ else{h.innerHTML='';f.hidden=false;t.hidden=true;m.classList.add('bloc')}}
+function iniciEntrada(){
+ const f=document.getElementById('entrada'),iN=document.getElementById('enNom'),iP=document.getElementById('enPin'),av=document.getElementById('enAvis'),ns=document.getElementById('enNoms');
+ const noms=Object.values(nomsDispositiu());
+ ns.innerHTML=noms.map(n=>`<button type="button" data-n="${n.replace(/"/g,'&quot;')}">${n.replace(/[<>&]/g,'')}</button>`).join('');
+ ns.querySelectorAll('button').forEach(b=>b.onclick=()=>{iN.value=b.dataset.n;ns.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));iP.value='';iP.focus()});
+ const err=(m,el)=>{av.className='en-avis';av.textContent=m;f.classList.remove('tremola');void f.offsetWidth;f.classList.add('tremola');(el||iN).focus()};
+ iP.oninput=()=>{iP.value=iP.value.replace(/\D/g,'').slice(0,4);av.textContent=''};iN.oninput=()=>{av.textContent=''};
+ const dins=n=>{try{localStorage.setItem('bn_jugador',n);const l=JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem('bn_noms_aparell',JSON.stringify(l))}}catch(e){}
+  pintaHola();const m=document.querySelector('main');m.classList.remove('ilumina');void m.offsetWidth;m.classList.add('ilumina');
+  setTimeout(()=>document.getElementById('tria').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'}),150)};
+ const desaPinP=(n,p)=>{const x=pinsP();x[n.trim().toLowerCase()]=p;try{localStorage.setItem('bn_pins',JSON.stringify(x))}catch(e){}};
+ f.onsubmit=async e=>{e.preventDefault();let n=iN.value.trim().replace(/\s+/g,' ');if(!n)return err('Escriu el teu nom.');
+  n=n.charAt(0).toUpperCase()+n.slice(1);const p=iP.value;
+  const coneguts=nomsDispositiu(),local=coneguts[n.toLowerCase()];if(local)n=local;
+  if(!local&&Object.keys(coneguts).length>=2)return err(`📵 En aquest aparell ja hi ha 2 noms (${Object.values(coneguts).join(' i ')}). Toca el teu nom per entrar.`);
+  if(!/^\d{4}$/.test(p))return err('🔢 Escriu el PIN: 4 números.',iP);
+  av.className='en-avis ok';av.textContent='Un moment…';
+  let ex;try{ex=await rpcP('bn_perfil_existeix',{p_nom:n})}catch(x){ex=null}
+  if(ex===null){const pl=pinsP()[n.toLowerCase()];if(local&&(!pl||pl===p)){if(!pl)desaPinP(n,p);return dins(n)}
+   return err(pl?'❌ PIN incorrecte.':'📡 Cal connexió a internet per entrar amb un nom nou.',pl?iP:iN)}
+  const primer=(document.querySelector('.as[data-id]')||{dataset:{}}).dataset.id||'socials';
+  if(ex){try{await rpcP('bn_progres_llegeix',{p_nom:n,p_pin:p,p_assig:primer});desaPinP(n,p);dins(n)}
+   catch(m){err(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar.':m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':'📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
+  try{const r=await rpcP('bn_perfil_crea',{p_nom:n,p_pin:p});if(r==='existeix')return err('Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.',iP);desaPinP(n,p);dins(n)}
+  catch(m){err(m==='nom'?'🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.':'📡 No hi ha connexió. Prova-ho més tard.')}};
+ // sense nom, els mons esperen: primer el nom
+ document.querySelectorAll('main .as[href]').forEach(a=>a.addEventListener('click',e=>{if(jugador())return;e.preventDefault();err('👆 Primer escriu el teu nom i el PIN.');f.scrollIntoView({behavior:'smooth',block:'center'})}));
+ pintaHola();
+}
 // botons: explicació plegable i rànquing en popup
 (function(){const bi=document.getElementById("btInfo"),it=document.getElementById("intro"),pop=document.getElementById("hsPop");
  bi.onclick=()=>{const o=it.hidden;it.hidden=!o;bi.setAttribute("aria-expanded",o)};
