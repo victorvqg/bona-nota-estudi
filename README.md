@@ -103,6 +103,22 @@ Tots els càlculs que surten al món s'han comprovat amb un programa (47 comprov
 
 ---
 
+### ✏️ Taller de mates (exercicis com els de l'escola)
+
+Motor compartit a `motor/eines/exercicis-mates.js`. Un món de mates l'inclou amb la línia
+`//@inclou eines/exercicis-mates.js` al final de les seves dades (`build.py` hi posa el fitxer sencer).
+
+- **S'escriu el resultat** amb un teclat numèric gran, en lloc de triar entre 3 opcions.
+- **Números nous cada vegada**: cada exercici surt d'un generador, amb 3 nivells (🟢 bàsic, 🟡 mitjà, 🔴 d'examen).
+- **Pas a pas com a la llibreta**: l'escala fila a fila, la taula de factors per al MCM i el MCD, el càlcul del criteri.
+- **Problemes en 4 passos**: dades (n'hi ha una que no serveix) → MCM o MCD? → càlcul → frase de resposta amb la unitat.
+- **Fitxes amb apartats a) b) c) d)**, com les de classe.
+- **Errors típics explicats** (l'1 no és primer, exponent petit al MCM, un factor no comú al MCD…). Al 2n error ensenya la resposta.
+- **«📒 Així s'escriu a la llibreta»** després de cada apartat.
+- **Examen simulat sobre 10**: 6 exercicis, sense pistes, nota parcial per passos i correcció completa al final.
+- Cada tema de la fitxa té el botó **✏️ Practica-ho com a classe** (camp `practica` del tema).
+- `prova.js` resol cada fitxa i l'examen sols (`mxProva`) i exigeix un 10.
+
 ## 🗂️ Com està fet
 
 Tots els mons fan servir el **mateix motor**. Només canvien les **dades** de cada món.

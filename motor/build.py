@@ -6,6 +6,8 @@ d = pathlib.Path(__file__).parent
 assig = sys.argv[1]
 plant = (d / "plantilla-estudi-interactiu.html").read_text()
 dades = (d / "dades" / f"{assig}.js").read_text()
+# eines compartides: una línia «//@inclou eines/<fitxer>.js» a les dades s'hi substitueix pel contingut del fitxer
+dades = re.sub(r"^//@inclou (eines/[\w.-]+\.js)\s*$", lambda m: (d / m.group(1)).read_text(), dades, flags=re.M)
 nom = re.search(r'nom:"([^"]+)"', dades).group(1)
 curs = re.search(r'curs:"([^"]+)"', dades).group(1)
 mt = re.search(r'tema:"([^"]+)"', dades.split("blocs:")[0])

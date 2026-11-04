@@ -5,6 +5,20 @@ const ASSIG={
  peu:"Bona Nota · Apunts de Matemàtiques · Tema 2: Divisibilitat (múltiples, divisors, criteris, primers, factors, MCM i MCD)",
  blocs:[{titol:"➗ Divisibilitat i criteris",n:3},{titol:"🧩 Primers i factors",n:2},{titol:"🤝 MCM, MCD i problemes",n:3}],
  jocs:[
+  {id:"fx-criteris",tipus:"custom",fn:"mxFitxa",prova:"mxProva",mx:{tipus:["criteri"],n:4},ic:"✔️",titol:"Fitxa 1 · Criteris",sub:"a) b) c) d) · sense dividir",col:"#fee2e2",
+   enunciat:"✔️ Fitxa 1 · Criteris de divisibilitat",final:"Recorda: 2, 5 i 10 → l'última xifra · 3 i 9 → la suma de les xifres · 11 → xifres alternes."},
+  {id:"fx-multdiv",tipus:"custom",fn:"mxFitxa",prova:"mxProva",mx:{tipus:["multiples","divisors"],n:4},ic:"🔢",titol:"Fitxa 2 · Múltiples i divisors",sub:"Escriu-los tots",col:"#e0f2fe",
+   enunciat:"🔢 Fitxa 2 · Múltiples i divisors",final:"Múltiples: vas sumant. Divisors: els busques per parelles."},
+  {id:"fx-primers",tipus:"custom",fn:"mxFitxa",prova:"mxProva",mx:{tipus:["primer"],n:4},ic:"💎",titol:"Fitxa 3 · Primer o compost?",sub:"Demostra-ho amb un divisor",col:"#dcfce7",
+   enunciat:"💎 Fitxa 3 · Primer o compost?",final:"Només cal provar els primers fins que el quadrat passi del nombre."},
+  {id:"fx-escala",tipus:"custom",fn:"mxFitxa",prova:"mxProva",mx:{tipus:["escala"],n:3},ic:"🪜",titol:"Fitxa 4 · L'escala",sub:"Descompon fila a fila",col:"#fef9c3",
+   enunciat:"🪜 Fitxa 4 · Descomposició amb l'escala",final:"Comença sempre pel primer més petit i no canviïs fins que ja no es pugui."},
+  {id:"fx-mcm",tipus:"custom",fn:"mxFitxa",prova:"mxProva",mx:{tipus:[["mcmmcd","MCD"],["mcmmcd","MCM"],"mcmmcd"],n:3},ic:"🤝",titol:"Fitxa 5 · MCM i MCD",sub:"Pas a pas, amb la taula de factors",col:"#ede9fe",
+   enunciat:"🤝 Fitxa 5 · MCM i MCD pas a pas",final:"MCD: comuns, exponent més petit. MCM: tots, exponent més gran."},
+  {id:"fx-problemes",tipus:"custom",fn:"mxFitxa",prova:"mxProva",mx:{tipus:["problema"],n:3},ic:"🧠",titol:"Fitxa 6 · Problemes",sub:"Dades → MCM o MCD? → càlcul → resposta",col:"#ffedd5",
+   enunciat:"🧠 Fitxa 6 · Problemes en 4 passos",final:"Coincidir de nou → MCM. Repartir en parts iguals, el màxim → MCD."},
+  {id:"ex-mates",tipus:"custom",fn:"mxExamen",prova:"mxProva",mx:{examen:[["criteri",1],["divisors",1.5],["primer",1],["escala",2],["mcmmcd",2],["problema",2.5]]},ic:"📝",titol:"Examen de mates",sub:"6 exercicis · nota sobre 10",col:"#fecaca",
+   enunciat:"📝 Examen simulat · Divisibilitat"},
   {id:"garbell",tipus:"custom",fn:"jocGarbell",prova:"provaGarbell",ic:"🧺",titol:"El garbell dels primers",sub:"Troba els 15 primers fins a 50",col:"#ccfbf1",
    enunciat:"🧺 El garbell: toca tots els nombres primers",
    final:"Truc: 2-3-5-7 · 11-13-17-19 · 23-29 · 31-37 · 41-43-47."},
@@ -33,7 +47,7 @@ const ASSIG={
  ]
 };
 const T=[
- {id:"relacio",ic:"➗",col:"#0d9488",titol:"La relació de divisibilitat",font:"Resum · secció 1",
+ {id:"relacio",practica:"fx-multdiv",ic:"➗",col:"#0d9488",titol:"La relació de divisibilitat",font:"Resum · secció 1",
   idea:"Dos nombres compleixen la relació de divisibilitat quan la divisió entre tots dos és exacta: el residu és 0.",
   pts:["<b>Divisió exacta</b>: no en sobra res. 60 : 15 = 4, residu 0 → 60 és divisible per 15.",
    "Si en sobra alguna cosa, no: 60 : 25 = 2 i en sobren 10 → 60 <b>no</b> és divisible per 25.",
@@ -52,7 +66,7 @@ const T=[
      ["Si 40 : 8 = 5, quin altre divisor de 40 tenim segur?",["El 5","El 48","El 32"],0,"Els divisors van per parelles: 8 · 5 = 40."],
      ["60 és divisible per 15?",["Sí, perquè 60 : 15 = 4 exacte","No, perquè 15 és senar","No, perquè 60 és més gran"],0,"La divisió és exacta, residu 0."],
      ["«a és múltiple de b» vol dir el mateix que…",["b és múltiple de a","b és divisor de a","a és divisor de b"],1,"Totes dues frases volen dir que a : b és exacta."]]},
- {id:"multdiv",ic:"✖️",col:"#0891b2",titol:"Múltiples i divisors d'un nombre",font:"Resum · secció 2",
+ {id:"multdiv",practica:"fx-multdiv",ic:"✖️",col:"#0891b2",titol:"Múltiples i divisors d'un nombre",font:"Resum · secció 2",
   idea:"Els múltiples d'un nombre són infinits; els divisors són pocs i sempre es poden comptar.",
   pts:["<b>Múltiples</b>: multiplica el nombre per 1, 2, 3… Múltiples de 20: 20, 40, 60, 80… No s'acaben mai.",
    "Tot nombre és múltiple d'ell mateix i de l'1. Un punt a sobre del nombre vol dir «múltiple de».",
@@ -70,7 +84,7 @@ const T=[
      ["Quina frase és certa?",["Els divisors d'un nombre són infinits","Els múltiples d'un nombre són infinits","Un nombre no és múltiple d'ell mateix"],1,"Els múltiples no s'acaben; els divisors es poden comptar."],
      ["Buscant els divisors de 18 per parelles, quan pares?",["Quan arribes al 18","Quan la parella es gira (6 amb 3)","Quan trobes el primer divisor"],1,"Si la parella es repeteix, ja els tens tots."],
      ["Quants divisors té el 90?",["12","6","10"],0,"1, 2, 3, 5, 6, 9, 10, 15, 18, 30, 45 i 90."]]},
- {id:"criteris",ic:"🔎",col:"#4f46e5",titol:"Criteris de divisibilitat",font:"Resum · secció 3",
+ {id:"criteris",practica:"fx-criteris",ic:"🔎",col:"#4f46e5",titol:"Criteris de divisibilitat",font:"Resum · secció 3",
   idea:"Els criteris són dreceres: et diuen si un nombre és divisible per 2, 3, 5, 9, 10 o 11 sense fer la divisió.",
   pts:["<b>Per 2</b>: acaba en xifra parella (0, 2, 4, 6, 8). 516 sí; 371 no.",
    "<b>Per 5</b>: acaba en 0 o en 5 (325 sí; 703 no). <b>Per 10</b>: acaba en 0 (560 sí, i també és divisible per 5).",
@@ -90,7 +104,7 @@ const T=[
      ["1.215 és divisible per 5? I per 9?",["Només per 5","Per 5 i per 9","Només per 9"],1,"Acaba en 5, i 1 + 2 + 1 + 5 = 9."],
      ["Quin criteri fa servir només l'última xifra?",["El del 3","El del 10","El de l'11"],1,"El 2, el 5 i el 10 miren la cua."],
      ["560 és divisible per 10?",["Sí, i també per 5","No, perquè no acaba en 5","Només per 10, per cap altre"],0,"Acaba en 0: divisible per 10 i per 5."]]},
- {id:"primers",ic:"💎",col:"#16a34a",titol:"Nombres primers i compostos",font:"Resum · secció 4",
+ {id:"primers",practica:"fx-primers",ic:"💎",col:"#16a34a",titol:"Nombres primers i compostos",font:"Resum · secció 4",
   idea:"Un nombre primer només té dos divisors: l'1 i ell mateix. Si en té més, és compost. L'1 no és ni primer ni compost.",
   pts:["<b>Primer</b>: 13 només té els divisors 1 i 13 → només es pot escriure 13 = 13 · 1.",
    "<b>Compost</b>: 18 té els divisors 1, 2, 3, 6, 9, 18 → 18 = 2 · 9 = 3 · 6 = 2 · 3 · 3.",
@@ -110,7 +124,7 @@ const T=[
      ["El 101 és primer o compost?",["Primer","Compost: 101 = 3 · 33","Compost, perquè acaba en 1"],0,"No és divisible per 2, 3, 5 ni 7, i 11 · 11 = 121 ja passa de 101."],
      ["El 247 és…",["primer, perquè és senar","compost: 247 = 13 · 19","primer, perquè no és divisible per 3"],1,"247 = 13 · 19."],
      ["Com funciona el garbell per trobar primers?",["Tatxes els múltiples de 2, 3, 5, 7… (menys ells mateixos)","Tatxes tots els nombres senars","Tatxes els nombres que acaben en 0"],0,"El que queda sense tatxar és primer."]]},
- {id:"factors",ic:"🌳",col:"#ca8a04",titol:"Descomposició en factors primers",font:"Resum · secció 5",
+ {id:"factors",practica:"fx-escala",ic:"🌳",col:"#ca8a04",titol:"Descomposició en factors primers",font:"Resum · secció 5",
   idea:"Descompondre (factoritzar) un nombre és escriure'l com una multiplicació on tots els factors són primers.",
   pts:["Nombres petits, amb càlcul mental: 36 = 4 · 9 = 2 · 2 · 3 · 3 = 2² · 3².",
    "Nombres grans, amb l'<b>escala de divisions</b>: divideix per 2 tantes vegades com puguis, després per 3, per 5… fins que a l'esquerra quedi l'1.",
@@ -130,7 +144,7 @@ const T=[
      ["40 = 2³ · 5. Quin d'aquests és divisor de 40?",["10 = 2 · 5","15 = 3 · 5","12 = 2² · 3"],0,"Un divisor només té factors de 40: el 3 no hi és."],
      ["120 = 2³ · 3 · 5. És múltiple de 40 = 2³ · 5?",["Sí: conté tots els factors de 40","No, perquè té un 3","No, perquè 40 és més petit"],0,"Els múltiples hereten tots els factors (i en poden tenir més)."],
      ["Quina és la descomposició de 396?",["2² · 3² · 11","2 · 198","2 · 2 · 3 · 33"],0,"396 : 2 = 198 → 198 : 2 = 99 → 99 : 3 = 33 → 33 : 3 = 11 → 11 : 11 = 1. El 33 no és primer!"]]},
- {id:"mcm",ic:"🔁",col:"#ea580c",titol:"Mínim comú múltiple (MCM)",font:"Resum · secció 6",
+ {id:"mcm",practica:"fx-mcm",ic:"🔁",col:"#ea580c",titol:"Mínim comú múltiple (MCM)",font:"Resum · secció 6",
   idea:"El MCM de dos o més nombres és el més petit dels seus múltiples comuns. S'escriu MCM (a, b).",
   pts:["<b>Taxis</b>: es renten cada 4 dies i es revisen cada 6. Coincideixen els dies 12, 24, 36… → cada 12 dies.",
    "<b>Mètode artesanal</b>: múltiples de 4 → 4, 8, <b>12</b>, 16…; múltiples de 6 → 6, <b>12</b>, 18… Per tant, MCM (4, 6) = 12.",
@@ -150,7 +164,7 @@ const T=[
      ["MCM (10, 15, 25) = ?",["5","150","750"],1,"2 · 3 · 5² = 150."],
      ["Els trens surten cada 18 i cada 24 minuts. Coincideixen cada…",["72 minuts (1 h 12 min)","6 minuts","432 minuts"],0,"MCM (18, 24) = 2³ · 3² = 72."],
      ["Un MCM pot ser més petit que els nombres?",["Sí, de vegades","No, mai: és igual o més gran","Només si són primers"],1,"És un múltiple: igual o més gran."]]},
- {id:"mcd",ic:"✂️",col:"#db2777",titol:"Màxim comú divisor (MCD)",font:"Resum · secció 7",
+ {id:"mcd",practica:"fx-mcm",ic:"✂️",col:"#db2777",titol:"Màxim comú divisor (MCD)",font:"Resum · secció 7",
   idea:"El MCD de dos o més nombres és el més gran dels seus divisors comuns. S'escriu MCD (a, b).",
   pts:["<b>Pati de 8 × 12 m</b>: testos a la mateixa distància. Funciona a 1, 2 i 4 m (divisors comuns). El més gran és 4.",
    "<b>Mètode artesanal</b>: divisors de 8 → 1, 2, 4, 8; divisors de 12 → 1, 2, 3, 4, 6, 12. Per tant, MCD (8, 12) = 4.",
@@ -170,7 +184,7 @@ const T=[
      ["MCD (10, 15, 25) = ?",["5","150","1"],0,"L'únic factor comú als tres és el 5."],
      ["Si et surt un MCD més gran que algun dels nombres…",["T'has equivocat segur","Està bé si són parells","És que són primers"],0,"El MCD és igual o més petit que els nombres."],
      ["200 kg de pomes i 260 kg de taronges en caixes iguals i grans. Quants kg per caixa?",["20 kg","10 kg","5.200 kg"],0,"MCD (200, 260) = 2² · 5 = 20."]]},
- {id:"problemes",ic:"🧠",col:"#7c3aed",titol:"MCM o MCD? Els problemes",font:"Resum · síntesi i problemes",
+ {id:"problemes",practica:"fx-problemes",ic:"🧠",col:"#7c3aed",titol:"MCM o MCD? Els problemes",font:"Resum · síntesi i problemes",
   idea:"Pregunta't què busques: si és quan tornen a coincidir coses que es repeteixen, MCM; si és repartir o tallar en trossos iguals tan grans com es pugui, MCD.",
   pts:["<b>MCM</b>: coincidències (autobusos, trens, taxis, torns) o un total més gran que les dades (palets). El resultat és <b>més gran</b> que les dades.",
    "<b>MCD</b>: repartir o tallar en parts iguals, tan grans com sigui possible i sense que sobri res (caixes, llistons, garrafes, quadrats). El resultat és <b>més petit</b> que les dades.",
@@ -259,3 +273,5 @@ function gbToca(b){const n=+b.dataset.n;if(!GB.j||b.classList.contains("ok")||b.
   info.innerHTML=n===1?"❌ L'1 no és primer: només té un divisor.":`❌ ${n} és compost: ${n} = ${d} · ${n/d}.`}}
 // per a la prova automàtica (motor/prova.js): toca tots els primers
 function provaGarbell(j){jocGarbell(j);document.querySelectorAll(".gb").forEach(b=>{if(esPrimer(+b.dataset.n))gbToca(b)});return GB.j===null||"no ha acabat el garbell"}
+
+//@inclou eines/exercicis-mates.js
