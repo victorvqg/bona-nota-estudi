@@ -228,3 +228,34 @@ El resultat surt a la pestanya **Actions** del repo.
 - **Rànquing:** `bn_ranking_mons` (total i estrelles per món). Els noms amagats o no permesos no hi surten.
 - **PIN:** xifrat (bcrypt), mai es guarda tal qual. 5 errors en 15 minuts bloquegen el nom 15 minuts. Format i canvi: `supabase/bn_pin_nou.sql`.
 - Els canvis a la base de dades es fan a Supabase i el seu SQL es desa a `supabase/`.
+
+### Què es registra (des del 4-11-2026) i el tauler d'admin
+
+Cap dada nova del nen: només el nom de sempre. El camp `detall` de cada registre porta:
+
+| Event | Detall |
+|---|---|
+| `entra` | `h` (hora local), `dw` (1 = dilluns … 7 = diumenge), estrelles, temes aprovats |
+| `fitxa` | tema, `s` (segons llegint-la), `fi` (1 si ha arribat al final) — s'envia en sortir |
+| `targetes` | tema, `s`, `vistes` de `n`, `girs`, `fi` — s'envia en sortir |
+| `test` | tema, `pc`, `mode` (tema · repas), `s` total i `q`: una entrada per pregunta |
+| `examen` | `joc` (examen · examreal), `pc`, `mode` (sorpresa · real · real-temps), `s`, `temes` i `q` |
+| `joc` | `joc`, `pc`, `s`, `enc`, `err`; el MAPA també `mode` i `f` (comarques fallades) |
+| `oberta` | número, tema, `pc`, `s`, `idees`/`de`, `det` (detectades al text), `falten` (punts clau no marcats) |
+
+Cada pregunta contestada va a `q` com un text curt **`tema/núm:encert:segons:opció`**, per exemple
+`lle/4:0:7:2` (tema «lle», pregunta 4, fallada, 7 segons, ha triat l'opció 2 del llibre de dades).
+Ocupa molt menys que una llista dins de la base de dades; si un registre passés de 1.700 bytes, només es
+guarden les fallades.
+
+**Identificadors de pregunta estables:** `motor/qids.py` dona un número a cada pregunta la primera vegada que
+la veu i el desa a `motor/qids.json` (lligat a una empremta del text). Si reordenes o afegeixes preguntes, les
+que hi havia mantenen el número; un número no es torna a fer servir mai. Si canvies el text d'una pregunta,
+compta com una de nova. `tot.py` també genera `admin/preguntes.json` (id → text, opcions, correcta, tema) perquè
+el tauler mostri el text de les preguntes.
+
+**Tauler** (`admin/`, pestanya 📊 Tauler): xifres amb comparació amb el període anterior, alertes, activitat per
+dia, mapa de calor hora × dia, evolució de les notes, constància i ratxa, domini nen × tema, preguntes més
+fallades amb el parany més triat i, filtrant per un nen, en què passa el temps. Les dades arriben ja agregades
+del servidor amb les funcions de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`,
+`_domini`, `_fallades`, `_evolucio`, `_alertes`), que demanen el correu i la contrasenya d'admin.

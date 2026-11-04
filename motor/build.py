@@ -22,6 +22,10 @@ for m in json.loads((d / "mons.json").read_text()):
     mons.append({"id": mid, "clau": mc.group(1) if mc else "bn_" + mid, "ic": m["ic"], "materia": m["materia"],
                  "titol": m["titol"], "url": "../../" + m["carpeta"] + "/"})
 mons_js = "const MONS=" + json.dumps(mons, ensure_ascii=False) + ";"
+# identificadors estables de les preguntes (motor/qids.json) → const QIDS={tema:[números]}
+from qids import ids_mon
+_, qids, _p = ids_mon(d / "dades" / f"{assig}.js")
+mons_js += "\nconst QIDS=" + json.dumps(qids, separators=(",", ":")) + ";"
 html = plant.replace("/*DADES*/", dades, 1).replace("/*MONS*/", mons_js, 1).replace("{{TITOL}}", f"{nom}{tema} · {curs} | Bona Nota")
 assert "{{" not in html and "/*DADES*/" not in html and "/*MONS*/" not in html
 out = d.parent / (sys.argv[2] if len(sys.argv) > 2 else assig) / "index.html"
