@@ -14,6 +14,7 @@ Després, aquí es comprova si se sap de veritat.
 | 2 | Biologia i Geologia | Bloc 1: Univers, Terra i cèl·lula | `bio-i-geo/univers/` |
 | 3 | Lengua Castellana | Temas 2 y 3 | `castellano/t2-t3/` |
 | 4 | Ciències socials | Les comarques de Catalunya | `sociales/comarques/` |
+| 5 | Matemàtiques | Tema 2: Divisibilitat | `matematiques/divisibilitat/` |
 
 La llista oficial de mons és `motor/mons.json`.
 

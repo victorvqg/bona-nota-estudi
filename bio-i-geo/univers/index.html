@@ -625,7 +625,7 @@ function svgFigura(){
  return s;
 }
 
-const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}];
+const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}];
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
@@ -1020,7 +1020,10 @@ function nomProhibit(n){const x=normT(n.trim());return !/^[a-z0-9 ._'-]+$/.test(
 const BUIDES=new Set("aquest aquesta aquests aquestes perque quan com amb sense sobre entre també molt mes menys tots totes cada altre altres seva seves seus quan durant despres abans pero porque cuando sobre entre tambien mucho todos todas otra otro otras otros".split(" "));
 function ideaDetectada(punt,text){const t=normT(text).replace(/[^a-z0-9 ]/g," "),paus=new Set(t.split(/\s+/).filter(w=>w.length>=4).map(w=>w.slice(0,5)));
  const claus=normT(punt.replace(/<[^>]+>/g,"")).replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>=5&&!BUIDES.has(w));
- return claus.some(w=>paus.has(w.slice(0,5)))}
+ if(claus.some(w=>paus.has(w.slice(0,5))))return true;
+ // mates: si el punt clau porta nombres de 2 xifres o més (1.001, 144, 72…), també val si el text els porta tots
+ const nums=x=>(normT(String(x).replace(/<[^>]+>/g,"")).match(/\d+(?:[.,]\d{3})*/g)||[]).map(n=>n.replace(/[.,]/g,""));
+ const np=[...new Set(nums(punt).filter(n=>n.length>=2))];if(!np.length)return false;const nt=new Set(nums(text));return np.every(n=>nt.has(n))}
 
 
 // ====================== PIN I PROGRÉS AL NÚVOL ======================

@@ -55,5 +55,19 @@
    "#f59e0b"
   ],
   "ic": "🗺️"
+ },
+ {
+  "dades": "divisibilitat",
+  "carpeta": "matematiques/divisibilitat",
+  "mon": "5",
+  "materia": "Matemàtiques",
+  "titol": "Tema 2: Divisibilitat",
+  "desc": "Múltiples, divisors, criteris, primers, factors, MCM i MCD.",
+  "colors": [
+   "#134e4a",
+   "#0d9488",
+   "#84cc16"
+  ],
+  "ic": "🔢"
  }
 ]

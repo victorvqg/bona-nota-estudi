@@ -753,7 +753,10 @@ function nomProhibit(n){const x=normT(n.trim());return !/^[a-z0-9 ._'-]+$/.test(
 const BUIDES=new Set("aquest aquesta aquests aquestes perque quan com amb sense sobre entre també molt mes menys tots totes cada altre altres seva seves seus quan durant despres abans pero porque cuando sobre entre tambien mucho todos todas otra otro otras otros".split(" "));
 function ideaDetectada(punt,text){const t=normT(text).replace(/[^a-z0-9 ]/g," "),paus=new Set(t.split(/\s+/).filter(w=>w.length>=4).map(w=>w.slice(0,5)));
  const claus=normT(punt.replace(/<[^>]+>/g,"")).replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>=5&&!BUIDES.has(w));
- return claus.some(w=>paus.has(w.slice(0,5)))}
+ if(claus.some(w=>paus.has(w.slice(0,5))))return true;
+ // mates: si el punt clau porta nombres de 2 xifres o més (1.001, 144, 72…), també val si el text els porta tots
+ const nums=x=>(normT(String(x).replace(/<[^>]+>/g,"")).match(/\d+(?:[.,]\d{3})*/g)||[]).map(n=>n.replace(/[.,]/g,""));
+ const np=[...new Set(nums(punt).filter(n=>n.length>=2))];if(!np.length)return false;const nt=new Set(nums(text));return np.every(n=>nt.has(n))}
 
 
 // ====================== PIN I PROGRÉS AL NÚVOL ======================
