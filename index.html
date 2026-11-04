@@ -137,7 +137,6 @@ h1 span{display:inline-block}
 .hs-pop>.hs-caixa{margin:auto}
 .hs-caixa{width:min(1040px,100%);padding:22px 22px 16px}
 .hs-tit{font-size:clamp(18px,4.8vw,36px);margin:4px 36px 10px}
-.hs-demo{display:inline-block;vertical-align:middle;margin-left:10px;font-size:10px;background:#f472b6;color:#4a044e;border-radius:6px;padding:5px 7px;text-shadow:none;animation:none}
 .hs-ticker{position:relative;z-index:1;overflow:hidden;margin:0 -22px 14px;padding:8px 0;background:linear-gradient(90deg,#b91c1c,#7c3aed,#0e7490,#b91c1c);border-block:2px solid #facc15;white-space:nowrap}
 .hs-ticker:empty{display:none}
 .hs-tk{display:inline-block;padding-left:100%;animation:tkRoda 30s linear infinite;font-family:'Press Start 2P',monospace;font-size:11px;color:#fff;text-shadow:2px 2px 0 #0008}
@@ -485,7 +484,7 @@ footer b{color:var(--groc)}
 </div>
 <div class="hs-pop" id="hsPop" hidden role="dialog" aria-modal="true" aria-label="Rànquing">
  <div class="hs-caixa"><button class="hs-tanca" id="hsTanca" aria-label="Tanca">✕</button>
-  <p class="hs-tit">★ HIGH SCORES ★<span class="hs-demo" id="hsDemo" hidden>DEMO</span></p>
+  <p class="hs-tit">★ HIGH SCORES ★</p>
   <div class="hs-ticker" id="hsTicker" aria-hidden="true"></div>
   <div class="hs-tabs" id="hsTabs" role="tablist"><button class="hs-tab on" role="tab" data-t="punts">⭐ Estrelles</button><button class="hs-tab" role="tab" data-t="temps">⏱ Temps</button><button class="hs-tab" role="tab" data-t="nivell">🏅 Nivell</button><button class="hs-tab" role="tab" data-t="setmana">📈 Setmana</button></div>
   <div id="hs"></div>
@@ -593,7 +592,7 @@ const MONS_IC=[...document.querySelectorAll('.as[data-id]')].map(a=>[a.dataset.i
 const monsHtml=r=>{const m=r.mons||{};const xs=MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<i>${ic} ${m[id]}</i>`);return xs.join("")};
 const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ⭐`,m:monsHtml(r)})},temps:{k:"temps_s",v:r=>({v:fT(r.temps_s)})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${NIV[n][2]} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ⭐`,s:"últims 7 dies"})}};
 function carregaHs(){const hs=document.getElementById("hs");
- if(DEMO){HSD=DEMO_D;HST=Date.now();document.getElementById("hsDemo").hidden=false;pintaHs();redoble();return}
+ if(DEMO){HSD=DEMO_D;HST=Date.now();pintaHs();redoble();return}
  if(HSD&&Date.now()-HST<60000){pintaHs();return}
  hs.innerHTML=`<div class="hs-buit">CARREGANT…</div>`;
  const rk=f=>fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:"{}"}).then(r=>r.ok?r.json():Promise.reject());
