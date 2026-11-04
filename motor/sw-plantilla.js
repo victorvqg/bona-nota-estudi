@@ -13,9 +13,11 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== "GET" || u.hostname.endsWith("supabase.co")) return;
+  if (u.pathname.includes("/admin/")) return; // el tauler d'admin, sempre directe de la xarxa
+
   const esPagina = r.mode === "navigate" || (r.headers.get("accept") || "").includes("text/html");
   if (esPagina) {
-    e.respondWith(fetch(r).then(resp => { const cp = resp.clone(); caches.open(VERSIO).then(c => c.put(r, cp)); return resp; })
+    e.respondWith(fetch(r.url, { cache: "no-cache", credentials: "same-origin" }).then(resp => { const cp = resp.clone(); caches.open(VERSIO).then(c => c.put(r, cp)); return resp; })
       .catch(() => caches.match(r).then(m => m || caches.match(u.pathname.endsWith("/") ? u.pathname + "index.html" : r))));
     return;
   }
