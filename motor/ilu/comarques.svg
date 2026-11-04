@@ -1,0 +1,12 @@
+<svg class="ilu" viewBox="0 0 200 130" aria-hidden="true"><style>.co-pin{animation:coBota 1.6s cubic-bezier(.3,0,.5,1) infinite;transform-box:fill-box;transform-origin:50% 100%}.co-pin2{animation-delay:-.5s}.co-pin3{animation-delay:-1s}.co-ruta{stroke-dasharray:4 5;animation:coRuta 1.2s linear infinite}.co-br{transform-origin:162px 34px;animation:coBruixola 4s ease-in-out infinite}@keyframes coBota{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}@keyframes coRuta{to{stroke-dashoffset:-18}}@keyframes coBruixola{30%{transform:rotate(25deg)}60%{transform:rotate(-15deg)}}@media(prefers-reduced-motion:reduce){.ilu *{animation:none!important}}</style>
+<path d="M30 30l46-10 48 10 46-10v84l-46 10-48-10-46 10z" fill="#0006" transform="translate(3 4)"/>
+<path d="M30 30l46-10v84l-46 10z" fill="#fef3c7"/><path d="M76 20l48 10v84l-48-10z" fill="#fde68a"/><path d="M124 30l46-10v84l-46 10z" fill="#fef3c7"/>
+<path d="M40 60q14-14 30-6t22 4 22-2 18 14 26-2" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+<path d="M44 90q10-8 22-2l10-6 14 8 16-10 16 6 14-6 18 4" fill="none" stroke="#86efac" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+<path class="co-ruta" d="M56 82q20-30 46-14t48-20" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+<g class="co-pin"><path d="M56 82c-6-7-9-11-9-15a9 9 0 0 1 18 0c0 4-3 8-9 15z" fill="#ef4444"/><circle cx="56" cy="67" r="3.4" fill="#fff"/></g>
+<g class="co-pin co-pin2"><path d="M102 68c-6-7-9-11-9-15a9 9 0 0 1 18 0c0 4-3 8-9 15z" fill="#8b5cf6"/><circle cx="102" cy="53" r="3.4" fill="#fff"/></g>
+<g class="co-pin co-pin3"><path d="M150 48c-6-7-9-11-9-15a9 9 0 0 1 18 0c0 4-3 8-9 15z" fill="#0ea5e9"/><circle cx="150" cy="33" r="3.4" fill="#fff"/></g>
+
+<g transform="translate(14 72)"><circle cx="162" cy="34" r="13" fill="#fff" stroke="#92400e" stroke-width="2"/><g class="co-br"><path d="M162 24l4 10-4 10-4-10z" fill="#ef4444"/><path d="M162 34l4 0-4 10-4-10z" fill="#475569"/></g><circle cx="162" cy="34" r="1.8" fill="#1e293b"/></g>
+</svg>

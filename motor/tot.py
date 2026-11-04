@@ -43,8 +43,10 @@ for m in mons:
     i = info[str(d / "dades" / f"{m['dades']}.js")]
     c1, c2, c3 = m["colors"]
     es = m.get("llengua") == "es"
+    ilu = d / "ilu" / f"{m['dades']}.svg"   # il·lustració pròpia del món (opcional; si no n'hi ha, es mostra l'emoji)
+    dibuix = " ".join(ilu.read_text().split()) if ilu.exists() else m['ic']
     targetes.append(f''' <a class="as" href="{e(m['carpeta'])}/" data-clau="{e(i['clau'])}" data-id="{e(i['id'])}" data-ic="{e(m['ic'])}" data-temes="{i['n']}" style="--c1:{c1};--c2:{c2};--c3:{c3}">
-  <div class="portada"><span class="tag">MÓN {e(m['mon'])}</span><span class="ic">{m['ic']}</span></div>
+  <div class="portada"><span class="tag">MÓN {e(m['mon'])}</span><span class="ic">{dibuix}</span></div>
   <div class="cos">
    <small class="mat">{e(m['materia'])}</small>
    <h2>{e(m['titol'])}</h2>

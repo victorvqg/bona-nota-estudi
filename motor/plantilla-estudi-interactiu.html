@@ -40,6 +40,7 @@ nav a.surt:hover,nav a.surt:focus-visible{background:#ffffff26;border-color:#fff
 .surt-gran:hover{color:var(--blau2)}
 main{max-width:960px;margin:0 auto;padding:18px 16px 40px}
 /* elements bàsics */
+h2.sec .ico{color:var(--g2,#2563eb);width:24px;height:24px}
 h2.sec{font-size:21px;margin:26px 0 12px;display:flex;align-items:center;gap:8px}
 h2.sec:first-child{margin-top:4px}
 .box{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--om);margin-bottom:14px}
@@ -337,22 +338,106 @@ body.suau .confeti,body.suau .vola,body.suau .espurna{display:none}
 .descans h2{font-size:26px;margin:8px 0}.descans p{max-width:420px;font-size:17px;opacity:.95}
 .descans .rel{font-family:'Press Start 2P',monospace;font-size:34px;margin:14px 0}
 .descans ul{text-align:left;max-width:380px;font-size:16px;line-height:1.7}
+/* ====================== ICONES, MASCOTA I MOVIMENT (v2) ====================== */
+.ico{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
+nav i{display:inline-flex}nav i .ico{width:19px;height:19px}
+nav button,nav a.surt{transition:background .25s,color .25s,transform .15s}
+nav button:active{transform:scale(.92)}
+nav button.on i{animation:icBota .5s cubic-bezier(.3,1.8,.5,1)}
+@keyframes icBota{30%{transform:translateY(-4px) scale(1.18)}}
+.passos button{display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .25s,color .25s,transform .15s}
+.passos button .ico{width:19px;height:19px}.passos button.on .ico{--icFons:var(--fosc)}
+.passos button:active{transform:scale(.95)}
+.so-btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:28px;border-radius:999px;transition:background .2s,transform .15s}
+.so-btn .ico{width:20px;height:20px}.so-btn:active{transform:scale(.88)}
+.mus-btn{opacity:.6}.mus-btn.on{opacity:1;background:#ffffff33}
+.mus-btn.on .ico{animation:musBalla 1.3s ease-in-out infinite;transform-origin:50% 80%}
+@keyframes musBalla{25%{transform:rotate(-10deg) translateY(-1px)}75%{transform:rotate(10deg) translateY(-1px)}}
+/* mascota */
+.masc{overflow:visible;display:inline-block}
+.masc .mc{transform-box:fill-box;transform-origin:50% 100%;animation:mRespira 3.2s ease-in-out infinite}
+@keyframes mRespira{50%{transform:translateY(-3px) scaleY(1.015)}}
+.masc .mu{transform-box:fill-box;transform-origin:center;animation:mParpella 4.2s infinite}
+@keyframes mParpella{0%,46%,50%,100%{transform:scaleY(1)}48%{transform:scaleY(.1)}}
+.masc .mbD{transform-box:fill-box;transform-origin:0% 100%}
+.m-hola .mbD{animation:mSaluda 1.4s ease-in-out infinite}
+@keyframes mSaluda{0%,100%{transform:rotate(0)}25%{transform:rotate(-22deg)}75%{transform:rotate(14deg)}}
+.masc .mst{transform-box:fill-box;transform-origin:center;animation:mEstrella 2.6s ease-in-out infinite}
+@keyframes mEstrella{50%{transform:rotate(25deg) scale(1.15)}}
+.m-feli .mc{animation:mSalta .7s cubic-bezier(.3,0,.6,1) infinite}
+.m-feli .mo{transform-box:fill-box;transform-origin:center;animation:mOmbra .7s cubic-bezier(.3,0,.6,1) infinite}
+@keyframes mSalta{0%,100%{transform:translateY(0) scale(1.04,.96)}15%{transform:translateY(0) scale(.97,1.03)}50%{transform:translateY(-14px)}}
+@keyframes mOmbra{50%{transform:scale(.7);opacity:.08}}
+.m-feli .mbE{transform-box:fill-box;transform-origin:100% 100%;animation:mBrac .35s ease-in-out infinite alternate}
+.m-feli .mbD{animation:mBrac2 .35s ease-in-out infinite alternate}
+@keyframes mBrac{to{transform:rotate(14deg)}}@keyframes mBrac2{to{transform:rotate(-14deg)}}
+.m-trist .mc{animation:mTrist 2.4s ease-in-out infinite}
+@keyframes mTrist{50%{transform:translateY(2px) rotate(-3deg)}}
+.m-trist .ml{animation:mLlagrima 1.8s ease-in infinite}
+@keyframes mLlagrima{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(22px);opacity:0}}
+.masc-benv{display:flex;justify-content:center;animation:mEntra .7s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes mEntra{from{transform:translateY(30px) scale(.5);opacity:0}}
+.arc .masc-arc{position:relative;margin-bottom:6px;animation:mEntra .6s cubic-bezier(.3,1.6,.5,1) .15s both;filter:drop-shadow(0 6px 18px #0008)}
+/* entrada de pantalles: el contingut nou apareix suau i esglaonat */
+#app>*,#zona>*{animation:vEntra .34s cubic-bezier(.2,.9,.3,1) both}
+#app>*:nth-child(2),#zona>*:nth-child(2){animation-delay:.04s}#app>*:nth-child(3),#zona>*:nth-child(3){animation-delay:.08s}
+#app>*:nth-child(4){animation-delay:.12s}#app>*:nth-child(5){animation-delay:.16s}#app>*:nth-child(n+6){animation-delay:.2s}
+@keyframes vEntra{from{opacity:0;transform:translateY(10px)}}
+.grid>.tile{animation:vEntra .4s cubic-bezier(.2,.9,.3,1) both}
+.grid>.tile:nth-child(2){animation-delay:.04s}.grid>.tile:nth-child(3){animation-delay:.08s}.grid>.tile:nth-child(4){animation-delay:.12s}.grid>.tile:nth-child(5){animation-delay:.16s}.grid>.tile:nth-child(n+6){animation-delay:.2s}
+.tile .ic{transition:transform .35s cubic-bezier(.3,1.7,.5,1)}
+.tile:hover .ic{transform:scale(1.12) rotate(-8deg)}
+.tile:active{transform:scale(.97)}
+.continua{transition:transform .2s,box-shadow .2s}.continua:hover{transform:translateY(-2px);box-shadow:0 8px 20px #f59e0b33}
+.continua>span:first-child,.nivell .nic{display:inline-block;animation:icFlota 3s ease-in-out infinite}
+@keyframes icFlota{50%{transform:translateY(-4px) rotate(4deg)}}
+.hero .av{animation:avBota 4s ease-in-out infinite;box-shadow:0 6px 16px #6366f155}
+@keyframes avBota{50%{transform:translateY(-4px)}}
+.cap-tema .ic{animation:mEntra .5s cubic-bezier(.3,1.6,.5,1) both}
+.barra i,.barra-test i{transition:width .6s cubic-bezier(.3,1.2,.5,1)}
+.barra i{animation:creix .9s cubic-bezier(.3,1.2,.5,1) both;transform-origin:left}
+/* respostes del test */
+.opt{transition:border-color .15s,background .15s,transform .12s}
+.opt:active:not(:disabled){transform:scale(.98)}
+.opt.ok{animation:optOk .5s cubic-bezier(.3,1.8,.5,1)}
+@keyframes optOk{40%{transform:scale(1.03)}}
+.opt.ok .ll{animation:llOk .5s cubic-bezier(.3,1.8,.5,1)}
+@keyframes llOk{40%{transform:scale(1.35) rotate(-10deg)}}
+.opt.ko{animation:tremola .35s}
+.fb{animation:vEntra .3s ease-out both}
+.chip{transition:transform .12s,background .15s,border-color .15s,color .15s}
+.chip:active{transform:scale(.94)}.chip.ok{animation:optOk .45s cubic-bezier(.3,1.8,.5,1)}
+.flash:active .in{transform:scale(.98)}.flash.gir:active .in{transform:rotateY(180deg) scale(.98)}
+.punts-fc i{transition:transform .25s,background .25s}
+.btn{transition:transform .08s,filter .15s}.btn:hover:not(:disabled){filter:brightness(1.06)}
+.kpi{animation:vEntra .4s cubic-bezier(.2,.9,.3,1) both}
+.kpis>.kpi:nth-child(2){animation-delay:.05s}.kpis>.kpi:nth-child(3){animation-delay:.1s}.kpis>.kpi:nth-child(4){animation-delay:.15s}.kpis>.kpi:nth-child(n+5){animation-delay:.2s}
+/* figures: barres que creixen */
+svg .fgB{transform-box:fill-box;transform-origin:50% 100%;animation:fgCreix .7s cubic-bezier(.3,1.3,.5,1) both}
+@keyframes fgCreix{from{transform:scaleY(0)}}
+svg .fgL{stroke-dasharray:900;stroke-dashoffset:900;animation:fgLinia 1.2s ease-out .4s forwards}
+@keyframes fgLinia{to{stroke-dashoffset:0}}
+svg .fgP{animation:vEntra .3s ease-out both}
+/* sense moviment: si el sistema ho demana o amb «efectes suaus» */
+@media(prefers-reduced-motion:reduce){#app>*,#zona>*,.grid>.tile,.kpi,.fb,.masc *,.masc-benv,.arc .masc-arc,.continua>span:first-child,.nivell .nic,.hero .av,.cap-tema .ic,.opt.ok,.opt.ok .ll,.chip.ok,nav button.on i,.mus-btn.on .ico,svg .fgB,svg .fgP{animation:none!important}svg .fgL{animation:none!important;stroke-dashoffset:0}}
+body.suau #app>*,body.suau #zona>*,body.suau .grid>.tile,body.suau .kpi,body.suau .masc *,body.suau .masc-benv,body.suau .arc .masc-arc,body.suau .continua>span:first-child,body.suau .nivell .nic,body.suau .hero .av,body.suau .opt.ok,body.suau .opt.ok .ll,body.suau .mus-btn.on .ico,body.suau svg .fgB{animation:none!important}
+body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </style>
 </head>
 <body>
 <header>
  <div class="hd">
   <div class="logo" onclick="vista('inici')"><span id="logoic">📚</span><span class="tt"><span id="hola"></span><small id="qui"></small></span></div>
-  <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci">🔊</button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts" onclick="obreEstrelles(event)" style="cursor:pointer">⭐ 0</span>
+  <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn mus-btn" id="mus" onclick="canviaMusica()" aria-label="Música de fons" aria-pressed="false"></button><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci"></button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts" onclick="obreEstrelles(event)" style="cursor:pointer">⭐ 0</span>
  </div>
  <nav id="nav">
-  <a class="surt" href="../../" title="Tornar al menú de tots els mons"><i>🚪</i><span>Mons</span></a>
-  <button data-v="inici" onclick="vista('inici')"><i>🏠</i><span>Inici</span></button>
-  <button data-v="temes" onclick="vista('temes')"><i>📖</i><span>Temes</span></button>
-  <button data-v="jocs" onclick="vista('jocs')"><i>🎮</i><span>Jocs</span></button>
-  <button data-v="obertes" onclick="vista('obertes')"><i>✍️</i><span>Obertes</span></button>
-  <button data-v="analitica" onclick="vista('analitica')"><i>📊</i><span>Com vaig</span></button>
-  <button data-v="usuari" onclick="benvinguda()"><i>👥</i><span class="ll-u">Canviar d'usuari</span></button>
+  <a class="surt" href="../../" title="Tornar al menú de tots els mons"><i data-ic="mons"></i><span>Mons</span></a>
+  <button data-v="inici" onclick="vista('inici')"><i data-ic="inici"></i><span>Inici</span></button>
+  <button data-v="temes" onclick="vista('temes')"><i data-ic="temes"></i><span>Temes</span></button>
+  <button data-v="jocs" onclick="vista('jocs')"><i data-ic="jocs"></i><span>Jocs</span></button>
+  <button data-v="obertes" onclick="vista('obertes')"><i data-ic="obertes"></i><span>Obertes</span></button>
+  <button data-v="analitica" onclick="vista('analitica')"><i data-ic="analitica"></i><span>Com vaig</span></button>
+  <button data-v="usuari" onclick="benvinguda()"><i data-ic="usuari"></i><span class="ll-u">Canviar d'usuari</span></button>
  </nav>
 </header>
 <main id="app"></main>
@@ -498,7 +583,7 @@ function cartaEstrelles(gran){
  return h}
 // el «LEVEL UP» surt quan s'acaba el test o el joc (no a mitja pregunta)
 function mostraNivell(){if(SUPPEND)return mostraSuper();if(!NIVPEND)return;if(document.querySelector(".arc")){setTimeout(mostraNivell,400);return}
- const v=NIVPEND;NIVPEND=null;so("super");window.NIVELLS_MOSTRATS=(window.NIVELLS_MOSTRATS||0)+1;
+ const v=NIVPEND;NIVPEND=null;so("nivell");abaixaMusUnMoment(4);window.NIVELLS_MOSTRATS=(window.NIVELLS_MOSTRATS||0)+1;
  const d=document.createElement("div");d.className="arc niv";
  d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">LEVEL UP!</div><div class="nic">${v.ic}</div><div class="t3">NIVELL ${v.n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ARA ETS<br>${v.nom.toUpperCase()}</div>${v.seg?`<div class="t4">PROPER: ${v.seg[2]} ${v.seg[1].toUpperCase()} · ${v.falten} ⭐</div>`:`<div class="t4">HAS ARRIBAT AL NIVELL MÀXIM!</div>`}`;
  document.body.appendChild(d);const para=focs(d.querySelector("canvas"));const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4500)}
@@ -524,7 +609,7 @@ const SUPER=50;let SUPPEND=0;
 function superFetes(){try{return +localStorage.getItem("bn_super_"+(S.nom||"").trim().toLowerCase())||0}catch(e){return 0}}
 function apuntaSuper(n){try{localStorage.setItem("bn_super_"+(S.nom||"").trim().toLowerCase(),String(n))}catch(e){}}
 function mostraSuper(){if(!SUPPEND)return mostraNivell();if(document.querySelector(".arc")){setTimeout(mostraSuper,400);return}
- const n=SUPPEND;SUPPEND=0;apuntaSuper(Math.max(n,superFetes()));so("superestrella");window.SUPERS_MOSTRADES=(window.SUPERS_MOSTRADES||0)+1;
+ const n=SUPPEND;SUPPEND=0;apuntaSuper(Math.max(n,superFetes()));so("superestrella");abaixaMusUnMoment(5.5);window.SUPERS_MOSTRADES=(window.SUPERS_MOSTRADES||0)+1;
  const d=document.createElement("div");d.className="arc sup";let orb="";for(let i=0;i<12;i++)orb+=`<i style="--a:${i*30}deg;--r:${i%2?46:38}vmin;animation-delay:${(i*.07).toFixed(2)}s"></i>`;
  d.innerHTML=`<div class="raigs"></div><div class="orbita">${orb}</div><div class="flash"></div><div class="t1">SUPER<br>ESTRELLA!</div><div class="sstar"><span></span></div><div class="t3">🌠 × ${n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}HAS ARRIBAT A<br>${n*SUPER} ⭐ ENTRE TOTS ELS MONS</div><div class="t4">PROPERA A ${(n+1)*SUPER} ⭐ · TOCA PER CONTINUAR</div>`;
  document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},5200)}
@@ -542,33 +627,133 @@ function vista(v){tancaActivitat();if(S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!==
  if(S.nom&&!SENSE_NUVOL()&&pinVell(S.nom)&&!PIN_AJORNA&&v!=="benvinguda"){pantallaNouPin();return}calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
 
 
+// ====================== ICONES I MASCOTA (SVG propis, mateix traç a tot arreu) ======================
+const icB=(c,extra="")=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${extra}>${c}</svg>`;
+const ICO={
+ mons:icB(`<circle class="d" cx="12" cy="12" r="9" fill="currentColor" opacity=".14" stroke="none"/><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>`),
+ inici:icB(`<path class="d" d="M5 10.5V20h14v-9.5L12 4.6z" fill="currentColor" opacity=".14" stroke="none"/><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5.5h4V20"/>`),
+ temes:icB(`<path class="d" d="M3 5.5c3-1.3 6-1.3 9 .6v13.4c-3-1.9-6-1.9-9-.6z" fill="currentColor" opacity=".14" stroke="none"/><path d="M3 5.5c3-1.3 6-1.3 9 .6 3-1.9 6-1.9 9-.6v13.4c-3-1.3-6-1.3-9 .6-3-1.9-6-1.9-9-.6z"/><path d="M12 6.1v13.4"/>`),
+ jocs:icB(`<path class="d" d="M7 7h10a5 5 0 0 1 4.8 6.3l-1 3.6a2.3 2.3 0 0 1-3.9 1L14.5 15h-5l-2.4 2.9a2.3 2.3 0 0 1-3.9-1l-1-3.6A5 5 0 0 1 7 7z" fill="currentColor" opacity=".14" stroke="none"/><path d="M7 7h10a5 5 0 0 1 4.8 6.3l-1 3.6a2.3 2.3 0 0 1-3.9 1L14.5 15h-5l-2.4 2.9a2.3 2.3 0 0 1-3.9-1l-1-3.6A5 5 0 0 1 7 7z"/><path d="M8 10v3M6.5 11.5h3"/><circle cx="15.5" cy="10.5" r=".6" fill="currentColor"/><circle cx="17" cy="12.5" r=".6" fill="currentColor"/>`),
+ obertes:icB(`<path class="d" d="M15.5 4.5l4 4L9 19l-5 1 1-5z" fill="currentColor" opacity=".14" stroke="none"/><path d="M15.5 4.5l4 4L9 19l-5 1 1-5z"/><path d="M13.5 6.5l4 4"/><path d="M14 20h6"/>`),
+ analitica:icB(`<path d="M4 20h16"/><rect class="d" x="15.5" y="4" width="3" height="16" rx="1" fill="currentColor" opacity=".14" stroke="none"/><rect x="5.5" y="12" width="3" height="8" rx="1"/><rect x="10.5" y="7" width="3" height="13" rx="1"/><rect x="15.5" y="4" width="3" height="16" rx="1"/>`),
+ usuari:icB(`<path class="d" d="M2.5 20a6.5 6.5 0 0 1 13 0z" fill="currentColor" opacity=".14" stroke="none"/><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.2a3.5 3.5 0 0 1 0 6.6M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/>`),
+ fitxa:icB(`<path class="d" d="M6 3h8l4 4v14H6z" fill="currentColor" opacity=".14" stroke="none"/><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h4"/>`),
+ targetes:icB(`<rect x="3" y="6" width="12" height="15" rx="2" transform="rotate(-8 9 13.5)"/><rect class="d" x="9" y="3" width="12" height="15" rx="2" fill="currentColor" opacity=".14" stroke="none"/><rect x="9" y="3" width="12" height="15" rx="2" fill="var(--icFons,#fff)"/><path d="M13 10.5h4"/>`),
+ test:icB(`<rect class="d" x="3.5" y="3.5" width="17" height="17" rx="4" fill="currentColor" opacity=".14" stroke="none"/><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="m8 12.3 2.8 2.7L16.5 9"/>`),
+ musica:icB(`<path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="17.5" cy="16" r="2.5" fill="currentColor"/><path d="M9 9.5l11-2"/>`)
+};
+function icSo(v){const ona=[``,`<path d="M15.5 11v2"/>`,`<path d="M15.5 9.5a3.5 3.5 0 0 1 0 5"/>`,`<path d="M15.5 9.5a3.5 3.5 0 0 1 0 5"/><path d="M18 7a7 7 0 0 1 0 10"/>`];
+ return icB(`<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity=".25"/>`+(v===0?`<path d="M16 9.5l5 5M21 9.5l-5 5"/>`:ona[v<2?1:v<4?2:3]))}
+// mascota «Nota»: una llibreta rodoneta amb ulls que parpellegen. estat: hola (saluda) · feli (salta) · trist
+function mascota(estat="hola",mida=110){const trist=estat==="trist",feli=estat==="feli";
+ const ulls=trist?`<path d="M40 52q5-4 10 0M70 52q5-4 10 0" stroke="#1e293b" stroke-width="3.2" fill="none" stroke-linecap="round"/><path class="ml" d="M45 58q-3 6 0 9q3-3 0-9z" fill="#60a5fa"/>`
+  :`<g class="mu"><ellipse cx="45" cy="52" rx="5.2" ry="6.5" fill="#1e293b"/><ellipse cx="75" cy="52" rx="5.2" ry="6.5" fill="#1e293b"/><circle cx="46.8" cy="49.5" r="1.9" fill="#fff"/><circle cx="76.8" cy="49.5" r="1.9" fill="#fff"/></g>`;
+ const boca=trist?`<path d="M52 72q8-6 16 0" stroke="#1e293b" stroke-width="3.2" fill="none" stroke-linecap="round"/>`
+  :feli?`<path d="M49 66q11 14 22 0z" fill="#be123c"/><path d="M53 70.5q7 4 14 0" fill="#fb7185"/>`:`<path d="M51 67q9 8 18 0" stroke="#1e293b" stroke-width="3.2" fill="none" stroke-linecap="round"/>`;
+ const avall=(x,s)=>`<path d="M${x} 66q${s*9} 6 ${s*8} 16" stroke="#1d4ed8" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+ const amunt=(x,s,c)=>`<path class="${c}" d="M${x} 62q${s*12}-10 ${s*10}-26" stroke="#1d4ed8" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+ const bE=feli?amunt(20,-1,"mbE"):avall(20,-1),bD=(feli||estat==="hola")?amunt(100,1,"mbD"):avall(100,1);
+ return `<svg class="masc m-${estat}" viewBox="0 0 120 130" width="${mida}" height="${Math.round(mida*130/120)}" aria-hidden="true"><defs><linearGradient id="mGr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bfdbfe" stop-opacity=".6"/><stop offset=".55" stop-color="#3b82f6" stop-opacity="0"/><stop offset="1" stop-color="#1e3a8a" stop-opacity=".5"/></linearGradient></defs>
+ <ellipse class="mo" cx="60" cy="124" rx="30" ry="4.5" fill="#0f172a" opacity=".15"/>
+ <g class="mc">${bE}${bD}<path d="M44 108v10M76 108v10" stroke="#1d4ed8" stroke-width="7" stroke-linecap="round"/>
+ <rect x="20" y="18" width="80" height="92" rx="22" fill="#3b82f6"/><rect x="20" y="18" width="80" height="92" rx="22" fill="url(#mGr)"/>
+ <rect x="30" y="30" width="60" height="62" rx="14" fill="#fff"/><path d="M38 84h44" stroke="#dbeafe" stroke-width="3" stroke-linecap="round"/>
+ ${[34,48,62,76].map(x=>`<rect x="${x}" y="11" width="8" height="15" rx="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>`).join("")}
+ ${ulls}<ellipse cx="37" cy="64" rx="5" ry="3" fill="#fda4af" opacity=".8"/><ellipse cx="83" cy="64" rx="5" ry="3" fill="#fda4af" opacity=".8"/>${boca}
+ <path class="mst" d="M92 22l3 6 6 1-4.5 4 1 6-5.5-3-5.5 3 1-6-4.5-4 6-1z" fill="#facc15" stroke="#ca8a04" stroke-width="1.2"/></g></svg>`}
+document.querySelectorAll("#nav [data-ic]").forEach(i=>i.innerHTML=ICO[i.dataset.ic]||"");
+
 // ====================== SO I EFECTES ARCADE ======================
+// Motor d'àudio v2: tot es sintetitza en directe (no hi ha fitxers de so).
+// Cadena: veus → bus d'efectes (SB) o de música (MB) → volum general (MG) → compressor → altaveus.
+// Una part de cada bus passa per una reverberació suau (sala petita) i un eco curt, perquè soni més ple i menys "pitet".
 // volum dels sons 0-5 (0 = silenci)
-let AC=null,MG=null,VOL=3,VOLant=3;
+let AC=null,MG=null,SB=null,MB=null,REV=null,ECO=null,VOL=3,VOLant=3;
 try{const v=localStorage.getItem("bn_vol");if(v!==null)VOL=Math.max(0,Math.min(5,+v||0));else if(localStorage.getItem("bn_so")==="0")VOL=0}catch(e){}
 const GVOL=[0,.12,.27,.45,.7,1];
-function audio(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=GVOL[VOL];MG.connect(AC.destination);}if(AC.state==="suspended")AC.resume();return AC}
-function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN");if(b)b.textContent=VOL===0?"🔇":VOL<3?"🔈":VOL<5?"🔉":"🔊";if(r)r.value=VOL;if(n)n.textContent=VOL}
+function impuls(seg,caiguda){const n=AC.sampleRate*seg|0,b=AC.createBuffer(2,n,AC.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,caiguda)}return b}
+let SOROLL=null;function soroll(){if(!SOROLL){const n=AC.sampleRate|0;SOROLL=AC.createBuffer(1,n,AC.sampleRate);const d=SOROLL.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1}return SOROLL}
+function guany(v){const g=AC.createGain();g.gain.value=v;return g}
+function audio(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();
+  const comp=AC.createDynamicsCompressor();comp.threshold.value=-16;comp.knee.value=12;comp.ratio.value=4;comp.attack.value=.004;comp.release.value=.22;
+  MG=guany(GVOL[VOL]);MG.connect(comp).connect(AC.destination);
+  REV=AC.createConvolver();REV.buffer=impuls(1.8,3);REV.connect(guany(.9)).connect(MG);
+  ECO=AC.createDelay(1);ECO.delayTime.value=.21;const fb=guany(.3),lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2600;ECO.connect(lp).connect(fb).connect(ECO);lp.connect(guany(.5)).connect(MG);
+  SB=guany(1);SB.connect(MG);SB.connect(guany(.22)).connect(REV);SB.connect(guany(.12)).connect(ECO);
+  MB=guany(0);MB.connect(MG);MB.connect(guany(.35)).connect(REV);MB.connect(guany(.2)).connect(ECO);}
+ if(AC.state==="suspended")AC.resume();return AC}
+function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN");if(b)b.innerHTML=icSo(VOL);if(r)r.value=VOL;if(n)n.textContent=VOL;pintaMus()}
 function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
 function canviaSo(){posaVol(VOL?0:(VOLant||3))}
-function nota(f,t0,d,tipus="square",vol=.12,dest){const o=AC.createOscillator(),g=AC.createGain();o.type=tipus;o.frequency.setValueAtTime(f,AC.currentTime+t0);g.gain.setValueAtTime(vol,AC.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t0+d);o.connect(g).connect(dest||MG);o.start(AC.currentTime+t0);o.stop(AC.currentTime+t0+d+.02)}
+// una veu: oscil·lador amb envolupant (atac ràpid, caiguda exponencial), filtre opcional, lliscament de to i vibrato
+function veu(f,t0,d,o={}){const{tipus="triangle",vol=.12,atac=.006,dest=SB,filtre=0,q=1,cap=0,vib=0,det=0}=o;
+ const t=AC.currentTime+t0,os=AC.createOscillator(),g=AC.createGain();os.type=tipus;os.frequency.setValueAtTime(f,t);if(det)os.detune.value=det;
+ if(cap)os.frequency.exponentialRampToValueAtTime(Math.max(20,cap),t+d);
+ if(vib){const l=AC.createOscillator(),lg=guany(vib);l.frequency.value=5.5;l.connect(lg).connect(os.frequency);l.start(t+Math.min(.15,d/3));l.stop(t+d+.05)}
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+atac);g.gain.setTargetAtTime(0,t+atac,d/4.5);
+ let sortida=g;if(filtre){const fl=AC.createBiquadFilter();fl.type="lowpass";fl.Q.value=q;fl.frequency.setValueAtTime(filtre*3,t);fl.frequency.exponentialRampToValueAtTime(filtre,t+Math.min(.25,d));g.connect(fl);sortida=fl}
+ os.connect(g);sortida.connect(dest);os.start(t);os.stop(t+d+.3)}
+// compatibilitat amb el codi antic (nota = una veu simple)
+function nota(f,t0,d,tipus="square",vol=.12,dest){veu(f,t0,d,{tipus,vol:vol*.8,dest:dest||SB,filtre:tipus==="square"||tipus==="sawtooth"?3200:0})}
+// timbres
+const pluck=(f,t0,d,v=.1,dest)=>{veu(f,t0,d,{tipus:"triangle",vol:v,dest});veu(f,t0,d*.6,{tipus:"square",vol:v*.35,filtre:2400,dest,det:6})};
+const campana=(f,t0,d,v=.08,dest)=>{veu(f,t0,d,{tipus:"sine",vol:v,dest});veu(f*2,t0,d*.45,{tipus:"sine",vol:v*.35,dest});veu(f*3.01,t0,d*.2,{tipus:"sine",vol:v*.12,dest})};
+const metall=(f,t0,d,v=.07,dest)=>{veu(f,t0,d,{tipus:"sawtooth",vol:v,filtre:1800,q:2,dest,vib:d>.4?f*.012:0});veu(f,t0,d,{tipus:"square",vol:v*.5,filtre:1400,det:-8,dest})};
+function sorollet(t0,d,o={}){const{vol=.08,tipus="bandpass",f0=800,f1=3000,q=1.2,dest=SB}=o;const t=AC.currentTime+t0,s=AC.createBufferSource(),fl=AC.createBiquadFilter(),g=AC.createGain();
+ s.buffer=soroll();fl.type=tipus;fl.Q.value=q;fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+d);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+Math.min(.02,d/3));g.gain.exponentialRampToValueAtTime(.0005,t+d);s.connect(fl).connect(g).connect(dest);s.start(t);s.stop(t+d+.05)}
+const cop=(t0,v=.18,dest)=>{veu(150,t0,.22,{tipus:"sine",vol:v,cap:45,dest})};
 function so(t){if(!VOL)return;try{audio();
- if(t==="ok"){nota(988,0,.08);nota(1319,.08,.18)}
- else if(t==="ko"){nota(196,0,.18,"sawtooth",.08);nota(147,.16,.25,"sawtooth",.08)}
- else if(t==="win"){[523,659,784,1047,784,1047,1319].forEach((f,i)=>nota(f,i*.11,.16));[262,330,392,523].forEach((f,i)=>nota(f,.77+i*.0,.6,"triangle",.1));nota(1568,.77,.6,"square",.08)}
- else if(t==="super"){[523,659,784,1047,1319,1568,2093].forEach((f,i)=>nota(f,i*.08,.14));[1047,1319,1568,2093].forEach((f,i)=>nota(f,.6+i*.12,.25));nota(2093,1.1,.8,"triangle",.12)}
- else if(t==="clic"){nota(660,0,.04,"square",.07);nota(990,.04,.06,"square",.06)}
- else if(t==="gir"){nota(440,0,.05,"square",.06);nota(880,.05,.08,"square",.05)}
- else if(t==="trist"){[392,370,349].forEach((f,i)=>nota(f,i*.38,.34,"sawtooth",.09));const o=AC.createOscillator(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain(),t0=AC.currentTime+1.14;o.type="sawtooth";o.frequency.setValueAtTime(330,t0);o.frequency.linearRampToValueAtTime(262,t0+1.1);l.frequency.value=6;lg.gain.value=9;l.connect(lg).connect(o.frequency);g.gain.setValueAtTime(.1,t0);g.gain.exponentialRampToValueAtTime(.001,t0+1.3);o.connect(g).connect(MG);o.start(t0);l.start(t0);o.stop(t0+1.35);l.stop(t0+1.35)}
- else if(t==="coin"){nota(988,0,.06);nota(1319,.06,.3)}
+ if(t==="ok"){campana(1319,0,.35,.08);campana(1976,.09,.5,.08);pluck(1319,0,.1,.04);sorollet(.09,.12,{vol:.025,tipus:"highpass",f0:6000,f1:9000})}
+ else if(t==="ko"){veu(311,0,.22,{tipus:"triangle",vol:.12,cap:233});veu(233,.17,.38,{tipus:"triangle",vol:.12,cap:156});veu(156,.17,.38,{tipus:"square",vol:.03,filtre:600})}
+ else if(t==="win"){[523,659,784,1047].forEach((f,i)=>pluck(f,i*.1,.22,.09));cop(0,.12);cop(.4,.16);
+  [262,330,392,523].forEach(f=>veu(f,.42,1.3,{tipus:"triangle",vol:.06,atac:.02}));[1047,1319,1568].forEach((f,i)=>campana(f,.42+i*.04,1.2,.05));
+  sorollet(.42,.6,{vol:.04,tipus:"highpass",f0:5000,f1:9000})}
+ else if(t==="super"){[523,659,784,1047,1319,1568].forEach((f,i)=>pluck(f,i*.07,.18,.08));cop(0,.12);cop(.45,.18);
+  [[523,659,784],[587,740,880],[659,831,988]].forEach((c,k)=>c.forEach(f=>pluck(f,.45+k*.16,k<2?.14:1.1,.06)));
+  [1319,1661,1976,2637].forEach((f,i)=>campana(f,.8+i*.05,1.4,.045));sorollet(.8,.9,{vol:.05,tipus:"highpass",f0:4000,f1:10000})}
+ else if(t==="clic"){veu(1500,0,.05,{tipus:"sine",vol:.09,cap:700});sorollet(0,.025,{vol:.02,tipus:"highpass",f0:4000,f1:6000})}
+ else if(t==="gir"){sorollet(0,.2,{vol:.12,f0:500,f1:3500,q:2});veu(660,.02,.12,{tipus:"sine",vol:.06,cap:990})}
+ else if(t==="trist"){[392,370,349].forEach((f,i)=>metall(f,i*.4,.36,.07));metall(330,1.2,1.3,.08);veu(330,1.2,1.3,{tipus:"triangle",vol:.05,cap:247,vib:6})}
+ else if(t==="coin"){pluck(988,0,.07,.07);campana(1319,.07,.45,.08)}
  else if(t==="superestrella"){// campanetes que pugen, fanfara de 4 notes i acord llarg brillant
-  [1568,1760,1976,2349,2637,3136].forEach((f,i)=>nota(f,i*.06,.35,"sine",.09));
-  [[392,.45,.14],[523,.6,.14],[659,.75,.14],[784,.9,.5]].forEach(([f,t0,d])=>{nota(f,t0,d,"square",.07);nota(f*2,t0,d,"triangle",.06)});
-  [[131,.9],[196,.9],[262,.9]].forEach(([f,t0])=>nota(f,t0,1.4,"triangle",.09));
-  [1047,1319,1568,2093].forEach((f,i)=>{nota(f,1.45+i*.03,1.5,"sine",.07)});
-  const o=AC.createOscillator(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain(),t0=AC.currentTime+1.45;o.type="triangle";o.frequency.value=2637;l.frequency.value=7;lg.gain.value=14;l.connect(lg).connect(o.frequency);g.gain.setValueAtTime(.06,t0);g.gain.exponentialRampToValueAtTime(.001,t0+1.8);o.connect(g).connect(MG);o.start(t0);l.start(t0);o.stop(t0+1.85);l.stop(t0+1.85);
-  [0,1,2,3,4,5,6,7].forEach(i=>nota([2093,2637,3136,3520][i%4],1.9+i*.11,.12,"sine",.05))}
+  [1568,1760,1976,2349,2637,3136].forEach((f,i)=>campana(f,i*.06,.5,.05));
+  [[392,.45,.14],[523,.6,.14],[659,.75,.14],[784,.9,.6]].forEach(([f,t0,d])=>{metall(f,t0,d,.06);pluck(f*2,t0,d,.05)});cop(.9,.2);
+  [131,196,262,330].forEach(f=>veu(f,.9,1.8,{tipus:"triangle",vol:.06,atac:.03}));
+  [1047,1319,1568,2093].forEach((f,i)=>campana(f,1.45+i*.03,1.8,.045));
+  [0,1,2,3,4,5,6,7].forEach(i=>campana([2093,2637,3136,3520][i%4],1.9+i*.11,.3,.03));sorollet(1.45,1.4,{vol:.04,tipus:"highpass",f0:5000,f1:11000})}
+ else if(t==="nivell"){[392,523,659,784,1047].forEach((f,i)=>pluck(f,i*.09,.2,.08));[523,659,784,1047].forEach(f=>campana(f,.5,1.2,.04));cop(.5,.15)}
 }catch(e){}}
+
+// ---- MÚSICA DE FONS (opcional, apagada per defecte) ----
+// Música tranquil·la per estudiar, generada en directe: acords suaus, baix, arpegi de campanetes i un ritme molt fluix.
+// Cada món té la seva tonalitat i el seu tempo (surten de l'id). S'abaixa sola quan parla la veu (🔊 Escolta) o surt una pantalla arcade.
+let MUS=false,MUSt=null,MUSpas=0,MUSseg=0,MUSduck=1;
+try{MUS=localStorage.getItem("bn_musica")==="1"}catch(e){}
+const MUSPROG=[[0,4,7,11],[9,12,16,19],[5,9,12,16],[7,11,14,17],[0,4,7,14],[9,12,16,21],[2,5,9,12],[7,11,14,19]]; // I · vi · IV · V · I · vi · ii · V
+const musHash=s=>[...String(s)].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);
+const MUSCFG=(()=>{const h=musHash(typeof ASSIG!=="undefined"?ASSIG.id:"bn");return{arrel:[60,62,65,57,58,63][h%6],tempo:84+h%5*4}})();
+const mf=n=>440*Math.pow(2,(n-69)/12);
+function musPas(t){// un pas = una corxera
+ const p=MUSpas,compas=(p>>3)%8,b=p%8,ac=MUSPROG[compas],r=MUSCFG.arrel,dur=60/MUSCFG.tempo/2,o=t-AC.currentTime;
+ if(b===0)ac.forEach((n,i)=>veu(mf(r+n-12),o,dur*8.2,{tipus:i%2?"sine":"triangle",vol:.028,atac:.25,dest:MB}));
+ if(b===0||b===3||b===6)veu(mf(r+ac[0]-24),o,dur*(b===6?2:3),{tipus:"triangle",vol:b===0?.09:.06,atac:.01,filtre:500,dest:MB});
+ const pat=[0,2,1,3,2,1,3,2],seed=(musHash(compas*13+b+(p>>6))%10);
+ if(seed<7)campana(mf(r+ac[pat[b]]+12),o,dur*3,b%2?.018:.026,MB);
+ if(b%2===1)sorollet(o,.05,{vol:.012,tipus:"highpass",f0:7000,f1:9000,dest:MB});
+ if(b===0||b===4)veu(110,o,.16,{tipus:"sine",vol:.05,cap:42,dest:MB});
+ MUSpas++}
+function musBucle(){if(!AC||document.hidden)return;const dur=60/MUSCFG.tempo/2;if(MUSseg<AC.currentTime)MUSseg=AC.currentTime+.08;while(MUSseg<AC.currentTime+.25){musPas(MUSseg);MUSseg+=dur}}
+function musVol(){if(MB)MB.gain.setTargetAtTime(MUS&&!document.hidden?.5*MUSduck:0,AC.currentTime,.4)}
+function musEngega(){if(!MUS)return;audio();if(!MUSt){MUSseg=0;MUSt=setInterval(musBucle,60);musBucle()}musVol()}
+function musAtura(){if(MUSt){clearInterval(MUSt);MUSt=null}if(MB)musVol()}
+function canviaMusica(){MUS=!MUS;try{localStorage.setItem("bn_musica",MUS?"1":"0")}catch(e){}if(MUS){musEngega();if(!VOL)posaVol(VOLant||3)}else musAtura();pintaMus()}
+function pintaMus(){const b=document.getElementById("mus");if(b){b.innerHTML=ICO.musica;b.classList.toggle("on",MUS);b.title=MUS?"Música de fons: engegada (toca per apagar-la)":"Música de fons: apagada (toca per engegar-la)";b.setAttribute("aria-pressed",MUS)}}
+function abaixaMus(on){MUSduck=on?.25:1;if(AC)musVol()}
+let MUSarc=null;function abaixaMusUnMoment(seg){abaixaMus(true);clearTimeout(MUSarc);MUSarc=setTimeout(()=>abaixaMus(!!PARLANT),seg*1000)}
+document.addEventListener("visibilitychange",()=>{if(!AC)return;if(document.hidden)musVol();else if(MUS)musVol()});
+// el navegador no deixa sonar res fins que es toca la pantalla: si la música estava engegada, comença al primer toc
+if(MUS)addEventListener("pointerdown",function un(){removeEventListener("pointerdown",un,true);musEngega()},true);
 function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};mida();
  const P=[],cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
  const esclat=(x,y)=>{const col=cols[Math.random()*cols.length|0];for(let i=0;i<46;i++){const a=Math.PI*2*i/46,v=2+Math.random()*4.5;P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,v:1,col,m:3+Math.random()*3})}};
@@ -580,18 +765,18 @@ document.addEventListener("click",e=>{const el=e.target.closest("button,.tile,.c
 let demoN=0;const MODE_DEMO=/[?&]demo\b/.test(location.search);
 function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true],[40,2,5,false],[0,0,5,false]];const c=casos[demoN%5];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%5+1}/5 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
 function fracas(pc,bones,n){
- so("trist");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ so("trist");abaixaMusUnMoment(4.5);document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
  const d=document.createElement("div");d.className="arc ko";
  let pl="";for(let i=0;i<40;i++)pl+=`<i class="pluja" style="left:${Math.random()*100}%;animation-duration:${.6+Math.random()*.7}s;animation-delay:${Math.random()*1.2}s"></i>`;
- d.innerHTML=`${pl}<div class="t1">${pc<25?"GAME<br>OVER":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">💔</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}REPASSA I<br>TORNA-HI!</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ d.innerHTML=`${pl}<div class="masc-arc">${mascota("trist",92)}</div><div class="t1">${pc<25?"GAME<br>OVER":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">💔</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}REPASSA I<br>TORNA-HI!</div><div class="t4">TOCA PER CONTINUAR</div>`;
  document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
 }
 function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremola");
  if(pc<50)return fracas(pc,bones,n);
  const sup=pc>=90,nE=pc>=90?3:pc>=70?2:1;
- so(sup?"super":"win");document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
+ so(sup?"super":"win");abaixaMusUnMoment(4.5);document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
  const d=document.createElement("div");d.className="arc";
- d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record?`<div class="rec">★ NOU RÈCORD ★</div>`:""}<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="masc-arc">${mascota("feli",92)}</div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record?`<div class="rec">★ NOU RÈCORD ★</div>`:""}<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div><div class="t4">TOCA PER CONTINUAR</div>`;
  document.body.appendChild(d);[0,1,2].slice(0,nE).forEach(i=>setTimeout(()=>so("coin"),500+i*250+700));
  const para=focs(d.querySelector("canvas"));
  const tanca=()=>{para();d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
@@ -608,7 +793,7 @@ function benvinguda(nomPre){
  const noms=Object.keys(PER),altres=Object.values(nomsAparell()).filter(n=>!noms.some(x=>x.toLowerCase()===n.toLowerCase()));
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=APROVA}).length;
  const pot=potNouNom("\u0000");
- app.innerHTML=`<div class="box benv"><div class="gran">👋</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
+ app.innerHTML=`<div class="box benv"><div class="gran masc-benv">${mascota("hola",104)}</div><h2 style="margin:8px 0 0">Hola! Sóc Bona Nota</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p>
  ${(noms.length||altres.length)?`<p class="prog">Qui estudia ara? Toca el teu nom i escriu el PIN.</p><div class="perfils">${noms.map(n=>`<button class="perfil" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b>${PER[n].id?` <span class="etq">#${PER[n].id}</span>`:""}<small>⭐ ${PER[n].punts||0} · ${nivell(PER[n].punts||0).ic} Nivell ${nivell(PER[n].punts||0).n} · ${aprovats(PER[n])}/${T.length} temes</small></span></button>`).join("")}${altres.map(n=>`<button class="perfil" data-n="${n.replace(/"/g,'&quot;')}"><span class="av2">${n.charAt(0)}</span><span><b>${n}</b><small>✨ Nou en aquest món · ja jugues en un altre</small></span></button>`).join("")}</div>`:`<p class="prog">Escriu el teu nom i tria un PIN de <b>4 números i 1 lletra al final</b> (per exemple ${PIN_EX}). La pròxima vegada entraràs amb el mateix nom i PIN, des de qualsevol dispositiu.</p>`}
  <form id="fn" autocomplete="off"><input id="nom" maxlength="20" placeholder="El teu nom" ${pot?"":"readonly"}>
  ${SENSE_NUVOL()?"":`<input id="pinL" ${ATR_PIN} placeholder="PIN (4 números + 1 lletra)">`}
@@ -665,8 +850,8 @@ function inici(){
  {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd)h+=`<div class="continua" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
  h+=`${blocsTemes()}
- <h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
- <h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>
+ <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
+ <h2 class="sec">${ICO.jocs} Jocs</h2><div class="grid">${tilesJocs()}</div>
  <div class="fila">${btSuau()}${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><a class="btn sec" href="../../" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
  app.innerHTML=h;
 }
@@ -674,7 +859,7 @@ function pintaTemes(){app.innerHTML=blocsTemes()}
 function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
 const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"],["examreal","📝","Examen de veritat","10 preguntes · nota sobre 10","#e0e7ff"]];
 function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
-function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
+function pintaJocs(){app.innerHTML=`<h2 class="sec">${ICO.jocs} Jocs</h2><div class="grid">${tilesJocs()}</div>`}
 function joc(id){tancaActivitat();JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
@@ -688,7 +873,7 @@ function pintaTema(){
  tancaActivitat();window.scrollTo(0,0);
  const t=tema,e=ET(t.id),idx=T.indexOf(t);
  app.innerHTML=`<div class="cap-tema"><div class="ic" style="background:${t.col}22">${t.ic}</div><div><div class="prog">Tema ${idx+1} de ${T.length} · ${t.font}</div><h2>${t.titol}</h2></div></div>
- <div class="passos">${[["fitxa","📄 Fitxa",e.fitxa],["targetes","🃏 Targetes",e.fc>=t.fc.length],["test","✅ Test",e.intents.length>0]].map(([k,n,f])=>`<button class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
+ <div class="passos">${[["fitxa",ICO.fitxa+" Fitxa",e.fitxa],["targetes",ICO.targetes+" Targetes",e.fc>=t.fc.length],["test",ICO.test+" Test",e.intents.length>0]].map(([k,n,f])=>`<button class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
  if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,NTEST),0,0,t.id)}
 }
 function fitxa(){
@@ -763,10 +948,10 @@ function triaVeu(){if(!("speechSynthesis" in window))return null;VEUS=speechSynt
 if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=()=>{VEUS=speechSynthesis.getVoices()};
 const potEscoltar=()=>"speechSynthesis" in window;
 function netText(h){const d=document.createElement("div");d.innerHTML=String(h).replace(/<br\s*\/?>/gi,". ").replace(/<\/li>/gi,". ");return d.textContent.replace(/[★⚠✅💡🔁🧠]/g,"").replace(/\s+/g," ").trim()}
-function calla(){if(potEscoltar())speechSynthesis.cancel();document.querySelectorAll(".escolta.parla").forEach(b=>{b.classList.remove("parla");b.firstChild.textContent="🔊"});PARLANT=null}
+function calla(){if(potEscoltar())speechSynthesis.cancel();if(AC)abaixaMus(false);document.querySelectorAll(".escolta.parla").forEach(b=>{b.classList.remove("parla");b.firstChild.textContent="🔊"});PARLANT=null}
 function escolta(btn,text){if(!potEscoltar())return;if(PARLANT===btn){calla();return}calla();
  const u=new SpeechSynthesisUtterance(netText(text)),v=triaVeu();if(v)u.voice=v;u.lang=v?v.lang:VEU_LANG;u.rate=.92;u.pitch=1.05;
- u.onend=u.onerror=()=>{if(PARLANT===btn)calla()};PARLANT=btn;btn.classList.add("parla");btn.firstChild.textContent="⏹";speechSynthesis.speak(u);registraEscolta()}
+ u.onend=u.onerror=()=>{if(PARLANT===btn)calla()};PARLANT=btn;btn.classList.add("parla");btn.firstChild.textContent="⏹";if(AC)abaixaMus(true);speechSynthesis.speak(u);registraEscolta()}
 let ESC_N=0;function registraEscolta(){ESC_N++}
 // botó: <button class="escolta" data-t="clau">; el text es guarda a ESCT[clau]
 const ESCT={};let ESCI=0;
@@ -1023,7 +1208,7 @@ let OB0=0;
 function obertes(n){OB0=Date.now();
  FONT=["obertes"];window.scrollTo(0,0);marcaNav("obertes");
  const o=OB[n],fet=S.ob[n];
- app.innerHTML=`<h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
+ app.innerHTML=`<h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
  <div class="box" style="margin-top:10px">${potEscoltar()?`<div class="escolta-fila">${btEscolta(o.q,"Escolta")}</div>`:""}<div class="pregunta">${o.q}</div>
  <textarea id="resp" rows="7" placeholder="Escriu aquí la teva resposta amb les teves paraules…"></textarea>
  <div class="fila"><button class="btn" id="veu">Comprova la meva resposta</button></div><div id="corr"></div></div>
@@ -1079,7 +1264,7 @@ function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElement
  if(fetsT.length>=4&&obN<4)reco.push(`Fer més <b>preguntes obertes</b>: a l'examen valen 3 punts.`);
  if(aprov.length===T.length&&exU===null)reco.push(`Fer l'<b>examen sorpresa</b> per comprovar-ho tot barrejat.`);
  if(!reco.length)reco.push("Mantenir el ritme: un examen sorpresa cada dos o tres dies abans de l'examen.");
- app.innerHTML=`<h2 class="sec">📊 Com va ${S.nom}</h2>
+ app.innerHTML=`<h2 class="sec">${ICO.analitica} Com va ${S.nom}</h2>
  <div class="kpis">
   <div class="kpi"><small>Temes aprovats</small><b>${aprov.length}/${T.length}</b><span>${pend.length} sense fer</span></div>
   <div class="kpi"><small>Encert als tests</small><b style="color:${color(g.encert)}">${g.encert===null?"—":g.encert+"%"}</b><span>${g.intents} tests fets</span></div>
@@ -1092,12 +1277,12 @@ function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElement
  <h2 class="sec">🏁 Com vas</h2><div id="cvA">${cartaComVas()}</div>
  <h2 class="sec">⭐ D'on surten les estrelles</h2>${cartaMons().replace('class="estrelles mons-est"','class="estrelles mons-est" style="margin:0 0 10px;cursor:default"')}${cartaEstrelles(true).replace('class="estrelles"','class="estrelles" style="margin:0 0 6px;cursor:default"')}
  <h2 class="sec">🏅 Nivells</h2><div class="box">${cartaNivell().replace('class="nivell"','class="nivell" style="margin:0 0 12px"')}<div class="rangs">${NIVELLS.map(([min,nom,ic],i)=>{const n=nivell(S.punts).n;return `<div class="rang ${i+1<n?'':i+1===n?'ara':'bloc'}"><span>${ic}</span><b>${i+1}. ${nom}</b><small>${min} ⭐</small></div>`}).join("")}</div><p class="prog" style="margin:10px 0 0">Cada encert als tests, als jocs i a les preguntes obertes suma ⭐, i les ⭐ fan pujar de nivell.</p></div>
- <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
+ <h2 class="sec">${ICO.temes} Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
  ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
  </table><p class="prog" style="margin:8px 0 0"><span class="semaf" style="background:#22c55e"></span>80% o més · <span class="semaf" style="background:#f59e0b"></span>50-79% · <span class="semaf" style="background:#ef4444"></span>menys del 50% · <span class="semaf" style="background:#cbd5e1"></span>sense fer</p></div>
  <h2 class="sec">❌ Preguntes que més falla</h2><div class="box"><p class="prog" style="margin:0 0 8px">🔁 Al repàs: <b>${repTots().length}</b> preguntes pendents (${repPendents().length} per avui) · 🏅 apreses del tot: <b>${S.apresos||0}</b></p>${errs.length?`<ol class="llista-err">${errs.slice(0,8).map(([q,c,t])=>`<li>${q} <span class="etq">${t.ic} ${t.titol}</span> <b>×${c}</b></li>`).join("")}</ol>`:`<p class="prog" style="margin:0">Encara cap error registrat. 👌</p>`}</div>
- <h2 class="sec">✍️ Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
- <h2 class="sec">🎮 Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
+ <h2 class="sec">${ICO.obertes} Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
+ <h2 class="sec">${ICO.jocs} Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
  <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat amb el seu nom i PIN. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
  <div class="fila">${btSuau()}<button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><button class="btn verm" onclick="demanaReset()">🗑️ Esborrar el progrés</button></div>`;
 }

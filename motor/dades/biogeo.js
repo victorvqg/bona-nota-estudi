@@ -243,25 +243,26 @@ const OB=[
 ];
 // ---- figures (SVG generats per funció) ----
 function svgFigura(){
- let s=`<svg viewBox="0 0 480 300" width="100%" style="max-width:480px" xmlns="http://www.w3.org/2000/svg" font-family="Nunito,Arial">`;
+ let s=`<svg viewBox="0 0 480 300" width="100%" style="max-width:480px" xmlns="http://www.w3.org/2000/svg" font-family="Nunito,Arial"><defs><radialGradient id="bgCel" cx="50%" cy="50%" r="70%"><stop offset="0" stop-color="#1e1b4b"/><stop offset="1" stop-color="#020617"/></radialGradient><radialGradient id="bgSol" cx="70%" cy="40%" r="75%"><stop offset="0" stop-color="#fffbeb"/><stop offset=".45" stop-color="#fde047"/><stop offset="1" stop-color="#f59e0b"/></radialGradient><radialGradient id="bgPl" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#f0f9ff"/><stop offset=".6" stop-color="#bae6fd"/><stop offset="1" stop-color="#7dd3fc"/></radialGradient></defs>`;
  let seed=7;const r=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};const g=()=>{let u=0;for(let i=0;i<6;i++)u+=r();return u-3};
- const dot=(x,y,o)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.1" fill="#1e293b" opacity="${o}"/>`;
+ const dot=(x,y,o)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.1" fill="#e0e7ff" opacity="${o}"/>`;
+ const fons=x=>{let f=`<rect x="${x}" y="4" width="152" height="118" rx="10" fill="url(#bgCel)" stroke="#312e81"/>`;for(let i=0;i<14;i++)f+=`<circle cx="${(x+8+r()*136).toFixed(1)}" cy="${(10+r()*106).toFixed(1)}" r=".7" fill="#fff" opacity=".45"/>`;return f};
  // galàxia A espiral
- s+=`<rect x="4" y="4" width="152" height="118" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>`;
+ s+=fons(4);
  for(let i=0;i<50;i++)s+=dot(80+g()*4,63+g()*4,.9);
  [0,Math.PI].forEach(b=>{for(let i=0;i<130;i++){const t=i/130*2.6*Math.PI,R=6+9*t;s+=dot(80+R*Math.cos(t+b)+g()*1.6,63+.62*R*Math.sin(t+b)+g()*1.2,.75)}});
  // galàxia B irregular
- s+=`<rect x="164" y="4" width="152" height="118" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>`;
+ s+=fons(164);
  [[-22,-8,10,110],[14,10,9,90],[28,-16,6,45],[-6,20,5,35]].forEach(([ox,oy,sd,n])=>{for(let i=0;i<n;i++)s+=dot(240+ox+g()*sd,63+oy+g()*sd*.8,.7)});
  // galàxia C el·líptica
- s+=`<rect x="324" y="4" width="152" height="118" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>`;
+ s+=fons(324);
  for(let i=0;i<380;i++){const R=Math.abs(g()*.3),a=r()*6.283;s+=dot(400+58*R*Math.cos(a),63+34*R*Math.sin(a),Math.max(.25,.95-R))}
  ["A","B","C"].forEach((l,i)=>s+=`<text x="${80+i*160}" y="142" text-anchor="middle" font-size="16" font-weight="900">${l}</text>`);
  // sistema solar
- const cy=225;s+=`<circle cx="-20" cy="${cy}" r="55" fill="#fde68a" stroke="#d4a017"/><text x="8" y="${cy+5}" font-size="12" font-weight="800">Sol</text><line x1="40" y1="${cy}" x2="474" y2="${cy}" stroke="#cbd5e1" stroke-dasharray="3,4"/>`;
+ const cy=225;s+=`<circle cx="-20" cy="${cy}" r="62" fill="#fde047" opacity=".18"/><circle cx="-20" cy="${cy}" r="55" fill="url(#bgSol)" stroke="#f59e0b"/><text x="8" y="${cy+5}" font-size="12" font-weight="800">Sol</text><line x1="40" y1="${cy}" x2="474" y2="${cy}" stroke="#cbd5e1" stroke-dasharray="3,4"/>`;
  const belt=(x1,x2,l)=>{let b="";for(let i=0;i<60;i++)b+=`<circle cx="${(x1+r()*(x2-x1)).toFixed(1)}" cy="${(cy+g()*8).toFixed(1)}" r="${(0.8+r()*.8).toFixed(1)}" fill="#64748b"/>`;return b+`<text x="${(x1+x2)/2}" y="${cy-30}" text-anchor="middle" font-size="14" font-weight="900">${l}</text>`};
  s+=belt(138,164,"X")+belt(390,470,"Y");
- [[60,4],[80,6],[101,6.5],[121,5],[195,21],[257,17],[312,11],[360,11]].forEach(([x,R],i)=>s+=`<circle cx="${x}" cy="${cy}" r="${R}" fill="#bae6fd" stroke="#1e293b"/><text x="${x}" y="${cy+38}" text-anchor="middle" font-size="13" font-weight="900">${i+1}</text>`);
+ [[60,4],[80,6],[101,6.5],[121,5],[195,21],[257,17],[312,11],[360,11]].forEach(([x,R],i)=>s+=`<circle cx="${x}" cy="${cy}" r="${R}" fill="url(#bgPl)" stroke="#0c4a6e" stroke-width="1.2"/><text x="${x}" y="${cy+38}" text-anchor="middle" font-size="13" font-weight="900">${i+1}</text>`);
  s+=`<text x="240" y="296" text-anchor="middle" font-size="10" fill="#64748b">Esquema: les mides i les distàncies no són reals.</text></svg>`;
  return s;
 }
