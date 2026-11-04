@@ -14,9 +14,12 @@ Després, aquí es comprova si se sap de veritat.
 | 2 | Biologia i Geologia | Bloc 1: Univers, Terra i cèl·lula | `bio-i-geo/univers/` |
 | 3 | Lengua Castellana | Temas 2 y 3 | `castellano/t2-t3/` |
 | 4 | Ciències socials | Les comarques de Catalunya | `sociales/comarques/` |
-| 5 | Matemàtiques | Tema 2: Divisibilitat | `matematiques/divisibilitat/` |
+| 5 | Matemàtiques | Tema 2: Divisibilitat | `matematiques/divisibilitat/` 🧪 |
 
 La llista oficial de mons és `motor/mons.json`.
+
+> 🧪 **El món 5 (Matemàtiques) és en prova.** Viu a la branca `mon-mates` i encara **no surt a la web dels nens**
+> (GitHub Pages només publica `main`). Per veure'l, mira [Provar una branca en local](#provar-una-branca-en-local).
 
 ---
 
@@ -28,9 +31,12 @@ La llista oficial de mons és `motor/mons.json`.
 - **Cada tema té 3 passos:** 📄 fitxa → 🃏 targetes → ✅ test.
   El test fa 6 preguntes a l'atzar del tema. Amb un **70 %** s'aprova i es passa sol al tema següent.
 - **Repàs dels errors:** el que falla torna a sortir avui, i el que encerta torna d'aquí a 3 dies i després a 7 dies.
-- **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de les comarques).
+- **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de
+  les comarques o el garbell dels primers).
 - **Exàmens:** l'examen sorpresa (15 preguntes barrejades) i l'examen de veritat, amb nota sobre 10.
 - **Preguntes obertes:** el nen escriu la resposta, la compara amb la resposta model i marca les idees clau que ha posat.
+  El motor detecta sol les idees que ja hi són: per les paraules i també pels **números** (si la idea clau diu
+  «MCM = 144» i el nen ha escrit 144, compta).
 - **🔊 Escolta:** llegeix en veu alta la fitxa o la pregunta.
 - **Mode suau:** treu les animacions fortes (també s'activa sol si l'aparell ho té demanat).
 - **App:** es pot afegir a la pantalla d'inici del mòbil i funciona sense connexió.
@@ -50,6 +56,38 @@ La llista oficial de mons és `motor/mons.json`.
   vegada), la teva posició («Et falten 13 ⭐ per atrapar…») i els premis de la colla.
 - Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell i 📈 Setmana. Compta els últims 120 dies.
 - **Demo amb nens inventats:** obre la portada amb `?demo` (per exemple `http://localhost:8000/?demo`).
+
+---
+
+## 🔢 Món 5 · Matemàtiques: Divisibilitat (en prova)
+
+Fet a partir dels 4 fulls del tema: **resum**, **esquema**, **examen** i **full de respostes**.
+Les dades són a `motor/dades/divisibilitat.js`.
+
+**8 temes en 3 blocs:**
+
+| Bloc | Temes |
+|---|---|
+| ➗ Divisibilitat i criteris | La relació de divisibilitat · Múltiples i divisors · Criteris del 2, 3, 5, 9, 10 i 11 |
+| 🧩 Primers i factors | Nombres primers i compostos · Descomposició en factors primers |
+| 🤝 MCM, MCD i problemes | Mínim comú múltiple · Màxim comú divisor · MCM o MCD? Els problemes |
+
+- **71 preguntes de test.** Les respostes falses són els «errors típics» que avisa l'esquema
+  (per exemple, confondre múltiple amb divisor, dir que l'1 és primer o girar els exponents del MCM i el MCD).
+- **15 preguntes obertes**, tretes de l'examen i dels «Comprova» del resum: la classe de 28 alumnes, les cabanes,
+  els trens, les rajoles, les monedes…
+- **6 jocs:**
+
+| Joc | Què es fa |
+|---|---|
+| 🧺 El garbell dels primers | Graella de l'1 al 50: cal tocar els 15 primers. Si toques un compost, es tatxa i diu per què (p. ex. «21 = 3 · 7»). Joc propi d'aquest món. |
+| 💎 Primer o compost? | Classificar nombres. |
+| 🌳 Nombre i factors | Unir cada nombre amb la seva descomposició (36 ↔ 2² · 3²…). |
+| 🪜 L'escala de 792 | Ordenar les divisions de la descomposició de 792. |
+| 🔎 Els criteris | Unir cada nombre amb la regla que el fa divisible. |
+| 🤝 MCM o MCD? | Decidir quin cal per a cada problema de l'examen. |
+
+Tots els càlculs que surten al món s'han comprovat amb un programa (47 comprovacions, totes correctes).
 
 ---
 
@@ -92,6 +130,23 @@ Ctrl+C l'atura.
 > Compte: en local també es fa servir la base de dades real. El que hi facis compta al rànquing.
 > Per provar, fes servir `?demo` a la portada.
 
+### Provar una branca en local
+
+Les coses grans es preparen en una **branca de prova** (ara mateix, `mon-mates`) i es miren en local abans de publicar-les.
+Atura `local.py` (Ctrl+C) i, des de la carpeta del repo:
+
+```
+git fetch origin
+git checkout mon-mates
+git pull
+python3 motor/local.py
+```
+
+Obre http://localhost:8000: a la portada hi ha la targeta del **MÓN 5**. Mentre la branca estigui triada,
+`local.py` també es posa al dia sol amb els canvis nous d'aquesta branca.
+
+Per tornar a la versió de la web: `git checkout main`.
+
 ### Afegir o actualitzar un món
 
 1. Escriu o amplia les dades a `motor/dades/<id>.js` (mateix format que els altres: `ASSIG`, `T`, `OB`).
@@ -121,6 +176,7 @@ Després, `python3 tot.py` els aplica a tots els mons, i cal passar la prova de 
 
 Fes commit i push a `main`. GitHub Pages ho publica en 1 o 2 minuts.
 Per provar una cosa gran abans de publicar-la, treballa en una altra branca i mira-la en local.
+Quan ja està bé, es fusiona la branca a `main` (per exemple, `mon-mates` → `main` per publicar el món de mates).
 
 ---
 
