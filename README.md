@@ -1,32 +1,143 @@
-# Bona Nota · Estudi interactiu (1r ESO)
+# ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-Pàgines d'estudi interactives per assignatura, publicades amb GitHub Pages.
+**Web:** https://victorvqg.github.io/bona-nota-estudi/
 
-- Inici: `index.html` (menú d'assignatures)
-- Cada tema: `<assignatura>/<tema>/index.html` (generat, no s'edita a mà). Ex.: `sociales/t3-clima/`
-- Motor comú: `motor/plantilla-estudi-interactiu.html`
-- Contingut de cada assignatura: `motor/dades/<assignatura>.js`
+Bona Nota és una web per **repassar** els temes de 1r d'ESO **jugant**. Cada tema és un «món» amb fitxes, targetes,
+tests, jocs i preguntes d'examen. Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
 
-## Afegir o actualitzar un món
+No serveix per aprendre un tema des de zero. Primer s'estudia amb el llibre i els apunts de l'institut.
+Després, aquí es comprova si se sap de veritat.
 
-1. Dades a `motor/dades/<id>.js` (mateix format que les altres: `ASSIG`, `T`, `OB`).
-2. Una entrada a `motor/mons.json`: `dades`, `carpeta`, `mon`, `materia`, `titol`, `desc`, `colors` (3), `ic` (i `llengua: "es"` si és en castellà).
-3. Regenerar-ho tot (pàgines i targetes de la portada):
+| Món | Assignatura | Tema | Carpeta |
+|---|---|---|---|
+| 1 | Ciències socials | Tema 3: El clima | `sociales/t3-clima/` |
+| 2 | Biologia i Geologia | Bloc 1: Univers, Terra i cèl·lula | `bio-i-geo/univers/` |
+| 3 | Lengua Castellana | Temas 2 y 3 | `castellano/t2-t3/` |
+| 4 | Ciències socials | Les comarques de Catalunya | `sociales/comarques/` |
+
+La llista oficial de mons és `motor/mons.json`.
+
+---
+
+## 🎮 Com funciona (per als nens)
+
+- **Entrar:** cada nen entra amb el seu **nom i un PIN**. Amb el PIN, el progrés es desa al núvol i el pot recuperar
+  des d'un altre aparell. En un mateix aparell hi poden entrar com a màxim 2 noms.
+- **Cada tema té 3 passos:** 📄 fitxa → 🃏 targetes → ✅ test.
+  El test fa 6 preguntes a l'atzar del tema. Amb un **70 %** s'aprova i es passa sol al tema següent.
+- **Repàs dels errors:** el que falla torna a sortir avui, i el que encerta torna d'aquí a 3 dies i després a 7 dies.
+- **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de les comarques).
+- **Exàmens:** l'examen sorpresa (15 preguntes barrejades) i l'examen de veritat, amb nota sobre 10.
+- **Preguntes obertes:** el nen escriu la resposta, la compara amb la resposta model i marca les idees clau que ha posat.
+- **🔊 Escolta:** llegeix en veu alta la fitxa o la pregunta.
+- **Mode suau:** treu les animacions fortes (també s'activa sol si l'aparell ho té demanat).
+- **App:** es pot afegir a la pantalla d'inici del mòbil i funciona sense connexió.
+
+### ⭐ Estrelles, superestrelles i nivells
+
+- **Estrelles:** +1 per cada encert als tests i als jocs, +1 per idea clau a les obertes, i regals per combos
+  (×5 seguides: +1; ×10: +2). Per jugar net, cada pregunta només dona estrella un cop al dia.
+- **A dalt de tot** es veu el total de **tots els mons**. Si toques les estrelles, surt el detall per món.
+  El total compta el que hi ha en aquell aparell i també el que hi ha al núvol.
+- **🌠 Superestrelles:** cada 50 ⭐ (sumant tots els mons) en surt una, amb animació i música pròpies.
+- **Nivells:** d'🐣 Aprenent a 🌟 Llegenda d'or, segons les estrelles de cada món.
+
+### 🏆 Rànquing (a la portada)
+
+- Podi, taula de classificació amb les estrelles de cada món, fletxes ▲▼ (llocs pujats o baixats des de l'última
+  vegada), la teva posició («Et falten 13 ⭐ per atrapar…») i els premis de la colla.
+- Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell i 📈 Setmana. Compta els últims 120 dies.
+- **Demo amb nens inventats:** obre la portada amb `?demo` (per exemple `http://localhost:8000/?demo`).
+
+---
+
+## 🗂️ Com està fet
+
+Tots els mons fan servir el **mateix motor**. Només canvien les **dades** de cada món.
+
+```
+index.html                     Portada: targetes dels mons + rànquing
+<assignatura>/<tema>/index.html  Pàgina de cada món (GENERADA: no s'edita a mà)
+motor/
+  plantilla-estudi-interactiu.html   El motor (tot el que fa un món)
+  dades/<id>.js                      Contingut de cada món (temes, preguntes, jocs, obertes)
+  mons.json                          Llista de mons (carpeta, número, títol, colors, icona…)
+  build.py                           Genera un món: plantilla + dades → pàgina
+  tot.py                             Genera TOTS els mons, les targetes de la portada i sw.js
+  prova.js                           Prova automàtica d'un món (Playwright)
+  local.py                           Servidor local que es posa al dia sol amb GitHub
+  eines/mapa-comarques.js            Genera el mapa SVG de les comarques
+admin/                         Panell d'administració (activitat, noms, rànquing)
+supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol
+sw.js, manifest.webmanifest, icones/   App instal·lable i sense connexió (sw.js el genera tot.py)
+```
+
+---
+
+## 🛠️ Feines habituals
+
+### Veure-ho en local
+
+Des de la carpeta del repo, en un Terminal:
+
+```
+python3 motor/local.py
+```
+
+Obre http://localhost:8000. Cada 20 segons baixa de GitHub el que hi hagi de nou: només cal recarregar la pàgina.
+Ctrl+C l'atura.
+
+> Compte: en local també es fa servir la base de dades real. El que hi facis compta al rànquing.
+> Per provar, fes servir `?demo` a la portada.
+
+### Afegir o actualitzar un món
+
+1. Escriu o amplia les dades a `motor/dades/<id>.js` (mateix format que els altres: `ASSIG`, `T`, `OB`).
+2. Si és un món nou, afegeix-lo a `motor/mons.json`:
+   `dades`, `carpeta`, `mon`, `materia`, `titol`, `desc`, `colors` (3), `ic` (i `llengua: "es"` si és en castellà).
+3. Regenera-ho tot i passa la prova:
 
 ```
 cd motor
 python3 tot.py
-ESTRICTE=1 node prova.js $PWD/../<carpeta>/index.html   # prova automàtica (Playwright)
+ESTRICTE=1 node prova.js $PWD/../<carpeta>/index.html
 ```
 
-4. Commit + push. GitHub Pages publica en 1-2 minuts.
+La prova ha d'acabar amb «errors: cap».
 
-**Revisió automàtica:** a cada push, GitHub Actions (`.github/workflows/revisa.yml`) torna a generar-ho tot i
-falla si alguna pàgina generada no coincideix (editada a mà o sense regenerar), i passa la prova de cada món en
-mode estricte (8 preguntes per tema com a mínim; la resposta correcta no pot ser la més llarga en més del 40 %
-ni en menys del 15 % de les preguntes). Mira la pestanya «Actions» del repo.
+**Regles del contingut:** tot surt dels apunts o del llibre (res inventat). Mínim **8 preguntes per tema**,
+3 opcions i una sola correcta. Els errors falsos han de ser errors típics, mai opcions absurdes.
+Si una dada és dubtosa, no va al test i la fitxa diu «pregunta-ho al profe».
 
-**App instal·lable:** `manifest.webmanifest`, `icones/` i `sw.js` (generat per `tot.py` amb la llista de mons i una versió nova a cada canvi) permeten afegir Bona Nota a la pantalla d'inici i fer-la servir sense connexió.
+### Millorar el motor
 
-Les millores del motor es fan a la plantilla i es regeneren tots els mons amb `tot.py`.
-El progrés de cada nen es guarda al navegador del seu aparell (localStorage), separat per nom.
+Els canvis comuns a tots els mons (sons, estrelles, pantalles…) es fan a `motor/plantilla-estudi-interactiu.html`.
+Després, `python3 tot.py` els aplica a tots els mons, i cal passar la prova de cada món.
+**Mai s'edita una pàgina generada** (`<assignatura>/<tema>/index.html`): el canvi es perdria i la revisió fallaria.
+
+### Publicar
+
+Fes commit i push a `main`. GitHub Pages ho publica en 1 o 2 minuts.
+Per provar una cosa gran abans de publicar-la, treballa en una altra branca i mira-la en local.
+
+---
+
+## ✅ Revisió automàtica
+
+A cada push, GitHub Actions (`.github/workflows/revisa.yml`) fa dues coses:
+
+1. Torna a generar tots els mons i la portada. Si una pàgina pujada no coincideix (editada a mà o sense regenerar), falla i diu quins fitxers.
+2. Passa la prova de cada món en mode estricte: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i rànquing de la capçalera.
+   També exigeix 8 preguntes per tema, i que la resposta correcta no sigui massa sovint (ni massa poc) la més llarga.
+
+El resultat surt a la pestanya **Actions** del repo.
+
+---
+
+## 🔒 Dades
+
+- **Al navegador** (localStorage): el progrés de cada nom, separat per món.
+- **Al núvol** (Supabase), només amb nom i PIN: el progrés de cada món, per poder canviar d'aparell.
+- **Registre d'activitat** (`bn_log`): què fa cada nen i quan, per al panell d'admin i el rànquing. Només s'hi pot escriure; llegir-lo només ho pot fer l'admin.
+- **Rànquing:** `bn_ranking_mons` (total i estrelles per món). Els noms amagats o no permesos no hi surten.
+- Els canvis a la base de dades es fan a Supabase i el seu SQL es desa a `supabase/`.
