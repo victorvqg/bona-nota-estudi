@@ -64,13 +64,16 @@ const {chromium}=require('playwright');
  await p.evaluate(()=>vista('analitica'));await p.screenshot({path:f.replace(/\.html$/,'_analitica.png'),fullPage:true});
  await p.evaluate(()=>vista('inici'));await p.screenshot({path:f.replace(/\.html$/,'_inici.png')});
  const nv=await p.evaluate(()=>[nivell(S.punts).n,window.NIVELLS_MOSTRATS||0]);if(nv[0]<2||nv[1]<1)errs.push('nivells: '+nv);
- // capçalera: les estrelles sumen tots els mons del mateix nom (un altre món fictici amb 7 ⭐)
- const cap=await p.evaluate(()=>{localStorage.setItem('bn_zzprova_perfils',JSON.stringify({prova:{nom:'Prova',punts:7}}));pintaCap();
-  const t=document.getElementById('punts').textContent,esp=S.punts+7;localStorage.removeItem('bn_zzprova_perfils');pintaCap();return [t,esp]});
+ // capçalera: les estrelles sumen tots els mons del mateix nom (un altre món real amb 7 ⭐ en aquest navegador)
+ const cap=await p.evaluate(()=>{const m=MONS.find(x=>x.id!==ASSIG.id);localStorage.setItem(m.clau+'_perfils',JSON.stringify({prova:{nom:'Prova',punts:7}}));pintaCap();
+  const t=document.getElementById('punts').textContent,esp=S.punts+7;return [t,esp]});
  if(!cap[0].startsWith(`⭐ ${cap[1]} `))errs.push(`capçalera: «${cap[0]}» i hauria de sumar ${cap[1]} ⭐`);else console.log(`capçalera: ${cap[0]} (suma de mons ok)`);
- // i si el núvol diu que en un altre món n'hi ha més (fet en un altre aparell), mana el núvol
- const capN=await p.evaluate(()=>{PSRV={zzaltre:500};pintaCap();const t=document.getElementById('punts').textContent,esp=S.punts+500;PSRV=null;pintaCap();return [t,esp]});
+ // si el núvol diu que en aquell món n'hi ha més (fet en un altre aparell), mana el núvol; i el panell de les estrelles ho reparteix per món
+ const capN=await p.evaluate(()=>{const m=MONS.find(x=>x.id!==ASSIG.id);PSRV={[m.id]:500};pintaCap();const t=document.getElementById('punts').textContent,esp=S.punts+500;
+  obreEstrelles();const pop=document.getElementById('popEst'),files=pop?pop.querySelectorAll('.me-fila').length:0,cap=pop?pop.querySelector('.mons-est h4').textContent:'';if(pop)pop.remove();
+  PSRV=null;localStorage.removeItem(m.clau+'_perfils');pintaCap();return [t,esp,files,cap,MONS.length]});
  if(!capN[0].startsWith(`⭐ ${capN[1]} `))errs.push(`capçalera amb núvol: «${capN[0]}» i hauria de ser ${capN[1]} ⭐`);
+ if(capN[2]!==capN[4]||!capN[3].startsWith(`⭐ ${capN[1]} `))errs.push(`panell d'estrelles: ${capN[2]} files de ${capN[4]} mons · «${capN[3]}»`);else console.log(`panell: ${capN[3].trim()} · ${capN[2]} mons`);
  // superestrelles: cada 50 ⭐ en surt una amb la seva animació (en aquesta prova se'n guanyen unes quantes)
  const sup=await p.evaluate(()=>[window.SUPERS_MOSTRADES||0,Math.floor(puntsTots()/SUPER)]);
  if(sup[0]<1)errs.push('superestrelles: no se n\'ha mostrat cap ('+sup+')');else console.log(`superestrelles: ${sup[0]} animacions · ${sup[1]} guanyades`);

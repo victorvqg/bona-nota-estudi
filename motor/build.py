@@ -10,8 +10,18 @@ nom = re.search(r'nom:"([^"]+)"', dades).group(1)
 curs = re.search(r'curs:"([^"]+)"', dades).group(1)
 mt = re.search(r'tema:"([^"]+)"', dades.split("blocs:")[0])
 tema = f" — {mt.group(1)}" if mt else ""
-html = plant.replace("/*DADES*/", dades, 1).replace("{{TITOL}}", f"{nom}{tema} · {curs} | Bona Nota")
-assert "{{" not in html and "/*DADES*/" not in html
+# llista de tots els mons (per sumar estrelles i enllaçar-los des de qualsevol món)
+import json
+mons = []
+for m in json.loads((d / "mons.json").read_text()):
+    src = (d / "dades" / f"{m['dades']}.js").read_text().split("const T=")[0]
+    mid = re.search(r'\bid:"([^"]+)"', src).group(1)
+    mc = re.search(r'\bclau:"([^"]+)"', src)
+    mons.append({"id": mid, "clau": mc.group(1) if mc else "bn_" + mid, "ic": m["ic"], "materia": m["materia"],
+                 "titol": m["titol"], "url": "../../" + m["carpeta"] + "/"})
+mons_js = "const MONS=" + json.dumps(mons, ensure_ascii=False) + ";"
+html = plant.replace("/*DADES*/", dades, 1).replace("/*MONS*/", mons_js, 1).replace("{{TITOL}}", f"{nom}{tema} · {curs} | Bona Nota")
+assert "{{" not in html and "/*DADES*/" not in html and "/*MONS*/" not in html
 out = d.parent / (sys.argv[2] if len(sys.argv) > 2 else assig) / "index.html"
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(html)

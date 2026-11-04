@@ -258,6 +258,13 @@ body.tremola main{animation:tremola .4s}
 .font b{text-align:right}
 #popEst{position:fixed;top:64px;right:max(12px,calc(50% - 468px));z-index:30;width:min(440px,calc(100vw - 24px));animation:popIn .22s cubic-bezier(.3,1.6,.5,1);filter:drop-shadow(0 10px 24px #0f172a33)}
 #popEst .estrelles{margin:0}
+#popEst .estrelles+.estrelles{margin-top:8px}
+.mons-est .me-fila{text-decoration:none;color:inherit;border-radius:10px;padding:3px 4px;margin:2px -4px}
+.mons-est a.me-fila[href]:hover{background:#fde68a55}
+.mons-est .me-fila.ara{background:#fff;box-shadow:0 0 0 2px #fcd34d inset}
+.mons-est .me-nom{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.mons-est .me-nom small{font-size:11.5px;font-weight:700;color:var(--suau);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mons-est .me-peu{margin:8px 0 0;font-size:13px;font-weight:700;color:#92400e}
 #popEst .comvas{margin-top:8px}
 .comvas{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;border-radius:16px;padding:12px 16px;box-shadow:var(--om)}
 .comvas .prog{color:#c7d2fe}
@@ -519,6 +526,7 @@ function svgClimo(){
  return s+`<text x="${x0-30}" y="13" font-size="11" fill="#dc2626">°C</text><text x="${x1+2}" y="13" font-size="11" fill="#2563eb">mm</text><text x="${W/2}" y="${H-3}" font-size="12" text-anchor="middle" font-weight="700" fill="#334155">Climograma de Girona (valors aproximats)</text></svg>`;
 }
 
+const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}];
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
@@ -617,15 +625,15 @@ function cartaComVas(){const v=veredicte(),m=elMeu();
  else if(!/^file:/.test(location.protocol))h+=`<p class="prog" style="margin:8px 0 0">${COMP===null?"La comparativa amb els altres nens encara no està activada.":"Encara no hi ha prou nens per comparar-te. Aviat!"}</p>`;
  return h+`</div>`}
 function obreEstrelles(e){if(e)e.stopPropagation();let d=document.getElementById("popEst");if(d){d.remove();return}
- d=document.createElement("div");d.id="popEst";const pinta=()=>{d.innerHTML=cartaEstrelles(false)+cartaComVas()};pinta();document.body.appendChild(d);carregaComp(()=>{if(d.isConnected)pinta()});
- d.onclick=()=>{d.remove();vista("analitica")};setTimeout(()=>document.addEventListener("click",function tanca(ev){if(!d.contains(ev.target)){d.remove()}document.removeEventListener("click",tanca,true)},true),0)}
+ d=document.createElement("div");d.id="popEst";const pinta=()=>{d.innerHTML=cartaMons()+cartaEstrelles(false)+cartaComVas()};pinta();document.body.appendChild(d);carregaComp(()=>{if(d.isConnected)pinta()});
+ d.onclick=ev=>{if(ev.target.closest("a[href]"))return;d.remove();vista("analitica")};setTimeout(()=>document.addEventListener("click",function tanca(ev){if(!d.contains(ev.target)){d.remove()}document.removeEventListener("click",tanca,true)},true),0)}
 function cartaEstrelles(gran){
  const fo=S.fonts||{},tot=FONTS.reduce((a,[k])=>a+(fo[k]||0),0),abans=Math.max(0,S.punts-tot),mx=Math.max(1,...FONTS.map(([k])=>fo[k]||0),abans);
  const fila=(ic,nom,v)=>`<div class="font"><span class="ic2">${ic}</span><span>${nom}</span><div class="bf"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
  if(!gran){ // versió compacta de l'inici: 2 files
   const xips=FONTS.filter(([k])=>fo[k]).map(([k,ic,nom])=>`<span title="${nom}">${ic} ${fo[k]}</span>`).join("")+(abans?`<span title="D'abans">⏳ ${abans}</span>`:"");
-  return `<div class="estrelles mini2" onclick="vista('analitica')"><div class="f1"><b>⭐ ${S.punts} estrelles</b><span class="xs">${xips||`<span>Fes el primer test! ✨</span>`}</span><small>→</small></div><div class="f2">✅ test +1 · 🎮 joc +1 · ✍️ idea +1 · 🔥 combo ×5 +1 · ×10 +2</div></div>`}
- let h=`<div class="estrelles" ${gran?"":`onclick="vista('analitica')"`}><h4>⭐ On guanyes les estrelles <small>${S.punts} en total${gran?"":" · toca per veure-ho tot"}</small></h4>`;
+  return `<div class="estrelles mini2" onclick="vista('analitica')"><div class="f1"><b>⭐ ${S.punts} en aquest món</b><span class="xs">${xips||`<span>Fes el primer test! ✨</span>`}</span><small>→</small></div><div class="f2">✅ test +1 · 🎮 joc +1 · ✍️ idea +1 · 🔥 combo ×5 +1 · ×10 +2</div></div>`}
+ let h=`<div class="estrelles" ${gran?"":`onclick="vista('analitica')"`}><h4>⭐ On guanyes les estrelles <small>${S.punts} en aquest món${gran?"":" · toca per veure-ho tot"}</small></h4>`;
  h+=FONTS.filter(([k])=>gran||fo[k]).map(([k,ic,nom])=>fila(ic,nom,fo[k]||0)).join("")+(abans?fila("⏳","D'abans",abans):"");
  if(!S.punts)h+=`<p class="prog" style="margin:4px 0 0">Encara cap estrella. Fes el primer test i mira com volen! ✨</p>`;
  if(gran){
@@ -648,11 +656,16 @@ function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" oncli
 let PSRV=null;
 function carregaPuntsMons(){if(!S.nom||/^file:/.test(location.protocol))return;const n=S.nom;
  rpc("bn_punts_mons",{p_nom:n}).then(r=>r.ok?r.json():null).then(d=>{if(!Array.isArray(d)||S.nom!==n)return;PSRV={};d.forEach(x=>{PSRV[x.assig]=+x.punts||0});pintaCap()}).catch(()=>{})}
-function puntsTots(){const ara=S.punts||0;if(!S.nom)return ara;const k=S.nom.trim().toLowerCase();let loc=0,srv=0;
- try{for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c)||c===CL+"perfils")continue;
-  const per=JSON.parse(localStorage.getItem(c)||"{}")||{},n=Object.keys(per).find(x=>x.trim().toLowerCase()===k);if(n)loc+=+(per[n]&&per[n].punts)||0}}catch(e){}
- if(PSRV)for(const a in PSRV)if(a!==ASSIG.id)srv+=PSRV[a];
- return ara+Math.max(loc,srv)}
+function puntsMons(){const k=(S.nom||"").trim().toLowerCase();
+ return MONS.map(m=>{if(m.id===ASSIG.id)return Object.assign({},m,{punts:S.punts||0,ara:true});let loc=0;
+  if(k)try{const per=JSON.parse(localStorage.getItem(m.clau+"_perfils")||"{}")||{},n=Object.keys(per).find(x=>x.trim().toLowerCase()===k);if(n)loc=+(per[n]&&per[n].punts)||0}catch(e){}
+  return Object.assign({},m,{punts:Math.max(loc,(PSRV&&PSRV[m.id])||0),ara:false})})}
+function puntsTots(){if(!S.nom)return S.punts||0;return puntsMons().reduce((a,m)=>a+m.punts,0)}
+// targeta «estrelles de tots els mons»: total, superestrelles i una fila per món (toca un món per anar-hi)
+function cartaMons(){const ms=puntsMons(),tot=ms.reduce((a,m)=>a+m.punts,0),sup=Math.floor(tot/SUPER),mx=Math.max(1,...ms.map(m=>m.punts)),falten=(sup+1)*SUPER-tot;
+ return `<div class="estrelles mons-est"><h4>⭐ ${tot} entre tots els mons <small>🌠 ${sup} superestrell${sup===1?"a":"es"}</small></h4>
+ ${ms.map(m=>`<a class="font me-fila${m.ara?" ara":""}" ${m.ara?"":`href="${m.url}"`} title="${m.materia} · ${m.titol}"><span class="ic2">${m.ic}</span><span class="me-nom">${m.materia}<small>${m.ara?"ets aquí":m.titol}</small></span><div class="bf"><i style="width:${Math.round(m.punts*100/mx)}%"></i></div><b>${m.punts}</b></a>`).join("")}
+ <p class="me-peu">Et falten <b>${falten} ⭐</b> per a la propera 🌠 (a ${(sup+1)*SUPER} ⭐)</p></div>`}
 // ---- superestrelles: cada SUPER ⭐ (sumant tots els mons) en guanyes una, amb animació i música pròpies ----
 const SUPER=50;let SUPPEND=0;
 function superFetes(){try{return +localStorage.getItem("bn_super_"+(S.nom||"").trim().toLowerCase())||0}catch(e){return 0}}
@@ -1172,7 +1185,7 @@ function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElement
  </div>
  <div class="valoracio" style="margin-top:14px"><h3>${nivTxt}</h3><p style="margin:0">${txt}</p><p style="margin:10px 0 4px"><b>Què li recomano ara:</b></p><ul style="margin:0;padding-left:20px">${reco.map(r=>`<li>${r}</li>`).join("")}</ul></div>
  <h2 class="sec">🏁 Com vas</h2><div id="cvA">${cartaComVas()}</div>
- <h2 class="sec">⭐ D'on surten les estrelles</h2>${cartaEstrelles(true).replace('class="estrelles"','class="estrelles" style="margin:0 0 6px;cursor:default"')}
+ <h2 class="sec">⭐ D'on surten les estrelles</h2>${cartaMons().replace('class="estrelles mons-est"','class="estrelles mons-est" style="margin:0 0 10px;cursor:default"')}${cartaEstrelles(true).replace('class="estrelles"','class="estrelles" style="margin:0 0 6px;cursor:default"')}
  <h2 class="sec">🏅 Nivells</h2><div class="box">${cartaNivell().replace('class="nivell"','class="nivell" style="margin:0 0 12px"')}<div class="rangs">${NIVELLS.map(([min,nom,ic],i)=>{const n=nivell(S.punts).n;return `<div class="rang ${i+1<n?'':i+1===n?'ara':'bloc'}"><span>${ic}</span><b>${i+1}. ${nom}</b><small>${min} ⭐</small></div>`}).join("")}</div><p class="prog" style="margin:10px 0 0">Cada encert als tests, als jocs i a les preguntes obertes suma ⭐, i les ⭐ fan pujar de nivell.</p></div>
  <h2 class="sec">📖 Tema per tema</h2><div class="box" style="overflow-x:auto"><table class="an"><tr><th>Tema</th><th>Fitxa</th><th class="mh">Targetes</th><th>Tests</th><th>Millor</th><th class="mh">Últim</th><th>Ell diu</th></tr>
  ${T.map((t,i)=>{const e=S.temes[t.id],m=millor(t.id),ul=e&&e.intents.length?e.intents[e.intents.length-1].pc:null;return `<tr style="cursor:pointer" onclick="obre(${i})"><td><span class="semaf" style="background:${color(m)}"></span>${t.ic} ${t.titol}</td><td>${e&&e.fitxa?"✅":"—"}</td><td class="mh">${e?`${Math.min(e.fc,t.fc.length)}/${t.fc.length}`:"—"}</td><td>${e?e.intents.length:0}</td><td><b>${m===null?"—":m+"%"}</b></td><td class="mh">${ul===null?"—":ul+"%"}</td><td>${e&&e.valoracio!==null?val[e.valoracio]:"—"}</td></tr>`}).join("")}
