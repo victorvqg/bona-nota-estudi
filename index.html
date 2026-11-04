@@ -132,6 +132,86 @@ h1 span{display:inline-block}
 .hs-peu{position:relative;z-index:1;font-family:'Press Start 2P',monospace;font-size:8px;color:#64748b;text-align:center;margin:14px 0 0;line-height:1.8}
 .hs-peu small{display:block;font-family:Nunito,system-ui,sans-serif;font-weight:700;font-size:12px;color:#64748b}
 @media(max-width:520px){.hs-caixa{padding:16px 10px 12px}.hs-tab{font-size:9px;padding:9px 9px}.podi{gap:6px;padding:30px 2px 0;min-height:270px}.pd-av{width:60px;height:60px;font-size:32px}.p1 .pd-av{width:80px;height:80px;font-size:44px}.pd-nom{font-size:15px}.p1 .pd-nom{font-size:19px}.pd-val{font-size:9.5px}.p1 .pd-bloc{height:104px}.p2 .pd-bloc{height:74px}.p3 .pd-bloc{height:56px}.hs-fila .nm{font-size:16px}}
+/* ===== rànquing gran i divertit ===== */
+.hs-pop{display:flex;align-items:flex-start;justify-content:center}
+.hs-pop>.hs-caixa{margin:auto}
+.hs-caixa{width:min(1040px,100%);padding:22px 22px 16px}
+.hs-tit{font-size:clamp(18px,4.8vw,36px);margin:4px 36px 10px}
+.hs-demo{display:inline-block;vertical-align:middle;margin-left:10px;font-size:10px;background:#f472b6;color:#4a044e;border-radius:6px;padding:5px 7px;text-shadow:none;animation:none}
+.hs-ticker{position:relative;z-index:1;overflow:hidden;margin:0 -22px 14px;padding:8px 0;background:linear-gradient(90deg,#b91c1c,#7c3aed,#0e7490,#b91c1c);border-block:2px solid #facc15;white-space:nowrap}
+.hs-ticker:empty{display:none}
+.hs-tk{display:inline-block;padding-left:100%;animation:tkRoda 30s linear infinite;font-family:'Press Start 2P',monospace;font-size:11px;color:#fff;text-shadow:2px 2px 0 #0008}
+.hs-tk span{margin-right:44px}.hs-tk b{color:#fde047}
+@keyframes tkRoda{to{transform:translateX(-100%)}}
+.hs-tab{font-size:11px;padding:12px 14px}
+.hs-cos{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:6px}
+@media(min-width:880px){.hs-cos{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);align-items:start}}
+.hs-dre{display:flex;flex-direction:column;gap:14px}
+/* podi més gran, amb focus de llum i comptador que puja */
+.podi{min-height:360px;padding-top:44px}
+.pd-av{width:84px;height:84px;font-size:46px}
+.p1 .pd-av{width:116px;height:116px;font-size:66px}
+.pd-nom{font-size:19px}.p1 .pd-nom{font-size:27px}
+.pd-val{font-size:13px;margin-bottom:6px}.p1 .pd-val{font-size:16px}
+.p1 .pd-bloc{height:150px}.p2 .pd-bloc{height:108px}.p3 .pd-bloc{height:80px}
+.pd.p1::before{content:"";position:absolute;left:50%;top:-40px;width:340px;height:420px;margin-left:-170px;z-index:-1;pointer-events:none;
+ background:conic-gradient(from 160deg at 50% 0,transparent 0 8deg,#fde04733 10deg 16deg,transparent 18deg 26deg,#fde04726 28deg 33deg,transparent 35deg);animation:focus 4s ease-in-out infinite alternate}
+@keyframes focus{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+.pd-xips{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:0 0 8px}
+.pd-xips i,.hs-xips i{font-style:normal;font-family:Nunito,system-ui,sans-serif;font-weight:900;font-size:12px;line-height:1;background:#ffffff14;border:1px solid #ffffff26;border-radius:999px;padding:4px 7px;white-space:nowrap;color:#e0e7ff}
+.pd-xips i.fo,.hs-xips i.fo{background:#ea580c33;border-color:#fb923c;color:#fed7aa}
+.pd-xips i.su,.hs-xips i.su{background:#facc1526;border-color:#facc15;color:#fde68a}
+.pd-mov{position:absolute;top:-6px;right:calc(50% - 64px);z-index:2}
+.p1 .pd-mov{right:calc(50% - 78px)}
+/* files del 4t en avall: més info i barra fins al líder */
+.hs-llista{gap:8px}
+.hs-fila{grid-template-columns:44px 48px minmax(0,1fr) auto;gap:12px;padding:9px 12px;background:linear-gradient(90deg,#ffffff12,#ffffff06);border:1px solid #ffffff14;animation:filaEntra .45s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes filaEntra{from{transform:translateX(40px);opacity:0}}
+.hs-fila:hover{border-color:#facc1588;background:linear-gradient(90deg,#facc1518,#ffffff08)}
+.hs-fila .pos{font-size:15px;color:#c7d2fe}
+.hs-fila .av{width:46px;height:46px;font-size:26px}
+.hs-fila .mig{min-width:0;display:flex;flex-direction:column;gap:5px}
+.hs-fila .nm{font-size:19px}
+.hs-xips{display:flex;flex-wrap:wrap;gap:4px}
+.hs-fila .vl{font-size:13px;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.hs-barra{grid-column:3/5;height:7px;margin-top:-4px;background:#ffffff14;border-radius:6px;overflow:hidden}
+.hs-barra i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#22d3ee,#a78bfa,#facc15);transform-origin:left;animation:barraCreix 1s cubic-bezier(.2,1,.3,1) both}
+@keyframes barraCreix{from{transform:scaleX(0)}}
+.mov{display:inline-block;font-family:'Press Start 2P',monospace;font-size:9px;border-radius:6px;padding:4px 5px;line-height:1}
+.mov.up{background:#16a34a;color:#fff;animation:movBota 1s ease-in-out 3}
+.mov.dn{background:#dc2626;color:#fff}
+.mov.nou{background:#facc15;color:#422006;animation:movBota 1s ease-in-out 3}
+.mov.eq{background:#ffffff1a;color:#94a3b8}
+@keyframes movBota{50%{transform:translateY(-4px)}}
+/* la teva targeta */
+.hs-tu{position:relative;overflow:hidden;border-radius:18px;padding:16px 18px;background:linear-gradient(135deg,#0e7490,#1e40af 60%,#6d28d9);border:3px solid #22d3ee;box-shadow:0 0 24px #22d3ee55}
+.hs-tu::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,#ffffff26 45%,transparent 60%);background-size:250% 100%;animation:brillTu 3s linear infinite;pointer-events:none}
+@keyframes brillTu{from{background-position:130% 0}to{background-position:-130% 0}}
+.hs-tu .t{font-family:'Press Start 2P',monospace;font-size:clamp(13px,2.6vw,17px);color:#fde047;text-shadow:2px 2px 0 #0007;line-height:1.5}
+.hs-tu p{margin:8px 0 0;font-weight:800;font-size:16px;color:#e0f2fe;line-height:1.4}
+.hs-tu p b{color:#fff}
+.hs-tu .falta{height:10px;margin-top:10px;background:#00000040;border-radius:6px;overflow:hidden}
+.hs-tu .falta i{display:block;height:100%;background:linear-gradient(90deg,#4ade80,#facc15);border-radius:6px;animation:barraCreix 1.2s cubic-bezier(.2,1,.3,1) .3s both;transform-origin:left}
+/* premis */
+.hs-premis{border-radius:18px;padding:14px;background:#ffffff0a;border:2px solid #ffffff1c}
+.hs-premis h3{margin:0 0 10px;font-family:'Press Start 2P',monospace;font-size:12px;color:#f0abfc;text-align:center;letter-spacing:1px}
+.hs-premis .g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.premi{position:relative;border-radius:14px;padding:12px 10px 10px;text-align:center;background:linear-gradient(160deg,var(--pc,#7c3aed)55,#0b1033 75%);border:2px solid var(--pc,#7c3aed);animation:premiEntra .5s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes premiEntra{from{transform:scale(.6) rotate(-6deg);opacity:0}}
+.premi .ic{font-size:34px;line-height:1;display:block;animation:premiIc 2.4s ease-in-out infinite}
+@keyframes premiIc{50%{transform:translateY(-4px) rotate(6deg)}}
+.premi .nm2{display:block;margin-top:6px;font-weight:900;font-size:13px;color:#fde68a;text-transform:uppercase;letter-spacing:.5px}
+.premi .qui{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;font-weight:900;font-size:17px;color:#fff;min-width:0}
+.premi .qui span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.premi .qui em{font-style:normal;font-size:22px}
+.premi small{display:block;margin-top:2px;font-weight:800;font-size:12.5px;color:#c7d2fe}
+@media(max-width:520px){.hs-caixa{padding:16px 10px 12px}.hs-ticker{margin:0 -10px 12px}.hs-tab{font-size:9px;padding:10px 9px}
+ .podi{min-height:300px}.pd-av{width:62px;height:62px;font-size:34px}.p1 .pd-av{width:86px;height:86px;font-size:48px}.pd-nom{font-size:15px}.p1 .pd-nom{font-size:20px}
+ .pd-val{font-size:10px}.p1 .pd-val{font-size:12px}.p1 .pd-bloc{height:112px}.p2 .pd-bloc{height:80px}.p3 .pd-bloc{height:60px}.pd-xips i{font-size:10.5px;padding:3px 5px}
+ .pd-mov{right:calc(50% - 48px)}.p1 .pd-mov{right:calc(50% - 58px)}
+ .hs-fila{grid-template-columns:34px 40px minmax(0,1fr) auto;gap:8px;padding:8px}.hs-fila .av{width:40px;height:40px;font-size:22px}.hs-fila .nm{font-size:16px}.hs-fila .vl{font-size:10.5px}.hs-fila .pos{font-size:12px}
+ .hs-xips i{font-size:10.5px;padding:3px 5px}.hs-premis .g{gap:8px}.premi .qui{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.hs-tk{animation:none;padding-left:12px}.pd.p1::before,.hs-tu::after,.premi .ic,.mov.up,.mov.nou{animation:none}.hs-fila,.premi{animation:none}}
 
 /* ---- targetes ---- */
 main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
@@ -260,7 +340,8 @@ footer b{color:var(--groc)}
 
 <div class="hs-pop" id="hsPop" hidden role="dialog" aria-modal="true" aria-label="Rànquing">
  <div class="hs-caixa"><button class="hs-tanca" id="hsTanca" aria-label="Tanca">✕</button>
-  <p class="hs-tit">★ HIGH SCORES ★</p>
+  <p class="hs-tit">★ HIGH SCORES ★<span class="hs-demo" id="hsDemo" hidden>DEMO</span></p>
+  <div class="hs-ticker" id="hsTicker" aria-hidden="true"></div>
   <div class="hs-tabs" id="hsTabs" role="tablist"><button class="hs-tab on" role="tab" data-t="punts">⭐ Estrelles</button><button class="hs-tab" role="tab" data-t="temps">⏱ Temps</button><button class="hs-tab" role="tab" data-t="nivell">🏅 Nivell</button><button class="hs-tab" role="tab" data-t="setmana">📈 Setmana</button></div>
   <div id="hs"></div>
   <p class="hs-peu">HAVE FUN! ▶ JUGA I PUJA AL PODI!<small>Compta tots els mons dels últims 120 dies. Les estrelles tenen un límit diari per jugar net.</small></p>
@@ -288,6 +369,7 @@ footer b{color:var(--groc)}
 (function(){const bi=document.getElementById("btInfo"),it=document.getElementById("intro"),pop=document.getElementById("hsPop");
  bi.onclick=()=>{const o=it.hidden;it.hidden=!o;bi.setAttribute("aria-expanded",o)};
  const tanca=()=>{pop.hidden=true};document.getElementById("btHs").onclick=()=>{pop.hidden=false;carregaHs()};
+ if(/[?&]demo\b/.test(location.search))setTimeout(()=>{pop.hidden=false;carregaHs()},300);
  document.getElementById("hsTanca").onclick=tanca;pop.onclick=e=>{if(e.target===pop)tanca()};document.addEventListener("keydown",e=>{if(e.key==="Escape")tanca()});
 })();
 // rànquing arcade (Supabase · funció bn_ranking): podi amb avatars + llista
@@ -304,30 +386,74 @@ const MONS_IC=[...document.querySelectorAll('.as[data-id]')].map(a=>[a.dataset.i
 const monsHtml=r=>{const m=r.mons||{};const xs=MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<i>${ic} ${m[id]}</i>`);return xs.join("")};
 const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ⭐`,m:monsHtml(r)})},temps:{k:"temps_s",v:r=>({v:fT(r.temps_s)})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${NIV[n][2]} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ⭐`,s:"últims 7 dies"})}};
 function carregaHs(){const hs=document.getElementById("hs");
+ if(DEMO){HSD=DEMO_D;HST=Date.now();document.getElementById("hsDemo").hidden=false;pintaHs();redoble();return}
  if(HSD&&Date.now()-HST<60000){pintaHs();return}
  hs.innerHTML=`<div class="hs-buit">CARREGANT…</div>`;
  const rk=f=>fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:"{}"}).then(r=>r.ok?r.json():Promise.reject());
- rk("bn_ranking_mons").catch(()=>rk("bn_ranking")).then(d=>{HSD=Array.isArray(d)?d:[];HST=Date.now();pintaHs()})
+ rk("bn_ranking_mons").catch(()=>rk("bn_ranking")).then(d=>{HSD=Array.isArray(d)?d:[];HST=Date.now();pintaHs();redoble()})
   .catch(()=>{hs.innerHTML=`<div class="hs-buit">EL RÀNQUING ARRIBA AVIAT…<br>MENTRESTANT, JUGA I SUMA ⭐!</div>`});
 }
+// demo: portada amb «?demo» → rànquing ple amb nens inventats (no surt de Supabase)
+const DEMO=/[?&]demo\b/.test(location.search);
+const DEMO_D=[["Pau",263,9400,150,71,{socials:150,biogeo:58,castellano:40,comarques:15}],["Jana",241,7100,190,22,{socials:190,biogeo:51}],["Àlex",198,8800,96,64,{socials:96,biogeo:44,castellano:38,comarques:20}],
+ ["Nora",151,5200,120,9,{socials:120,castellano:31}],["Laia",139,6100,70,35,{socials:70,biogeo:41,comarques:28}],["Hugo",112,3900,112,40,{castellano:112}],["Ona",97,4400,60,0,{biogeo:60,comarques:37}],
+ ["Èric",83,2600,83,18,{socials:83}],["Martina",66,3100,30,12,{socials:30,biogeo:21,castellano:15}],["Leo",48,1500,48,48,{comarques:48}],["Júlia",31,2000,20,5,{biogeo:20,castellano:11}],["Max",12,700,12,12,{socials:12}]]
+ .map(([nom,punts,temps_s,punts_max,setmana,mons])=>({nom,punts,temps_s,punts_max,setmana,mons}));
+const DEMO_PREV={pau:2,jana:1,àlex:5,nora:3,laia:4,hugo:8,ona:6,èric:7,martina:9,júlia:10};
+const SUPER=50,ordinal=n=>n===1?"1r":n===2?"2n":n===3?"3r":n===4?"4t":n+"è";
+const nMons=r=>Object.values(r.mons||{}).filter(x=>x>0).length;
+function xipsInfo(r){const sup=Math.floor((r.punts||0)/SUPER),n=niv(r.punts_max||0);
+ return `${sup?`<i class="su" title="superestrelles (1 cada ${SUPER} ⭐)">🌠 ${sup}</i>`:""}<i title="nivell ${n+1}: ${NIV[n][1]}">${NIV[n][2]} ${n+1}</i>${r.setmana>0?`<i class="fo" title="aquesta setmana">🔥 +${r.setmana}</i>`:""}`}
+function movHtml(m){return m==null?"":m==="nou"?`<span class="mov nou">NOU!</span>`:m>0?`<span class="mov up">▲${m}</span>`:m<0?`<span class="mov dn">▼${-m}</span>`:`<span class="mov eq">=</span>`}
 function pintaHs(){
  const c=HSCFG[HSTAB],rows=HSD.filter(r=>r[c.k]>0).sort((a,b)=>b[c.k]-a[c.k]);
- const meu=((document.querySelector("#hola em")||{}).textContent||"").trim().toLowerCase();
- const esJo=r=>meu&&r.nom.trim().toLowerCase()===meu;
- const val=r=>{const x=c.v(r);return `${x.v}${x.s?`<small>${esc(x.s)}</small>`:""}${x.m?`<span class="hs-mons">${x.m}</span>`:""}`};
+ const meu=DEMO?"laia":((document.querySelector("#hola em")||{}).textContent||"").trim().toLowerCase();
+ const k=r=>r.nom.trim().toLowerCase(),esJo=r=>meu&&k(r)===meu;
+ // moviment respecte a l'última vegada que es va mirar el rànquing en aquest aparell (per pestanya)
+ let prev={};try{prev=DEMO?(HSTAB==="punts"?DEMO_PREV:{}):JSON.parse(localStorage.getItem("bn_hs_prev_"+HSTAB)||"{}")||{}}catch(e){}
+ const hiHavia=Object.keys(prev).length>0,mov=(r,pos)=>!hiHavia?null:prev[k(r)]==null?"nou":prev[k(r)]-pos;
+ if(!DEMO)try{const nou={};rows.forEach((r,i)=>nou[k(r)]=i+1);localStorage.setItem("bn_hs_prev_"+HSTAB,JSON.stringify(nou))}catch(e){}
+ const cnt=(n,suf)=>`<span class="cnt" data-n="${n}">${n}</span>${suf}`;
+ const val=r=>{const x=c.v(r),v=HSTAB==="punts"?cnt(r.punts," ⭐"):HSTAB==="setmana"?"+"+cnt(r.setmana," ⭐"):x.v;return `${v}${x.s?`<small>${esc(x.s)}</small>`:""}${x.m?`<span class="hs-mons">${x.m}</span>`:""}`};
  const pd=(r,pos)=>{if(!r)return `<div class="pd p${pos} lliure"><span class="pd-av">👻</span><span class="pd-nom">Lliure</span><span class="pd-val"><small>Pot ser teu!</small></span><div class="pd-bloc">${pos}</div></div>`;
-  const a=avatar(r.nom);return `<div class="pd p${pos} ${esJo(r)?"jo":""}"><span class="pd-av" style="--av:${a.c}">${pos===1?`<span class="corona">👑</span>`:""}${a.e}</span><span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="pd-val">${val(r)}</span><div class="pd-bloc">${pos}</div></div>`};
- const fila=(r,pos,extra)=>{const a=avatar(r.nom);return `<div class="hs-fila ${extra||""}"><span class="pos">${pos}</span><span class="av" style="--av:${a.c}">${a.e}</span><span class="nm">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="vl">${val(r)}</span></div>`};
- let h="";
- if(!rows.length)h=`<div class="hs-buit">ENCARA NO HI HA NINGÚ AL PODI<br>JUGA I SERÀS EL PRIMER! 🚀</div>`;
+  const a=avatar(r.nom);return `<div class="pd p${pos} ${esJo(r)?"jo":""}"><span class="pd-mov">${movHtml(mov(r,pos))}</span><span class="pd-av" style="--av:${a.c}">${pos===1?`<span class="corona">👑</span>`:""}${a.e}</span><span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="pd-val">${val(r)}</span><span class="pd-xips">${xipsInfo(r)}</span><div class="pd-bloc">${pos}</div></div>`};
+ const top=rows.length?rows[0][c.k]:1;
+ const fila=(r,pos,extra,i)=>{const a=avatar(r.nom);return `<div class="hs-fila ${extra||""}" style="animation-delay:${(.9+(i||0)*.08).toFixed(2)}s"><span class="pos">${pos}</span><span class="av" style="--av:${a.c}">${a.e}</span><span class="mig"><span class="nm">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="hs-xips">${xipsInfo(r)}</span></span><span class="vl">${movHtml(mov(r,pos))}<span>${val(r)}</span></span><div class="hs-barra"><i style="width:${Math.max(3,Math.round(r[c.k]*100/top))}%"></i></div></div>`};
+ let esq="",dre="";
+ if(!rows.length)esq=`<div class="hs-buit">ENCARA NO HI HA NINGÚ AL PODI<br>JUGA I SERÀS EL PRIMER! 🚀</div>`;
  else{
-  h=`<div class="podi">${pd(rows[0],1)}${pd(rows[1],2)}${pd(rows[2],3)}</div>`;
+  esq=`<div class="podi">${pd(rows[0],1)}${pd(rows[1],2)}${pd(rows[2],3)}</div>`;
   const resta=rows.slice(3,10);
-  if(resta.length)h+=`<div class="hs-llista">${resta.map((r,i)=>fila(r,i+4)).join("")}</div>`;
+  if(resta.length)esq+=`<div class="hs-llista">${resta.map((r,i)=>fila(r,i+4,"",i)).join("")}</div>`;
   const ij=rows.findIndex(esJo);
-  if(ij>=10)h+=`<div class="hs-llista">${fila(rows[ij],ij+1,"mes")}</div>`;
+  if(ij>=10)esq+=`<div class="hs-llista">${fila(rows[ij],ij+1,"mes",8)}</div>`;
  }
- document.getElementById("hs").innerHTML=h;
+ // la teva targeta: on ets i quant et falta per avançar
+ const ij=rows.findIndex(esJo),unit=HSTAB==="temps"?"":" ⭐",fmt=v=>HSTAB==="temps"?fT(v).toLowerCase():v;
+ if(meu){if(ij<0)dre+=`<div class="hs-tu"><div class="t">ENCARA NO HI ETS!</div><p>Fes un test o un joc i entraràs al rànquing. 🚀</p></div>`;
+  else{const r=rows[ij],ant=rows[ij-1],seg=rows[ij+1];
+   if(ij===0)dre+=`<div class="hs-tu"><div class="t">👑 ETS EL 1r!</div><p>Tens <b>${fmt(r[c.k]-(seg?seg[c.k]:0))}${unit}</b> d'avantatge${seg?` sobre <b>${esc(seg.nom)}</b> ${avatar(seg.nom).e}`:""}. Que no t'atrapin!</p></div>`;
+   else{const falta=ant[c.k]-r[c.k]+(HSTAB==="temps"?60:1),pc=Math.round(r[c.k]*100/Math.max(1,ant[c.k]));
+    dre+=`<div class="hs-tu"><div class="t">ETS EL ${ordinal(ij+1).toUpperCase()}!</div><p>Et falten <b>${fmt(falta)}${unit}</b> per atrapar <b>${esc(ant.nom)}</b> ${avatar(ant.nom).e} i pujar al ${ordinal(ij)} lloc.</p><div class="falta"><i style="width:${pc}%"></i></div></div>`}}}
+ // premis de la colla
+ const tots=HSD.filter(r=>r.punts>0||r.temps_s>0),millor=(f,ok)=>{let m=null;tots.forEach(r=>{const v=f(r);if(ok(v)&&(!m||v>m.v||(v===m.v&&r.punts>m.r.punts)))m={r,v}});return m};
+ const P=[["🔥","Màquina de la setmana","#ea580c",millor(r=>r.setmana||0,v=>v>0),v=>`+${v} ⭐ en 7 dies`],
+  ["🚀","Cohet","#db2777",millor(r=>r.temps_s>=600?Math.round(r.punts*600/r.temps_s):0,v=>v>0),v=>`${v} ⭐ cada 10 min`],
+  ["🌍","Explorador de mons","#0891b2",millor(nMons,v=>v>1),v=>`${v} mons amb ⭐`],
+  ["⏱","Més constant","#7c3aed",millor(r=>r.temps_s||0,v=>v>0),v=>fT(v).toLowerCase()+" estudiant"]].filter(x=>x[3]);
+ if(P.length)dre+=`<div class="hs-premis"><h3>🏆 PREMIS DE LA COLLA</h3><div class="g">${P.map(([ic,nm,col,m,tx],i)=>`<div class="premi" style="--pc:${col};animation-delay:${(1.1+i*.15).toFixed(2)}s"><span class="ic">${ic}</span><span class="nm2">${nm}</span><span class="qui"><em>${avatar(m.r.nom).e}</em><span>${esc(m.r.nom)}</span></span><small>${tx(m.v)}</small></div>`).join("")}</div></div>`;
+ document.getElementById("hs").innerHTML=`<div class="hs-cos"><div class="hs-esq">${esq}</div>${dre?`<div class="hs-dre">${dre}</div>`:""}</div>`;
+ // rètol de notícies que passa
+ const nt=[];const r0=rows[0];
+ if(r0&&rows[1])nt.push(`👑 <b>${esc(r0.nom)}</b> lidera amb ${fmt(r0[c.k]-rows[1][c.k])}${unit} d'avantatge`);
+ P.forEach(([ic,nm,,m,tx])=>nt.push(`${ic} <b>${esc(m.r.nom)}</b>: ${tx(m.v)}`));
+ tots.filter(r=>r.punts>=SUPER).sort((a,b)=>b.punts-a.punts).slice(0,4).forEach(r=>nt.push(`🌠 <b>${esc(r.nom)}</b> té ${Math.floor(r.punts/SUPER)} superestrell${Math.floor(r.punts/SUPER)===1?"a":"es"}`));
+ if(hiHavia)rows.slice(0,10).forEach((r,i)=>{const m=mov(r,i+1);if(m==="nou")nt.push(`✨ <b>${esc(r.nom)}</b> entra al rànquing!`);else if(m>=2)nt.push(`📈 <b>${esc(r.nom)}</b> puja ${m} llocs!`)});
+ nt.push(`⭐ ${tots.length} jugadors · ${tots.reduce((a,r)=>a+r.punts,0)} estrelles entre tots`);
+ const tk=document.getElementById("hsTicker");tk.innerHTML=`<div class="hs-tk">${nt.map(x=>`<span>${x}</span>`).join("")}</div>`;
+ // comptadors que pugen
+ if(!matchMedia("(prefers-reduced-motion:reduce)").matches)document.querySelectorAll("#hs .cnt").forEach(e=>{const n=+e.dataset.n,t0=performance.now(),D=1200,ret=e.closest(".pd")?800:1000;e.textContent="0";
+  const pas=t=>{const q=Math.min(1,Math.max(0,(t-t0-ret)/D));e.textContent=Math.round(n*(1-Math.pow(1-q,3)));if(q<1)requestAnimationFrame(pas)};requestAnimationFrame(pas)});
  if(rows.length&&!matchMedia("(prefers-reduced-motion:reduce)").matches)confetiHs();
 }
 function confetiHs(){const box=document.querySelector(".hs-caixa"),cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
@@ -341,6 +467,11 @@ const MELO={ // una musiqueta curta diferent per a cada pestanya
  setmana:[[523,0,.08],[659,.08,.08],[784,.16,.08],[1047,.24,.08],[1319,.32,.08],[1568,.4,.3],[784,.4,.3,"triangle"]], // setmana: escala que puja
  nivell:[[392,0,.12],[523,.12,.12],[659,.24,.12],[784,.36,.12],[1047,.5,.34],[523,.5,.34,"triangle"],[659,.5,.34,"triangle"]] // nivell: fanfàrria
 };
+let REDOBLE=false;function redoble(){if(REDOBLE||!soOk())return;REDOBLE=true;try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();
+ for(let i=0;i<16;i++)notaH(i%2?98:110,i*.045,.05,"square",.05+i*.004);
+ const n=ACH.createBufferSource(),b=ACH.createBuffer(1,ACH.sampleRate*.9,ACH.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
+ const g=ACH.createGain(),f=ACH.createBiquadFilter();f.type="highpass";f.frequency.value=5000;g.gain.value=.18;n.buffer=b;n.connect(f).connect(g).connect(ACH.destination);n.start(ACH.currentTime+.75);
+ [[523,.75],[659,.75],[784,.75],[1047,.75]].forEach(([fq,t0])=>notaH(fq,t0,.7,"triangle",.07));[[1319,.95],[1568,1.07],[2093,1.2]].forEach(([fq,t0])=>notaH(fq,t0,.18,"square",.05))}catch(e){}}
 function musiqueta(t){if(!soOk())return;try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();(MELO[t]||MELO.punts).forEach(([f,t0,d,ty])=>notaH(f,t0,d,ty))}catch(e){}}
 // colors de les estrelles: or, plata i colors vius
 const EST={or:["linear-gradient(135deg,#fff7c2,#facc15 45%,#b45309)","#facc15"],plata:["linear-gradient(135deg,#ffffff,#cbd5e1 45%,#64748b)","#e2e8f0"],
