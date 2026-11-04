@@ -56,6 +56,12 @@ La llista oficial de mons és `motor/mons.json`.
   vegada), la teva posició («Et falten 13 ⭐ per atrapar…») i els premis de la colla.
 - Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell i 📈 Setmana. Compta els últims 120 dies.
 - **Demo amb nens inventats:** obre la portada amb `?demo` (per exemple `http://localhost:8000/?demo`).
+- **🥚 Secret:** toca **5 vegades seguides i ràpid** dins del rànquing (fora dels botons) i es fa una **festa amb música**.
+  Del 2n al 4t toc surt una guspira ✨⚡🔥 i un «bip» cada cop més agut. Cada vegada surt una festa diferent:
+  🌋 **Terratrèmol** (Grieg, «A la cova del rei de la muntanya», cada cop més ràpid i amb un BUM final),
+  🥁 **Desfilada** (Mozart, «Marxa turca», amb els nens del rànquing desfilant) i
+  🐝 **Abellots** (Rimski-Kórsakov, «El vol del borinot»). Totes tres músiques són de domini públic.
+  Si el so està apagat, la festa només es veu. En mode suau només surt un rètol quiet.
 
 ---
 

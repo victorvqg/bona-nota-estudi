@@ -340,6 +340,18 @@ footer{position:relative;z-index:1;text-align:center;color:#a5b4fc;font-size:14p
 footer b{color:var(--groc)}
 .admin{display:inline-block;margin-top:14px;font-family:'Press Start 2P',monospace;font-size:9px;color:#a5b4fc;text-decoration:none;border:1px solid #ffffff26;border-radius:999px;padding:8px 14px;opacity:.7;transition:opacity .2s,border-color .2s}
 .admin:hover{opacity:1;border-color:var(--groc);color:var(--groc)}
+/* ---- 🎉 FESTA: ou de Pasqua del rànquing (5 tocs seguits i ràpids dins del rànquing) ---- */
+.hs-caixa{-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.hs-festa{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+.hs-llums{position:absolute;border-radius:50%;mix-blend-mode:screen;opacity:.3;background:conic-gradient(#f472b6 0 6%,transparent 0 12.5%,#38bdf8 0 18.5%,transparent 0 25%,#facc15 0 31%,transparent 0 37.5%,#4ade80 0 43.5%,transparent 0 50%,#a78bfa 0 56%,transparent 0 62.5%,#fb923c 0 68.5%,transparent 0 75%,#22d3ee 0 81%,transparent 0 87.5%,#f472b6 0 93.5%,transparent 0)}
+.hs-fx{position:absolute;left:0;top:0;line-height:1;pointer-events:none;will-change:transform}
+.hs-fx>i{display:inline-block;font-style:normal}
+.hs-marx{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:3px;will-change:transform}
+.hs-marx .e{font-size:44px;line-height:1;filter:drop-shadow(0 4px 0 #0007)}
+.hs-marx .n{font-family:'Press Start 2P',monospace;font-size:8px;color:#fff;background:#000a;border-radius:6px;padding:3px 5px;white-space:nowrap}
+.hs-flash{position:absolute;inset:0;background:#fff;opacity:0}
+.hs-rf b{animation-duration:2.8s}
+.hs-suau{position:absolute;left:50%;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:15px;color:var(--groc);background:#070a2af0;border:3px solid var(--groc);border-radius:14px;padding:12px 16px;white-space:nowrap}
 
 @media (max-width:520px){header{padding-top:40px}.flota{display:none}main{gap:18px}.prox{min-height:170px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.as{opacity:1}}
@@ -516,7 +528,7 @@ function iniciEntrada(){
 // botons: explicació plegable i rànquing en popup
 (function(){const bi=document.getElementById("btInfo"),it=document.getElementById("intro"),pop=document.getElementById("hsPop");
  bi.onclick=()=>{const o=it.hidden;it.hidden=!o;bi.setAttribute("aria-expanded",o)};
- const tanca=()=>{pop.hidden=true};document.getElementById("btHs").onclick=()=>{pop.hidden=false;carregaHs()};
+ const tanca=()=>{pop.hidden=true;fiFesta(true)};document.getElementById("btHs").onclick=()=>{pop.hidden=false;carregaHs()};
  if(/[?&]demo\b/.test(location.search))setTimeout(()=>{pop.hidden=false;carregaHs()},300);
  document.getElementById("hsTanca").onclick=tanca;pop.onclick=e=>{if(e.target===pop)tanca()};document.addEventListener("keydown",e=>{if(e.key==="Escape")tanca()});
 })();
@@ -663,6 +675,112 @@ function efecteTab(b){const box=document.querySelector(".hs-caixa"),fx=FXT[b.dat
  for(let i=0;i<10;i++)espurna(box,W*(.15+Math.random()*.7),H*(.3+Math.random()*.4),EST[fx.mix[i%fx.mix.length]][1],14+Math.random()*16,300+i*90);
 }
 document.getElementById("hsTabs").onclick=e=>{const b=e.target.closest(".hs-tab");if(!b)return;if(b.dataset.t!==HSTAB)efecteTab(b);HSTAB=b.dataset.t;document.querySelectorAll(".hs-tab").forEach(x=>x.classList.toggle("on",x===b));if(HSD)pintaHs()};
+// ---- 🎉 FESTA: ou de Pasqua del rànquing ----
+// 5 tocs seguits i ràpids dins del rànquing (fora dels botons) → festa amb música. Cada vegada en surt una altra:
+// 🌋 Terratrèmol (Grieg: «A la cova del rei de la muntanya», que s'accelera), 🥁 Desfilada (Mozart: «Marxa turca»),
+// 🐝 Abellots (Rimski-Kórsakov: «El vol del borinot»). Totes tres músiques són de domini públic, fetes amb WebAudio.
+const NF=n=>{const m=/^([A-G])(#?)(\d)$/.exec(n);return 440*2**(({C:-9,D:-7,E:-5,F:-4,G:-2,A:0,B:2}[m[1]]+(m[2]?1:0)+(m[3]-4)*12)/12)};
+const seqP=s=>s.trim().split(/\s+/).map(x=>{const[n,l]=x.split(":");return[n,+(l||1)]});
+const suau=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
+let FSO=false,FG=null,FSOR=null,FLFO=null,FESTA=null,FESTA_N=Math.floor(Math.random()*3),TOC_N=0,TOC_T=0;
+function fAc(){ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();
+ if(!FSOR){FSOR=ACH.createBuffer(1,ACH.sampleRate,ACH.sampleRate);const d=FSOR.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+ FG=ACH.createGain();FG.connect(ACH.destination)}
+// nota, soroll (caixa/xarles) i bombo; tot passa pel volum de la festa (FG) per poder-ho apagar de cop
+function fN(f,t0,d,tipus="square",vol=.07,det){if(!FSO)return;const t=ACH.currentTime+t0,o=ACH.createOscillator(),g=ACH.createGain();o.type=tipus;o.frequency.setValueAtTime(f,t);if(det)det.connect(o.detune);
+ g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.006);g.gain.exponentialRampToValueAtTime(.001,t+Math.max(.03,d));o.connect(g).connect(FG);o.start(t);o.stop(t+d+.03)}
+function fS(t0,d,vol,tipus="highpass",fq=7000){if(!FSO)return;const t=ACH.currentTime+t0,s=ACH.createBufferSource(),f=ACH.createBiquadFilter(),g=ACH.createGain();s.buffer=FSOR;s.loop=true;f.type=tipus;f.frequency.value=fq;
+ g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(f).connect(g).connect(FG);s.start(t,Math.random()*.5);s.stop(t+d+.02)}
+function fK(t0,vol=.5,f0=150){if(!FSO)return;const t=ACH.currentTime+t0,o=ACH.createOscillator(),g=ACH.createGain();o.type="sine";o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(40,t+.14);
+ g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(g).connect(FG);o.start(t);o.stop(t+.22)}
+// 🌋 3 vegades el tema, cada cop més ràpid i més fort, i un BUM final
+function musTerra(){const P=seqP("B4 C#5 D5 E5 F#5 D5 F#5:2 F5 C#5 F5:2 E5 C5 E5:2 B4 C#5 D5 E5 F#5 D5 F#5 B5 A5 F#5 D5 F#5 A5:4"),R=3,tot=P.reduce((a,x)=>a+x[1],0)*R;
+ let t=0,k=0;
+ for(let r=0;r<R;r++)for(const[n,l]of P){const t1=t;let d=0;
+  for(let s=0;s<l;s++){const q=k/tot,dt=.12-.06*q,tt=t1+d;fN(NF(k%2?"F#3":"B2"),tt,dt*.8,"triangle",.16);fS(tt,.04,.02+.06*q);if(k%2===0)fK(tt,.3+.3*q);d+=dt;k++}
+  fN(NF(n),t1,d*.9,"square",.05+.02*r);if(r===R-1)fN(NF(n)/2,t1,d*.9,"sawtooth",.035);t+=d}
+ fK(t,.9,120);fS(t,1.3,.45,"lowpass",900);["B3","D4","F#4","B4"].forEach(n=>fN(NF(n),t+.05,1.1,"triangle",.09));fN(NF("B5"),t+.05,.45,"square",.045);fN(NF("F#5"),t+.25,.4,"square",.035);
+ return {d:t+1.3,bum:t}}
+// 🥁 marxa amb bombo, caixa i «um-pa», i acord final de La major
+function musDesfi(){const u=.09,B1="C5:2 -:2 D5 C5 B4 C5",B2="E5:2 -:2 F5 E5 D#5 E5",B3="B5 A5 G#5 A5 B5 A5 G#5 A5";
+ const M=seqP(`B4 A4 G#4 A4 ${B1} ${B2} ${B3} C6:4 B4 A4 G#4 A4 ${B1} ${B2} ${B3} C6 B5 A5 G#5 A5 E5 C5 E5 A5:4 -:4`);
+ let t=0;for(const[n,l]of M){if(n!=="-")fN(NF(n),t,l*u*.9,"square",.055);t+=l*u}
+ const H=["A","A","E","A","A","A","E","EA","A"],AC={A:["A2",["C4","E4"]],E:["E2",["B3","D4","G#3"]]};
+ H.forEach((h,b)=>{for(let e=0;e<4;e++){const tt=(4+b*8+e*2)*u,[bs,ac]=AC[h.length>1?h[e<2?0:1]:h];
+  if(e%2===0){fN(NF(bs),tt,u*1.6,"triangle",.17);fK(tt,.42)}else{ac.forEach(x=>fN(NF(x),tt,u*1.4,"square",.022));fS(tt,.09,.12,"bandpass",1800)}fS(tt+u,.03,.03)}});
+ for(let i=0;i<8;i++)fS(t-4*u+i*u/2,.05,.05+.012*i,"bandpass",2000);
+ fK(t,.7);fS(t,.9,.18,"highpass",5000);["A3","C#4","E4","A4"].forEach(n=>fN(NF(n),t,1,"triangle",.08));fN(NF("E5"),t,.6,"square",.04);fN(NF("A5"),t+.12,.7,"square",.045);
+ return {d:t+1.1}}
+// 🐝 escales cromàtiques ràpides amb vibrato de borinot
+function musAbella(){const u=.065,A="E5 D#5 D5 C#5 D5 C#5 C5 B4 C5 B4 A#4 A4 G#4 G4 F#4 F4",B="E4 F4 E4 D#4 ".repeat(4),C="E4 F4 F#4 G4 G#4 A4 A#4 B4 C5 C#5 D5 D#5 E5 F5 E5 D#5";
+ const M=seqP(`${A} ${B} ${C} ${A} ${B} ${C} A4 B4 C5 D5 E5 F5 G#5 A5:8`);let det=null;
+ if(FSO){FLFO=ACH.createOscillator();det=ACH.createGain();FLFO.frequency.value=26;det.gain.value=22;FLFO.connect(det);FLFO.start()}
+ let t=0;for(const[n,l]of M){fN(NF(n),t,l*u*.95,"sawtooth",.042,det);t+=l*u}
+ for(let e=0;e<Math.floor((t-8*u)/(2*u));e++){const tt=e*2*u;fN(NF(e%2?"E3":"A2"),tt,u*1.5,"triangle",.15);if(e%2===0)fK(tt,.3);else fS(tt,.04,.05)}
+ fK(t-8*u,.6);["A3","C4","E4","A4"].forEach(n=>fN(NF(n),t-8*u,8*u+.5,"triangle",.06));if(FLFO)FLFO.stop(ACH.currentTime+t+1);
+ return {d:t+.5}}
+// part visible del rànquing (la finestra pot tallar-lo): els efectes es fan allà
+function visHs(box){const cb=box.getBoundingClientRect(),top=Math.max(0,-cb.top),bot=Math.min(box.clientHeight,innerHeight-cb.top);return {W:box.clientWidth,top,H:Math.max(160,bot-top)}}
+function fEm(capa,e,x,y,m){const s=document.createElement("span");s.className="hs-fx";s.innerHTML=`<i>${e}</i>`;s.style.cssText=`font-size:${m}px;left:${x-m/2}px;top:${y-m/2}px`;capa.appendChild(s);return s}
+function fxTerra(box,capa,v,mu){const N=Math.round(mu.bum*14);
+ FESTA.anims.push(box.animate(Array.from({length:N+1},(_,k)=>{const q=k/N,A=1+9*q*q;return {transform:k===N?"none":`translate(${(Math.random()*2-1)*A}px,${(Math.random()*2-1)*A}px) rotate(${(Math.random()*2-1)*A*.1}deg)`}}),{duration:mu.bum*1000,easing:"linear"}));
+ FESTA.t.push(setTimeout(()=>{const fl=document.createElement("div");fl.className="hs-flash";capa.appendChild(fl);fl.animate([{opacity:.85},{opacity:0}],{duration:550,fill:"forwards"});
+  FESTA.anims.push(box.animate([{transform:"scale(1.04)"},{transform:"scale(.98)"},{transform:"none"}],{duration:420}));
+  const x0=v.W/2,y0=v.top+v.H*.45;
+  for(let i=0;i<34;i++){const e=fEm(capa,["💥","🪨","🔥","⭐","🌋","🦖"][i%6],x0,y0,22+Math.random()*26),a=Math.random()*Math.PI*2,vel=220+Math.random()*320,vx=Math.cos(a)*vel,vy=Math.sin(a)*vel-180,g=700,T=1.1+Math.random()*.5,K=[];
+   for(let k=0;k<=10;k++){const q=k/10,tt=q*T;K.push({transform:`translate(${vx*tt}px,${vy*tt+.5*g*tt*tt}px) rotate(${(i%2?1:-1)*540*q}deg) scale(${k<2?.4+k*.6:1})`,opacity:q<.7?1:1-(q-.7)/.3})}
+   e.animate(K,{duration:T*1000,easing:"linear",fill:"both"})}
+  confetiHs()},mu.bum*1000))}
+function fxDesfi(box,capa,v,mu){const D=mu.d*1000,gap=78,y=v.top+v.H-96,rows=(HSD||[]).filter(r=>r.punts>0).sort((a,b)=>b.punts-a.punts).slice(0,8);
+ const fila=[{e:"🥁"},...rows.map(r=>({e:avatar(r.nom).e,n:r.nom})),{e:"🎺"}];
+ fila.forEach((m,i)=>{const el=document.createElement("div");el.className="hs-marx";el.innerHTML=`<span class="e">${m.e}</span>${m.n?`<span class="n">${esc(m.n)}</span>`:""}`;capa.appendChild(el);
+  const x0=v.W+20+i*gap,x1=x0-(v.W+fila.length*gap+60);
+  el.animate([{transform:`translate(${x0}px,${y}px)`},{transform:`translate(${x1}px,${y}px)`}],{duration:D,easing:"linear",fill:"both"});
+  el.firstChild.animate([{transform:"translateY(0) rotate(-8deg)"},{transform:"translateY(-12px) rotate(8deg)"}],{duration:180,iterations:Infinity,direction:"alternate",easing:"ease-in-out",delay:i*40})});
+ for(let i=0;i<14;i++)FESTA.t.push(setTimeout(()=>{const e=fEm(capa,i%2?"🎶":"🎵",Math.random()*v.W,y-10,26);
+  e.animate([{transform:"translateY(0) scale(.5)",opacity:0},{transform:"translateY(-60px) scale(1.1)",opacity:1,offset:.3},{transform:`translate(${(Math.random()-.5)*60}px,-180px) scale(.9)`,opacity:0}],{duration:1600,fill:"forwards"})},300+i*D/16))}
+function fxAbella(box,capa,v,mu){const D=mu.d*1000,pt=()=>[20+Math.random()*(v.W-40),v.top+30+Math.random()*(v.H-60)];
+ for(let i=0;i<14;i++){const m=22+Math.random()*16,e=fEm(capa,"🐝",m/2,m/2,m),K=[];let x=Math.random()<.5?-40:v.W+40,y=v.top+Math.random()*v.H;
+  K.push({transform:`translate(${x}px,${y}px)`});
+  for(let k=0;k<7;k++){const[nx,ny]=pt();K.push({transform:`translate(${nx}px,${ny}px) scaleX(${nx<x?1:-1})`});x=nx;y=ny}
+  K.push({transform:`translate(${x+(Math.random()-.5)*200}px,${v.top-80}px)`});
+  e.animate(K,{duration:D-i*90,delay:i*90,easing:"ease-in-out",fill:"both"});
+  e.firstChild.animate([{transform:"translateY(-3px) rotate(-6deg)"},{transform:"translateY(3px) rotate(6deg)"}],{duration:70,iterations:Infinity,direction:"alternate"})}
+ for(let i=0;i<9;i++)FESTA.t.push(setTimeout(()=>{const e=fEm(capa,["🌼","🌸","🌻","🌷"][i%4],30+Math.random()*(v.W-60),v.top+v.H-34,30);
+  e.animate([{transform:"scale(0) rotate(-90deg)"},{transform:"scale(1.3) rotate(10deg)",offset:.6},{transform:"scale(1) rotate(0)"}],{duration:500,fill:"forwards"})},400+i*D/11))}
+const FESTES=[{r:"TERRATRÈMOL!",tx:"linear-gradient(#fde68a,#f97316 55%,#b91c1c)",gl:"#f97316",mus:musTerra,fx:fxTerra,em:["💥","🪨","🔥","🌋"]},
+ {r:"DESFILADA!",tx:"linear-gradient(90deg,#f472b6,#facc15,#4ade80,#22d3ee,#a78bfa)",gl:"#f0abfc",mus:musDesfi,fx:fxDesfi,em:["🎵","🎶","🥁","🎺"]},
+ {r:"ABELLOTS!",tx:"linear-gradient(#fef9c3,#facc15 50%,#a16207)",gl:"#facc15",mus:musAbella,fx:fxAbella,em:["🐝","🌼","🍯","🌸"]}];
+function festa(){const box=document.querySelector(".hs-caixa"),F=FESTES[FESTA_N++%FESTES.length],v=visHs(box);
+ FSO=soOk();if(FSO)try{fAc()}catch(e){FSO=false}
+ const mu=F.mus(),capa=document.createElement("div");capa.className="hs-festa";box.appendChild(capa);
+ FESTA={F,box,capa,anims:[],t:[]};FESTA.t.push(setTimeout(()=>fiFesta(),mu.d*1000+300));window.FESTES_FETES=(window.FESTES_FETES||0)+1;
+ if(suau()){const b=document.createElement("div");b.className="hs-suau";b.style.top=(v.top+70)+"px";b.textContent="🎉 "+F.r+" 🎉";capa.appendChild(b);return}
+ // llums de discoteca que giren
+ const L=2*Math.max(innerWidth,innerHeight),ll=document.createElement("div");ll.className="hs-llums";ll.style.cssText=`width:${L}px;height:${L}px;left:${v.W/2-L/2}px;top:${v.top+v.H/2-L/2}px`;capa.appendChild(ll);
+ ll.animate([{transform:"rotate(0)"},{transform:"rotate(360deg)"}],{duration:2600,iterations:Infinity});
+ // rètol lletra a lletra
+ const r=document.createElement("div");r.className="hs-rotul hs-rf";r.style.cssText=`top:${v.top+Math.min(260,v.H*.3)}px;--tx:${F.tx};--gl:${F.gl}`;
+ r.innerHTML=[...F.r].map((c,i)=>`<b style="animation-delay:${i*55}ms">${c}</b>`).join("");capa.appendChild(r);FESTA.t.push(setTimeout(()=>r.remove(),2800+F.r.length*55));
+ // tothom balla: avatars del podi, files de la taula i el títol
+ box.querySelectorAll(".pd-av").forEach((e,i)=>FESTA.anims.push(e.animate([{transform:"translateY(0) rotate(-14deg)"},{transform:"translateY(-12px) rotate(14deg) scale(1.08)"}],{duration:300,iterations:Infinity,direction:"alternate",easing:"ease-in-out",delay:i*100})));
+ box.querySelectorAll(".ht-fila:not(.ht-cap)").forEach((e,i)=>FESTA.anims.push(e.animate([{transform:"translateY(0)"},{transform:"translateY(-6px)"}],{duration:240,iterations:Infinity,direction:"alternate",easing:"ease-in-out",delay:i*60})));
+ const tit=box.querySelector(".hs-tit");if(tit)FESTA.anims.push(tit.animate([{filter:"hue-rotate(0deg)",transform:"scale(1)"},{filter:"hue-rotate(360deg)",transform:"scale(1.08)"}],{duration:900,iterations:Infinity,direction:"alternate"}));
+ confetiHs();F.fx(box,capa,v,mu)}
+function fiFesta(rapid){if(!FESTA)return;const f=FESTA;FESTA=null;f.t.forEach(clearTimeout);f.anims.forEach(a=>{try{a.cancel()}catch(e){}});f.capa.remove();
+ if(FG&&ACH){const g=FG,t=ACH.currentTime;FG=null;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+(rapid?.12:.3));setTimeout(()=>{try{g.disconnect()}catch(e){}},600)}
+ if(FLFO){try{FLFO.stop()}catch(e){}FLFO=null}}
+// comptador de tocs: del 2n al 4t toc surt una guspira i un «bip» cada cop més agut; al 5è, FESTA
+document.querySelector(".hs-caixa").addEventListener("pointerdown",e=>{if(e.button>0||e.target.closest("button,a"))return;
+ const box=e.currentTarget,cb=box.getBoundingClientRect(),x=e.clientX-cb.left,y=e.clientY-cb.top,t=performance.now();
+ if(FESTA){if(!suau()){const em=FESTA.F.em,s=fEm(FESTA.capa,em[Math.floor(Math.random()*em.length)],x,y,30);
+   s.animate([{transform:"scale(.3)",opacity:1},{transform:`translate(${(Math.random()-.5)*50}px,-70px) scale(1.3)`,opacity:1,offset:.5},{transform:`translate(${(Math.random()-.5)*80}px,-120px) scale(1)`,opacity:0}],{duration:800,fill:"forwards"})}return}
+ TOC_N=t-TOC_T<500?TOC_N+1:1;TOC_T=t;
+ if(TOC_N>=5){TOC_N=0;festa();return}
+ if(TOC_N<2)return;
+ if(soOk())try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();notaH([0,0,660,880,1175][TOC_N],0,.09,"square",.06)}catch(err){}
+ if(suau())return;const m=18+TOC_N*6,s=document.createElement("span");s.className="hs-fx";s.textContent=["","","✨","⚡","🔥"][TOC_N];s.style.cssText=`font-size:${m}px;left:${x-m/2}px;top:${y-m/2}px;z-index:8`;box.appendChild(s);
+ s.animate([{transform:"scale(.2)",opacity:1},{transform:"translateY(-26px) scale(1.2)",opacity:1,offset:.6},{transform:"translateY(-40px) scale(.9)",opacity:0}],{duration:600,fill:"forwards"}).onfinish=()=>s.remove()});
 </script>
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
 </body>
