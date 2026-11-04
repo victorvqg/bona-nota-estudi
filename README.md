@@ -24,6 +24,12 @@ La llista oficial de mons és `motor/mons.json`.
 - **Entrar:** a la portada, el nen escriu el seu **nom i un PIN** i de seguida **tria el món**. Dins dels mons ja no
   li torna a demanar res. Amb el PIN, el progrés es desa al núvol i el pot recuperar des d'un altre aparell.
   En un mateix aparell hi poden entrar com a màxim 2 noms. «No ets tu?» (a la portada) o «Canviar d'usuari» (dins d'un món) canvien de nen.
+- **El PIN:** **4 números i 1 lletra al final** (per exemple `4587R`). Es pot escriure com es vulgui: sempre surt en
+  majúscules, i al principi només deixa posar números. El PIN d'exemple no es pot fer servir.
+- **🛡️ Actualització de seguretat:** qui encara té el PIN antic (només 4 números) pot entrar igual, però tot seguit
+  se li demana triar-ne un de nou (escrit dues vegades). Fins que no el canvia no pot continuar. Si no hi ha connexió,
+  pot fer «Ara no» i se li tornarà a demanar la pròxima vegada. Si ja l'havia canviat en un altre aparell, se li
+  demana entrar amb el PIN nou. Al panell d'admin surt «🛡️ PIN nou» o «⚠️ PIN antic» per a cada nen.
 - **Cada tema té 3 passos:** 📄 fitxa → 🃏 targetes → ✅ test.
   El test fa 6 preguntes a l'atzar del tema. Amb un **70 %** s'aprova i es passa sol al tema següent.
 - **Repàs dels errors:** el que falla torna a sortir avui, i el que encerta torna d'aquí a 3 dies i després a 7 dies.
@@ -147,4 +153,5 @@ El resultat surt a la pestanya **Actions** del repo.
 - **Al núvol** (Supabase), només amb nom i PIN: el progrés de cada món, per poder canviar d'aparell.
 - **Registre d'activitat** (`bn_log`): què fa cada nen i quan, per al panell d'admin i el rànquing. Només s'hi pot escriure; llegir-lo només ho pot fer l'admin.
 - **Rànquing:** `bn_ranking_mons` (total i estrelles per món). Els noms amagats o no permesos no hi surten.
+- **PIN:** xifrat (bcrypt), mai es guarda tal qual. 5 errors en 15 minuts bloquegen el nom 15 minuts. Format i canvi: `supabase/bn_pin_nou.sql`.
 - Els canvis a la base de dades es fan a Supabase i el seu SQL es desa a `supabase/`.

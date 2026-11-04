@@ -283,9 +283,21 @@ h1 span{display:inline-block}
 .en-noms:empty{display:none}
 .en-noms button{font:inherit;font-weight:900;font-size:15px;color:#1e1b4b;background:#fde68a;border:0;border-radius:999px;padding:7px 14px;cursor:pointer;box-shadow:0 3px 0 #b45309}
 .en-noms button.on{background:#22d3ee;box-shadow:0 3px 0 #0e7490}
-.en-camps{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:8px}
+.en-camps{display:grid;grid-template-columns:minmax(0,1fr) 116px;gap:8px}
 .en-camps input{min-width:0;font:inherit;font-weight:900;font-size:18px;text-align:center;color:#1e1b4b;background:#fff;border:3px solid #c7d2fe;border-radius:14px;padding:11px 8px}
-#enPin{letter-spacing:5px}
+.pin-in{letter-spacing:3px;text-transform:uppercase}.pin-in::placeholder{letter-spacing:0;text-transform:none}
+/* 🛡️ actualització de seguretat del PIN (4 xifres + 1 lletra) */
+.np-pop{position:fixed;inset:0;z-index:60;background:#020617e0;backdrop-filter:blur(5px);display:flex;padding:14px;overflow:auto}
+.np-pop[hidden]{display:none}
+.np-pop .entrada{margin:auto;max-width:440px;width:100%;text-align:center}
+.np-ic{font-size:50px;line-height:1}
+.np-pop h2{margin:0;font-family:'Press Start 2P',monospace;font-size:15px;line-height:1.5;color:var(--groc)}
+.np-pop p{margin:0;font-size:15.5px;font-weight:700;color:#e0e7ff;line-height:1.45}
+.np-pop p b{color:#fff}.np-ex{letter-spacing:2px;color:var(--groc)!important}
+.np-pop input{font:inherit;font-weight:900;font-size:22px;text-align:center;color:#1e1b4b;background:#fff;border:3px solid #c7d2fe;border-radius:14px;padding:11px 8px}
+.np-pop input:focus{outline:none;border-color:#facc15;box-shadow:0 0 0 4px #facc1555}
+.np-ara{font:inherit;font-weight:800;font-size:14px;color:#c7d2fe;background:none;border:1px solid #ffffff40;border-radius:999px;padding:8px 14px;cursor:pointer}
+.np-ara[hidden]{display:none}
 .en-camps input:focus{outline:none;border-color:#facc15;box-shadow:0 0 0 4px #facc1555}
 .en-bt{font-family:'Press Start 2P',monospace;font-size:14px;color:#1e1b4b;background:#facc15;border:0;border-radius:14px;padding:14px;cursor:pointer;box-shadow:0 4px 0 #b91c1c}
 .en-bt:active{transform:translateY(2px);box-shadow:0 2px 0 #b91c1c}
@@ -387,10 +399,10 @@ footer b{color:var(--groc)}
  <form class="entrada" id="entrada" autocomplete="off" hidden>
   <label for="enNom">👋 Com et dius?</label>
   <div class="en-noms" id="enNoms"></div>
-  <div class="en-camps"><input id="enNom" maxlength="20" placeholder="El teu nom"><input id="enPin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="PIN"></div>
+  <div class="en-camps"><input id="enNom" maxlength="20" placeholder="El teu nom"><input id="enPin" class="pin-in" maxlength="5" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="PIN"></div>
   <div class="en-avis" id="enAvis" role="status"></div>
   <button class="en-bt" type="submit">Entra ▶</button>
-  <p class="en-peu">El PIN són 4 números. El primer cop, inventa-te'n un i recorda'l: amb el PIN continues des de qualsevol aparell.</p>
+  <p class="en-peu">El PIN són <b>4 números i 1 lletra al final</b> (per exemple 4587R). El primer cop, inventa-te'n un i recorda'l: amb el PIN continues des de qualsevol aparell.</p>
  </form>
  <div class="tria" id="tria" hidden>👇 Ara tria el teu món 👇</div>
 </header>
@@ -447,6 +459,19 @@ footer b{color:var(--groc)}
 </main>
 
 
+<div class="np-pop" id="npPop" hidden role="dialog" aria-modal="true" aria-labelledby="npTit">
+ <form class="entrada" id="npForm" autocomplete="off">
+  <div class="np-ic">🛡️</div>
+  <h2 id="npTit">ACTUALITZACIÓ DE SEGURETAT</h2>
+  <p>Hola, <b id="npNom"></b>! Per protegir millor el teu progrés, ara els PIN són més segurs: <b>4 números i 1 lletra al final</b>, per exemple <b class="np-ex">4587R</b>.</p>
+  <p>Tria el teu PIN nou i recorda'l (apunta'l amb papa o mama). Des d'ara, el PIN antic ja no servirà.</p>
+  <input id="npP1" class="pin-in" maxlength="5" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="PIN nou">
+  <input id="npP2" class="pin-in" maxlength="5" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="Repeteix el PIN nou">
+  <div class="en-avis" id="npAvis" role="status"></div>
+  <button class="en-bt" type="submit">Desa el PIN nou 🔑</button>
+  <button class="np-ara" type="button" id="npAra" hidden>Ara no, ho faré la pròxima vegada</button>
+ </form>
+</div>
 <div class="hs-pop" id="hsPop" hidden role="dialog" aria-modal="true" aria-label="Rànquing">
  <div class="hs-caixa"><button class="hs-tanca" id="hsTanca" aria-label="Tanca">✕</button>
   <p class="hs-tit">★ HIGH SCORES ★<span class="hs-demo" id="hsDemo" hidden>DEMO</span></p>
@@ -480,7 +505,10 @@ function pinsP(){try{return JSON.parse(localStorage.getItem('bn_pins')||'{}')||{
 function nomsDispositiu(){const m={};try{(JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[]).forEach(n=>{m[n.trim().toLowerCase()]=n});
  for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c))continue;Object.keys(JSON.parse(localStorage.getItem(c)||'{}')||{}).forEach(n=>{m[n.trim().toLowerCase()]=m[n.trim().toLowerCase()]||n})}}catch(e){}return m}
 const rpcP=(f,body)=>fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:JSON.stringify(body)})
- .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/nom no permes/.test(t)?"nom":"xarxa"}return t?JSON.parse(t):null});
+ .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa"}return t?JSON.parse(t):null});
+// PIN = 4 xifres + 1 lletra al final (ex. 4587R), sempre en MAJÚSCULES. Els antics (4 xifres) entren i es demana canviar-los.
+const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
+function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
 function pintaHola(){const G=jugador(),h=document.getElementById('hola'),f=document.getElementById('entrada'),t=document.getElementById('tria'),m=document.querySelector('main');
  if(G){h.innerHTML=`Hola, <em>${G.replace(/[<>&]/g,'')}</em>! 👋 <button class="canvia" id="enCanvia" type="button">No ets tu?</button>`;f.hidden=true;t.hidden=false;m.classList.remove('bloc');
   document.getElementById('enCanvia').onclick=()=>{try{localStorage.removeItem('bn_jugador')}catch(e){}location.reload()}}
@@ -491,25 +519,44 @@ function iniciEntrada(){
  ns.innerHTML=noms.map(n=>`<button type="button" data-n="${n.replace(/"/g,'&quot;')}">${n.replace(/[<>&]/g,'')}</button>`).join('');
  ns.querySelectorAll('button').forEach(b=>b.onclick=()=>{iN.value=b.dataset.n;ns.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));iP.value='';iP.focus()});
  const err=(m,el)=>{av.className='en-avis';av.textContent=m;f.classList.remove('tremola');void f.offsetWidth;f.classList.add('tremola');(el||iN).focus()};
- iP.oninput=()=>{iP.value=iP.value.replace(/\D/g,'').slice(0,4);av.textContent=''};iN.oninput=()=>{av.textContent=''};
+ iP.oninput=()=>{iP.value=netPin(iP.value);av.textContent=''};iN.oninput=()=>{av.textContent=''};
  const dins=n=>{try{localStorage.setItem('bn_jugador',n);const l=JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem('bn_noms_aparell',JSON.stringify(l))}}catch(e){}
   pintaHola();const m=document.querySelector('main');m.classList.remove('ilumina');void m.offsetWidth;m.classList.add('ilumina');
   setTimeout(()=>document.getElementById('tria').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'}),150)};
  const desaPinP=(n,p)=>{const x=pinsP();x[n.trim().toLowerCase()]=p;try{localStorage.setItem('bn_pins',JSON.stringify(x))}catch(e){}};
  f.onsubmit=async e=>{e.preventDefault();let n=iN.value.trim().replace(/\s+/g,' ');if(!n)return err('Escriu el teu nom.');
-  n=n.charAt(0).toUpperCase()+n.slice(1);const p=iP.value;
+  n=n.charAt(0).toUpperCase()+n.slice(1);const p=netPin(iP.value);
   const coneguts=nomsDispositiu(),local=coneguts[n.toLowerCase()];if(local)n=local;
   if(!local&&Object.keys(coneguts).length>=2)return err(`📵 En aquest aparell ja hi ha 2 noms (${Object.values(coneguts).join(' i ')}). Toca el teu nom per entrar.`);
-  if(!/^\d{4}$/.test(p))return err('🔢 Escriu el PIN: 4 números.',iP);
+  if(!PIN_NOU.test(p)&&!PIN_VELL.test(p))return err(`🔢 Escriu el PIN: 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,iP);
   av.className='en-avis ok';av.textContent='Un moment…';
   let ex;try{ex=await rpcP('bn_perfil_existeix',{p_nom:n})}catch(x){ex=null}
   if(ex===null){const pl=pinsP()[n.toLowerCase()];if(local&&(!pl||pl===p)){if(!pl)desaPinP(n,p);return dins(n)}
    return err(pl?'❌ PIN incorrecte.':'📡 Cal connexió a internet per entrar amb un nom nou.',pl?iP:iN)}
   const primer=(document.querySelector('.as[data-id]')||{dataset:{}}).dataset.id||'socials';
-  if(ex){try{await rpcP('bn_progres_llegeix',{p_nom:n,p_pin:p,p_assig:primer});desaPinP(n,p);dins(n)}
+  if(ex){try{await rpcP('bn_progres_llegeix',{p_nom:n,p_pin:p,p_assig:primer});desaPinP(n,p);if(PIN_VELL.test(p))return demanaNouPin(n,()=>dins(n));dins(n)}
    catch(m){err(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar.':m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':'📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
+  if(!PIN_NOU.test(p))return err(`🔤 Al final del PIN hi va una lletra. Per exemple: ${PIN_EX}. Inventa't el teu!`,iP);
+  if(p===PIN_EX)return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",iP);
   try{const r=await rpcP('bn_perfil_crea',{p_nom:n,p_pin:p});if(r==='existeix')return err('Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.',iP);desaPinP(n,p);dins(n)}
-  catch(m){err(m==='nom'?'🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.':'📡 No hi ha connexió. Prova-ho més tard.')}};
+  catch(m){err(m==='nom'?'🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.':m==='pinfmt'?`🔤 El PIN són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió. Prova-ho més tard.',m==='pinfmt'?iP:iN)}};
+ // 🛡️ actualització de seguretat: qui té el PIN antic (4 xifres) en tria un de nou (4 xifres + 1 lletra)
+ function demanaNouPin(n,despres){const pop=document.getElementById('npPop'),fm=document.getElementById('npForm'),p1=document.getElementById('npP1'),p2=document.getElementById('npP2'),na=document.getElementById('npAvis'),ara=document.getElementById('npAra');
+  document.getElementById('npNom').textContent=n;p1.value=p2.value='';na.className='en-avis';na.textContent='';ara.hidden=true;pop.hidden=false;setTimeout(()=>p1.focus(),50);
+  const ko=(m,el)=>{na.className='en-avis';na.textContent=m;fm.classList.remove('tremola');void fm.offsetWidth;fm.classList.add('tremola');(el||p1).focus()};
+  p1.oninput=()=>{p1.value=netPin(p1.value);na.textContent='';if(p1.value.length===5)p2.focus()};p2.oninput=()=>{p2.value=netPin(p2.value);na.textContent=''};
+  ara.onclick=()=>{try{sessionStorage.setItem('bn_pin_ajorna','1')}catch(e){}pop.hidden=true;despres()};
+  fm.onsubmit=async e=>{e.preventDefault();const a=netPin(p1.value),b=netPin(p2.value),vell=pinsP()[n.toLowerCase()];
+   if(!PIN_NOU.test(a))return ko(`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,p1);
+   if(a===PIN_EX)return ko("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",p1);
+   if(a!==b)return ko("Els dos PIN no són iguals. Torna'ls a escriure.",p2);
+   na.className='en-avis ok';na.textContent='Un moment…';
+   try{await rpcP('bn_perfil_canvia_pin',{p_nom:n,p_pin:vell,p_nou:a});desaPinP(n,a);na.textContent='🛡️ PIN actualitzat! Recorda\'l bé.';setTimeout(()=>{pop.hidden=true;despres()},900)}
+   catch(m){if(m==='pin'){ // el PIN guardat ja no serveix (potser ja l'ha canviat en un altre aparell): que torni a entrar
+     const x=pinsP();delete x[n.toLowerCase()];try{localStorage.setItem('bn_pins',JSON.stringify(x));localStorage.removeItem('bn_jugador')}catch(er){}
+     pop.hidden=true;pintaHola();iN.value=n;iP.value='';av.className='en-avis';av.textContent='🔐 Sembla que ja havies canviat el PIN en un altre aparell. Entra amb el PIN nou.';iP.focus();return}
+    ko(m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':m==='pinfmt'?`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió i ara no es pot canviar el PIN.');if(m==='xarxa')ara.hidden=false}}}
+ setTimeout(()=>{const G=jugador(),pg=G&&pinsP()[G.toLowerCase()];let aj=false;try{aj=sessionStorage.getItem('bn_pin_ajorna')==='1'}catch(e){}if(G&&PIN_VELL.test(pg||'')&&!aj)demanaNouPin(G,()=>{})},0);
  // sense nom, els mons esperen: primer el nom
  document.querySelectorAll('main .as[href]').forEach(a=>a.addEventListener('click',e=>{if(jugador())return;e.preventDefault();err('👆 Primer escriu el teu nom i el PIN.');f.scrollIntoView({behavior:'smooth',block:'center'})}));
  pintaHola();
