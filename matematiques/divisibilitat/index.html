@@ -622,6 +622,7 @@ function gbToca(b){const n=+b.dataset.n;if(!GB.j||b.classList.contains("ok")||b.
 function provaGarbell(j){jocGarbell(j);document.querySelectorAll(".gb").forEach(b=>{if(esPrimer(+b.dataset.n))gbToca(b)});return GB.j===null||"no ha acabat el garbell"}
 
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}];
+const QIDS={"relacio":[1,2,3,4,5,6,7,8],"multdiv":[1,2,3,4,5,6,7,8],"criteris":[1,2,3,4,5,6,7,8,9],"primers":[1,2,3,4,5,6,7,8,9],"factors":[1,2,3,4,5,6,7,8,9],"mcm":[1,2,3,4,5,6,7,8,9],"mcd":[1,2,3,4,5,6,7,8,9],"problemes":[1,2,3,4,5,6,7,8,9,10]};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
@@ -638,10 +639,29 @@ function desa(){S.mod=Date.now();guarda();pintaCap();nuvolProg()}
 const BN_LOG={url:"https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/bn_log",key:"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb"};
 const SESSIO=Math.random().toString(36).slice(2,12);let APARELL="",TPEND=0;
 try{APARELL=localStorage.getItem("bn_aparell")||"";if(!APARELL){APARELL=Math.random().toString(36).slice(2,12);localStorage.setItem("bn_aparell",APARELL)}}catch(e){APARELL="?"}
-function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return;
+// ---- id estable de cada pregunta («tema/núm.»; l'assignatura ja va a la columna assig). Ve de motor/qids.json via build.py ----
+(function(){if(typeof QIDS==="undefined")return;const posa=(qs,tid)=>{const ns=QIDS[tid];if(ns&&qs)qs.forEach((q,i)=>{if(ns[i])q.id=tid+"/"+ns[i]})};
+ T.forEach(t=>posa(t.q,t.id));(ASSIG.jocs||[]).forEach(j=>{if(Array.isArray(j.q))posa(j.q,"j-"+j.id)})})();
+const cpQ=q=>Object.assign(q.slice(),{id:q.id});
+// cada resposta d'un test: "tema/núm:encert(1/0):segons:opció triada" (text curt: ocupa molt menys que una llista a la base de dades)
+let TQ=[],TQ0=0,TQT=0;
+const anotaQ=(q,ok,op)=>{TQ.push(`${q.id||"?"}:${ok?1:0}:${Math.min(600,Math.round((Date.now()-TQ0)/1000))}:${op==null?"-":op}`)};
+let ULT=null,JOC0=0;  // detall de l'últim test/joc per afegir-lo al registre del joc
+const segs=t0=>t0?Math.min(36000,Math.round((Date.now()-t0)/1000)):0;
+// el detall no pot passar de 2000 bytes a la base de dades: si és massa llarg, es queden només les preguntes fallades
+function retalla(o){const mida=x=>new TextEncoder().encode(JSON.stringify(x)).length;if(mida(o)<=1700)return o;
+ o=Object.assign({},o);if(Array.isArray(o.q)){const ko=o.q.filter(x=>x.split(":")[1]==="0");o.qok=o.q.length-ko.length;o.q=ko;
+  while(o.q.length&&mida(o)>1700)o.q.pop()}
+ if(mida(o)>1700){delete o.titol;delete o.fonts}return o}
+// fitxa i targetes: es registren en sortir, amb el temps dedicat i si s'han acabat
+let ACTV=null;
+function tancaActivitat(){const a=ACTV;ACTV=null;if(!a)return;const s=segs(a.t0);if(s<2)return;
+ if(a.tipus==="fitxa")registra("fitxa",{tema:a.tid,titol:a.titol,s,fi:a.fi?1:0});
+ else registra("targetes",{tema:a.tid,titol:a.titol,s,vistes:a.vistes.size,n:a.n,girs:a.girs,fi:a.vistes.size>=a.n?1:0})}
+function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return;detall=retalla(detall||{});
  try{fetch(BN_LOG.url,{method:"POST",keepalive:true,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json","Prefer":"return=minimal"},
   body:JSON.stringify({assig:ASSIG.id,nom:S.nom.slice(0,40),sessio:SESSIO,aparell:APARELL,event,detall:detall||{}})}).catch(()=>{})}catch(e){}}
-function buidaTemps(){if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
+function buidaTemps(){tancaActivitat();if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")buidaTemps()});
 addEventListener("pagehide",buidaTemps);
 // noms d'aquest dispositiu, sumant tots els mons (mateix navegador). Màxim 2 noms per dispositiu.
@@ -654,7 +674,7 @@ function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLower
 function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
  ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
 function apuntaNom(n){try{const l=JSON.parse(localStorage.getItem("bn_noms_aparell")||"[]")||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem("bn_noms_aparell",JSON.stringify(l))}}catch(e){}}
-function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{h:new Date().getHours(),dw:new Date().getDay()||7,nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
@@ -780,7 +800,7 @@ const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${
 function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
 let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
 function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
-function vista(v){if(S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
+function vista(v){tancaActivitat();if(S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
  if(S.nom&&!SENSE_NUVOL()&&pinVell(S.nom)&&!PIN_AJORNA&&v!=="benvinguda"){pantallaNouPin();return}calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
 
 
@@ -917,28 +937,33 @@ function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.l
 const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"],["examreal","📝","Examen de veritat","10 preguntes · nota sobre 10","#e0e7ff"]];
 function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
 function pintaJocs(){app.innerHTML=`<h2 class="sec">🎮 Jocs</h2><div class="grid">${tilesJocs()}</div>`}
-function joc(id){JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
-function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id);registra(id==="examen"?"examen":"joc",{joc:id,titol:j?j[2]:id,pc})}
+function joc(id){tancaActivitat();JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
+ const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
+ if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}
+ registra(ex?"examen":"joc",det)}
 
 // ====================== TEMA ======================
 let tema,pest="fitxa";
-function obre(i){calla();aturaSeg();COMBO=0;FONT=["temes",T[i].id];tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
+function obre(i){tancaActivitat();calla();aturaSeg();COMBO=0;FONT=["temes",T[i].id];tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
 function pintaTema(){
- window.scrollTo(0,0);
+ tancaActivitat();window.scrollTo(0,0);
  const t=tema,e=ET(t.id),idx=T.indexOf(t);
  app.innerHTML=`<div class="cap-tema"><div class="ic" style="background:${t.col}22">${t.ic}</div><div><div class="prog">Tema ${idx+1} de ${T.length} · ${t.font}</div><h2>${t.titol}</h2></div></div>
  <div class="passos">${[["fitxa","📄 Fitxa",e.fitxa],["targetes","🃏 Targetes",e.fc>=t.fc.length],["test","✅ Test",e.intents.length>0]].map(([k,n,f])=>`<button class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
  if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,NTEST),0,0,t.id)}
 }
 function fitxa(){
- const t=tema;ET(t.id).fitxa=true;desa();registra("fitxa",{tema:t.id,titol:t.titol});
+ const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
  const txtF=`${t.titol}. Idea clau: ${t.idea}. ${t.pts.join(". ")}. Truc: ${t.truc}. Compte: ${t.compte}`;
- document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+ document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila"><button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+ const cpt=document.querySelector("#zona .compte");if(cpt&&"IntersectionObserver" in window){const a=ACTV,ob=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){if(a)a.fi=1;ob.disconnect()}});ob.observe(cpt)}
 }
 function targetes(n){calla();
  const t=tema,c=t.fc[n],e=ET(t.id);e.fc=Math.max(e.fc,n+1);desa();
+ if(!ACTV||ACTV.tipus!=="targetes"||ACTV.tid!==t.id){tancaActivitat();ACTV={tipus:"targetes",tid:t.id,titol:t.titol,t0:Date.now(),vistes:new Set(),n:t.fc.length,girs:0}}ACTV.vistes.add(n);
  document.getElementById("zona").innerHTML=`<div class="prog" style="text-align:center">Targeta ${n+1} de ${t.fc.length}</div>
- <div class="flash" onclick="this.classList.toggle('gir')"><div class="in"><div class="cara davant">${btEscolta(c[0],"")}${c[0]}<small>toca per girar</small></div><div class="cara darrere">${btEscolta(c[1],"")}${c[1]}<small>toca per tornar</small></div></div></div>
+ <div class="flash" onclick="this.classList.toggle('gir');if(ACTV&&ACTV.tipus==='targetes')ACTV.girs++"><div class="in"><div class="cara davant">${btEscolta(c[0],"")}${c[0]}<small>toca per girar</small></div><div class="cara darrere">${btEscolta(c[1],"")}${c[1]}<small>toca per tornar</small></div></div></div>
  <div class="punts-fc">${t.fc.map((x,i)=>`<i class="${i==n?'on':''}"></i>`).join("")}</div>
  <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="targetes(${n-1})">← Anterior</button>
  ${n<t.fc.length-1?`<button class="btn" onclick="targetes(${n+1})">Següent →</button>`:`<button class="btn verd" onclick="pest='test';pintaTema()">Fes el test ✅</button>`}</div>`;
@@ -948,10 +973,12 @@ function targetes(n){calla();
 function test(ordre,k,bones,clau,pool,cb){
  calla();
  const z=document.getElementById("zona"),llista=pool||tema.q,esTema=!pool;
+ if(k===0){TQ=[];TQT=Date.now()}
  if(k>=ordre.length){
   const pc=Math.round(bones*100/ordre.length);
+  ULT={mode:esTema?"tema":clau==="examen"?"sorpresa":clau==="repas"?"repas":"joc",bones,n:ordre.length,s:segs(TQT),q:TQ.slice()};
   if(cb){cb(pc,bones,ordre.length);return}
-  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",{tema:tema.id,titol:tema.titol,pc,bones,n:ordre.length});
+  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",Object.assign({tema:tema.id,titol:tema.titol,pc},ULT));ULT=null;
   const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=APROVA;
   const rec=ant!==null&&pc>ant;if(rec){const f=FONT;FONT=["record"];suma(2);FONT=f}
   if(aprova)arcade(pc,bones,ordre.length,rec);else fracas(pc,bones,ordre.length);
@@ -970,8 +997,9 @@ function test(ordre,k,bones,clau,pool,cb){
  const ops=barreja(q[1].map((o,i)=>[o,i]));
  z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
  ${potEscoltar()?`<div class="escolta-fila" style="margin:4px 0 -4px">${btEscolta(q[0]+". "+ops.map(([o],j)=>"ABC"[j]+": "+o).join(". "),"")}</div>`:""}<div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="fb"></div></div>`;
+ TQ0=Date.now();
  z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-  const ok=+b.dataset.i===q[2];
+  const ok=+b.dataset.i===q[2];anotaQ(q,ok,+b.dataset.i);
   z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
   const tidR=q.tid||(esTema?tema.id:null);if(tidR)repAnota(tidR,q[0],ok);
   if(ok){const nova=REPAS?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);if(!nova&&!REPAS)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">ja encertada avui · sense ⭐</small>`);so("ok");ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
@@ -982,7 +1010,7 @@ function test(ordre,k,bones,clau,pool,cb){
 function valora(i,b){ET(tema.id).valoracio=i;desa();registra("valora",{tema:tema.id,titol:tema.titol,v:["Costa","Bé","Fàcil"][i]});b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
 function resultatJoc(id,titol){return (pc,b,n)=>{const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
 function examen(){
- const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=q.slice();c.tema=t.titol;c.tid=t.id;pool.push(c)}));
+ const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=cpQ(q);c.tema=t.titol;c.tid=t.id;pool.push(c)}));
  const ordre=barreja(pool.map((x,i)=>i)).slice(0,15);
  app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
  test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
@@ -1157,8 +1185,8 @@ function examenReal(){aturaSeg();calla();window.scrollTo(0,0);marcaNav("jocs");
  <div class="fila"><button class="btn verd" id="exGo">Comença l'examen ▶</button></div></div>`;
  app.querySelectorAll(".ex-opt").forEach(l=>l.onclick=()=>{app.querySelectorAll(".ex-opt").forEach(x=>x.classList.toggle("on",x===l));l.querySelector("input").checked=true});
  document.getElementById("exGo").onclick=()=>{const tl=+app.querySelector("input[name=exT]:checked").value;
-  const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=q.slice();c.tema=t.titol;c.tid=t.id;c.ops=barreja(q[1].map((o,i)=>[o,i]));pool.push(c)}));
-  EXR={qs:barreja(pool).slice(0,10),r:{},k:0,fi:tl?Date.now()+tl*1000:0,t:null};
+  const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=cpQ(q);c.tema=t.titol;c.tid=t.id;c.ops=barreja(q[1].map((o,i)=>[o,i]));pool.push(c)}));
+  EXR={qs:barreja(pool).slice(0,10),r:{},k:0,fi:tl?Date.now()+tl*1000:0,t:null,t0:Date.now(),tl};
   if(EXR.fi)EXR.t=setInterval(()=>{const el=document.getElementById("exRel");const s=Math.max(0,Math.round((EXR.fi-Date.now())/1000));if(el){el.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;el.classList.toggle("poc",s<=60)}if(s<=0)fiExamenReal(true)},500);
   pintaExR()}}
 function pintaExR(){const e=EXR,q=e.qs[e.k],n=e.qs.length;calla();
@@ -1177,7 +1205,8 @@ function fiExamenReal(perTemps){const e=EXR;if(!e||e.acabat)return;e.acabat=1;if
  let b=0,nova=0;const n=e.qs.length;
  e.qs.forEach((q,k)=>{const ok=e.r[k]===q[2];if(ok){b++;nova+=estPregunta(q.tid+"|"+q[0])}repAnota(q.tid,q[0],ok);if(!ok){const x=ET(q.tid);x.fallades[q[0]]=(x.fallades[q[0]]||0)+1}});
  const f=FONT;FONT=["examen"];suma(nova);FONT=f;
- const nota=Math.round(b*100/n)/10,pc=Math.round(b*100/n);desaJoc("examreal",pc);S.examens.push({d:avui(),pc,real:1});desa();
+ const nota=Math.round(b*100/n)/10,pc=Math.round(b*100/n);
+ ULT={mode:e.tl?"real-temps":"real",bones:b,n,s:segs(e.t0),q:e.qs.map((q,k)=>`${q.id||"?"}:${e.r[k]===q[2]?1:0}:-:${e.r[k]===undefined?"-":e.r[k]}`)};desaJoc("examreal",pc);S.examens.push({d:avui(),pc,real:1});desa();
  if(pc>=50)arcade(pc,b,n,false);else fracas(pc,b,n);
  app.innerHTML=`<h2 class="sec">📝 Resultat de l'examen</h2><div class="box" style="text-align:center">${perTemps?`<p class="prog">⏱ S'ha acabat el temps!</p>`:""}<div class="ex-nota" style="color:${nota>=5?"#16a34a":"#dc2626"}">${nota.toString().replace(".",",")}<small style="font-size:18px">/10</small></div><p><b>${b} de ${n} encertades</b> · ${nota>=9?"Excel·lent!":nota>=7?"Molt bé!":nota>=5?"Aprovat!":"Cal repassar més, ànims!"}</p>${nova?`<p class="prog">+${nova} ⭐ per preguntes noves d'avui</p>`:""}</div>
  <h2 class="sec">🔎 Revisa les respostes</h2><div class="box">${e.qs.map((q,k)=>{const ok=e.r[k]===q[2],tua=e.r[k]===undefined?"(sense resposta)":q[1][e.r[k]];return `<div class="ex-rev ${ok?"ok":"ko"}"><b>${k+1}. ${q[0]}</b><small>${ok?"✅":"❌"} La teva: ${tua}${ok?"":` · Correcta: <b>${q[1][q[2]]}</b>`}</small><small>💡 ${q[3]}</small></div>`}).join("")}
@@ -1200,10 +1229,10 @@ function repProper(){const f=repTots().map(r=>r.prox).sort();return f[0]||null}
 function repas(){
  const pend=barreja(repPendents()).slice(0,10);aturaSeg();COMBO=0;FONT=["repas"];window.scrollTo(0,0);marcaNav("inici");
  if(!pend.length){const pr=repProper();app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila"><button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
- const pool=pend.map(r=>{const t=T.find(x=>x.id===r.tid),q=t.q.find(x=>x[0]===r.q).slice();q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
+ const pool=pend.map(r=>{const t=T.find(x=>x.id===r.tid),q=cpQ(t.q.find(x=>x[0]===r.q));q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
  REPAS=true;
  app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Si l'encertes, tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après! 🧠</p><div id="zona"></div>`;
- test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{REPAS=false;registra("joc",{joc:"repas",titol:"Repàs dels errors",pc});arcade(pc,b,n,false);
+ test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{REPAS=false;registra("joc",Object.assign({joc:"repas",titol:"Repàs dels errors",pc},ULT||{}));ULT=null;arcade(pc,b,n,false);
   const queden=repPendents().length,pr=repProper();
   document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=APROVA?"🧠":"💪"}</div><h2>${b} de ${n} recordades</h2><p>${b?`Molt bé! Les que has encertat tornaran d'aquí a uns dies per assegurar-nos que no se t'obliden.`:""} ${n-b?`Les que has fallat tornaran <b>demà</b>.`:""}</p>${S.apresos?`<p class="prog">Preguntes apreses per sempre: <b>${S.apresos}</b> 🏅</p>`:""}<div class="fila">${queden?`<button class="btn" onclick="repas()">Repassa'n ${queden} més</button>`:""}<button class="btn sec" onclick="vista('inici')">Torna a l'inici</button></div></div>`});
 }
@@ -1212,7 +1241,7 @@ function cartaRepas(){const n=repPendents().length,tot=repTots().length;if(!tot)
 
 // ====================== JOCS GENÈRICS ======================
 // tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
-function fiJoc(j,n,errors){diaEst().j[j.id]=1;const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
+function fiJoc(j,n,errors,extra){ULT=Object.assign({enc:n,err:errors},extra||{});diaEst().j[j.id]=1;const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
  document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
 function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
 function jocOrdena(j){
@@ -1252,7 +1281,8 @@ function jocClassifica(j){
 
 // ====================== PREGUNTES OBERTES ======================
 function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}
-function obertes(n){
+let OB0=0;
+function obertes(n){OB0=Date.now();
  FONT=["obertes"];window.scrollTo(0,0);marcaNav("obertes");
  const o=OB[n],fet=S.ob[n];
  app.innerHTML=`<h2 class="sec">✍️ Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
@@ -1270,7 +1300,7 @@ function obertes(n){
   document.getElementById("nota").onclick=()=>{
    const txtR=document.getElementById("resp").value,cks=[...document.querySelectorAll(".pk")],k=cks.filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
    const det=o.p.filter((pt,i)=>cks[i].checked&&ideaDetectada(pt,txtR)).length,primera=!diaEst().o[n];diaEst().o[n]=1;
-   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(primera?det:0);registra("oberta",{n,tema:o.t,pc});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(primera?det:0);registra("oberta",{n,tema:o.t,pc,s:segs(OB0),idees:k,de:tot,det,falten:o.p.map((x,i)=>cks[i].checked?null:i).filter(x=>x!==null)});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
    const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
    document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> marcades · n'he trobat <b>${det}</b> escrites al teu text${primera?` → +${det} ⭐`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>A l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
   };

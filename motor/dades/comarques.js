@@ -316,7 +316,7 @@ function mpToca(n,p){
 }
 // ---- 📍 On és? ----
 function mpRonda(max){const L=barreja(mpLlista().slice());return L.slice(0,Math.min(max,L.length))}
-function mpOnEs(){MP.r=mpRonda(15);MP.k=0;MP.enc=0;MP.err=0;MP.int=0;MP.fet=new Set();mpPregOnEs()}
+function mpOnEs(){MP.fl=[];MP.r=mpRonda(15);MP.k=0;MP.enc=0;MP.err=0;MP.int=0;MP.fet=new Set();mpPregOnEs()}
 function mpPregOnEs(){if(MP.k>=MP.r.length)return mpFi();const n=MP.r[MP.k];MP.int=0;
  document.getElementById("mpEnun").innerHTML=`📍 On és ${mpArtP(mpC(n)[1])}? <small class="prog">(${MP.k+1}/${MP.r.length})</small>`;
  document.getElementById("mpZona").innerHTML=`<div class="mp-info" id="mpInfo"><p style="color:var(--suau)">Toca la comarca al mapa. Si falles, et diré quina has tocat.</p></div>`}
@@ -324,14 +324,14 @@ function mpRespon(n,p){const bona=MP.r[MP.k];if(MP.mode!=="onEs"||MP.bloc||MP.fe
  const e=document.getElementById("mpInfo");
  if(n===bona){p.classList.add("ok");MP.fet.add(n);if(!MP.int){MP.enc++;suma(JOCSTAR)}so("ok");
   e.style.borderColor="#22c55e";e.innerHTML=`<p>✅ Sí! ${n} · <b>${mpC(n)[1]}</b>, capital <b>${mpC(n)[2]}</b>.</p>`;MP.k++;MP.bloc=1;setTimeout(()=>{MP.bloc=0;mpPregOnEs()},1100);return}
- MP.int++;if(MP.int===1)MP.err++;so("ko");p.classList.add("ko");setTimeout(()=>p.classList.remove("ko"),700);
+ MP.int++;if(MP.int===1){MP.err++;MP.fl.push(bona)}so("ko");p.classList.add("ko");setTimeout(()=>p.classList.remove("ko"),700);
  e.style.borderColor="#f97316";
  if(MP.int<2){e.innerHTML=`<p>❌ Aquesta és ${mpArtP(mpC(n)[1])}. Torna-ho a provar!</p>`;return}
  const q=mpSol(bona,3000);MP.fet.add(bona);
  e.innerHTML=`<p>❌ Aquesta és ${mpArtP(mpC(n)[1])}. ${mpMaj(mpArtP(mpC(bona)[1]))} és la que fa pampallugues en <b style="color:#15803d">verd</b> (capital: ${mpC(bona)[2]}).</p>`;
  MP.k++;MP.bloc=1;setTimeout(()=>{q.classList.add("ko");MP.bloc=0;mpPregOnEs()},3000)}
 // ---- 🏛️ Quina capital? ----
-function mpCapital(){MP.r=mpRonda(10);MP.k=0;MP.enc=0;MP.err=0;mpPregCap()}
+function mpCapital(){MP.fl=[];MP.r=mpRonda(10);MP.k=0;MP.enc=0;MP.err=0;mpPregCap()}
 function mpPregCap(){document.querySelectorAll(".mp-c.mira").forEach(p=>p.classList.remove("mira"));if(MP.k>=MP.r.length)return mpFi();
  const n=MP.r[MP.k],[,nom,cap,d]=mpC(n);document.querySelector(`.mp-c[data-n="${n}"]`).classList.add("mira");
  const alt=barreja(COM.filter(c=>c[3]===d&&c[0]!==n).map(c=>c[2])).slice(0,2),ops=barreja([cap,...alt]);
@@ -340,12 +340,12 @@ function mpPregCap(){document.querySelectorAll(".mp-c.mira").forEach(p=>p.classL
 function mpTriaCap(b){if(MP.bloc)return;const n=MP.r[MP.k],[,nom,cap]=mpC(n),ok=b.dataset.c===cap;MP.bloc=1;
  document.querySelectorAll(".mp-opts .opt").forEach(o=>{if(o.dataset.c===cap)o.classList.add("ok")});
  const p=document.querySelector(`.mp-c[data-n="${n}"]`);p.classList.remove("mira");
- if(ok){MP.enc++;suma(JOCSTAR);so("ok");p.classList.add("ok")}else{MP.err++;so("ko");b.classList.add("ko");mpSol(n,2600);document.querySelectorAll(".mp-opts .opt.ok").forEach(o=>o.classList.add("sol"))}
+ if(ok){MP.enc++;suma(JOCSTAR);so("ok");p.classList.add("ok")}else{MP.err++;MP.fl.push(n);so("ko");b.classList.add("ko");mpSol(n,2600);document.querySelectorAll(".mp-opts .opt.ok").forEach(o=>o.classList.add("sol"))}
  document.getElementById("mpInfo").innerHTML=`<div class="fb ${ok?"ok":"ko"}">${ok?"✅ Molt bé!":"❌ No."} La capital ${mpDe(nom)} és <b>${cap}</b>.</div>`;
  MP.k++;setTimeout(()=>{MP.bloc=0;mpPregCap()},ok?1100:2600)}
 // ---- 🎯 De qui és? Et dic la capital i toques la comarca al mapa ----
 const mpEsCap=cap=>cap.includes(" i ")?`<b>${cap}</b> són les capitals`:`<b>${mpMaj(cap)}</b> és la capital`;
-function mpQui(){MP.r=mpRonda(10);MP.k=0;MP.enc=0;MP.err=0;MP.int=0;MP.fet=new Set();mpPregQui()}
+function mpQui(){MP.fl=[];MP.r=mpRonda(10);MP.k=0;MP.enc=0;MP.err=0;MP.int=0;MP.fet=new Set();mpPregQui()}
 function mpPregQui(){if(MP.k>=MP.r.length)return mpFi();const n=MP.r[MP.k];MP.int=0;
  document.getElementById("mpEnun").innerHTML=`🎯 ${mpEsCap(mpC(n)[2])} de quina comarca? <small class="prog">(${MP.k+1}/${MP.r.length})</small>`;
  document.getElementById("mpZona").innerHTML=`<div class="mp-info" id="mpInfo"><p style="color:var(--suau)">Toca la comarca al mapa. Si t'equivoques, et diré quina has tocat i quina capital té.</p></div>`}
@@ -353,7 +353,7 @@ function mpRespQui(n,p){const bona=MP.r[MP.k];if(MP.mode!=="quiEs"||MP.bloc||MP.
  const e=document.getElementById("mpInfo"),[,nb,cb]=mpC(bona),[,nn,cn]=mpC(n);
  if(n===bona){p.classList.add("ok");MP.fet.add(n);if(!MP.int){MP.enc++;suma(JOCSTAR)}so("ok");e.style.borderColor="#22c55e";
   e.innerHTML=`<p>✅ Sí! ${mpEsCap(cb)} ${mpDe(nb)} (${n}).</p>`;MP.k++;MP.bloc=1;setTimeout(()=>{MP.bloc=0;if(MP.mode==="quiEs")mpPregQui()},1200);return}
- MP.int++;if(MP.int===1)MP.err++;so("ko");p.classList.add("ko");setTimeout(()=>p.classList.remove("ko"),700);e.style.borderColor="#f97316";
+ MP.int++;if(MP.int===1){MP.err++;MP.fl.push(bona)}so("ko");p.classList.add("ko");setTimeout(()=>p.classList.remove("ko"),700);e.style.borderColor="#f97316";
  if(MP.int<2){e.innerHTML=`<p>❌ Aquesta és ${mpArtP(nn)}, i la seva capital és <b>${cn}</b>. Torna-ho a provar!</p>`;return}
  const q=mpSol(bona,3000);MP.fet.add(bona);
  e.innerHTML=`<p>❌ Aquesta és ${mpArtP(nn)} (capital: ${cn}). La resposta era ${mpArtP(nb)}: és la que fa pampallugues en <b style="color:#15803d">verd</b>.</p>`;
@@ -365,7 +365,7 @@ function mpRec(){try{return +localStorage.getItem(mpRecKey())||0}catch(e){return
 function mpContra(){MP.fi=0;MP.enc=0;MP.err=0;MP.r=[];MP.k=0;
  document.getElementById("mpEnun").innerHTML=`⏱ Contrarellotge: ${MP_T} segons!`;
  document.getElementById("mpZona").innerHTML=`<div class="mp-info"><p>La comarca fa pampallugues al mapa 🟠. Tria la seva capital tan ràpid com puguis. Si n'encertes 3 seguides, fas <b>combo</b> 🔥.</p><p>🏆 El teu rècord: <b>${mpRec()}</b> capitals</p></div><div class="fila" style="margin:0 0 10px"><button class="btn verd" onclick="mpContraVa()">Comença ▶</button></div>`}
-function mpContraVa(){aturaSeg();MP.enc=0;MP.err=0;MP.combo=0;MP.bloc=0;MP.fi=Date.now()+MP_T*1000;MP.pila=barreja(mpLlista().slice());
+function mpContraVa(){aturaSeg();MP.fl=[];MP.enc=0;MP.err=0;MP.combo=0;MP.bloc=0;MP.fi=Date.now()+MP_T*1000;MP.pila=barreja(mpLlista().slice());
  document.getElementById("mpZona").innerHTML=`<div class="mp-crono"><i id="mpCrI"></i></div><div class="mp-marc"><span id="mpCrS">⏱ ${MP_T}</span><span id="mpCrC"></span><span id="mpCrE">✅ 0</span></div><div class="mp-opts mp-4" id="mpOpts"></div>`;
  temp=setInterval(()=>{const q=Math.max(0,MP.fi-Date.now()),i=document.getElementById("mpCrI");if(!i||!MP.fi){aturaSeg();return}
   i.style.width=(q/(MP_T*10))+"%";document.getElementById("mpCrS").textContent="⏱ "+Math.ceil(q/1000);if(q<=10000)i.classList.add("poc");if(q<=0)mpContraFi()},100);
@@ -378,16 +378,16 @@ function mpContraPreg(){document.querySelectorAll(".mp-c.mira").forEach(p=>p.cla
  document.getElementById("mpOpts").innerHTML=ops.map(o=>`<button class="opt" data-c="${o.replace(/"/g,"&quot;")}" onclick="mpContraTria(this)"><span>${o}</span></button>`).join("")}
 function mpContraTria(b){if(MP.bloc||!MP.fi)return;const n=MP.cn,cap=mpC(n)[2],ok=b.dataset.c===cap,p=document.querySelector(`.mp-c[data-n="${n}"]`);p.classList.remove("mira");
  if(ok){MP.enc++;MP.combo++;if(MP.enc<=15)suma(JOCSTAR);so("ok");b.classList.add("ok");p.classList.add("ok");setTimeout(()=>p.classList.remove("ok"),900)}
- else{MP.err++;MP.combo=0;so("ko");b.classList.add("ko");mpSol(n,900);document.querySelectorAll("#mpOpts .opt").forEach(o=>{if(o.dataset.c===cap)o.classList.add("ok","sol")})}
+ else{MP.err++;MP.fl.push(n);MP.combo=0;so("ko");b.classList.add("ko");mpSol(n,900);document.querySelectorAll("#mpOpts .opt").forEach(o=>{if(o.dataset.c===cap)o.classList.add("ok","sol")})}
  document.getElementById("mpCrE").textContent="✅ "+MP.enc;document.getElementById("mpCrC").textContent=MP.combo>=3?`🔥 COMBO ×${MP.combo}`:"";
  MP.bloc=1;setTimeout(()=>{MP.bloc=0;if(MP.fi&&MP.mode==="contra")mpContraPreg()},ok?280:1100)}
 function mpContraFi(){if(!MP.fi)return;MP.fi=0;aturaSeg();document.querySelectorAll(".mp-c.mira").forEach(p=>p.classList.remove("mira"));
  const rec=mpRec(),nou=MP.enc>rec;if(nou)try{localStorage.setItem(mpRecKey(),String(MP.enc))}catch(e){}
  document.getElementById("mpEnun").innerHTML=`⏱ Temps! ${MP.enc} capital${MP.enc===1?"":"s"} encertad${MP.enc===1?"a":"es"}${nou?" · 🏆 NOU RÈCORD!":` · el teu rècord: ${rec}`}`;
  document.getElementById("mpZona").innerHTML=`<div class="fila" style="margin:0 0 10px"><button class="btn verd" onclick="mpContraVa()">Torna-hi ▶</button></div>`;
- if(MP.enc+MP.err)fiJoc(MP.j,MP.enc,MP.err)}
+ if(MP.enc+MP.err)fiJoc(MP.j,MP.enc,MP.err,{mode:MP.mode,f:MP.fl.join(",")})}
 function mpSol(n,ms){const q=document.querySelector(`.mp-c[data-n="${n}"]`);if(!q)return q;q.parentNode.appendChild(q);q.classList.remove("mira","ko");q.classList.add("sol");setTimeout(()=>q.classList.remove("sol"),ms);return q}
-function mpFi(){document.getElementById("mpEnun").innerHTML=`🏁 Ronda acabada: ${MP.enc} de ${MP.r.length} a la primera`;document.getElementById("mpZona").innerHTML="";fiJoc(MP.j,MP.enc,MP.err)}
+function mpFi(){document.getElementById("mpEnun").innerHTML=`🏁 Ronda acabada: ${MP.enc} de ${MP.r.length} a la primera`;document.getElementById("mpZona").innerHTML="";fiJoc(MP.j,MP.enc,MP.err,{mode:MP.mode,f:(MP.fl||[]).join(",")})}
 // per a la prova automàtica (motor/prova.js): juga totes dues rondes encertant-ho tot
 function provaMapa(j){MP.mode="onEs";MP.dem="";jocMapa(j);for(let i=0;i<MP.r.length;i++){MP.bloc=0;const n=MP.r[MP.k];mpRespon(n,document.querySelector(`.mp-c[data-n="${n}"]`));MP.bloc=0;mpPregOnEs()}
  MP.mode="capital";jocMapa(j);for(let i=0;i<MP.r.length;i++){MP.bloc=0;const cap=mpC(MP.r[MP.k])[2];mpTriaCap([...document.querySelectorAll(".mp-opts .opt")].find(o=>o.dataset.c===cap));MP.bloc=0;mpPregCap()}

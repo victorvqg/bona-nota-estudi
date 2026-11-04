@@ -64,6 +64,17 @@ s = s[:a] + "\n" + "\n".join(targetes) + "\n " + s[b:]
 idx.write_text(s)
 print(f"✓ portada: {len(mons)} mons")
 
+# 3b) text de totes les preguntes per al tauler d'admin (admin/preguntes.json): id → text, opcions, correcta, tema
+from qids import ids_mon
+preguntes = {}
+for m in mons:
+    _, _, p = ids_mon(d / "dades" / f"{m['dades']}.js")
+    for k, v in p.items():
+        v["mon"] = m["titol"]
+    preguntes.update(p)
+(arrel / "admin" / "preguntes.json").write_text(json.dumps(preguntes, ensure_ascii=False, separators=(",", ":")))
+print(f"✓ admin/preguntes.json: {len(preguntes)} preguntes")
+
 # 4) service worker (app instal·lable i sense connexió): llista de pàgines i versió segons el contingut
 import hashlib
 fitxers_sw = ["./", "index.html", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png"] + [m["carpeta"] + "/" for m in mons]

@@ -43,7 +43,7 @@ tr.clic{cursor:pointer}tr.clic:hover td{background:#ffffff0a}
 .nom{font-weight:900;color:#fff}
 .xip{display:inline-block;border-radius:999px;padding:2px 9px;font-weight:800;font-size:12px;background:#ffffff14;margin:1px 2px 1px 0;white-space:nowrap}
 .pc{font-weight:900}.v{color:#4ade80}.t{color:#fbbf24}.r{color:#f87171}
-.ev-entra{background:#1d4ed855}.ev-fitxa{background:#0ea5e955}.ev-test{background:#7c3aed66}.ev-joc{background:#db277755}.ev-examen{background:#dc262666}.ev-oberta{background:#ea580c55}.ev-valora{background:#16a34a55}.ev-temps{background:#47556966}
+.ev-entra{background:#1d4ed855}.ev-fitxa{background:#0ea5e955}.ev-test{background:#7c3aed66}.ev-joc{background:#db277755}.ev-examen{background:#dc262666}.ev-oberta{background:#ea580c55}.ev-valora{background:#16a34a55}.ev-temps{background:#47556966}.ev-targetes{background:#0891b255}
 .sessio{border-top:1px solid var(--vora);padding:14px 16px}
 .sessio h3{margin:0 0 8px;font-size:15px}
 .gestio{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--vora)}
@@ -61,21 +61,47 @@ tr.clic{cursor:pointer}tr.clic:hover td{background:#ffffff0a}
 .buit{padding:30px;text-align:center;color:var(--suau);font-weight:800}
 .det-cap{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--vora);flex-wrap:wrap}
 .det-cap h2{margin:0;font-size:22px}
+/* ---- tauler ---- */
+.tf{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.tf label{font-weight:900;color:var(--suau);font-size:13px}
+.kpi .dl{font-size:13px;font-weight:900;margin-left:6px}.dl.up{color:#4ade80}.dl.dn{color:#f87171}.dl.eq{color:var(--suau)}
+.kpi em{display:block;font-style:normal;color:var(--suau);font-weight:700;font-size:12px;margin-top:2px}
+.graella{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:14px;margin-bottom:14px}
+.pan{background:var(--panell);border:1px solid var(--vora);border-radius:18px;padding:14px 16px;min-width:0}
+.pan h3{margin:0 0 4px;font-size:16px}.pan .sub{color:var(--suau);font-weight:700;font-size:12.5px;margin:0 0 10px}
+.pan.ample{grid-column:1/-1}
+.cv{position:relative;height:260px}
+.calor{display:grid;grid-template-columns:34px repeat(24,1fr);gap:2px;font-size:10.5px;font-weight:800;color:var(--suau)}
+.calor i{display:block;aspect-ratio:1;border-radius:3px;background:#ffffff0d}.calor span{text-align:center}
+.dom{overflow:auto;max-height:520px}.dom table{font-size:13px}.dom td,.dom th{padding:6px 7px;text-align:center}.dom td.nom,.dom th.nom{text-align:left;position:sticky;left:0;background:#141a4a;z-index:1}
+.dom th{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;max-height:170px;font-size:11.5px}
+.cel{display:inline-block;min-width:38px;border-radius:7px;padding:3px 4px;font-weight:900;color:#0b1033}
+.fq{display:grid;grid-template-columns:1fr 150px;gap:6px 12px;padding:9px 0;border-top:1px solid #ffffff10;font-size:14px}
+.fq:first-of-type{border-top:0}.fq b{color:#fff}.fq small{color:var(--suau);font-weight:700;display:block;margin-top:2px}
+.fq .bar{height:9px;background:#ffffff14;border-radius:6px;overflow:hidden;margin-top:4px}.fq .bar i{display:block;height:100%;background:linear-gradient(90deg,#f97316,#ef4444)}
+.fq .ok{color:#4ade80}.fq .pa{color:#fca5a5}
+.al{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid #ffffff10;font-weight:700;font-size:14px}.al:first-child{border-top:0}
+.al .g3{color:#f87171}.al .g2{color:#fbbf24}.al .g1{color:var(--suau)}
+.cst{display:grid;grid-template-columns:minmax(90px,140px) 1fr auto;gap:8px;align-items:center;margin:5px 0;font-weight:800;font-size:14px}
+.cst .bfe i{background:linear-gradient(90deg,#22d3ee,#0284c7)}
+.avis-sql{background:#7c2d12;border:2px solid #fb923c;border-radius:14px;padding:12px 16px;font-weight:800;margin-bottom:14px}
+details.pend summary{cursor:pointer;color:var(--suau);font-weight:800;padding:6px 0}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 </head>
 <body>
 <div class="top"><h1>🔐 ADMIN · BONA NOTA</h1><span class="esp"></span><span id="eines" hidden>
- <select id="dies"><option value="1">Avui</option><option value="7" selected>7 dies</option><option value="30">30 dies</option><option value="365">Tot l'any</option></select>
+ <select id="dies"><option value="1">Avui</option><option value="7" selected>7 dies</option><option value="30">30 dies</option><option value="365">Tot el curs</option></select>
  <button class="btn sec" id="refresca">↻ Actualitza</button> <button class="btn sec" id="surt">Surt</button></span>
  <a href="../" class="btn sec" style="text-decoration:none">← Inici</a></div>
 <main id="app"></main>
 
 <script>
 const API="https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb";
-const ASSIGS={socials:"🌍 Socials",biogeo:"🔭 Bio i Geo",castellano:"📝 Castellano"};
+const ASSIGS={socials:"🌍 Socials (clima)",biogeo:"🔭 Bio i Geo",castellano:"📝 Castellano",comarques:"🗺️ Comarques",divisibilitat:"➗ Mates (divisibilitat)"};
 const app=document.getElementById("app"),$=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let CRED=null,LOGS=[],VISTA="nens",FILTRE={q:"",assig:"",event:""};
+let CRED=null,LOGS=[],VISTA="tauler",FILTRE={q:"",assig:"",event:""};
 try{CRED=JSON.parse(sessionStorage.getItem("bn_admin")||"null")}catch(e){}
 
 function login(msg){
@@ -103,11 +129,12 @@ const cpc=pc=>`<span class="pc ${pc>=80?"v":pc>=50?"t":"r"}">${pc}%</span>`;
 const clauNen=l=>l.nom.trim().toLowerCase();
 function descriu(l){const d=l.detall||{};switch(l.event){
  case"entra":return d.nou?"Perfil nou creat ✨":`Entra · ⭐ ${d.punts??0} · ${d.aprovats??0}/${d.temes??"?"} temes aprovats`;
- case"fitxa":return `Llegeix la fitxa: <b>${esc(d.titol||d.tema)}</b>`;
- case"test":return `Test de <b>${esc(d.titol||d.tema)}</b>: ${d.bones}/${d.n} · ${cpc(d.pc)}`;
- case"joc":return `Joc <b>${esc(d.titol||d.joc)}</b>: ${cpc(d.pc)}`;
- case"examen":return `🏆 Examen sorpresa: ${cpc(d.pc)}`;
- case"oberta":return `Pregunta oberta (${esc(d.tema||"")}): ${cpc(d.pc)} de les idees clau`;
+ case"fitxa":return `Llegeix la fitxa: <b>${esc(d.titol||d.tema)}</b>${d.s?` · ${fmtT(d.s)}${d.fi?" · fins al final ✅":""}`:""}`;
+ case"targetes":return `Targetes de <b>${esc(d.titol||d.tema)}</b>: ${d.vistes}/${d.n} vistes · ${d.girs||0} girs · ${fmtT(d.s)}`;
+ case"test":return `Test de <b>${esc(d.titol||d.tema)}</b>: ${d.bones}/${d.n} · ${cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
+ case"joc":return `Joc <b>${esc(d.titol||d.joc)}</b>: ${cpc(d.pc)}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.mode&&d.joc==="mapa43"?` · ${esc(d.mode)}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
+ case"examen":return `🏆 ${d.joc==="examreal"?"Examen de veritat":"Examen sorpresa"}: ${cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
+ case"oberta":return `Pregunta oberta (${esc(d.tema||"")}): ${cpc(d.pc)} de les idees clau${d.s?` · ${fmtT(d.s)}`:""}`;
  case"valora":return `Valora <b>${esc(d.titol||d.tema)}</b>: ${esc(d.v)}`;
  case"temps":return `⏱ ${fmtT(d.s)} estudiant`;
  default:return esc(JSON.stringify(d))}}
@@ -122,14 +149,15 @@ function nens(){const m={};LOGS.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[
 const mitj=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
 
 function pinta(){
+ if(VISTA==="tauler")return pintaTauler();
  const N=nens(),ses=new Set(LOGS.map(l=>l.sessio)).size,temps=LOGS.filter(l=>l.event==="temps").reduce((a,l)=>a+(l.detall.s||0),0),tests=LOGS.filter(l=>l.event==="test").map(l=>l.detall.pc);
  app.innerHTML=`<div class="kpis">
   <div class="kpi"><small>Nens</small><b>${N.length}</b></div><div class="kpi"><small>Sessions</small><b>${ses}</b></div>
   <div class="kpi"><small>Temps d'estudi</small><b>${fmtT(temps)}</b></div><div class="kpi"><small>Tests fets</small><b>${tests.length}</b></div>
   <div class="kpi"><small>Nota mitjana tests</small><b>${tests.length?mitj(tests)+"%":"—"}</b></div><div class="kpi"><small>Registres</small><b>${LOGS.length}</b></div></div>
- <div class="pest"><button data-v="nens" class="${VISTA==="nens"?"on":""}">👤 Nens</button><button data-v="sessions" class="${VISTA==="sessions"?"on":""}">🕹 Sessions</button><button data-v="log" class="${VISTA==="log"?"on":""}">📜 Log complet</button></div>
+ ${pestanyes()}<div class="pest" style="display:none"><button data-v="nens" class="${VISTA==="nens"?"on":""}">👤 Nens</button><button data-v="sessions" class="${VISTA==="sessions"?"on":""}">🕹 Sessions</button><button data-v="log" class="${VISTA==="log"?"on":""}">📜 Log complet</button></div>
  <div class="caixa" id="cont"></div>`;
- app.querySelectorAll(".pest button").forEach(b=>b.onclick=()=>{VISTA=b.dataset.v;pinta()});
+ lligaPest();
  const c=$("#cont");if(!LOGS.length){c.innerHTML=`<div class="buit">Encara no hi ha cap registre en aquest període.</div>`;return}
  if(VISTA==="nens")vistaNens(c,N);else if(VISTA==="sessions")vistaSessions(c,LOGS);else vistaLog(c);
 }
@@ -182,6 +210,100 @@ async function usuari(nom,accio,nou){$("#gest").innerHTML=`<p class="gest-n">Un 
   const n=await r.json();await carrega();if(accio==="amaga"||accio==="mostra"||accio==="treupin")detall(nom.trim().toLowerCase());if(accio==="canvia"){const k=nou.trim().toLowerCase();if(nens().some(x=>x.k===k))detall(k)}
   const av=document.createElement("div");av.className="avis-ok";av.textContent=accio==="esborra"?`🗑️ ${nom} esborrat (${n} registres)`:accio==="amaga"?`🙈 ${nom} ja no surt al rànquing`:accio==="mostra"?`👁 ${nom} torna a sortir al rànquing`:accio==="treupin"?`🔑 PIN de ${nom} esborrat`:`✏️ ${nom} → ${nou} (${n} registres)`;document.body.appendChild(av);setTimeout(()=>av.remove(),3500);
  }catch(e){$("#gest").innerHTML=`<p class="err">No hi ha connexió.</p>`}}
+// ====================== TAULER (dades agregades al servidor: supabase/bn_admin_tauler.sql) ======================
+const PERIODE={1:"avui",7:"7d",30:"30d",365:"curs"};
+const TF={assig:"",nom:""};let TD=null,GRAF=[];
+const pestanyes=()=>`<div class="pest">${[["tauler","📊 Tauler"],["nens","👤 Nens"],["sessions","🕹 Sessions"],["log","📜 Log complet"]].map(([v,t])=>`<button data-v="${v}" class="${VISTA===v?"on":""}">${t}</button>`).join("")}</div>`;
+function lligaPest(){app.querySelectorAll(".pest button").forEach(b=>b.onclick=()=>{VISTA=b.dataset.v;pinta()})}
+const PAL=["#22d3ee","#facc15","#f472b6","#4ade80","#a78bfa","#fb923c","#60a5fa","#f87171","#2dd4bf","#e879f9","#bef264","#fda4af"];
+// color fix per nen: segons l'ordre alfabètic de tots els noms del registre (cap repetit fins a 12 nens)
+const colorNen=n=>{const k=String(n).trim().toLowerCase(),tots=[...new Set(LOGS.map(l=>l.nom.trim().toLowerCase()))].sort();let i=tots.indexOf(k);
+ if(i<0){i=0;for(const c of k)i=(i*31+c.charCodeAt(0))>>>0}return PAL[i%PAL.length]};
+const colPc=pc=>pc==null?"#ffffff14":pc>=90?"#4ade80":pc>=70?"#a3e635":pc>=50?"#fbbf24":"#f87171";
+let PREG=null;async function preguntes(){if(PREG)return PREG;try{const r=await fetch("preguntes.json",{cache:"no-cache"});PREG=r.ok?await r.json():{}}catch(e){PREG={}}return PREG}
+async function rpcT(f){const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
+ body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_periode:PERIODE[$("#dies").value]||"7d",p_assig:TF.assig||null,p_nom:TF.nom||null})});
+ if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
+async function pintaTauler(){
+ GRAF.forEach(g=>g.destroy());GRAF=[];if(window.Chart)Chart.defaults.animation=false;
+ app.innerHTML=`${pestanyes()}<div id="tau"><div class="buit">Carregant el tauler…</div></div>`;lligaPest();
+ const noms=[...new Map(LOGS.map(l=>[l.nom.trim().toLowerCase(),l.nom])).values()].sort((a,b)=>a.localeCompare(b,"ca"));
+ const as=[...new Set([...Object.keys(ASSIGS),...LOGS.map(l=>l.assig)])];
+ let dades;try{const [resum,act,calor,domini,fall,evo,alert]=await Promise.all(["bn_admin_resum","bn_admin_activitat","bn_admin_calor","bn_admin_domini","bn_admin_fallades","bn_admin_evolucio","bn_admin_alertes"].map(rpcT));
+  dades={resum,act,calor,domini,fall,evo,alert};await preguntes()}
+ catch(e){$("#tau").innerHTML=e==="falta"?`<div class="avis-sql">⚙️ El tauler encara no està activat a la base de dades. Executa una vegada <b>supabase/bn_admin_tauler.sql</b> al SQL Editor de Supabase i torna a carregar. Mentrestant, tens les altres pestanyes.</div>`:`<div class="avis-sql">No s'han pogut carregar les dades del tauler (${esc(e)}).</div>`;return}
+ TD=dades;
+ const {resum,act,calor,domini,fall,evo,alert}=dades,A=resum.ara||{},B=resum.abans;
+ const dl=(k,inv)=>{if(!B||B[k]==null||A[k]==null)return"";const x=A[k]-B[k];if(!x)return`<span class="dl eq">=</span>`;const up=x>0;return `<span class="dl ${up!==!!inv?"up":"dn"}">${up?"▲":"▼"} ${Math.abs(Math.round(x))}</span>`};
+ const kpi=(t,v,k,sub,inv)=>`<div class="kpi"><small>${t}</small><b>${v??"—"}${k?dl(k,inv):""}</b>${sub?`<em>${sub}</em>`:""}</div>`;
+ const fmtM=m=>m==null?"—":m>=60?`${Math.floor(m/60)} h ${Math.round(m%60)} min`:`${Math.round(m)} min`;
+ const titolP={avui:"avui","7d":"els últims 7 dies","30d":"els últims 30 dies",curs:"tot el curs"}[resum.periode];
+ $("#tau").innerHTML=`<div class="tf"><label>Assignatura</label><select id="tfa"><option value="">Totes</option>${as.map(a=>`<option value="${esc(a)}" ${TF.assig===a?"selected":""}>${esc(ASSIGS[a]||a)}</option>`).join("")}</select>
+ <label>Nen</label><select id="tfn"><option value="">Tots</option>${noms.map(n=>`<option ${TF.nom.toLowerCase()===n.toLowerCase()?"selected":""}>${esc(n)}</option>`).join("")}</select>
+ <span class="prog" style="color:var(--suau);font-weight:700">Dades ${titolP==="avui"?"d'avui":titolP==="tot el curs"?"de tot el curs":"dels "+titolP.slice(4)}${B?" · ▲▼ = canvi respecte al període anterior":""}</span></div>
+ <div class="kpis">${kpi("Nens actius",A.nens,"nens")}${kpi("Dies d'estudi",A.dies,"dies",null)}${kpi("Temps d'estudi",fmtM(A.minuts),"minuts")}${kpi("Tests fets",A.tests,"tests")}
+ ${kpi("Nota mitjana tests",A.nota==null?"—":A.nota+"%","nota",`${A.aprovats??"—"}% aprovats (≥70%)`)}${kpi("Preguntes contestades",A.respostes,"respostes",A.encert==null?null:`${A.encert}% encertades`)}
+ ${kpi("Segons per pregunta",A.seg_preg??"—",null,"menys de 3 s: potser endevina")}${kpi("Exàmens",A.examens,"examens",A.nota_exam==null?null:`nota mitjana ${A.nota_exam}%`)}${kpi("Jocs",A.jocs,"jocs")}${kpi("Obertes",A.obertes,"obertes")}${kpi("Fitxes llegides",A.fitxes,"fitxes")}</div>
+ <div class="graella">
+  <div class="pan ample"><h3>🚨 Alertes</h3><p class="sub">El que convé mirar ara. Vermell = atenció, groc = cal mirar-ho, gris = per saber-ho.</p><div id="tAl"></div></div>
+  <div class="pan"><h3>📅 Activitat per dia</h3><p class="sub">Minuts d'estudi de cada nen per dia</p><div class="cv"><canvas id="gAct"></canvas></div></div>
+  <div class="pan"><h3>🕒 Quan estudien</h3><p class="sub">Activitat per hora i dia de la setmana (com més clar, més activitat)</p><div id="tCal"></div></div>
+  <div class="pan"><h3>📈 Evolució de les notes</h3><p class="sub">Cada punt és un test (o examen) · línia per nen</p><div class="cv"><canvas id="gEvo"></canvas></div></div>
+  <div class="pan"><h3>🔥 Constància</h3><p class="sub">Dies que ha estudiat en aquest període i ratxa actual de dies seguits</p><div id="tCst"></div></div>
+  <div class="pan ample"><h3>🎯 Domini per tema</h3><p class="sub">Millor nota de test de cada nen a cada tema (verd ≥ 90, llima ≥ 70, groc ≥ 50, vermell &lt; 50, buit = no l'ha fet). Passa el ratolí per veure intents i última nota.</p><div id="tDom" class="dom"></div></div>
+  <div class="pan ample"><h3>❌ Preguntes més fallades</h3><p class="sub">Top 20 per assignatura, amb l'opció equivocada que més trien (el «parany»). Compta des del 4-11-2026, quan es va començar a registrar cada pregunta.</p><div id="tFal"></div></div>
+  ${TF.nom?`<div class="pan"><h3>🧩 En què passa el temps ${esc(TF.nom)}</h3><p class="sub">Segons registrats per tipus d'activitat (dades del període)</p><div class="cv"><canvas id="gTip"></canvas></div></div>`:""}
+ </div>`;
+ $("#tfa").onchange=e=>{TF.assig=e.target.value;pintaTauler()};$("#tfn").onchange=e=>{TF.nom=e.target.value;pintaTauler()};
+ tAlertes(alert);gActivitat(act);tCalor(calor);gEvolucio(evo);tConstancia(act);tDomini(domini);tFallades(fall);if(TF.nom)gTipus();
+}
+const GOPC=()=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#e2e8f0",font:{weight:"bold"}}}},scales:{x:{ticks:{color:"#a5b4fc"},grid:{color:"#ffffff10"}},y:{ticks:{color:"#a5b4fc"},grid:{color:"#ffffff10"},beginAtZero:true}}});
+const nouG=(id,cfg)=>{const c=document.getElementById(id);if(!c||!window.Chart)return;GRAF.push(new Chart(c,cfg))};
+function tAlertes(al){const e=$("#tAl");if(!al.length){e.innerHTML=`<div class="buit">Cap alerta. Tot en ordre 👍</div>`;return}
+ const ic={inactiu:"😴",baixa:"📉",encallat:"🧱",rapid:"⚡",pregunta:"❓",pendent:"📭"};
+ const fila=a=>`<div class="al"><span class="g${a.gravetat}">${a.gravetat===3?"●":a.gravetat===2?"●":"○"}</span><span>${ic[a.tipus]||"•"} ${a.nom?`<b>${esc(a.nom)}</b> · `:""}${a.assig?`<span class="xip">${esc(ASSIGS[a.assig]||a.assig)}</span> `:""}${esc(a.text)}</span></div>`;
+ const imp=al.filter(a=>a.gravetat>1),info=al.filter(a=>a.gravetat<=1);
+ e.innerHTML=(imp.length?imp.map(fila).join(""):`<div class="buit" style="padding:10px">Cap alerta important 👍</div>`)+(info.length?`<details class="pend"><summary>+ ${info.length} avisos per saber-ho (temes pendents, preguntes difícils)</summary>${info.map(fila).join("")}</details>`:"")}
+function gActivitat(act){const dies=[...new Set(act.map(a=>a.dia))].sort(),noms=[...new Set(act.map(a=>a.nom))];
+ nouG("gAct",{type:"bar",data:{labels:dies.map(d=>new Date(d+"T12:00").toLocaleDateString("ca-ES",{weekday:"short",day:"numeric",month:"numeric"})),
+  datasets:noms.map(n=>({label:n,backgroundColor:colorNen(n),data:dies.map(d=>{const x=act.find(a=>a.dia===d&&a.nom===n);return x?+x.minuts:0})}))},
+  options:Object.assign(GOPC(),{scales:{x:{stacked:true,ticks:{color:"#a5b4fc"},grid:{display:false}},y:{stacked:true,ticks:{color:"#a5b4fc"},grid:{color:"#ffffff10"},title:{display:true,text:"minuts",color:"#a5b4fc"}}}})})}
+function tCalor(cal){const mx=Math.max(1,...cal.map(c=>(+c.minuts)+c.accions)),D=["dl","dt","dc","dj","dv","ds","dg"];let h=`<div class="calor"><span></span>${[...Array(24)].map((_,i)=>`<span>${i%3?"":i}</span>`).join("")}`;
+ for(let dw=1;dw<=7;dw++){h+=`<span style="text-align:left">${D[dw-1]}</span>`;for(let hh=0;hh<24;hh++){const c=cal.find(x=>x.dw===dw&&x.h===hh),v=c?(+c.minuts)+c.accions:0;
+  h+=`<i title="${D[dw-1]} ${hh}h · ${c?`${c.minuts} min · ${c.accions} accions · ${c.nens} nens`:"res"}" style="${v?`background:rgba(250,204,21,${(.15+.85*v/mx).toFixed(2)})`:""}"></i>`}}
+ $("#tCal").innerHTML=h+`</div>`}
+function gEvolucio(evo){const noms=[...new Set(evo.map(e=>e.nom.trim()))];
+ nouG("gEvo",{type:"line",data:{datasets:noms.map(n=>({label:n,borderColor:colorNen(n),backgroundColor:colorNen(n),tension:.25,pointRadius:3,
+  data:evo.filter(e=>e.nom.trim()===n).map(e=>({x:new Date(e.ts).getTime(),y:e.pc,t:e.tema,ev:e.event}))}))},
+  options:Object.assign(GOPC(),{parsing:false,scales:{x:{type:"linear",ticks:{color:"#a5b4fc",maxTicksLimit:7,callback:v=>new Date(v).toLocaleDateString("ca-ES",{day:"numeric",month:"numeric"})},grid:{color:"#ffffff10"}},
+   y:{min:0,max:100,ticks:{color:"#a5b4fc",callback:v=>v+"%"},grid:{color:"#ffffff10"}}},
+   plugins:{legend:{labels:{color:"#e2e8f0"}},tooltip:{callbacks:{title:it=>new Date(it[0].raw.x).toLocaleString("ca-ES",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}),label:it=>`${it.dataset.label}: ${it.raw.y}% · ${it.raw.ev==="examen"?"examen":"test"} ${it.raw.t||""}`}}}})})}
+function tConstancia(act){const per={};act.forEach(a=>{const k=a.nom.trim().toLowerCase();(per[k]=per[k]||{nom:a.nom,dies:new Set(),min:0}).dies.add(a.dia);per[k].min+=+a.minuts});
+ const avui=new Date();const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+ const ratxa=s=>{let n=0,d=new Date(avui);if(!s.has(iso(d)))d.setDate(d.getDate()-1);while(s.has(iso(d))){n++;d.setDate(d.getDate()-1)}return n};
+ const L=Object.values(per).sort((a,b)=>b.dies.size-a.dies.size),mx=Math.max(1,...L.map(x=>x.dies.size));
+ $("#tCst").innerHTML=L.length?L.map(x=>`<div class="cst"><span style="color:${colorNen(x.nom)}">${esc(x.nom)}</span><div class="bfe"><i style="width:${Math.round(x.dies.size*100/mx)}%"></i></div><span>${x.dies.size} dies · ${Math.round(x.min)} min${ratxa(x.dies)>1?` · 🔥 ${ratxa(x.dies)}`:""}</span></div>`).join(""):`<div class="buit">Sense activitat en aquest període.</div>`}
+function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=`<div class="buit">Encara no hi ha tests en aquest període.</div>`;return}
+ const per=[...new Set(dom.map(x=>x.assig))];let h="";
+ per.forEach(a=>{const ds=dom.filter(x=>x.assig===a),temes=[...new Map(ds.map(x=>[x.tema,x.titol||x.tema])).entries()],noms=[...new Map(ds.map(x=>[x.nom.trim().toLowerCase(),x.nom])).values()];
+  h+=`<h4 style="margin:12px 0 6px">${esc(ASSIGS[a]||a)}</h4><table><thead><tr><th class="nom" style="writing-mode:horizontal-tb;transform:none">Nen</th>${temes.map(([,t])=>`<th title="${esc(t)}">${esc(t.length>26?t.slice(0,25)+"…":t)}</th>`).join("")}</tr></thead><tbody>
+  ${noms.map(n=>`<tr><td class="nom"><a href="#" data-n="${esc(n)}" style="color:${colorNen(n)};text-decoration:none">${esc(n)}</a></td>${temes.map(([t])=>{const c=ds.find(x=>x.tema===t&&x.nom.trim().toLowerCase()===n.trim().toLowerCase());
+   if(!c)return `<td></td>`;const tip=`${c.titol||t}\n${c.intents} intents · millor ${c.millor??"—"}% · última ${c.ultima??"—"}%${c.valoracio?` · diu «${c.valoracio}»`:""}${c.segons_estudi?` · ${Math.round(c.segons_estudi/60)} min de fitxa/targetes`:""}`;
+   return `<td title="${esc(tip)}">${c.millor==null?`<span class="cel" style="background:#ffffff14;color:#a5b4fc">📖</span>`:`<span class="cel" style="background:${colPc(c.millor)}">${c.millor}</span>`}</td>`}).join("")}</tr>`).join("")}</tbody></table>`});
+ $("#tDom").innerHTML=h+`<p class="sub" style="margin-top:8px">📖 = ha llegit la fitxa però encara no ha fet el test. Toca un nom per filtrar-ho tot per aquest nen.</p>`;
+ $("#tDom").querySelectorAll("a[data-n]").forEach(x=>x.onclick=e=>{e.preventDefault();TF.nom=x.dataset.n;pintaTauler();scrollTo(0,0)})}
+function tFallades(fall){if(!fall.length){$("#tFal").innerHTML=`<div class="buit">Encara no hi ha preguntes fallades registrades en aquest període (es compten des del 4-11-2026).</div>`;return}
+ const per=[...new Set(fall.map(x=>x.assig))],net=t=>String(t||"").replace(/<[^>]+>/g,"");
+ $("#tFal").innerHTML=per.map(a=>`<h4 style="margin:12px 0 4px">${esc(ASSIGS[a]||a)}</h4>`+fall.filter(x=>x.assig===a).map(f=>{const q=PREG[a+"/"+f.qid]||null;
+  const parany=q&&f.opcio_parany!=null&&q.o[+f.opcio_parany]!=null?net(q.o[+f.opcio_parany]):null;
+  return `<div class="fq"><div><b>${q?esc(net(q.t)):`Pregunta ${esc(f.qid)}`}</b><small>${q?`${esc(q.tema)} · `:""}✅ <span class="ok">${q?esc(net(q.o[q.c])):"?"}</span>${parany?` · parany: <span class="pa">${esc(parany)}</span>`:""}${f.segons!=null?` · ${f.segons} s de mitjana`:""} · id ${esc(f.qid)}</small></div>
+  <div><b>${f.pct_error}%</b> d'error<small>${f.errors} de ${f.intents} respostes · ${f.nens_fallen} de ${f.nens} nens</small><div class="bar"><i style="width:${f.pct_error}%"></i></div></div></div>`}).join("")).join("")}
+function gTipus(){const k=TF.nom.trim().toLowerCase(),t={"Fitxes":0,"Targetes":0,"Tests":0,"Jocs":0,"Exàmens":0,"Obertes":0};
+ LOGS.filter(l=>l.nom.trim().toLowerCase()===k&&(!TF.assig||l.assig===TF.assig)).forEach(l=>{const s=+(l.detall||{}).s||0;if(!s)return;
+  const m={fitxa:"Fitxes",targetes:"Targetes",test:"Tests",joc:"Jocs",examen:"Exàmens",oberta:"Obertes"}[l.event];if(m)t[m]+=s});
+ const ks=Object.keys(t).filter(x=>t[x]>0);if(!ks.length){const c=$("#gTip");if(c)c.parentNode.innerHTML=`<div class="buit">Encara no hi ha temps registrat per activitat (es compta des del 4-11-2026).</div>`;return}
+ nouG("gTip",{type:"doughnut",data:{labels:ks.map(x=>`${x} (${Math.round(t[x]/60)} min)`),datasets:[{data:ks.map(x=>t[x]),backgroundColor:PAL.slice(0,ks.length),borderColor:"#141a4a"}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right",labels:{color:"#e2e8f0"}}}}})}
+
 $("#refresca").onclick=carrega;$("#dies").onchange=carrega;$("#surt").onclick=()=>{CRED=null;LOGS=[];sessionStorage.removeItem("bn_admin");login()};
 CRED?carrega():login();
 </script>
