@@ -767,10 +767,10 @@ function mostraNivell(){if(SUPPEND)return mostraSuper();if(!NIVPEND)return;if(do
 function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" onclick="vista('analitica')"><span class="nic">${v.ic}</span><div style="flex:1;min-width:0"><b>Nivell ${v.n} · ${v.nom}</b><div class="barra"><i style="width:${v.pc}%"></i></div><small>${v.seg?`Et falten ${v.falten} ⭐ per a ${v.seg[2]} ${v.seg[1]}`:"Nivell màxim! Ets una llegenda 🌟"}</small></div></div>`}
 // estrelles de la capçalera: suma de tots els mons per al mateix nom. El món obert compta en directe; els altres mons
 // agafen el més alt entre el que hi ha en aquest navegador i el que diu el núvol (Supabase bn_punts_mons, com el rànquing),
-// perquè un nen pot haver fet cada món en un aparell diferent. El nivell continua sent el d'aquest món, com al rànquing.
+// perquè un nen pot haver fet cada món en un aparell diferent. (rpc() ja torna el JSON llegit, no la resposta.) El nivell continua sent el d'aquest món, com al rànquing.
 let PSRV=null;
 function carregaPuntsMons(){if(!S.nom||/^file:/.test(location.protocol))return;const n=S.nom;
- rpc("bn_punts_mons",{p_nom:n}).then(r=>r.ok?r.json():null).then(d=>{if(!Array.isArray(d)||S.nom!==n)return;PSRV={};d.forEach(x=>{PSRV[x.assig]=+x.punts||0});pintaCap()}).catch(()=>{})}
+ rpc("bn_punts_mons",{p_nom:n}).then(d=>{if(!Array.isArray(d)||S.nom!==n)return;PSRV={};d.forEach(x=>{PSRV[x.assig]=+x.punts||0});pintaCap();document.querySelectorAll(".mons-est").forEach(e=>{e.outerHTML=cartaMons()})}).catch(()=>{})}
 function puntsMons(){const k=(S.nom||"").trim().toLowerCase();
  return MONS.map(m=>{if(m.id===ASSIG.id)return Object.assign({},m,{punts:S.punts||0,ara:true});let loc=0;
   if(k)try{const per=JSON.parse(localStorage.getItem(m.clau+"_perfils")||"{}")||{},n=Object.keys(per).find(x=>x.trim().toLowerCase()===k);if(n)loc=+(per[n]&&per[n].punts)||0}catch(e){}
