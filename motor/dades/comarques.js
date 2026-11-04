@@ -218,7 +218,7 @@ function svgCapses(){
 // Les formes surten de const MAPA (al final del fitxer, generat amb dades oficials de límits municipals).
 const DEMCOL={B:["#dbeafe","#1d4ed8"],G:["#dcfce7","#15803d"],L:["#fef3c7","#b45309"],T:["#fce7f3","#be185d"]};
 const DEMIC={B:"🏙️",G:"🌋",L:"⛰️",T:"🌊"};
-let MP={mode:"explora",dem:"",num:true,veure:"tot"}; // veure: tot · com (només comarca) · cap (només capital)
+let MP={mode:"explora",dem:"",num:true,veure:"tot",revela:new Set()}; // veure: tot · com (només comarca) · cap (només capital)
 const mpC=n=>COM[n-1]; // [n,nom,capital,dem]
 const MPLA=["Selva","Segarra","Noguera","Cerdanya","Conca de Barberà","Garrotxa","Terra Alta","Ribera d'Ebre","Vall d'Aran"];
 const mpArtP=nom=>nom==="Garrigues"?"les Garrigues":nom==="Osona"?"Osona":MPLA.includes(nom)?"la "+nom:/^[AEIOUÀÈÉÍÒÓÚ]/i.test(nom)?"l'"+nom:"el "+nom; // el Bages, l'Anoia, la Selva
@@ -230,7 +230,7 @@ function mpCss(){if(document.getElementById("mpCss"))return;const s=document.cre
 .mp-filtre{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 10px}.mp-filtre .chip{margin:0;padding:6px 10px;font-size:13.5px}
 .mp-enun{font-weight:900;font-size:18px;min-height:28px;margin:0 0 8px;text-align:center}.mp-enun b{color:#c2410c}
 .mp-wrap{position:relative;overflow:auto;max-height:78vh;border-radius:14px;background:#f8fafc;touch-action:pan-x pan-y}
-.mp-svg{display:block;width:100%;max-width:620px;margin:0 auto;height:auto;transition:width .2s}
+.mp-svg{user-select:none;-webkit-user-select:none;display:block;width:100%;max-width:620px;margin:0 auto;height:auto;transition:width .2s}
 .mp-wrap.gran .mp-svg{width:230%;max-width:none}
 .mp-c{stroke:#64748b;stroke-width:.7;cursor:pointer;transition:fill .15s}.mp-c:hover,.mp-c.hov{filter:brightness(.93);stroke:#0f172a;stroke-width:1.4}
 .mp-c.sel{stroke:#0f172a;stroke-width:2}.mp-c.ok{fill:#4ade80!important}.mp-c.ko{fill:#f87171!important}
@@ -276,27 +276,33 @@ function jocMapa(j){
    tip.style.left=(e.clientX-r.left+wrap.scrollLeft)+"px";tip.style.top=(e.clientY-r.top+wrap.scrollTop)+"px";tip.style.display="block";
    if(MP.mode==="explora")mpInfo(n,true)});
   p.addEventListener("pointerleave",()=>{tip.style.display="none"});
-  p.addEventListener("click",()=>mpToca(n,p))});
+  p.addEventListener("click",()=>{mpToca(n,p);const ara=Date.now();if(MP.ultToc&&MP.ultToc.n===n&&ara-MP.ultToc.t<450){MP.ultToc=null;mpDestapa(n)}else MP.ultToc={n,t:ara}})});
  ({explora:mpExplora,onEs:mpOnEs,capital:mpCapital,quiEs:mpQui,contra:mpContra})[MP.mode]();
 }
 // què diu l'etiqueta en passar el ratolí: a Explora, comarca i capital; als jocs, només el que no regala la resposta
 function mpTipHtml(n){const [,nom,cap]=mpC(n),fet=MP.fet&&MP.fet.has(n),tot=`<b>${n} · ${nom}</b><span>🏛️ ${cap}</span>`;
- if(MP.mode==="explora")return MP.veure==="com"?`<b>${n} · ${nom}</b>`:MP.veure==="cap"?`<span>🏛️ ${cap}</span>`:tot;
+ if(MP.mode==="explora"){const vist=MP.revela.has(n);
+  if(MP.veure==="com")return `<b>${n} · ${nom}</b><span>${vist?`🏛️ ${cap}`:"🖱️🖱️ doble clic: la capital"}</span>`;
+  if(MP.veure==="cap")return `<b>${vist?`${n} · ${nom}`:"🖱️🖱️ doble clic: la comarca"}</b><span>🏛️ ${cap}</span>`;
+  return tot}
  if(MP.mode==="onEs"||MP.mode==="quiEs")return fet?tot:`<b>Aquesta? 🤔</b>`;
  return fet?tot:`<b>${n} · ${nom}</b>`}
 function mpTip(n){const [,nom,cap]=mpC(n);return MP.veure==="com"?`${n} · ${nom}`:MP.veure==="cap"?`🏛️ ${cap}`:`${n} · ${nom} · 🏛️ ${cap}`}
-function mpVeure(v){MP.veure=v;document.querySelectorAll(".mp-veure .chip").forEach(c=>c.classList.toggle("sel",c.dataset.v===v));const s=document.querySelector(".mp-c.sel");if(s)mpInfo(+s.dataset.n,true)}
+function mpVeure(v){MP.veure=v;MP.revela=new Set();const s=document.querySelector(".mp-c.sel");mpExplora();if(s)mpInfo(+s.dataset.n,true)}
 const mpLlista=()=>COM.filter(c=>!MP.dem||c[3]===MP.dem).map(c=>c[0]);
 function mpExplora(){
- document.getElementById("mpEnun").innerHTML=`Passa el ratolí o el dit per sobre d'una comarca`;
+ document.getElementById("mpEnun").innerHTML=MP.veure==="tot"?`Passa el ratolí o el dit per sobre d'una comarca`:`Endevina-la! Fes <b>doble clic</b> a la comarca per veure la resposta`;
  document.getElementById("mpZona").innerHTML=`<div class="mp-veure mp-filtre" style="justify-content:center"><span class="prog" style="align-self:center">👁️ Veure:</span>${[["tot","Comarca i capital"],["com","Només comarca"],["cap","Només capital"]].map(([v,t])=>`<span class="chip ${MP.veure===v?"sel":""}" data-v="${v}" onclick="mpVeure('${v}')">${t}</span>`).join("")}</div><div class="mp-info" id="mpInfo" style="min-height:118px"><p style="color:var(--suau)">👆 Toca una comarca per veure el nom, la capital i la demarcació.</p></div><p class="prog" id="mpVist" style="text-align:center;margin:-4px 0 8px"></p>`;
  mpVist()}
+// ---- doble clic a Explora: surt la resposta que falta (la capital o la comarca) ----
+function mpDestapa(n){if(MP.mode!=="explora"||MP.veure==="tot")return;MP.revela.add(n);mpInfo(n,false);so("gir");
+ const t=document.getElementById("mpTip");if(t&&t.style.display==="block")t.innerHTML=mpTipHtml(n)}
 function mpVist(){const L=mpLlista(),v=L.filter(n=>MP.vist.has(n)).length;const e=document.getElementById("mpVist");if(e)e.innerHTML=`👀 N'has mirat ${v} de ${L.length}${v===L.length?" · 🎉 totes! Ara prova «📍 On és?»":""}`}
 function mpInfo(n,nomesHover){const [,nom,cap,d]=mpC(n);const e=document.getElementById("mpInfo");if(!e)return;
  document.querySelectorAll(".mp-c.sel").forEach(p=>p.classList.remove("sel"));document.querySelector(`.mp-c[data-n="${n}"]`).classList.add("sel");
  const caps=cap.includes(" i Terrassa")?`<b>Sabadell</b> i <b>Terrassa</b> (en té dues!)`:`<b>${cap}</b>`;
  const txt=`${nom}. Capital: ${cap}. Demarcació de ${DEMNOM[d]}.`;
- const tapa=t=>`<span class="mp-tapa" onclick="this.outerHTML=this.dataset.t" data-t="${t.replace(/"/g,"&quot;")}" style="background:#e2e8f0;border-radius:8px;padding:0 10px;cursor:pointer;color:var(--suau)">❓ toca per veure-ho</span>`;
+ const vist=MP.revela.has(n),tapa=t=>vist?t:`<span class="mp-tapa" onclick="this.outerHTML=this.dataset.t" data-t="${t.replace(/"/g,"&quot;")}" style="background:#e2e8f0;border-radius:8px;padding:0 10px;cursor:pointer;color:var(--suau)">❓ doble clic a la comarca (o toca aquí)</span>`;
  const titol=MP.veure==="cap"?`${n} · ${tapa(nom)}`:`${n} · ${nom}`,capT=MP.veure==="com"?tapa(caps):caps;
  e.style.borderColor=DEMCOL[d][1];e.innerHTML=`<h3 style="color:${DEMCOL[d][1]}">${titol} ${MP.veure==="tot"?btEscolta(txt,""):""}</h3><p>🏛️ Capital: ${capT}</p><p>${DEMIC[d]} Demarcació de ${DEMNOM[d]}</p>${n===21?`<p style="color:var(--suau);font-size:13px;margin:0">⭐ La més nova (2023): abans era part d'Osona.</p>`:""}`;
  if(!nomesHover){MP.vist.add(n);mpVist()}}
