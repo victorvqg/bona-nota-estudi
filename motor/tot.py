@@ -27,7 +27,7 @@ js = r"""
 const fs=require('fs');const out={};
 for(const f of process.argv.slice(1)){const src=fs.readFileSync(f,'utf8');
  const g={document:{getElementById:()=>({})},window:{},location:{search:''}};
- const r=new Function('document','window','location',src+';return {n:T.length,j:ASSIG.jocs.length,clau:ASSIG.clau||("bn_"+ASSIG.id)}')(g.document,g.window,g.location);
+ const r=new Function('document','window','location',src+';return {n:T.length,j:ASSIG.jocs.length,clau:ASSIG.clau||("bn_"+ASSIG.id),id:ASSIG.id}')(g.document,g.window,g.location);
  out[f]=r}
 console.log(JSON.stringify(out))"""
 fitxers = [str(d / "dades" / f"{m['dades']}.js") for m in mons]
@@ -43,7 +43,7 @@ for m in mons:
     i = info[str(d / "dades" / f"{m['dades']}.js")]
     c1, c2, c3 = m["colors"]
     es = m.get("llengua") == "es"
-    targetes.append(f''' <a class="as" href="{e(m['carpeta'])}/" data-clau="{e(i['clau'])}" data-temes="{i['n']}" style="--c1:{c1};--c2:{c2};--c3:{c3}">
+    targetes.append(f''' <a class="as" href="{e(m['carpeta'])}/" data-clau="{e(i['clau'])}" data-id="{e(i['id'])}" data-ic="{e(m['ic'])}" data-temes="{i['n']}" style="--c1:{c1};--c2:{c2};--c3:{c3}">
   <div class="portada"><span class="tag">MÓN {e(m['mon'])}</span><span class="ic">{m['ic']}</span></div>
   <div class="cos">
    <small class="mat">{e(m['materia'])}</small>

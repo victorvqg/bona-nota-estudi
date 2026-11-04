@@ -118,6 +118,9 @@ h1 span{display:inline-block}
 .hs-fila .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:21px;background:var(--av);border:2px solid #ffffff40}
 .hs-fila .nm{font-weight:900;font-size:18px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hs-fila .vl{font-family:'Press Start 2P',monospace;font-size:11px;color:#4ade80;text-align:right;line-height:1.5}
+.hs-mons{display:flex;flex-wrap:wrap;gap:2px 7px;justify-content:center;margin-top:4px;font-family:Nunito,system-ui,sans-serif;font-weight:800;font-size:12px;line-height:1.35;color:#c7d2fe}
+.hs-mons i{font-style:normal;white-space:nowrap}
+.hs-fila .vl .hs-mons{justify-content:flex-end}
 .hs-fila .vl small{display:block;font-family:Nunito,system-ui,sans-serif;font-weight:800;font-size:12px;color:#a5b4fc}
 .hs-fila.mes{margin-top:8px;border:2px dashed #22d3ee}
 .hs-fila.mes .pos{color:#22d3ee}
@@ -205,7 +208,7 @@ footer b{color:var(--groc)}
 
 <main>
  <!-- MONS:inici (generat per motor/tot.py, no editar a mà) -->
- <a class="as" href="sociales/t3-clima/" data-clau="bn_soc" data-temes="10" style="--c1:#0c4a6e;--c2:#0284c7;--c3:#22d3ee">
+ <a class="as" href="sociales/t3-clima/" data-clau="bn_soc" data-id="socials" data-ic="🌍" data-temes="10" style="--c1:#0c4a6e;--c2:#0284c7;--c3:#22d3ee">
   <div class="portada"><span class="tag">MÓN 1</span><span class="ic">🌍</span></div>
   <div class="cos">
    <small class="mat">Ciències socials</small>
@@ -216,7 +219,7 @@ footer b{color:var(--groc)}
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
  </a>
- <a class="as" href="bio-i-geo/univers/" data-clau="bn_biogeo" data-temes="11" style="--c1:#3b0764;--c2:#7c3aed;--c3:#c084fc">
+ <a class="as" href="bio-i-geo/univers/" data-clau="bn_biogeo" data-id="biogeo" data-ic="🔭" data-temes="11" style="--c1:#3b0764;--c2:#7c3aed;--c3:#c084fc">
   <div class="portada"><span class="tag">MÓN 2</span><span class="ic">🔭</span></div>
   <div class="cos">
    <small class="mat">Biologia i Geologia</small>
@@ -227,7 +230,7 @@ footer b{color:var(--groc)}
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
  </a>
- <a class="as" href="castellano/t2-t3/" data-clau="bn_castellano" data-temes="15" style="--c1:#7f1d1d;--c2:#dc2626;--c3:#f59e0b">
+ <a class="as" href="castellano/t2-t3/" data-clau="bn_castellano" data-id="castellano" data-ic="📝" data-temes="15" style="--c1:#7f1d1d;--c2:#dc2626;--c3:#f59e0b">
   <div class="portada"><span class="tag">MÓN 3</span><span class="ic">📝</span></div>
   <div class="cos">
    <small class="mat">Lengua Castellana</small>
@@ -238,7 +241,7 @@ footer b{color:var(--groc)}
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
  </a>
- <a class="as" href="sociales/comarques/" data-clau="bn_comarques" data-temes="7" style="--c1:#7c2d12;--c2:#c2410c;--c3:#f59e0b">
+ <a class="as" href="sociales/comarques/" data-clau="bn_comarques" data-id="comarques" data-ic="🗺️" data-temes="7" style="--c1:#7c2d12;--c2:#c2410c;--c3:#f59e0b">
   <div class="portada"><span class="tag">MÓN 4</span><span class="ic">🗺️</span></div>
   <div class="cos">
    <small class="mat">Ciències socials</small>
@@ -296,19 +299,22 @@ const fT=s=>{const m=Math.round(s/60);return m<1?"<1 MIN":m>=60?`${Math.floor(m/
 // cada nom té sempre el mateix animal i el mateix color (surt del nom, igual a tots els dispositius)
 const AVS=["🦊","🐸","🦁","🐼","🐯","🐙","🦄","🐲","🦖","🐧","🐨","🦉","🐺","🐻","🦈","🐵","🐰","🐷","🦝","🐳"],AVC=["#7c3aed","#2563eb","#059669","#db2777","#ea580c","#0891b2","#4f46e5","#16a34a","#c026d3","#0284c7"];
 function avatar(nom){let h=7;for(const c of nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;return {e:AVS[h%AVS.length],c:AVC[Math.floor(h/97)%AVC.length]}}
-const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ⭐`})},temps:{k:"temps_s",v:r=>({v:fT(r.temps_s)})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${NIV[n][2]} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ⭐`,s:"últims 7 dies"})}};
+// estrelles de cada món (icona de la targeta del món, en l'ordre de la portada)
+const MONS_IC=[...document.querySelectorAll('.as[data-id]')].map(a=>[a.dataset.id,a.dataset.ic||"⭐"]);
+const monsHtml=r=>{const m=r.mons||{};const xs=MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<i>${ic} ${m[id]}</i>`);return xs.join("")};
+const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ⭐`,m:monsHtml(r)})},temps:{k:"temps_s",v:r=>({v:fT(r.temps_s)})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${NIV[n][2]} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ⭐`,s:"últims 7 dies"})}};
 function carregaHs(){const hs=document.getElementById("hs");
  if(HSD&&Date.now()-HST<60000){pintaHs();return}
  hs.innerHTML=`<div class="hs-buit">CARREGANT…</div>`;
- fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/bn_ranking",{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:"{}"})
-  .then(r=>r.ok?r.json():Promise.reject()).then(d=>{HSD=Array.isArray(d)?d:[];HST=Date.now();pintaHs()})
+ const rk=f=>fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:"{}"}).then(r=>r.ok?r.json():Promise.reject());
+ rk("bn_ranking_mons").catch(()=>rk("bn_ranking")).then(d=>{HSD=Array.isArray(d)?d:[];HST=Date.now();pintaHs()})
   .catch(()=>{hs.innerHTML=`<div class="hs-buit">EL RÀNQUING ARRIBA AVIAT…<br>MENTRESTANT, JUGA I SUMA ⭐!</div>`});
 }
 function pintaHs(){
  const c=HSCFG[HSTAB],rows=HSD.filter(r=>r[c.k]>0).sort((a,b)=>b[c.k]-a[c.k]);
  const meu=((document.querySelector("#hola em")||{}).textContent||"").trim().toLowerCase();
  const esJo=r=>meu&&r.nom.trim().toLowerCase()===meu;
- const val=r=>{const x=c.v(r);return `${x.v}${x.s?`<small>${esc(x.s)}</small>`:""}`};
+ const val=r=>{const x=c.v(r);return `${x.v}${x.s?`<small>${esc(x.s)}</small>`:""}${x.m?`<span class="hs-mons">${x.m}</span>`:""}`};
  const pd=(r,pos)=>{if(!r)return `<div class="pd p${pos} lliure"><span class="pd-av">👻</span><span class="pd-nom">Lliure</span><span class="pd-val"><small>Pot ser teu!</small></span><div class="pd-bloc">${pos}</div></div>`;
   const a=avatar(r.nom);return `<div class="pd p${pos} ${esJo(r)?"jo":""}"><span class="pd-av" style="--av:${a.c}">${pos===1?`<span class="corona">👑</span>`:""}${a.e}</span><span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="pd-val">${val(r)}</span><div class="pd-bloc">${pos}</div></div>`};
  const fila=(r,pos,extra)=>{const a=avatar(r.nom);return `<div class="hs-fila ${extra||""}"><span class="pos">${pos}</span><span class="av" style="--av:${a.c}">${a.e}</span><span class="nm">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="vl">${val(r)}</span></div>`};

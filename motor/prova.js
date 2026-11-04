@@ -68,6 +68,12 @@ const {chromium}=require('playwright');
  const cap=await p.evaluate(()=>{localStorage.setItem('bn_zzprova_perfils',JSON.stringify({prova:{nom:'Prova',punts:7}}));pintaCap();
   const t=document.getElementById('punts').textContent,esp=S.punts+7;localStorage.removeItem('bn_zzprova_perfils');pintaCap();return [t,esp]});
  if(!cap[0].startsWith(`⭐ ${cap[1]} `))errs.push(`capçalera: «${cap[0]}» i hauria de sumar ${cap[1]} ⭐`);else console.log(`capçalera: ${cap[0]} (suma de mons ok)`);
+ // i si el núvol diu que en un altre món n'hi ha més (fet en un altre aparell), mana el núvol
+ const capN=await p.evaluate(()=>{PSRV={zzaltre:500};pintaCap();const t=document.getElementById('punts').textContent,esp=S.punts+500;PSRV=null;pintaCap();return [t,esp]});
+ if(!capN[0].startsWith(`⭐ ${capN[1]} `))errs.push(`capçalera amb núvol: «${capN[0]}» i hauria de ser ${capN[1]} ⭐`);
+ // superestrelles: cada 50 ⭐ en surt una amb la seva animació (en aquesta prova se'n guanyen unes quantes)
+ const sup=await p.evaluate(()=>[window.SUPERS_MOSTRADES||0,Math.floor(puntsTots()/SUPER)]);
+ if(sup[0]<1)errs.push('superestrelles: no se n\'ha mostrat cap ('+sup+')');else console.log(`superestrelles: ${sup[0]} animacions · ${sup[1]} guanyades`);
  console.log(`nivell ${nv[0]} · level up mostrats ${nv[1]} · jocs fets ${jocsFets} · examens ${await p.evaluate(()=>S.examens.length)} · errors:`,errs.length?errs:'cap');
  await b.close();process.exit(errs.length?1:0);
 })();
