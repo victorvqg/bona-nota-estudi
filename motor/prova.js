@@ -64,6 +64,10 @@ const {chromium}=require('playwright');
  await p.evaluate(()=>vista('analitica'));await p.screenshot({path:f.replace(/\.html$/,'_analitica.png'),fullPage:true});
  await p.evaluate(()=>vista('inici'));await p.screenshot({path:f.replace(/\.html$/,'_inici.png')});
  const nv=await p.evaluate(()=>[nivell(S.punts).n,window.NIVELLS_MOSTRATS||0]);if(nv[0]<2||nv[1]<1)errs.push('nivells: '+nv);
+ // capçalera: les estrelles sumen tots els mons del mateix nom (un altre món fictici amb 7 ⭐)
+ const cap=await p.evaluate(()=>{localStorage.setItem('bn_zzprova_perfils',JSON.stringify({prova:{nom:'Prova',punts:7}}));pintaCap();
+  const t=document.getElementById('punts').textContent,esp=S.punts+7;localStorage.removeItem('bn_zzprova_perfils');pintaCap();return [t,esp]});
+ if(!cap[0].startsWith(`⭐ ${cap[1]} `))errs.push(`capçalera: «${cap[0]}» i hauria de sumar ${cap[1]} ⭐`);else console.log(`capçalera: ${cap[0]} (suma de mons ok)`);
  console.log(`nivell ${nv[0]} · level up mostrats ${nv[1]} · jocs fets ${jocsFets} · examens ${await p.evaluate(()=>S.examens.length)} · errors:`,errs.length?errs:'cap');
  await b.close();process.exit(errs.length?1:0);
 })();

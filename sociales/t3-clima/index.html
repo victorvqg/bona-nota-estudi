@@ -621,7 +621,12 @@ function mostraNivell(){if(!NIVPEND)return;if(document.querySelector(".arc")){se
  d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">LEVEL UP!</div><div class="nic">${v.ic}</div><div class="t3">NIVELL ${v.n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ARA ETS<br>${v.nom.toUpperCase()}</div>${v.seg?`<div class="t4">PROPER: ${v.seg[2]} ${v.seg[1].toUpperCase()} · ${v.falten} ⭐</div>`:`<div class="t4">HAS ARRIBAT AL NIVELL MÀXIM!</div>`}`;
  document.body.appendChild(d);const para=focs(d.querySelector("canvas"));const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4500)}
 function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" onclick="vista('analitica')"><span class="nic">${v.ic}</span><div style="flex:1;min-width:0"><b>Nivell ${v.n} · ${v.nom}</b><div class="barra"><i style="width:${v.pc}%"></i></div><small>${v.seg?`Et falten ${v.falten} ⭐ per a ${v.seg[2]} ${v.seg[1]}`:"Nivell màxim! Ets una llegenda 🌟"}</small></div></div>`}
-function pintaCap(){const nv=nivell(S.punts);document.getElementById("punts").textContent=`⭐ ${S.punts} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom}${S.id?" · #"+S.id:""} · ${ASSIG.curs}`:ASSIG.curs}
+// estrelles de la capçalera: suma de tots els mons d'aquest navegador per al mateix nom (el món obert compta en directe).
+// El nivell continua sent el d'aquest món, com al rànquing (nivell = el millor món).
+function puntsTots(){let t=S.punts||0;if(!S.nom)return t;const k=S.nom.trim().toLowerCase();
+ try{for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c)||c===CL+"perfils")continue;
+  const per=JSON.parse(localStorage.getItem(c)||"{}")||{},n=Object.keys(per).find(x=>x.trim().toLowerCase()===k);if(n)t+=+(per[n]&&per[n].punts)||0}}catch(e){}return t}
+function pintaCap(){const nv=nivell(S.punts),tot=puntsTots();document.getElementById("punts").textContent=`⭐ ${tot} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom}${S.id?" · #"+S.id:""} · ${ASSIG.curs}`:ASSIG.curs}
 // temps d'estudi: cada 15 s amb la pestanya visible
 setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;TPEND+=15;guarda();if(TPEND>=300)buidaTemps()}},15000);
 const app=document.getElementById("app");
