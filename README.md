@@ -229,6 +229,19 @@ El resultat surt a la pestanya **Actions** del repo.
 - **PIN:** xifrat (bcrypt), mai es guarda tal qual. 5 errors en 15 minuts bloquegen el nom 15 minuts. Format i canvi: `supabase/bn_pin_nou.sql`.
 - Els canvis a la base de dades es fan a Supabase i el seu SQL es desa a `supabase/`.
 
+### 📷 Correcció de la foto del quadern
+
+Al Taller de mates, el nen pot fer una foto de l'exercici a la llibreta i Claude li diu on s'ha equivocat.
+
+- **Què s'envia:** el nom i el PIN, l'enunciat, la resposta model, les idees clau i la foto (reduïda a 1.600 px).
+  Ho rep la Edge Function `bn-corregeix` de Supabase, que ho passa a Claude (Anthropic).
+- **Què torna:** el que Claude ha llegit, línia per línia, si està bé, i la **primera línia equivocada** amb
+  una frase curta que explica què falla i per què, sense donar la solució.
+- **La foto no es desa enlloc** (ni a Supabase ni als registres). Només es compta quantes fotos envia cada nom cada dia (`bn_fotos`).
+- **Límits:** només amb nom i PIN; 10 fotos per nen i dia i 200 entre tots cada dia; fotos de 4 MB com a màxim.
+- **Cal activar-la a part** (SQL, clau d'Anthropic i desplegar la funció sense verificació de JWT):
+  vegeu [`supabase/functions/bn-corregeix/README.md`](supabase/functions/bn-corregeix/README.md).
+
 ### Què es registra (des del 4-11-2026) i el tauler d'admin
 
 Cap dada nova del nen: només el nom de sempre. El camp `detall` de cada registre porta:
@@ -259,3 +272,4 @@ dia, mapa de calor hora × dia, evolució de les notes, constància i ratxa, dom
 fallades amb el parany més triat i, filtrant per un nen, en què passa el temps. Les dades arriben ja agregades
 del servidor amb les funcions de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`,
 `_domini`, `_fallades`, `_evolucio`, `_alertes`), que demanen el correu i la contrasenya d'admin.
+L'apartat **✏️ Taller de mates: on s'equivoquen** (exercici · pas · error · vegades · nens) surt de `bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql` (s'executa una vegada, després de `bn_admin_tauler.sql`), i llegeix el camp `ep` (`"exercici|pas|error"`, un per cada resposta fallada) que el Taller afegeix als events `joc` i `examen`.

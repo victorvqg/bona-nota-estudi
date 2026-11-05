@@ -110,7 +110,7 @@ details.pend summary{cursor:pointer;color:var(--suau);font-weight:800;padding:6p
 <script>
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="block";b.textContent="⚠️ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="block";b.textContent="⚠️ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
-const VERSIO_ADMIN="4-11 17:10";
+const VERSIO_ADMIN="5-11 10:00";
 const API="https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb";
 const ASSIGS={socials:"🌍 Socials (clima)",biogeo:"🔭 Bio i Geo",castellano:"📝 Castellano",comarques:"🗺️ Comarques",divisibilitat:"➗ Mates (divisibilitat)"};
 const app=document.getElementById("app"),$=s=>document.querySelector(s);
@@ -266,6 +266,7 @@ async function pintaTauler(){
   <div class="pan"><h3>🔥 Constància</h3><p class="sub">Dies que ha estudiat en aquest període i ratxa actual de dies seguits</p><div id="tCst"></div></div>
   <div class="pan ample"><h3>🎯 Domini per tema</h3><p class="sub">Per a cada assignatura: quants temes té aprovats cada nen (barra) i la millor nota de test a cada tema. Passa el ratolí per una nota per veure intents i última nota.</p><div id="tDom" class="dom"></div></div>
   <div class="pan ample"><h3>❌ Preguntes més fallades</h3><p class="sub">Top 20 per assignatura, amb l'opció equivocada que més trien (el «parany»). Compta des del 4-11-2026, quan es va començar a registrar cada pregunta.</p><div id="tFal"></div></div>
+  <div class="pan ample"><h3>✏️ Taller de mates: on s'equivoquen</h3><p class="sub">Els errors que més es repeteixen als exercicis del Taller de mates (jocs i examen simulat): en quin exercici, en quin pas i quin error típic. Top 30. Els registres antics no ho porten.</p><div id="tErr"><div class="buit">Carregant…</div></div></div>
   ${TF.nom?`<div class="pan"><h3>🧩 En què passa el temps ${esc(TF.nom)}</h3><p class="sub">Segons registrats per tipus d'activitat (dades del període)</p><div class="cv"><canvas id="gTip"></canvas></div></div>`:""}
  </div>`;
  $("#tfa").onchange=e=>{TF.assig=e.target.value;pintaTauler()};$("#tfn").onchange=e=>{TF.nom=e.target.value;pintaTauler()};
@@ -273,6 +274,7 @@ async function pintaTauler(){
  const prova=(id,f)=>{try{f()}catch(e){const el=$(id);if(el)el.innerHTML=`<div class="avis-sql">⚠️ Aquest apartat no s'ha pogut dibuixar: ${esc(e&&e.message||e)}</div>`;console.error(e)}};
  prova("#tAl",()=>tAlertes(alert));prova("#gAct",()=>gActivitat(act));prova("#tCal",()=>tCalor(calor));prova("#gEvo",()=>gEvolucio(evo));
  prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));if(TF.nom)prova("#gTip",()=>gTipus());
+ tErrorsTaller();
 }
 const GOPC=()=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#e2e8f0",font:{weight:"bold"}}}},scales:{x:{ticks:{color:"#a5b4fc"},grid:{color:"#ffffff10"}},y:{ticks:{color:"#a5b4fc"},grid:{color:"#ffffff10"},beginAtZero:true}}});
 const nouG=(id,cfg)=>{const c=document.getElementById(id);if(!c||!window.Chart)return;GRAF.push(new Chart(c,cfg))};
@@ -329,6 +331,16 @@ function tFallades(fall){if(!fall.length){$("#tFal").innerHTML=`<div class="buit
   const parany=q&&f.opcio_parany!=null&&q.o[+f.opcio_parany]!=null?net(q.o[+f.opcio_parany]):null;
   return `<div class="fq"><div><b>${q?esc(net(q.t)):`Pregunta ${esc(f.qid)}`}</b><small>${q?`${esc(q.tema)} · `:""}✅ <span class="ok">${q?esc(net(q.o[q.c])):"?"}</span>${parany?` · parany: <span class="pa">${esc(parany)}</span>`:""}${f.segons!=null?` · ${f.segons} s de mitjana`:""} · id ${esc(f.qid)}</small></div>
   <div><b>${f.pct_error}%</b> d'error<small>${f.errors} de ${f.intents} respostes · ${f.nens_fallen} de ${f.nens} nens</small><div class="bar"><i style="width:${f.pct_error}%"></i></div></div></div>`}).join("")).join("")}
+// ---- ✏️ Taller de mates: on s'equivoquen (supabase/bn_admin_errors_taller.sql) ----
+// Es carrega a part de la resta: si la funció encara no és a la base de dades o falla, només aquest apartat ho diu.
+const TALLER_GEN={error:"Troba l'error",control:"Quadern (punts de control)",escala:"Escala (descompondre)",mcmmcd:"MCM i MCD",problema:"Problemes",criteri:"Criteris",divisors:"Divisors",multiples:"Múltiples",primer:"Primer o compost",divisio:"Divisió llarga",combinades:"Operacions combinades",fraccions:"Fraccions",equacio:"Equacions"};
+const TALLER_ERR={estima:"Estimació equivocada (abans de calcular)",linia:"Ha tocat una línia bona",per:"No ha sabut dir per què",no_primer:"Divisor que no és primer",no_divideix:"No és divisible pel que ha posat",no_menor:"No comença pel primer més petit",quocient:"Divisió mal feta",exponent:"Exponent mal comptat",mcm_exp_petit:"MCM amb l'exponent petit",mcd_exp_gran:"MCD amb l'exponent gran",mcd_no_comu:"MCD amb un factor no comú",mcm_falta:"Al MCM li falta un factor",confon_mcm_mcd:"Confon MCM i MCD",dada_sobrant:"Agafa la dada que no serveix",u_primer:"Diu que l'1 és primer",primer_compost:"Primer/compost equivocat",suma_xifres:"Suma de xifres mal feta",criteri_xifra:"Mira la xifra equivocada",multiple_no:"No és múltiple",fora_rang:"Fora de l'interval",falten:"N'hi falten",divisor_no:"No és divisor",calcul:"Error de càlcul",resta:"Resta mal feta",baixar:"No baixa la xifra",jerarquia:"No respecta la jerarquia",signe:"Error de signe",denominador:"Suma els denominadors",simplifica:"No simplifica",unitat:"Resposta/unitat equivocada","-":"Altres"};
+async function tErrorsTaller(){const el=$("#tErr");if(!el)return;
+ let ep;try{ep=await rpcT("bn_admin_errors_taller")}
+ catch(e){console.error(e);el.innerHTML=e==="falta"?`<div class="avis-sql">⚙️ Aquest apartat encara no està activat a la base de dades. Executa una vegada <b>supabase/bn_admin_errors_taller.sql</b> al SQL Editor de Supabase i torna a carregar.</div>`:`<div class="avis-sql">⚠️ No s'han pogut carregar els errors del Taller de mates (${esc(e&&e.message||e)}).</div>`;return}
+ try{if(!Array.isArray(ep)||!ep.length){el.innerHTML=`<div class="buit">Encara no hi ha errors del Taller de mates registrats en aquest període (els registres antics no en porten).</div>`;return}
+  el.innerHTML=`<div class="taula"><table><thead><tr><th>Exercici</th><th>Pas</th><th>Error</th><th>Vegades</th><th>Nens</th></tr></thead><tbody>${ep.map(x=>`<tr><td class="nom" title="${esc(x.gen)}">${esc(TALLER_GEN[x.gen]||x.gen)}</td><td>${esc(x.pas)}</td><td title="${esc(x.codi)}">${esc(TALLER_ERR[x.codi]||x.codi)}</td><td class="pc">${+x.n||0}</td><td>${+x.nens||0}</td></tr>`).join("")}</tbody></table></div>`}
+ catch(e){console.error(e);el.innerHTML=`<div class="avis-sql">⚠️ Aquest apartat no s'ha pogut dibuixar: ${esc(e&&e.message||e)}</div>`}}
 function gTipus(){const k=TF.nom.trim().toLowerCase(),t={"Fitxes":0,"Targetes":0,"Tests":0,"Jocs":0,"Exàmens":0,"Obertes":0};
  LOGS.filter(l=>l.nom.trim().toLowerCase()===k&&(!TF.assig||l.assig===TF.assig)).forEach(l=>{const s=+(l.detall||{}).s||0;if(!s)return;
   const m={fitxa:"Fitxes",targetes:"Targetes",test:"Tests",joc:"Jocs",examen:"Exàmens",oberta:"Obertes"}[l.event];if(m)t[m]+=s});

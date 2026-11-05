@@ -31,6 +31,8 @@ jobs:
             git diff --stat
             exit 1
           fi
+      - name: Prova dels generadors del Taller de mates (càlculs, errors típics, Troba l'error)
+        run: cd motor && node prova-generadors.js
       - name: Prova automàtica de cada món
         run: |
           cd motor

@@ -37,6 +37,8 @@ const {chromium}=require('playwright');
   else if(t==='figura'){const n=await p.evaluate(id=>ASSIG.jocs.find(j=>j.id===id).q.length,id);for(let k=0;k<n;k++){await p.locator('.opt').first().click();await p.click('#seg')}}
   await tanca();
  }
+ // proves pròpies de les eines incloses (pissarra, quadern…): window.BN_PROVES = noms de funcions que tornen true o el text de l'error
+ for(const f of await p.evaluate(()=>window.BN_PROVES||[])){const r=await p.evaluate(f=>{try{return window[f]()}catch(e){return 'peta: '+e.message}},f);if(r!==true)errs.push(`${f}: ${r}`);else console.log(`${f}: ok`);await tanca()}
  // examen de veritat: 10 preguntes encertades → nota 10
  await p.evaluate(()=>{aturaSeg();joc('examreal')});await p.click('#exGo');
  for(let k=0;k<10;k++){await p.evaluate(()=>{const q=EXR.qs[EXR.k];[...document.querySelectorAll('.opt')].find(o=>+o.dataset.i===q[2]).click()});await p.waitForTimeout(300)}

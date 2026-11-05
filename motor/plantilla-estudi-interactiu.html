@@ -851,15 +851,20 @@ function inici(){
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
  h+=`${blocsTemes()}
  <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
- <h2 class="sec">${ICO.jocs} Jocs</h2><div class="grid">${tilesJocs()}</div>
+ ${seccionsJocs()}
  <div class="fila">${btSuau()}${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><a class="btn sec" href="../../" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
  app.innerHTML=h;
 }
 function pintaTemes(){app.innerHTML=blocsTemes()}
 function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
 const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"],["examreal","📝","Examen de veritat","10 preguntes · nota sobre 10","#e0e7ff"]];
-function tilesJocs(){return JOCS.map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
-function pintaJocs(){app.innerHTML=`<h2 class="sec">${ICO.jocs} Jocs</h2><div class="grid">${tilesJocs()}</div>`}
+function tilesJocs(llista){return (llista||JOCS).map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
+function pintaJocs(){app.innerHTML=seccionsJocs()}
+// si algun joc porta «grup», els jocs surten per seccions (en l'ordre en què apareixen); els exàmens del motor van al grup de l'examen
+function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">${ICO.jocs} Jocs</h2><div class="grid">${tilesJocs()}</div>`;
+ const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
+ JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
+ return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
 function joc(id){tancaActivitat();JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
@@ -1151,21 +1156,23 @@ function repPendents(){const d=avui();return repTots().filter(r=>r.prox<=d)}
 function repProper(){const f=repTots().map(r=>r.prox).sort();return f[0]||null}
 function repas(){
  const pend=barreja(repPendents()).slice(0,10);aturaSeg();COMBO=0;FONT=["repas"];window.scrollTo(0,0);marcaNav("inici");
- if(!pend.length){const pr=repProper();app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila"><button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
+ if(!pend.length){const pr=repProper();app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila">${repasExtra()}<button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
  const pool=pend.map(r=>{const t=T.find(x=>x.id===r.tid),q=cpQ(t.q.find(x=>x[0]===r.q));q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
  REPAS=true;
  app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Si l'encertes, tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après! 🧠</p><div id="zona"></div>`;
  test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{REPAS=false;registra("joc",Object.assign({joc:"repas",titol:"Repàs dels errors",pc},ULT||{}));ULT=null;arcade(pc,b,n,false);
   const queden=repPendents().length,pr=repProper();
-  document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=APROVA?"🧠":"💪"}</div><h2>${b} de ${n} recordades</h2><p>${b?`Molt bé! Les que has encertat tornaran d'aquí a uns dies per assegurar-nos que no se t'obliden.`:""} ${n-b?`Les que has fallat tornaran <b>demà</b>.`:""}</p>${S.apresos?`<p class="prog">Preguntes apreses per sempre: <b>${S.apresos}</b> 🏅</p>`:""}<div class="fila">${queden?`<button class="btn" onclick="repas()">Repassa'n ${queden} més</button>`:""}<button class="btn sec" onclick="vista('inici')">Torna a l'inici</button></div></div>`});
+  document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=APROVA?"🧠":"💪"}</div><h2>${b} de ${n} recordades</h2><p>${b?`Molt bé! Les que has encertat tornaran d'aquí a uns dies per assegurar-nos que no se t'obliden.`:""} ${n-b?`Les que has fallat tornaran <b>demà</b>.`:""}</p>${S.apresos?`<p class="prog">Preguntes apreses per sempre: <b>${S.apresos}</b> 🏅</p>`:""}<div class="fila">${queden?`<button class="btn" onclick="repas()">Repassa'n ${queden} més</button>`:""}${repasExtra()}<button class="btn sec" onclick="vista('inici')">Torna a l'inici</button></div></div>`});
 }
+// botó opcional per continuar el repàs amb un altre joc (ASSIG.repasExtra = id del joc, p. ex. el repàs barrejat de mates)
+function repasExtra(){const j=ASSIG.repasExtra&&ASSIG.jocs.find(x=>x.id===ASSIG.repasExtra);return j?`<button class="btn verd" onclick="joc('${j.id}')">${j.ic} ${j.titol}</button>`:""}
 function cartaRepas(){const n=repPendents().length,tot=repTots().length;if(!tot)return "";
  return `<div class="continua" style="background:#ecfdf5;border-color:#6ee7b7" onclick="repas()"><span style="font-size:28px">🔁</span><b>${n?`Tens <span style="color:#047857">${n} pregunta${n>1?"s":""}</span> per repassar avui`:`Errors al dia! Proper repàs: ${new Date(repProper()).toLocaleDateString("ca-ES",{day:"numeric",month:"short"})}`}</b><span class="btn ${n?"verd":"sec"}">${n?"Repassa →":"Mira"}</span></div>`}
 
 // ====================== JOCS GENÈRICS ======================
 // tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
 function fiJoc(j,n,errors,extra){ULT=Object.assign({enc:n,err:errors},extra||{});diaEst().j[j.id]=1;const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
- document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
+ document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila">${(()=>{const s=j.seg&&ASSIG.jocs.find(x=>x.id===j.seg);return s?`<button class="btn" onclick="joc('${s.id}')">${s.ic} Ara tu: ${s.titol} ▶</button>`:""})()}<button class="btn${j.seg?" sec":""}" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
 function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
 function jocOrdena(j){
  let pos=0,errors=0;const it=j.items;
@@ -1213,6 +1220,7 @@ function obertes(n){OB0=Date.now();
  <textarea id="resp" rows="7" placeholder="Escriu aquí la teva resposta amb les teves paraules…"></textarea>
  <div class="fila"><button class="btn" id="veu">Comprova la meva resposta</button></div><div id="corr"></div></div>
  <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="obertes(${n-1})">← Anterior</button><button class="btn sec" ${n==OB.length-1?'disabled':''} onclick="obertes(${n+1})">Següent →</button></div>`;
+ if(typeof obertesExtra==="function")obertesExtra(n,o); // p. ex. 📒 quadern de mates (eines/quadern.js)
  document.getElementById("veu").onclick=()=>{
   const txt=document.getElementById("resp").value.trim();
   if(txt.length<15){document.getElementById("corr").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de comprovar-ho.</div>`;return}
