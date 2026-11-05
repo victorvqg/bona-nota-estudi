@@ -8,6 +8,8 @@ plant = (d / "plantilla-estudi-interactiu.html").read_text()
 dades = (d / "dades" / f"{assig}.js").read_text()
 # eines compartides: una línia «//@inclou eines/<fitxer>.js» a les dades s'hi substitueix pel contingut del fitxer
 dades = re.sub(r"^//@inclou (eines/[\w.-]+\.js)\s*$", lambda m: (d / m.group(1)).read_text(), dades, flags=re.M)
+# la plantilla també pot incloure eines compartides (p. ex. eines/so-mobil.js, que també va a la portada)
+plant = re.sub(r"^//@inclou (eines/[\w.-]+\.js)\s*$", lambda m: (d / m.group(1)).read_text(), plant, flags=re.M)
 nom = re.search(r'nom:"([^"]+)"', dades).group(1)
 curs = re.search(r'curs:"([^"]+)"', dades).group(1)
 mt = re.search(r'tema:"([^"]+)"', dades.split("blocs:")[0])

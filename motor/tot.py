@@ -63,6 +63,12 @@ if ini not in s or fi not in s:
     sys.exit("ERROR: a index.html falten les marques MONS:inici / MONS:fi")
 a, b = s.index(ini) + len(ini), s.index(fi)
 s = s[:a] + "\n" + "\n".join(targetes) + "\n " + s[b:]
+# el desbloqueig del so als mòbils és el mateix codi que als mons (motor/eines/so-mobil.js)
+ini, fi = "/* SO-MOBIL:inici (copiat de motor/eines/so-mobil.js per motor/tot.py, no editar a mà) */", "/* SO-MOBIL:fi */"
+if ini not in s or fi not in s:
+    sys.exit("ERROR: a index.html falten les marques SO-MOBIL:inici / SO-MOBIL:fi")
+a, b = s.index(ini) + len(ini), s.index(fi)
+s = s[:a] + "\n" + (d / "eines" / "so-mobil.js").read_text().rstrip("\n") + "\n" + s[b:]
 idx.write_text(s)
 print(f"✓ portada: {len(mons)} mons")
 

@@ -667,22 +667,24 @@ document.querySelectorAll("#nav [data-ic]").forEach(i=>i.innerHTML=ICO[i.dataset
 // Cadena: veus → bus d'efectes (SB) o de música (MB) → volum general (MG) → compressor → altaveus.
 // Una part de cada bus passa per una reverberació suau (sala petita) i un eco curt, perquè soni més ple i menys "pitet".
 // volum dels sons 0-5 (0 = silenci)
+//@inclou eines/so-mobil.js
 let AC=null,MG=null,SB=null,MB=null,REV=null,ECO=null,VOL=3,VOLant=3;
 try{const v=localStorage.getItem("bn_vol");if(v!==null)VOL=Math.max(0,Math.min(5,+v||0));else if(localStorage.getItem("bn_so")==="0")VOL=0}catch(e){}
+bnSo.sessio(VOL>0); // a l'iPhone, que soni encara que el mòbil estigui en silenci (si el so de l'app està engegat)
 const GVOL=[0,.12,.27,.45,.7,1];
 function impuls(seg,caiguda){const n=AC.sampleRate*seg|0,b=AC.createBuffer(2,n,AC.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,caiguda)}return b}
 let SOROLL=null;function soroll(){if(!SOROLL){const n=AC.sampleRate|0;SOROLL=AC.createBuffer(1,n,AC.sampleRate);const d=SOROLL.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1}return SOROLL}
 function guany(v){const g=AC.createGain();g.gain.value=v;return g}
-function audio(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();
+function audio(){if(!AC){AC=bnSo.context();if(!AC)throw new Error("sense Web Audio"); // context compartit, desbloquejat al primer toc (so-mobil.js)
   const comp=AC.createDynamicsCompressor();comp.threshold.value=-16;comp.knee.value=12;comp.ratio.value=4;comp.attack.value=.004;comp.release.value=.22;
   MG=guany(GVOL[VOL]);MG.connect(comp).connect(AC.destination);
   REV=AC.createConvolver();REV.buffer=impuls(1.8,3);REV.connect(guany(.9)).connect(MG);
   ECO=AC.createDelay(1);ECO.delayTime.value=.21;const fb=guany(.3),lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2600;ECO.connect(lp).connect(fb).connect(ECO);lp.connect(guany(.5)).connect(MG);
   SB=guany(1);SB.connect(MG);SB.connect(guany(.22)).connect(REV);SB.connect(guany(.12)).connect(ECO);
   MB=guany(0);MB.connect(MG);MB.connect(guany(.35)).connect(REV);MB.connect(guany(.2)).connect(ECO);}
- if(AC.state==="suspended")AC.resume();return AC}
+ if(AC.state!=="running"&&AC.state!=="closed")try{AC.resume().catch(()=>{})}catch(e){}return AC}
 function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN");if(b)b.innerHTML=icSo(VOL);if(r)r.value=VOL;if(n)n.textContent=VOL;pintaMus()}
-function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
+function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}bnSo.sessio(v>0);if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
 function canviaSo(){posaVol(VOL?0:(VOLant||3))}
 // una veu: oscil·lador amb envolupant (atac ràpid, caiguda exponencial), filtre opcional, lliscament de to i vibrato
 function veu(f,t0,d,o={}){const{tipus="triangle",vol=.12,atac=.006,dest=SB,filtre=0,q=1,cap=0,vib=0,det=0}=o;
@@ -752,7 +754,8 @@ function abaixaMus(on){MUSduck=on?.25:1;if(AC)musVol()}
 let MUSarc=null;function abaixaMusUnMoment(seg){abaixaMus(true);clearTimeout(MUSarc);MUSarc=setTimeout(()=>abaixaMus(!!PARLANT),seg*1000)}
 document.addEventListener("visibilitychange",()=>{if(!AC)return;if(document.hidden)musVol();else if(MUS)musVol()});
 // el navegador no deixa sonar res fins que es toca la pantalla: si la música estava engegada, comença al primer toc
-if(MUS)addEventListener("pointerdown",function un(){removeEventListener("pointerdown",un,true);musEngega()},true);
+// (dins del mateix gest que desbloqueja l'àudio: pointerup / touchend / click / tecla, no pointerdown)
+if(MUS)bnSo.quanSigui(musEngega);
 function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};mida();
  const P=[],cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
  const esclat=(x,y)=>{const col=cols[Math.random()*cols.length|0];for(let i=0;i<46;i++){const a=Math.PI*2*i/46,v=2+Math.random()*4.5;P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,v:1,col,m:3+Math.random()*3})}};

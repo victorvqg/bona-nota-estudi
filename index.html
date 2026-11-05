@@ -552,6 +552,35 @@ footer b{color:var(--groc)}
 
 <script src="sprites.js"></script>
 <script>
+/* SO-MOBIL:inici (copiat de motor/eines/so-mobil.js per motor/tot.py, no editar a mà) */
+// ===== SO ALS MÒBILS (motor/eines/so-mobil.js · el mateix codi als mons i a la portada; tot.py el copia a index.html) =====
+// Els navegadors només deixen engegar el so dins d'un gest de l'usuari, i en pantalles tàctils «pointerdown» NO compta:
+// només pointerup, touchend, click i keydown. Per això hi ha UN sol AudioContext per pàgina (bnSo.context()) i es
+// desbloqueja al primer d'aquests gestos: resume() + un buffer buit d'1 mostra (el truc d'iOS). Si el mòbil el posa en
+// pausa («suspended» o «interrupted»: una trucada, canviar d'app…), es torna a engegar en tornar a la pàgina o al toc següent.
+// A l'iPhone, el so de Web Audio calla amb l'interruptor de silenci: bnSo.sessio(true) posa navigator.audioSession en
+// «playback» perquè soni igualment mentre el so de l'app estigui engegat (l'app ja té el seu botó per apagar-lo).
+const bnSo=(()=>{let ctx=null,armat=false,tocat=false;const pendents=[],EV=["pointerup","touchend","click","keydown"],OP={capture:true,passive:true};
+ const resum=c=>{try{const p=c.resume();if(p&&p.catch)p.catch(()=>{})}catch(e){}};
+ function context(){if(!ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{ctx=new C()}catch(e){return null}
+   try{ctx.addEventListener("statechange",()=>{if(ctx.state!=="running"&&ctx.state!=="closed")arma()})}catch(e){}}
+  return ctx}
+ function gest(){const c=context();
+  if(c){if(c.state!=="running")resum(c);try{const s=c.createBufferSource();s.buffer=c.createBuffer(1,1,22050);s.connect(c.destination);s.start(0)}catch(e){}}
+  if(!tocat){tocat=true;pendents.splice(0).forEach(f=>{try{f()}catch(e){}})}
+  if(!c||c.state==="running")desarma();else{try{c.resume().then(()=>{if(c.state==="running")desarma()},()=>{})}catch(e){}}}
+ function arma(){if(armat)return;armat=true;EV.forEach(t=>addEventListener(t,gest,OP))}
+ function desarma(){if(!armat)return;armat=false;EV.forEach(t=>removeEventListener(t,gest,OP))}
+ function torna(){if(ctx&&ctx.state!=="running"&&ctx.state!=="closed"){resum(ctx);arma()}}
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")torna()});
+ addEventListener("pageshow",torna);
+ arma();
+ return {
+  context, // el context compartit de la pàgina (el crea si encara no hi és)
+  quanSigui(f){if(tocat)f();else pendents.push(f)}, // f s'executa dins del primer gest (o ara mateix, si ja n'hi ha hagut un)
+  sessio(on){try{if(navigator.audioSession)navigator.audioSession.type=on?"playback":"auto"}catch(e){}} // so encara que el mòbil estigui en silenci
+ }})();
+/* SO-MOBIL:fi */
 // estrelles
 (function(){const c=document.getElementById('cel');let h='';for(let i=0;i<90;i++){const s=Math.random()<.15?4:Math.random()<.5?2:3;
  h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
@@ -760,6 +789,10 @@ function confetiHs(){const box=document.querySelector(".hs-caixa"),cols=["#facc1
  for(let i=0;i<28;i++){const c=document.createElement("i");c.className="conf";c.style.cssText=`left:${Math.random()*100}%;background:${cols[i%7]};width:${6+Math.random()*6}px;height:${8+Math.random()*8}px;animation-duration:${1.4+Math.random()*1.2}s;animation-delay:${Math.random()*.6}s`;box.appendChild(c);setTimeout(()=>c.remove(),3400)}}
 // so arcade del rànquing (respecta el 🔊/🔇 de les assignatures: bn_so)
 let ACH=null;const soOk=()=>{try{return localStorage.getItem("bn_vol")!=="0"&&localStorage.getItem("bn_so")!=="0"}catch(e){return true}};
+// un sol context d'àudio per a tota la portada (redoble, musiqueta de les pestanyes, tocs i festa secreta): el de so-mobil.js,
+// que es desbloqueja al primer toc (pointerup / touchend / click / tecla), abans que el rànquing faci la crida al servidor
+function acH(){ACH=bnSo.context();if(!ACH)throw new Error("sense Web Audio");if(ACH.state!=="running"&&ACH.state!=="closed")try{ACH.resume().catch(()=>{})}catch(e){}return ACH}
+bnSo.sessio(soOk()); // a l'iPhone, que soni encara que el mòbil estigui en silenci (si el so no està apagat)
 function notaH(f,t0,d,tipus="square",vol=.09){const o=ACH.createOscillator(),g=ACH.createGain(),t=ACH.currentTime+t0;o.type=tipus;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(ACH.destination);o.start(t);o.stop(t+d+.02)}
 const MELO={ // una musiqueta curta diferent per a cada pestanya
  punts:[[784,0,.1],[988,.09,.1],[1175,.18,.1],[1568,.27,.28],[1319,.27,.28,"triangle"]],        // estrelles: arpegi brillant
@@ -767,12 +800,12 @@ const MELO={ // una musiqueta curta diferent per a cada pestanya
  setmana:[[523,0,.08],[659,.08,.08],[784,.16,.08],[1047,.24,.08],[1319,.32,.08],[1568,.4,.3],[784,.4,.3,"triangle"]], // setmana: escala que puja
  nivell:[[392,0,.12],[523,.12,.12],[659,.24,.12],[784,.36,.12],[1047,.5,.34],[523,.5,.34,"triangle"],[659,.5,.34,"triangle"]] // nivell: fanfàrria
 };
-let REDOBLE=false;function redoble(){if(REDOBLE||!soOk())return;REDOBLE=true;try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();
+let REDOBLE=false;function redoble(){if(REDOBLE||!soOk())return;REDOBLE=true;try{acH();
  for(let i=0;i<16;i++)notaH(i%2?98:110,i*.045,.05,"square",.05+i*.004);
  const n=ACH.createBufferSource(),b=ACH.createBuffer(1,ACH.sampleRate*.9,ACH.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
  const g=ACH.createGain(),f=ACH.createBiquadFilter();f.type="highpass";f.frequency.value=5000;g.gain.value=.18;n.buffer=b;n.connect(f).connect(g).connect(ACH.destination);n.start(ACH.currentTime+.75);
  [[523,.75],[659,.75],[784,.75],[1047,.75]].forEach(([fq,t0])=>notaH(fq,t0,.7,"triangle",.07));[[1319,.95],[1568,1.07],[2093,1.2]].forEach(([fq,t0])=>notaH(fq,t0,.18,"square",.05))}catch(e){}}
-function musiqueta(t){if(!soOk())return;try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();(MELO[t]||MELO.punts).forEach(([f,t0,d,ty])=>notaH(f,t0,d,ty))}catch(e){}}
+function musiqueta(t){if(!soOk())return;try{acH();(MELO[t]||MELO.punts).forEach(([f,t0,d,ty])=>notaH(f,t0,d,ty))}catch(e){}}
 // colors de les estrelles: or, plata i colors vius
 const EST={or:["linear-gradient(135deg,#fff7c2,#facc15 45%,#b45309)","#facc15"],plata:["linear-gradient(135deg,#ffffff,#cbd5e1 45%,#64748b)","#e2e8f0"],
  rosa:["linear-gradient(135deg,#fce7f3,#f472b6 50%,#9d174d)","#f472b6"],cian:["linear-gradient(135deg,#cffafe,#22d3ee 50%,#0e7490)","#22d3ee"],
@@ -812,7 +845,7 @@ const NF=n=>{const m=/^([A-G])(#?)(\d)$/.exec(n);return 440*2**(({C:-9,D:-7,E:-5
 const seqP=s=>s.trim().split(/\s+/).map(x=>{const[n,l]=x.split(":");return[n,+(l||1)]});
 const suau=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
 let FSO=false,FG=null,FSOR=null,FLFO=null,FESTA=null,FESTA_N=Math.floor(Math.random()*3),TOC_N=0,TOC_T=0;
-function fAc(){ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();
+function fAc(){acH();
  if(!FSOR){FSOR=ACH.createBuffer(1,ACH.sampleRate,ACH.sampleRate);const d=FSOR.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
  FG=ACH.createGain();FG.connect(ACH.destination)}
 // nota, soroll (caixa/xarles) i bombo; tot passa pel volum de la festa (FG) per poder-ho apagar de cop
@@ -907,7 +940,7 @@ document.querySelector(".hs-caixa").addEventListener("pointerdown",e=>{if(e.butt
  TOC_N=t-TOC_T<500?TOC_N+1:1;TOC_T=t;
  if(TOC_N>=5){TOC_N=0;festa();return}
  if(TOC_N<2)return;
- if(soOk())try{ACH=ACH||new(window.AudioContext||window.webkitAudioContext)();if(ACH.state==="suspended")ACH.resume();notaH([0,0,660,880,1175][TOC_N],0,.09,"square",.06)}catch(err){}
+ if(soOk())try{acH();notaH([0,0,660,880,1175][TOC_N],0,.09,"square",.06)}catch(err){}
  if(suau())return;const m=18+TOC_N*6,s=document.createElement("span");s.className="hs-fx";s.textContent=["","","✨","⚡","🔥"][TOC_N];s.style.cssText=`font-size:${m}px;left:${x-m/2}px;top:${y-m/2}px;z-index:8`;box.appendChild(s);
  s.animate([{transform:"scale(.2)",opacity:1},{transform:"translateY(-26px) scale(1.2)",opacity:1,offset:.6},{transform:"translateY(-40px) scale(.9)",opacity:0}],{duration:600,fill:"forwards"}).onfinish=()=>s.remove()});
 </script>

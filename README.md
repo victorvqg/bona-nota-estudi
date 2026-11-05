@@ -46,6 +46,7 @@ La llista oficial de mons és `motor/mons.json`.
 - **🔊 Escolta:** llegeix en veu alta la fitxa o la pregunta.
 - **Mode suau:** treu les animacions fortes (també s'activa sol si l'aparell ho té demanat).
 - **App:** es pot afegir a la pantalla d'inici del mòbil i funciona sense connexió.
+- **So al mòbil:** els efectes i la música s'engeguen al primer toc (els mòbils no deixen sonar res abans). A l'iPhone sonen encara que estigui en silenci, mentre el so de l'app estigui engegat; si el mòbil talla el so (una trucada, canviar d'app), torna en tornar a l'app o al toc següent. El codi és `motor/eines/so-mobil.js`, el mateix als mons i a la portada.
 
 ### ⭐ Estrelles, superestrelles i nivells
 
