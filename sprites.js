@@ -1,7 +1,7 @@
 // Bona Nota · sprites de pixel art propis (SVG), sense emojis: es veuen iguals a tots els aparells i nítids a qualsevol mida.
 // Generat per a n2402. Cada sprite és una graella de 16×16: cada lletra és un color de BN_PAL i «.» és transparent.
 //   bnSpr(nom, classe, paleta) → «<svg class="spr …">» · paleta (opcional) canvia colors: {Y:"#…"}
-//   bnTile(idMon)              → rajola del món amb el color de la seva assignatura · bnMat(nom) → BN_MAT amb valor per defecte
+//   bnTile(idMon)              → rajola del món amb el color de la seva assignatura · bnMat(nom) → BN_MAT, o un color de BN_MAT_RESERVA si l'assignatura és nova
 //   BN_AV (20 animals, mateix ordre que AVS) · BN_AV_BG (fons de cada animal) · BN_NIV (icones dels 10 nivells)
 //   BN_MON (data-id del món → {ic, mat}) · BN_MAT (assignatura → {curt, color, tint}) · BN_SPR (tots els sprites)
 const BN_PAL={"K":"#1d1631","W":"#ffffff","w":"#e2e8f0","g":"#94a3b8","G":"#475569","Q":"#273449","Y":"#ffd23f","y":"#f59e0b","O":"#f97316","o":"#fed7aa","R":"#e8442e","r":"#f9a8d4","P":"#ec4899","B":"#3b82f6","b":"#93c5fd","C":"#22d3ee","N":"#92400e","n":"#d6a26a","S":"#fde68a","V":"#8b5cf6","v":"#c4b5fd","E":"#22c55e","e":"#86efac","D":"#15803d","T":"#14b8a6","t":"#99f6e4","s":"#64748b","z":"#cd7f32","Z":"#8a4b16","c":"currentColor"};
@@ -71,6 +71,8 @@ function bnSpr(nom,classe,paleta){const s=BN_SPR[nom];if(!s)return "";const k=no
  const pal=Object.assign({},BN_PAL,s.pal||{},paleta||{});let r="";
  s.p.forEach((fila,y)=>{let x=0;while(x<fila.length){const c=fila[x];if(c==="."){x++;continue}let x2=x;while(x2<fila.length&&fila[x2]===c)x2++;r+=`<rect x="${x}" y="${y}" width="${x2-x}" height="1" fill="${pal[c]}"/>`;x=x2}});
  return BN_SPR_CAU[k]=`<svg class="spr${classe?" "+classe:""}" viewBox="0 0 ${s.w} ${s.h}" width="${s.w}" height="${s.h}" aria-hidden="true" focusable="false" shape-rendering="crispEdges">${r}</svg>`}
-// món o assignatura que encara no són aquí: rajola grisa amb una estrella (no es trenca res si s'afegeix un món nou)
-function bnMat(nom){return BN_MAT[nom]||{curt:String(nom||"ALTRES").toUpperCase(),color:"#334155",tint:"#cbd5e1"}}
+// colors de reserva per a una assignatura que encara no és a BN_MAT: surt sempre el mateix per a la mateixa assignatura (depèn del nom)
+const BN_MAT_RESERVA=[{color:"#2563eb",tint:"#93c5fd"},{color:"#db2777",tint:"#f9a8d4"},{color:"#16a34a",tint:"#86efac"},{color:"#ca8a04",tint:"#fde047"},{color:"#0891b2",tint:"#67e8f9"},{color:"#4338ca",tint:"#a5b4fc"},{color:"#65a30d",tint:"#bef264"},{color:"#c026d3",tint:"#f0abfc"}];
+function bnMat(nom){if(BN_MAT[nom])return BN_MAT[nom];const t=String(nom||"Altres").trim();let h=2166136261;for(const c of t.toLowerCase()){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return Object.assign({curt:t.toUpperCase()},BN_MAT_RESERVA[(h>>>0)%BN_MAT_RESERVA.length])}
+// món que encara no és a BN_MON: rajola grisa amb una estrella (a la portada, index.html hi posa l'emoji del món)
 function bnTile(id){const m=BN_MON[id]||{ic:"star"};return `<span class="spr-tile" style="--mc:${bnMat(m.mat).color}">${bnSpr(m.ic)}</span>`}

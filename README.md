@@ -61,7 +61,11 @@ La llista oficial de mons és `motor/mons.json`.
 - Podi, taula de classificació amb les estrelles de cada món, fletxes ▲▼ (llocs pujats o baixats des de l'última
   vegada), la teva posició («Et falten 13 ⭐ per atrapar…») i els premis de la colla.
 - Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell i 📈 Setmana. Compta els últims 120 dies.
-- Les icones del rànquing són pixel art propi (`sprites.js`, sense emojis: es veuen iguals a tots els aparells) i cada món té una rajola amb el color de la seva assignatura; a la taula i a la llegenda els mons van agrupats per assignatura.
+- Les icones del rànquing són pixel art propi (`sprites.js`, sense emojis: es veuen iguals a tots els aparells) i cada món té una rajola amb el color de la seva assignatura; a la taula els mons van agrupats per assignatura i, en passar-hi per sobre, cada icona diu què és.
+- La classificació ocupa tota l'amplada i no s'estreny: si hi ha molts mons, es desplaça de costat i el nom queda enganxat a l'esquerra.
+- **Afegir un món al rànquing:** surt sol de la seva targeta a la portada (`data-id`, `.mat`, `h2`). Per donar-li dibuix i color, a `sprites.js` afegeix-lo a `BN_MON`
+  (`id: {ic: "un dibuix de BN_SPR", mat: "Assignatura"}`). Si l'assignatura és nova, afegeix-la també a `BN_MAT` (`curt` = nom curt de la capçalera, `color`, `tint`).
+  Sense aquestes entrades no es trenca res: el món surt amb el seu emoji en una rajola grisa i l'assignatura nova agafa un color de reserva.
 - **Demo amb nens inventats:** obre la portada amb `?demo` (per exemple `http://localhost:8000/?demo`).
 - **🥚 Secret:** toca **5 vegades seguides i ràpid** dins del rànquing (fora dels botons) i es fa una **festa amb música**.
   Del 2n al 4t toc surt una guspira ✨⚡🔥 i un «bip» cada cop més agut. Cada vegada surt una festa diferent:
