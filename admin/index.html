@@ -54,10 +54,10 @@ a{color:var(--primary)}
 .nav-b:hover{background:var(--card2);color:var(--text)}
 .nav-b[aria-current="page"]{background:var(--primary-soft);color:var(--primary)}
 .nav-b:focus-visible{outline:2px solid var(--primary)}
-.sub{display:flex;flex-direction:column;margin:2px 0 6px 30px;border-left:1px solid var(--border)}
-.sub button{all:unset;cursor:pointer;padding:5px 12px;font-size:13px;color:var(--muted);border-radius:0 6px 6px 0}
-.sub button:hover{color:var(--text);background:var(--card2)}
-.sub button:focus-visible{outline:2px solid var(--primary)}
+.menu .sub{display:flex;flex-direction:column;margin:2px 0 6px 30px;border-left:1px solid var(--border)}
+.menu .sub button{all:unset;cursor:pointer;padding:5px 12px;font-size:13px;color:var(--muted);border-radius:0 6px 6px 0}
+.menu .sub button:hover{color:var(--text);background:var(--card2)}
+.menu .sub button:focus-visible{outline:2px solid var(--primary)}
 .menu-peu{margin-top:auto;padding:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:2px}
 .menu-peu small{color:var(--soft);font-size:11.5px;padding:6px 12px 2px}
 .principal{margin-left:var(--menu);min-width:0;padding-top:var(--dalt)}
@@ -83,6 +83,8 @@ main{padding:24px;max-width:1640px}
 .btn-ic{all:unset;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:var(--r1);color:var(--muted);cursor:pointer}
 .btn-ic:hover{background:var(--card2);color:var(--text)}
 .btn-ic:focus-visible{outline:2px solid var(--primary)}
+.btn-ic:disabled{opacity:.45;cursor:not-allowed}
+.btn-ic.perill:hover{color:var(--bad);background:var(--bad-bg)}
 .linkb{all:unset;cursor:pointer;color:var(--primary);font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:4px}
 .linkb:hover{text-decoration:underline}
 .linkb:focus-visible{outline:2px solid var(--primary);border-radius:4px}
@@ -364,7 +366,7 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="5-11 16:00";
+const VERSIO_ADMIN="5-11 17:00";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -424,7 +426,9 @@ const IC={
  graella:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/>',
  amunt:'<path d="m18 15-6-6-6 6"/>',avall:'<path d="m6 9 6 6 6-6"/>',ordena:'<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
- dispositiu:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>'};
+ dispositiu:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+ copies:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
+ extern:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>'};
 const ic=(n,cls)=>`<svg class="ic${cls?" "+cls:""}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${IC[n]||""}</svg>`;
 const LOGO=`<svg class="logo-m" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#facc15"/><path d="m16 6 3 6.2 6.8 1-4.9 4.8 1.2 6.8L16 21.6l-6.1 3.2 1.2-6.8L6.2 13.2l6.8-1z" fill="#1e1b4b"/></svg>`;
 
@@ -502,7 +506,7 @@ async function carrega(){
 }
 
 // ====================== MENÚ, CAPÇALERA I FILTRES ======================
-const MENU=[["tauler","Tauler"],["nens","Nens"],["sessions","Sessions"],["log","Log complet"]];
+const MENU=[["tauler","Tauler"],["nens","Nens"],["sessions","Sessions"],["log","Log complet"],["copies","Còpies de seguretat"]];
 const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
 const PERIODES=[[1,"Avui"],[7,"7 dies"],[30,"30 dies"],[365,"Curs"]];
 function muntaShell(){
@@ -538,10 +542,11 @@ const LF=()=>LOGS.filter(l=>(!TF.assig||l.assig===TF.assig)&&(!TF.nom||clauNen(l
 
 function pinta(){
  marcaMenu();pintaFiltres();
- $("#titol").textContent={tauler:"Tauler",nens:"Nens",sessions:"Sessions",log:"Log complet",fitxa:"Fitxa del nen"}[VISTA]||"Tauler";
+ $("#titol").textContent={tauler:"Tauler",nens:"Nens",sessions:"Sessions",log:"Log complet",fitxa:"Fitxa del nen",copies:"Còpies de seguretat"}[VISTA]||"Tauler";
  if(VISTA==="tauler")return pintaTauler();
  const c=$("#contingut");
  if(VISTA==="fitxa"&&FITXA){detall(FITXA);return Promise.resolve()}
+ if(VISTA==="copies"){vistaCopies(c);return Promise.resolve()}
  if(!LOGS.length){c.innerHTML=`<div class="targeta">${buit("safata","Encara no hi ha cap registre en aquest període.","Prova amb un període més llarg (30 dies o Curs).")}</div>`;return Promise.resolve()}
  if(VISTA==="nens")vistaNens(c);else if(VISTA==="sessions")vistaSessions(c);else vistaLog(c);
  return Promise.resolve()}
@@ -855,6 +860,62 @@ function gTipus(){const k=TF.nom.trim().toLowerCase(),t={"Fitxes":0,"Targetes":0
   const m={fitxa:"Fitxes",targetes:"Targetes",test:"Tests",joc:"Jocs",examen:"Exàmens",oberta:"Obertes"}[l.event];if(m)t[m]+=s});
  const ks=Object.keys(t).filter(x=>t[x]>0);if(!ks.length){const c=$("#gTip");if(c)c.parentNode.innerHTML=buit("rellotge","Encara no hi ha temps registrat per activitat.","Es compta des del 4-11-2026.");return}
  nouG("gTip",{type:"doughnut",data:{labels:ks.map(x=>`${x} (${Math.round(t[x]/60)} min)`),datasets:[{data:ks.map(x=>t[x]),backgroundColor:PAL().slice(0,ks.length),borderColor:cssV("--card"),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"}}}})}
+
+// ====================== CÒPIES DE SEGURETAT (supabase/bn_copies.sql) ======================
+// Còpies de les dades de Bona Nota dins de la mateixa base de dades: automàtiques cada nit, abans d'esborrar o canviar res
+// des de l'admin, manuals, i abans de restaurar. Aquí es veuen, es descarreguen (JSON), es restauren i s'esborren.
+let CPTOK=0,COPIES=[];
+async function rpcC(f,extra){if(DEMO)return demoCopiesRpc(f);const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
+ body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,...(extra||{})})});if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
+const MOTIU={"automàtica":["info","Automàtica"],"manual":["neutre","Manual"],"abans d'esborrar":["warn","Abans d'esborrar"],"abans de canviar":["warn","Abans de canviar"]};
+const pillMotiu=m=>{const r=/^abans de restaurar la #(\d+)/.exec(m||""),[cl,t]=MOTIU[m]||(r?["warn",`Abans de restaurar la #${r[1]}`]:["neutre",m||"—"]);return `<span class="pill ${cl}">${esc(t)}</span>`};
+const contingut=f=>[[f.bn_log,"registre","registres"],[f.perfils,"perfil","perfils"],[f.progres,"progrés","progressos"]].filter(x=>x[0]!=null).map(([n,u,m])=>pl(n,u,m)).join(" · ");
+const kb=b=>b>=1048576?fmtD((b/1048576).toFixed(1))+" MB":Math.max(1,Math.round((b||0)/1024))+" KB";
+function vistaCopies(c){const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ c.innerHTML=`<div class="graella">
+ <section class="targeta c-12" aria-labelledby="cpT"><h2 id="cpT">${ic("copies")}Còpies de seguretat</h2>
+  <p class="sub">Cada còpia guarda totes les dades de Bona Nota: el registre d'activitat, els perfils (amb el PIN xifrat), el progrés al núvol, els noms amagats i els reinicis. No guarda els administradors. Es fan soles <b>cada nit a les 3:00</b> i <b>just abans d'esborrar o canviar res</b> des de l'admin. Les automàtiques es guarden 30 dies; les altres, 90. El fitxer descarregat porta els PIN xifrats: guarda'l en un lloc privat.</p>
+  <div class="eines-t"><span class="muted" id="cpN"></span><span class="esp"></span><button class="btn" type="button" id="cpFes"${nd}>${ic("copies")}Fes una còpia ara</button></div>
+  ${DEMO?`<p class="muted" style="margin:-4px 0 10px;font-size:12.5px">En demo les accions no estan disponibles.</p>`:""}
+  <div id="cpLlista">${Array(4).fill('<div class="esq esq-f"></div>').join("")}</div></section>
+ <section class="targeta c-12" aria-labelledby="cpS"><h2 id="cpS">${ic("escut")}Còpia completa de Supabase</h2>
+  <p class="sub">A més, Supabase fa cada dia una còpia de <b>tota</b> la base de dades i en guarda 7 dies. Es restaura des del panell de Supabase i torna tot el projecte enrere, no només una part.</p>
+  <a class="btn sec" href="https://supabase.com/dashboard/project/agippwtqvhpxdockuigl/database/backups/scheduled" target="_blank" rel="noopener">${ic("extern")}Obre les còpies de Supabase</a></section></div>`;
+ $("#cpFes").onclick=fesCopia;carregaCopies()}
+async function carregaCopies(){const tok=++CPTOK;if(!$("#cpLlista"))return;let L;
+ try{L=await rpcC("bn_admin_copies")}catch(e){if(tok!==CPTOK||!$("#cpLlista"))return;
+  $("#cpLlista").innerHTML=e==="falta"?avisSQL("supabase/bn_copies.sql","Les còpies de seguretat encara no estan activades a la base de dades."):avisErr(`No s'han pogut carregar les còpies (${e}).`);return}
+ if(tok!==CPTOK||!$("#cpLlista"))return;COPIES=Array.isArray(L)?L:[];
+ $("#cpN").textContent=pl(COPIES.length,"còpia","còpies")+(COPIES.length?` · l'última: ${dataC(COPIES[0].ts)}`:"");
+ if(!COPIES.length){$("#cpLlista").innerHTML=buit("copies","Encara no hi ha cap còpia.","La primera automàtica es farà aquesta nit a les 3:00.");return}
+ const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ $("#cpLlista").innerHTML=taula("tCop",[{k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},{k:"motiu",t:"Tipus",cls:"nw",h:r=>pillMotiu(r.motiu)},
+  {k:"n",t:"Contingut",cls:"nw",v:r=>(r.files||{}).bn_log||0,h:r=>esc(contingut(r.files||{}))},{k:"mida",t:"Mida",num:true,h:r=>kb(r.mida)},
+  {k:"acc",t:"<span class='sr'>Accions</span>",ord:false,cls:"nw",h:r=>`<button class="btn sec petit" type="button" data-cb="${r.id}"${nd}>${ic("baixar")}Descarrega</button> <button class="btn perill-sec petit" type="button" data-cr="${r.id}"${nd}>${ic("reinicia")}Restaura</button> <button class="btn-ic perill" type="button" data-ce="${r.id}" aria-label="Esborra la còpia #${r.id}" title="Esborra la còpia"${nd}>${ic("paperera")}</button>`}],
+  COPIES,{k:"ts",etiqueta:"Còpies de seguretat"});
+ $("#cpLlista").onclick=e=>{const b=e.target.closest("button[data-cb],button[data-cr],button[data-ce]");if(!b||b.disabled)return;const id=+(b.dataset.cb||b.dataset.cr||b.dataset.ce),r=COPIES.find(x=>+x.id===id);if(!r)return;
+  if(b.dataset.cb)baixaCopia(r);else if(b.dataset.cr)restauraCopia(r);else esborraCopia(r)}}
+async function fesCopia(){if(DEMO){toast("No disponible en demo","avis");return}const b=$("#cpFes");if(b)b.disabled=true;
+ try{const id=await rpcC("bn_admin_copia_fes");toast(`Còpia #${id} feta`);await carregaCopies()}
+ catch(e){toast(e==="falta"?"Falta executar supabase/bn_copies.sql":`No s'ha pogut fer la còpia (${e})`,"err")}finally{const x=$("#cpFes");if(x)x.disabled=false}}
+async function baixaCopia(r){if(DEMO)return;try{const d=await rpcC("bn_admin_copia_baixa",{p_id:+r.id});const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:"application/json"}));a.download=`bona-nota-copia-${r.id}-${String(r.ts).slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+ toast(`Còpia #${r.id} descarregada`)}catch(e){toast(`No s'ha pogut descarregar (${e})`,"err")}}
+async function restauraCopia(r){if(DEMO)return;const f=r.files||{};
+ if(!await dialeg({titol:`Restaurar la còpia del ${dataC(r.ts)}?`,ok:"Continua",icona:"reinicia",cos:`<p>Pas 1 de 2. Les dades de Bona Nota tornaran a com eren el <b>${esc(dataC(r.ts))}</b>:</p>
+  <ul><li>registre d'activitat: ${esc(f.bn_log??"?")} registres;</li><li>perfils amb PIN: ${esc(f.perfils??"?")};</li><li>progrés al núvol: ${esc(f.progres??"?")};</li><li>els noms amagats i els reinicis d'aquell moment.</li></ul>
+  <p>Tot el que s'hagi fet després desapareixerà de la base de dades. Els administradors no canvien.</p>`}))return;
+ if(!await dialeg({titol:"Restaurar la còpia: última confirmació",ok:"Sí, restaura-la",icona:"reinicia",cos:`<p>Pas 2 de 2. Abans de restaurar, es farà automàticament una còpia de l'estat d'ara. Si t'hi repenses, podràs restaurar aquella còpia i tornar a com estava tot.</p>`}))return;
+ try{const x=await rpcC("bn_admin_copia_restaura",{p_id:+r.id});await carrega();toast(`Còpia #${r.id} restaurada (${x.bn_log} registres). L'estat d'abans és a la còpia #${x.copia_abans}.`)}
+ catch(e){toast(`No s'ha pogut restaurar (${e})`,"err")}}
+async function esborraCopia(r){if(DEMO)return;
+ if(!await dialeg({titol:`Esborrar la còpia #${r.id}?`,ok:"Sí, esborra-la",icona:"paperera",irreversible:true,cos:`<p>S'esborrarà la còpia del <b>${esc(dataC(r.ts))}</b> (${esc(contingut(r.files||{}))}).</p><p>Les dades actuals de Bona Nota no es toquen.</p>`}))return;
+ try{await rpcC("bn_admin_copia_esborra",{p_id:+r.id});toast(`Còpia #${r.id} esborrada`);await carregaCopies()}catch(e){toast(`No s'ha pogut esborrar (${e})`,"err")}}
+// demo: una llista inventada (cap crida)
+function demoCopiesRpc(f){if(f!=="bn_admin_copies")throw "demo";const n=DEMO_L.length,files=k=>({bn_log:k,perfils:6,progres:17,amagats:1,config:0,reinicis:1}),L=[],d0=new Date();
+ const a=(dies,h,m,motiu,k)=>{const d=new Date(d0);d.setDate(d.getDate()-dies);d.setHours(h,m,0,0);L.push({id:0,ts:d.toISOString(),motiu,files:files(k),mida:Math.round(k*330+14000)})};
+ a(0,10,15,"manual",n);for(let i=0;i<8;i++)a(i,3,0,"automàtica",Math.max(40,n-i*38));a(2,18,42,"abans d'esborrar",n-70);a(5,17,5,"abans de canviar",n-190);
+ L.sort((x,y)=>y.ts.localeCompare(x.ts)).forEach((x,i)=>x.id=L.length-i);return L.filter(x=>Date.parse(x.ts)<=Date.now())}
 
 // ====================== MODE DEMO (admin/?demo): dades inventades, cap crida a Supabase ======================
 let DEMO_L=null;

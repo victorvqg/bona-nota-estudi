@@ -323,3 +323,9 @@ L'apartat **✏️ Taller de mates: on s'equivoquen** (exercici · pas · error 
   Cal haver executat una vegada `supabase/bn_admin_reinicia.sql`.
 - **🗑️ Esborrar el nen del tot:** treu el nen sencer (registre, PIN i progrés).
 Dins dels mons ja no hi ha cap botó per esborrar el progrés: només es pot fer des de l'admin.
+
+**Còpies de seguretat** (`admin/` → Còpies de seguretat; `supabase/bn_copies.sql`, ja executat al projecte «bonanota»):
+- Cada còpia guarda el registre, els perfils (PIN xifrat), el progrés al núvol, els noms amagats, la configuració i els reinicis. **No** guarda els administradors.
+- Es fan soles **cada nit a les 3:00** (pg_cron `bn-copia-diaria`) i **just abans d'esborrar o canviar** dades des de l'admin (triggers `bn_copia_abans`); també amb el botó «Fes una còpia ara».
+- Les automàtiques es guarden 30 dies; la resta, 90. Des de l'admin es poden **descarregar** (JSON), **restaurar** (dues confirmacions; abans es fa una còpia de l'estat d'ara) i **esborrar**.
+- A part, Supabase guarda cada dia una còpia de tota la base de dades (7 dies), que es restaura des del seu panell.
