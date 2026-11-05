@@ -61,6 +61,7 @@ La llista oficial de mons és `motor/mons.json`.
 - Podi, taula de classificació amb les estrelles de cada món, fletxes ▲▼ (llocs pujats o baixats des de l'última
   vegada), la teva posició («Et falten 13 ⭐ per atrapar…») i els premis de la colla.
 - Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell i 📈 Setmana. Compta els últims 120 dies.
+- Les icones del rànquing són pixel art propi (`sprites.js`, sense emojis: es veuen iguals a tots els aparells) i cada món té una rajola amb el color de la seva assignatura; a la taula i a la llegenda els mons van agrupats per assignatura.
 - **Demo amb nens inventats:** obre la portada amb `?demo` (per exemple `http://localhost:8000/?demo`).
 - **🥚 Secret:** toca **5 vegades seguides i ràpid** dins del rànquing (fora dels botons) i es fa una **festa amb música**.
   Del 2n al 4t toc surt una guspira ✨⚡🔥 i un «bip» cada cop més agut. Cada vegada surt una festa diferent:

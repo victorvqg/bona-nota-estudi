@@ -79,9 +79,9 @@ print(f"✓ admin/preguntes.json: {len(preguntes)} preguntes")
 
 # 4) service worker (app instal·lable i sense connexió): llista de pàgines i versió segons el contingut
 import hashlib
-fitxers_sw = ["./", "index.html", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png"] + [m["carpeta"] + "/" for m in mons]
+fitxers_sw = ["./", "index.html", "sprites.js", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png"] + [m["carpeta"] + "/" for m in mons]
 h = hashlib.sha1()
-for f in ["index.html"] + [m["carpeta"] + "/index.html" for m in mons]:
+for f in ["index.html", "sprites.js"] + [m["carpeta"] + "/index.html" for m in mons]:
     h.update((arrel / f).read_bytes())
 versio = h.hexdigest()[:10]
 sw = (d / "sw-plantilla.js").read_text().replace("__VERSIO__", versio).replace("__FITXERS__", json.dumps(fitxers_sw, ensure_ascii=False))
