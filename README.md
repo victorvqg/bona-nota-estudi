@@ -14,12 +14,12 @@ Després, aquí es comprova si se sap de veritat.
 | 2 | Biologia i Geologia | Bloc 1: Univers, Terra i cèl·lula | `bio-i-geo/univers/` |
 | 3 | Lengua Castellana | Temas 2 y 3 | `castellano/t2-t3/` |
 | 4 | Ciències socials | Les comarques de Catalunya | `sociales/comarques/` |
-| 5 | Matemàtiques | Tema 2: Divisibilitat | `matematiques/divisibilitat/` 🧪 |
+| 5 | Matemàtiques | Tema 2: Divisibilitat | `matematiques/divisibilitat/` |
 
 La llista oficial de mons és `motor/mons.json`.
 
-> 🧪 **El món 5 (Matemàtiques) és en prova.** Viu a la branca `mon-mates` i encara **no surt a la web dels nens**
-> (GitHub Pages només publica `main`). Per veure'l, mira [Provar una branca en local](#provar-una-branca-en-local).
+> 🔢 **El món 5 (Matemàtiques) es publica el 5-11-2026**, amb el Taller de mates complet (branca `mates-millores`).
+> La 📷 correcció de la foto del quadern només funciona quan la funció `bn-corregeix` està desplegada a Supabase.
 
 ---
 
@@ -71,7 +71,7 @@ La llista oficial de mons és `motor/mons.json`.
 
 ---
 
-## 🔢 Món 5 · Matemàtiques: Divisibilitat (en prova)
+## 🔢 Món 5 · Matemàtiques: Divisibilitat
 
 Fet a partir dels 4 fulls del tema: **resum**, **esquema**, **examen** i **full de respostes**.
 Les dades són a `motor/dades/divisibilitat.js`.
@@ -186,17 +186,17 @@ Ctrl+C l'atura.
 
 ### Provar una branca en local
 
-Les coses grans es preparen en una **branca de prova** (ara mateix, `mon-mates`) i es miren en local abans de publicar-les.
+Les coses grans es preparen en una **branca de prova** (per exemple, `mates-millores`) i es miren en local abans de publicar-les.
 Atura `local.py` (Ctrl+C) i, des de la carpeta del repo:
 
 ```
 git fetch origin
-git checkout mon-mates
+git checkout mates-millores
 git pull
 python3 motor/local.py
 ```
 
-Obre http://localhost:8000: a la portada hi ha la targeta del **MÓN 5**. Mentre la branca estigui triada,
+Obre http://localhost:8000 i mira-hi els canvis de la branca. Mentre la branca estigui triada,
 `local.py` també es posa al dia sol amb els canvis nous d'aquesta branca.
 
 Per tornar a la versió de la web: `git checkout main`.
@@ -230,7 +230,7 @@ Després, `python3 tot.py` els aplica a tots els mons, i cal passar la prova de 
 
 Fes commit i push a `main`. GitHub Pages ho publica en 1 o 2 minuts.
 Per provar una cosa gran abans de publicar-la, treballa en una altra branca i mira-la en local.
-Quan ja està bé, es fusiona la branca a `main` (per exemple, `mon-mates` → `main` per publicar el món de mates).
+Quan ja està bé, es fusiona la branca a `main` (per exemple, `mates-millores` → `main`).
 
 ---
 
