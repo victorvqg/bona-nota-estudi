@@ -88,16 +88,18 @@ Les dades són a `motor/dades/divisibilitat.js`.
   (per exemple, confondre múltiple amb divisor, dir que l'1 és primer o girar els exponents del MCM i el MCD).
 - **15 preguntes obertes**, tretes de l'examen i dels «Comprova» del resum: la classe de 28 alumnes, les cabanes,
   els trens, les rajoles, les monedes…
-- **6 jocs:**
+- **20 jocs en 4 seccions** (a la pantalla de jocs surten agrupats; camp `grup` de cada joc):
 
-| Joc | Què es fa |
+| Secció | Jocs |
 |---|---|
-| 🧺 El garbell dels primers | Graella de l'1 al 50: cal tocar els 15 primers. Si toques un compost, es tatxa i diu per què (p. ex. «21 = 3 · 7»). Joc propi d'aquest món. |
-| 💎 Primer o compost? | Classificar nombres. |
-| 🌳 Nombre i factors | Unir cada nombre amb la seva descomposició (36 ↔ 2² · 3²…). |
-| 🪜 L'escala de 792 | Ordenar les divisions de la descomposició de 792. |
-| 🔎 Els criteris | Unir cada nombre amb la regla que el fa divisible. |
-| 🤝 MCM o MCD? | Decidir quin cal per a cada problema de l'examen. |
+| 🧸 Per entendre | 🟦 Rectangles de quadradets (divisors per parelles, primers) · 🌳 L'arbre de factors · 🐸 Les granotes (MCM) · 🧱 Les rajoles (MCD) · 🧺 El garbell dels primers |
+| ✏️ Taller: com a classe | Fitxes 1 a 7 (criteris, múltiples i divisors, primers, l'escala, MCM i MCD, problemes, la divisió llarga) · 🔀 Repàs barrejat · 🔍 Troba l'error |
+| 🎮 Jocs ràpids | 💎 Primer o compost? · 🌳 Nombre i factors · 🪜 L'escala de 792 (en acabar, botó «Ara tu» cap a la Fitxa 4) · 🔎 Els criteris · 🤝 MCM o MCD? |
+| 📝 Exàmens | Examen de mates (6 exercicis, sobre 10) · Examen sorpresa · Examen de veritat |
+
+- **✏️ Full de brut** (botó al costat del so): per fer càlculs amb el dit o el llapis. No es desa.
+- **📒 Quadern a les preguntes obertes**: el nen resol el problema en paper i després **comprova els resultats**
+  pas a pas (camp `c` de cada pregunta) o **fa una foto del full** i Claude li diu la primera línia equivocada.
 
 Tots els càlculs que surten al món s'han comprovat amb un programa (47 comprovacions, totes correctes).
 
@@ -105,19 +107,41 @@ Tots els càlculs que surten al món s'han comprovat amb un programa (47 comprov
 
 ### ✏️ Taller de mates (exercicis com els de l'escola)
 
-Motor compartit a `motor/eines/exercicis-mates.js`. Un món de mates l'inclou amb la línia
-`//@inclou eines/exercicis-mates.js` al final de les seves dades (`build.py` hi posa el fitxer sencer).
+Motor compartit a `motor/eines/`. Un món de mates l'inclou amb línies `//@inclou eines/<fitxer>.js` al final
+de les seves dades (`build.py` hi posa el fitxer sencer):
+
+| Fitxer | Què hi ha |
+|---|---|
+| `exercicis-mates.js` | El Taller: generadors, teclat, fitxes, examen, repàs barrejat i Troba l'error |
+| `manipulatius-mates.js` | 🧸 Dibuixos que es mouen: rectangles, arbre, granotes, rajoles |
+| `quadern.js` | 📒 Punts de control i foto del quadern a les preguntes obertes |
+| `pissarra.js` | ✏️ Full de brut |
 
 - **S'escriu el resultat** amb un teclat numèric gran, en lloc de triar entre 3 opcions.
 - **Números nous cada vegada**: cada exercici surt d'un generador, amb 3 nivells (🟢 bàsic, 🟡 mitjà, 🔴 d'examen).
-- **Pas a pas com a la llibreta**: l'escala fila a fila, la taula de factors per al MCM i el MCD, el càlcul del criteri.
+  Els enunciats i problemes surten dels apunts; els números per practicar els fa el programa i es comproven sols.
+- **Tres maneres de fer una fitxa** (primer «Com ho vols fer?», després el nivell):
+  👀 **Mira com es fa** (un exemple resolt, pas a pas, amb l'explicació de cada pas; no dona estrelles) ·
+  ✍️ **Completa** (la primera meitat dels passos ja surt feta i el nen fa la resta) · 💪 **Tot sol**.
+- **Pas a pas com a la llibreta**: l'escala fila a fila, la taula de factors per al MCM i el MCD, el càlcul del criteri,
+  i la **divisió llarga xifra a xifra** dibuixada com a la llibreta (la «caixa»).
+- **💡 Pista** a cada pas (abans de respondre). Aquell pas ja no dona estrella.
+- **🤔 Per què?** De vegades, després d'encertar, pregunta per què (3 opcions). No compta per a la nota.
+- **🤔 Abans de calcular**: al MCM i al MCD primer cal estimar si el resultat serà més gran o més petit.
 - **Problemes en 4 passos**: dades (n'hi ha una que no serveix) → MCM o MCD? → càlcul → frase de resposta amb la unitat.
-- **Fitxes amb apartats a) b) c) d)**, com les de classe.
 - **Errors típics explicats** (l'1 no és primer, exponent petit al MCM, un factor no comú al MCD…). Al 2n error ensenya la resposta.
 - **«📒 Així s'escriu a la llibreta»** després de cada apartat.
+- **🔀 Repàs barrejat**: exercicis de tipus diferents seguits (mai dos d'iguals de costat). També surt com a botó
+  en acabar el repàs dels errors (`ASSIG.repasExtra`).
+- **🔍 Troba l'error**: un exercici resolt per un company amb un error típic. Cal tocar la primera línia dolenta i dir per què.
 - **Examen simulat sobre 10**: 6 exercicis, sense pistes, nota parcial per passos i correcció completa al final.
 - Cada tema de la fitxa té el botó **✏️ Practica-ho com a classe** (camp `practica` del tema).
-- `prova.js` resol cada fitxa i l'examen sols (`mxProva`) i exigeix un 10.
+- **Registre per pas**: cada resposta fallada es desa com `exercici|pas|error` (camp `ep`) per al tauler d'admin.
+- Generadors preparats per a temes futurs (encara no surten enlloc): **operacions combinades** (jerarquia),
+  **suma i resta de fraccions** i **equacions de primer grau**.
+- **Proves**: `node motor/prova-generadors.js` fa cada generador centenars de vegades i comprova que els càlculs quadren;
+  `prova.js` resol cada fitxa en els tres modes, l'examen (ha de donar un 10), els dibuixos, Troba l'error,
+  el full de brut i els punts de control del quadern.
 
 ## 🗂️ Com està fet
 
@@ -133,6 +157,8 @@ motor/
   build.py                           Genera un món: plantilla + dades → pàgina
   tot.py                             Genera TOTS els mons, les targetes de la portada i sw.js
   prova.js                           Prova automàtica d'un món (Playwright)
+  prova-generadors.js                Prova dels generadors del Taller de mates (sense navegador)
+  eines/                             Peces compartides que un món inclou amb //@inclou (Taller de mates, dibuixos, quadern, full de brut)
   local.py                           Servidor local que es posa al dia sol amb GitHub
   eines/mapa-comarques.js            Genera el mapa SVG de les comarques
 admin/                         Panell d'administració (activitat, noms, rànquing)
@@ -210,10 +236,11 @@ Quan ja està bé, es fusiona la branca a `main` (per exemple, `mon-mates` → `
 
 ## ✅ Revisió automàtica
 
-A cada push, GitHub Actions (`.github/workflows/revisa.yml`) fa dues coses:
+A cada push, GitHub Actions (`.github/workflows/revisa.yml`) fa tres coses:
 
 1. Torna a generar tots els mons i la portada. Si una pàgina pujada no coincideix (editada a mà o sense regenerar), falla i diu quins fitxers.
-2. Passa la prova de cada món en mode estricte: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i rànquing de la capçalera.
+2. Passa la prova dels generadors del Taller de mates (`motor/prova-generadors.js`).
+3. Passa la prova de cada món en mode estricte: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i rànquing de la capçalera.
    També exigeix 8 preguntes per tema, i que la resposta correcta no sigui massa sovint (ni massa poc) la més llarga.
 
 El resultat surt a la pestanya **Actions** del repo.
@@ -231,7 +258,7 @@ El resultat surt a la pestanya **Actions** del repo.
 
 ### 📷 Correcció de la foto del quadern
 
-Al Taller de mates, el nen pot fer una foto de l'exercici a la llibreta i Claude li diu on s'ha equivocat.
+A les preguntes obertes de mates (📒 L'has resolt al quadern?), el nen pot fer una foto del full i Claude li diu on s'ha equivocat. Al món s'activa amb `foto:true` a ASSIG.
 
 - **Què s'envia:** el nom i el PIN, l'enunciat, la resposta model, les idees clau i la foto (reduïda a 1.600 px).
   Ho rep la Edge Function `bn-corregeix` de Supabase, que ho passa a Claude (Anthropic).

@@ -1,35 +1,37 @@
 // ===================== ✏️ PISSARRA LLIURE (motor/eines/pissarra.js) =====================
 // Un full de brut per fer càlculs amb el dit o el llapis, a qualsevol pantalla del món. No es llegeix ni es desa enlloc.
-// S'inclou a les dades d'un món amb la línia  //@inclou eines/pissarra.js  (surt un botó ✏️ a baix a la dreta).
+// S'inclou a les dades d'un món amb la línia  //@inclou eines/pissarra.js  (surt un botó ✏️ a la capçalera, al costat del so).
 let PIS=null;
 function pisCss(){if(document.getElementById("pisCss"))return;const s=document.createElement("style");s.id="pisCss";s.textContent=`
-#pisBt{position:fixed;right:14px;bottom:18px;z-index:45;width:56px;height:56px;border-radius:50%;border:0;background:#fff;box-shadow:0 4px 14px #0f172a40,0 0 0 3px var(--blau) inset;font-size:26px;cursor:pointer}
-@media(max-width:760px){#pisBt{bottom:calc(84px + env(safe-area-inset-bottom))}}
+#pisBt.so-btn{font-size:16px}
+#pisBt.flota{position:fixed;right:14px;bottom:18px;z-index:45;width:52px;height:52px;border-radius:50%;border:0;background:#fff;box-shadow:0 4px 14px #0f172a40,0 0 0 3px var(--blau) inset;font-size:24px;cursor:pointer}
 #pisCapa{position:fixed;inset:0;z-index:70;display:none;flex-direction:column}
 #pisCapa.on{display:flex}
-#pisCapa .barra{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px calc(8px + env(safe-area-inset-top)*0);background:#1e293b;color:#fff}
-#pisCapa .barra button{border:0;border-radius:10px;padding:8px 11px;font:inherit;font-weight:800;font-size:15px;cursor:pointer;background:#334155;color:#fff}
-#pisCapa .barra button.on{background:#fff;color:#0f172a}
-#pisCapa .barra .col{width:34px;height:34px;padding:0;border:3px solid #334155}
-#pisCapa .barra .col.on{border-color:#fff;box-shadow:0 0 0 2px #38bdf8}
-#pisCapa .barra .esp{flex:1}
-#pisCapa canvas{flex:1;width:100%;touch-action:none;cursor:crosshair}
+#pisCapa .pis-barra{flex:0 0 auto;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;align-items:center;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:#1e293b;color:#fff}
+#pisCapa .pis-barra button{border:0;border-radius:10px;padding:7px 10px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#334155;color:#fff;white-space:nowrap}
+#pisCapa .pis-barra button.on{background:#fff;color:#0f172a}
+#pisCapa .pis-barra .col{width:34px;height:34px;padding:0;border:3px solid #334155}
+#pisCapa .pis-barra .col.on{border-color:#fff;box-shadow:0 0 0 2px #38bdf8}
+#pisCapa .pis-barra .esp{flex:1}
+#pisCapa canvas{flex:1 1 0;min-height:0;width:100%;display:block;touch-action:none;cursor:crosshair}
+@media(max-width:520px){#pisCapa .pis-barra .txt{display:none}}
 #pisCapa.full canvas{background-color:#fffef5;background-image:linear-gradient(#93c5fd66 1px,transparent 1px),linear-gradient(90deg,#93c5fd66 1px,transparent 1px);background-size:26px 26px}
 #pisCapa.sobre canvas{background:#ffffff40}
 `;document.head.appendChild(s)}
 function pisMunta(){if(document.getElementById("pisBt")||typeof ASSIG==="undefined"||!ASSIG.pissarra)return;pisCss();
- const b=document.createElement("button");b.id="pisBt";b.title="Full de brut per fer càlculs";b.setAttribute("aria-label","Obre el full de brut");b.textContent="✏️";b.onclick=pisObre;document.body.appendChild(b);
- const c=document.createElement("div");c.id="pisCapa";c.className="full";c.innerHTML=`<div class="barra">
+ const b=document.createElement("button");b.id="pisBt";b.title="Full de brut per fer càlculs";b.setAttribute("aria-label","Obre el full de brut");b.textContent="✏️";b.onclick=pisObre;
+ const vol=document.querySelector("header .vol");if(vol){b.className="so-btn";vol.insertBefore(b,vol.firstChild)}else{b.className="flota";document.body.appendChild(b)}
+ const c=document.createElement("div");c.id="pisCapa";c.className="full";c.innerHTML=`<div class="pis-barra">
   <button class="col on" style="background:#0f172a" data-c="#0f172a" aria-label="Negre"></button><button class="col" style="background:#2563eb" data-c="#2563eb" aria-label="Blau"></button><button class="col" style="background:#dc2626" data-c="#dc2626" aria-label="Vermell"></button>
-  <button id="pisGoma">🧽 Goma</button><button id="pisDesfes">↶ Desfés</button><button id="pisBuida">🗑 Esborra-ho tot</button>
-  <button id="pisFons">🔍 Escriu sobre l'exercici</button><span class="esp"></span><button id="pisTanca">✖ Tanca</button></div><canvas id="pisCv" aria-label="Full de brut"></canvas>`;
+  <button id="pisGoma" aria-label="Goma">🧽<span class="txt"> Goma</span></button><button id="pisDesfes" aria-label="Desfés">↶<span class="txt"> Desfés</span></button><button id="pisBuida" aria-label="Esborra-ho tot">🗑<span class="txt"> Esborra-ho tot</span></button>
+  <button id="pisFons">🔍 Sobre l'exercici</button><span class="esp"></span><button id="pisTanca">✖ Tanca</button></div><canvas id="pisCv" aria-label="Full de brut"></canvas>`;
  document.body.appendChild(c);
  PIS={traços:[],col:"#0f172a",goma:false,actiu:null,cv:c.querySelector("canvas")};
  c.querySelectorAll(".col").forEach(x=>x.onclick=()=>{PIS.col=x.dataset.c;PIS.goma=false;c.querySelectorAll(".col").forEach(y=>y.classList.toggle("on",y===x));document.getElementById("pisGoma").classList.remove("on")});
  document.getElementById("pisGoma").onclick=e=>{PIS.goma=!PIS.goma;e.currentTarget.classList.toggle("on",PIS.goma)};
  document.getElementById("pisDesfes").onclick=()=>{PIS.traços.pop();pisRedibuixa()};
  document.getElementById("pisBuida").onclick=()=>{PIS.traços=[];pisRedibuixa()};
- document.getElementById("pisFons").onclick=e=>{const sobre=c.classList.toggle("sobre");c.classList.toggle("full",!sobre);e.currentTarget.textContent=sobre?"📄 Full quadriculat":"🔍 Escriu sobre l'exercici"};
+ document.getElementById("pisFons").onclick=e=>{const sobre=c.classList.toggle("sobre");c.classList.toggle("full",!sobre);e.currentTarget.textContent=sobre?"📄 Full quadriculat":"🔍 Sobre l'exercici"};
  document.getElementById("pisTanca").onclick=pisTanca;
  const cv=PIS.cv,pt=e=>{const r=cv.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
  cv.addEventListener("pointerdown",e=>{e.preventDefault();cv.setPointerCapture&&cv.setPointerCapture(e.pointerId);PIS.actiu={c:PIS.col,g:PIS.goma,w:PIS.goma?26:(e.pointerType==="pen"?2.6:3.4),p:[pt(e)]};PIS.traços.push(PIS.actiu);pisRedibuixa()});

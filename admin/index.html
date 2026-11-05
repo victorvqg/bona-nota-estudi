@@ -148,7 +148,9 @@ function descriu(l){const d=l.detall||{};switch(l.event){
  case"test":return `Test de <b>${esc(d.titol||d.tema)}</b>: ${d.bones}/${d.n} · ${cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"joc":return `Joc <b>${esc(d.titol||d.joc)}</b>: ${cpc(d.pc)}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.mode&&d.joc==="mapa43"?` · ${esc(d.mode)}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"examen":return `🏆 ${d.joc==="examreal"?"Examen de veritat":"Examen sorpresa"}: ${cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
- case"oberta":return `Pregunta oberta (${esc(d.tema||"")}): ${cpc(d.pc)} de les idees clau${d.s?` · ${fmtT(d.s)}`:""}`;
+ case"oberta":if(d.mode==="control")return `📒 Quadern · punts de control (${esc(d.tema||"")}): ${cpc(d.pc)} bé a la primera${d.pasos?` (${esc(d.pasos)})`:""}`;
+   if(d.mode==="foto")return `📷 Foto del quadern (${esc(d.tema||"")}): ${d.ok?(d.correcte?"tot correcte":"hi ha trobat un error"):`no s'ha pogut corregir (${esc(d.error||"?")})`}`;
+   return `Pregunta oberta (${esc(d.tema||"")}): ${cpc(d.pc)} de les idees clau${d.s?` · ${fmtT(d.s)}`:""}`;
  case"valora":return `Valora <b>${esc(d.titol||d.tema)}</b>: ${esc(d.v)}`;
  case"temps":return `⏱ ${fmtT(d.s)} estudiant`;
  default:return esc(JSON.stringify(d))}}
