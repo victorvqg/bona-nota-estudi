@@ -13,7 +13,7 @@ Si la foto no es llegeix o no és aquest exercici, ho diu.
 - **Límit:** 10 fotos per nen i dia, i 200 entre tots els nens cada dia. Si Claude no respon, la foto no compta.
 - Fitxers: `index.ts` (la funció) i `supabase/bn_fotos.sql` (el comptador de fotos i la comprovació del PIN).
 
-**Adreça:** `https://xbtlgjucvrdcmkgmxvzy.supabase.co/functions/v1/bn-corregeix`
+**Adreça:** `https://agippwtqvhpxdockuigl.supabase.co/functions/v1/bn-corregeix`
 
 ---
 
@@ -33,7 +33,7 @@ Només les pot fer servir el servidor, no els nens.
 O bé, des d'un Terminal del Mac (amb el CLI de Supabase i `supabase login` fet):
 
 ```
-supabase secrets set ANTHROPIC_API_KEY=sk-ant-LA_TEVA_CLAU --project-ref xbtlgjucvrdcmkgmxvzy
+supabase secrets set ANTHROPIC_API_KEY=sk-ant-LA_TEVA_CLAU --project-ref agippwtqvhpxdockuigl
 ```
 
 Mai posis la clau en cap fitxer del repo.
@@ -57,7 +57,7 @@ La funció ja comprova el nom i el PIN pel seu compte.
 **Opció A · Terminal del Mac**, des de la carpeta del repo:
 
 ```
-supabase functions deploy bn-corregeix --no-verify-jwt --project-ref xbtlgjucvrdcmkgmxvzy
+supabase functions deploy bn-corregeix --no-verify-jwt --project-ref agippwtqvhpxdockuigl
 ```
 
 (Si no tens el CLI instal·lat: `npx supabase functions deploy …` amb els mateixos paràmetres.)
@@ -73,9 +73,9 @@ Cada vegada que canviï `index.ts`, cal tornar a desplegar (amb la verificació 
 Des d'un Terminal. Aquesta prova no envia cap foto i no gasta res:
 
 ```
-curl -s https://xbtlgjucvrdcmkgmxvzy.supabase.co/functions/v1/bn-corregeix \
+curl -s https://agippwtqvhpxdockuigl.supabase.co/functions/v1/bn-corregeix \
   -H "Content-Type: application/json" \
-  -H "apikey: sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb" \
+  -H "apikey: sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p" \
   -d '{"nom":"prova","pin":"0000A","enunciat":"Prova","imatge":""}'
 ```
 

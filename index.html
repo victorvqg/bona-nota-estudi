@@ -606,7 +606,7 @@ function jugador(){try{return localStorage.getItem('bn_jugador')||''}catch(e){re
 function pinsP(){try{return JSON.parse(localStorage.getItem('bn_pins')||'{}')||{}}catch(e){return {}}}
 function nomsDispositiu(){const m={};try{(JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[]).forEach(n=>{m[n.trim().toLowerCase()]=n});
  for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c))continue;Object.keys(JSON.parse(localStorage.getItem(c)||'{}')||{}).forEach(n=>{m[n.trim().toLowerCase()]=m[n.trim().toLowerCase()]||n})}}catch(e){}return m}
-const rpcP=(f,body)=>fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:JSON.stringify(body)})
+const rpcP=(f,body)=>fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:JSON.stringify(body)})
  .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa"}return t?JSON.parse(t):null});
 // PIN = 4 xifres + 1 lletra al final (ex. 4587R), sempre en MAJÚSCULES. Els antics (4 xifres) entren i es demana canviar-los.
 const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
@@ -703,7 +703,7 @@ function carregaHs(){const hs=document.getElementById("hs");
  if(DEMO){HSD=DEMO_D;HST=Date.now();pintaHs();redoble();return}
  if(HSD&&Date.now()-HST<60000){pintaHs();return}
  hs.innerHTML=`<div class="hs-buit">CARREGANT…</div>`;
- const rk=f=>fetch("https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb","Content-Type":"application/json"},body:"{}"}).then(r=>r.ok?r.json():Promise.reject());
+ const rk=f=>fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:"{}"}).then(r=>r.ok?r.json():Promise.reject());
  rk("bn_ranking_mons").catch(()=>rk("bn_ranking")).then(d=>{HSD=Array.isArray(d)?d:[];HST=Date.now();pintaHs();redoble()})
   .catch(()=>{hs.innerHTML=`<div class="hs-buit">EL RÀNQUING ARRIBA AVIAT…<br>MENTRESTANT, JUGA I SUMA ${ST()}!</div>`});
 }

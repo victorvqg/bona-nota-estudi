@@ -262,6 +262,8 @@ El resultat surt a la pestanya **Actions** del repo.
 ## 🔒 Dades
 
 - **Al navegador** (localStorage): el progrés de cada nom, separat per món.
+- **Base de dades:** projecte Supabase propi **«bonanota»** (`agippwtqvhpxdockuigl`, Frankfurt), des del 5-11-2026.
+  Abans compartia el projecte «marcador»; s'hi va copiar tot (registre, perfils amb PIN, progrés, admin i les 37 funcions) i es va comprovar que era idèntic.
 - **Al núvol** (Supabase), només amb nom i PIN: el progrés de cada món, per poder canviar d'aparell.
 - **Registre d'activitat** (`bn_log`): què fa cada nen i quan, per al panell d'admin i el rànquing. Només s'hi pot escriure; llegir-lo només ho pot fer l'admin.
 - **Rànquing:** `bn_ranking_mons` (total i estrelles per món). Els noms amagats o no permesos no hi surten.

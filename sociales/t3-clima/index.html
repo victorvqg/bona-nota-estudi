@@ -625,7 +625,7 @@ if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
 function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
 function desa(){S.mod=Date.now();guarda();pintaCap();nuvolProg()}
 // ---- registre d'activitat per al panell admin (Supabase: només escriptura; llegir-ho només pot l'admin) ----
-const BN_LOG={url:"https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/bn_log",key:"sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb"};
+const BN_LOG={url:"https://agippwtqvhpxdockuigl.supabase.co/rest/v1/bn_log",key:"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p"};
 const SESSIO=Math.random().toString(36).slice(2,12);let APARELL="",TPEND=0;
 try{APARELL=localStorage.getItem("bn_aparell")||"";if(!APARELL){APARELL=Math.random().toString(36).slice(2,12);localStorage.setItem("bn_aparell",APARELL)}}catch(e){APARELL="?"}
 // ---- id estable de cada pregunta («tema/núm.»; l'assignatura ja va a la columna assig). Ve de motor/qids.json via build.py ----
