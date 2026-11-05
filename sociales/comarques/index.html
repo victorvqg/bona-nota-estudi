@@ -1737,7 +1737,10 @@ function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElement
  <div class="fila">${btSuau()}<button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
 }
 
-aplicaSuau();if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../../sw.js").catch(()=>{});
+aplicaSuau();
+// service worker (app sense connexió): a la web publicada (https) sí. A localhost no, perquè sempre es vegi l'última versió
+// (excepte si la URL porta ?sw); a localhost, a més, es desregistra el que hi hagués d'abans i se n'esborra la còpia guardada.
+(function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc?/[?&]sw\b/.test(location.search):location.protocol==="https:"){navigator.serviceWorker.register("../../sw.js").catch(()=>{});return}if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 pintaCap();pintaSo();
 (function(){let G="";try{G=localStorage.getItem("bn_jugador")||""}catch(e){}
  if(G&&(pinDe(G)||SENSE_NUVOL())&&(!S.nom||S.nom.toLowerCase()!==G.toLowerCase())&&potNouNom(G)){entra(G);return}

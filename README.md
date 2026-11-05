@@ -187,6 +187,12 @@ python3 motor/local.py
 Obre http://localhost:8000. Cada 20 segons baixa de GitHub el que hi hagi de nou: només cal recarregar la pàgina.
 Ctrl+C l'atura.
 
+- **Admin en local:** http://localhost:8000/admin/ (amb la barra final; sense barra també funciona).
+- **Service worker:** a localhost no s'instal·la (així sempre veus l'última versió) i, si n'hi havia un d'abans, s'esborra sol.
+  Per provar l'app sense connexió en local, obre la pàgina amb `?sw`.
+- **Des del mòbil (mateixa wifi):** `local.py` només respon al mateix Mac. Per al mòbil, des de la carpeta del repo:
+  `python3 -m http.server 8000 --bind 0.0.0.0` i obre `http://IP-del-Mac:8000` (la IP: `ipconfig getifaddr en0` o `en1`).
+
 > Compte: en local també es fa servir la base de dades real. El que hi facis compta al rànquing.
 > Per provar, fes servir `?demo` a la portada.
 

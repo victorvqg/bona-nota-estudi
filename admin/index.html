@@ -110,7 +110,9 @@ details.pend summary{cursor:pointer;color:var(--suau);font-weight:800;padding:6p
 <script>
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="block";b.textContent="⚠️ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="block";b.textContent="⚠️ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
-const VERSIO_ADMIN="5-11 12:50";
+const VERSIO_ADMIN="5-11 13:30";
+// a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
+(function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 const API="https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb";
 const ASSIGS={socials:"🌍 Socials (clima)",biogeo:"🔭 Bio i Geo",castellano:"📝 Castellano",comarques:"🗺️ Comarques",divisibilitat:"➗ Mates (divisibilitat)"};
 const app=document.getElementById("app"),$=s=>document.querySelector(s);

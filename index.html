@@ -944,6 +944,10 @@ document.querySelector(".hs-caixa").addEventListener("pointerdown",e=>{if(e.butt
  if(suau())return;const m=18+TOC_N*6,s=document.createElement("span");s.className="hs-fx";s.textContent=["","","✨","⚡","🔥"][TOC_N];s.style.cssText=`font-size:${m}px;left:${x-m/2}px;top:${y-m/2}px;z-index:8`;box.appendChild(s);
  s.animate([{transform:"scale(.2)",opacity:1},{transform:"translateY(-26px) scale(1.2)",opacity:1,offset:.6},{transform:"translateY(-40px) scale(.9)",opacity:0}],{duration:600,fill:"forwards"}).onfinish=()=>s.remove()});
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
+<script>
+// service worker (app sense connexió): a la web publicada (https) sí. A localhost no, perquè sempre es vegi l'última versió
+// (excepte si la URL porta ?sw); a localhost, a més, es desregistra el que hi hagués d'abans i se n'esborra la còpia guardada.
+(function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc?/[?&]sw\b/.test(location.search):location.protocol==="https:"){navigator.serviceWorker.register("sw.js").catch(()=>{});return}if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
+</script>
 </body>
 </html>
