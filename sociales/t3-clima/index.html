@@ -48,7 +48,6 @@ h2.sec:first-child{margin-top:4px}
 .btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--blau2)}
 .btn.sec{background:#fff;color:var(--fosc);box-shadow:0 0 0 2px var(--vora) inset,0 3px 0 var(--vora)}
 .btn.verd{background:var(--verd);box-shadow:0 3px 0 #15803d}
-.btn.verm{background:var(--verm);box-shadow:0 3px 0 #991b1b}
 .btn:disabled{opacity:.45;cursor:default}
 .fila{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .prog{color:var(--suau);font-size:14.5px;font-weight:700}
@@ -161,8 +160,6 @@ table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middl
 .valoracio{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px solid #c7d2fe;border-radius:18px;padding:16px 18px}
 .valoracio h3{margin:0 0 6px}
 .llista-err li{margin:6px 0}
-.modal{position:fixed;inset:0;background:#0f172a80;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
-.modal .box{max-width:420px;text-align:center}
 .peu-pag{text-align:center;color:#94a3b8;font-size:13px;margin:26px 0 8px}
 .confeti{position:fixed;top:-20px;font-size:22px;z-index:60;pointer-events:none;animation:cau 1.8s linear forwards}
 @keyframes cau{to{transform:translateY(105vh) rotate(540deg);opacity:.2}}
@@ -650,7 +647,7 @@ let ACTV=null;
 function tancaActivitat(){const a=ACTV;ACTV=null;if(!a)return;const s=segs(a.t0);if(s<2)return;
  if(a.tipus==="fitxa")registra("fitxa",{tema:a.tid,titol:a.titol,s,fi:a.fi?1:0});
  else registra("targetes",{tema:a.tid,titol:a.titol,s,vistes:a.vistes.size,n:a.n,girs:a.girs,fi:a.vistes.size>=a.n?1:0})}
-function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return;detall=retalla(detall||{});
+function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return;detall=retalla(detall||{});if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
  try{fetch(BN_LOG.url,{method:"POST",keepalive:true,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json","Prefer":"return=minimal"},
   body:JSON.stringify({assig:ASSIG.id,nom:S.nom.slice(0,40),sessio:SESSIO,aparell:APARELL,event,detall:detall||{}})}).catch(()=>{})}catch(e){}}
 function buidaTemps(){tancaActivitat();if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
@@ -760,12 +757,14 @@ function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" oncli
 // estrelles de la capçalera: suma de tots els mons per al mateix nom. El món obert compta en directe; els altres mons
 // agafen el més alt entre el que hi ha en aquest navegador i el que diu el núvol (Supabase bn_punts_mons, com el rànquing),
 // perquè un nen pot haver fet cada món en un aparell diferent. (rpc() ja torna el JSON llegit, no la resposta.) El nivell continua sent el d'aquest món, com al rànquing.
-let PSRV=null;
+// Si l'admin ha esborrat el progrés d'un món (bn_reinicis), les estrelles d'aquell món desades aquí abans del reinici no compten.
+let PSRV=null,PRI={};
 function carregaPuntsMons(){if(!S.nom||/^file:/.test(location.protocol))return;const n=S.nom;
- rpc("bn_punts_mons",{p_nom:n}).then(d=>{if(!Array.isArray(d)||S.nom!==n)return;PSRV={};d.forEach(x=>{PSRV[x.assig]=+x.punts||0});pintaCap();document.querySelectorAll(".mons-est").forEach(e=>{e.outerHTML=cartaMons()})}).catch(()=>{})}
+ Promise.all([rpc("bn_punts_mons",{p_nom:n}),rpc("bn_reinicis",{p_nom:n}).catch(()=>null)]).then(([d,ri])=>{if(!Array.isArray(d)||S.nom!==n)return;PSRV={};d.forEach(x=>{PSRV[x.assig]=+x.punts||0});PRI=ri&&typeof ri==="object"?ri:{};pintaCap();document.querySelectorAll(".mons-est").forEach(e=>{e.outerHTML=cartaMons()})}).catch(()=>{})}
+const reiniciDe=id=>Math.max(+(PRI&&PRI[id])||0,+(PRI&&PRI["*"])||0);
 function puntsMons(){const k=(S.nom||"").trim().toLowerCase();
  return MONS.map(m=>{if(m.id===ASSIG.id)return Object.assign({},m,{punts:S.punts||0,ara:true});let loc=0;
-  if(k)try{const per=JSON.parse(localStorage.getItem(m.clau+"_perfils")||"{}")||{},n=Object.keys(per).find(x=>x.trim().toLowerCase()===k);if(n)loc=+(per[n]&&per[n].punts)||0}catch(e){}
+  if(k)try{const per=JSON.parse(localStorage.getItem(m.clau+"_perfils")||"{}")||{},n=Object.keys(per).find(x=>x.trim().toLowerCase()===k);if(n&&(+(per[n]&&per[n].reinici)||0)>=reiniciDe(m.id))loc=+(per[n]&&per[n].punts)||0}catch(e){}
   return Object.assign({},m,{punts:Math.max(loc,(PSRV&&PSRV[m.id])||0),ara:false})})}
 function puntsTots(){if(!S.nom)return S.punts||0;return puntsMons().reduce((a,m)=>a+m.punts,0)}
 // targeta «estrelles de tots els mons»: total, superestrelles i una fila per món (toca un món per anar-hi)
@@ -1170,7 +1169,9 @@ function desaPin(n,p){const x=pins();x[n.trim().toLowerCase()]=p;try{localStorag
 let NUV_T=null,NUV_OK=null;
 function nuvolProg(){if(!S.nom||!pinDe(S.nom)||/^file:/.test(location.protocol))return;clearTimeout(NUV_T);NUV_T=setTimeout(()=>nuvolPuja(),8000)}
 function nuvolPuja(keep){const p=pinDe(S.nom);if(!S.nom||!p||/^file:/.test(location.protocol))return Promise.resolve();clearTimeout(NUV_T);
- return rpc("bn_progres_desa",{p_nom:S.nom,p_pin:p,p_assig:ASSIG.id,p_estat:S,p_mod:S.mod||Date.now()},keep).then(()=>{NUV_OK=Date.now()}).catch(()=>{})}
+ return rpc("bn_progres_desa",{p_nom:S.nom,p_pin:p,p_assig:ASSIG.id,p_estat:S,p_mod:S.mod||Date.now()},keep).then(x=>{
+  // -1 = l'admin ha esborrat el progrés i aquest dispositiu encara no ho sabia: no s'ha desat; es baixa el núvol, que buida el d'aquí
+  if(x===-1)return nuvolBaixa(S.nom,p).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici")});NUV_OK=Date.now()}).catch(()=>{})}
 addEventListener("pagehide",()=>{if(NUV_T)nuvolPuja(true)});
 // FUSIONA dos progressos (dispositiu i núvol) sense perdre mai res: números → el més alt, llistes → la més llarga
 // (dies: unió), sí/no → sí si algun és sí, textos → del més recent. Així un dispositiu nou (buit) no esborra el progrés d'un altre.
@@ -1183,13 +1184,22 @@ function fusiona(a,b){const nouA=(a&&a.mod||0)>=(b&&b.mod||0);
   if(typeof x==="object"&&typeof y==="object"){const o={};new Set([...Object.keys(x),...Object.keys(y)]).forEach(kk=>o[kk]=f(x[kk],y[kk],kk));return o}
   return nouA?x:y};
  const r=f(a||{},b||{},"");r.nom=(a&&a.nom)||(b&&b.nom)||"";r.mod=Math.max(a&&a.mod||0,b&&b.mod||0);return Object.assign(BUIT(),r)}
+// REINICI des de l'admin (supabase/bn_admin_reinicia.sql): el núvol torna «reinici» (ms de l'últim esborrat d'aquest món o de tots).
+// Si és més nou que el que coneix aquest dispositiu (S.reinici), PRIMER es buida aquí el progrés d'aquest món (es queden el nom i l'id)
+// i només després es fusiona amb el núvol. Si no, fusiona() (que agafa sempre el més alt) faria tornar el progrés esborrat.
+function aplicaReinici(r){const ri=+(r&&r.reinici)||0;if(ri<=(+S.reinici||0))return false;
+ const n=S.nom,id=S.id;S=BUIT();S.nom=n;if(id)S.id=id;S.reinici=ri;S.mod=Date.now();guarda();return true}
+// fusiona el que torna bn_progres_llegeix: reinici → progrés desat al núvol → registre reconstruït
+function fusionaNuvol(r){const n=S.nom,reini=aplicaReinici(r);
+ if(r&&r.estat)S=fusiona(S,Object.assign({},r.estat,{mod:r.mod}));
+ if(r&&r.log)S=fusiona(S,Object.assign({},r.log,{mod:0})); // el registre reconstrueix estrelles, temps, temes i jocs encara que es perdi el dispositiu
+ S.nom=n;return reini}
 // baixa el progrés del núvol i el fusiona amb el d'aquest dispositiu
 function nuvolBaixa(nom,pin){return rpc("bn_progres_llegeix",{p_nom:nom,p_pin:pin,p_assig:ASSIG.id}).then(r=>{
- if(!r||(!r.estat&&!r.log))return false;const abans=JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps]);const n=S.nom;
- if(r.estat)S=fusiona(S,Object.assign({},r.estat,{mod:r.mod}));
- if(r.log)S=fusiona(S,Object.assign({},r.log,{mod:0})); // el registre reconstrueix estrelles, temps, temes i jocs encara que es perdi el dispositiu
- S.nom=n;S.mod=Date.now();guarda();pintaCap();
- return JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps])!==abans})}
+ if(!r)return false;const abans=JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps]);
+ const reini=fusionaNuvol(r);if(!reini&&!r.estat&&!r.log)return false;
+ S.mod=Date.now();guarda();pintaCap();
+ return reini||JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps])!==abans})}
 // pantalla del PIN. mode: "crea" (nom nou), "entra" (el nom ja té PIN), "posa" (perfil d'aquest dispositiu sense PIN)
 function pantallaPin(nom,mode,despres){marcaNav("usuari");
  const tit={crea:`🔐 Tria un PIN per a <b>${nom}</b>`,entra:`🔐 <b>${nom}</b> ja té PIN`,posa:`🔐 Protegeix <b>${nom}</b> amb un PIN`}[mode];
@@ -1252,7 +1262,7 @@ function cartaPin(){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LO
  if(pinDe(S.nom))return `<p class="prog" style="text-align:center;margin:10px 0 0">☁️ Progrés guardat al núvol amb PIN${NUV_OK?" · desat fa un moment":""}</p>`;
  return `<div class="continua" style="background:#eef2ff;border-color:#a5b4fc" onclick="posaPin()"><span style="font-size:28px">🔐</span><b>Posa't un PIN i no perdràs mai el progrés (també en un altre dispositiu)</b><span class="btn">Posa'l →</span></div>`}
 function posaPin(){const n=S.nom;rpc("bn_perfil_existeix",{p_nom:n}).then(ex=>{
- if(ex)pantallaPin(n,"entra",(ok,r)=>{if(r&&(r.estat||r.log)){if(r.estat)S=fusiona(S,Object.assign({},r.estat,{mod:r.mod}));if(r.log)S=fusiona(S,Object.assign({},r.log,{mod:0}));S.nom=n;S.mod=Date.now();guarda()}nuvolPuja();vista("inici")});
+ if(ex)pantallaPin(n,"entra",(ok,r)=>{if(r&&(r.estat||r.log||r.reinici)){fusionaNuvol(r);S.nom=n;S.mod=Date.now();guarda()}nuvolPuja();vista("inici")});
  else pantallaPin(n,"posa",ok=>{if(ok)nuvolPuja();vista("inici")})}).catch(()=>{})}
 
 // ====================== EFECTES SUAUS ======================
@@ -1461,14 +1471,7 @@ function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElement
  <h2 class="sec">${ICO.obertes} Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
  <h2 class="sec">${ICO.jocs} Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
  <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat amb el seu nom i PIN. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
- <div class="fila">${btSuau()}<button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><button class="btn verm" onclick="demanaReset()">🗑️ Esborrar el progrés</button></div>`;
-}
-function demanaReset(){
- const m=document.createElement("div");m.className="modal";
- m.innerHTML=`<div class="box"><div class="gran">⚠️</div><h3>Esborrar tot el progrés de ${S.nom}?</h3><p class="prog">Només s'esborra el progrés de ${S.nom}; els altres noms no es toquen. No es pot desfer.</p><div class="fila"><button class="btn sec" id="no">No, deixa-ho</button><button class="btn verm" id="si">Sí, esborra-ho</button></div></div>`;
- document.body.appendChild(m);
- m.querySelector("#no").onclick=()=>m.remove();
- m.querySelector("#si").onclick=()=>{if(pinDe(S.nom)){const n=S.nom;S=BUIT();S.nom=n;S.mod=Date.now();nuvolPuja()}delete PER[S.nom];S=BUIT();try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.removeItem(CL+"actiu")}catch(e){}m.remove();pintaCap();benvinguda()};
+ <div class="fila">${btSuau()}<button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
 }
 
 aplicaSuau();if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../../sw.js").catch(()=>{});

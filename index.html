@@ -556,15 +556,21 @@ footer b{color:var(--groc)}
 (function(){const c=document.getElementById('cel');let h='';for(let i=0;i<90;i++){const s=Math.random()<.15?4:Math.random()<.5?2:3;
  h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
 // progrés guardat per cada assignatura (mateix navegador)
-(function(){let nom='',G='';try{G=localStorage.getItem('bn_jugador')||''}catch(e){}
+(function(){let nom='',G='';try{G=localStorage.getItem('bn_jugador')||''}catch(e){}const pintades=[];
  document.querySelectorAll('.as[data-clau]').forEach(a=>{try{
   const cl=a.dataset.clau+'_',per=JSON.parse(localStorage.getItem(cl+'perfils')||'{}')||{},S=G?per[Object.keys(per).find(x=>x.toLowerCase()===G.toLowerCase())]:null;
   if(!S)return;nom=nom||S.nom;
   const total=+a.dataset.temes||1,fets=Object.values(S.temes||{}).filter(t=>t&&t.intents&&t.intents.length&&Math.max(...t.intents.map(i=>i.pc))>=70).length,pc=Math.min(100,Math.round(fets/total*100));
   const p=a.querySelector('.prog');p.classList.add('on');p.querySelector('.pt').textContent=`⭐ ${S.punts||0} punts`;p.querySelector('.pc').textContent=`✅ ${fets}/${total} aprovats`;
   a.querySelector('.juga span').textContent='CONTINUA ▶';requestAnimationFrame(()=>setTimeout(()=>p.querySelector('.barra i').style.width=pc+'%',500));
+  pintades.push([a,+S.reinici||0]);
  }catch(e){}});
  iniciEntrada();
+ // si l'admin ha esborrat el progrés d'un món (supabase/bn_admin_reinicia.sql), el que hi ha desat aquí d'abans del reinici no es mostra
+ // (el món el buidarà del tot quan s'obri). bn_reinicis torna {món: ms, "*": ms}.
+ if(G&&pintades.length&&/^https?:/.test(location.protocol))setTimeout(()=>rpcP('bn_reinicis',{p_nom:G}).then(ri=>{if(!ri||typeof ri!=='object')return;
+  pintades.forEach(([a,r])=>{if(r>=Math.max(+ri[a.dataset.id]||0,+ri['*']||0))return;
+   const p=a.querySelector('.prog');p.classList.remove('on');p.querySelector('.barra i').style.width='0';a.querySelector('.juga span').textContent='JUGA ▶'})}).catch(()=>{}),0);
 })();
 // ---- entrada: el nen escriu el nom (i el PIN) i de seguida tria el món ----
 function jugador(){try{return localStorage.getItem('bn_jugador')||''}catch(e){return ''}}

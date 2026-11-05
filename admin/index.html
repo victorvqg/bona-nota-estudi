@@ -110,7 +110,7 @@ details.pend summary{cursor:pointer;color:var(--suau);font-weight:800;padding:6p
 <script>
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="block";b.textContent="⚠️ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="block";b.textContent="⚠️ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
-const VERSIO_ADMIN="5-11 10:00";
+const VERSIO_ADMIN="5-11 12:50";
 const API="https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb";
 const ASSIGS={socials:"🌍 Socials (clima)",biogeo:"🔭 Bio i Geo",castellano:"📝 Castellano",comarques:"🗺️ Comarques",divisibilitat:"➗ Mates (divisibilitat)"};
 const app=document.getElementById("app"),$=s=>document.querySelector(s);
@@ -207,7 +207,7 @@ function blocEstrelles(n){const as=[...n.assigs].filter(a=>n.punts[a]!=null);if(
   const fila=(ic,nom,v)=>`<div class="fest"><span>${ic} ${nom}</span><div class="bfe"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
   return `<div class="est-assig"><b>${esc(ASSIGS[a]||a)}</b> <span class="xip">⭐ ${p}</span>${FONTS_EST.filter(([k])=>fo[k]).map(([k,ic,nom])=>fila(ic,nom,fo[k])).join("")}${ab?fila("⏳","D'abans (sense detall)",ab):""}</div>`}).join("")}</div>`}
 function detall(k){const ls=LOGS.filter(l=>clauNen(l)===k),n=nens().find(x=>x.k===k);
- $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)} ${idDe(k)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="gestio"><button class="btn sec" id="canvia">✏️ Canvia el nom</button><button class="btn sec" id="amaga">🙈 Amaga del rànquing</button><button class="btn sec" id="treupin" hidden>🔑 Treu el PIN</button><button class="btn sec perill" id="esborra">🗑️ Esborra l'usuari</button><div id="gest"></div></div><div class="taula">${blocEstrelles(n)}${blocSessions(ls)}</div>`;
+ $("#cont").innerHTML=`<div class="det-cap"><button class="btn sec" id="torna">← Tots</button><h2>${esc(n.nom)} ${idDe(k)}</h2><span class="xip">${n.ses.size} sessions</span><span class="xip">⏱ ${fmtT(n.temps)}</span><span class="xip">${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span></div><div class="gestio"><button class="btn sec" id="canvia">✏️ Canvia el nom</button><button class="btn sec" id="amaga">🙈 Amaga del rànquing</button><button class="btn sec" id="treupin" hidden>🔑 Treu el PIN</button><button class="btn sec" id="reinicia">♻️ Esborrar el progrés</button><button class="btn sec perill" id="esborra">🗑️ Esborrar el nen del tot</button><div id="gest"></div></div><div class="taula">${blocEstrelles(n)}${blocSessions(ls)}</div>`;
  $("#torna").onclick=pinta;
  rpcU(n.nom,"estat").then(v=>{if(v&1){$("#amaga").textContent="👁 Torna'l a mostrar al rànquing";$("#amaga").dataset.a="mostra"}if(v&2){$("#treupin").hidden=false;$(".det-cap").insertAdjacentHTML("beforeend",v&4?`<span class="xip" title="PIN de 4 números i 1 lletra">🛡️ PIN nou</span>`:`<span class="xip" title="Encara té el PIN antic de 4 números: se li demanarà canviar-lo quan entri" style="background:#fef3c7;color:#92400e">⚠️ PIN antic</span>`)}}).catch(()=>{});
  $("#treupin").onclick=()=>{$("#gest").innerHTML=`<div class="gest-f"><b>Treure el PIN de ${esc(n.nom)}?</b> El progrés al núvol es manté; el nen podrà posar-se un PIN nou des del seu dispositiu.<button class="btn perill" id="si">Sí, treu-lo</button><button class="btn sec" id="cancel">No</button></div>`;$("#cancel").onclick=()=>$("#gest").innerHTML="";$("#si").onclick=()=>usuari(n.nom,"treupin")};
@@ -215,9 +215,28 @@ function detall(k){const ls=LOGS.filter(l=>clauNen(l)===k),n=nens().find(x=>x.k=
  $("#canvia").onclick=()=>{$("#gest").innerHTML=`<form id="fc" class="gest-f"><input id="nou" maxlength="40" value="${esc(n.nom)}"><button class="btn">Desa</button><button type="button" class="btn sec" id="cancel">Cancel·la</button></form><p class="gest-n">Canvia el nom al registre i al rànquing. Si poses el nom d'un altre nen, s'ajunten.</p>`;
   $("#nou").focus();$("#cancel").onclick=()=>$("#gest").innerHTML="";
   $("#fc").onsubmit=async e=>{e.preventDefault();const nou=$("#nou").value.trim().replace(/\s+/g," ");if(!nou)return;await usuari(n.nom,"canvia",nou)}};
- $("#esborra").onclick=()=>{$("#gest").innerHTML=`<div class="gest-f"><b>Segur que vols esborrar tot el registre de ${esc(n.nom)}? No es pot desfer.</b><button class="btn perill" id="si">Sí, esborra</button><button class="btn sec" id="cancel">No</button></div>`;
+ $("#esborra").onclick=()=>{$("#gest").innerHTML=`<div class="gest-f"><b>Segur que vols esborrar ${esc(n.nom)} del tot (registre, PIN i progrés)? No es pot desfer.</b><button class="btn perill" id="si">Sí, esborra'l</button><button class="btn sec" id="cancel">No</button></div>`;
   $("#cancel").onclick=()=>$("#gest").innerHTML="";$("#si").onclick=()=>usuari(n.nom,"esborra")};
+ // ♻️ esborrar el progrés (d'un món o de tots): el nen es queda amb el nom i el PIN. Dos passos: triar el món i confirmar.
+ $("#reinicia").onclick=async()=>{const ms=await monsLlista();
+  $("#gest").innerHTML=`<div class="gest-f"><b>Esborrar el progrés de ${esc(n.nom)} a:</b><select id="rmon"><option value="">🌐 Tots els mons</option>${ms.map(m=>`<option value="${esc(m.id)}">${esc(m.nom)}</option>`).join("")}</select><button class="btn" id="seg">Continua</button><button class="btn sec" id="cancel">Cancel·la</button></div><p class="gest-n">S'esborren les estrelles, els tests, els jocs i el temps d'aquest món (o de tots). El nen continua amb el seu nom i el seu PIN.</p>`;
+  $("#cancel").onclick=()=>$("#gest").innerHTML="";
+  $("#seg").onclick=()=>{const id=$("#rmon").value,mon=id?(ms.find(m=>m.id===id)||{nom:id}).nom:"tots els mons";
+   $("#gest").innerHTML=`<div class="gest-f"><b>⚠️ Segur que vols esborrar el progrés de <u>${esc(n.nom)}</u> a <u>${esc(mon)}</u>? No es pot desfer.</b><button class="btn perill" id="si">Sí, esborra el progrés</button><button class="btn sec" id="cancel">No</button></div><p class="gest-n">El nom i el PIN de ${esc(n.nom)} es queden. Als seus dispositius, el progrés d'abans s'esborrarà la propera vegada que entri.</p>`;
+   $("#cancel").onclick=()=>$("#gest").innerHTML="";$("#si").onclick=()=>reinicia(n.nom,id||null,mon)}};
 }
+// mons per al selector: motor/mons.json (títol + assignatura); si no es pot llegir, els noms curts d'ASSIGS
+let MONSL=null;async function monsLlista(){if(MONSL)return MONSL;
+ try{const r=await fetch("../motor/mons.json",{cache:"no-cache"});if(r.ok)MONSL=(await r.json()).map(m=>({id:m.dades,nom:`${m.ic||""} ${m.titol} · ${m.materia}`.trim()}))}catch(e){}
+ return MONSL=MONSL&&MONSL.length?MONSL:Object.entries(ASSIGS).map(([id,nom])=>({id,nom}))}
+async function reinicia(nom,assig,mon){$("#gest").innerHTML=`<p class="gest-n">Un moment…</p>`;
+ try{const r=await fetch(API.replace("bn_admin_logs","bn_admin_reinicia"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_assig:assig})});
+  if(r.status===404){$("#gest").innerHTML=`<p class="err">Aquesta opció encara no està activada a la base de dades (falta executar supabase/bn_admin_reinicia.sql).</p>`;return}
+  if(!r.ok){$("#gest").innerHTML=`<p class="err">No s'ha pogut fer (${r.status}).</p>`;return}
+  const n=await r.json(),k=nom.trim().toLowerCase();await carrega();
+  if(nens().some(x=>x.k===k))detall(k); // si se li ha esborrat tot, ja no surt a la llista fins que torni a jugar
+  const av=document.createElement("div");av.className="avis-ok";av.textContent=`♻️ Progrés de ${nom} esborrat (${mon}): ${n} registres`;document.body.appendChild(av);setTimeout(()=>av.remove(),4500);
+ }catch(e){$("#gest").innerHTML=`<p class="err">No hi ha connexió.</p>`}}
 async function rpcU(nom,accio,nou){const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:accio,p_nou:nou||null})});if(!r.ok)throw r.status;return r.json()}
 async function usuari(nom,accio,nou){$("#gest").innerHTML=`<p class="gest-n">Un moment…</p>`;
  try{const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:accio,p_nou:nou||null})});
