@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Prova del so · Bona Nota</title>
+<style>
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f5f6fa;color:#0f172a;font-size:16px;line-height:1.45}
+main{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:22px;margin:0 0 4px}
+p{margin:0 0 14px;color:#4a5568}
+button{display:block;width:100%;font:inherit;font-weight:600;text-align:left;border:1px solid #cbd3e1;background:#fff;border-radius:12px;padding:14px 16px;margin:10px 0;cursor:pointer}
+button small{display:block;font-weight:400;color:#4a5568;font-size:14px;margin-top:2px}
+button:active{background:#eef2ff}
+.res{display:flex;gap:8px;margin:2px 0 12px}
+.res button{margin:0;text-align:center;padding:10px}
+.si{border-color:#15803d;background:#dcfce7}.no{border-color:#b91c1c;background:#fee2e2}
+pre{white-space:pre-wrap;word-break:break-word;background:#0f172a;color:#e2e8f0;border-radius:12px;padding:12px;font-size:12.5px;min-height:80px}
+.copia{background:#4f46e5;color:#fff;border-color:#4f46e5;text-align:center}
+</style>
+</head>
+<body>
+<main>
+<h1>Prova del so</h1>
+<p>Toca cada botó i digues si sents el «bip». Després prem «Copia el resultat» i enganxa-ho al xat.</p>
+<button id="b1">1 · So de l'app (Web Audio)<small>El mateix sistema que fan servir els mons.</small></button>
+<div class="res" data-p="1"><button>Sí, l'he sentit</button><button>No he sentit res</button></div>
+<button id="b2">2 · So com un vídeo (element &lt;audio&gt;)<small>Un altre sistema del navegador.</small></button>
+<div class="res" data-p="2"><button>Sí, l'he sentit</button><button>No he sentit res</button></div>
+<button id="b3">3 · So de l'app amb el truc del silenci<small>Web Audio amb un àudio mut de fons engegat.</small></button>
+<div class="res" data-p="3"><button>Sí, l'he sentit</button><button>No he sentit res</button></div>
+<button class="copia" id="copia">Copia el resultat</button>
+<pre id="log"></pre>
+</main>
+<script src="motor/eines/so-mobil.js"></script>
+<script>
+const L=[],R={},log=t=>{L.push(new Date().toLocaleTimeString("ca-ES")+" "+t);document.getElementById("log").textContent=info()+"\n\n"+L.join("\n")};
+const info=()=>{const C=window.AudioContext||window.webkitAudioContext,s=navigator.audioSession;let c=null;try{c=bnSo.context()}catch(e){}
+ return ["Navegador: "+navigator.userAgent,"Web Audio: "+(C?"sí":"no")+" · estat: "+(c?c.state:"-")+" · mostreig: "+(c?c.sampleRate:"-"),
+  "audioSession: "+(s?"sí ("+s.type+(s.state?", "+s.state:"")+")":"no"),"Pantalla: "+innerWidth+"×"+innerHeight+" · tàctil: "+(navigator.maxTouchPoints||0),
+  "Respostes: "+(Object.keys(R).length?Object.entries(R).map(([k,v])=>k+"="+v).join(" "):"cap")].join("\n")};
+// un bip en WAV (per a l'element <audio>), fet aquí mateix: sense fitxers
+function wav(freq,seg){const sr=22050,n=sr*seg|0,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,s)=>[...s].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
+ w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
+ for(let i=0;i<n;i++){const env=Math.min(1,i/400,(n-i)/1500);v.setInt16(44+i*2,freq?Math.sin(2*Math.PI*freq*i/sr)*12000*env:0,true)}
+ return URL.createObjectURL(new Blob([b],{type:"audio/wav"}))}
+function bipWA(f){const c=bnSo.context();if(!c){log("✗ aquest navegador no té Web Audio");return}
+ const abans=c.state;try{c.resume()}catch(e){}
+ const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+.02;o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.02);g.gain.setTargetAtTime(0,t+.35,.06);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.7);
+ log(`Web Audio: estat abans «${abans}», ara «${c.state}»`);setTimeout(()=>log(`Web Audio: estat després «${c.state}» · temps ${c.currentTime.toFixed(2)} s`),400)}
+let MUT=null;
+document.getElementById("b1").onclick=()=>{log("Botó 1");bipWA(880)};
+document.getElementById("b2").onclick=()=>{log("Botó 2");const a=new Audio(wav(660,.45));a.play().then(()=>log("<audio>: sona (play() d'acord)"),e=>log("<audio>: ✗ "+e.name+": "+e.message))};
+document.getElementById("b3").onclick=()=>{log("Botó 3");if(!MUT){MUT=new Audio(wav(0,1));MUT.loop=true;MUT.setAttribute("playsinline","");MUT.play().then(()=>log("àudio mut de fons: engegat"),e=>log("àudio mut: ✗ "+e.name))}setTimeout(()=>bipWA(1047),150)};
+document.querySelectorAll(".res").forEach(d=>d.querySelectorAll("button").forEach((b,i)=>b.onclick=()=>{R["prova"+d.dataset.p]=i?"NO":"SÍ";d.querySelectorAll("button").forEach((x,j)=>x.className=j===i?(i?"no":"si"):"");log("Prova "+d.dataset.p+": "+(i?"no ha sonat":"ha sonat"))}));
+document.getElementById("copia").onclick=()=>{const t=info()+"\n\n"+L.join("\n");(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>log("✓ copiat"),()=>{const r=document.createRange();r.selectNodeContents(document.getElementById("log"));const s=getSelection();s.removeAllRanges();s.addRange(r);log("Selecciona el text i copia'l a mà")})};
+log("Pàgina carregada");
+</script>
+</body>
+</html>
