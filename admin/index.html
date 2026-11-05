@@ -73,9 +73,19 @@ tr.clic{cursor:pointer}tr.clic:hover td{background:#ffffff0a}
 .cv{position:relative;height:260px}
 .calor{display:grid;grid-template-columns:34px repeat(24,1fr);gap:2px;font-size:10.5px;font-weight:800;color:var(--suau)}
 .calor i{display:block;aspect-ratio:1;border-radius:3px;background:#ffffff0d}.calor span{text-align:center}
-.dom{overflow:auto;max-height:520px}.dom table{font-size:13px}.dom td,.dom th{padding:6px 7px;text-align:center}.dom td.nom,.dom th.nom{text-align:left;position:sticky;left:0;background:#141a4a;z-index:1}
-.dom th{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;max-height:170px;font-size:11.5px}
-.cel{display:inline-block;min-width:38px;border-radius:7px;padding:3px 4px;font-weight:900;color:#0b1033}
+.dom{overflow:auto}
+.dm-as{margin:14px 0 18px}.dm-as h4{margin:0 0 8px;font-size:16px}
+.dm-res{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin:0 0 10px}
+.dm-nen{background:#0b1033;border:1px solid var(--vora);border-radius:12px;padding:8px 10px;cursor:pointer}.dm-nen:hover{border-color:#a5b4fc}
+.dm-nen b{display:flex;justify-content:space-between;font-size:14px}.dm-nen small{color:var(--suau);font-weight:700;font-size:12px}
+.dm-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:#ffffff14;margin:5px 0 3px}.dm-bar i{display:block;height:100%}
+.dm-t{width:auto;border-collapse:separate;border-spacing:0 3px;font-size:13.5px}
+.dm-t th{position:static;background:none;text-transform:none;letter-spacing:0;font-size:13px;color:#fff;padding:4px 6px;text-align:center;white-space:nowrap}
+.dm-t th:first-child{text-align:left;color:var(--suau)}
+.dm-t td{padding:3px 6px;border:0;text-align:center;vertical-align:middle}.dm-t td.tm{text-align:left;font-weight:800;color:#e2e8f0;min-width:200px}
+.dm-t tr:hover td{background:#ffffff08}
+.dm-c{display:inline-block;min-width:46px;border-radius:8px;padding:4px 6px;font-weight:900;color:#0b1033}.dm-c.buit{background:transparent;color:#ffffff33}.dm-c.fx{background:#ffffff14;color:#cbd5e1}
+.dm-lleg{display:flex;flex-wrap:wrap;gap:10px;font-size:12.5px;font-weight:800;color:var(--suau);margin-top:6px}.dm-lleg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
 .fq{display:grid;grid-template-columns:1fr 150px;gap:6px 12px;padding:9px 0;border-top:1px solid #ffffff10;font-size:14px}
 .fq:first-of-type{border-top:0}.fq b{color:#fff}.fq small{color:var(--suau);font-weight:700;display:block;margin-top:2px}
 .fq .bar{height:9px;background:#ffffff14;border-radius:6px;overflow:hidden;margin-top:4px}.fq .bar i{display:block;height:100%;background:linear-gradient(90deg,#f97316,#ef4444)}
@@ -90,13 +100,17 @@ details.pend summary{cursor:pointer;color:var(--suau);font-weight:800;padding:6p
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 </head>
 <body>
-<div class="top"><h1>🔐 ADMIN · BONA NOTA</h1><span class="esp"></span><span id="eines" hidden>
+<div class="top"><h1>🔐 ADMIN · BONA NOTA</h1><small id="vadm" style="color:var(--suau);font-weight:800;font-size:12px"></small><span class="esp"></span><span id="eines" hidden>
  <select id="dies"><option value="1">Avui</option><option value="7" selected>7 dies</option><option value="30">30 dies</option><option value="365">Tot el curs</option></select>
  <button class="btn sec" id="refresca">↻ Actualitza</button> <button class="btn sec" id="surt">Surt</button></span>
  <a href="../" class="btn sec" style="text-decoration:none">← Inici</a></div>
 <main id="app"></main>
+<div id="errG" class="avis-sql" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:99"></div>
 
 <script>
+window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="block";b.textContent="⚠️ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
+window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="block";b.textContent="⚠️ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
+const VERSIO_ADMIN="4-11 17:10";
 const API="https://xbtlgjucvrdcmkgmxvzy.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_0qCYDBqe_j5w9_ifCXeeyw_s76eEjzb";
 const ASSIGS={socials:"🌍 Socials (clima)",biogeo:"🔭 Bio i Geo",castellano:"📝 Castellano",comarques:"🗺️ Comarques",divisibilitat:"➗ Mates (divisibilitat)"};
 const app=document.getElementById("app"),$=s=>document.querySelector(s);
@@ -231,7 +245,7 @@ async function pintaTauler(){
  const as=[...new Set([...Object.keys(ASSIGS),...LOGS.map(l=>l.assig)])];
  let dades;try{const [resum,act,calor,domini,fall,evo,alert]=await Promise.all(["bn_admin_resum","bn_admin_activitat","bn_admin_calor","bn_admin_domini","bn_admin_fallades","bn_admin_evolucio","bn_admin_alertes"].map(rpcT));
   dades={resum,act,calor,domini,fall,evo,alert};await preguntes()}
- catch(e){$("#tau").innerHTML=e==="falta"?`<div class="avis-sql">⚙️ El tauler encara no està activat a la base de dades. Executa una vegada <b>supabase/bn_admin_tauler.sql</b> al SQL Editor de Supabase i torna a carregar. Mentrestant, tens les altres pestanyes.</div>`:`<div class="avis-sql">No s'han pogut carregar les dades del tauler (${esc(e)}).</div>`;return}
+ catch(e){console.error(e);$("#tau").innerHTML=e==="falta"?`<div class="avis-sql">⚙️ El tauler encara no està activat a la base de dades. Executa una vegada <b>supabase/bn_admin_tauler.sql</b> al SQL Editor de Supabase i torna a carregar. Mentrestant, tens les altres pestanyes.</div>`:`<div class="avis-sql">No s'han pogut carregar les dades del tauler (${esc(e)}).</div>`;return}
  TD=dades;
  const {resum,act,calor,domini,fall,evo,alert}=dades,A=resum.ara||{},B=resum.abans;
  const dl=(k,inv)=>{if(!B||B[k]==null||A[k]==null)return"";const x=A[k]-B[k];if(!x)return`<span class="dl eq">=</span>`;const up=x>0;return `<span class="dl ${up!==!!inv?"up":"dn"}">${up?"▲":"▼"} ${Math.abs(Math.round(x))}</span>`};
@@ -250,12 +264,15 @@ async function pintaTauler(){
   <div class="pan"><h3>🕒 Quan estudien</h3><p class="sub">Activitat per hora i dia de la setmana (com més clar, més activitat)</p><div id="tCal"></div></div>
   <div class="pan"><h3>📈 Evolució de les notes</h3><p class="sub">Cada punt és un test (o examen) · línia per nen</p><div class="cv"><canvas id="gEvo"></canvas></div></div>
   <div class="pan"><h3>🔥 Constància</h3><p class="sub">Dies que ha estudiat en aquest període i ratxa actual de dies seguits</p><div id="tCst"></div></div>
-  <div class="pan ample"><h3>🎯 Domini per tema</h3><p class="sub">Millor nota de test de cada nen a cada tema (verd ≥ 90, llima ≥ 70, groc ≥ 50, vermell &lt; 50, buit = no l'ha fet). Passa el ratolí per veure intents i última nota.</p><div id="tDom" class="dom"></div></div>
+  <div class="pan ample"><h3>🎯 Domini per tema</h3><p class="sub">Per a cada assignatura: quants temes té aprovats cada nen (barra) i la millor nota de test a cada tema. Passa el ratolí per una nota per veure intents i última nota.</p><div id="tDom" class="dom"></div></div>
   <div class="pan ample"><h3>❌ Preguntes més fallades</h3><p class="sub">Top 20 per assignatura, amb l'opció equivocada que més trien (el «parany»). Compta des del 4-11-2026, quan es va començar a registrar cada pregunta.</p><div id="tFal"></div></div>
   ${TF.nom?`<div class="pan"><h3>🧩 En què passa el temps ${esc(TF.nom)}</h3><p class="sub">Segons registrats per tipus d'activitat (dades del període)</p><div class="cv"><canvas id="gTip"></canvas></div></div>`:""}
  </div>`;
  $("#tfa").onchange=e=>{TF.assig=e.target.value;pintaTauler()};$("#tfn").onchange=e=>{TF.nom=e.target.value;pintaTauler()};
- tAlertes(alert);gActivitat(act);tCalor(calor);gEvolucio(evo);tConstancia(act);tDomini(domini);tFallades(fall);if(TF.nom)gTipus();
+ // cada apartat per separat: si un falla, la resta es veu igual i l'error surt escrit al seu lloc
+ const prova=(id,f)=>{try{f()}catch(e){const el=$(id);if(el)el.innerHTML=`<div class="avis-sql">⚠️ Aquest apartat no s'ha pogut dibuixar: ${esc(e&&e.message||e)}</div>`;console.error(e)}};
+ prova("#tAl",()=>tAlertes(alert));prova("#gAct",()=>gActivitat(act));prova("#tCal",()=>tCalor(calor));prova("#gEvo",()=>gEvolucio(evo));
+ prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));if(TF.nom)prova("#gTip",()=>gTipus());
 }
 const GOPC=()=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#e2e8f0",font:{weight:"bold"}}}},scales:{x:{ticks:{color:"#a5b4fc"},grid:{color:"#ffffff10"}},y:{ticks:{color:"#a5b4fc"},grid:{color:"#ffffff10"},beginAtZero:true}}});
 const nouG=(id,cfg)=>{const c=document.getElementById(id);if(!c||!window.Chart)return;GRAF.push(new Chart(c,cfg))};
@@ -283,15 +300,29 @@ function tConstancia(act){const per={};act.forEach(a=>{const k=a.nom.trim().toLo
  const ratxa=s=>{let n=0,d=new Date(avui);if(!s.has(iso(d)))d.setDate(d.getDate()-1);while(s.has(iso(d))){n++;d.setDate(d.getDate()-1)}return n};
  const L=Object.values(per).sort((a,b)=>b.dies.size-a.dies.size),mx=Math.max(1,...L.map(x=>x.dies.size));
  $("#tCst").innerHTML=L.length?L.map(x=>`<div class="cst"><span style="color:${colorNen(x.nom)}">${esc(x.nom)}</span><div class="bfe"><i style="width:${Math.round(x.dies.size*100/mx)}%"></i></div><span>${x.dies.size} dies · ${Math.round(x.min)} min${ratxa(x.dies)>1?` · 🔥 ${ratxa(x.dies)}`:""}</span></div>`).join(""):`<div class="buit">Sense activitat en aquest període.</div>`}
-function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=`<div class="buit">Encara no hi ha tests en aquest període.</div>`;return}
- const per=[...new Set(dom.map(x=>x.assig))];let h="";
- per.forEach(a=>{const ds=dom.filter(x=>x.assig===a),temes=[...new Map(ds.map(x=>[x.tema,x.titol||x.tema])).entries()],noms=[...new Map(ds.map(x=>[x.nom.trim().toLowerCase(),x.nom])).values()];
-  h+=`<h4 style="margin:12px 0 6px">${esc(ASSIGS[a]||a)}</h4><table><thead><tr><th class="nom" style="writing-mode:horizontal-tb;transform:none">Nen</th>${temes.map(([,t])=>`<th title="${esc(t)}">${esc(t.length>26?t.slice(0,25)+"…":t)}</th>`).join("")}</tr></thead><tbody>
-  ${noms.map(n=>`<tr><td class="nom"><a href="#" data-n="${esc(n)}" style="color:${colorNen(n)};text-decoration:none">${esc(n)}</a></td>${temes.map(([t])=>{const c=ds.find(x=>x.tema===t&&x.nom.trim().toLowerCase()===n.trim().toLowerCase());
-   if(!c)return `<td></td>`;const tip=`${c.titol||t}\n${c.intents} intents · millor ${c.millor??"—"}% · última ${c.ultima??"—"}%${c.valoracio?` · diu «${c.valoracio}»`:""}${c.segons_estudi?` · ${Math.round(c.segons_estudi/60)} min de fitxa/targetes`:""}`;
-   return `<td title="${esc(tip)}">${c.millor==null?`<span class="cel" style="background:#ffffff14;color:#a5b4fc">📖</span>`:`<span class="cel" style="background:${colPc(c.millor)}">${c.millor}</span>`}</td>`}).join("")}</tr>`).join("")}</tbody></table>`});
- $("#tDom").innerHTML=h+`<p class="sub" style="margin-top:8px">📖 = ha llegit la fitxa però encara no ha fet el test. Toca un nom per filtrar-ho tot per aquest nen.</p>`;
- $("#tDom").querySelectorAll("a[data-n]").forEach(x=>x.onclick=e=>{e.preventDefault();TF.nom=x.dataset.n;pintaTauler();scrollTo(0,0)})}
+function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=`<div class="buit">Encara no hi ha activitat de temes en aquest període.</div>`;return}
+ // tots els temes de cada assignatura, en l'ordre del món (de preguntes.json), encara que ningú no els hagi fet
+ const temesDe=a=>{const m=new Map();Object.entries(PREG||{}).forEach(([k,v])=>{const [as,t]=k.split("/");if(as===a&&!t.startsWith("j-")&&!m.has(t))m.set(t,v.tema)});
+  dom.filter(x=>x.assig===a).forEach(x=>{if(!m.has(x.tema))m.set(x.tema,x.titol||x.tema)});return [...m.entries()]};
+ const estat=c=>!c?"no":c.millor==null?"fitxa":c.millor>=70?"aprovat":"suspes";
+ const COL={aprovat:"#4ade80",suspes:"#f87171",fitxa:"#64748b",no:"#ffffff14"};
+ let h="";
+ [...new Set(dom.map(x=>x.assig))].forEach(a=>{const ds=dom.filter(x=>x.assig===a),temes=temesDe(a),
+   noms=[...new Map(ds.map(x=>[x.nom.trim().toLowerCase(),x.nom])).values()].sort((x,y)=>x.localeCompare(y,"ca"));
+  const cel=(n,t)=>ds.find(x=>x.tema===t&&x.nom.trim().toLowerCase()===n.trim().toLowerCase());
+  // resum per nen: barra apilada aprovats / suspesos / només fitxa / sense fer
+  const res=noms.map(n=>{const c={aprovat:0,suspes:0,fitxa:0,no:0};temes.forEach(([t])=>c[estat(cel(n,t))]++);const N=temes.length;
+   return `<div class="dm-nen" data-n="${esc(n)}" title="Toca per veure-ho tot només d'aquest nen"><b><span style="color:${colorNen(n)}">${esc(n)}</span><span>${c.aprovat}/${N}</span></b>
+    <div class="dm-bar">${["aprovat","suspes","fitxa"].map(k=>c[k]?`<i style="width:${c[k]*100/N}%;background:${COL[k]}"></i>`:"").join("")}</div>
+    <small>${c.aprovat} aprovats · ${c.suspes} per millorar · ${c.fitxa} només llegits · ${c.no} sense obrir</small></div>`}).join("");
+  // taula: una fila per tema (nom sencer, en horitzontal) i una columna per nen
+  const files=temes.map(([t,tit])=>`<tr><td class="tm">${esc(tit)}</td>${noms.map(n=>{const c=cel(n,t),e=estat(c);
+   const tip=c?`${n} · ${tit}\n${c.intents} intents de test · millor ${c.millor??"—"}% · última ${c.ultima??"—"}%${c.valoracio?` · diu «${c.valoracio}»`:""}${c.segons_estudi?` · ${Math.round(c.segons_estudi/60)} min de fitxa/targetes`:""}`:`${n} · ${tit}: encara no l'ha obert`;
+   return `<td title="${esc(tip)}">${e==="no"?`<span class="dm-c buit">·</span>`:e==="fitxa"?`<span class="dm-c fx">📖</span>`:`<span class="dm-c" style="background:${colPc(c.millor)}">${c.millor}${c.intents>1?`<small style="font-weight:800;opacity:.7"> ×${c.intents}</small>`:""}</span>`}</td>`}).join("")}</tr>`).join("");
+  h+=`<div class="dm-as"><h4>${esc(ASSIGS[a]||a)} <span class="xip">${temes.length} temes</span></h4><div class="dm-res">${res}</div>
+   <div style="overflow:auto"><table class="dm-t"><thead><tr><th>Tema</th>${noms.map(n=>`<th style="color:${colorNen(n)}">${esc(n)}</th>`).join("")}</tr></thead><tbody>${files}</tbody></table></div></div>`});
+ $("#tDom").innerHTML=h+`<div class="dm-lleg"><span><i style="background:#4ade80"></i>90-100</span><span><i style="background:#a3e635"></i>70-89</span><span>(aprovat = 70 o més)</span><span><i style="background:#fbbf24"></i>50-69</span><span><i style="background:#f87171"></i>menys de 50</span><span>📖 només ha llegit la fitxa</span><span>· sense obrir</span><span>×3 = intents</span></div>`;
+ $("#tDom").querySelectorAll(".dm-nen").forEach(x=>x.onclick=()=>{TF.nom=x.dataset.n;pintaTauler();scrollTo(0,0)})}
 function tFallades(fall){if(!fall.length){$("#tFal").innerHTML=`<div class="buit">Encara no hi ha preguntes fallades registrades en aquest període (es compten des del 4-11-2026).</div>`;return}
  const per=[...new Set(fall.map(x=>x.assig))],net=t=>String(t||"").replace(/<[^>]+>/g,"");
  $("#tFal").innerHTML=per.map(a=>`<h4 style="margin:12px 0 4px">${esc(ASSIGS[a]||a)}</h4>`+fall.filter(x=>x.assig===a).map(f=>{const q=PREG[a+"/"+f.qid]||null;
@@ -305,6 +336,7 @@ function gTipus(){const k=TF.nom.trim().toLowerCase(),t={"Fitxes":0,"Targetes":0
  nouG("gTip",{type:"doughnut",data:{labels:ks.map(x=>`${x} (${Math.round(t[x]/60)} min)`),datasets:[{data:ks.map(x=>t[x]),backgroundColor:PAL.slice(0,ks.length),borderColor:"#141a4a"}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right",labels:{color:"#e2e8f0"}}}}})}
 
 $("#refresca").onclick=carrega;$("#dies").onchange=carrega;$("#surt").onclick=()=>{CRED=null;LOGS=[];sessionStorage.removeItem("bn_admin");login()};
+$("#vadm").textContent="versió "+VERSIO_ADMIN;
 CRED?carrega():login();
 </script>
 </body>
