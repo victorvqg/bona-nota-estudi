@@ -15,7 +15,7 @@ Després, aquí es comprova si se sap de veritat.
 | 3 | Lengua Castellana | Temas 2 y 3 | `castellano/t2-t3/` |
 | 4 | Ciències socials | Les comarques de Catalunya | `sociales/comarques/` |
 | 5 | Matemàtiques | Tema 2: Divisibilitat | `matematiques/divisibilitat/` |
-| 6 | Llengua catalana | Tema 2: La literatura, el nom i la puntuació | `catala/t2/` |
+| 6 | Català | Tema 2: La literatura, el nom i la puntuació | `catala/t2/` |
 
 La llista oficial de mons és `motor/mons.json`.
 

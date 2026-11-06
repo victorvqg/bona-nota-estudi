@@ -1,8 +1,8 @@
 const ASSIG={
  id:"catala",
- nom:"Llengua catalana", tema:"Tema 2: La literatura, el nom i la puntuació", curs:"1r ESO", ic:"📖",
+ nom:"Català", tema:"Tema 2: La literatura, el nom i la puntuació", curs:"1r ESO", ic:"📖",
  color:["#1e1b4b","#4338ca","#fbbf24"],
- peu:"Bona Nota · Llengua catalana 1r ESO (Barcanova) · Unitat 2: la literatura i els gèneres, el nom i els signes de puntuació",
+ peu:"Bona Nota · Català 1r ESO (llibre de Barcanova) · Unitat 2: la literatura i els gèneres, el nom i els signes de puntuació",
  blocs:[{titol:"📚 La literatura i els gèneres",n:5},{titol:"🏷️ El nom",n:5},{titol:"✏️ Els signes de puntuació",n:2}],
  jocs:[
   {id:"veu",grup:"📚 Literatura",tipus:"ordena",ic:"🔥",titol:"De la veu al paper",sub:"Com va canviar la literatura",col:"#fef3c7",

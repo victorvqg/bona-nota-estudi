@@ -257,8 +257,33 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 .llegenda .bands i{flex:1}
 .llegenda .q{display:inline-flex;align-items:center;gap:5px}
 .llegenda .q i{width:12px;height:12px;border-radius:3px;display:inline-block}
-.dm-as{margin:4px 0 24px}
-.dm-as h3{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:14.5px}
+.dm-eines{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.dm-eines>span{color:var(--muted);font-size:13px}
+.dm-bts{display:flex;gap:8px;flex-wrap:wrap}
+.dm-as{border:1px solid var(--border);border-radius:var(--r2);background:var(--card);margin:0 0 10px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.dm-as[open]{border-color:var(--border2);box-shadow:var(--sh1)}
+.dm-cap{list-style:none;cursor:pointer;position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(170px,260px);align-items:center;gap:14px;padding:12px 16px 12px 18px;user-select:none;-webkit-user-select:none}
+.dm-cap::-webkit-details-marker{display:none}
+.dm-cap::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--mc,#94a3b8)}
+.dm-cap:hover{background:var(--card2)}
+.dm-cap:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+.dm-as[open]>.dm-cap{background:var(--card2);border-bottom:1px solid var(--border)}
+.dm-xev{display:grid;place-items:center;width:28px;height:28px;border-radius:var(--r1);color:var(--soft);transition:transform .2s ease}
+.dm-cap:hover .dm-xev{color:var(--text)}
+.dm-as:not([open]) .dm-xev{transform:rotate(-90deg)}
+.dm-tit{display:flex;flex-direction:column;min-width:0}
+.dm-nom{font-weight:700;font-size:15px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-meta{color:var(--muted);font-size:12.5px;margin-top:2px}
+.dm-avs{display:flex;align-items:center;padding-left:6px}
+.dm-avs .av{margin-left:-6px;box-shadow:0 0 0 2px var(--card)}
+.dm-as[open] .dm-avs .av{box-shadow:0 0 0 2px var(--card2)}
+.dm-avs .mes{margin-left:6px;font-size:12px;font-weight:600;color:var(--muted)}
+.dm-prog{display:flex;flex-direction:column;gap:5px;min-width:0}
+.dm-prog .dm-bar{margin:0}
+.dm-prog small{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
+.dm-prog small b{color:var(--text);font-weight:700}
+.dm-cos{padding:14px 16px 16px}
+@media (max-width:767px){.dm-cap{grid-template-columns:auto minmax(0,1fr);row-gap:8px;padding:12px 14px 12px 16px}.dm-avs{display:none}.dm-prog{grid-column:1/-1}.dm-cos{padding:12px}}
 .dm-res{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin:0 0 12px}
 .dm-nen{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card2);border:1px solid var(--border);border-radius:var(--r1);padding:10px 12px;display:block}
 .dm-nen:hover{border-color:var(--primary)}
@@ -372,7 +397,7 @@ window.addEventListener("unhandledrejection",e=>{const b=document.getElementById
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
 (function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 const API="https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p";
-const ASSIGS={socials:"Socials (clima)",biogeo:"Bio i Geo",castellano:"Castellano",comarques:"Comarques",divisibilitat:"Mates (divisibilitat)"};
+const ASSIGS={socials:"Socials (clima)",biogeo:"Bio i Geo",castellano:"Castellano",comarques:"Comarques",divisibilitat:"Mates (divisibilitat)",catala:"Català (tema 2)"};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let CRED=null,LOGS=[],VISTA="tauler",FITXA=null,FILTRE={q:"",assig:"",event:""},FS={q:"",assig:"",event:""},FN={q:""},DIES=7,ACT=null,ESTATS={};
@@ -817,8 +842,11 @@ function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=buit("diana","Encara 
   dom.filter(x=>x.assig===a).forEach(x=>{if(!m.has(x.tema))m.set(x.tema,x.titol||x.tema)});return [...m.entries()]};
  const estat=c=>!c?"no":c.millor==null?"fitxa":c.millor>=70?"aprovat":"suspes";
  const COL={aprovat:"var(--ok)",suspes:"var(--bad)",fitxa:"var(--soft)"};
- let h="";
- [...new Set(dom.map(x=>x.assig))].forEach(a=>{const ds=dom.filter(x=>x.assig===a),temes=temesDe(a),
+ // cada món es pot plegar i desplegar; l'estat es recorda en aquest navegador (bn_admin_dm)
+ const DMK="bn_admin_dm",assigs=[...new Set(dom.map(x=>x.assig))];let dmObert={};try{dmObert=JSON.parse(localStorage.getItem(DMK)||"{}")||{}}catch(e){}
+ const obert=a=>Object.prototype.hasOwnProperty.call(dmObert,a)?!!dmObert[a]:assigs.length===1;
+ let h=assigs.length>1?`<div class="dm-eines"><span>${pl(assigs.length,"món","mons")} · toca un món per veure'n el detall</span><div class="dm-bts"><button class="btn sec petit" type="button" data-dm="obre">${ic("avall")}Desplega-ho tot</button><button class="btn sec petit" type="button" data-dm="tanca">${ic("amunt")}Plega-ho tot</button></div></div>`:"";
+ assigs.forEach(a=>{const ds=dom.filter(x=>x.assig===a),temes=temesDe(a),
    noms=[...new Map(ds.map(x=>[x.nom.trim().toLowerCase(),x.nom])).values()].sort((x,y)=>x.localeCompare(y,"ca"));
   const cel=(n,t)=>ds.find(x=>x.tema===t&&x.nom.trim().toLowerCase()===n.trim().toLowerCase());
   const res=noms.map(n=>{const c={aprovat:0,suspes:0,fitxa:0,no:0};temes.forEach(([t])=>c[estat(cel(n,t))]++);const N=temes.length;
@@ -828,11 +856,23 @@ function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=buit("diana","Encara 
   const files=temes.map(([t,tit])=>`<tr><td class="tm">${esc(tit)}</td>${noms.map(n=>{const c=cel(n,t),e=estat(c);
    const tip=c?`${n} · ${tit}\n${c.intents} intents de test · millor ${c.millor??"—"}% · última ${c.ultima??"—"}%${c.valoracio?` · diu «${c.valoracio}»`:""}${c.segons_estudi?` · ${Math.round(c.segons_estudi/60)} min de fitxa/targetes`:""}`:`${n} · ${tit}: encara no l'ha obert`;
    return `<td title="${esc(tip)}">${e==="no"?`<span class="dm-c buit">·</span>`:e==="fitxa"?`<span class="dm-c bfx" aria-label="només ha llegit la fitxa">F</span>`:`<span class="dm-c ${bandPc(c.millor)}">${c.millor}${c.intents>1?`<small> ×${c.intents}</small>`:""}</span>`}</td>`}).join("")}</tr>`).join("");
-  h+=`<div class="dm-as"><h3>${xipAssig(a)}<span class="xip">${temes.length} temes</span></h3><div class="dm-res">${res}</div>
-   <div class="taula-w"><table class="dm-t"><thead><tr><th scope="col" class="tm">Tema</th>${noms.map(n=>`<th scope="col"><span class="nen" style="justify-content:center">${avatar(n,"p")}${esc(n)}</span></th>`).join("")}</tr></thead><tbody>${files}</tbody></table></div></div>`});
+  // resum del món per a la capçalera plegable: tots els nens junts
+  const tot={aprovat:0,suspes:0,fitxa:0,no:0};noms.forEach(n=>temes.forEach(([t])=>tot[estat(cel(n,t))]++));const TT=Math.max(1,temes.length*noms.length),pc=Math.round(tot.aprovat*100/TT);
+  const avs=noms.slice(0,5).map(n=>avatar(n,"p")).join("")+(noms.length>5?`<span class="mes">+${noms.length-5}</span>`:"");
+  h+=`<details class="dm-as" data-a="${esc(a)}" style="--mc:${colAssig(a)}"${obert(a)?" open":""}>
+   <summary class="dm-cap" title="Toca per ${obert(a)?"plegar":"desplegar"} ${esc(nomAssig(a))}"><span class="dm-xev">${ic("avall")}</span>
+    <span class="dm-tit"><span class="dm-nom">${esc(nomAssig(a))}</span><span class="dm-meta">${pl(temes.length,"tema","temes")} · ${pl(noms.length,"nen","nens")}${tot.suspes?` · ${tot.suspes} per millorar`:""}</span></span>
+    <span class="dm-avs" aria-hidden="true">${avs}</span>
+    <span class="dm-prog"><span class="dm-bar" aria-hidden="true">${["aprovat","suspes","fitxa"].map(k=>tot[k]?`<i style="width:${tot[k]*100/TT}%;background:${COL[k]}"></i>`:"").join("")}</span>
+     <small><span>${noms.length===1?`<b>${tot.aprovat}/${temes.length}</b> temes aprovats`:`<b>${tot.aprovat}/${TT}</b> aprovats entre tots`}</span><span>${pc}%</span></small></span></summary>
+   <div class="dm-cos"><div class="dm-res">${res}</div>
+   <div class="taula-w"><table class="dm-t"><thead><tr><th scope="col" class="tm">Tema</th>${noms.map(n=>`<th scope="col"><span class="nen" style="justify-content:center">${avatar(n,"p")}${esc(n)}</span></th>`).join("")}</tr></thead><tbody>${files}</tbody></table></div></div></details>`});
  $("#tDom").innerHTML=h+`<div class="llegenda"><span>Millor nota:</span><span>0</span><span class="bands" aria-hidden="true"><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b50"></i><i class="b50"></i><i class="b70"></i><i class="b70"></i><i class="b90"></i></span><span>100</span>
   <span class="q"><i class="b0"></i>menys de 50</span><span class="q"><i class="b50"></i>50-69</span><span class="q"><i class="b70"></i>70-89 (aprovat)</span><span class="q"><i class="b90"></i>90-100</span><span class="q"><i class="bfx"></i>F = només fitxa</span><span>· = sense obrir</span><span>×3 = intents</span></div>`;
- $("#tDom").querySelectorAll(".dm-nen").forEach(x=>x.onclick=()=>{TF.nom=x.dataset.n;pinta();scrollTo(0,0)})}
+ $("#tDom").querySelectorAll(".dm-nen").forEach(x=>x.onclick=()=>{TF.nom=x.dataset.n;pinta();scrollTo(0,0)});
+ const desa=()=>{try{localStorage.setItem(DMK,JSON.stringify(dmObert))}catch(e){}};
+ $("#tDom").querySelectorAll("details.dm-as").forEach(d=>d.addEventListener("toggle",()=>{dmObert[d.dataset.a]=d.open;const s=d.querySelector(".dm-cap");if(s)s.title=`Toca per ${d.open?"plegar":"desplegar"} ${nomAssig(d.dataset.a)}`;desa()}));
+ $("#tDom").querySelectorAll("[data-dm]").forEach(b=>b.onclick=()=>{const o=b.dataset.dm==="obre";$("#tDom").querySelectorAll("details.dm-as").forEach(d=>{d.open=o;dmObert[d.dataset.a]=o});desa()})}
 function tFallades(fall){if(!fall.length){$("#tFal").innerHTML=buit("creu","Encara no hi ha preguntes fallades registrades en aquest període.","Es compten des del 4-11-2026.");return}
  const net=t=>String(t||"").replace(/<[^>]+>/g,"");
  const rows=fall.map(f=>{const q=PREG[f.assig+"/"+f.qid]||null,parany=q&&f.opcio_parany!=null&&q.o[+f.opcio_parany]!=null?net(q.o[+f.opcio_parany]):null;
