@@ -15,6 +15,7 @@ Després, aquí es comprova si se sap de veritat.
 | 3 | Lengua Castellana | Temas 2 y 3 | `castellano/t2-t3/` |
 | 4 | Ciències socials | Les comarques de Catalunya | `sociales/comarques/` |
 | 5 | Matemàtiques | Tema 2: Divisibilitat | `matematiques/divisibilitat/` |
+| 6 | Llengua catalana | Tema 2: La literatura, el nom i la puntuació | `catala/t2/` |
 
 La llista oficial de mons és `motor/mons.json`.
 
@@ -168,6 +169,30 @@ de les seves dades (`build.py` hi posa el fitxer sencer):
 - **Proves**: `node motor/prova-generadors.js` fa cada generador centenars de vegades i comprova que els càlculs quadren;
   `prova.js` resol cada fitxa en els tres modes, l'examen (ha de donar un 10), els dibuixos, Troba l'error,
   el full de brut i els punts de control del quadern.
+
+## 📖 Món 6 · Català: La literatura, el nom i la puntuació
+
+Fet a partir dels 4 fulls del tema 2 (llibre de Llengua catalana de 1r d'ESO, Barcanova, pàg. 42-55):
+**resum**, **esquema**, **examen** i **full de respostes**. Les dades són a `motor/dades/catala.js`.
+
+**12 temes en 3 blocs:**
+
+| Bloc | Temes |
+|---|---|
+| 📚 La literatura i els gèneres | L'art de la paraula · La literatura oral tradicional · La literatura escrita · Els gèneres: vers i prosa · El teatre, l'assaig i com reconèixer els gèneres |
+| 🏷️ El nom | El nom i el sintagma nominal · Les classes de noms · Les marques de gènere i de nombre · Els noms invariables · El clau / la clau, el pols / la pols, el son / la son |
+| ✏️ Els signes de puntuació | El punt, l'interrogant, l'admiració i els punts suspensius · El punt i coma i els dos punts |
+
+- **109 preguntes de test.** Les respostes falses són les confusions que avisa el resum
+  (la literatura «només parla de coses inventades», anònima = «de molts autors», «la cavalla», «llapissos», majúscula darrere el punt i coma…).
+- **15 preguntes obertes**, tretes de l'examen i dels «Comprova» del resum.
+- **10 jocs en 3 seccions:** 📚 Literatura (De la veu al paper · Oral o escrita? · Gèneres i subgèneres · Quin gènere és?) ·
+  🏷️ El nom (Individual i col·lectiu · Paraules diferents · El xivato del gènere · Plural igual o amb -s?) ·
+  ✏️ Puntuació (Quin signe hi va? · Majúscula o minúscula?).
+- 👾 Boss: **El Monstre dels Signes**.
+- Falten les pàgines 52-53 del llibre (inici d'ortografia): la puntuació surt de la taula de la pàgina 54.
+
+---
 
 ## 🗂️ Com està fet
 

@@ -69,5 +69,19 @@
    "#84cc16"
   ],
   "ic": "🔢"
+ },
+ {
+  "dades": "catala",
+  "carpeta": "catala/t2",
+  "mon": "6",
+  "materia": "Llengua catalana",
+  "titol": "Tema 2: La literatura, el nom i la puntuació",
+  "desc": "Literatura oral i escrita, els gèneres, el nom (classes, gènere i nombre) i els signes de puntuació.",
+  "colors": [
+   "#1e1b4b",
+   "#4338ca",
+   "#fbbf24"
+  ],
+  "ic": "📖"
  }
 ]
