@@ -37,6 +37,13 @@ La llista oficial de mons és `motor/mons.json`.
 - **Cada tema té 3 passos:** 📄 fitxa → 🃏 targetes → ✅ test.
   El test fa 6 preguntes a l'atzar del tema. Amb un **70 %** s'aprova i es passa sol al tema següent.
 - **Repàs dels errors:** el que falla torna a sortir avui, i el que encerta torna d'aquí a 3 dies i després a 7 dies.
+  Quan un error s'encerta 3 vegades al repàs, queda **après**: surt el rètol «APRÈS!» i dona **+2 ⭐**.
+  Al repàs també hi van els **exercicis fallats del Taller de mates** (es fa un exercici nou del mateix tipus i nivell)
+  i les **comarques fallades del MAPA** (On és? o la capital). Compten com a recordats si es fan sense errors ni pistes.
+- **💡 Pista als tests** (temes i repàs, no als exàmens): el 1r toc ensenya la idea clau del tema i el 2n treu una opció
+  falsa. Aquella pregunta ja no dona estrella ni suma al combo (com la pista del Taller).
+- **🛡️ Escut del combo:** si falles amb un combo de 3 o més, pots respondre una pregunta germana del mateix tema
+  (una que el test no ha tret). Si l'encertes, continues amb la meitat del combo.
 - **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de
   les comarques o el garbell dels primers).
 - **Exàmens:** l'examen sorpresa (15 preguntes barrejades) i l'examen de veritat, amb nota sobre 10.
@@ -50,8 +57,9 @@ La llista oficial de mons és `motor/mons.json`.
 
 ### ⭐ Estrelles, superestrelles i nivells
 
-- **Estrelles:** +1 per cada encert als tests i als jocs, +1 per idea clau a les obertes, i regals per combos
-  (×5 seguides: +1; ×10: +2). Per jugar net, cada pregunta només dona estrella un cop al dia.
+- **Estrelles:** +1 per cada encert als tests i als jocs, +1 per idea clau a les obertes, regals per combos
+  (×5 seguides: +1; ×10: +2) i +2 per cada error après al repàs. Per jugar net, cada pregunta només dona estrella un cop al dia;
+  les preguntes del repàs i les respostes amb pista no en donen.
 - **A dalt de tot** es veu el total de **tots els mons**. Si toques les estrelles, surt el detall per món.
   El total compta el que hi ha en aquell aparell i també el que hi ha al núvol.
 - **🌠 Superestrelles:** cada 50 ⭐ (sumant tots els mons) en surt una, amb animació i música pròpies.
@@ -213,6 +221,22 @@ Obre http://localhost:8000 i mira-hi els canvis de la branca. Mentre la branca e
 
 Per tornar a la versió de la web: `git checkout main`.
 
+### Errors propis d'una eina al repàs (Bona Nota 2.0)
+
+Una eina (o un joc propi d'un món) pot posar els seus errors al repàs espaiat, a més de les preguntes de test:
+
+```js
+(window.BN_REP_TIPUS=window.BN_REP_TIPUS||{}).<tipus>={ic, titol, peu, max,
+  valid: r => true/false,          // l'error encara té sentit en aquest món?
+  nom:   r => "text per a la llista",
+  juga:  (items, fi) => { … fi([true/false per a cada item]) }};
+// durant el joc normal, cada error:  repAnotaExt("<tipus>", clau, dades, false)
+```
+
+El motor els desa a `S.rep` (viatja al núvol amb el progrés), els mou de capsa i dona el +2 ⭐ quan queden apresos.
+Ja ho fan servir el Taller de mates (`mx`, a `eines/exercicis-mates.js`) i el MAPA (`mapa`, a `dades/comarques.js`).
+Les proves `bnProvaFase1`, `mxRepProva` i `mpRepProva` (via `BN_PROVES`) ho comproven a cada push.
+
 ### Afegir o actualitzar un món
 
 1. Escriu o amplia les dades a `motor/dades/<id>.js` (mateix format que els altres: `ASSIG`, `T`, `OB`).
@@ -293,9 +317,9 @@ Cap dada nova del nen: només el nom de sempre. El camp `detall` de cada registr
 | `entra` | `h` (hora local), `dw` (1 = dilluns … 7 = diumenge), estrelles, temes aprovats |
 | `fitxa` | tema, `s` (segons llegint-la), `fi` (1 si ha arribat al final) — s'envia en sortir |
 | `targetes` | tema, `s`, `vistes` de `n`, `girs`, `fi` — s'envia en sortir |
-| `test` | tema, `pc`, `mode` (tema · repas), `s` total i `q`: una entrada per pregunta |
+| `test` | tema, `pc`, `mode` (tema · repas), `s` total, `q`: una entrada per pregunta, i `pistes` (preguntes amb pista, si n'hi ha) |
 | `examen` | `joc` (examen · examreal), `pc`, `mode` (sorpresa · real · real-temps), `s`, `temes` i `q` |
-| `joc` | `joc`, `pc`, `s`, `enc`, `err`; el MAPA també `mode` i `f` (comarques fallades) |
+| `joc` | `joc`, `pc`, `s`, `enc`, `err`; el MAPA també `mode` i `f` (comarques fallades). El repàs (`joc: "repas"`) també porta `apr` (errors apresos en aquella sessió) i `ext` (p. ex. `mx:1/2,mapa:2/3`: errors del Taller i del MAPA recordats) |
 | `oberta` | número, tema, `pc`, `s`, `idees`/`de`, `det` (detectades al text), `falten` (punts clau no marcats) |
 
 Cada pregunta contestada va a `q` com un text curt **`tema/núm:encert:segons:opció`**, per exemple

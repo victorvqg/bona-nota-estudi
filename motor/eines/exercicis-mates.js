@@ -296,7 +296,7 @@ function mxFitxa(j){mxInici(j,false)}
 function mxExamen(j){mxInici(j,true)}
 function mxBarreja(j){mxInici(j,false)}
 function mxComença(id,nv){const j=ASSIG.jocs.find(x=>x.id===id),ex=!!j.mx.examen,bar=!!j.mx.barreja,mode=ex?"examen":bar?"barreja":MX_MODE;
- const fes=g=>{const E=Array.isArray(g)?MXG[g[0]](nv,g[1]):MXG[g](nv);E.g=mxNomG(g);if(ex)E.passos=E.passos.filter(P=>!P.noEx);return E};
+ const fes=g=>{const E=Array.isArray(g)?MXG[g[0]](nv,g[1]):MXG[g](nv);E.g=mxNomG(g);E.gs=g;E.nv=nv;if(ex)E.passos=E.passos.filter(P=>!P.noEx);return E};
  let llista;
  if(ex)llista=j.mx.examen.map(([g,p])=>{const E=fes(g);E.punts=p;return E});
  else if(bar){llista=[];let deck=[],prev=null;for(let i=0;i<j.mx.n;i++){if(!deck.length)deck=MX_B(j.mx.barreja);let k=deck.findIndex(g=>mxNomG(g)!==prev);if(k<0)k=0;const g=deck.splice(k,1)[0];prev=mxNomG(g);llista.push(fes(g))}}
@@ -305,7 +305,7 @@ function mxComença(id,nv){const j=ASSIG.jocs.find(x=>x.id===id),ex=!!j.mx.exame
   pre:llista.map(E=>mode==="completa"&&E.passos.length>1?Math.floor(E.passos.length/2):0)};
  mxIniciaApartat();mxPinta();window.scrollTo(0,0)}
 // mode «completa»: els primers passos de cada apartat ja surten fets (amb la resposta bona)
-function mxIniciaApartat(){const pre=MX.pre[MX.e]||0,E=MX.llista[MX.e];MX.p=pre;MX.resp[MX.e]=E.passos.slice(0,pre).map(P=>P.r)}
+function mxIniciaApartat(){const pre=MX.pre[MX.e]||0,E=MX.llista[MX.e];if(MX.rep&&E.nv)MX.nv=E.nv;MX.p=pre;MX.resp[MX.e]=E.passos.slice(0,pre).map(P=>P.r)}
 const MX_LL="abcdefghij";
 function mxPinta(){const {j,llista,e,p,ex,mode}=MX,E=llista[e],P=E.passos[p],pre=MX.pre[e]||0,mira=mode==="mira",bar=mode==="barreja";
  const fets=E.passos.slice(0,p).map((x,i)=>`<div class="mx-fet${i<pre?" pre":""}">${ex?"✏️":i<pre||mira?"👀":"✅"} ${mxTxt(x.q)} → <b>${mxMostra(x,(MX.resp[e]||[])[i])}</b></div>`).join("");
@@ -345,7 +345,7 @@ function mxBo(P,v){if(v===null||v===undefined)return false;if(P.ok)return P.ok(v
  if(P.t==="fact"){const ks=new Set([...Object.keys(v),...Object.keys(P.r)]);return [...ks].every(k=>(v[k]||0)===(P.r[k]||0))}
  return v===P.r}
 // cada resposta equivocada es desa com «generador|pas|codi» (p. ex. «escala|primer|no_primer») per al tauler d'admin
-function mxApunta(E,P,c){if(MX.ep.length<40)MX.ep.push(`${E.g||"?"}|${P.id||P.t}|${c||"-"}`)}
+function mxApunta(E,P,c){if(MX.ep.length<40)MX.ep.push(`${E.g||"?"}|${P.id||P.t}|${c||"-"}`);if(MX.errE)MX.errE[MX.e]=(MX.errE[MX.e]||0)+1;mxRepErr(E,P,c)}
 function mxRespon(i){if(!MX||MX.fi||MX.apFet||MX.esp||MX.perq||MX.mode==="mira")return;const E=MX.llista[MX.e],P=E.passos[MX.p],v=mxLlegeix(P,i),fb=document.getElementById("mxFb");
  if(P.t!=="tria"&&(v===null||(P.t==="llista"&&!v.length)||(P.t==="fact"&&!Object.keys(v).length))){fb.innerHTML=`<div class="fb">✏️ Primer escriu la resposta.</div>`;return}
  (MX.resp[MX.e]=MX.resp[MX.e]||[])[MX.p]=v;const bo=mxBo(P,v);
@@ -358,7 +358,7 @@ function mxRespon(i){if(!MX||MX.fi||MX.apFet||MX.esp||MX.perq||MX.mode==="mira")
  fb.innerHTML=`<div class="fb" style="background:#fef2f2;border-color:#fecaca">❌ ${em.m}</div>`}
 // 💡 pista abans de respondre: ajuda, però aquell pas ja no dona estrella
 function mxPista(){if(!MX||MX.fi||MX.apFet||MX.esp||MX.perq)return;const P=MX.llista[MX.e].passos[MX.p],fb=document.getElementById("mxFb");if(!fb)return;
- if(!MX.ajut){MX.ajut=1;MX.pistes++}
+ if(!MX.ajut){MX.ajut=1;MX.pistes++}if(MX.ajutE)MX.ajutE[MX.e]=1;
  fb.innerHTML=`<div class="fb">💡 ${P.pista||MX_PISTA[P.t]}<br><small>Aquest pas ja no dona estrella, però t'ajuda a aprendre.</small></div>`}
 // 🤔 «per què?» després d'encertar (no compta per a la nota: serveix per entendre)
 function mxPerque(P){MX.perq=true;const q=P.perque,ord=MX_B(q.op.map((_,i)=>i)),pas=app.querySelector(".mx-pas");
@@ -624,3 +624,46 @@ function mxProva(j){const fitxa=!j.mx.examen&&!j.mx.barreja;
  if(MX.errs)return `hi ha ${MX.errs} errors amb les respostes bones`;
  if(j.mx.examen&&!/10/.test(document.querySelector(".mx-nota").textContent))return "l'examen perfecte no dona un 10";
  return true}
+
+// ===================== 🔁 REPÀS DELS ERRORS DEL TALLER (Bona Nota 2.0) =====================
+// Cada exercici amb algun pas fallat (fitxes, repàs barrejat i examen) entra al repàs dels errors del món: un per generador i nivell.
+// Al repàs es fa un exercici NOU del mateix tipus i nivell (números nous). Si el fa sense cap error ni pista, compta com a recordat
+// i avança de capsa (avui → 3 dies → 7 dies → après, +2 ⭐). Els passos del repàs no donen estrella.
+function mxRepClau(gs,nv){return JSON.stringify(gs)+"|"+nv}
+function mxRepErr(E,P,c){if(typeof repAnotaExt!=="function"||!MX||E.gs===undefined||MX.mode==="control"||MX.mode==="mira")return;
+ if(!MXG[mxNomG(E.gs)])return;const nv=E.nv||MX.nv;repAnotaExt("mx",mxRepClau(E.gs,nv),{g:E.gs,nv,pas:(P&&(P.id||P.t))||"",codi:c||"-"},false)}
+// nom per a la llista del repàs: la fitxa del Taller d'on surt aquell tipus d'exercici
+function mxRepNom(g){const jj=(ASSIG.jocs||[]).filter(x=>x.fn==="mxFitxa"&&x.mx&&Array.isArray(x.mx.tipus)),gj=JSON.stringify(g);
+ const j=jj.find(x=>x.mx.tipus.some(t=>JSON.stringify(t)===gj))||jj.find(x=>x.mx.tipus.some(t=>mxNomG(t)===mxNomG(g)));
+ return j?`${j.ic||"✏️"} ${j.titol}`:"✏️ Taller de mates"}
+function mxRepas(items,fi){mxCss();mxCss2();
+ const j={id:"rp-taller",titol:"🔁 Repàs del Taller",mx:{}};
+ const llista=items.map(r=>{const nv=r.nv||2,E=Array.isArray(r.g)?MXG[r.g[0]](nv,r.g[1]):MXG[r.g](nv);E.g=mxNomG(r.g);E.gs=r.g;E.nv=nv;return E});
+ const jst=typeof JOCSTAR!=="undefined"?JOCSTAR:0;JOCSTAR=0;
+ MX={j,nv:llista[0].nv,ex:false,mode:"barreja",llista,e:0,p:0,v:"",f:{},int:0,ajut:0,bones:0,errs:0,resp:[],ok:{},fi:false,apFet:false,ep:[],pistes:0,pq:0,pqb:0,
+  pre:llista.map(()=>0),errE:[],ajutE:[],rep:true};
+ MX.onFi=()=>{MX.fi=true;JOCSTAR=jst;fi(llista.map((E,i)=>!(MX.errE[i]||MX.ajutE[i])))};
+ mxIniciaApartat();mxPinta();window.scrollTo(0,0)}
+(window.BN_REP_TIPUS=window.BN_REP_TIPUS||{}).mx={ic:"✏️",max:3,titol:"Ara, exercicis del Taller que et van costar",
+ peu:"Números nous, el mateix tipus d'exercici. Si el fas sense cap error ni pista, compta com a recordat.",
+ valid:r=>r.g!==undefined&&typeof MXG!=="undefined"&&!!MXG[mxNomG(r.g)],
+ nom:r=>`${mxRepNom(r.g)} · ${["","🟢 Bàsic","🟡 Mitjà","🔴 D'examen"][r.nv||2]}`,
+ juga:mxRepas};
+// prova automàtica (motor/prova.js): un pas fallat entra al repàs; al repàs, un exercici nou fet bé el passa a la capsa 1
+function mxRepProva(){const repAbans=JSON.stringify(S.rep||{}),apAbans=S.apresos||0;
+ try{const fx=(ASSIG.jocs||[]).find(x=>x.fn==="mxFitxa"&&x.mx&&Array.isArray(x.mx.tipus));if(!fx)return true;
+  const g=fx.mx.tipus[0];S.rep={};
+  MX_MODE="sol";mxFitxa(fx);mxComença(fx.id,1);const P=MX.llista[0].passos[0];
+  if(P.t==="tria")mxRespon((P.r+1)%P.op.length);else if(P.t==="fact"){MX.f={7:9};mxRespon()}else{MX.v="999999";mxRespon()}
+  const k="mx|"+mxRepClau(g,1);if(!S.rep[k])return "el pas fallat no ha entrat al repàs";
+  if(!repPendents().some(x=>x.tipus==="mx"))return "el repàs no veu l'error del Taller";
+  repas();const b=document.getElementById("repSeg");if(!b)return "el repàs no ofereix els exercicis del Taller";b.click();
+  if(!MX||!MX.rep)return "el repàs no ha obert el Taller";
+  let seg=0;while(MX&&!MX.fi&&seg++<400){const s=document.getElementById("mxSeg");if(s){s.click();continue}const Q=MX.llista[MX.e].passos[MX.p];
+   if(MX.perq){mxPerqueResp(Q.perque.r);continue}if(Q.t==="tria"){mxRespon(Q.r);continue}if(Q.t==="fact"){MX.f={...Q.r};mxRespon();continue}
+   MX.v=Q.t==="llista"?Q.r.join(", "):String(Q.r);mxRespon()}
+  const r2=S.rep[k];if(!r2||r2.c!==1)return `després del repàs, la capsa hauria de ser 1 (és ${r2?r2.c:"fora"})`;
+  if(REPAS)return "el repàs no s'ha tancat";
+  if(!/recordats/.test(app.textContent))return "no surt el resum del repàs";
+  return true}finally{REPAS=false;S.rep=JSON.parse(repAbans);S.apresos=apAbans;desa()}}
+if(typeof window!=="undefined")(window.BN_PROVES=window.BN_PROVES||[]).push("mxRepProva");

@@ -112,6 +112,17 @@ ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;heig
 .opt.ok{background:var(--verd-cl);border-color:#22c55e}.opt.ok .ll{background:#22c55e;color:#fff}
 .opt.ko{background:var(--verm-cl);border-color:#ef4444}.opt.ko .ll{background:#ef4444;color:#fff}
 .opt:disabled{cursor:default}
+/* Bona Nota 2.0 · 💡 pista als tests, 🛡️ escut del combo i repàs d'errors de les eines */
+.pista-fila{display:flex;justify-content:flex-end;margin-top:4px}
+.pista-fila .btn,.escut .btn{padding:6px 12px;font-size:14px}
+.opt.fora{opacity:.38;text-decoration:line-through;border-style:dashed}
+.fb.pista{background:var(--groc-cl);border-color:#fcd34d}
+.escut{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.escut small{color:var(--suau);font-weight:700;font-size:13px}
+.escut.obert{display:block;padding:12px 14px;border-radius:14px;border:2px dashed #86efac;background:#f0fdf4}
+.escut.obert .pregunta{font-size:17px;margin:6px 0 4px}
+.rep-llista{display:inline-block;text-align:left;margin:4px auto 6px;padding-left:22px;font-weight:700;line-height:1.6}
+.rep-apr{font-weight:800;color:#047857}
 .fb{margin-top:12px;padding:12px 14px;border-radius:14px;background:#eff6ff;border:2px solid #bfdbfe}
 .fb.ok{background:var(--verd-cl);border-color:#86efac}.fb.ko{background:#fff7ed;border-color:#fdba74}
 .barra-test{height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin:6px 0 4px}
@@ -791,7 +802,7 @@ const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${
 function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
 let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
 function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v))}
-function vista(v){tancaActivitat();if(S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
+function vista(v){tancaActivitat();REPAS=false;if(S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
  if(S.nom&&!SENSE_NUVOL()&&pinVell(S.nom)&&!PIN_AJORNA&&v!=="benvinguda"){pantallaNouPin();return}calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
 
 
@@ -1081,7 +1092,7 @@ function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">$
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
  JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
  return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
-function joc(id){tancaActivitat();JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
  if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}
@@ -1117,10 +1128,10 @@ function targetes(n){calla();
 function test(ordre,k,bones,clau,pool,cb){
  calla();
  const z=document.getElementById("zona"),llista=pool||tema.q,esTema=!pool;
- if(k===0){TQ=[];TQT=Date.now()}
+ if(k===0){TQ=[];TQT=Date.now();TPIST=0}
  if(k>=ordre.length){
   const pc=Math.round(bones*100/ordre.length);
-  ULT={mode:esTema?"tema":clau==="examen"?"sorpresa":clau==="repas"?"repas":"joc",bones,n:ordre.length,s:segs(TQT),q:TQ.slice()};
+  ULT={mode:esTema?"tema":clau==="examen"?"sorpresa":clau==="repas"?"repas":"joc",bones,n:ordre.length,s:segs(TQT),q:TQ.slice()};if(TPIST)ULT.pistes=TPIST;
   if(cb){cb(pc,bones,ordre.length);return}
   const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",Object.assign({tema:tema.id,titol:tema.titol,pc},ULT));ULT=null;
   const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=APROVA;
@@ -1139,18 +1150,42 @@ function test(ordre,k,bones,clau,pool,cb){
  }
  const q=llista[ordre[k]];
  const ops=barreja(q[1].map((o,i)=>[o,i]));
+ // 💡 pista i 🛡️ escut del combo: només als tests dels temes i al repàs (els exàmens i els jocs, sense ajuda)
+ const ajuda=esTema||clau==="repas",th=ajuda?(q.tid?T.find(t=>t.id===q.tid):tema):null;let pista=0;
  z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
- ${potEscoltar()?`<div class="escolta-fila" style="margin:4px 0 -4px">${btEscolta(q[0]+". "+ops.map(([o],j)=>"ABC"[j]+": "+o).join(". "),"")}</div>`:""}<div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="fb"></div></div>`;
+ ${potEscoltar()?`<div class="escolta-fila" style="margin:4px 0 -4px">${btEscolta(q[0]+". "+ops.map(([o],j)=>"ABC"[j]+": "+o).join(". "),"")}</div>`:""}<div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div>${ajuda&&th?`<div class="pista-fila"><button class="btn sec" id="pista" type="button">💡 Pista</button></div>`:""}<div id="fb"></div></div>`;
  TQ0=Date.now();
+ const bp=document.getElementById("pista");
+ if(bp)bp.onclick=()=>{const fb=document.getElementById("fb");if(!pista)TPIST++;
+  if(!pista&&th.idea){pista=1;fb.innerHTML=`<div class="fb pista">💡 <b>Pista:</b> ${th.idea}<br><small>Aquesta pregunta ja no dona estrella, però t'ajuda a aprendre.</small></div>`;bp.textContent="💡 Una altra pista";so("clic");veuBe(fb);return}
+  pista=2;const mal=barreja([...z.querySelectorAll(".opt:not(.fora)")].filter(o=>+o.dataset.i!==q[2]))[0];if(mal){mal.classList.add("fora");mal.disabled=true}
+  fb.innerHTML=`<div class="fb pista">${th.idea?`💡 <b>Pista:</b> ${th.idea}<br>`:""}✂️ He tret una resposta que segur que no és.<br><small>Aquesta pregunta ja no dona estrella, però t'ajuda a aprendre.</small></div>`;bp.parentNode.remove();so("clic");veuBe(fb)};
  z.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
   const ok=+b.dataset.i===q[2];anotaQ(q,ok,+b.dataset.i);
-  z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});
-  const tidR=q.tid||(esTema?tema.id:null);if(tidR)repAnota(tidR,q[0],ok);
-  if(ok){const nova=REPAS?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);if(!nova&&!REPAS)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">ja encertada avui · sense ⭐</small>`);so("ok");ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
-  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});if(bp&&bp.parentNode)bp.parentNode.remove();
+  // amb pista, encertar no avança la capsa del repàs (torna demà) ni suma al combo
+  const tidR=q.tid||(esTema?tema.id:null);if(tidR&&!(ok&&pista))repAnota(tidR,q[0],ok);
+  if(ok&&pista&&REPAS&&tidR){const r=S.rep&&S.rep[tidR+"|"+q[0]];if(r){r.prox=diaMes(1);desa()}}
+  const comboAbans=COMBO;
+  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista)ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
  });
 }
+// 🛡️ Escut del combo: si falles amb un combo de 3 o més, pots respondre una pregunta germana del mateix tema (una que aquest test no ha tret).
+// Si l'encertes, recuperes la meitat del combo. No dona estrella ni compta per a la nota; si la falles, va al repàs com qualsevol error.
+let TPIST=0;
+function veuBe(el){try{el.scrollIntoView({block:"center",behavior:SUAU?"auto":"smooth"})}catch(e){}}
+function escutCombo(th,usats,salva,tidR){const cands=th.q.filter(x=>!usats.includes(x[0])),ez=document.getElementById("escutZ");if(!cands.length||!ez)return;
+ const m=cands[Math.floor(Math.random()*cands.length)],ops=barreja(m[1].map((o,i)=>[o,i]));
+ ez.innerHTML=`<div class="escut"><button class="btn verd" id="escut" type="button">🛡️ Salva el combo ×${salva}</button><small>Respon una pregunta germana: si l'encertes, no perds tota la ratxa.</small></div>`;
+ document.getElementById("escut").onclick=()=>{so("clic");
+  ez.innerHTML=`<div class="escut obert"><div class="prog">🛡️ Pregunta germana · si l'encertes, continues amb el combo ×${salva}</div><div class="pregunta germana">${m[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt germ" data-g="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div><div id="escutFb"></div></div>`;
+  veuBe(ez);ez.querySelectorAll(".germ").forEach(b=>b.onclick=()=>{const okG=+b.dataset.g===m[2];ez.querySelectorAll(".germ").forEach(x=>{x.disabled=true;if(+x.dataset.g===m[2])x.classList.add("ok")});
+   if(okG){COMBO=salva;so("super");const d=document.createElement("div");d.className="combo";d.innerHTML=`🛡️ COMBO SALVAT!<small>CONTINUES AMB ×${salva}</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1400)}
+   else{b.classList.add("ko");so("ko");if(tidR)repAnota(tidR,m[0],false)}
+   document.getElementById("escutFb").innerHTML=`<div class="fb ${okG?"ok":"ko"}">${okG?"🛡️ <b>Combo salvat!</b>":"💡 <b>Aquesta tampoc.</b> El combo torna a començar."} ${m[3]}</div>`})}}
 function valora(i,b){ET(tema.id).valoracio=i;desa();registra("valora",{tema:tema.id,titol:tema.titol,v:["Costa","Bé","Fàcil"][i]});b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
 function resultatJoc(id,titol){return (pc,b,n)=>{const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
 function examen(){
@@ -1368,33 +1403,82 @@ function fiExamenReal(perTemps){const e=EXR;if(!e||e.acabat)return;e.acabat=1;if
  <div class="fila"><button class="btn" onclick="examenReal()">Un altre examen</button>${repPendents().length?`<button class="btn verd" onclick="repas()">🔁 Repassa els errors</button>`:""}<button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`;
  EXR=null}
 
+// prova automàtica (motor/prova.js): 💡 pista, 🛡️ escut del combo i bo per error après. Deixa el repàs com estava.
+async function bnProvaFase1(){const espera=ms=>new Promise(r=>setTimeout(r,ms)),repAbans=JSON.stringify(S.rep||{}),apAbans=S.apresos||0;
+ try{
+  // 1) pista: dos tocs → la idea clau i una opció falsa fora; encertar amb pista no dona ⭐ ni suma al combo
+  aturaSeg();obre(0);pest='test';pintaTema();
+  const qa=()=>tema.q.find(x=>x[0]===document.querySelector('.pregunta').innerHTML);
+  let q=qa();if(!q)return "pista: no trobo la pregunta";
+  document.getElementById('pista').click();if(tema.idea&&!/Pista/.test(document.getElementById('fb').textContent))return "pista: no surt la idea clau";
+  if(document.getElementById('pista'))document.getElementById('pista').click();
+  const fora=[...document.querySelectorAll('.opt.fora')];if(fora.length!==1||+fora[0].dataset.i===q[2])return "pista: no ha tret una opció falsa";
+  if(document.getElementById('pista'))return "pista: el botó hauria de desaparèixer";
+  COMBO=4;const p0=S.punts;[...document.querySelectorAll('.opt')].find(o=>+o.dataset.i===q[2]).click();
+  if(S.punts!==p0)return "pista: ha donat estrella";if(COMBO!==4)return "pista: ha tocat el combo";
+  // 2) escut: amb combo ×4 falla → pregunta germana del mateix tema → l'encerta → continua amb ×2
+  document.getElementById('seg').click();q=qa();COMBO=4;
+  [...document.querySelectorAll('.opt')].find(o=>+o.dataset.i!==q[2]).click();
+  const be=document.getElementById('escut');if(!be)return "escut: no surt el botó";be.click();
+  const g=document.querySelector('.pregunta.germana').innerHTML,m=tema.q.find(x=>x[0]===g);if(!m)return "escut: la pregunta germana no és del tema";
+  [...document.querySelectorAll('.germ')].find(o=>+o.dataset.g===m[2]).click();if(COMBO!==2)return "escut: el combo hauria de ser ×2 i és ×"+COMBO;
+  // 3) error après: el 3r repàs encertat el treu del repàs, dona +2 ⭐ i el compta com a après
+  const t=T[0],qq=t.q[0],k=t.id+"|"+qq[0];S.rep=S.rep||{};S.rep[k]={tid:t.id,q:qq[0],c:2,prox:avui()};REPAS=true;REPAPR=0;const p1=S.punts;repAnota(t.id,qq[0],true);REPAS=false;
+  if(S.rep[k])return "après: l'error no surt del repàs";if(S.punts!==p1+2)return `après: +${S.punts-p1} ⭐ i havien de ser +2`;if(REPAPR!==1||(S.apresos||0)!==apAbans+1)return "après: no l'ha comptat";
+  await espera(1700);return true
+ }finally{REPAS=false;COMBO=0;S.rep=JSON.parse(repAbans);S.apresos=apAbans;desa();aturaSeg()}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaFase1");
+
 // ====================== REPÀS ESPAIAT DELS ERRORS ======================
 // Cada pregunta fallada entra a la capsa 0 (es pot repassar avui mateix).
 // Al repàs: encert → capsa 1 (torna d'aquí a 3 dies) → capsa 2 (d'aquí a 7) → après i surt. Error → capsa 0, torna demà.
 const APROVA=70,NTEST=6,REP_DIES=[0,3,7];
 let REPAS=false;
 function diaMes(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
-function repAnota(tid,txt,ok){S.rep=S.rep||{};const k=tid+"|"+txt,r=S.rep[k];
- if(!ok){S.rep[k]={tid,q:txt,c:0,prox:REPAS?diaMes(1):avui()};desa();return}
+// Bona Nota 2.0 · un error que queda «après» (3 repassos encertats en dies diferents) dona +2 ⭐ (font «repas») i el rètol APRÈS!
+// A més de les preguntes de test, una eina pot posar al repàs els seus propis errors (Taller de mates, MAPA de comarques…):
+//   (window.BN_REP_TIPUS=window.BN_REP_TIPUS||{}).<tipus>={ic, titol, peu, max, valid(r)→bool, nom(r)→text, juga(items, fi)}
+//   · durant el joc normal, cada error es registra amb repAnotaExt("<tipus>", clau, dades, false)
+//   · al repàs, juga(items, fi) fa jugar aquells errors i crida fi([true/false per a cada item]); el motor els mou de capsa.
+const REP_TIPUS=window.BN_REP_TIPUS=window.BN_REP_TIPUS||{};
+let REPAPR=0;  // errors apresos en aquest repàs (van al registre com «apr»)
+function repMou(k,nou,ok){S.rep=S.rep||{};const r=S.rep[k];
+ if(!ok){if(!r&&!nou.tid&&!nou.tipus)return;S.rep[k]=Object.assign({},r||{},nou,{c:0,prox:REPAS?diaMes(1):avui()});desa();return}
  if(!REPAS||!r)return;
- const c=r.c+1;if(c>=REP_DIES.length){delete S.rep[k];S.apresos=(S.apresos||0)+1}else S.rep[k]={...r,c,prox:diaMes(REP_DIES[c])};desa()}
-function repTots(){return Object.values(S.rep||{}).filter(r=>T.some(t=>t.id===r.tid&&t.q.some(q=>q[0]===r.q)))}
+ const c=r.c+1;if(c>=REP_DIES.length){delete S.rep[k];S.apresos=(S.apresos||0)+1;premiApres()}else S.rep[k]={...r,c,prox:diaMes(REP_DIES[c])};desa()}
+function repAnota(tid,txt,ok){repMou(tid+"|"+txt,{tid,q:txt},ok)}
+function repAnotaExt(tipus,clau,dades,ok){repMou(tipus+"|"+clau,Object.assign({tipus,clau},dades||{}),ok)}
+function premiApres(){REPAPR++;const f=FONT;FONT=["repas"];suma(2);FONT=f;
+ setTimeout(()=>{const d=document.createElement("div");d.className="combo";d.innerHTML=`APRÈS! 🧠<small>+2 ⭐ · JA NO TORNARÀ</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1500);so("super")},COMBO>=2?750:0)}
+function repValid(r){if(r.tipus){const x=REP_TIPUS[r.tipus];try{return !!(x&&x.valid(r))}catch(e){return false}}return T.some(t=>t.id===r.tid&&t.q.some(q=>q[0]===r.q))}
+function repTots(){return Object.values(S.rep||{}).filter(repValid)}
 function repPendents(){const d=avui();return repTots().filter(r=>r.prox<=d)}
 function repProper(){const f=repTots().map(r=>r.prox).sort();return f[0]||null}
 function repas(){
- const pend=barreja(repPendents()).slice(0,10);aturaSeg();COMBO=0;FONT=["repas"];window.scrollTo(0,0);marcaNav("inici");
- if(!pend.length){const pr=repProper();app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila">${repasExtra()}<button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
- const pool=pend.map(r=>{const t=T.find(x=>x.id===r.tid),q=cpQ(t.q.find(x=>x[0]===r.q));q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
- REPAS=true;
- app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Si l'encertes, tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après! 🧠</p><div id="zona"></div>`;
- test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{REPAS=false;registra("joc",Object.assign({joc:"repas",titol:"Repàs dels errors",pc},ULT||{}));ULT=null;arcade(pc,b,n,false);
-  const queden=repPendents().length,pr=repProper();
-  document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=APROVA?"🧠":"💪"}</div><h2>${b} de ${n} recordades</h2><p>${b?`Molt bé! Les que has encertat tornaran d'aquí a uns dies per assegurar-nos que no se t'obliden.`:""} ${n-b?`Les que has fallat tornaran <b>demà</b>.`:""}</p>${S.apresos?`<p class="prog">Preguntes apreses per sempre: <b>${S.apresos}</b> 🏅</p>`:""}<div class="fila">${queden?`<button class="btn" onclick="repas()">Repassa'n ${queden} més</button>`:""}${repasExtra()}<button class="btn sec" onclick="vista('inici')">Torna a l'inici</button></div></div>`});
+ const pend=repPendents();aturaSeg();COMBO=0;FONT=["repas"];window.scrollTo(0,0);marcaNav("inici");
+ const cap=`<h2 class="sec">🔁 Repassa els teus errors</h2>`;
+ if(!pend.length){const pr=repProper();app.innerHTML=`${cap}<div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila">${repasExtra()}<button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
+ // primer les preguntes de test (fins a 10) i després, per tipus, els errors de les eines (Taller, MAPA…)
+ const pq=barreja(pend.filter(r=>!r.tipus)).slice(0,10);
+ const ext=Object.keys(REP_TIPUS).map(t=>[t,barreja(pend.filter(r=>r.tipus===t)).slice(0,REP_TIPUS[t].max||3)]).filter(x=>x[1].length);
+ REPAS=true;REPAPR=0;const R={b:0,n:0,ult:null,ext:[]};
+ const part=i=>{if(i>=ext.length)return repFi(R);const [t,its]=ext[i],x=REP_TIPUS[t];window.scrollTo(0,0);
+  app.innerHTML=`${cap}<div class="box" style="text-align:center"><div class="gran">${x.ic||"🔁"}</div><h3>${x.titol||"Ara, uns quants errors més"}</h3><ul class="rep-llista">${its.map(r=>`<li>${x.nom(r)}</li>`).join("")}</ul>${x.peu?`<p class="prog">${x.peu}</p>`:""}<div class="fila"><button class="btn verd" id="repSeg">Som-hi ▶</button></div></div><div id="zona"></div>`;
+  document.getElementById("repSeg").onclick=()=>x.juga(its,oks=>{if(!REPAS)return;its.forEach((r,k)=>repMou(t+"|"+r.clau,{},!!oks[k]));const b=its.filter((r,k)=>oks[k]).length;R.b+=b;R.n+=its.length;R.ext.push(`${t}:${b}/${its.length}`);part(i+1)})};
+ if(!pq.length)return part(0);
+ const pool=pq.map(r=>{const t=T.find(x=>x.id===r.tid),q=cpQ(t.q.find(x=>x[0]===r.q));q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
+ app.innerHTML=`${cap}<p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Si l'encertes, tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après (+2 ⭐)! 🧠</p><div id="zona"></div>`;
+ test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{R.b+=b;R.n+=n;R.ult=ULT;ULT=null;part(0)});
 }
+function repFi(R){REPAS=false;const pc=R.n?Math.round(R.b*100/R.n):0,b=R.b,n=R.n;
+ registra("joc",Object.assign({joc:"repas",titol:"Repàs dels errors",pc},R.ult||{},REPAPR?{apr:REPAPR}:{},R.ext.length?{ext:R.ext.join(",")}:{}));arcade(pc,b,n,false);
+ const queden=repPendents().length;
+ app.innerHTML=`<h2 class="sec">🔁 Repassa els teus errors</h2><div id="zona"></div>`;
+ document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=APROVA?"🧠":"💪"}</div><h2>${b} de ${n} recordats</h2><p>${b?`Molt bé! Els que has encertat tornaran d'aquí a uns dies per assegurar-nos que no se t'obliden.`:""} ${n-b?`Els que has fallat tornaran <b>demà</b>.`:""}</p>${REPAPR?`<p class="rep-apr">🧠 Avui n'has après <b>${REPAPR}</b> per sempre · +${2*REPAPR} ⭐</p>`:""}${S.apresos?`<p class="prog">Errors apresos per sempre: <b>${S.apresos}</b> 🏅</p>`:""}<div class="fila">${queden?`<button class="btn" onclick="repas()">Repassa'n ${queden} més</button>`:""}${repasExtra()}<button class="btn sec" onclick="vista('inici')">Torna a l'inici</button></div></div>`}
 // botó opcional per continuar el repàs amb un altre joc (ASSIG.repasExtra = id del joc, p. ex. el repàs barrejat de mates)
 function repasExtra(){const j=ASSIG.repasExtra&&ASSIG.jocs.find(x=>x.id===ASSIG.repasExtra);return j?`<button class="btn verd" onclick="joc('${j.id}')">${j.ic} ${j.titol}</button>`:""}
-function cartaRepas(){const n=repPendents().length,tot=repTots().length;if(!tot)return "";
- return `<div class="continua" style="background:#ecfdf5;border-color:#6ee7b7" onclick="repas()"><span style="font-size:28px">🔁</span><b>${n?`Tens <span style="color:#047857">${n} pregunta${n>1?"s":""}</span> per repassar avui`:`Errors al dia! Proper repàs: ${new Date(repProper()).toLocaleDateString("ca-ES",{day:"numeric",month:"short"})}`}</b><span class="btn ${n?"verd":"sec"}">${n?"Repassa →":"Mira"}</span></div>`}
+function cartaRepas(){const p=repPendents(),n=p.length,tot=repTots().length;if(!tot)return "";const nomes=p.every(r=>!r.tipus);
+ return `<div class="continua" style="background:#ecfdf5;border-color:#6ee7b7" onclick="repas()"><span style="font-size:28px">🔁</span><b>${n?`Tens <span style="color:#047857">${n} ${nomes?`pregunta${n>1?"s":""}`:`error${n>1?"s":""}`}</span> per repassar avui`:`Errors al dia! Proper repàs: ${new Date(repProper()).toLocaleDateString("ca-ES",{day:"numeric",month:"short"})}`}</b><span class="btn ${n?"verd":"sec"}">${n?"Repassa →":"Mira"}</span></div>`}
 
 // ====================== JOCS GENÈRICS ======================
 // tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
