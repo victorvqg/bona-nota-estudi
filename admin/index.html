@@ -282,6 +282,7 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 .dm-prog .dm-bar{margin:0}
 .dm-prog small{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
 .dm-prog small b{color:var(--text);font-weight:700}
+.dm-pit{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dm-cos{padding:14px 16px 16px}
 @media (max-width:767px){.dm-cap{grid-template-columns:auto minmax(0,1fr);row-gap:8px;padding:12px 14px 12px 16px}.dm-avs{display:none}.dm-prog{grid-column:1/-1}.dm-cos{padding:12px}}
 .dm-res{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin:0 0 12px}
@@ -836,16 +837,31 @@ function tConstancia(act){const per={};act.forEach(a=>{const k=a.nom.trim().toLo
  const ratxa=s=>{let n=0,d=new Date(avui);if(!s.has(iso(d)))d.setDate(d.getDate()-1);while(s.has(iso(d))){n++;d.setDate(d.getDate()-1)}return n};
  const L=Object.values(per).sort((a,b)=>b.dies.size-a.dies.size),mx=Math.max(1,...L.map(x=>x.dies.size));
  $("#tCst").innerHTML=L.length?L.map(x=>{const r=ratxa(x.dies);return `<div class="cst"><span class="nen">${avatar(x.nom,"p")}<span>${esc(x.nom)}</span></span><div class="bfe"><i style="width:${Math.round(x.dies.size*100/mx)}%;background:${colorNen(x.nom)}"></i></div><span class="r">${pl(x.dies.size,"dia","dies")} · ${Math.round(x.min)} min${r>1?` · ${ic("foc")}${r} seguits`:""}</span></div>`}).join(""):buit("foc","Sense activitat en aquest període.")}
+// ---- blocs plegables per món (Domini per tema, Preguntes més fallades) ----
+// Cada món és un <details> amb una capçalera que es llegeix sense obrir-lo. L'estat es recorda en aquest navegador (una clau per apartat).
+// Per defecte, plegats; si només hi ha un món, obert.
+function plegables(clau,assigs){let st={};try{st=JSON.parse(localStorage.getItem(clau)||"{}")||{}}catch(e){}
+ const obert=a=>Object.prototype.hasOwnProperty.call(st,a)?!!st[a]:assigs.length===1,desa=()=>{try{localStorage.setItem(clau,JSON.stringify(st))}catch(e){}};
+ return {
+  eines:()=>assigs.length>1?`<div class="dm-eines"><span>${pl(assigs.length,"món","mons")} · toca un món per veure'n el detall</span><div class="dm-bts"><button class="btn sec petit" type="button" data-dm="obre">${ic("avall")}Desplega-ho tot</button><button class="btn sec petit" type="button" data-dm="tanca">${ic("amunt")}Plega-ho tot</button></div></div>`:"",
+  // a: món · meta: línia petita sota el nom · mig: columna del mig (opcional) · dreta: columna de la dreta (barra o resum) · cos: el que surt en desplegar
+  bloc:(a,meta,mig,dreta,cos)=>`<details class="dm-as" data-a="${esc(a)}" style="--mc:${colAssig(a)}"${obert(a)?" open":""}>
+   <summary class="dm-cap" title="Toca per ${obert(a)?"plegar":"desplegar"} ${esc(nomAssig(a))}"><span class="dm-xev">${ic("avall")}</span>
+    <span class="dm-tit"><span class="dm-nom">${esc(nomAssig(a))}</span><span class="dm-meta">${meta}</span></span>
+    <span class="dm-avs" aria-hidden="true">${mig||""}</span><span class="dm-prog">${dreta||""}</span></summary>
+   <div class="dm-cos">${cos}</div></details>`,
+  lliga:el=>{if(!el)return;
+   el.querySelectorAll("details.dm-as").forEach(d=>d.addEventListener("toggle",()=>{st[d.dataset.a]=d.open;const c=d.querySelector(".dm-cap");if(c)c.title=`Toca per ${d.open?"plegar":"desplegar"} ${nomAssig(d.dataset.a)}`;desa()}));
+   el.querySelectorAll("[data-dm]").forEach(b=>b.onclick=()=>{const o=b.dataset.dm==="obre";el.querySelectorAll("details.dm-as").forEach(d=>{d.open=o;st[d.dataset.a]=o});desa()})}}}
 function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=buit("diana","Encara no hi ha activitat de temes en aquest període.");return}
  // tots els temes de cada assignatura, en l'ordre del món (de preguntes.json), encara que ningú no els hagi fet
  const temesDe=a=>{const m=new Map();Object.entries(PREG||{}).forEach(([k,v])=>{const [as,t]=k.split("/");if(as===a&&!t.startsWith("j-")&&!m.has(t))m.set(t,v.tema)});
   dom.filter(x=>x.assig===a).forEach(x=>{if(!m.has(x.tema))m.set(x.tema,x.titol||x.tema)});return [...m.entries()]};
  const estat=c=>!c?"no":c.millor==null?"fitxa":c.millor>=70?"aprovat":"suspes";
  const COL={aprovat:"var(--ok)",suspes:"var(--bad)",fitxa:"var(--soft)"};
- // cada món es pot plegar i desplegar; l'estat es recorda en aquest navegador (bn_admin_dm)
- const DMK="bn_admin_dm",assigs=[...new Set(dom.map(x=>x.assig))];let dmObert={};try{dmObert=JSON.parse(localStorage.getItem(DMK)||"{}")||{}}catch(e){}
- const obert=a=>Object.prototype.hasOwnProperty.call(dmObert,a)?!!dmObert[a]:assigs.length===1;
- let h=assigs.length>1?`<div class="dm-eines"><span>${pl(assigs.length,"món","mons")} · toca un món per veure'n el detall</span><div class="dm-bts"><button class="btn sec petit" type="button" data-dm="obre">${ic("avall")}Desplega-ho tot</button><button class="btn sec petit" type="button" data-dm="tanca">${ic("amunt")}Plega-ho tot</button></div></div>`:"";
+ // cada món es pot plegar i desplegar (plegables); l'estat es recorda en aquest navegador (bn_admin_dm)
+ const assigs=[...new Set(dom.map(x=>x.assig))],PL=plegables("bn_admin_dm",assigs);
+ let h=PL.eines();
  assigs.forEach(a=>{const ds=dom.filter(x=>x.assig===a),temes=temesDe(a),
    noms=[...new Map(ds.map(x=>[x.nom.trim().toLowerCase(),x.nom])).values()].sort((x,y)=>x.localeCompare(y,"ca"));
   const cel=(n,t)=>ds.find(x=>x.tema===t&&x.nom.trim().toLowerCase()===n.trim().toLowerCase());
@@ -859,29 +875,35 @@ function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=buit("diana","Encara 
   // resum del món per a la capçalera plegable: tots els nens junts
   const tot={aprovat:0,suspes:0,fitxa:0,no:0};noms.forEach(n=>temes.forEach(([t])=>tot[estat(cel(n,t))]++));const TT=Math.max(1,temes.length*noms.length),pc=Math.round(tot.aprovat*100/TT);
   const avs=noms.slice(0,5).map(n=>avatar(n,"p")).join("")+(noms.length>5?`<span class="mes">+${noms.length-5}</span>`:"");
-  h+=`<details class="dm-as" data-a="${esc(a)}" style="--mc:${colAssig(a)}"${obert(a)?" open":""}>
-   <summary class="dm-cap" title="Toca per ${obert(a)?"plegar":"desplegar"} ${esc(nomAssig(a))}"><span class="dm-xev">${ic("avall")}</span>
-    <span class="dm-tit"><span class="dm-nom">${esc(nomAssig(a))}</span><span class="dm-meta">${pl(temes.length,"tema","temes")} · ${pl(noms.length,"nen","nens")}${tot.suspes?` · ${tot.suspes} per millorar`:""}</span></span>
-    <span class="dm-avs" aria-hidden="true">${avs}</span>
-    <span class="dm-prog"><span class="dm-bar" aria-hidden="true">${["aprovat","suspes","fitxa"].map(k=>tot[k]?`<i style="width:${tot[k]*100/TT}%;background:${COL[k]}"></i>`:"").join("")}</span>
-     <small><span>${noms.length===1?`<b>${tot.aprovat}/${temes.length}</b> temes aprovats`:`<b>${tot.aprovat}/${TT}</b> aprovats entre tots`}</span><span>${pc}%</span></small></span></summary>
-   <div class="dm-cos"><div class="dm-res">${res}</div>
-   <div class="taula-w"><table class="dm-t"><thead><tr><th scope="col" class="tm">Tema</th>${noms.map(n=>`<th scope="col"><span class="nen" style="justify-content:center">${avatar(n,"p")}${esc(n)}</span></th>`).join("")}</tr></thead><tbody>${files}</tbody></table></div></div></details>`});
+  h+=PL.bloc(a,`${pl(temes.length,"tema","temes")} · ${pl(noms.length,"nen","nens")}${tot.suspes?` · ${tot.suspes} per millorar`:""}`,avs,
+    `<span class="dm-bar" aria-hidden="true">${["aprovat","suspes","fitxa"].map(k=>tot[k]?`<i style="width:${tot[k]*100/TT}%;background:${COL[k]}"></i>`:"").join("")}</span>
+     <small><span>${noms.length===1?`<b>${tot.aprovat}/${temes.length}</b> temes aprovats`:`<b>${tot.aprovat}/${TT}</b> aprovats entre tots`}</span><span>${pc}%</span></small>`,
+    `<div class="dm-res">${res}</div>
+   <div class="taula-w"><table class="dm-t"><thead><tr><th scope="col" class="tm">Tema</th>${noms.map(n=>`<th scope="col"><span class="nen" style="justify-content:center">${avatar(n,"p")}${esc(n)}</span></th>`).join("")}</tr></thead><tbody>${files}</tbody></table></div>`)});
  $("#tDom").innerHTML=h+`<div class="llegenda"><span>Millor nota:</span><span>0</span><span class="bands" aria-hidden="true"><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b50"></i><i class="b50"></i><i class="b70"></i><i class="b70"></i><i class="b90"></i></span><span>100</span>
   <span class="q"><i class="b0"></i>menys de 50</span><span class="q"><i class="b50"></i>50-69</span><span class="q"><i class="b70"></i>70-89 (aprovat)</span><span class="q"><i class="b90"></i>90-100</span><span class="q"><i class="bfx"></i>F = només fitxa</span><span>· = sense obrir</span><span>×3 = intents</span></div>`;
  $("#tDom").querySelectorAll(".dm-nen").forEach(x=>x.onclick=()=>{TF.nom=x.dataset.n;pinta();scrollTo(0,0)});
- const desa=()=>{try{localStorage.setItem(DMK,JSON.stringify(dmObert))}catch(e){}};
- $("#tDom").querySelectorAll("details.dm-as").forEach(d=>d.addEventListener("toggle",()=>{dmObert[d.dataset.a]=d.open;const s=d.querySelector(".dm-cap");if(s)s.title=`Toca per ${d.open?"plegar":"desplegar"} ${nomAssig(d.dataset.a)}`;desa()}));
- $("#tDom").querySelectorAll("[data-dm]").forEach(b=>b.onclick=()=>{const o=b.dataset.dm==="obre";$("#tDom").querySelectorAll("details.dm-as").forEach(d=>{d.open=o;dmObert[d.dataset.a]=o});desa()})}
+ PL.lliga($("#tDom"))}
 function tFallades(fall){if(!fall.length){$("#tFal").innerHTML=buit("creu","Encara no hi ha preguntes fallades registrades en aquest període.","Es compten des del 4-11-2026.");return}
  const net=t=>String(t||"").replace(/<[^>]+>/g,"");
  const rows=fall.map(f=>{const q=PREG[f.assig+"/"+f.qid]||null,parany=q&&f.opcio_parany!=null&&q.o[+f.opcio_parany]!=null?net(q.o[+f.opcio_parany]):null;
   return {assig:f.assig,qid:f.qid,text:q?net(q.t):`Pregunta ${f.qid}`,tema:q?q.tema:"",bona:q?net(q.o[q.c]):null,parany,pct:+f.pct_error,errors:+f.errors,intents:+f.intents,nens:+f.nens,nf:+f.nens_fallen,seg:f.segons!=null?+f.segons:null}});
- $("#tFal").innerHTML=taula("tFalT",[
+ // un bloc plegable per món (com al Domini per tema), amb la seva taula ordenable; l'estat es recorda (bn_admin_fal)
+ const cols=[
   {k:"text",t:"Pregunta",cls:"cur",h:r=>`<span class="q-t">${esc(r.text)}</span><span class="q-s">${r.tema?esc(r.tema)+" · ":""}bona: <span class="ok">${esc(r.bona??"?")}</span>${r.parany?` · parany: <span class="pa">${esc(r.parany)}</span>`:""} · id ${esc(r.qid)}</span>`},
-  {k:"assig",t:"Assignatura",h:r=>xipAssig(r.assig)},{k:"pct",t:"% d'error",num:true,h:r=>mini(r.pct,100,"bad",r.pct+"%")},
+  {k:"pct",t:"% d'error",num:true,h:r=>mini(r.pct,100,"bad",r.pct+"%")},
   {k:"errors",t:"Errors",num:true,h:r=>`${r.errors} <span class="muted">de ${r.intents}</span>`},{k:"nf",t:"Nens que la fallen",num:true,h:r=>`${r.nf} <span class="muted">de ${r.nens}</span>`},
-  {k:"seg",t:"Segons",num:true,h:r=>r.seg==null?"—":fmtD(r.seg)}],rows,{k:"errors",alta:true,etiqueta:"Preguntes més fallades"})}
+  {k:"seg",t:"Segons",num:true,h:r=>r.seg==null?"—":fmtD(r.seg)}];
+ // ordre dels mons: el que té més errors, primer
+ const assigs=[...new Set(rows.map(r=>r.assig))].sort((x,y)=>rows.filter(r=>r.assig===y).reduce((t,r)=>t+r.errors,0)-rows.filter(r=>r.assig===x).reduce((t,r)=>t+r.errors,0)),PL=plegables("bn_admin_fal",assigs);
+ $("#tFal").innerHTML=PL.eines()+assigs.map(a=>{const rs=rows.filter(r=>r.assig===a),err=rs.reduce((t,r)=>t+r.errors,0),int=rs.reduce((t,r)=>t+r.intents,0),
+   pitjor=[...rs].sort((x,y)=>y.pct-x.pct||y.errors-x.errors)[0],parany=rs.filter(r=>r.parany).length,pc=int?Math.round(err*100/int):0;
+  return PL.bloc(a,`${pl(rs.length,"pregunta","preguntes")} · ${pl(err,"error","errors")}${parany?` · ${parany} amb parany`:""}`,
+   `<span class="pill ${pc>=50?"bad":pc>=30?"warn":"neutre"}" title="Errors sobre intents de les preguntes d'aquest món">${pc}% d'error</span>`,
+   `<span class="dm-bar" aria-hidden="true"><i style="width:${pitjor.pct}%;background:var(--bad)"></i></span>
+    <small><span class="dm-pit" title="${esc(pitjor.text)}">Pitjor: <b>${esc(pitjor.text)}</b></span><span>${pitjor.pct}%</span></small>`,
+   taula("tFalT-"+a,cols,rs,{k:"errors",alta:true,etiqueta:`Preguntes més fallades · ${nomAssig(a)}`}))}).join("");
+ PL.lliga($("#tFal"))}
 // ---- Taller de mates: on s'equivoquen (supabase/bn_admin_errors_taller.sql) ----
 // Es carrega a part de la resta: si la funció encara no és a la base de dades o falla, només aquest apartat ho diu.
 const TALLER_GEN={error:"Troba l'error",control:"Quadern (punts de control)",escala:"Escala (descompondre)",mcmmcd:"MCM i MCD",problema:"Problemes",criteri:"Criteris",divisors:"Divisors",multiples:"Múltiples",primer:"Primer o compost",divisio:"Divisió llarga",combinades:"Operacions combinades",fraccions:"Fraccions",equacio:"Equacions"};
