@@ -133,6 +133,38 @@ ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;heig
 .mi-b{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#60a5fa,#2563eb);border-radius:0 4px 4px 0;transition:width .4s}
 .mi.fet{background:var(--verd-cl);border-color:#86efac}.mi.fet .mi-p{color:#15803d}.mi.fet .mi-t{color:#166534}.mi.fet .mi-b{background:#22c55e}
 .combo.missio{color:#4ade80;text-shadow:3px 3px 0 #14532d,0 0 18px #86efac}
+/* 👾 boss del món */
+.boss-carta{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:12px 14px;border-radius:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1e1b4b,#4c1d95 60%,#831843);border:3px solid #a78bfa;box-shadow:0 0 18px #a78bfa55}
+.boss-carta.tancat{cursor:default;filter:saturate(.35);border-color:#64748b;box-shadow:none}
+.boss-carta .boss-mini{width:52px;height:52px;flex:none}
+.bc-t{flex:1;min-width:0}.bc-t b{display:block;font-family:'Press Start 2P',monospace;font-size:12px;line-height:1.6;color:#fde047}.bc-t small{display:block;font-weight:700;font-size:13.5px;color:#e9d5ff;margin-top:2px}
+.bc-b{display:block;height:7px;margin-top:7px;background:#ffffff26;border-radius:5px;overflow:hidden}.bc-b i{display:block;height:100%;background:#a78bfa;border-radius:5px}
+.boss{background:radial-gradient(circle at 50% 20%,#312e81,#0f172a 70%);border-radius:20px;padding:14px;margin:4px 0 10px;border:3px solid #a78bfa;color:#e2e8f0}
+.boss-cap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.boss-nom{font-family:'Press Start 2P',monospace;font-size:11px;color:#fde047;line-height:1.6;flex:1 1 140px}
+.boss-hp{position:relative;flex:2 1 180px;height:20px;background:#00000066;border:2px solid #fca5a5;border-radius:8px;overflow:hidden}
+.boss-hp i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#dc2626,#f97316,#facc15);transition:width .6s cubic-bezier(.2,1,.3,1)}
+.boss-hp span{position:relative;display:block;text-align:center;font-family:'Press Start 2P',monospace;font-size:9px;line-height:16px;color:#fff;text-shadow:1px 1px 0 #000}
+.boss-esc{display:flex;align-items:center;justify-content:space-between;margin:8px 0 2px}
+.boss-spr-w{position:relative;width:96px;height:96px}.boss-spr{width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 6px 0 #0006)}
+.boss-spr-w .boss-spr{animation:bossFlota 2.4s ease-in-out infinite}
+@keyframes bossFlota{50%{transform:translateY(-6px)}}
+.boss-spr-w.cop .boss-spr{animation:bossCop .45s}
+@keyframes bossCop{0%,100%{transform:none;filter:none}20%{transform:translateX(-8px) rotate(-6deg);filter:brightness(3)}50%{transform:translateX(6px) rotate(4deg)}75%{transform:translateX(-3px)}}
+.boss-dmg{position:absolute;left:62%;top:0;font-family:'Press Start 2P',monospace;font-size:16px;color:#fde047;text-shadow:2px 2px 0 #b91c1c;animation:bossDmg 1s forwards;pointer-events:none}
+@keyframes bossDmg{to{transform:translateY(-40px);opacity:0}}
+.boss-cors{font-size:26px;letter-spacing:2px}.boss-cors.tremola{animation:bossCop .45s}
+body.boss-mal{box-shadow:inset 0 0 0 6px #ef4444}
+.boss-ronda{font-family:'Press Start 2P',monospace;font-size:9px;color:#a5b4fc;text-align:right;margin-bottom:8px}
+.boss-box{color:var(--txt)}.boss-fig{text-align:center;margin-bottom:8px}.boss-fig svg{max-width:100%;height:auto}
+.bo-ord{display:flex;flex-direction:column;gap:6px;margin-top:8px}.bo-ord .opt{flex-direction:column;align-items:flex-start;margin:0}.bo-ord .opt small{font-weight:600;color:var(--suau)}
+.bo-fet{text-align:right;font-weight:800;color:var(--suau);margin-top:4px}
+.boss-intro{text-align:center;padding:10px 4px}.boss-intro h2{font-family:'Press Start 2P',monospace;font-size:15px;line-height:1.6;color:#fde047;text-shadow:2px 2px 0 #7c2d12;margin:8px 0}
+.boss-intro p{font-weight:700;font-size:16px;margin:6px 0}.boss-intro p.petit{font-size:14px;color:#c7d2fe}
+.boss-intro .boss-spr.gran{width:150px;height:150px;animation:bossFlota 2.4s ease-in-out infinite}
+.boss-intro .boss-spr.ko{animation:none;transform:rotate(90deg) translateX(20px);filter:grayscale(.7) drop-shadow(0 6px 0 #0006)}
+.boss-intro .boss-spr.riu{animation:bossFlota .8s ease-in-out infinite}
+.btn.gran{font-size:18px;padding:14px 26px;margin-top:10px}
 .fb{margin-top:12px;padding:12px 14px;border-radius:14px;background:#eff6ff;border:2px solid #bfdbfe}
 .fb.ok{background:var(--verd-cl);border-color:#86efac}.fb.ko{background:#fff7ed;border-color:#fdba74}
 .barra-test{height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin:6px 0 4px}
@@ -792,6 +824,9 @@ const OB=[
   m:"Se escribe b después de m (cambio, ambulancia), delante de l y r (tabla, brazo), en el imperfecto de los verbos en -ar (cantaba, estábamos) y en los verbos en -bir menos hervir, servir y vivir (escribir, recibir). Aprobado va con b porque es de la familia de probar y prueba, y gobierno de la de gobernar. El catalán aquí nos engaña."}
 ];
 
+// 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
+ASSIG.boss={nom:"El Monstruo de las Faltas",spr:"monstre"};
+
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}];
 const QIDS={"texto":[1,2,3,4,5,6,7,8],"tipos":[1,2,3,4,5,6,7,8],"sustantivo":[1,2,3,4,5,6,7,8],"genero":[1,2,3,4,5,6,7,8],"diccionario":[1,2,3,4,5,6,7,8],"puntuacion":[1,2,3,4,5,6,7,8],"noticia":[1,2,3,4,5,6,7,8],"fake":[1,2,3,4,5,6,7,8],"lirica":[1,2,3,4,5,6,7,8],"narrativa":[1,2,3,4,5,6,7,8],"articulos":[1,2,3,4,5,6,7,8],"demostrativos":[1,2,3,4,5,6,7,8],"cuantificadores":[1,2,3,4,5,6,7,8],"polisemia":[1,2,3,4,5,6,7,8],"letrab":[1,2,3,4,5,6,7,8]};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
@@ -876,7 +911,7 @@ function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO
  const premi=COMBO%10===0?2:COMBO%5===0?1:0;
  const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
  document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
-const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"]];
+const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
 // el resum d'estrelles només surt quan toques el comptador de dalt a la dreta
 // ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
 let COMP=null,COMPT=0;
@@ -1247,7 +1282,7 @@ function inici(){
  // joc destacat (opcional): ASSIG.destacat = id del joc → botó gran a l'inici
  {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd)h+=`<div class="continua" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
- h+=cartaMissions();
+ h+=bossCarta(true)+cartaMissions();
  h+=`${blocsTemes()}
  <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
  ${seccionsJocs()}
@@ -1258,7 +1293,7 @@ function pintaTemes(){app.innerHTML=blocsTemes()}
 function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
 const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"],["examreal","📝","Examen de veritat","10 preguntes · nota sobre 10","#e0e7ff"]];
 function tilesJocs(llista){return (llista||JOCS).map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
-function pintaJocs(){app.innerHTML=seccionsJocs()}
+function pintaJocs(){app.innerHTML=bossCarta()+seccionsJocs()}
 // si algun joc porta «grup», els jocs surten per seccions (en l'ordre en què apareixen); els exàmens del motor van al grup de l'examen
 function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">${ICO.jocs} Jocs</h2><div class="grid">${tilesJocs()}</div>`;
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
@@ -1600,6 +1635,104 @@ async function bnProvaFase1(){const espera=ms=>new Promise(r=>setTimeout(r,ms)),
   await espera(1700);return true
  }finally{REPAS=false;COMBO=0;S.rep=JSON.parse(repAbans);S.apresos=apAbans;desa();aturaSeg()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaFase1");
+
+// ====================== 👾 BOSS DEL MÓN (Bona Nota 2.0) ======================
+// Repte final del món: s'obre quan has aprovat el 70 % dels temes. Barreja preguntes de test de tots els temes, una de figura,
+// una de parelles o de classificar, una d'ordenar i una oberta (només contingut que ja és al món: res inventat).
+// Cada encert treu vida al boss; cada error et treu un cor (en tens 3, i com a màxim se'n perd un per ronda).
+// L'oberta treu vida segons les idees clau que s'hi detecten. El boss té el 80 % de la vida que poden treure totes les rondes:
+// es pot fallar alguna cosa i guanyar. Guanyar dona +10 ⭐ un cop al dia (font «boss»). Els errors van al repàs com sempre.
+const BOSS_ESTRELLES=10,BOSS_DESBLOQ=.7;
+const BOSS_PAL={K:"#1d1631",W:"#ffffff",R:"#e8442e",Y:"#ffd23f",G:"#475569",g:"#94a3b8"};
+const BOSS_SPR={"monstre":["..Y..........Y..","..YY........YY..","...YKKKKKKKKY...","..KMMMMMMMMMMK..",".KMMMMMMMMMMMMK.",".KMKKMMMMMMKKMK.",".KMWWKMMMMKWWMK.",".KMWKKMMMMKKWMK.",".KMMMMmmmmMMMMK.",".KMKKKKKKKKKKMK.",".KMKWRWRWRWRKMK.",".KMKRRRRRRRRKMK.",".KMMKKKKKKKKMMK.","..KMMMMMMMMMMK..","..KMMK....KMMK..","..KKKK....KKKK.."],"borrasca":["................",".....KKKK.......","....KggggK.KKK..","..KKKggggKKgggK.",".KGGGGGGGGGGGGGK","KGGGKKGGGGKKGGGK","KGGWWKGGGGKWWGGK","KGGWKKGGGGKKWGGK","KGGGGGGGGGGGGGGK","KGGGKKKKKKKKGGGK",".KGGGGGGGGGGGGK.","..KKKKKKKKKKKK..","......YYK.......",".....YYK........","......YYK.......",".....YK........."]};
+let BOSS=null;
+function bossSpr(cl){const nom=(ASSIG.boss&&ASSIG.boss.spr)||"monstre",p=BOSS_SPR[nom]||BOSS_SPR.monstre,pal=Object.assign({},BOSS_PAL,{M:(ASSIG.color||[])[1]||"#7c3aed",m:(ASSIG.color||[])[2]||"#c4b5fd"});let r="";
+ p.forEach((f,y)=>{let x=0;while(x<16){const c=f[x];if(c==="."){x++;continue}let x2=x;while(x2<16&&f[x2]===c)x2++;r+=`<rect x="${x}" y="${y}" width="${x2-x}" height="1" fill="${pal[c]}"/>`;x=x2}});
+ return `<svg class="${cl||""}" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`}
+function bossNom(){return (ASSIG.boss&&ASSIG.boss.nom)||"El Boss del món"}
+function bossEstat(){const n=T.length,ap=T.filter(t=>{const m=millor(t.id);return m!==null&&m>=APROVA}).length,cal=Math.max(1,Math.ceil(n*BOSS_DESBLOQ));
+ return {ap,n,cal,obert:ap>=cal,guanyat:!!(S.boss&&S.boss.v),avui:!!diaEst().boss}}
+function bossCarta(enInici){if(!S.nom||!T.length)return "";const e=bossEstat();if(enInici&&(!e.obert||e.avui))return "";
+ return `<div class="boss-carta${e.obert?"":" tancat"}" ${e.obert?`onclick="boss()" role="button" tabindex="0"`:""}>${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}</b><small>${e.obert?(e.avui?"L'has vençut avui! Pots tornar-hi per practicar.":`El repte final del món. Guanya'l: +${BOSS_ESTRELLES} ⭐${e.guanyat?" · ja l'has vençut "+S.boss.v+(S.boss.v>1?" vegades":" vegada"):""}`):`🔒 Aprova ${e.cal} dels ${e.n} temes per obrir-lo · ara: ${e.ap}`}</small>${e.obert?"":`<i class="bc-b"><i style="width:${Math.round(e.ap*100/e.cal)}%"></i></i>`}</div>${e.obert?`<span class="btn verd">Lluita ⚔️</span>`:""}</div>`}
+// rondes: ~10, amb les especials repartides; si el món no té un tipus de joc, s'hi posa una pregunta de test
+function bossRondes(){const temes=barreja(T.slice()),tests=[];
+ for(let i=0;tests.length<9&&i<temes.length*4;i++){const t=temes[i%temes.length],q=barreja(t.q.filter(x=>!tests.some(y=>y[0]===x[0])))[0];if(q){const c=cpQ(q);c.tid=t.id;c.tema=t.titol;tests.push(c)}}
+ const J=ASSIG.jocs||[],de=tp=>barreja(J.filter(j=>j.tipus===tp))[0],test=()=>tests.length?{tipus:"test",q:tests.shift(),dmg:12}:null,R=[];
+ const fig=(()=>{const j=de("figura");if(!j||!j.q||!j.q.length)return null;const q=cpQ(barreja(j.q.slice())[0]);return {tipus:"test",q,svg:typeof window[j.figura]==="function"?window[j.figura]():j.figura,dmg:12}})();
+ const par=(()=>{const j=de("parelles");if(j&&j.pars&&j.pars.length>=3){const ps=barreja(j.pars.slice()).slice(0,3),q=[`Quina és la parella de «${ps[0][0]}»?`,ps.map(x=>x[1]),0,`La parella bona és «${ps[0][1]}».`];return {tipus:"test",q,dmg:12,joc:j.titol}}
+  const c=de("classifica");if(c&&c.caixes&&c.items&&c.items.length){const it=barreja(c.items.slice())[0],ix=c.caixes.findIndex(x=>x[0]===it[1]);if(ix<0)return null;
+   const q=[`On va? «${it[0]}»`,c.caixes.map(x=>x[1]),ix,`Va a «${c.caixes[ix][1]}».`];return {tipus:"test",q,dmg:12,joc:c.titol}}return null})();
+ const ord=(()=>{const j=de("ordena");if(!j||!j.items||j.items.length<3)return null;const n=Math.min(5,j.items.length),i0=Math.floor(Math.random()*(j.items.length-n+1));return {tipus:"ordena",j,items:j.items.slice(i0,i0+n),dmg:24}})();
+ const ob=OB.length?{tipus:"oberta",o:barreja(OB.slice())[0],dmg:24}:null;
+ [test(),test(),ord||test(),test(),fig||test(),ob||test(),test(),par||test(),test(),test()].forEach(x=>{if(x)R.push(x)});return R}
+function boss(){aturaSeg();tancaActivitat();REPAS=false;COMBO=0;FONT=["boss"];marcaNav("jocs");window.scrollTo(0,0);const e=bossEstat();
+ if(!e.obert){app.innerHTML=`<h2 class="sec">👾 ${bossNom()}</h2>${bossCarta()}<div class="fila"><button class="btn sec" onclick="vista('jocs')">Torna als jocs</button></div>`;return}
+ const rondes=bossRondes(),max=rondes.reduce((a,r)=>a+r.dmg,0),hp=Math.round(max*.8);
+ BOSS={rondes,k:0,hp,hp0:hp,cors:3,enc:0,err:0,t0:Date.now(),fet:false};TQ=[];
+ app.innerHTML=`<div class="boss"><div class="boss-intro">${bossSpr("boss-spr gran")}<h2>${bossNom()}</h2><p>Té <b>${hp}</b> punts de vida. Tu tens <b style="white-space:nowrap">3 cors ❤️❤️❤️</b></p><p class="petit">Cada encert li treu vida. Cada error et treu un cor. ${rondes.length} rondes: test, jocs i una pregunta oberta.</p><button class="btn verd gran" id="bossGo">⚔️ Lluita!</button></div></div>`;
+ document.getElementById("bossGo").onclick=()=>{so("clic");bossPinta()}}
+function bossCap(){const B=BOSS,pc=Math.max(0,Math.round(B.hp*100/B.hp0));
+ return `<div class="boss-cap"><div class="boss-nom">${bossNom()}</div><div class="boss-hp" title="Vida del boss"><i style="width:${pc}%"></i><span>${Math.max(0,B.hp)} HP</span></div></div>
+ <div class="boss-esc"><div class="boss-spr-w" id="bossSprW">${bossSpr("boss-spr")}</div><div class="boss-cors" aria-label="${B.cors} cors">${"❤️".repeat(B.cors)}${"🤍".repeat(3-B.cors)}</div></div>
+ <div class="boss-ronda">Ronda ${B.k+1} de ${B.rondes.length}</div>`}
+function bossPinta(){const B=BOSS,r=B.rondes[B.k];window.scrollTo(0,0);TQ0=Date.now();
+ let cos="";
+ if(r.tipus==="test"){const ops=barreja(r.q[1].map((o,i)=>[o,i]));r.ops=ops;
+  cos=`${r.svg?`<div class="boss-fig">${r.svg}</div>`:""}<div class="prog">${r.q.tema||r.joc||"Repte"}</div><div class="pregunta">${r.q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt bo" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div>`}
+ else if(r.tipus==="ordena"){r.ok=0;r.fallat=false;const ix=barreja(r.items.map((x,i)=>i));
+  cos=`<div class="prog">⚡ Cop doble · ${r.j.titol}</div><div class="pregunta">${r.j.instr||"Toca'ls en ordre."}${r.j.base?` <small>(a sota: ${r.j.base})</small>`:""}</div><div class="bo-ord">${ix.map(i=>`<button class="opt bo-o" data-k="${i}" style="${r.items[i][2]?`background:${r.items[i][2]}`:""}"><b>${r.items[i][0]}</b>${r.items[i][1]?`<small>${r.items[i][1]}</small>`:""}</button>`).join("")}</div><div class="bo-fet" id="boFet"></div>`}
+ else{cos=`<div class="prog">⚡ Cop final · ${r.o.t}</div><div class="pregunta">${r.o.q}</div><textarea id="boResp" rows="5" placeholder="Explica-ho amb les teves paraules: cada idea clau li treu vida…"></textarea><div class="fila"><button class="btn" id="bossCop">Llança el cop ⚡</button></div>`}
+ app.innerHTML=`<div class="boss">${bossCap()}<div class="box boss-box">${cos}<div id="boFb"></div></div></div>`;
+ if(r.tipus==="test")app.querySelectorAll(".bo").forEach(b=>b.onclick=()=>{const ok=+b.dataset.i===r.q[2];anotaQ(r.q,ok,+b.dataset.i);
+   app.querySelectorAll(".bo").forEach(x=>{x.disabled=true;if(+x.dataset.i===r.q[2])x.classList.add("ok")});if(!ok)b.classList.add("ko");
+   if(r.q.tid){repAnota(r.q.tid,r.q[0],ok);if(!ok){const e=ET(r.q.tid);e.fallades[r.q[0]]=(e.fallades[r.q[0]]||0)+1;desa()}}
+   bossResol(ok,ok?r.dmg:0,(ok?"✅ <b>Cop!</b> ":"💥 <b>T'ha tocat!</b> ")+(r.q[3]||""))});
+ else if(r.tipus==="ordena")app.querySelectorAll(".bo-o").forEach(b=>b.onclick=()=>{if(b.disabled)return;const k=+b.dataset.k;
+   if(k===r.ok){b.disabled=true;b.classList.add("ok");b.style.order=-100+r.ok;r.ok++;document.getElementById("boFet").textContent=`${r.ok} de ${r.items.length}`;so("ok");
+    if(r.ok>=r.items.length)bossResol(!r.fallat,r.fallat?Math.round(r.dmg/2):r.dmg,r.fallat?"👍 <b>Ordenat!</b> Amb una errada: mig cop.":"⚡ <b>Cop doble!</b> Tot en ordre a la primera.",r.fallat)}
+   else{b.classList.add("ko");setTimeout(()=>b.classList.remove("ko"),500);so("ko");if(!r.fallat){r.fallat=true;bossDolor();
+    if(BOSS.cors<=0){app.querySelectorAll(".bo-o").forEach(x=>x.disabled=true);bossResol(false,0,"💥 <b>T'has quedat sense cors!</b>",true)}}}});
+ else document.getElementById("bossCop").onclick=()=>{const txt=document.getElementById("boResp").value.trim();
+   if(txt.length<15){document.getElementById("boFb").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de llançar el cop.</div>`;return}
+   document.getElementById("bossCop").disabled=true;document.getElementById("boResp").readOnly=true;
+   const det=r.o.p.filter(pt=>ideaDetectada(pt,txt)).length,tot=r.o.p.length,dmg=Math.round(r.dmg*det/Math.max(1,tot));
+   bossResol(det>0,dmg,`${det?`⚡ <b>${det} de ${tot} idees clau!</b>`:"🤔 <b>No hi he trobat cap idea clau.</b>"} <details style="margin-top:6px"><summary>👀 Resposta model</summary><p>${r.o.m}</p></details>`,true)}}
+// un error: perds un cor (només un per ronda)
+function bossDolor(){const B=BOSS;B.cors=Math.max(0,B.cors-1);B.err++;so("ko");const c=app.querySelector(".boss-cors");if(c){c.innerHTML="❤️".repeat(B.cors)+"🤍".repeat(3-B.cors);c.classList.remove("tremola");void c.offsetWidth;c.classList.add("tremola")}document.body.classList.add("boss-mal");setTimeout(()=>document.body.classList.remove("boss-mal"),350)}
+function bossResol(ok,dmg,txt,jaComptat){const B=BOSS;if(ok){B.enc++;missio("enc")}else if(!jaComptat)bossDolor();
+ if(dmg>0){B.hp-=dmg;so("super");const w=document.getElementById("bossSprW");if(w){w.classList.remove("cop");void w.offsetWidth;w.classList.add("cop");const d=document.createElement("b");d.className="boss-dmg";d.textContent="-"+dmg;w.appendChild(d)}
+  const h=app.querySelector(".boss-hp");if(h){h.querySelector("i").style.width=Math.max(0,Math.round(B.hp*100/B.hp0))+"%";h.querySelector("span").textContent=Math.max(0,B.hp)+" HP"}}
+ const fi=B.hp<=0||B.cors<=0||B.k>=B.rondes.length-1;
+ document.getElementById("boFb").innerHTML=`<div class="fb ${ok&&dmg>0?"ok":"ko"}">${txt}</div><div class="fila"><button class="btn" id="bossSeg">${fi?"Veure el resultat 🏁":"Següent ronda ▶"}</button></div>`;
+ document.getElementById("bossSeg").onclick=()=>{if(fi)return bossFi();B.k++;bossPinta()}}
+function bossFi(){const B=BOSS;if(!B||B.fet)return;B.fet=true;const guanya=B.hp<=0,n=B.enc+B.err,pc=n?Math.round(B.enc*100/n):0;window.scrollTo(0,0);
+ let premi=0;if(guanya){const e=diaEst();if(!e.boss){e.boss=1;premi=BOSS_ESTRELLES;const f=FONT;FONT=["boss"];suma(premi);FONT=f}S.boss=S.boss||{};S.boss.v=(S.boss.v||0)+1;S.boss.d=avui();S.boss.cors=Math.max(S.boss.cors||0,B.cors);desa();confeti();so("super")}else so("ko");
+ missio("jocs","boss");registra("joc",{joc:"boss",titol:bossNom(),pc,enc:B.enc,err:B.err,guanya:guanya?1:0,cors:B.cors,hp:Math.max(0,B.hp),s:segs(B.t0),q:TQ.slice()});
+ const fall=[...new Set(B.rondes.slice(0,B.k+1).filter((r,i)=>r.tipus==="test"&&r.q.tid&&TQ.some(x=>x.startsWith((r.q.id||"?")+":0"))).map(r=>r.q.tema))];
+ app.innerHTML=`<div class="boss"><div class="boss-intro" id="bossFi">${guanya?`${bossSpr("boss-spr gran ko")}<h2>🏆 HAS VENÇUT ${bossNom().toUpperCase()}!</h2><p>Amb ${B.cors} ${B.cors===1?"cor":"cors"} de sobres ${"❤️".repeat(B.cors)}</p><p class="petit">${premi?`+${premi} ⭐ de premi!`:"Avui ja l'havies vençut: aquesta vegada, sense estrelles."} Ja estàs a punt per a l'examen d'aquest tema 💪</p>`
+  :`${bossSpr("boss-spr gran riu")}<h2>${B.cors<=0?"T'HA GUANYAT AQUESTA VEGADA!":"S'HA ESCAPAT PER POC!"}</h2><p>${B.cors<=0?"T'has quedat sense cors.":`Li quedaven ${B.hp} punts de vida.`} Has encertat ${B.enc} de ${n}.</p>${fall.length?`<p class="petit">Abans de tornar-hi, repassa: <b>${fall.join(", ")}</b>. Els errors ja són al teu repàs 🔁</p>`:""}`}
+  <div class="fila" style="justify-content:center"><button class="btn${guanya?" sec":" verd"}" onclick="boss()">${guanya?"Torna a lluitar":"Torna-hi ⚔️"}</button>${!guanya&&repPendents().length?`<button class="btn" onclick="repas()">🔁 Repassa els errors</button>`:""}<button class="btn sec" onclick="vista('jocs')">Jocs</button></div></div></div>`;
+ setTimeout(mostraNivell,1200)}
+// prova automàtica (motor/prova.js): victòria (+10 ⭐ un sol cop al dia) i derrota (3 errors)
+async function bnProvaBoss(){const repAbans=JSON.stringify(S.rep||{}),bossAbans=JSON.stringify(S.boss||null),e=diaEst(),avuiAbans=e.boss,p0=S.punts;
+ const juga=be=>{let n=0;while(n++<60){if(document.getElementById("bossFi"))return true;const sg=document.getElementById("bossSeg");if(sg){sg.click();continue}
+  const r=BOSS.rondes[BOSS.k];
+  if(r.tipus==="test"){[...app.querySelectorAll(".bo")].find(o=>be?+o.dataset.i===r.q[2]:+o.dataset.i!==r.q[2]).click();continue}
+  if(r.tipus==="ordena"){if(!be){const mal=[...app.querySelectorAll(".bo-o")].find(o=>+o.dataset.k!==0);if(mal&&!r.fallat){mal.click();}}
+   for(let k=r.ok;k<r.items.length;k++)app.querySelector(`.bo-o[data-k="${k}"]`).click();continue}
+  document.getElementById("boResp").value=be?r.o.m+" "+r.o.p.join(". "):"No me'n recordo gens ni mica, la veritat.";document.getElementById("bossCop").click()}return false};
+ const mfAbans=JSON.stringify(e.mf||[]),mtAbans=e.mt;e.mf=missionsAvui().map(m=>m.id);e.mt=1;  // les missions, ja fetes: no han de sumar durant la prova
+ try{if(!bossEstat().obert)return "el boss hauria d'estar obert (tots els temes aprovats)";e.boss=0;
+  vista('jocs');if(!app.querySelector('.boss-carta'))return "no surt la targeta del boss a Jocs";
+  boss();document.getElementById("bossGo").click();if(!juga(true))return "el combat no s'acaba (victòria)";
+  if(BOSS.hp>0)return `amb tot encertat el boss hauria de caure (li queden ${BOSS.hp} HP)`;if(S.punts!==p0+BOSS_ESTRELLES)return `victòria: +${S.punts-p0} ⭐ i havien de ser +${BOSS_ESTRELLES}`;
+  if(!diaEst().boss||!S.boss||!S.boss.v)return "la victòria no ha quedat apuntada";
+  const p1=S.punts;boss();document.getElementById("bossGo").click();juga(true);if(S.punts!==p1)return "la 2a victòria del dia no hauria de donar estrelles";
+  boss();document.getElementById("bossGo").click();if(!juga(false))return "el combat no s'acaba (derrota)";
+  if(BOSS.cors!==0||BOSS.hp<=0)return `amb tot fallat hauria de perdre (cors ${BOSS.cors}, HP ${BOSS.hp})`;if(!/GUANYAT AQUESTA VEGADA/.test(app.textContent))return "no surt la pantalla de derrota";
+  await new Promise(r=>setTimeout(r,1500));return true
+ }finally{S.rep=JSON.parse(repAbans);const b=JSON.parse(bossAbans);if(b)S.boss=b;else delete S.boss;e.boss=avuiAbans;e.mf=JSON.parse(mfAbans);e.mt=mtAbans;desa();aturaSeg()}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaBoss");
 
 // ====================== 🎯 MISSIONS DEL DIA (Bona Nota 2.0) ======================
 // Cada dia, 3 missions curtes per món: les mateixes tot el dia (es trien amb el dia i el món) i es poden fer en uns 10 minuts.

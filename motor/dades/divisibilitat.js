@@ -307,6 +307,9 @@ function gbToca(b){const n=+b.dataset.n;if(!GB.j||b.classList.contains("ok")||b.
 // per a la prova automàtica (motor/prova.js): toca tots els primers
 function provaGarbell(j){jocGarbell(j);document.querySelectorAll(".gb").forEach(b=>{if(esPrimer(+b.dataset.n))gbToca(b)});return GB.j===null||"no ha acabat el garbell"}
 
+// 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
+ASSIG.boss={nom:"El Gegant Primer",spr:"monstre"};
+
 //@inclou eines/exercicis-mates.js
 //@inclou eines/manipulatius-mates.js
 //@inclou eines/quadern.js

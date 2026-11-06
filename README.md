@@ -45,6 +45,11 @@ La llista oficial de mons és `motor/mons.json`.
 - **🎯 Missions d'avui** (a l'inici de cada món): 3 missions curtes que es poden fer en uns 10 minuts (aprova un tema,
   encerta 10 preguntes, repassa errors, juga 2 jocs, fes un combo de ×5, una oberta o un examen). Són les mateixes tot el dia
   i surten del dia i del món. Cada missió feta: **+3 ⭐**; les 3: **+5 ⭐** més. Cada missió només premia un cop.
+- **👾 Boss del món** (a Jocs, i a l'inici quan està obert): el repte final abans de l'examen. S'obre quan has aprovat el 70 %
+  dels temes. 10 rondes amb contingut que ja és al món: preguntes de test de tots els temes, una de figura, una de parelles
+  o de classificar, una d'ordenar (cop doble) i una oberta (treu vida segons les idees clau). Cada error treu un cor (n'hi ha 3);
+  el boss té el 80 % de la vida que poden treure totes les rondes. Guanyar: **+10 ⭐** un cop al dia. Els errors van al repàs.
+  Cada món té el seu boss a les dades (`ASSIG.boss={nom, spr}`; monstres pixel art `monstre` i `borrasca` dins del motor).
 - **🛡️ Escut del combo:** si falles amb un combo de 3 o més, pots respondre una pregunta germana del mateix tema
   (una que el test no ha tret). Si l'encertes, continues amb la meitat del combo.
 - **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de

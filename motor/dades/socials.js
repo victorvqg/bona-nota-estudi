@@ -166,3 +166,6 @@ function svgClimo(){
  Tm.forEach((v,i)=>s+=`<circle class="fgP" style="animation-delay:${(.5+i*.07).toFixed(2)}s" cx="${x0+i*bw+bw/2}" cy="${yt(v)}" r="4" fill="#fff" stroke="#dc2626" stroke-width="2.2"/>`);
  return s+`<line x1="${x0}" x2="${x1}" y1="${y0}" y2="${y0}" stroke="#94a3b8" stroke-width="1.5"/><text x="${x0-30}" y="13" font-size="11" fill="#dc2626">°C</text><text x="${x1+2}" y="13" font-size="11" fill="#2563eb">mm</text><text x="${W/2}" y="${H-3}" font-size="12" text-anchor="middle" font-weight="700" fill="#334155">Climograma de Girona (valors aproximats)</text></svg>`;
 }
+
+// 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
+ASSIG.boss={nom:"La Gran Borrasca",spr:"borrasca"};

@@ -327,3 +327,6 @@ const OB=[
  {t:"El uso de la b",q:"Escribe cuatro reglas del uso de la b con dos ejemplos cada una. Explica por qué «aprobado» y «gobierno» se escriben con b aunque en catalán sean «aprovat» y «govern».",p:["Cuatro reglas correctas (tras m, bl/br, -aba, haber/deber..., -bir...)","Dos ejemplos de cada regla","Aprobado: familia de prueba/probar, con b","Gobierno: familia de gobernar, con b; el catalán no sirve de guía"],
   m:"Se escribe b después de m (cambio, ambulancia), delante de l y r (tabla, brazo), en el imperfecto de los verbos en -ar (cantaba, estábamos) y en los verbos en -bir menos hervir, servir y vivir (escribir, recibir). Aprobado va con b porque es de la familia de probar y prueba, y gobierno de la de gobernar. El catalán aquí nos engaña."}
 ];
+
+// 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
+ASSIG.boss={nom:"El Monstruo de las Faltas",spr:"monstre"};

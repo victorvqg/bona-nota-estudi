@@ -266,3 +266,6 @@ function svgFigura(){
  s+=`<text x="240" y="296" text-anchor="middle" font-size="10" fill="#64748b">Esquema: les mides i les distàncies no són reals.</text></svg>`;
  return s;
 }
+
+// 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
+ASSIG.boss={nom:"El Cometa Rebel",spr:"monstre"};
