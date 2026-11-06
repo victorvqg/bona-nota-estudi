@@ -42,6 +42,9 @@ La llista oficial de mons és `motor/mons.json`.
   i les **comarques fallades del MAPA** (On és? o la capital). Compten com a recordats si es fan sense errors ni pistes.
 - **💡 Pista als tests** (temes i repàs, no als exàmens): el 1r toc ensenya la idea clau del tema i el 2n treu una opció
   falsa. Aquella pregunta ja no dona estrella ni suma al combo (com la pista del Taller).
+- **🎯 Missions d'avui** (a l'inici de cada món): 3 missions curtes que es poden fer en uns 10 minuts (aprova un tema,
+  encerta 10 preguntes, repassa errors, juga 2 jocs, fes un combo de ×5, una oberta o un examen). Són les mateixes tot el dia
+  i surten del dia i del món. Cada missió feta: **+3 ⭐**; les 3: **+5 ⭐** més. Cada missió només premia un cop.
 - **🛡️ Escut del combo:** si falles amb un combo de 3 o més, pots respondre una pregunta germana del mateix tema
   (una que el test no ha tret). Si l'encertes, continues amb la meitat del combo.
 - **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de
@@ -69,7 +72,11 @@ La llista oficial de mons és `motor/mons.json`.
 
 - Podi, taula de classificació amb les estrelles de cada món, fletxes ▲▼ (llocs pujats o baixats des de l'última
   vegada), la teva posició («Et falten 13 ⭐ per atrapar…») i els premis de la colla.
-- Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell i 📈 Setmana. Compta els últims 120 dies.
+- Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell, 📈 Setmana i 🧠 **Remuntada** (errors apresos al repàs els últims 7 dies;
+  surt de la funció `bn_ranking_remuntada`, `supabase/bn_ranking_remuntada.sql`; sense la funció, la pestanya surt buida). Compta els últims 120 dies.
+- **Meta de la colla:** que 3 de cada 4 nens del rànquing (com a mínim 3) facin 30 ⭐ o més en 7 dies. Premia que hi participi
+  tothom. Quan s'aconsegueix, la festa del rànquing salta sola a cada aparell, un cop per setmana.
+- **Premis de la colla:** Màquina de la setmana, Cohet, Explorador de mons, Més constant i Remuntada de la setmana.
 - Les icones del rànquing són pixel art propi (`sprites.js`, sense emojis: es veuen iguals a tots els aparells) i cada món té una rajola amb el color de la seva assignatura; a la taula els mons van agrupats per assignatura i, en passar-hi per sobre, cada icona diu què és.
 - La classificació ocupa tota l'amplada i no s'estreny: si hi ha molts mons, es desplaça de costat i el nom queda enganxat a l'esquerra.
 - **Afegir un món al rànquing:** surt sol de la seva targeta a la portada (`data-id`, `.mat`, `h2`). Per donar-li dibuix i color, a `sprites.js` afegeix-lo a `BN_MON`

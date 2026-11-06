@@ -123,6 +123,16 @@ ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;heig
 .escut.obert .pregunta{font-size:17px;margin:6px 0 4px}
 .rep-llista{display:inline-block;text-align:left;margin:4px auto 6px;padding-left:22px;font-weight:700;line-height:1.6}
 .rep-apr{font-weight:800;color:#047857}
+/* 🎯 missions del dia */
+.missions{margin-top:14px;background:#fff;border:2px solid #c7d2fe;border-radius:16px;padding:12px 14px}
+.mi-cap{display:flex;justify-content:space-between;align-items:baseline;gap:4px 10px;flex-wrap:wrap}
+.mi-cap b{font-size:16.5px}.mi-cap small{color:var(--suau);font-weight:700;font-size:13px}
+.mi{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:var(--txt);background:#f8fafc;border:2px solid var(--vora);border-radius:12px;padding:9px 12px 11px;margin-top:7px;cursor:pointer}
+.mi:hover{border-color:#93c5fd}
+.mi-ic{font-size:22px;flex:none}.mi-t{flex:1;font-weight:800;font-size:15px;line-height:1.25}.mi-p{font-weight:900;font-size:13.5px;color:var(--suau);flex:none}
+.mi-b{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#60a5fa,#2563eb);border-radius:0 4px 4px 0;transition:width .4s}
+.mi.fet{background:var(--verd-cl);border-color:#86efac}.mi.fet .mi-p{color:#15803d}.mi.fet .mi-t{color:#166534}.mi.fet .mi-b{background:#22c55e}
+.combo.missio{color:#4ade80;text-shadow:3px 3px 0 #14532d,0 0 18px #86efac}
 .fb{margin-top:12px;padding:12px 14px;border-radius:14px;background:#eff6ff;border:2px solid #bfdbfe}
 .fb.ok{background:var(--verd-cl);border-color:#86efac}.fb.ko{background:#fff7ed;border-color:#fdba74}
 .barra-test{height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin:6px 0 4px}
@@ -1784,11 +1794,11 @@ function volaEstrella(n){try{
  setTimeout(()=>{d.remove();const pl=document.getElementById("punts");pl.classList.remove("boing");void pl.offsetWidth;pl.classList.add("boing");so("coin")},1130);
 }catch(e){}}
 // ratxa d'encerts seguits als tests: COMBO ×3, ×5 (+1 ⭐ de regal), ×10 (+2 ⭐)…
-function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;if(COMBO<3)return;
+function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO<3)return;
  const premi=COMBO%10===0?2:COMBO%5===0?1:0;
  const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
  document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
-const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"]];
+const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"]];
 // el resum d'estrelles només surt quan toques el comptador de dalt a la dreta
 // ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
 let COMP=null,COMPT=0;
@@ -2159,6 +2169,7 @@ function inici(){
  // joc destacat (opcional): ASSIG.destacat = id del joc → botó gran a l'inici
  {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd)h+=`<div class="continua" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(sp>=0)h+=`<div class="continua" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
+ h+=cartaMissions();
  h+=`${blocsTemes()}
  <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
  ${seccionsJocs()}
@@ -2217,7 +2228,7 @@ function test(ordre,k,bones,clau,pool,cb){
   ULT={mode:esTema?"tema":clau==="examen"?"sorpresa":clau==="repas"?"repas":"joc",bones,n:ordre.length,s:segs(TQT),q:TQ.slice()};if(TPIST)ULT.pistes=TPIST;
   if(cb){cb(pc,bones,ordre.length);return}
   const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",Object.assign({tema:tema.id,titol:tema.titol,pc},ULT));ULT=null;
-  const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=APROVA;
+  const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=APROVA;if(aprova)missio("aprova");
   const rec=ant!==null&&pc>ant;if(rec){const f=FONT;FONT=["record"];suma(2);FONT=f}
   if(aprova)arcade(pc,bones,ordre.length,rec);else fracas(pc,bones,ordre.length);
   const msg=pc>=90?"Excel·lent!":pc>=APROVA?"Tema superat!":pc>=50?`Gairebé! Per passar de tema cal un ${APROVA} %`:"Cal repassar més, ànims!";
@@ -2250,7 +2261,7 @@ function test(ordre,k,bones,clau,pool,cb){
   const tidR=q.tid||(esTema?tema.id:null);if(tidR&&!(ok&&pista))repAnota(tidR,q[0],ok);
   if(ok&&pista&&REPAS&&tidR){const r=S.rep&&S.rep[tidR+"|"+q[0]];if(r){r.prox=diaMes(1);desa()}}
   const comboAbans=COMBO;
-  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista)ratxa(true)}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){ratxa(true);missio("enc")}}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
   document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
@@ -2270,12 +2281,12 @@ function escutCombo(th,usats,salva,tidR){const cands=th.q.filter(x=>!usats.inclu
    else{b.classList.add("ko");so("ko");if(tidR)repAnota(tidR,m[0],false)}
    document.getElementById("escutFb").innerHTML=`<div class="fb ${okG?"ok":"ko"}">${okG?"🛡️ <b>Combo salvat!</b>":"💡 <b>Aquesta tampoc.</b> El combo torna a començar."} ${m[3]}</div>`})}}
 function valora(i,b){ET(tema.id).valoracio=i;desa();registra("valora",{tema:tema.id,titol:tema.titol,v:["Costa","Bé","Fàcil"][i]});b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
-function resultatJoc(id,titol){return (pc,b,n)=>{const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
+function resultatJoc(id,titol){return (pc,b,n)=>{if(id!=="examen")missio("jocs",id);const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
 function examen(){
  const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=cpQ(q);c.tema=t.titol;c.tid=t.id;pool.push(c)}));
  const ordre=barreja(pool.map((x,i)=>i)).slice(0,15);
  app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
- test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});resultatJoc("examen")(pc,b,n)});
+ test(ordre,0,0,"examen",pool,(pc,b,n)=>{S.examens.push({d:avui(),pc});missio("exam");resultatJoc("examen")(pc,b,n)});
 }
 
 // ====================== ESCOLTA (lectura en veu alta) ======================
@@ -2474,7 +2485,7 @@ function pintaExR(){const e=EXR,q=e.qs[e.k],n=e.qs.length;calla();
  const f=document.getElementById("exFi");if(f)f.onclick=()=>{const falten=n-Object.keys(e.r).length;
   if(falten&&!f.dataset.ok){f.dataset.ok=1;f.textContent=`Et falten ${falten}. Lliura igualment ✔`;return}fiExamenReal(false)};
  if(e.fi){const el=document.getElementById("exRel");if(el){const s=Math.max(0,Math.round((e.fi-Date.now())/1000));el.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`}}}
-function fiExamenReal(perTemps){const e=EXR;if(!e||e.acabat)return;e.acabat=1;if(e.t)clearInterval(e.t);calla();
+function fiExamenReal(perTemps){const e=EXR;if(!e||e.acabat)return;e.acabat=1;missio("exam");if(e.t)clearInterval(e.t);calla();
  let b=0,nova=0;const n=e.qs.length;
  e.qs.forEach((q,k)=>{const ok=e.r[k]===q[2];if(ok){b++;nova+=estPregunta(q.tid+"|"+q[0])}repAnota(q.tid,q[0],ok);if(!ok){const x=ET(q.tid);x.fallades[q[0]]=(x.fallades[q[0]]||0)+1}});
  const f=FONT;FONT=["examen"];suma(nova);FONT=f;
@@ -2512,6 +2523,53 @@ async function bnProvaFase1(){const espera=ms=>new Promise(r=>setTimeout(r,ms)),
  }finally{REPAS=false;COMBO=0;S.rep=JSON.parse(repAbans);S.apresos=apAbans;desa();aturaSeg()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaFase1");
 
+// ====================== 🎯 MISSIONS DEL DIA (Bona Nota 2.0) ======================
+// Cada dia, 3 missions curtes per món: les mateixes tot el dia (es trien amb el dia i el món) i es poden fer en uns 10 minuts.
+// Es compten amb el que el motor ja sap: temes aprovats, encerts, repàs, jocs, combo, obertes i exàmens.
+// Cada missió feta: +3 ⭐ (font «missio»); les 3: +5 ⭐ més (màxim 14 ⭐ al dia per món). Una missió només premia un cop.
+const MIS_PREMI=3,MIS_TOTES=5;
+const MISSIONS=[
+ {id:"aprova",ic:"✅",t:()=>"Aprova el test d'un tema",n:()=>1,anar:"tema"},
+ {id:"enc",ic:"🎯",t:n=>`Encerta ${n} preguntes`,n:()=>10,anar:"tema"},
+ {id:"rep",ic:"🔁",t:n=>`Repassa ${n} error${n>1?"s":""}`,n:()=>Math.min(3,repPendents().length),pot:()=>repPendents().length>0,anar:"repas"},
+ {id:"jocs",ic:"🎮",t:n=>`Juga ${n} jocs diferents`,n:()=>2,pot:()=>(ASSIG.jocs||[]).length>=2,anar:"jocs"},
+ {id:"combo",ic:"🔥",t:n=>`Fes un combo de ×${n}`,n:()=>5,anar:"tema"},
+ {id:"ob",ic:"✍️",t:()=>"Respon una pregunta oberta",n:()=>1,pot:()=>OB.length>0,anar:"obertes"},
+ {id:"exam",ic:"🏆",t:()=>"Fes un examen (sorpresa o de veritat)",n:()=>1,anar:"examen"}];
+function missionsAvui(){const e=diaEst();
+ if(!e.mis){let h=7;for(const c of avui()+"|"+ASSIG.id)h=(h*31+c.charCodeAt(0))>>>0;  // llavor: el dia i el món
+  const ord=MISSIONS.filter(m=>!m.pot||m.pot()).map(m=>{h=(Math.imul(h,1103515245)+12345)>>>0;return [h,m]}).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  e.mis=ord.slice(0,3).map(m=>({id:m.id,n:m.n()}))}
+ return e.mis.map(x=>{const m=MISSIONS.find(y=>y.id===x.id);return m?Object.assign({},m,{n:x.n}):null}).filter(Boolean)}
+function misValor(id){const c=diaEst().mc||{};return id==="jocs"?(c.jocs||[]).length:(c[id]||0)}
+function missio(k,v){if(!S||!S.nom)return;const e=diaEst();e.mc=e.mc||{};
+ if(k==="jocs"){const l=e.mc.jocs||(e.mc.jocs=[]);if(!l.includes(v))l.push(v)}else if(k==="combo")e.mc.combo=Math.max(e.mc.combo||0,v||0);else e.mc[k]=(e.mc[k]||0)+(v||1);
+ revisaMissions()}
+function retolMissio(txt,sub,ret){setTimeout(()=>{const d=document.createElement("div");d.className="combo missio";d.innerHTML=`${txt}<small>${sub}</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1600);so("super")},ret)}
+function revisaMissions(){const e=diaEst(),ms=missionsAvui();e.mf=e.mf||[];let nou=0;
+ ms.forEach(m=>{if(e.mf.includes(m.id)||misValor(m.id)<m.n)return;e.mf.push(m.id);nou++;const f=FONT;FONT=["missio"];suma(MIS_PREMI);FONT=f;retolMissio("🎯 MISSIÓ FETA!",`+${MIS_PREMI} ⭐`,900+nou*1700)});
+ if(ms.length&&ms.every(m=>e.mf.includes(m.id))&&!e.mt){e.mt=1;nou++;const f=FONT;FONT=["missio"];suma(MIS_TOTES);FONT=f;retolMissio("🎉 LES 3 MISSIONS!",`+${MIS_TOTES} ⭐ DE REGAL`,900+nou*1700)}
+ desa();const c=document.getElementById("missions");if(c)c.outerHTML=cartaMissions()}
+function cartaMissions(){if(!S.nom)return "";const ms=missionsAvui();if(!ms.length)return "";const mf=diaEst().mf||[],fetes=ms.filter(m=>mf.includes(m.id)).length;
+ return `<div class="missions" id="missions"><div class="mi-cap"><b>🎯 Missions d'avui</b><small>${fetes===ms.length?`🎉 Totes fetes! +${MIS_PREMI*ms.length+MIS_TOTES} ⭐`:`${fetes} de ${ms.length} · +${MIS_PREMI} ⭐ cada una · les ${ms.length}: +${MIS_TOTES} ⭐ més`}</small></div>${ms.map(m=>{const fet=mf.includes(m.id),v=Math.min(misValor(m.id),m.n);
+  return `<button class="mi${fet?" fet":""}" type="button" onclick="misAnar('${m.anar}')"><span class="mi-ic">${m.ic}</span><span class="mi-t">${m.t(m.n)}</span><span class="mi-p">${fet?"✔ FETA":`${v}/${m.n}`}</span><i class="mi-b" style="width:${Math.round(v*100/Math.max(1,m.n))}%"></i></button>`}).join("")}</div>`}
+function misAnar(a){if(a==="repas")return repas();if(a==="jocs")return vista("jocs");if(a==="obertes")return vista("obertes");if(a==="examen")return joc("examen");const sp=seguentPendent();obre(sp>=0?sp:(S.ultim||0))}
+// prova automàtica (motor/prova.js): premis de les missions (un cop cada una), targeta i tria estable del dia
+async function bnProvaMissions(){const estAbans=JSON.stringify(S.est||null),p0=S.punts;
+ try{const e=diaEst();e.mis=[{id:"enc",n:2},{id:"combo",n:3},{id:"exam",n:1}];e.mc={};e.mf=[];e.mt=0;
+  vista('inici');if(!document.getElementById('missions'))return "no surt la targeta de missions";
+  missio("enc");if(e.mf.length)return "una missió s'ha donat per feta abans d'hora";missio("enc");
+  if(!e.mf.includes("enc")||S.punts!==p0+3)return `missió feta: hauria de sumar +3 ⭐ (${S.punts-p0})`;
+  missio("combo",3);missio("exam");if(e.mf.length!==3||!e.mt)return "les 3 missions no han quedat fetes";
+  if(S.punts!==p0+3*MIS_PREMI+MIS_TOTES)return `les 3: +${S.punts-p0} ⭐ i havien de ser +${3*MIS_PREMI+MIS_TOTES}`;
+  missio("exam");missio("enc");if(S.punts!==p0+3*MIS_PREMI+MIS_TOTES)return "una missió feta ha tornat a donar estrelles";
+  if(!/Totes fetes/.test(document.getElementById('missions').textContent))return "la targeta no s'actualitza";
+  delete e.mis;const a=JSON.stringify(missionsAvui().map(m=>m.id));delete e.mis;const b=JSON.stringify(missionsAvui().map(m=>m.id));
+  if(a!==b||missionsAvui().length!==3)return "la tria de missions del dia no és estable";
+  await new Promise(r=>setTimeout(r,4500));return true
+ }finally{const x=JSON.parse(estAbans);if(x)S.est=x;else delete S.est;desa();vista('inici')}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaMissions");
+
 // ====================== REPÀS ESPAIAT DELS ERRORS ======================
 // Cada pregunta fallada entra a la capsa 0 (es pot repassar avui mateix).
 // Al repàs: encert → capsa 1 (torna d'aquí a 3 dies) → capsa 2 (d'aquí a 7) → après i surt. Error → capsa 0, torna demà.
@@ -2547,11 +2605,11 @@ function repas(){
  REPAS=true;REPAPR=0;const R={b:0,n:0,ult:null,ext:[]};
  const part=i=>{if(i>=ext.length)return repFi(R);const [t,its]=ext[i],x=REP_TIPUS[t];window.scrollTo(0,0);
   app.innerHTML=`${cap}<div class="box" style="text-align:center"><div class="gran">${x.ic||"🔁"}</div><h3>${x.titol||"Ara, uns quants errors més"}</h3><ul class="rep-llista">${its.map(r=>`<li>${x.nom(r)}</li>`).join("")}</ul>${x.peu?`<p class="prog">${x.peu}</p>`:""}<div class="fila"><button class="btn verd" id="repSeg">Som-hi ▶</button></div></div><div id="zona"></div>`;
-  document.getElementById("repSeg").onclick=()=>x.juga(its,oks=>{if(!REPAS)return;its.forEach((r,k)=>repMou(t+"|"+r.clau,{},!!oks[k]));const b=its.filter((r,k)=>oks[k]).length;R.b+=b;R.n+=its.length;R.ext.push(`${t}:${b}/${its.length}`);part(i+1)})};
+  document.getElementById("repSeg").onclick=()=>x.juga(its,oks=>{if(!REPAS)return;its.forEach((r,k)=>repMou(t+"|"+r.clau,{},!!oks[k]));const b=its.filter((r,k)=>oks[k]).length;missio("rep",its.length);R.b+=b;R.n+=its.length;R.ext.push(`${t}:${b}/${its.length}`);part(i+1)})};
  if(!pq.length)return part(0);
  const pool=pq.map(r=>{const t=T.find(x=>x.id===r.tid),q=cpQ(t.q.find(x=>x[0]===r.q));q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
  app.innerHTML=`${cap}<p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Si l'encertes, tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après (+2 ⭐)! 🧠</p><div id="zona"></div>`;
- test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{R.b+=b;R.n+=n;R.ult=ULT;ULT=null;part(0)});
+ test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{missio("rep",n);R.b+=b;R.n+=n;R.ult=ULT;ULT=null;part(0)});
 }
 function repFi(R){REPAS=false;const pc=R.n?Math.round(R.b*100/R.n):0,b=R.b,n=R.n;
  registra("joc",Object.assign({joc:"repas",titol:"Repàs dels errors",pc},R.ult||{},REPAPR?{apr:REPAPR}:{},R.ext.length?{ext:R.ext.join(",")}:{}));arcade(pc,b,n,false);
@@ -2565,7 +2623,7 @@ function cartaRepas(){const p=repPendents(),n=p.length,tot=repTots().length;if(!
 
 // ====================== JOCS GENÈRICS ======================
 // tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
-function fiJoc(j,n,errors,extra){ULT=Object.assign({enc:n,err:errors},extra||{});diaEst().j[j.id]=1;const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
+function fiJoc(j,n,errors,extra){missio("jocs",j.id);ULT=Object.assign({enc:n,err:errors},extra||{});diaEst().j[j.id]=1;const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
  document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila">${(()=>{const s=j.seg&&ASSIG.jocs.find(x=>x.id===j.seg);return s?`<button class="btn" onclick="joc('${s.id}')">${s.ic} Ara tu: ${s.titol} ▶</button>`:""})()}<button class="btn${j.seg?" sec":""}" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
 function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
 function jocOrdena(j){
@@ -2625,7 +2683,7 @@ function obertes(n){OB0=Date.now();
   document.getElementById("nota").onclick=()=>{
    const txtR=document.getElementById("resp").value,cks=[...document.querySelectorAll(".pk")],k=cks.filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
    const det=o.p.filter((pt,i)=>cks[i].checked&&ideaDetectada(pt,txtR)).length,primera=!diaEst().o[n];diaEst().o[n]=1;
-   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(primera?det:0);registra("oberta",{n,tema:o.t,pc,s:segs(OB0),idees:k,de:tot,det,falten:o.p.map((x,i)=>cks[i].checked?null:i).filter(x=>x!==null)});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
+   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(primera?det:0);missio("ob");registra("oberta",{n,tema:o.t,pc,s:segs(OB0),idees:k,de:tot,det,falten:o.p.map((x,i)=>cks[i].checked?null:i).filter(x=>x!==null)});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
    const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
    document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> marcades · n'he trobat <b>${det}</b> escrites al teu text${primera?` → +${det} ⭐`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>A l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
   };
