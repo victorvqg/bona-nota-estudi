@@ -6,8 +6,8 @@
 const fs=require("fs"),path=require("path");
 const src=fs.readFileSync(path.join(__dirname,"eines/exercicis-mates.js"),"utf8");
 // el fitxer només toca el navegador dins de funcions: n'hi ha prou amb un parell d'objectes buits
-const ctx=new Function("document","window",src+";return {MXG,MXE,mxBo,mxMsg,mxFactors,mxMCD,mxMCM,mxVal}")({getElementById:()=>null},{});
-const {MXG,MXE,mxBo,mxMsg,mxMCD}=ctx;
+const ctx=new Function("document","window",src+";return {MXG,MXE,mxBo,mxMsg,mxFactors,mxMCD,mxMCM,mxVal,mxN}")({getElementById:()=>null},{});
+const {MXG,MXE,mxBo,mxMsg,mxMCD,mxN}=ctx;
 const N=+process.env.N||300,errs=[];let passos=0,exercicis=0;
 const err=(g,nv,m,E)=>{if(errs.length<40)errs.push(`${g} (nivell ${nv}): ${m}${E?" · "+String(E.enun).replace(/<[^>]+>/g,"").slice(0,80):""}`)};
 const dolentes=P=>P.t==="tria"?P.op.map((_,i)=>i).filter(i=>i!==P.r):P.t==="num"?[P.r+1,Math.max(0,P.r-1),P.r*2+3].filter(v=>v!==P.r):
@@ -38,9 +38,25 @@ for(const [g,arg] of variants)for(const nv of [1,2,3])for(let k=0;k<N;k++){
  if(c.tipus==="equacio"){if(c.a*c.x+c.b!==c.c*c.x+c.e)err(g,nv,`equació: x = ${c.x} no la compleix`,E);if(E.passos[E.passos.length-1].r!==c.x)err(g,nv,"l'últim pas no és la x",E)}
 }
 // Troba l'error
-let errorsEx=0;for(const [t,f] of Object.entries(MXE))for(let k=0;k<N;k++){let E;try{E=f()}catch(e){err("error:"+t,"-","peta: "+e.message);continue}errorsEx++;
- if(typeof E.enun!=="string"||!Array.isArray(E.linies)||E.linies.length<2||!(E.mal>=0&&E.mal<E.linies.length)||!Array.isArray(E.per)||E.per.length!==3||new Set(E.per).size!==3||typeof E.bona!=="string"||!E.pista)err("error:"+t,"-","estructura incorrecta",E);
- if(E.linies.some(l=>typeof l!=="string"||!l.trim()||/undefined|NaN/.test(l))||/undefined|NaN/.test(E.bona+E.per.join("")+E.enun))err("error:"+t,"-","text amb undefined/NaN: "+E.linies.join(" / "),E)}
-console.log(`generadors: ${exercicis} exercicis · ${passos} passos · Troba l'error: ${errorsEx} exemples`);
+let errorsEx=0,per0Long=0;for(const [t,f] of Object.entries(MXE)){
+ const posCnt={};
+ for(let k=0;k<N;k++){let E;try{E=f()}catch(e){err("error:"+t,"-","peta: "+e.message);continue}errorsEx++;
+  if(typeof E.enun!=="string"||!Array.isArray(E.linies)||E.linies.length<2||!(E.mal>=0&&E.mal<E.linies.length)||!Array.isArray(E.per)||E.per.length!==3||new Set(E.per).size!==3||typeof E.bona!=="string"||!E.pista)err("error:"+t,"-","estructura incorrecta",E);
+  if(E.linies.some(l=>typeof l!=="string"||!l.trim()||/undefined|NaN/.test(l))||/undefined|NaN/.test(E.bona+E.per.join("")+E.enun))err("error:"+t,"-","text amb undefined/NaN: "+E.linies.join(" / "),E);
+  if(E.r===undefined||E.r===null||!["num","tria","llista"].includes(E.t)||typeof E.q!=="string"){err("error:"+t,"-","falta pas 3 (r, t, q)",E);continue}
+  if(!mxBo(E,E.r))err("error:"+t,"-","E.r no passa mxBo(E, E.r)",E);
+  const rTxt=E.t==="tria"?E.op[E.r]:E.t==="llista"?E.r.join(", "):String(E.r),rTxtFmt=E.t==="num"?mxN(E.r):rTxt;
+  const bonaPlain=E.bona.replace(/<[^>]+>/g,"");
+  if(!bonaPlain.includes(rTxt)&&!bonaPlain.includes(rTxtFmt))err("error:"+t,`-`,`E.bona no conté la resposta correcta (${rTxt})`,E);
+  posCnt[E.mal]=(posCnt[E.mal]||0)+1;
+  const L0=E.per[0].length,L1=E.per[1].length,L2=E.per[2].length;
+  if(L0>L1&&L0>L2)per0Long++}
+ const keys=Object.keys(posCnt);
+ if(keys.length<3)err("error:"+t,"-","mal té menys de 3 posicions diferents: "+JSON.stringify(posCnt));
+ for(const [p,c] of Object.entries(posCnt))if(c/N>0.5)err("error:"+t,`-`,`posició mal=${p} massa freqüent (${Math.round(c/N*100)}% > 50%)`);
+}
+const pctLong=per0Long/errorsEx;
+if(pctLong<0.25||pctLong>0.35)err("error:per","-","per[0] és la més llarga el "+(pctLong*100).toFixed(1)+"% dels cops (fora del rang 25%–35%)");
+console.log(`generadors: ${exercicis} exercicis · ${passos} passos · Troba l'error: ${errorsEx} exemples (per[0] més llarga: ${(pctLong*100).toFixed(1)}%)`);
 console.log(errs.length?"ERRORS:\n- "+errs.join("\n- "):"errors: cap");
 process.exit(errs.length?1:0);

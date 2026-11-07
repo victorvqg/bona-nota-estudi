@@ -1238,7 +1238,7 @@ function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">$
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
  JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
  return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
-function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
  if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}

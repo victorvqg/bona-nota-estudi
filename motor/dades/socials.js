@@ -21,7 +21,130 @@ const ASSIG={
    enunciat:"🗂️ Temps o clima?",instr:"Toca una frase i després la caixa on va.",
    caixes:[["temps","🌦️ TEMPS · avui, un moment"],["clima","🪪 CLIMA · sempre, uns 30 anys"]],
    items:[["Avui a París plou i fa fred","temps"],["El clima de París és calorós i sec a l'estiu","clima"],["Demà nevarà al Pirineu","temps"],["A Igualada els hiverns són freds i amb boira","clima"],["Aquesta tarda hi ha tempesta a Girona","temps"],["A l'equador plou molt tot l'any","clima"],["Ara mateix bufa la tramuntana","temps"],["A la costa les temperatures són suaus tot l'any","clima"]],
-   final:"Temps = tiquet d'un dia; clima = carnet d'identitat."}
+   final:"Temps = tiquet d'un dia; clima = carnet d'identitat."},
+  {id:"err-clima",tipus:"error",ic:"🔍",titol:"Troba l'error al climograma",sub:"5 exercicis amb trampa",col:"#fee2e2",
+   enunciat:"🔍 Troba l'error al climograma i les dades del clima",
+   exercicis:[
+    {id:"climo-gaussen",nom:"en Pol",figura:"svgClimo",
+     enun:"Comenta el climograma de Girona (temperatura, amplitud tèrmica, precipitació i mesos secs).",
+     linies:[
+      "1. Mes més càlid: juliol i agost (24 °C). Mes més fred: gener i desembre (8 °C).",
+      "2. Amplitud tèrmica: 24 − 8 = 16 °C (amplitud moderada).",
+      "3. Precipitació total: 667 mm l'any, amb el màxim a l'octubre (112 mm).",
+      "4. Mesos secs: cap, perquè tots els mesos plou més de 20 mm.",
+      "5. Conclusió: és un clima mediterrani litoral."
+     ],
+     mal:3,
+     per:[
+      "Al juliol la barra de pluja queda sota la línia de temperatura (P < 2 · T): sí que és un mes sec",
+      "El mes més plujós no és l'octubre sinó el gener, perquè la línia vermella és més baixa",
+      "L'amplitud tèrmica es calcula sumant la temperatura màxima i la mínima (24 + 8 = 32 °C)"
+     ],
+     t:"tria",q:"Per què el juliol (24 °C i 25 mm) és un <b>mes sec</b> al climograma?",
+     op:["Perquè la barra de pluja queda sota la línia vermella (25 mm < 2 · 24 = 48)","Perquè 25 mm és més gran que 24 °C","Perquè a l'estiu no plou mai cap litre"],r:0,
+     pista:"Mira al gràfic si al juliol la barra blava queda per sota de la línia vermella.",
+     pistaR:"Regla de Gaussen: un mes és sec quan P < 2 · T (al gràfic, la barra queda sota la línia).",
+     llibreta:[
+      "1. Mes més càlid: juliol i agost (24 °C). Mes més fred: gener i desembre (8 °C).",
+      "2. Amplitud tèrmica: 24 − 8 = 16 °C (amplitud moderada).",
+      "3. Precipitació total: 667 mm l'any, amb el màxim a l'octubre (112 mm).",
+      "4. Mesos secs: <b>el juliol és un mes sec (P = 25 mm < 2 · T = 48, la barra queda sota la línia)</b>.",
+      "5. Conclusió: és un clima mediterrani litoral amb sequera estival."
+     ],ok:[3,4]},
+    {id:"amplitud-neg",nom:"la Berta",
+     enun:"Calcula l'amplitud tèrmica anual d'una estació d'alta muntanya amb T mín = −3 °C (gener) i T màx = 25 °C (juliol).",
+     linies:[
+      "Dades: mes més càlid = 25 °C (juliol); mes més fred = −3 °C (gener).",
+      "Fórmula: Amplitud tèrmica = T màxima − T mínima.",
+      "Càlcul: 25 − 3 = 22 °C.",
+      "Resposta: l'amplitud tèrmica és de 22 °C."
+     ],
+     mal:2,
+     per:[
+      "De −3 °C a 0 °C hi ha 3 graus i fins a 25 °C n'hi ha 25 més: 25 − (−3) = 25 + 3 = 28 °C",
+      "L'amplitud tèrmica s'ha de calcular dividint 25 entre 3",
+      "Quan hi ha temperatures negatives no es pot calcular l'amplitud tèrmica"
+     ],
+     t:"num",q:"Quants graus d'<b>amplitud tèrmica</b> hi ha realment entre −3 °C i 25 °C?",r:28,
+     pista:"Pensa en el termòmetre: per pujar de −3 °C a 0 °C ja puges 3 graus, i després 25 graus més.",
+     pistaR:"Fes 25 + 3 = 28 °C.",
+     llibreta:[
+      "Dades: mes més càlid = 25 °C (juliol); mes més fred = −3 °C (gener).",
+      "Fórmula: Amplitud tèrmica = T màxima − T mínima.",
+      "Càlcul: 25 − (−3) = 25 + 3 = <b>28 °C</b>.",
+      "Resposta: l'amplitud tèrmica anual és de <b>28 °C</b>."
+     ],ok:[2,3]},
+    {id:"amplitud-mitjana",nom:"en Marc",
+     enun:"En una ciutat, el mes més càlid té 26 °C i el mes més fred té 10 °C. Calcula l'amplitud tèrmica anual.",
+     linies:[
+      "Dades: T del mes més càlid = 26 °C; T del mes més fred = 10 °C.",
+      "Per trobar l'amplitud tèrmica faig la mitjana dels dos valors: (26 + 10) : 2 = 18 °C.",
+      "Resposta: l'amplitud tèrmica és de 18 °C."
+     ],
+     mal:1,
+     per:[
+      "Ha confós l'amplitud tèrmica amb la mitjana: l'amplitud és la resta entre la màxima i la mínima (26 − 10)",
+      "Per fer la mitjana s'havien de multiplicar 26 · 10",
+      "L'amplitud tèrmica és sempre la temperatura del mes més càlid (26 °C)"
+     ],
+     t:"num",q:"Quant val l'<b>amplitud tèrmica</b> (en °C) si el mes més càlid té 26 °C i el més fred 10 °C?",r:16,
+     pista:"Recorda la definició d'amplitud tèrmica: la diferència entre el mes més càlid i el més fred.",
+     pistaR:"Resta 26 − 10 = 16 °C.",
+     llibreta:[
+      "Dades: T del mes més càlid = 26 °C; T del mes més fred = 10 °C.",
+      "Amplitud tèrmica = T màxima − T mínima = 26 − 10 = <b>16 °C</b>.",
+      "Resposta: l'amplitud tèrmica és de <b>16 °C</b>."
+     ],ok:[1,2]},
+    {id:"unitats-aparells",nom:"la Júlia",
+     enun:"Escriu les dades meteorològiques recollides avui a l'estació d'Igualada amb el seu aparell i unitat.",
+     linies:[
+      "Temperatura: 18 °C (mesurada amb el termòmetre).",
+      "Humitat de l'aire: 65 % (mesurada amb l'higròmetre).",
+      "Precipitació recollida: 14 hPa d'aigua (mesurada amb el pluviòmetre).",
+      "Velocitat del vent: 25 km/h (mesurada amb l'anemòmetre)."
+     ],
+     mal:2,
+     per:[
+      "La pluja del pluviòmetre es mesura en mm (o L/m²); els hPa són la unitat de la pressió atmosfèrica",
+      "El pluviòmetre serveix per mesurar la direcció del vent i no pas la pluja",
+      "La temperatura del termòmetre s'ha d'escriure en km/h"
+     ],
+     t:"tria",q:"En quina <b>unitat</b> es mesura la precipitació recollida pel pluviòmetre?",
+     op:["En mil·límetres (mm) o litres per metre quadrat (L/m²)","En hectopascals (hPa)","En graus Celsius (°C)"],r:0,
+     pista:"Revisa les unitats de cada aparell meteorològic.",
+     pistaR:"La pluja es mesura en mm (1 mm = 1 L/m²); els hPa són del baròmetre.",
+     llibreta:[
+      "Temperatura: 18 °C (mesurada amb el termòmetre).",
+      "Humitat de l'aire: 65 % (mesurada amb l'higròmetre).",
+      "Precipitació recollida: <b>14 mm (o 14 L/m²) d'aigua</b> (mesurada amb el pluviòmetre).",
+      "Velocitat del vent: 25 km/h (mesurada amb l'anemòmetre)."
+     ],ok:[2]},
+    {id:"gaussen-reves",nom:"l'Àlex",
+     enun:"Al juny, en un poble mediterrani, la temperatura mitjana és T = 20 °C i la precipitació és P = 30 mm. És un mes sec?",
+     linies:[
+      "Dades del juny: T = 20 °C i P = 30 mm.",
+      "Aplico la regla de Gaussen: calculo el doble de la temperatura → 2 · 20 = 40.",
+      "Com que 40 és més gran que 30, al juny plou molt i NO és un mes sec.",
+      "Per tant, el juny és un mes humit."
+     ],
+     mal:2,
+     per:[
+      "Ha aplicat la regla al revés: com que la pluja (30 mm) és més petita que 2 · T (40), SÍ que és un mes sec",
+      "S'havia de multiplicar la pluja per 2 (2 · 30 = 60) en lloc de la temperatura",
+      "Un mes només és sec si la precipitació és exactament 0 mm"
+     ],
+     t:"tria",q:"Si T = 20 °C i P = 30 mm, com és el mes de juny segons la regla de Gaussen (P < 2 · T)?",
+     op:["És un mes sec, perquè P (30 mm) és més petit que 2 · T (40)","És un mes humit, perquè 2 · T (40) és més gran que 30","No es pot saber sense la pressió atmosfèrica"],r:0,
+     pista:"Recorda: hi ha sequera (mes sec) quan la pluja P no arriba al doble de la temperatura (2 · T).",
+     pistaR:"P = 30 mm és menys que 2 · T = 40 → és un mes sec.",
+     llibreta:[
+      "Dades del juny: T = 20 °C i P = 30 mm.",
+      "Regla de Gaussen: comparem la pluja P amb el doble de la temperatura (2 · T = 2 · 20 = 40).",
+      "Com que <b>P = 30 mm < 40 (2 · T)</b>, la barra queda sota la línia.",
+      "Resposta: el juny <b>SÍ que és un mes sec</b>."
+     ],ok:[2,3]}
+   ],
+   final:"Ja domines les trampes clàssiques dels climogrames i les dades del clima!"}
  ]
 };
 

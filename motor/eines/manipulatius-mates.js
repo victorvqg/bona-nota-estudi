@@ -61,13 +61,13 @@ function mpRectPinta(){const R=MP.rondes[MP.r],{n,files}=R,q=Math.floor(n/files)
  <div style="text-align:center"><div class="mp-quad${sob?"":" ok"}" style="--q:${mida}px;grid-template-columns:repeat(${q},var(--q))">${"<i></i>".repeat(q*files)}</div>
  ${sob?`<div class="mp-sob" style="--q:${mida}px">${"<i></i>".repeat(sob)}</div>`:""}</div>
  <div class="fb ${sob?"":"ok"}">${sob?`❌ ${files} files de ${q} i en sobren <b>${sob}</b>: ${n} : ${files} no és exacta → ${files} <b>no</b> és divisor de ${n}.`:`✅ ${files} files de ${q}: ${files} · ${q} = ${n} → <b>${files}</b> i <b>${q}</b> són divisors de ${n}.`}</div>
- <p style="margin:10px 0 2px"><b>Rectangles trobats:</b> ${fets.length} de ${parells.length}</p><div class="mp-xips">${fets.map(d=>`<span>${d} × ${n/d}</span>`).join("")||"<small class='prog'>encara cap</small>"}</div>
+ <p style="margin:10px 0 2px"><b>Rectangles trobats:</b> ${fets.length} de ${parells.length}</p><div class="mp-xips">${fets.map(d=>`<span>${d} · ${n/d}</span>`).join("")||"<small class='prog'>encara cap</small>"}</div>
  <div id="mpFb">${R.msg||""}</div>${R.fet?"":`<div class="fila"><button class="btn verd" onclick="mpRectFet()">Ja els tinc tots ✔</button></div>`}<div id="zona"></div></div>`}
 function mpRectFiles(d){const R=MP.rondes[MP.r];R.files=Math.max(1,Math.min(R.n,R.files+d));if(typeof so==="function")so("clic");mpRectPinta()}
 function mpRectFet(){const R=MP.rondes[MP.r];if(R.fet)return;const par=mpDiv(R.n).filter(d=>d*d<=R.n),fb=document.getElementById("mpFb");
  if(R.trobats.size<par.length){MP.errs++;if(typeof sacseja==="function")sacseja(fb.parentNode);fb.innerHTML=`<div class="fb ko">Encara ${par.length-R.trobats.size===1?"en falta 1":`en falten ${par.length-R.trobats.size}`}. Prova altres nombres de files.</div>`;return}
  mpEstrella();if(typeof so==="function")so("ok");const pr=mpPrimer(R.n);R.fet=true;
- R.msg=`<div class="fb ok">🎉 ${pr?`<b>${R.n}</b> només fa el rectangle 1 × ${R.n}: només té dos divisors → és <b>PRIMER</b>.`:`Divisors de ${R.n}: <b>${mpDiv(R.n).join(", ")}</b>. Van per parelles: ${par.map(d=>`${d} · ${R.n/d}`).join(", ")}.`}</div>${mpBotoSeg()}`;mpRectPinta()}
+ R.msg=`<div class="fb ok">🎉 ${pr?`<b>${R.n}</b> només fa el rectangle 1 · ${R.n}: només té dos divisors → és <b>PRIMER</b>.`:`Divisors de ${R.n}: <b>${mpDiv(R.n).join(", ")}</b>. Van per parelles: ${par.map(d=>`${d} · ${R.n/d}`).join(", ")}.`}</div>${mpBotoSeg()}`;mpRectPinta()}
 
 // ---------- 🐸 LES GRANOTES: el MCM és el primer lloc on coincideixen ----------
 function mpGranotes(j){mpInici(j,j.mp.parells.map(([a,b])=>({a,b,va:0,vb:0,fet:false,int:0})),mpGranPinta)}
@@ -99,10 +99,10 @@ function mpRajPinta(){const R=MP.rondes[MP.r],{a,b,s}=R,g=mpMCD(a,b),W=560,k=Mat
  const max=Math.min(a,b),mides=[...Array(max)].map((_,i)=>i+1).filter(x=>max<=16||x<=8||a%x===0||b%x===0);
  const exacta=s&&!(a%s)&&!(b%s);
  app.innerHTML=`<h2 class="sec">${MP.j.enunciat||MP.j.titol}</h2><div class="box">${mpCap("🧱 Les rajoles")}
- <p class="mp-big">Volem enrajolar un terra de <b>${a} × ${b}</b> pams amb rajoles quadrades iguals, <b>sense tallar-ne cap</b> i <b>tan grans com es pugui</b>. Tria la mida del costat de la rajola:</p>
+ <p class="mp-big">Volem enrajolar un terra de <b>${a} · ${b}</b> pams amb rajoles quadrades iguals, <b>sense tallar-ne cap</b> i <b>tan grans com es pugui</b>. Tria la mida del costat de la rajola:</p>
  <div class="mp-mides">${mides.map(x=>`<button class="${R.prov[x]===1?"ok":R.prov[x]===0?"ko":""}${s===x?" sel":""}" onclick="mpRajTria(${x})">${x}</button>`).join("")}</div>
  <svg class="mp-svg" viewBox="0 0 ${W} ${h+20}" role="img" aria-label="terra rectangular amb rajoles"><rect x="${ox}" y="${oy}" width="${w}" height="${h}" fill="#f8fafc" stroke="#334155" stroke-width="3"/>${rj}</svg>
- <div id="mpFb">${R.fet?R.msg:s?`<div class="fb ${exacta?"ok":"ko"}">${exacta?`✅ Rajoles de ${s}: encaixen justes (${a/s} × ${b/s} = ${a/s*b/s} rajoles). ${s} divideix ${a} i ${b}.`:`❌ Rajoles de ${s}: sobra una franja vermella. ${a%s?`${a} : ${s} no és exacta.`:`${b} : ${s} no és exacta.`}`}</div>${exacta?`<div class="fila"><button class="btn verd" onclick="mpRajFet()">Aquesta és la més gran ✔</button></div>`:""}`:""}</div><div id="zona"></div></div>`}
+ <div id="mpFb">${R.fet?R.msg:s?`<div class="fb ${exacta?"ok":"ko"}">${exacta?`✅ Rajoles de ${s}: encaixen justes (${a/s} · ${b/s} = ${a/s*b/s} rajoles). ${s} divideix ${a} i ${b}.`:`❌ Rajoles de ${s}: sobra una franja vermella. ${a%s?`${a} : ${s} no és exacta.`:`${b} : ${s} no és exacta.`}`}</div>${exacta?`<div class="fila"><button class="btn verd" onclick="mpRajFet()">Aquesta és la més gran ✔</button></div>`:""}`:""}</div><div id="zona"></div></div>`}
 function mpRajTria(x){const R=MP.rondes[MP.r];if(R.fet)return;R.s=x;R.prov[x]=R.a%x||R.b%x?0:1;if(typeof so==="function")so("clic");mpRajPinta()}
 function mpRajFet(){const R=MP.rondes[MP.r],g=mpMCD(R.a,R.b);if(R.fet)return;
  if(R.s!==g){R.int++;MP.errs++;if(typeof so==="function")so("ko");document.getElementById("mpFb").insertAdjacentHTML("beforeend",`<div class="fb ko">N'hi ha una de més gran que també encaixa justa. Prova mides més grans!</div>`);return}

@@ -986,7 +986,7 @@ const MXG={
    if(k===0){const h=MX_R(8,17),mi=MX_T([0,15,30,45]),t=h*60+mi+m;
     txt=`A l'estació, els trens de la línia groga surten cada <b>${a} minuts</b> i els de la línia blava cada <b>${b} minuts</b>. Avui ${extra} trens han sortit junts a les ${hhmm(h,mi)}, l'últim a les ${hhmm(h,mi)}. A quina hora tornaran a sortir junts?`;
     const t2=h*60+mi+mxMCD(a,b);frases=[`Tornaran a sortir junts a les ${hhmm(Math.floor(t/60),t%60)}.`,`Tornaran a sortir junts d'aquí a ${m} hores.`,`Tornaran a sortir junts a les ${hhmm(Math.floor(t2/60),t2%60)}.`]}
-   else if(k===1){txt=`Tenim rajoles de <b>${a} cm × ${b} cm</b>. Volem fer amb elles el <b>quadrat més petit</b> possible, sense tallar-ne cap. La caixa porta ${extra*10} rajoles. Quant farà de costat el quadrat?`;
+   else if(k===1){txt=`Tenim rajoles de <b>${a} cm · ${b} cm</b>. Volem fer amb elles el <b>quadrat més petit</b> possible, sense tallar-ne cap. La caixa porta ${extra*10} rajoles. Quant farà de costat el quadrat?`;
     frases=[`El quadrat farà ${m} cm de costat.`,`El quadrat farà ${mxMCD(a,b)} cm de costat.`,`El quadrat farà ${m} rajoles de costat.`]}
    else if(k===2){txt=`En Pau va a la piscina cada <b>${a} dies</b> i la Laia cada <b>${b} dies</b>. Avui, que és dia ${extra}, hi han coincidit. D'aquí a quants dies hi tornaran a coincidir?`;
     frases=[`Hi tornaran a coincidir d'aquí a ${m} dies.`,`Hi tornaran a coincidir d'aquí a ${a+b} dies.`,`Hi tornaran a coincidir el dia ${m} del mes, segur.`]}
@@ -1000,7 +1000,7 @@ const MXG={
     frases=[`A cada cabana hi haurà ${m} persones.`,`Hi haurà ${m} cabanes en total.`,`A cada cabana hi haurà ${mxMCM(a,b)} persones.`]}
    else if(k===2){txt=`Tenim <b>${a} caramels de maduixa</b> i <b>${b} de llimona</b>. Els volem posar en bosses iguals, sense barrejar gustos i amb el <b>màxim</b> de caramels a cada bossa. Som ${extra} amics. Quants caramels hi haurà a cada bossa?`;
     frases=[`A cada bossa hi haurà ${m} caramels.`,`A cada bossa hi haurà ${a+b} caramels.`,`Hi haurà ${m} bosses.`]}
-   else{txt=`Un hort rectangular fa <b>${a} m × ${b} m</b>. El volem dividir en parcel·les quadrades iguals, <b>les més grans possible</b>. Hi ha ${extra} pomeres. Quant farà de costat cada parcel·la?`;
+   else{txt=`Un hort rectangular fa <b>${a} m · ${b} m</b>. El volem dividir en parcel·les quadrades iguals, <b>les més grans possible</b>. Hi ha ${extra} pomeres. Quant farà de costat cada parcel·la?`;
     frases=[`Cada parcel·la farà ${m} m de costat.`,`Cada parcel·la farà ${mxMCM(a,b)} m de costat.`,`Hi haurà ${m} parcel·les.`]}
    clau="«repartir en parts iguals, el màxim / el més gran possible, sense que en sobri» → busquem un DIVISOR comú → MCD";
   }
@@ -1047,8 +1047,11 @@ function mxCss(){if(document.getElementById("mxCss"))return;const s=document.cre
 .mx-taula{font-size:17px;font-weight:800;background:#fff;border-radius:10px;padding:8px 12px;margin:6px 0;display:inline-block}
 .mx-llib{margin-top:12px;padding:14px 18px;border-radius:6px;color:#1e293b;font-size:18px;line-height:1.75;
  background-color:#fffef5;background-image:linear-gradient(#93c5fd55 1px,transparent 1px),linear-gradient(90deg,#93c5fd55 1px,transparent 1px);background-size:22px 22px;
- font-family:"Segoe Print","Bradley Hand","Comic Sans MS","Chalkboard SE",cursive;box-shadow:inset 4px 0 0 #f87171}
-.mx-llib h4{margin:0 0 4px;font-family:Nunito,system-ui,sans-serif;font-size:14px;color:#b91c1c}
+ font-family:"Segoe Print","Bradley Hand","Comic Sans MS","Chalkboard SE",cursive;box-shadow:inset 4px 0 0 #22c55e;border:1px solid #bbf7d0}
+.mx-llib h4{margin:0 0 4px;font-family:Nunito,system-ui,sans-serif;font-size:14px;color:#15803d;text-transform:uppercase;letter-spacing:.3px}
+.mx-llib.mx-err{box-shadow:inset 4px 0 0 #ef4444;border-color:#fecaca}
+.mx-llib.mx-err h4{color:#b91c1c}
+.mx-lin-ok{background:#dcfce7;border-left:3px solid #16a34a;padding:1px 8px;border-radius:4px;font-weight:800;margin:2px 0}
 .mx-llib .mx-escala span{border-right-color:#1e293b}
 .mx-nota{font-size:56px;font-weight:900;text-align:center;line-height:1.1}
 .mx-pts{width:100%;border-collapse:collapse;margin-top:10px;font-size:15px}.mx-pts td,.mx-pts th{padding:6px 8px;border-bottom:1px solid var(--vora);text-align:left}.mx-pts td:last-child,.mx-pts th:last-child{text-align:right;white-space:nowrap}
@@ -1128,7 +1131,7 @@ function mxExplica(P){return P.expl||(P.perque&&P.perque.op[P.perque.r])||P.pist
 function mxSegMira(){const E=MX.llista[MX.e];(MX.resp[MX.e]=MX.resp[MX.e]||[])[MX.p]=E.passos[MX.p].r;
  if(MX.p+1<E.passos.length){MX.p++;return mxPinta()}
  MX.fi=true;const id=MX.j.id,nv=MX.nv;
- app.querySelector(".mx-pas").outerHTML=`<div class="mx-llib"><h4>📒 Així s'escriu a la llibreta</h4>${E.sol}</div>`;
+ app.querySelector(".mx-pas").outerHTML=`<div class="mx-llib"><h4>📒 Així s'escriu a la llibreta · Exemple resolt</h4>${E.sol}</div>`;
  document.getElementById("zona").innerHTML=`<div class="fb ok">👀 Ja has vist com es fa. Ara et toca a tu!</div><div class="fila"><button class="btn" onclick="MX_MODE='completa';mxComença('${id}',${nv})">✍️ Completa'n un</button><button class="btn sec" onclick="MX_MODE='sol';mxComença('${id}',${nv})">💪 Fes-ne un tot sol</button><button class="btn sec" onclick="MX_MODE='mira';mxComença('${id}',${nv})">👀 Un altre exemple</button></div>`}
 function mxMostra(P,v){if(v===undefined||v===null)return "—";if(P.t==="tria")return P.op[v];if(P.t==="fact")return mxPot(v);if(P.t==="llista")return mxLlista(v);return mxN(v)}
 function mxEntrada(P){
@@ -1180,7 +1183,7 @@ function mxSeg(){const E=MX.llista[MX.e];MX.esp=false;
  if(MX.ex){if(MX.e+1<MX.llista.length){MX.e++;MX.p=0;return mxPinta()}return mxFiExamen()}
  // apartat acabat: solució de llibreta
  const ult=MX.e+1>=MX.llista.length,bar=MX.mode==="barreja";MX.apFet=true;
- app.querySelector(".mx-pas").outerHTML=`<div class="fb ok">✅ ${bar?`Exercici ${MX.e+1}`:`Apartat ${MX_LL[MX.e]})`} fet!</div><div class="mx-llib"><h4>📒 Així s'escriu a la llibreta</h4>${E.sol}</div>`;
+ app.querySelector(".mx-pas").outerHTML=`<div class="fb ok">✅ ${bar?`Exercici ${MX.e+1}`:`Apartat ${MX_LL[MX.e]})`} fet!</div><div class="mx-llib"><h4>📒 Així s'escriu a la llibreta${bar?"":` · Apartat ${MX_LL[MX.e]})`}</h4>${E.sol}</div>`;
  document.getElementById("zona").innerHTML=`<div class="fila"><button class="btn" id="mxSeg" onclick="${ult?(MX.onFi?"MX.onFi()":"mxFiFitxa()"):"mxApartat()"}">${ult?(MX.onFi?"Veure el resultat 🏁":"Acaba la fitxa 🏁"):bar?`Exercici ${MX.e+2} ▶`:`Apartat ${MX_LL[MX.e+1]}) ▶`}</button></div>`}
 function mxApartat(){MX.apFet=false;MX.e++;mxIniciaApartat();mxPinta();window.scrollTo(0,0)}
 function mxFiFitxa(){MX.fi=true;const {j,bones,errs}=MX,tot=MX.llista.reduce((a,E,i)=>a+E.passos.length-(MX.pre[i]||0),0),bar=MX.mode==="barreja";
@@ -1200,7 +1203,9 @@ function mxFiExamen(){MX.fi=true;const {j,llista}=MX;let nota=0;
  fiJoc(j,Math.max(1,n10),100-n10,{nivell:MX.nv,mode:"examen"});
  document.getElementById("zona").innerHTML=`<div class="fb ${nota>=5?"ok":""}">${nota>=5?"🎉 Aprovat!":"💪 Encara no: repassa els exercicis amb ❌ i torna-hi."} Mira la correcció de dalt: és com la del profe.</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Un altre examen</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
 // teclat físic (ordinador)
-if(typeof addEventListener!=="undefined")addEventListener("keydown",e=>{if(!MX||MX.fi||MX.apFet||MX.perq||MX.mode==="mira"||!document.getElementById("mxDisp"))return;
+if(typeof addEventListener!=="undefined")addEventListener("keydown",e=>{if(!document.getElementById("mxDisp"))return;
+ if(MXR&&!MXR.fi&&MXR.fase==="escriu"){if(/^[0-9]$/.test(e.key))mxErrTecla(e.key);else if(e.key===","||e.key===" ")mxErrTecla(",");else if(e.key==="Backspace")mxErrTecla("⌫");else if(e.key==="Enter"){e.preventDefault();MXR.esp?mxErrMostraSol(false):mxErrRespon()}else return;e.preventDefault();return}
+ if(!MX||MX.fi||MX.apFet||MX.perq||MX.mode==="mira")return;
  if(/^[0-9]$/.test(e.key))mxTecla(e.key);else if(e.key===","||e.key===" ")mxTecla(",");else if(e.key==="Backspace")mxTecla("⌫");else if(e.key==="Enter"){e.preventDefault();MX.esp?mxSeg():mxRespon()}else return;e.preventDefault()});
 
 // ---------- GENERADORS NOUS: divisió llarga (aquest tema) · combinades, fraccions i equacions (per a temes futurs) ----------
@@ -1320,97 +1325,274 @@ Object.assign(MXG,{
  }
 });
 
-// ---------- 🔍 TROBA L'ERROR: un exercici resolt amb un error típic. El nen toca la línia dolenta i diu per què ----------
+// ---------- 🔍 TROBA L'ERROR: un exercici resolt amb un error típic. El nen toca la línia dolenta, diu per què i ho escriu bé ----------
 // Joc: {id:"…",tipus:"custom",fn:"mxError",prova:"mxErrProva",mx:{error:["mcm_exp",…],n:5}, …}
-// Cada tipus retorna {enun, linies:[…], mal (índex de la línia dolenta), per:[la bona primer, 2 de falses], bona, pista}.
+// Cada tipus retorna {enun, linies:[…], mal, per:[bona, 2 falses], llibreta:[…], bona, pista, t, q, r, op?}.
 const MX_NOMS=["en Pau","la Laia","en Nil","la Carla","l'Oriol","la Martina"];
 const mxEsc=(n,ps)=>{const r=[];let c=n;for(const p of ps){r.push(`${mxN(c)} │ ${p}`);c/=p}r.push(`${mxN(c)} │`);return r};
 const mxPrimersDe=n=>{const r=[];let d=2;while(n>1){while(n%d===0){r.push(d);n/=d}d++}return r};
+const MX_POS_CUR={};
+const mxPos=(k,arr)=>{const i=(MX_POS_CUR[k]=(MX_POS_CUR[k]||0)+1)%arr.length;return arr[i]};
+let MX_PER_CUR=0;
+const mxPer3=(b,d1,d2)=>{const i=(MX_PER_CUR++)%10;if(i<3)return [b[1],d1[0],d2[0]];return [b[0],d1[1],d2[1]]};
+const mxLlibHtml=(ll,okSet)=>ll.map((l,i)=>`<div class="${okSet&&okSet.includes(i)?"mx-lin-ok":""}">${l}</div>`).join("");
 const MXE={
  mcm_exp(){let a,b,Fa,Fb;for(let k=0;k<200;k++){a=MX_T([12,18,20,24,28,36,40,45,48,54,60,72,90]);b=MX_T([8,15,16,18,20,27,30,32,36,50]);if(a===b||a%b===0||b%a===0)continue;Fa=mxFactors(a);Fb=mxFactors(b);if(Object.keys(Fa).some(p=>Fb[p]&&Fb[p]!==Fa[p]))break}
   const ps=[...new Set([...Object.keys(Fa),...Object.keys(Fb)].map(Number))],Fm={},Fo={};ps.forEach(p=>{const x=Fa[p]||0,y=Fb[p]||0;Fo[p]=Math.max(x,y);Fm[p]=x&&y?Math.min(x,y):Math.max(x,y)});
-  return {enun:`Calcula el MCM (${a}, ${b}).`,linies:[`${a} = ${mxPot(Fa)}`,`${b} = ${mxPot(Fb)}`,`Agafo tots els factors, comuns i no comuns.`,`MCM (${a}, ${b}) = ${mxPot(Fm)} = ${mxN(mxVal(Fm))}`],mal:3,
-   per:["Dels factors comuns s'ha d'agafar l'exponent més gran, no el més petit","Al MCM només hi van els factors comuns","Els exponents s'havien de sumar"],
-   bona:`MCM (${a}, ${b}) = ${mxPot(Fo)} = <b>${mxN(mxVal(Fo))}</b>`,pista:"Mira bé els exponents del resultat."}},
+  const m=mxVal(Fo),wm=mxVal(Fm),pos=mxPos("mcm_exp",[1,2,3]);
+  const linies=pos===1?[`${a} = ${mxPot(Fa)} i ${b} = ${mxPot(Fb)}`,`Agafo tots els factors amb l'exponent més petit dels comuns.`,`MCM (${a}, ${b}) = ${mxPot(Fm)}`,`Resultat: ${mxN(wm)}`]
+   :pos===2?[`${a} = ${mxPot(Fa)}`,`${b} = ${mxPot(Fb)}`,`MCM (${a}, ${b}) = ${mxPot(Fm)}`,`Per tant, MCM (${a}, ${b}) = ${mxN(wm)}`]
+   :[`${a} = ${mxPot(Fa)}`,`${b} = ${mxPot(Fb)}`,`Agafo tots els factors, comuns i no comuns.`,`MCM (${a}, ${b}) = ${mxPot(Fm)} = ${mxN(wm)}`];
+  const per=mxPer3(
+   ["Al MCM s'agafa l'exponent gran dels comuns","Dels factors comuns s'ha d'agafar l'exponent més gran, i aquí s'ha agafat el més petit"],
+   ["Al MCM només hi van els comuns","Al MCM només s'han d'agafar els factors comuns que surten als dos nombres i descartar la resta"],
+   ["Els exponents s'han de sumar","Quan un factor primer es repeteix als dos nombres, al MCM s'han de sumar tots els seus exponents"]
+  );
+  const llib=[`${a} = ${mxPot(Fa)}`,`${b} = ${mxPot(Fb)}`,`Agafo tots els factors, comuns i no comuns, amb l'exponent més gran.`,`MCM (${a}, ${b}) = ${mxPot(Fo)} = <b>${mxN(m)}</b>`];
+  return {enun:`Calcula el MCM (${a}, ${b}).`,linies,mal:pos,per,llibreta:llib,bona:mxLlibHtml(llib,[2,3]),
+   t:"num",r:m,q:`Calcula bé el <b>MCM (${a}, ${b})</b>:`,pistaR:`Agafa tots els factors primers amb l'exponent més gran: ${mxPot(Fo)}.`,pista:"Mira bé els exponents dels factors comuns."}},
  mcd_nocomu(){let a,b,Fa,Fb;for(let k=0;k<200;k++){a=MX_T([12,18,20,24,30,36,40,42,60,72,84,90]);b=MX_T([8,15,16,27,28,32,35,45,50,54,63,75]);if(a===b)continue;Fa=mxFactors(a);Fb=mxFactors(b);const ks=[...new Set([...Object.keys(Fa),...Object.keys(Fb)])];if(mxMCD(a,b)>1&&ks.some(p=>!(Fa[p]&&Fb[p])))break}
   const ps=[...new Set([...Object.keys(Fa),...Object.keys(Fb)].map(Number))].sort((x,y)=>x-y),Fo={};ps.forEach(p=>{if(Fa[p]&&Fb[p])Fo[p]=Math.min(Fa[p],Fb[p])});
-  const nc=ps.find(p=>!(Fa[p]&&Fb[p])),Fm={...Fo,[nc]:Fa[nc]||Fb[nc]};
-  return {enun:`Calcula el MCD (${a}, ${b}).`,linies:[`${a} = ${mxPot(Fa)}`,`${b} = ${mxPot(Fb)}`,`Agafo els comuns, amb l'exponent més petit.`,`MCD (${a}, ${b}) = ${mxPot(Fm)} = ${mxN(mxVal(Fm))}`],mal:3,
-   per:[`El ${nc} no el tenen tots dos nombres: al MCD només hi van els factors comuns`,"Al MCD s'agafa l'exponent més gran","El MCD sempre és 1"],
-   bona:`MCD (${a}, ${b}) = ${mxPot(Fo)} = <b>${mxN(mxVal(Fo))}</b>`,pista:"Mira si tots els factors del resultat surten als dos nombres."}},
- escala_noprimer(){const n=MX_T([48,72,80,96,112,144,160,176,208,240]),ps=mxPrimersDe(n);// n = 2·4·… (té almenys tres 2)
-  const mal=[2,4,...ps.slice(3)],l=mxEsc(n,mal);
-  return {enun:`Descompon ${mxN(n)} en factors primers.`,linies:[...l,`${mxN(n)} = ${mal.join(" · ")}`],mal:1,
-   per:["4 no és primer: a l'escala només hi van nombres primers","La divisió no és exacta","S'havia de començar pel 3"],
-   bona:`${mxEsc(n,ps).join("<br>")}<br>${mxN(n)} = <b>${mxPot(mxFactors(n))}</b>`,pista:"Mira bé els nombres de la columna de la dreta."}},
- escala_divisio(){let n,ps,k,w,c;for(let t=0;t<200;t++){n=MX_T([60,84,90,126,132,150,156,168,180,198]);ps=mxPrimersDe(n);k=MX_R(0,ps.length-3);c=n;for(let i=0;i<=k;i++)c/=ps[i];w=c+2;if(w%2===0&&w!==c)break}
+  const nc=ps.find(p=>!(Fa[p]&&Fb[p])),Fm={...Fo,[nc]:Fa[nc]||Fb[nc]},g=mxVal(Fo),wg=mxVal(Fm),pos=mxPos("mcd_nocomu",[1,2,3]);
+  const linies=pos===1?[`${a} = ${mxPot(Fa)} i ${b} = ${mxPot(Fb)}`,`Agafo els factors comuns i també el factor ${nc}.`,`MCD (${a}, ${b}) = ${mxPot(Fm)}`,`Resultat: ${mxN(wg)}`]
+   :pos===2?[`${a} = ${mxPot(Fa)}`,`${b} = ${mxPot(Fb)}`,`MCD (${a}, ${b}) = ${mxPot(Fm)}`,`Per tant, MCD (${a}, ${b}) = ${mxN(wg)}`]
+   :[`${a} = ${mxPot(Fa)}`,`${b} = ${mxPot(Fb)}`,`Agafo els comuns, amb l'exponent més petit.`,`MCD (${a}, ${b}) = ${mxPot(Fm)} = ${mxN(wg)}`];
+  const per=mxPer3(
+   [`El ${nc} no és comú als dos nombres`,`El factor ${nc} no el tenen tots dos nombres: al MCD només hi van els factors comuns`],
+   ["Al MCD s'agafa l'exponent gran","Al MCD s'ha d'agafar sempre l'exponent més gran de cada factor primer comú dels dos nombres"],
+   ["Els exponents s'han de restar","Per calcular el MCD s'han de restar els exponents dels factors primers que es repeteixen"]
+  );
+  const llib=[`${a} = ${mxPot(Fa)}`,`${b} = ${mxPot(Fb)}`,`Agafo només els factors comuns, amb l'exponent més petit.`,`MCD (${a}, ${b}) = ${mxPot(Fo)} = <b>${mxN(g)}</b>`];
+  return {enun:`Calcula el MCD (${a}, ${b}).`,linies,mal:pos,per,llibreta:llib,bona:mxLlibHtml(llib,[2,3]),
+   t:"num",r:g,q:`Calcula bé el <b>MCD (${a}, ${b})</b>:`,pistaR:`Agafa només els factors comuns amb l'exponent més petit: ${mxPot(Fo)}.`,pista:"Mira si tots els factors del resultat surten als dos nombres."}},
+ escala_noprimer(){const n=MX_T([36,48,60,72,80,84,96,108,112,120,144]),ps=mxPrimersDe(n),F=mxFactors(n);
+  const maxK=Math.min(2,ps.length-2),pos=mxPos("escala_noprimer",[0,1,maxK]);
+  const comp=ps[pos]*ps[pos+1],mal=[...ps.slice(0,pos),comp,...ps.slice(pos+2)],l=mxEsc(n,mal);
+  const per=mxPer3(
+   [`${comp} no és primer (${comp} = ${ps[pos]} · ${ps[pos+1]})`,`${comp} no és un nombre primer: a la dreta de l'escala només hi poden anar nombres primers`],
+   ["A l'escala cal començar pel més gran","A l'escala de factorització sempre s'ha de començar dividint pel factor primer més gran possible"],
+   ["No es pot repetir cap factor primer","A la columna de la dreta de l'escala no es pot repetir mai el mateix factor primer dues vegades"]
+  );
+  const escBo=mxEsc(n,ps),llib=[...escBo,`${mxN(n)} = <b>${mxPot(F)}</b>`];
+  return {enun:`Descompon ${mxN(n)} en factors primers.`,linies:[...l,`${mxN(n)} = ${mal.join(" · ")}`],mal:pos,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[pos,llib.length-1]),
+   t:"num",r:ps[pos],q:`Quin <b>nombre primer</b> ha d'anar a la dreta en lloc de ${comp}?`,pistaR:`${comp} = ${ps[pos]} · ${ps[pos+1]}. Comença pel primer més petit: ${ps[pos]}.`,pista:"Mira bé els nombres de la columna de la dreta."}},
+ escala_divisio(){const pos=mxPos("escala_divisio",[1,2,3]),k=pos-1;
+  const n=MX_T([60,84,90,126,132,150,156,168,180,198]),ps=mxPrimersDe(n);
+  let c=n;for(let i=0;i<=k;i++)c/=ps[i];const w=c+2;
   const ant=c*ps[k],l=mxEsc(n,ps).slice(0,k+1),wps=mxPrimersDe(w);l.push(...mxEsc(w,wps));
-  return {enun:`Descompon ${mxN(n)} en factors primers.`,linies:[...l,`${mxN(n)} = ${[...ps.slice(0,k+1),...wps].join(" · ")}`],mal:k+1,
-   per:[`${mxN(ant)} : ${ps[k]} no fa ${w}, fa ${c}`,`${w} no es pot dividir per ${wps[0]}`,"S'havia de dividir per un nombre més gran"],
-   bona:`${mxEsc(n,ps).join("<br>")}<br>${mxN(n)} = <b>${mxPot(mxFactors(n))}</b>`,pista:"Comprova cada divisió de l'escala."}},
- primer_u(){const p=MX_T([7,11,13,17,19,23]),q=MX_T([9,15,21,25,27,33]),dv=x=>mxDivisors(x).join(", ");
-  const l=MX_B([`${p}: els seus divisors són ${dv(p)} → és primer.`,`${q}: els seus divisors són ${dv(q)} → és compost.`,`1: només es pot dividir per 1 → és primer.`,`2: els seus divisors són 1 i 2 → és primer.`]);
-  return {enun:`Classifica 1, 2, ${p} i ${q} en primers i compostos.`,linies:l,mal:l.findIndex(x=>x.startsWith("1:")),
-   per:["Un primer ha de tenir exactament dos divisors, i l'1 només en té un","L'1 és parell","Tots els nombres d'una xifra són primers"],
-   bona:`1: només té un divisor → <b>no és ni primer ni compost</b>.`,pista:"Recorda la definició: quants divisors ha de tenir un nombre primer?"}},
- primer_fals(){const n=MX_T([51,57,87,93,111,117,123,129,141,159,177]),x=String(n).split(""),s=x.reduce((a,b)=>a+ +b,0);
-  return {enun:`${n} és primer o compost?`,linies:[`${n} és senar → no és divisible per 2.`,`${x.join(" + ")} = ${s} → no és múltiple de 3 → no és divisible per 3.`,`No acaba en 0 ni en 5 → no és divisible per 5.`,`→ ${n} és primer.`],mal:1,
-   per:[`${s} sí que és múltiple de 3: ${n} = 3 · ${n/3}`,`${n} és parell`,"El criteri del 3 mira l'última xifra"],
-   bona:`${x.join(" + ")} = ${s} → <b>sí</b> és múltiple de 3 → ${n} = 3 · ${n/3} → ${n} és <b>compost</b>.`,pista:"Comprova els criteris un per un."}},
+  const per=mxPer3(
+   [`${mxN(ant)} : ${ps[k]} fa ${c}, no ${w}`,`La divisió està mal feta: ${mxN(ant)} : ${ps[k]} no fa ${w}, sinó que fa exactament ${c}`],
+   [`${ps[k]} no és un nombre primer`,`El nombre ${ps[k]} de la columna dreta és compost i no es pot fer servir a l'escala de factors`],
+   ["S'havia de multiplicar en lloc de dividir","A cada pas de l'escala s'ha de multiplicar el nombre de l'esquerra pel factor primer de la dreta"]
+  );
+  const escBo=mxEsc(n,ps),llib=[...escBo,`${mxN(n)} = <b>${mxPot(mxFactors(n))}</b>`];
+  return {enun:`Descompon ${mxN(n)} en factors primers.`,linies:[...l,`${mxN(n)} = ${[...ps.slice(0,k+1),...wps].join(" · ")}`],mal:k+1,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[k+1,llib.length-1]),
+   t:"num",r:c,q:`Quant fa <b>${mxN(ant)} : ${ps[k]}</b>?`,pistaR:` Divideix ${mxN(ant)} entre ${ps[k]}.`,pista:"Comprova cada divisió de l'escala."}},
+ primer_u(){const p=MX_T([7,11,13,17,19,23]),q=MX_T([9,15,21,25,27,33]),dv=x=>mxDivisors(x).join(", "),pos=mxPos("primer_u",[0,1,2,3]);
+  const altres=[`${p}: els seus divisors són ${dv(p)} → és primer.`,`${q}: els seus divisors són ${dv(q)} → és compost.`,`2: els seus divisors són 1 i 2 → és primer.`];
+  const linMal=`1: només es pot dividir per 1 → és primer.`,l=[...altres];l.splice(pos,0,linMal);
+  const per=mxPer3(
+   ["L'1 només té un divisor: no és primer","Un nombre primer ha de tenir exactament dos divisors diferents, i l'1 només en té un"],
+   ["L'1 és un nombre compost especial","L'1 és un nombre compost perquè és divisor de tots els altres nombres naturals de la taula"],
+   ["Tots els nombres senars són primers","Qualsevol nombre senar més petit que deu és sempre un nombre primer perquè no es divideix per 2"]
+  );
+  const op=["no és ni primer ni compost","és un nombre compost","és un nombre primer"],llib=[...l];
+  llib[pos]=`1: només té un divisor → <b>no és ni primer ni compost</b>.`;
+  return {enun:`Classifica 1, 2, ${p} i ${q} en primers i compostos.`,linies:l,mal:pos,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[pos]),
+   t:"tria",op,r:0,q:`Com s'ha de classificar el nombre <b>1</b>?`,pistaR:`Un primer té exactament 2 divisors; un compost, més de 2. L'1 només en té 1.`,pista:"Recorda la definició: quants divisors ha de tenir un nombre primer?"}},
+ primer_fals(){const n=MX_T([51,57,87,93,111,117,123,129,141,159,177]),x=String(n).split(""),s=x.reduce((a,b)=>a+ +b,0),q=n/3,pos=mxPos("primer_fals",[0,1,2]);
+  const c2=`${n} és senar → no és divisible per 2.`,c5=`No acaba en 0 ni en 5 → no és divisible per 5.`,c3=`${x.join(" + ")} = ${s} → no és múltiple de 3 → no és divisible per 3.`;
+  const linies=pos===0?[c3,c2,c5,`→ ${n} és primer.`]:pos===1?[c2,c3,c5,`→ ${n} és primer.`]:[c2,c5,c3,`→ ${n} és primer.`];
+  const per=mxPer3(
+   [`${s} sí que és múltiple de 3 (${n} = 3 · ${q})`,`${s} sí que és múltiple de 3 (3 · ${s/3} = ${s}), per tant ${n} és divisible per 3: ${n} = 3 · ${q}`],
+   ["El criteri del 3 mira l'última xifra","Per saber si un nombre és divisible per 3 només s'ha de mirar si l'última xifra és 3, 6 o 9"],
+   ["S'havien de multiplicar les xifres","Al criteri de divisibilitat del 3 s'han de multiplicar totes les xifres del nombre entre elles"]
+  );
+  const llib=[...linies];llib[pos]=`${x.join(" + ")} = ${s} → <b>sí</b> és múltiple de 3 → ${n} = 3 · <b>${q}</b>.`;llib[3]=`→ Per tant, ${n} és <b>compost</b> (divisible per 3).`;
+  return {enun:`${n} és primer o compost?`,linies,mal:pos,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[pos,3]),
+   t:"num",r:q,q:`Com que ${n} és múltiple de 3, quant fa <b>${n} : 3</b>?`,pistaR:`Fes la divisió ${n} : 3.`,pista:"Comprova els criteris un per un."}},
  divisors_falta(){const n=MX_T([24,30,36,40,48,60,72]),dv=mxDivisors(n),par=dv.filter(x=>x*x<=n),mig=dv.filter(x=>x!==1&&x!==n&&x*x!==n),tr=MX_T(mig),pa=Math.min(tr,n/tr);
-  return {enun:`Escriu tots els divisors de ${n}.`,linies:[...par.map(x=>`${x} · ${n/x} = ${n}`),`Divisors de ${n}: ${dv.filter(x=>x!==tr).join(", ")}`],mal:par.length,
-   per:[`Hi falta el ${tr}: surt a la parella ${pa} · ${n/pa}`,`Hi sobra el ${n}: un nombre no és divisor d'ell mateix`,"L'1 no és divisor de cap nombre"],
-   bona:`Divisors de ${n}: <b>${dv.join(", ")}</b>`,pista:"Compara la llista final amb les parelles."}},
- criteri3(){let n;for(let k=0;k<200;k++){n=MX_R(102,9999);if(n%3===0&&n%10%3!==0)break}const x=String(n).split(""),u=+x[x.length-1],s=x.reduce((a,b)=>a+ +b,0);
-  return {enun:`${mxN(n)} és divisible per 3?`,linies:[`Vull saber si ${mxN(n)} és divisible per 3.`,`Miro l'última xifra: és un ${u}.`,`${u} no és de la taula del 3.`,`→ ${mxN(n)} no és divisible per 3.`],mal:1,
-   per:["Pel 3 s'han de sumar totes les xifres; l'última xifra només serveix per al 2, el 5 i el 10","L'última xifra és un 0","S'havia de mirar la primera xifra"],
-   bona:`${x.join(" + ")} = ${s}, que és múltiple de 3 → ${mxN(n)} <b>sí</b> és divisible per 3.`,pista:"Quin criteri es fa servir per al 3?"}},
+  const pos=mxPos("divisors_falta",[0,1,2]),partxt=par.map(x=>`${x} · ${n/x} = ${n}`).join(" · "),llistaMal=`Divisors de ${n}: ${dv.filter(x=>x!==tr).join(", ")}`;
+  const linies=pos===0?[llistaMal,`Comprovació amb les parelles: ${partxt}`,`Totes les parelles donen ${n}.`]
+   :pos===1?[`Parelles de factors: ${partxt}`,llistaMal,`Ordenats de petit a gran.`]
+   :[`Busquem totes les parelles que multipliquen ${n}:`,`${partxt}`,llistaMal];
+  const per=mxPer3(
+   [`Hi falta el divisor ${tr} (de ${pa} · ${n/pa})`,`A la llista final hi falta el ${tr}, que ja sortia a la parella de factors ${pa} · ${n/pa} = ${n}`],
+   [`Hi sobra el ${n} perquè és el mateix nombre`,`El nombre ${n} no s'ha de posar mai a la llista perquè cap nombre és divisor d'ell mateix`],
+   ["Només s'apunta el petit de cada parella","Quan fem les parelles de factors, només s'ha d'apuntar el nombre més petit de cada parella"]
+  );
+  const llib=[`Busquem les parelles que donen ${n}: ${partxt}`,`Divisors de ${n}: <b>${dv.join(", ")}</b>`];
+  return {enun:`Escriu tots els divisors de ${n}.`,linies,mal:pos,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[1]),
+   t:"num",r:tr,q:`Quin <b>divisor</b> s'ha deixat a la llista?`,pistaR:`Mira la parella ${pa} · ${n/pa} = ${n}.`,pista:"Compara la llista final amb les parelles."}},
+ criteri3(){let n;for(let k=0;k<200;k++){n=MX_R(102,9999);if(n%3===0&&n%10%3!==0)break}const x=String(n).split(""),u=+x[x.length-1],s=x.reduce((a,b)=>a+ +b,0),pos=mxPos("criteri3",[0,1,2]);
+  const linMal=`Miro només l'última xifra (${u}): com que no és múltiple de 3, no és divisible per 3.`;
+  const linies=pos===0?[linMal,`No cal fer la suma de les xifres.`,`→ ${mxN(n)} no és divisible per 3.`]
+   :pos===1?[`Vull saber si ${mxN(n)} és divisible per 3.`,linMal,`→ ${mxN(n)} no és divisible per 3.`]
+   :[`Analitzem les xifres del nombre ${mxN(n)}.`,`L'última xifra és un ${u}.`,linMal];
+  const per=mxPer3(
+   ["Pel 3 cal sumar totes les xifres del nombre","Pel criteri del 3 s'han de sumar totes les xifres; mirar l'última només serveix pel 2, el 5 i el 10"],
+   ["Pel 3 s'ha de mirar només la primera xifra","Per saber si un nombre és divisible per 3 s'ha de mirar només si la primera xifra és múltiple de 3"],
+   ["Només els nombres senars van a la taula del 3","Un nombre només pot ser divisible per 3 si totes les seves xifres són nombres senars"]
+  );
+  const llib=[`Sumem totes les xifres de ${mxN(n)}:`,`${x.join(" + ")} = <b>${s}</b>`,`${s} és múltiple de 3 → ${mxN(n)} <b>sí</b> és divisible per 3.`];
+  return {enun:`${mxN(n)} és divisible per 3?`,linies,mal:pos,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[1,2]),
+   t:"num",r:s,q:`Quant fa la <b>suma de les xifres</b> de ${mxN(n)} (${x.join(" + ")})?`,pistaR:`Suma ${x.join(" + ")}.`,pista:"Quin criteri es fa servir per al 3?"}},
  problema_confon(){let a,b;for(let k=0;k<200;k++){const g=MX_T([2,3,4,6]);a=g*MX_R(2,6);b=g*MX_R(2,6);if(a!==b&&a%b&&b%a&&mxMCD(a,b)>1)break}if(a>b)[a,b]=[b,a];
-  const g=mxMCD(a,b),m=mxMCM(a,b);
-  if(Math.random()<.5)return {enun:`Dos autobusos surten junts. Un passa cada ${a} minuts i l'altre cada ${b}. D'aquí a quant tornaran a sortir junts?`,
-   linies:[`Dades: ${a} min i ${b} min.`,`Volem saber quan tornen a coincidir → calculo el MCD.`,`MCD (${a}, ${b}) = ${g}`,`Tornaran a sortir junts d'aquí a ${g} minuts.`],mal:1,
-   per:["«Tornar a coincidir» vol dir buscar un múltiple comú: és un problema de MCM","Les dades estan malament","S'havien de sumar els dos temps"],
-   bona:`MCM (${a}, ${b}) = ${m} → tornaran a sortir junts d'aquí a <b>${m} minuts</b>.`,pista:"Què vol dir «tornar a coincidir»?"};
+  const g=mxMCD(a,b),m=mxMCM(a,b),pos=mxPos("problema_confon",[0,1,2]);
+  if(Math.random()<.5){
+   const linMal=`Volem saber quan tornen a coincidir → calculo el MCD (${a}, ${b}) = ${g}.`;
+   const linies=pos===0?[linMal,`Dades del problema: cada ${a} min i cada ${b} min.`,`Tornaran a sortir junts d'aquí a ${g} minuts.`]
+    :pos===1?[`Dades: ${a} min i ${b} min.`,linMal,`Tornaran a sortir junts d'aquí a ${g} minuts.`]
+    :[`Dades: un surt cada ${a} min i l'altre cada ${b} min.`,`Busquem un temps que es repeteixi als dos autobusos.`,linMal];
+   const per=mxPer3(
+    ["Coincidir en el temps és buscar el MCM","«Tornar a coincidir» vol dir buscar un múltiple comú dels dos temps: és un problema de MCM, no de MCD"],
+    ["S'havien de sumar els minuts dels autobusos","Per saber quan coincideixen dos autobusos sempre s'han de sumar els minuts que triga cadascun"],
+    ["S'havien de restar els dos temps de pas","En aquests problemes de coincidència s'ha de calcular la diferència restant els dos temps de pas"]
+   );
+   const llib=[`Dades: cada ${a} min i cada ${b} min.`,`«Tornar a coincidir» → busquem el múltiple comú més petit (MCM).`,`MCM (${a}, ${b}) = <b>${m}</b>`,`Resposta: tornaran a sortir junts d'aquí a <b>${m} minuts</b>.`];
+   return {enun:`Dos autobusos surten junts. Un passa cada ${a} minuts i l'altre cada ${b}. D'aquí a quant tornaran a sortir junts?`,
+    linies,mal:pos,per,llibreta:llib,bona:mxLlibHtml(llib,[1,2,3]),
+    t:"num",r:m,q:`Calcula el resultat correcte: d'aquí a quants <b>minuts</b> tornaran a coincidir (MCM de ${a} i ${b})?`,pistaR:`Calcula el MCM (${a}, ${b}).`,pista:"Què vol dir «tornar a coincidir»?"}}
+  const linMal=`Tallar en trossos iguals tan llargs com es pugui → calculo el MCM (${a}, ${b}) = ${m}.`;
+  const linies=pos===0?[linMal,`Dades: dues cintes de ${a} cm i ${b} cm.`,`Cada tros farà ${m} cm.`]
+   :pos===1?[`Dades: ${a} cm i ${b} cm.`,linMal,`Cada tros farà ${m} cm.`]
+   :[`Dades: cintes de ${a} cm i ${b} cm.`,`Volem repartir-les sense que en sobri res.`,linMal];
+  const per=mxPer3(
+   ["Tallar en trossos màxims és buscar el MCD","Tallar en trossos iguals tan llargs com es pugui és buscar el màxim divisor comú (MCD), no el MCM"],
+   ["S'havien de sumar les longituds de les cintes","Per fer trossos iguals primer s'han de sumar les dues longituds i després dividir entre dos"],
+   ["S'havien de multiplicar les dues longituds","Per trobar la mida de cada tros s'han de multiplicar les longituds de totes dues cintes"]
+  );
+  const llib=[`Dades: ${a} cm i ${b} cm.`,`Tallar en trossos iguals tan llargs com es pugui → busquem el màxim divisor comú (MCD).`,`MCD (${a}, ${b}) = <b>${g}</b>`,`Resposta: cada tros farà <b>${g} cm</b>.`];
   return {enun:`Tenim dues cintes de ${a} cm i ${b} cm. Les volem tallar en trossos iguals, tan llargs com es pugui, sense que en sobri. Quant farà cada tros?`,
-   linies:[`Dades: ${a} cm i ${b} cm.`,`Tallar en trossos iguals → calculo el MCM.`,`MCM (${a}, ${b}) = ${m}`,`Cada tros farà ${m} cm.`],mal:1,
-   per:["Tallar en trossos iguals, tan llargs com es pugui, és buscar un divisor comú: és un problema de MCD","Les dades estan malament","S'havien de multiplicar les dues longituds"],
-   bona:`MCD (${a}, ${b}) = ${g} → cada tros farà <b>${g} cm</b>.`,pista:"Un tros pot ser més llarg que la cinta?"}},
- multiple_reves(){const b=MX_R(3,12),k=MX_R(3,9),a=b*k;
-  return {enun:`Fes la divisió ${a} : ${b} i digues què és cada nombre de l'altre.`,linies:[`${a} : ${b} = ${k}, i el residu és 0.`,`La divisió és exacta.`,`→ ${b} és múltiple de ${a}.`,`→ ${a} és divisible per ${b}.`],mal:2,
-   per:[`És al revés: ${a} és múltiple de ${b}, i ${b} és divisor de ${a}`,"La divisió no és exacta",`${b} és més gran que ${a}`],
-   bona:`→ ${a} és <b>múltiple</b> de ${b}, i ${b} és <b>divisor</b> de ${a}.`,pista:"El múltiple és el nombre gran; el divisor, el petit."}},
+   linies,mal:pos,per,llibreta:llib,bona:mxLlibHtml(llib,[1,2,3]),
+   t:"num",r:g,q:`Calcula el resultat correcte: quants <b>cm</b> farà cada tros (MCD de ${a} i ${b})?`,pistaR:`Calcula el MCD (${a}, ${b}).`,pista:"Un tros pot ser més llarg que la cinta?"}},
+ multiple_reves(){const b=MX_R(3,12),k=MX_R(3,9),a=b*k,pos=mxPos("multiple_reves",[1,2,3]);
+  const linMal=`→ ${b} és múltiple de ${a}, i ${a} és divisor de ${b}.`;
+  const linies=pos===1?[`${a} : ${b} = ${k} (residu 0, divisió exacta).`,linMal,`Perquè ${b} · ${k} = ${a}.`,`→ ${a} és divisible per ${b}.`]
+   :pos===2?[`${a} : ${b} = ${k}, i el residu és 0.`,`La divisió és exacta.`,linMal,`→ ${a} és divisible per ${b}.`]
+   :[`Fem la divisió ${a} : ${b} = ${k}.`,`El residu és 0, per tant és exacta.`,`→ ${a} és divisible per ${b}.`,linMal];
+  const per=mxPer3(
+   [`És al revés: ${a} és múltiple de ${b}`,`És al revés: el nombre gran (${a}) és múltiple del petit (${b}), i ${b} és divisor de ${a}`],
+   [`El quocient ${k} és el múltiple de ${a}`,`En una divisió exacta, el múltiple sempre és el quocient (${k}) i no pas el dividend (${a})`],
+   ["Només els nombres parells tenen múltiples","Un nombre només pot ser múltiple d'un altre si tots dos nombres acaben en xifra parella"]
+  );
+  const op=[`${a} és múltiple de ${b}, i ${b} és divisor de ${a}`,`${b} és múltiple de ${a}, i ${a} és divisor de ${b}`,`${a} i ${b} són divisors de ${k}`];
+  const llib=[`${a} : ${b} = ${k} (residu 0 → divisió exacta).`,`→ <b>${a} és múltiple de ${b}</b>, i <b>${b} és divisor de ${a}</b>.`,`→ També diem que ${a} és divisible per ${b}.`];
+  return {enun:`Fes la divisió ${a} : ${b} i digues què és cada nombre de l'altre.`,linies,mal:pos,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[1]),
+   t:"tria",op,r:0,q:`Quina és l'afirmació <b>correcta</b>?`,pistaR:`El múltiple és el nombre gran (${a}); el divisor és el petit (${b}).`,pista:"El múltiple és el nombre gran; el divisor, el petit."}},
  // per a temes futurs
- jerarquia(){const a=MX_R(2,9),b=MX_R(2,9),c=MX_R(2,9);
-  return {enun:`Calcula ${a} + ${b} · ${c}.`,linies:[`${a} + ${b} · ${c}`,`= ${a+b} · ${c}`,`= ${(a+b)*c}`],mal:1,
-   per:["S'ha de multiplicar abans de sumar","S'havia de restar","La suma està mal feta"],bona:`${a} + ${b} · ${c} = ${a} + ${b*c} = <b>${a+b*c}</b>`,pista:"Quina operació va primer?"}},
- fraccio_den(){const b=MX_T([2,3,4,5]),d=MX_T([3,5,7].filter(x=>x!==b)),a=1,c=1,m=mxMCM(b,d);
-  return {enun:`Calcula ${mxFr(a,b)} + ${mxFr(c,d)}.`,linies:[`${mxFr(a,b)} + ${mxFr(c,d)}`,`= ${mxFr(a+c,b+d)}`],mal:1,
-   per:["Els denominadors no se sumen: primer s'han de posar amb el mateix denominador (el MCM)","S'havien de multiplicar els numeradors","Està bé"],
-   bona:`${mxFr(a,b)} + ${mxFr(c,d)} = ${mxFr(a*m/b,m)} + ${mxFr(c*m/d,m)} = <b>${mxFr(a*m/b+c*m/d,m)}</b>`,pista:"Què passa amb els denominadors quan se sumen fraccions?"}}
+ jerarquia(){const a=MX_R(2,9),b=MX_R(2,9),c=MX_R(2,9),res=a+b*c,pos=mxPos("jerarquia",[0,1,2]);
+  const linies=pos===0?[`Fem primer la suma: ${a} + ${b} = ${a+b}`,`= ${a+b} · ${c}`,`= ${(a+b)*c}`]
+   :pos===1?[`${a} + ${b} · ${c}`,`= ${a+b} · ${c}`,`= ${(a+b)*c}`]
+   :[`${a} + ${b} · ${c}`,`Operem d'esquerra a dreta:`,`= ${a+b} · ${c} = ${(a+b)*c}`];
+  const per=mxPer3(
+   ["La multiplicació va abans que la suma","Segons la jerarquia d'operacions, s'ha de fer la multiplicació abans que la suma"],
+   ["Sempre s'opera de dreta a esquerra","En qualsevol expressió sense parèntesis sempre s'han de fer les operacions de dreta a esquerra"],
+   ["Primer es multipliquen els tres nombres","Quan hi ha una suma i un producte, s'han de multiplicar tots tres nombres entre ells"]
+  );
+  const llib=[`${a} + ${b} · ${c}`,`= ${a} + ${b*c}`,`= <b>${res}</b>`];
+  return {enun:`Calcula ${a} + ${b} · ${c}.`,linies,mal:pos,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[1,2]),
+   t:"num",r:res,q:`Quant fa realment <b>${a} + ${b} · ${c}</b>?`,pistaR:`Primer ${b} · ${c} = ${b*c}, i després ${a} + ${b*c}.`,pista:"Quina operació va primer?"}},
+ fraccio_den(){const b=MX_T([2,3,4,5]),d=MX_T([3,5,7].filter(x=>x!==b)),a=1,c=1,m=mxMCM(b,d),num=a*m/b+c*m/d,pos=mxPos("fraccio_den",[0,1,2]);
+  const linies=pos===0?[`Sumem numeradors i denominadors: ${mxFr(a+c,b+d)}`,`Perquè ${a} + ${c} = ${a+c} i ${b} + ${d} = ${b+d}.`,`Resultat: ${mxFr(a+c,b+d)}`]
+   :pos===1?[`${mxFr(a,b)} + ${mxFr(c,d)}`,`= ${mxFr(a+c,b+d)}`,`Ja no es pot simplificar més.`]
+   :[`Volem sumar ${mxFr(a,b)} + ${mxFr(c,d)}.`,`Sumem a dalt i a baix per separat:`,`= ${mxFr(a+c,b+d)}`];
+  const per=mxPer3(
+   ["Cal posar denominador comú (el MCM)","Els denominadors no se sumen mai: primer s'han de reduir a comú denominador (el MCM)"],
+   ["S'han de multiplicar els numeradors","Per sumar dues fraccions s'han de multiplicar els numeradors entre ells i deixar el denominador"],
+   ["Es deixa el denominador més petit","Quan sumem fraccions de diferent denominador es deixa sempre el denominador més petit dels dos"]
+  );
+  const llib=[`${mxFr(a,b)} + ${mxFr(c,d)} (MCM de ${b} i ${d} = ${m})`,`= ${mxFr(a*m/b,m)} + ${mxFr(c*m/d,m)}`,`= <b>${mxFr(num,m)}</b>`];
+  return {enun:`Calcula ${mxFr(a,b)} + ${mxFr(c,d)}.`,linies,mal:pos,per,
+   llibreta:llib,bona:mxLlibHtml(llib,[0,1,2]),
+   t:"num",r:m,q:`Quin és el <b>denominador comú (MCM de ${b} i ${d})</b> que s'ha de fer servir?`,pistaR:`Busca el MCM de ${b} i ${d}.`,pista:"Què passa amb els denominadors quan se sumen fraccions?"}}
 };
 let MXR=null;
+function mxErrRepAnota(E,pas){if(!MXR||MXR.rep||typeof repAnotaExt!=="function"||!E.tipus||!MXE[E.tipus])return;
+ repAnotaExt("err",E.tipus,{tipus:E.tipus,pas},false)}
 function mxError(j){mxCss();mxCss2();const ts=MX_B(j.mx.error||Object.keys(MXE)).slice(0,j.mx.n||5);
- MXR={j,llista:ts.map(t=>{const E=MXE[t]();E.tipus=t;E.nom=MX_T(MX_NOMS);E.ord=MX_B([0,1,2]);return E}),e:0,fase:"linia",bones:0,errs:0,int:0,ep:[],fi:false};mxErrPinta()}
-function mxErrPinta(){const {j,llista,e}=MXR,E=llista[e];MXR.fase="linia";MXR.int=0;
- app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><div class="mx-cap"><span class="mx-ap">Exercici ${e+1} de ${llista.length}</span></div>
- <p>🔍 <b>${E.nom.charAt(0).toUpperCase()+E.nom.slice(1)}</b> ha fet aquest exercici i hi ha <b>un error</b>. Toca la primera línia que està malament.</p>
- <div class="mx-enun">${E.enun}</div><div class="mx-llib mx-err">${E.linies.map((l,i)=>`<button class="mx-lin" data-i="${i}" onclick="mxErrLin(${i})">${l}</button>`).join("")}</div><div id="mxFb"></div><div id="zona"></div></div>`}
+ MXR={j,llista:ts.map(t=>{const E=MXE[t]();E.tipus=t;E.nom=MX_T(MX_NOMS);E.ord=MX_B([0,1,2]);return E}),e:0,fase:"linia",v:"",bones:0,errs:0,int:0,ep:[],errE:[],fi:false};mxErrPinta()}
+function mxErrPinta(){const {j,llista,e}=MXR,E=llista[e];MXR.fase="linia";MXR.int=0;MXR.v="";MXR.esp=false;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><div class="mx-cap"><span class="mx-ap">Exercici ${e+1} de ${llista.length}</span><span class="prog">Pas 1 de 3 · Troba la línia</span></div>
+ <p>🔍 <b>${E.nom.charAt(0).toUpperCase()+E.nom.slice(1)}</b> ha fet aquest exercici i hi ha <b>un error</b>. Toca la línia que està malament.</p>
+ <div class="mx-enun">${E.enun}</div><div class="mx-llib mx-err"><h4>❌ Així NO s'escriu (busca l'error)</h4>${E.linies.map((l,i)=>`<button class="mx-lin" data-i="${i}" onclick="mxErrLin(${i})">${l}</button>`).join("")}</div><div id="mxFb"></div><div id="zona"></div></div>`}
 function mxErrLin(i){if(!MXR||MXR.fase!=="linia")return;const E=MXR.llista[MXR.e],b=document.querySelector(`.mx-lin[data-i="${i}"]`),fb=document.getElementById("mxFb");
- if(i!==E.mal){MXR.errs++;MXR.int++;if(MXR.ep.length<40)MXR.ep.push(`error|${E.tipus}|linia`);if(b){b.classList.add("no");if(typeof sacseja==="function")sacseja(b)}
+ if(i!==E.mal){MXR.errs++;MXR.int++;MXR.errE[MXR.e]=1;if(MXR.ep.length<40)MXR.ep.push(`error|${E.tipus}|linia`);mxErrRepAnota(E,"linia");
+  if(b){b.classList.add("no");if(typeof sacseja==="function")sacseja(b)}
   fb.innerHTML=`<div class="fb" style="background:#fef2f2;border-color:#fecaca">Aquesta línia està bé. ${MXR.int>=2?"💡 "+E.pista:"Busca'n una altra."}</div>`;return}
  if(!MXR.int){MXR.bones++;if(typeof suma==="function"&&typeof JOCSTAR!=="undefined"&&JOCSTAR)suma(JOCSTAR)}if(typeof so==="function")so("ok");
- if(b)b.classList.add("mal");MXR.fase="per";
- fb.innerHTML=`<div class="fb ok">🎯 L'has trobada! Ara: <b>per què està malament?</b></div><div class="mx-opc">${E.ord.map(k=>`<button onclick="mxErrPer(${k})">${E.per[k]}</button>`).join("")}</div>`}
-function mxErrPer(k){if(!MXR||MXR.fase!=="per")return;const E=MXR.llista[MXR.e],bo=k===0;MXR.fase="fet";
+ if(b)b.classList.add("mal");MXR.fase="per";MXR.int=0;
+ fb.innerHTML=`<div class="fb ok">🎯 L'has trobada! <b>Pas 2 de 3 · Per què està malament?</b></div><div class="mx-opc">${E.ord.map(k=>`<button onclick="mxErrPer(${k})">${E.per[k]}</button>`).join("")}</div>`}
+function mxErrPer(k){if(!MXR||MXR.fase!=="per")return;const E=MXR.llista[MXR.e],bo=k===0;
  if(bo){MXR.bones++;if(typeof suma==="function"&&typeof JOCSTAR!=="undefined"&&JOCSTAR)suma(JOCSTAR);if(typeof so==="function")so("ok")}
- else{MXR.errs++;if(MXR.ep.length<40)MXR.ep.push(`error|${E.tipus}|per`);if(typeof so==="function")so("ko")}
- const ult=MXR.e+1>=MXR.llista.length;
- document.getElementById("mxFb").innerHTML=`<div class="fb ${bo?"ok":""}">${bo?"👏 Exacte!":"No ben bé."} ${E.per[0]}.</div><div class="mx-llib"><h4>📒 Com s'hauria d'escriure</h4>${E.bona}</div><div class="fila"><button class="btn" id="mxSeg" onclick="${ult?"mxErrFi()":"mxErrSeg()"}">${ult?"Acaba 🏁":"Següent exercici ▶"}</button></div>`}
+ else{MXR.errs++;MXR.errE[MXR.e]=1;if(MXR.ep.length<40)MXR.ep.push(`error|${E.tipus}|per`);mxErrRepAnota(E,"per");if(typeof so==="function")so("ko")}
+ if(E.r===undefined){MXR.fase="fet";return mxErrMostraSol(bo)}
+ MXR.fase="escriu";MXR.int=0;MXR.v="";MXR.perBo=bo;
+ document.getElementById("mxFb").innerHTML=`<div class="fb ${bo?"ok":""}">${bo?"👏 Exacte!":"No ben bé."} ${E.per[0]}.</div>
+ <div class="mx-pas" style="margin-top:10px"><div class="prog" style="margin-bottom:4px">✍️ Pas 3 de 3 · Escriu-ho bé tu</div><div>${E.q}</div><div id="mxErrFb2"></div>${mxErrEntrada(E)}</div>`;
+ mxErrVista()}
+function mxErrEntrada(E){
+ if(E.t==="tria")return `<div class="mx-opc">${E.op.map((o,i)=>`<button onclick="mxErrRespon(${i})">${o}</button>`).join("")}</div>`;
+ const k=E.t==="llista"?[7,8,9,"⌫",4,5,6,",",1,2,3,"C","",0,"",""]:[7,8,9,"⌫",4,5,6,"C",1,2,3,"",0,"","",""];
+ return `<div class="mx-disp buit" id="mxDisp">${E.t==="llista"?"Escriu els nombres separats per comes":"Escriu el resultat"}</div>
+ <div class="mx-tec">${k.map(x=>x===""?"<span></span>":`<button class="${x==="⌫"||x==="C"?"esb":""}" onclick="mxErrTecla('${x}')">${x}</button>`).join("")}</div>
+ <div class="fila"><button class="btn" onclick="mxErrRespon()">Comprova ✔</button></div>`}
+function mxErrTecla(x){if(!MXR||MXR.fi||MXR.fase!=="escriu")return;if(x==="⌫")MXR.v=MXR.v.slice(0,-1);else if(x==="C")MXR.v="";else if(x===","){if(MXR.v&&!/,\s*$/.test(MXR.v))MXR.v+=", "}else if(MXR.v.replace(/\D/g,"").length<40)MXR.v+=x;
+ if(typeof so==="function"&&x!=="")so("clic");mxErrVista()}
+function mxErrVista(){if(!MXR)return;const E=MXR.llista[MXR.e],d=document.getElementById("mxDisp");if(!d)return;
+ d.classList.toggle("buit",!MXR.v);d.textContent=MXR.v?MXR.v.replace(/\d+/g,m=>mxN(+m)):(E.t==="llista"?"Escriu els nombres separats per comes":"Escriu el resultat")}
+function mxErrRespon(i){if(!MXR||MXR.fase!=="escriu"||MXR.esp)return;const E=MXR.llista[MXR.e],fb2=document.getElementById("mxErrFb2");
+ let v;if(E.t==="tria")v=i;else{const ns=(MXR.v.match(/\d+/g)||[]).map(Number);v=E.t==="llista"?ns:(ns.length?ns[0]:null)}
+ if(E.t!=="tria"&&(v===null||(E.t==="llista"&&!v.length))){if(fb2)fb2.innerHTML=`<div class="fb">✏️ Primer escriu la resposta.</div>`;return}
+ const bo=mxBo(E,v);
+ if(bo){if(!MXR.int){MXR.bones++;if(typeof suma==="function"&&typeof JOCSTAR!=="undefined"&&JOCSTAR)suma(JOCSTAR)}if(typeof so==="function")so("ok");MXR.fase="fet";return mxErrMostraSol(true)}
+ MXR.errs++;MXR.int++;MXR.errE[MXR.e]=1;if(MXR.ep.length<40)MXR.ep.push(`error|${E.tipus}|escriu`);mxErrRepAnota(E,"escriu");if(typeof so==="function")so("ko");
+ const pas=document.querySelector(".mx-pas");if(pas&&typeof sacseja==="function")sacseja(pas);
+ if(MXR.int>=2||E.t==="tria"){MXR.esp=true;if(fb2)fb2.innerHTML=`<div class="fb">❌ La resposta correcta és <b>${mxMostra(E,E.r)}</b>. Mira com queda l'exercici sencer corregit.</div><div class="fila"><button class="btn" id="mxSeg" onclick="mxErrMostraSol(false)">Mira la llibreta ▶</button></div>`;return}
+ if(fb2)fb2.innerHTML=`<div class="fb" style="background:#fef2f2;border-color:#fecaca">❌ No és correcte. ${E.pistaR||"Torna-ho a provar."}</div>`}
+function mxErrMostraSol(bo){if(!MXR)return;const E=MXR.llista[MXR.e],ult=MXR.e+1>=MXR.llista.length;MXR.fase="fet";MXR.esp=false;
+ document.getElementById("mxFb").innerHTML=`<div class="fb ${bo?"ok":""}">${bo?"✅ Molt bé! Ja has detectat i corregit l'error.":"👉 Fixa't bé en la correcció pas a pas."} (${E.per[0]}.)</div>
+ <div class="mx-llib"><h4>📒 Així s'escriu a la llibreta · Exercici corregit</h4>${E.bona}</div>
+ <div class="fila"><button class="btn" id="mxSeg" onclick="${ult?(MXR.onFi?"MXR.onFi()":"mxErrFi()"):"mxErrSeg()"}">${ult?(MXR.onFi?"Veure el resultat 🏁":"Acaba 🏁"):"Següent exercici ▶"}</button></div>`}
 function mxErrSeg(){MXR.e++;mxErrPinta();window.scrollTo(0,0)}
 function mxErrFi(){const {j,bones,errs,llista}=MXR;MXR.fi=true;
- app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><p>Has revisat <b>${llista.length} exercicis</b>: <b>${bones}</b> encerts i <b>${errs}</b> errors. Buscar els errors dels altres és una manera molt bona de no fer-los tu!</p><div id="zona"></div></div>`;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><p>Has revisat i corregit <b>${llista.length} exercicis</b>: <b>${bones}</b> passos bé a la primera i <b>${errs}</b> errors. Buscar i corregir els errors és la millor manera de no fer-los a l'examen!</p><div id="zona"></div></div>`;
  fiJoc(j,Math.max(1,bones),errs,{mode:"error",ep:MXR.ep})}
-function mxErrProva(j){mxError(j);let s=0;while(MXR&&!MXR.fi&&s++<100){const b=document.getElementById("mxSeg");if(b){b.click();continue}const E=MXR.llista[MXR.e];if(MXR.fase==="linia")mxErrLin(E.mal);else if(MXR.fase==="per")mxErrPer(0)}return MXR&&MXR.fi?true:"Troba l'error: no ha acabat"}
+function mxErrProva(j){mxError(j);let s=0;while(MXR&&!MXR.fi&&s++<150){const b=document.getElementById("mxSeg");if(b){b.click();continue}const E=MXR.llista[MXR.e];if(MXR.fase==="linia")mxErrLin(E.mal);else if(MXR.fase==="per")mxErrPer(0);else if(MXR.fase==="escriu"){if(E.t==="tria")mxErrRespon(E.r);else{MXR.v=E.t==="llista"?E.r.join(", "):String(E.r);mxErrRespon()}}}return MXR&&MXR.fi?true:"Troba l'error: no ha acabat"}
+const MX_ERR_NOM={mcm_exp:"MCM: exponent dels comuns",mcd_nocomu:"MCD: factors comuns",escala_noprimer:"Escala: només factors primers",escala_divisio:"Escala: divisió exacta",primer_u:"El nombre 1 ni primer ni compost",primer_fals:"Comprovar si és divisible per 3",divisors_falta:"Totes les parelles de divisors",criteri3:"Criteri de divisibilitat del 3",problema_confon:"Problema: triar MCM o MCD",multiple_reves:"Múltiple i divisor",jerarquia:"Jerarquia d'operacions",fraccio_den:"Suma de fraccions amb MCM"};
+function mxErrRepas(items,fi){mxCss();mxCss2();
+ const j={id:"rp-err",titol:"🔍 Repàs d'errors que et van enganyar",mx:{}};
+ const llista=items.map(r=>{const E=MXE[r.tipus]();E.tipus=r.tipus;E.nom=MX_T(MX_NOMS);E.ord=MX_B([0,1,2]);return E});
+ const jst=typeof JOCSTAR!=="undefined"?JOCSTAR:0;JOCSTAR=0;
+ MXR={j,llista,e:0,fase:"linia",v:"",bones:0,errs:0,int:0,ep:[],errE:[],fi:false,rep:true};
+ MXR.onFi=()=>{MXR.fi=true;JOCSTAR=jst;fi(llista.map((_,i)=>!MXR.errE[i]))};
+ mxErrPinta();window.scrollTo(0,0)}
+(window.BN_REP_TIPUS=window.BN_REP_TIPUS||{}).err={ic:"🔍",max:3,titol:"Ara, errors que et van enganyar",
+ peu:"Un altre exemple amb la mateixa trampa. Troba la línia, digues per què i escriu-ho bé sense cap error.",
+ valid:r=>r&&r.tipus&&typeof MXE!=="undefined"&&!!MXE[r.tipus],
+ nom:r=>`🔍 ${MX_ERR_NOM[r.tipus]||r.tipus}`,
+ juga:mxErrRepas};
+function mxErrRepProva(){const repAbans=JSON.stringify(S.rep||{}),apAbans=S.apresos||0;
+ try{const jErr=(ASSIG.jocs||[]).find(x=>x.fn==="mxError");if(!jErr)return true;
+  S.rep={};mxError(jErr);const E0=MXR.llista[0],malAlt=(E0.mal+1)%E0.linies.length;
+  mxErrLin(malAlt);
+  const k="err|"+E0.tipus;if(!S.rep[k])return "l'error de Troba l'error no ha entrat al repàs";
+  if(!repPendents().some(x=>x.tipus==="err"))return "repPendents no inclou l'error de Troba l'error";
+  repas();const b=document.getElementById("repSeg");if(!b)return "el repàs no ofereix el botó per començar";b.click();
+  if(!MXR||!MXR.rep)return "el repàs no ha obert Troba l'error";
+  let s=0;while(MXR&&!MXR.fi&&s++<150){const seg=document.getElementById("mxSeg");if(seg){seg.click();continue}const E=MXR.llista[MXR.e];
+   if(MXR.fase==="linia")mxErrLin(E.mal);else if(MXR.fase==="per")mxErrPer(0);else if(MXR.fase==="escriu"){if(E.t==="tria")mxErrRespon(E.r);else{MXR.v=E.t==="llista"?E.r.join(", "):String(E.r);mxErrRespon()}}}
+  const r2=S.rep[k];if(!r2||r2.c!==1)return `després del repàs d'error, la capsa hauria de ser 1 (és ${r2?r2.c:"fora"})`;
+  return true}finally{REPAS=false;S.rep=JSON.parse(repAbans);S.apresos=apAbans;desa()}}
+if(typeof window!=="undefined")(window.BN_PROVES=window.BN_PROVES||[]).push("mxErrRepProva");
 
 // ---------- PROVA AUTOMÀTICA (motor/prova.js): resol la fitxa o l'examen amb les respostes bones ----------
 // Fitxes: prova els tres modes (mira → completa → sol) i també les preguntes «per què?». Examen: ha de donar un 10.
@@ -1539,13 +1721,13 @@ function mpRectPinta(){const R=MP.rondes[MP.r],{n,files}=R,q=Math.floor(n/files)
  <div style="text-align:center"><div class="mp-quad${sob?"":" ok"}" style="--q:${mida}px;grid-template-columns:repeat(${q},var(--q))">${"<i></i>".repeat(q*files)}</div>
  ${sob?`<div class="mp-sob" style="--q:${mida}px">${"<i></i>".repeat(sob)}</div>`:""}</div>
  <div class="fb ${sob?"":"ok"}">${sob?`❌ ${files} files de ${q} i en sobren <b>${sob}</b>: ${n} : ${files} no és exacta → ${files} <b>no</b> és divisor de ${n}.`:`✅ ${files} files de ${q}: ${files} · ${q} = ${n} → <b>${files}</b> i <b>${q}</b> són divisors de ${n}.`}</div>
- <p style="margin:10px 0 2px"><b>Rectangles trobats:</b> ${fets.length} de ${parells.length}</p><div class="mp-xips">${fets.map(d=>`<span>${d} × ${n/d}</span>`).join("")||"<small class='prog'>encara cap</small>"}</div>
+ <p style="margin:10px 0 2px"><b>Rectangles trobats:</b> ${fets.length} de ${parells.length}</p><div class="mp-xips">${fets.map(d=>`<span>${d} · ${n/d}</span>`).join("")||"<small class='prog'>encara cap</small>"}</div>
  <div id="mpFb">${R.msg||""}</div>${R.fet?"":`<div class="fila"><button class="btn verd" onclick="mpRectFet()">Ja els tinc tots ✔</button></div>`}<div id="zona"></div></div>`}
 function mpRectFiles(d){const R=MP.rondes[MP.r];R.files=Math.max(1,Math.min(R.n,R.files+d));if(typeof so==="function")so("clic");mpRectPinta()}
 function mpRectFet(){const R=MP.rondes[MP.r];if(R.fet)return;const par=mpDiv(R.n).filter(d=>d*d<=R.n),fb=document.getElementById("mpFb");
  if(R.trobats.size<par.length){MP.errs++;if(typeof sacseja==="function")sacseja(fb.parentNode);fb.innerHTML=`<div class="fb ko">Encara ${par.length-R.trobats.size===1?"en falta 1":`en falten ${par.length-R.trobats.size}`}. Prova altres nombres de files.</div>`;return}
  mpEstrella();if(typeof so==="function")so("ok");const pr=mpPrimer(R.n);R.fet=true;
- R.msg=`<div class="fb ok">🎉 ${pr?`<b>${R.n}</b> només fa el rectangle 1 × ${R.n}: només té dos divisors → és <b>PRIMER</b>.`:`Divisors de ${R.n}: <b>${mpDiv(R.n).join(", ")}</b>. Van per parelles: ${par.map(d=>`${d} · ${R.n/d}`).join(", ")}.`}</div>${mpBotoSeg()}`;mpRectPinta()}
+ R.msg=`<div class="fb ok">🎉 ${pr?`<b>${R.n}</b> només fa el rectangle 1 · ${R.n}: només té dos divisors → és <b>PRIMER</b>.`:`Divisors de ${R.n}: <b>${mpDiv(R.n).join(", ")}</b>. Van per parelles: ${par.map(d=>`${d} · ${R.n/d}`).join(", ")}.`}</div>${mpBotoSeg()}`;mpRectPinta()}
 
 // ---------- 🐸 LES GRANOTES: el MCM és el primer lloc on coincideixen ----------
 function mpGranotes(j){mpInici(j,j.mp.parells.map(([a,b])=>({a,b,va:0,vb:0,fet:false,int:0})),mpGranPinta)}
@@ -1577,10 +1759,10 @@ function mpRajPinta(){const R=MP.rondes[MP.r],{a,b,s}=R,g=mpMCD(a,b),W=560,k=Mat
  const max=Math.min(a,b),mides=[...Array(max)].map((_,i)=>i+1).filter(x=>max<=16||x<=8||a%x===0||b%x===0);
  const exacta=s&&!(a%s)&&!(b%s);
  app.innerHTML=`<h2 class="sec">${MP.j.enunciat||MP.j.titol}</h2><div class="box">${mpCap("🧱 Les rajoles")}
- <p class="mp-big">Volem enrajolar un terra de <b>${a} × ${b}</b> pams amb rajoles quadrades iguals, <b>sense tallar-ne cap</b> i <b>tan grans com es pugui</b>. Tria la mida del costat de la rajola:</p>
+ <p class="mp-big">Volem enrajolar un terra de <b>${a} · ${b}</b> pams amb rajoles quadrades iguals, <b>sense tallar-ne cap</b> i <b>tan grans com es pugui</b>. Tria la mida del costat de la rajola:</p>
  <div class="mp-mides">${mides.map(x=>`<button class="${R.prov[x]===1?"ok":R.prov[x]===0?"ko":""}${s===x?" sel":""}" onclick="mpRajTria(${x})">${x}</button>`).join("")}</div>
  <svg class="mp-svg" viewBox="0 0 ${W} ${h+20}" role="img" aria-label="terra rectangular amb rajoles"><rect x="${ox}" y="${oy}" width="${w}" height="${h}" fill="#f8fafc" stroke="#334155" stroke-width="3"/>${rj}</svg>
- <div id="mpFb">${R.fet?R.msg:s?`<div class="fb ${exacta?"ok":"ko"}">${exacta?`✅ Rajoles de ${s}: encaixen justes (${a/s} × ${b/s} = ${a/s*b/s} rajoles). ${s} divideix ${a} i ${b}.`:`❌ Rajoles de ${s}: sobra una franja vermella. ${a%s?`${a} : ${s} no és exacta.`:`${b} : ${s} no és exacta.`}`}</div>${exacta?`<div class="fila"><button class="btn verd" onclick="mpRajFet()">Aquesta és la més gran ✔</button></div>`:""}`:""}</div><div id="zona"></div></div>`}
+ <div id="mpFb">${R.fet?R.msg:s?`<div class="fb ${exacta?"ok":"ko"}">${exacta?`✅ Rajoles de ${s}: encaixen justes (${a/s} · ${b/s} = ${a/s*b/s} rajoles). ${s} divideix ${a} i ${b}.`:`❌ Rajoles de ${s}: sobra una franja vermella. ${a%s?`${a} : ${s} no és exacta.`:`${b} : ${s} no és exacta.`}`}</div>${exacta?`<div class="fila"><button class="btn verd" onclick="mpRajFet()">Aquesta és la més gran ✔</button></div>`:""}`:""}</div><div id="zona"></div></div>`}
 function mpRajTria(x){const R=MP.rondes[MP.r];if(R.fet)return;R.s=x;R.prov[x]=R.a%x||R.b%x?0:1;if(typeof so==="function")so("clic");mpRajPinta()}
 function mpRajFet(){const R=MP.rondes[MP.r],g=mpMCD(R.a,R.b);if(R.fet)return;
  if(R.s!==g){R.int++;MP.errs++;if(typeof so==="function")so("ko");document.getElementById("mpFb").insertAdjacentHTML("beforeend",`<div class="fb ko">N'hi ha una de més gran que també encaixa justa. Prova mides més grans!</div>`);return}
@@ -2221,7 +2403,7 @@ function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">$
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
  JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
  return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
-function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id);({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
  if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}

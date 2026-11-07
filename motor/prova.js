@@ -35,6 +35,7 @@ const {chromium}=require('playwright');
   else if(t==='classifica'){const it=await p.evaluate(id=>ASSIG.jocs.find(j=>j.id===id).items,id);for(const [fr,k] of it){await p.evaluate(([fr,k])=>{[...document.querySelectorAll('#fr .chip')].find(x=>x.textContent===fr).click();document.querySelector(`.cub[data-k="${k}"]`).click()},[fr,k])}}
   else if(t==='custom'){const ok=await p.evaluate(id=>{const j=ASSIG.jocs.find(x=>x.id===id);return j.prova?window[j.prova](j):'sense prova'},id);if(ok!==true)errs.push(`joc ${id}: ${ok}`);else{const fet=await p.evaluate(id=>id in S.jocs,id);if(!fet)errs.push(`joc ${id}: no ha cridat fiJoc`)}}
   else if(t==='figura'){const n=await p.evaluate(id=>ASSIG.jocs.find(j=>j.id===id).q.length,id);for(let k=0;k<n;k++){await p.locator('.opt').first().click();await p.click('#seg')}}
+  else if(t==='error'){const ok=await p.evaluate(id=>jocErrorProva(ASSIG.jocs.find(x=>x.id===id)),id);if(ok!==true)errs.push(`joc ${id}: ${ok}`);else{const fet=await p.evaluate(id=>id in S.jocs,id);if(!fet)errs.push(`joc ${id}: no ha cridat fiJoc`)}}
   await tanca();
  }
  // proves pròpies de les eines incloses (pissarra, quadern…): window.BN_PROVES = noms de funcions que tornen true o el text de l'error
