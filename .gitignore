@@ -1,5 +1,9 @@
+.DS_Store
 node_modules/
 package-lock.json
 *_inici.png
 *_analitica.png
 __pycache__/
+# nucli
+.nucli/
+.claude/worktrees/

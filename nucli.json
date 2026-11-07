@@ -1,0 +1,109 @@
+{
+  "versio": 1,
+  "idioma": "ca",
+  "branca_base": "main",
+  "docs": {
+    "estat": "docs/ESTAT.md",
+    "decisions": {
+      "cami": "docs/DECISIONS.md",
+      "format": "adr"
+    },
+    "trampes": "docs/TRAMPES.md",
+    "convencions": "docs/CONVENCIONS.md",
+    "arquitectura": "docs/ARQUITECTURA.md"
+  },
+  "checks": {
+    "generat": {
+      "ordre": "python3 motor/tot.py"
+    },
+    "generadors": {
+      "ordre": "node motor/prova-generadors.js"
+    },
+    "visual": {
+      "manual": "Revisió visual al navegador / mòbil a 360, 390 i 430 px"
+    },
+    "sql": {
+      "manual": "SQL revisat i aplicat al projecte Supabase «bonanota» (agippwtqvhpxdockuigl)"
+    }
+  },
+  "regles": [
+    {
+      "patrons": [
+        "*.md",
+        "docs/**"
+      ],
+      "checks": []
+    },
+    {
+      "patrons": [
+        "motor/**",
+        "index.html",
+        "sprites.js",
+        "sw.js",
+        "CNAME",
+        "sociales/**",
+        "bio-i-geo/**",
+        "castellano/**",
+        "catala/**",
+        "matematiques/**"
+      ],
+      "checks": [
+        "generat",
+        "generadors"
+      ]
+    },
+    {
+      "patrons": [
+        "admin/**"
+      ],
+      "checks": [
+        "generat",
+        "visual"
+      ]
+    },
+    {
+      "patrons": [
+        "supabase/**"
+      ],
+      "checks": [
+        "sql"
+      ]
+    }
+  ],
+  "per_defecte": [
+    "generat",
+    "generadors"
+  ],
+  "risc": [
+    {
+      "patrons": [
+        "supabase/**"
+      ],
+      "motiu": "els canvis d'SQL o funcions a Supabase (agippwtqvhpxdockuigl) no es desfan amb un revert del PR"
+    }
+  ],
+  "commits": {
+    "tipus": [
+      "feat",
+      "fix",
+      "docs",
+      "style",
+      "refactor",
+      "perf",
+      "test",
+      "build",
+      "ci",
+      "chore",
+      "revert",
+      "wip"
+    ]
+  },
+  "agent": {
+    "torns": 60,
+    "pressupost_usd": 7,
+    "prohibides": [
+      "Bash(supabase:*)",
+      "mcp__supabase__*"
+    ]
+  }
+}
