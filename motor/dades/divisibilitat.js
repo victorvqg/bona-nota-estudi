@@ -33,7 +33,7 @@ const ASSIG={
    enunciat:"➗ Fitxa 7 · La divisió llarga",final:"Si la divisió és exacta (residu 0), el nombre gran és divisible pel petit."},
   {id:"rp-barreja",grup:"✏️ Taller: com a classe",tipus:"custom",fn:"mxFitxa",prova:"mxProva",mx:{barreja:["criteri","multiples","divisors","primer","escala",["mcmmcd","MCD"],["mcmmcd","MCM"],"problema","divisio"],n:6},ic:"🔀",titol:"Repàs barrejat",sub:"6 exercicis de tot, barrejats",col:"#fae8ff",
    enunciat:"🔀 Repàs barrejat",final:"Barrejar costa més, però el que aprens així es recorda molt més el dia de l'examen."},
-  {id:"er-troba",grup:"✏️ Taller: com a classe",tipus:"custom",fn:"mxError",prova:"mxErrProva",mx:{error:["mcm_exp","mcd_nocomu","escala_noprimer","escala_divisio","primer_u","primer_fals","divisors_falta","criteri3","problema_confon","multiple_reves"],n:5},ic:"🔍",titol:"Troba l'error",sub:"Exercicis resolts amb un error típic",col:"#fef3c7",
+  {id:"er-troba",grup:"✏️ Taller: com a classe",tipus:"custom",fn:"mxError",prova:"mxErrProva",mx:{error:["mcm_exp","mcd_nocomu","escala_noprimer","escala_divisio","primer_u","primer_fals","divisors_falta","criteri3","problema_confon","multiple_reves","jerarquia","fraccio_den"],n:5},ic:"🔍",titol:"Troba l'error",sub:"Exercicis resolts amb un error típic",col:"#fef3c7",
    enunciat:"🔍 Troba l'error",final:"Si saps trobar l'error dels altres, és molt més difícil que el facis tu."},
   {id:"garbell",grup:"🧸 Per entendre",tipus:"custom",fn:"jocGarbell",prova:"provaGarbell",ic:"🧺",titol:"El garbell dels primers",sub:"Troba els 15 primers fins a 50",col:"#ccfbf1",
    enunciat:"🧺 El garbell: toca tots els nombres primers",
