@@ -7,9 +7,9 @@ function jocOrdena(j){
  let pos=0,errors=0;const it=j.items;
  app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="xips" style="margin-top:10px"></div><div class="pila" id="pila">${j.base?`<div style="background:#bbf7d0">${j.base}</div>`:""}</div><div id="zona"></div></div>`;
  const x=document.getElementById("xips");
- barreja(it.map((c,i)=>i)).forEach(i=>{const s=document.createElement("span");s.className="chip";s.textContent=it[i][0];
+ barreja(it.map((c,i)=>i)).forEach(i=>{const s=document.createElement("span");s.className="chip";s.setAttribute("role","button");s.tabIndex=0;s.textContent=it[i][0];
   s.onclick=()=>{if(s.classList.contains("ok"))return;
-   if(i===pos){s.classList.add("ok");const d=document.createElement("div");d.style.background=it[i][2]||"#eef2ff";d.innerHTML=`${i+1} · ${it[i][0]}${it[i][1]?` <small style="font-weight:600;color:#475569">— ${it[i][1]}</small>`:""}`;document.getElementById("pila").appendChild(d);pos++;suma(1);so("ok");if(pos===it.length)fiJoc(j,it.length,errors)}
+   if(i===pos){s.classList.add("ok");s.tabIndex=-1;const d=document.createElement("div");d.style.background=it[i][2]||"#eef2ff";d.innerHTML=`${i+1} · ${it[i][0]}${it[i][1]?` <small style="font-weight:600;color:#475569">— ${it[i][1]}</small>`:""}`;document.getElementById("pila").appendChild(d);pos++;suma(1);so("ok");if(pos===it.length)fiJoc(j,it.length,errors)}
    else{errors++;sacseja(s)}};x.appendChild(s)});
 }
 function jocFigura(j){
@@ -21,20 +21,20 @@ function jocParelles(j){
  const PAR=j.pars;let sel=null,fet=0,errors=0;
  app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div class="col2" style="margin-top:12px"><div id="esq"></div><div id="dre"></div></div><div id="zona"></div></div>`;
  const E=document.getElementById("esq"),D=document.getElementById("dre");
- barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][0];s.dataset.i=i;s.onclick=()=>{if(s.classList.contains("ok"))return;E.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};E.appendChild(s)});
- barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.textContent=PAR[i][1];
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.setAttribute("role","button");s.tabIndex=0;s.setAttribute("aria-pressed","false");s.textContent=PAR[i][0];s.dataset.i=i;s.onclick=()=>{if(s.classList.contains("ok"))return;E.querySelectorAll(".chip").forEach(c=>{c.classList.remove("sel");c.setAttribute("aria-pressed","false")});s.classList.add("sel");s.setAttribute("aria-pressed","true");sel=s};E.appendChild(s)});
+ barreja(PAR.map((p,i)=>i)).forEach(i=>{const s=document.createElement("div");s.className="chip";s.style.display="block";s.setAttribute("role","button");s.tabIndex=0;s.textContent=PAR[i][1];
   s.onclick=()=>{if(!sel||s.classList.contains("ok"))return;
-   if(+sel.dataset.i===i){sel.classList.remove("sel");sel.classList.add("ok");s.classList.add("ok");sel=null;fet++;suma(1);so("ok");if(fet===PAR.length)fiJoc(j,PAR.length,errors)}
+   if(+sel.dataset.i===i){sel.classList.remove("sel");sel.setAttribute("aria-pressed","false");sel.classList.add("ok");sel.tabIndex=-1;s.classList.add("ok");s.tabIndex=-1;sel=null;fet++;suma(1);so("ok");if(fet===PAR.length)fiJoc(j,PAR.length,errors)}
    else{errors++;sacseja(s)}};D.appendChild(s)});
 }
 function jocClassifica(j){
  const F=j.items;let sel=null,fet=0,errors=0;
- app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="fr" style="margin:10px 0"></div><div class="col2">${j.caixes.map(([k,t])=>`<div class="cub" data-k="${k}"><h4>${t}</h4></div>`).join("")}</div><div id="zona"></div></div>`;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${j.instr}<div id="fr" style="margin:10px 0"></div><div class="col2">${j.caixes.map(([k,t])=>`<div class="cub" role="button" tabindex="0" data-k="${k}"><h4>${t}</h4></div>`).join("")}</div><div id="zona"></div></div>`;
  const fr=document.getElementById("fr");
- barreja(F).forEach(f=>{const s=document.createElement("span");s.className="chip";s.textContent=f[0];s.dataset.k=f[1];s.onclick=()=>{fr.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));s.classList.add("sel");sel=s};fr.appendChild(s)});
+ barreja(F).forEach(f=>{const s=document.createElement("span");s.className="chip";s.setAttribute("role","button");s.tabIndex=0;s.setAttribute("aria-pressed","false");s.textContent=f[0];s.dataset.k=f[1];s.onclick=()=>{fr.querySelectorAll(".chip").forEach(c=>{c.classList.remove("sel");c.setAttribute("aria-pressed","false")});s.classList.add("sel");s.setAttribute("aria-pressed","true");sel=s};fr.appendChild(s)});
  app.querySelectorAll(".cub").forEach(c=>c.onclick=()=>{
   if(!sel)return;
-  if(sel.dataset.k===c.dataset.k){sel.classList.remove("sel");sel.classList.add("ok");sel.onclick=null;c.appendChild(sel);sel=null;fet++;suma(1);so("ok");if(fet===F.length)fiJoc(j,F.length,errors)}
+  if(sel.dataset.k===c.dataset.k){sel.classList.remove("sel");sel.setAttribute("aria-pressed","false");sel.classList.add("ok");sel.tabIndex=-1;sel.onclick=null;c.appendChild(sel);sel=null;fet++;suma(1);so("ok");if(fet===F.length)fiJoc(j,F.length,errors)}
   else{errors++;sacseja(sel)}});
 }
 

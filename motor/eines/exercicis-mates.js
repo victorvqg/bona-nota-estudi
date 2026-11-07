@@ -224,6 +224,7 @@ function mxCss(){if(document.getElementById("mxCss"))return;const s=document.cre
 .mx-tec{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-width:360px;margin:0 auto}
 .mx-tec button{border:0;border-radius:12px;padding:13px 0;font-size:21px;font-weight:900;background:#fff;color:var(--fosc);box-shadow:0 0 0 2px var(--vora) inset,0 3px 0 var(--vora);cursor:pointer;font-family:inherit}
 .mx-tec button:active{transform:translateY(2px)}
+.mx-tec button:focus-visible,.mx-opc button:focus-visible,.mx-fact .f button:focus-visible,.mx-mode:focus-visible,.mx-lin:focus-visible{outline:3px solid var(--blau2);outline-offset:2px}
 .mx-tec .ok{background:var(--blau);color:#fff;box-shadow:0 3px 0 var(--blau2)}
 .mx-tec .esb{background:#fee2e2}
 .mx-opc{display:flex;flex-direction:column;gap:8px;margin-top:10px}
@@ -315,7 +316,7 @@ function mxPinta(){const {j,llista,e,p,ex,mode}=MX,E=llista[e],P=E.passos[p],pre
  const cap=`<div class="mx-cap"><span class="mx-ap">${ex?`Exercici ${e+1} de ${llista.length} · ${String(E.punts).replace(".",",")} punt${E.punts===1?"":"s"}`:mira?"👀 Mira com es fa":mode==="control"?`📒 Resultat ${p+1} de ${E.passos.length}`:bar?`Exercici ${e+1} de ${llista.length}`:`Apartat ${MX_LL[e]}) de ${llista.length}${mode==="completa"?" · ✍️ Completa":""}`}</span><span class="prog">${["","🟢 Bàsic","🟡 Mitjà","🔴 D'examen"][MX.nv]}</span></div>`;
  const ctx=P.ctx?`<div style="text-align:center">${P.ctx()}</div>`:"";
  const pas=mira?`<div class="mx-pas mira">${ctx}<div>${P.q}</div><div class="mx-sol">👉 <b>${mxMostra(P,P.r)}</b></div>${mxExplica(P)?`<div class="fb">💡 ${mxExplica(P)}</div>`:""}<div class="fila"><button class="btn" id="mxSeg" onclick="mxSegMira()">${p+1<E.passos.length?"Següent pas ▶":"Mira com queda a la llibreta ▶"}</button></div></div>`
-  :`<div class="mx-pas">${ctx}<div>${P.q}</div><div id="mxFb"></div>${mxEntrada(P)}${ex?"":`<div class="mx-ajuda"><button class="btn sec" onclick="mxPista()">💡 Pista</button></div>`}</div>`;
+  :`<div class="mx-pas">${ctx}<div>${P.q}</div><div id="mxFb" role="status" aria-live="polite"></div>${mxEntrada(P)}${ex?"":`<div class="mx-ajuda"><button class="btn sec" onclick="mxPista()">💡 Pista</button></div>`}</div>`;
  app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box">${cap}
  <div class="mx-enun"><b>${ex||bar?e+1+".":mira||mode==="control"?"":MX_LL[e]+")"}</b> ${E.enun}</div>${pre&&p===pre?`<div class="prog" style="margin:2px 0 4px">👀 Els primers passos ja estan fets. Mira'ls bé i continua tu.</div>`:""}${fets}
  ${pas}<div id="zona"></div></div>`;MX.v="";MX.f={};MX.int=0;MX.ajut=0;if(!mira)mxVista()}
@@ -326,13 +327,14 @@ function mxSegMira(){const E=MX.llista[MX.e];(MX.resp[MX.e]=MX.resp[MX.e]||[])[M
  app.querySelector(".mx-pas").outerHTML=`<div class="mx-llib"><h4>📒 Així s'escriu a la llibreta · Exemple resolt</h4>${E.sol}</div>`;
  document.getElementById("zona").innerHTML=`<div class="fb ok">👀 Ja has vist com es fa. Ara et toca a tu!</div><div class="fila"><button class="btn" onclick="MX_MODE='completa';mxComença('${id}',${nv})">✍️ Completa'n un</button><button class="btn sec" onclick="MX_MODE='sol';mxComença('${id}',${nv})">💪 Fes-ne un tot sol</button><button class="btn sec" onclick="MX_MODE='mira';mxComença('${id}',${nv})">👀 Un altre exemple</button></div>`}
 function mxMostra(P,v){if(v===undefined||v===null)return "—";if(P.t==="tria")return P.op[v];if(P.t==="fact")return mxPot(v);if(P.t==="llista")return mxLlista(v);return mxN(v)}
+const mxLblTec=x=>x==="⌫"?' aria-label="Esborra l\'última xifra"':x==="C"?' aria-label="Esborra-ho tot"':x===","?' aria-label="Coma separadora"':"";
 function mxEntrada(P){
  if(P.t==="tria")return `<div class="mx-opc">${P.op.map((o,i)=>`<button onclick="mxRespon(${i})">${o}</button>`).join("")}</div>`;
  if(P.t==="fact")return `<div class="mx-fact">${P.primers.map(p=>`<div class="f zero" data-p="${p}"><button onclick="mxExp(${p},1)" aria-label="més ${p}">＋</button><b>${p}<sup>0</sup></b><button onclick="mxExp(${p},-1)" aria-label="menys ${p}">−</button></div>`).join("")}</div>
-  <div class="mx-vista" id="mxVis">= ?</div><div class="fila"><button class="btn" onclick="mxRespon()">Comprova ✔</button></div>`;
+  <div class="mx-vista" id="mxVis" role="status" aria-live="polite">= ?</div><div class="fila"><button class="btn" onclick="mxRespon()">Comprova ✔</button></div>`;
  const k=P.t==="llista"?[7,8,9,"⌫",4,5,6,",",1,2,3,"C","",0,"",""]:[7,8,9,"⌫",4,5,6,"C",1,2,3,"",0,"","",""];
- return `<div class="mx-disp buit" id="mxDisp">${P.t==="llista"?"Escriu els nombres separats per comes":"Escriu el resultat"}</div>
- <div class="mx-tec">${k.map(x=>x===""?"<span></span>":`<button class="${x==="⌫"||x==="C"?"esb":""}" onclick="mxTecla('${x}')">${x}</button>`).join("")}</div>
+ return `<div class="mx-disp buit" id="mxDisp" role="status" aria-live="polite">${P.t==="llista"?"Escriu els nombres separats per comes":"Escriu el resultat"}</div>
+ <div class="mx-tec">${k.map(x=>x===""?"<span></span>":`<button class="${x==="⌫"||x==="C"?"esb":""}"${mxLblTec(x)} onclick="mxTecla('${x}')">${x}</button>`).join("")}</div>
  <div class="fila"><button class="btn" onclick="mxRespon()">Comprova ✔</button></div>`}
 function mxTecla(x){if(!MX||MX.fi)return;if(x==="⌫")MX.v=MX.v.slice(0,-1);else if(x==="C")MX.v="";else if(x===","){if(MX.v&&!/,\s*$/.test(MX.v))MX.v+=", "}else if(MX.v.replace(/\D/g,"").length<40)MX.v+=x;
  if(typeof so==="function"&&x!=="")so("clic");mxVista()}
@@ -395,7 +397,14 @@ function mxFiExamen(){MX.fi=true;const {j,llista}=MX;let nota=0;
  fiJoc(j,Math.max(1,n10),100-n10,{nivell:MX.nv,mode:"examen"});
  document.getElementById("zona").innerHTML=`<div class="fb ${nota>=5?"ok":""}">${nota>=5?"🎉 Aprovat!":"💪 Encara no: repassa els exercicis amb ❌ i torna-hi."} Mira la correcció de dalt: és com la del profe.</div><div class="fila"><button class="btn" onclick="joc('${j.id}')">Un altre examen</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
 // teclat físic (ordinador)
-if(typeof addEventListener!=="undefined")addEventListener("keydown",e=>{if(!document.getElementById("mxDisp"))return;
+if(typeof addEventListener!=="undefined")addEventListener("keydown",e=>{
+ if(e.altKey||e.ctrlKey||e.metaKey)return;
+ const tg=e.target;if(tg&&(/^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName)||tg.isContentEditable))return;
+ const seg=document.getElementById("mxSeg");
+ if(seg&&e.key==="Enter"){e.preventDefault();seg.click();return}
+ const opcs=[...document.querySelectorAll(".mx-opc button:not(:disabled)")];
+ if(opcs.length&&/^[123]$/.test(e.key)){const b=opcs[+e.key-1];if(b){e.preventDefault();b.click();return}}
+ if(!document.getElementById("mxDisp"))return;
  if(MXR&&!MXR.fi&&MXR.fase==="escriu"){if(/^[0-9]$/.test(e.key))mxErrTecla(e.key);else if(e.key===","||e.key===" ")mxErrTecla(",");else if(e.key==="Backspace")mxErrTecla("⌫");else if(e.key==="Enter"){e.preventDefault();MXR.esp?mxErrMostraSol(false):mxErrRespon()}else return;e.preventDefault();return}
  if(!MX||MX.fi||MX.apFet||MX.perq||MX.mode==="mira")return;
  if(/^[0-9]$/.test(e.key))mxTecla(e.key);else if(e.key===","||e.key===" ")mxTecla(",");else if(e.key==="Backspace")mxTecla("⌫");else if(e.key==="Enter"){e.preventDefault();MX.esp?mxSeg():mxRespon()}else return;e.preventDefault()});
@@ -734,8 +743,8 @@ function mxErrPer(k){if(!MXR||MXR.fase!=="per")return;const E=MXR.llista[MXR.e],
 function mxErrEntrada(E){
  if(E.t==="tria")return `<div class="mx-opc">${E.op.map((o,i)=>`<button onclick="mxErrRespon(${i})">${o}</button>`).join("")}</div>`;
  const k=E.t==="llista"?[7,8,9,"⌫",4,5,6,",",1,2,3,"C","",0,"",""]:[7,8,9,"⌫",4,5,6,"C",1,2,3,"",0,"","",""];
- return `<div class="mx-disp buit" id="mxDisp">${E.t==="llista"?"Escriu els nombres separats per comes":"Escriu el resultat"}</div>
- <div class="mx-tec">${k.map(x=>x===""?"<span></span>":`<button class="${x==="⌫"||x==="C"?"esb":""}" onclick="mxErrTecla('${x}')">${x}</button>`).join("")}</div>
+ return `<div class="mx-disp buit" id="mxDisp" role="status" aria-live="polite">${E.t==="llista"?"Escriu els nombres separats per comes":"Escriu el resultat"}</div>
+ <div class="mx-tec">${k.map(x=>x===""?"<span></span>":`<button class="${x==="⌫"||x==="C"?"esb":""}"${mxLblTec(x)} onclick="mxErrTecla('${x}')">${x}</button>`).join("")}</div>
  <div class="fila"><button class="btn" onclick="mxErrRespon()">Comprova ✔</button></div>`}
 function mxErrTecla(x){if(!MXR||MXR.fi||MXR.fase!=="escriu")return;if(x==="⌫")MXR.v=MXR.v.slice(0,-1);else if(x==="C")MXR.v="";else if(x===","){if(MXR.v&&!/,\s*$/.test(MXR.v))MXR.v+=", "}else if(MXR.v.replace(/\D/g,"").length<40)MXR.v+=x;
  if(typeof so==="function"&&x!=="")so("clic");mxErrVista()}

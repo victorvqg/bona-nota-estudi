@@ -28,7 +28,9 @@ function mpCss(){if(document.getElementById("mpCss"))return;const s=document.cre
 .mp-xips span{background:#dcfce7;border:2px solid #86efac;border-radius:999px;padding:4px 12px;font-weight:900}
 .mp-svg{width:100%;height:auto;display:block;background:#fff;border-radius:12px;touch-action:manipulation}
 .mp-svg .tk{cursor:pointer}
-.mp-svg .tk:hover rect{fill:#fef9c3}
+.mp-svg .tk:hover rect,.mp-svg .tk:focus-visible rect{fill:#fef9c3}
+.mp-svg .tk:focus-visible{outline:2px solid var(--blau2)}
+.mp-step button:focus-visible,.mp-mides button:focus-visible,.mp-node>button:focus-visible{outline:3px solid var(--blau2);outline-offset:2px}
 .mp-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0}
 .mp-bts .btn{padding:9px 14px}
 .mp-mides{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
@@ -74,7 +76,7 @@ function mpGranotes(j){mpInici(j,j.mp.parells.map(([a,b])=>({a,b,va:0,vb:0,fet:f
 function mpGranPinta(){const R=MP.rondes[MP.r],{a,b}=R,m=mpMCM(a,b),L=Math.min(80,Math.max(m+Math.max(a,b),Math.ceil(m*1.3))),W=380,x0=14,x1=W-14,X=v=>x0+(x1-x0)*v/L,y=78;
  const salts=(p,v,amunt,col)=>{let s="";for(let k=1;k<=v;k++){const xa=X((k-1)*p),xb=X(k*p),h=Math.min(30,(xb-xa)*.45);s+=`<path d="M${xa} ${y} Q${(xa+xb)/2} ${amunt?y-h*1.6:y+h*1.6} ${xb} ${y}" fill="none" stroke="${col}" stroke-width="2.5" stroke-dasharray="5 4"/>`}
   for(let k=1;k<=v;k++)s+=`<circle cx="${X(k*p)}" cy="${amunt?y-7:y+7}" r="5" fill="${col}"/>`;return s};
- let tk="";const pas=L<=30?1:L<=60?2:5;for(let v=0;v<=L;v++){const g=v%pas===0;tk+=`<g class="tk" onclick="mpGranTria(${v})"><rect x="${X(v)-(x1-x0)/L/2}" y="${y-22}" width="${(x1-x0)/L}" height="44" fill="transparent"/><line x1="${X(v)}" x2="${X(v)}" y1="${y-(g?8:4)}" y2="${y+(g?8:4)}" stroke="#334155" stroke-width="${g?2:1}"/>${g?`<text x="${X(v)}" y="${y+28}" font-size="${L>30?10:12}" font-weight="700" text-anchor="middle" fill="#334155">${v}</text>`:""}</g>`}
+ let tk="";const pas=L<=30?1:L<=60?2:5;for(let v=0;v<=L;v++){const g=v%pas===0;tk+=`<g class="tk" role="button" tabindex="0" aria-label="Tria el ${v}" onclick="mpGranTria(${v})"><rect x="${X(v)-(x1-x0)/L/2}" y="${y-22}" width="${(x1-x0)/L}" height="44" fill="transparent"/><line x1="${X(v)}" x2="${X(v)}" y1="${y-(g?8:4)}" y2="${y+(g?8:4)}" stroke="#334155" stroke-width="${g?2:1}"/>${g?`<text x="${X(v)}" y="${y+28}" font-size="${L>30?10:12}" font-weight="700" text-anchor="middle" fill="#334155">${v}</text>`:""}</g>`}
  const gv=`<text x="${X(R.va*a)}" y="${y-44}" font-size="22" text-anchor="middle">🐸</text>`,gb=`<text x="${X(R.vb*b)}" y="${y+66}" font-size="22" text-anchor="middle" style="filter:hue-rotate(160deg)">🐸</text>`;
  app.innerHTML=`<h2 class="sec">${MP.j.enunciat||MP.j.titol}</h2><div class="box">${mpCap("🐸 Les granotes")}
  <p class="mp-big">La granota <b style="color:#16a34a">verda</b> salta de <b>${a} en ${a}</b> i la <b style="color:#2563eb">blava</b> de <b>${b} en ${b}</b>. Surten juntes del 0. <b>On tornaran a caure juntes per primer cop?</b> Fes-les saltar i després <b>toca aquell número</b> a la recta.</p>

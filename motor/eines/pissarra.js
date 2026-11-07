@@ -5,10 +5,12 @@ let PIS=null;
 function pisCss(){if(document.getElementById("pisCss"))return;const s=document.createElement("style");s.id="pisCss";s.textContent=`
 #pisBt.so-btn{font-size:16px}
 #pisBt.flota{position:fixed;right:14px;bottom:18px;z-index:45;width:52px;height:52px;border-radius:50%;border:0;background:#fff;box-shadow:0 4px 14px #0f172a40,0 0 0 3px var(--blau) inset;font-size:24px;cursor:pointer}
+@media(max-width:600px){#pisBt.flota{bottom:calc(76px + env(safe-area-inset-bottom))}}
 #pisCapa{position:fixed;inset:0;z-index:70;display:none;flex-direction:column}
 #pisCapa.on{display:flex}
 #pisCapa .pis-barra{flex:0 0 auto;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;align-items:center;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:#1e293b;color:#fff}
 #pisCapa .pis-barra button{border:0;border-radius:10px;padding:7px 10px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#334155;color:#fff;white-space:nowrap}
+#pisCapa .pis-barra button:focus-visible{outline:3px solid #facc15;outline-offset:2px}
 #pisCapa .pis-barra button.on{background:#fff;color:#0f172a}
 #pisCapa .pis-barra .col{width:34px;height:34px;padding:0;border:3px solid #334155}
 #pisCapa .pis-barra .col.on{border-color:#fff;box-shadow:0 0 0 2px #38bdf8}
@@ -21,7 +23,7 @@ function pisCss(){if(document.getElementById("pisCss"))return;const s=document.c
 function pisMunta(){if(document.getElementById("pisBt")||typeof ASSIG==="undefined"||!ASSIG.pissarra)return;pisCss();
  const b=document.createElement("button");b.id="pisBt";b.title="Full de brut per fer càlculs";b.setAttribute("aria-label","Obre el full de brut");b.textContent="✏️";b.onclick=pisObre;
  const vol=document.querySelector("header .vol");if(vol){b.className="so-btn";vol.insertBefore(b,vol.firstChild)}else{b.className="flota";document.body.appendChild(b)}
- const c=document.createElement("div");c.id="pisCapa";c.className="full";c.innerHTML=`<div class="pis-barra">
+ const c=document.createElement("div");c.id="pisCapa";c.className="full";c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");c.setAttribute("aria-label","Full de brut");c.innerHTML=`<div class="pis-barra">
   <button class="col on" style="background:#0f172a" data-c="#0f172a" aria-label="Negre"></button><button class="col" style="background:#2563eb" data-c="#2563eb" aria-label="Blau"></button><button class="col" style="background:#dc2626" data-c="#dc2626" aria-label="Vermell"></button>
   <button id="pisGoma" aria-label="Goma">🧽<span class="txt"> Goma</span></button><button id="pisDesfes" aria-label="Desfés">↶<span class="txt"> Desfés</span></button><button id="pisBuida" aria-label="Esborra-ho tot">🗑<span class="txt"> Esborra-ho tot</span></button>
   <button id="pisFons">🔍 Sobre l'exercici</button><span class="esp"></span><button id="pisTanca">✖ Tanca</button></div><canvas id="pisCv" aria-label="Full de brut"></canvas>`;
@@ -40,8 +42,8 @@ function pisMunta(){if(document.getElementById("pisBt")||typeof ASSIG==="undefin
  addEventListener("resize",()=>{if(c.classList.contains("on"))pisMida()});
  addEventListener("keydown",e=>{if(e.key==="Escape"&&c.classList.contains("on"))pisTanca()})}
 // el fons de la pàgina queda a sota: en mode «sobre l'exercici» es veu l'enunciat i s'hi pot escriure al damunt
-function pisObre(){const c=document.getElementById("pisCapa");if(!c)return;c.classList.add("on");pisMida();if(typeof so==="function")so("clic")}
-function pisTanca(){const c=document.getElementById("pisCapa");if(c)c.classList.remove("on")}
+function pisObre(){const c=document.getElementById("pisCapa");if(!c)return;c.classList.add("on");pisMida();const t=document.getElementById("pisTanca");if(t)t.focus();if(typeof so==="function")so("clic")}
+function pisTanca(){const c=document.getElementById("pisCapa");if(c)c.classList.remove("on");const b=document.getElementById("pisBt");if(b)b.focus()}
 function pisMida(){const cv=PIS.cv,r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=Math.max(1,Math.round(r.width*dpr));cv.height=Math.max(1,Math.round(r.height*dpr));pisRedibuixa()}
 function pisRedibuixa(nomesUltim){const cv=PIS.cv,x=cv.getContext("2d"),dpr=window.devicePixelRatio||1;x.setTransform(dpr,0,0,dpr,0,0);
  const pinta=t=>{x.globalCompositeOperation=t.g?"destination-out":"source-over";x.strokeStyle=t.c;x.lineWidth=t.w;x.lineCap="round";x.lineJoin="round";x.beginPath();
