@@ -1,0 +1,391 @@
+/* ==========================================================================
+   Bona Nota — Full d'estil base per a PDFs d'estudi (WeasyPrint · A4)
+   Cap document ha d'escriure CSS nou: tot surt d'aquest fitxer.
+   ========================================================================== */
+
+:root {
+  --c1: #0c4a6e;
+  --c2: #0284c7;
+  --c3: #38bdf8;
+  --c-suau: #f0f9ff;
+  --txt: #1e293b;
+  --gris: #64748b;
+  --vora: #cbd5e1;
+}
+
+body.assig-mates      { --c1: #134e4a; --c2: #0d9488; --c3: #84cc16; --c-suau: #f0fdfa; }
+body.assig-socials    { --c1: #0c4a6e; --c2: #0284c7; --c3: #38bdf8; --c-suau: #f0f9ff; }
+body.assig-biogeo     { --c1: #3b0764; --c2: #7c3aed; --c3: #c084fc; --c-suau: #faf5ff; }
+body.assig-catala     { --c1: #1e1b4b; --c2: #4338ca; --c3: #fbbf24; --c-suau: #eef2ff; }
+body.assig-castellano { --c1: #7f1d1d; --c2: #dc2626; --c3: #f59e0b; --c-suau: #fef2f2; }
+body.assig-angles     { --c1: #1e3a8a; --c2: #2563eb; --c3: #60a5fa; --c-suau: #eff6ff; }
+body.assig-tecnologia { --c1: #7c2d12; --c2: #ea580c; --c3: #fb923c; --c-suau: #fff7ed; }
+
+@page {
+  size: A4 portrait;
+  margin: 18mm 15mm 18mm 15mm;
+  @top-left {
+    content: string(bn-cap-esq);
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #475569;
+  }
+  @top-right {
+    content: string(bn-cap-dre);
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    font-size: 8pt;
+    color: #64748b;
+  }
+  @bottom-left {
+    content: "Bona Nota · Material d'estudi 1r ESO";
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #475569;
+  }
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    font-size: 8.5pt;
+    font-weight: bold;
+    color: #1e293b;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "DejaVu Sans", Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.45;
+  color: var(--txt);
+  margin: 0;
+  padding: 0;
+  orphans: 3;
+  widows: 3;
+}
+
+/* Marcadors invisibles per a la capçalera de pàgina de WeasyPrint */
+.bn-meta-esq {
+  string-set: bn-cap-esq content();
+  display: none;
+}
+.bn-meta-dre {
+  string-set: bn-cap-dre content();
+  display: none;
+}
+
+/* ---- Franja de títol (portada interior) ---- */
+.franja-titol {
+  background: var(--c1);
+  color: #ffffff;
+  border-left: 6px solid var(--c3);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.franja-titol .etiqueta-bn {
+  font-size: 8.5pt;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--c3);
+  margin: 0 0 3px 0;
+}
+.franja-titol h1 {
+  font-size: 16pt;
+  line-height: 1.2;
+  margin: 0 0 4px 0;
+  color: #ffffff;
+}
+.franja-titol .subtitol {
+  font-size: 9.5pt;
+  margin: 0;
+  color: #e2e8f0;
+}
+
+/* ---- Títols i regles anti-orfes ---- */
+h2 {
+  font-size: 13pt;
+  color: var(--c1);
+  border-bottom: 2px solid var(--c2);
+  padding-bottom: 3px;
+  margin: 14px 0 7px 0;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+h3 {
+  font-size: 11pt;
+  color: var(--c2);
+  margin: 10px 0 4px 0;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+p {
+  margin: 0 0 7px 0;
+}
+ul, ol {
+  margin: 0 0 8px 0;
+  padding-left: 18px;
+}
+li {
+  margin-bottom: 3px;
+}
+
+/* ---- Requadres pedagògics (mai es parteixen entre pàgines) ---- */
+.idea,
+.avis-profe,
+.truc,
+.alerta,
+.compte,
+.formula-clau,
+.exemple,
+.checklist,
+.targeta,
+.pregunta,
+.rubrica,
+.resposta-oral,
+.svg-container {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.idea {
+  background: var(--c-suau);
+  border-left: 4px solid var(--c2);
+  border-radius: 4px;
+  padding: 8px 11px;
+  margin: 8px 0;
+}
+.avis-profe {
+  background: #fffbeb;
+  border-left: 4px solid #d97706;
+  border-radius: 4px;
+  padding: 8px 11px;
+  margin: 8px 0;
+}
+.truc {
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  border-radius: 4px;
+  padding: 8px 11px;
+  margin: 8px 0;
+}
+.alerta, .compte {
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  border-radius: 4px;
+  padding: 8px 11px;
+  margin: 8px 0;
+}
+.formula-clau {
+  background: #eff6ff;
+  border: 1.5px solid #2563eb;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  text-align: center;
+  font-weight: bold;
+}
+.exemple {
+  background: #f8fafc;
+  border: 1px solid var(--vora);
+  border-left: 4px solid #475569;
+  border-radius: 4px;
+  padding: 8px 11px;
+  margin: 8px 0;
+}
+.checklist {
+  background: #f8fafc;
+  border: 1.5px solid var(--c2);
+  border-radius: 6px;
+  padding: 9px 12px;
+  margin: 10px 0;
+}
+.checklist h3 {
+  margin-top: 0;
+  color: var(--c1);
+}
+.checklist ul {
+  list-style: none;
+  padding-left: 4px;
+  margin-bottom: 0;
+}
+
+/* ---- Taules ---- */
+.taula-bn {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 10px 0;
+  font-size: 9.5pt;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.taula-bn th {
+  background: var(--c1);
+  color: #ffffff;
+  text-align: left;
+  padding: 6px 8px;
+  border: 1px solid var(--c1);
+}
+.taula-bn td {
+  padding: 5px 8px;
+  border: 1px solid var(--vora);
+  vertical-align: top;
+}
+.taula-bn tr:nth-child(even) td {
+  background: #f8fafc;
+}
+
+/* ---- Figures SVG ---- */
+.svg-container {
+  text-align: center;
+  margin: 8px auto;
+  padding: 6px;
+}
+.svg-caption {
+  font-size: 8.5pt;
+  color: var(--gris);
+  font-style: italic;
+  margin-top: 3px;
+}
+
+/* ---- Esquema visual (.doc-esquema) calibrat per no desbordar ---- */
+body.doc-esquema {
+  font-size: 10pt;
+  line-height: 1.35;
+}
+body.doc-esquema .franja-titol {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+body.doc-esquema .franja-titol h1 {
+  font-size: 14pt;
+}
+.graella-esquema {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.targeta {
+  width: 48.8%;
+  background: #ffffff;
+  border: 1.5px solid var(--c2);
+  border-top: 4px solid var(--c1);
+  border-radius: 6px;
+  padding: 7px 9px;
+  margin-bottom: 2px;
+}
+.targeta h3 {
+  font-size: 10pt;
+  color: var(--c1);
+  margin: 0 0 3px 0;
+}
+.targeta p {
+  margin: 0 0 3px 0;
+  font-size: 9.2pt;
+}
+.targeta .ex-targeta {
+  font-size: 8.6pt;
+  color: #334155;
+  background: var(--c-suau);
+  padding: 3px 6px;
+  border-radius: 3px;
+  margin-top: 3px;
+}
+
+/* Ajust automàtic d'1 sol intent (-1 pt) quan l'esquema desborda per poc */
+body.doc-esquema.esquema-compacte {
+  font-size: 9pt;
+  line-height: 1.26;
+}
+body.doc-esquema.esquema-compacte .franja-titol {
+  padding: 6px 10px;
+  margin-bottom: 6px;
+}
+body.doc-esquema.esquema-compacte .franja-titol h1 {
+  font-size: 12.5pt;
+}
+body.doc-esquema.esquema-compacte .targeta {
+  padding: 5px 7px;
+}
+body.doc-esquema.esquema-compacte .targeta h3 {
+  font-size: 9pt;
+}
+body.doc-esquema.esquema-compacte .targeta p {
+  font-size: 8.3pt;
+}
+body.doc-esquema.esquema-compacte .targeta .ex-targeta {
+  font-size: 7.9pt;
+}
+body.doc-esquema.esquema-compacte .alerta,
+body.doc-esquema.esquema-compacte .truc,
+body.doc-esquema.esquema-compacte .checklist {
+  padding: 5px 8px;
+  margin: 5px 0;
+  font-size: 8.5pt;
+}
+
+/* ---- Examen, Solucionari i Preguntes orals ---- */
+.dades-alumne {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid var(--vora);
+  background: #f8fafc;
+  border-radius: 5px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  font-size: 9.5pt;
+}
+.pregunta {
+  margin: 9px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+.pregunta .punts {
+  font-weight: bold;
+  color: var(--c2);
+  font-size: 9pt;
+}
+.opcions {
+  list-style: none;
+  padding-left: 10px;
+  margin: 4px 0;
+}
+.opcions li {
+  margin-bottom: 2px;
+}
+.linies-resposta {
+  height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #ffffff,
+    #ffffff 15px,
+    #e2e8f0 16px
+  );
+  margin-top: 5px;
+}
+.rubrica {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 4px;
+  padding: 6px 9px;
+  font-size: 9pt;
+  margin-top: 4px;
+}
+.resposta-oral {
+  background: var(--c-suau);
+  border-left: 3px solid var(--c2);
+  padding: 5px 9px;
+  margin: 3px 0 8px 0;
+  font-size: 9.5pt;
+}

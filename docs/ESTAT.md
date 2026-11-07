@@ -1,14 +1,21 @@
-# Estat
+# Estat actual
 
-Última actualització: 2026-11-07
+Data: 2026-11-07
 
-Aquest fitxer es reescriu sencer a cada tancament de sessió (skill `tanca-sessio`). No és un historial: l'historial és a git.
+## Què funciona
+- **6 mons publicats** a `https://www.bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`).
+- **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 5 pestanyes (`punts`, `temps`, `nivell`, `setmana`, `remuntada`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
+- **Tauler d'administració (`admin/index.html`)** a `https://www.bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
+- **Bloc `g1` (Nucli)**: instal·lat i configurat amb les 3 portes de verificació (`generat`, `generadors`, `estricte`).
+- **Bloc `g2` (`n2448` — Troba l'error i Llibreta)**:
+  - Punt volat `·` per a la multiplicació a tot el mòdul de Matemàtiques.
+  - Diferenciació visual de llibreta correcta (vora verda `.mx-llib`) vs llibreta amb error (vora vermella `.mx-llib.mx-err`) i ressaltat `.mx-lin-ok`.
+  - 12 generadors `MXE` de «🔍 Troba l'error» amb posició d'error variable (`mxPos`), llargada d'opcions equilibrada (`mxPer3`, ~30% `per[0]` més llarga), Pas 3 «✍️ Escriu-ho bé», llibreta corregida completa i repàs espaiat (`window.BN_REP_TIPUS.err`).
+  - Tipus de joc genèric `error: jocError` a `motor/jocs_generics.js` i nou joc `err-clima` («🔍 Troba l'error al climograma») a `motor/dades/socials.js`.
+- **Bloc `g3` (`MILLORES.md` — UX, dreceres de teclat i accessibilitat WAI-ARIA)**:
+  - Dreceres de teclat globals (`1`–`4`, `Espai`, `←`/`→`, `Enter`, `Escape`), barra contextual `.tema-nav`, botó `⏸ Pausa` als reptes amb temps, millores a `#popEst` i rols/focus WAI-ARIA a la portada i a tots els mons.
+- **Bloc `g4` (`n2446` — Habilitat modular de PDFs `skills/bona-nota/`)**:
+  - `SKILL.md` (95 línies), `INVENTARI.md`, `CANVIS.md`, 11 fitxers a `references/`, `assets/base.css`, `scripts/bonanota_pdf.py` i paquet `skills/bona-nota.zip` verificat amb WeasyPrint.
 
-## Ara
-- `nucli` inicialitzat i configurat a `bona-nota-estudi` (`nucli.json`, `AGENTS.md`, `CLAUDE.md`, `docs/*.md`, hooks de git actius).
-
-## Següent
-- Pendent de rebre la llista de millores a implementar sobre `bona-nota-estudi`.
-
-## Bloquejat
-- Res.
+## En curs
+- Llest per fusionar a `main` / publicar després de la revisió de l'usuari.
