@@ -889,7 +889,7 @@ let ACTV=null;
 function tancaActivitat(){const a=ACTV;ACTV=null;if(!a)return;const s=segs(a.t0);if(s<2)return;
  if(a.tipus==="fitxa")registra("fitxa",{tema:a.tid,titol:a.titol,s,fi:a.fi?1:0});
  else registra("targetes",{tema:a.tid,titol:a.titol,s,vistes:a.vistes.size,n:a.n,girs:a.girs,fi:a.vistes.size>=a.n?1:0})}
-function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return;detall=retalla(detall||{});if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
+function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO)return;detall=retalla(detall||{});if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
  try{fetch(BN_LOG.url,{method:"POST",keepalive:true,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json","Prefer":"return=minimal"},
   body:JSON.stringify({assig:ASSIG.id,nom:S.nom.slice(0,40),sessio:SESSIO,aparell:APARELL,event,detall:detall||{}})}).catch(()=>{})}catch(e){}}
 function buidaTemps(){tancaActivitat();if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
@@ -1250,7 +1250,7 @@ function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremo
 // ====================== INICI DE SESSIÓ (NOM + PIN) ======================
 // Per entrar cal el nom i el PIN (4 xifres + 1 lletra; els PIN antics de 4 xifres encara entren i es demana canviar-los). Nom nou → es crea amb aquest PIN (màxim 2 noms per dispositiu).
 // La sessió es manté oberta en aquest dispositiu fins que es toca «Canviar d'usuari».
-const SENSE_NUVOL=()=>/^file:/.test(location.protocol)||window.BN_NO_LOG;
+const SENSE_NUVOL=()=>/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO;
 function benvinguda(nomPre){
  marcaNav("usuari");calla();
  if(S.nom){S=BUIT();try{localStorage.removeItem(CL+"actiu");localStorage.removeItem("bn_jugador")}catch(e){}pintaCap()}
@@ -2047,8 +2047,11 @@ aplicaSuau();
 (function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc?/[?&]sw\b/.test(location.search):location.protocol==="https:"){navigator.serviceWorker.register("../../sw.js").catch(()=>{});return}if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 pintaCap();pintaSo();
 (function(){let G="";try{G=localStorage.getItem("bn_jugador")||""}catch(e){}
- if(G&&(pinDe(G)||SENSE_NUVOL())&&(!S.nom||S.nom.toLowerCase()!==G.toLowerCase())&&potNouNom(G)){entra(G);return}
- vista("inici");carregaPuntsMons()})();
+ if(G&&(pinDe(G)||SENSE_NUVOL())&&(!S.nom||S.nom.toLowerCase()!==G.toLowerCase())&&potNouNom(G))entra(G);
+ else if(MODE_DEMO&&!S.nom){S=BUIT();S.nom="Demo";pintaCap();vista("inici");carregaPuntsMons()}
+ else{vista("inici");carregaPuntsMons()}
+ const usp=new URLSearchParams(location.search),jP=usp.get("joc"),tP=usp.get("tema"),vP=usp.get("vista");
+ if(S.nom){if(jP)joc(jP);else if(tP!==null&&T[+tP])obre(+tP);else if(vP)vista(vP)}})();
 </script>
 </body>
 </html>
