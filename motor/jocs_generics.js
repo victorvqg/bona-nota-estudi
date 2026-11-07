@@ -46,11 +46,11 @@ function jgErrCss(){if(document.getElementById("jgErrCss"))return;const s=docume
 .jg-cap{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 .jg-ap{display:inline-block;padding:4px 12px;border-radius:99px;background:#eef2ff;color:#1e40af;font-weight:900;font-size:14px}
 .jg-enun{font-size:18px;font-weight:800;padding:12px 14px;border-radius:14px;background:#f8fafc;border:2px solid var(--vora);margin:6px 0}
-.jg-llib{margin-top:10px;padding:14px 16px;border-radius:14px;background:repeating-linear-gradient(#fff,#fff 29px,#e2e8f0 30px);border:2px solid #cbd5e1;border-left:5px solid #22c55e;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:17px;line-height:30px}
-.jg-llib h4{margin:0 0 4px;font-family:Nunito,system-ui,sans-serif;font-size:13px;color:#15803d;text-transform:uppercase;letter-spacing:.6px}
-.jg-llib.jg-err{border-left-color:#ef4444;display:flex;flex-direction:column;gap:4px}
+.jg-llib{margin-top:12px;padding:14px 18px;border-radius:6px;color:#1e293b;font-size:18px;line-height:1.75;background-color:#fffef5;background-image:linear-gradient(#93c5fd55 1px,transparent 1px),linear-gradient(90deg,#93c5fd55 1px,transparent 1px);background-size:22px 22px;font-family:"Segoe Print","Bradley Hand","Comic Sans MS","Chalkboard SE",cursive;box-shadow:inset 4px 0 0 #22c55e;border:1px solid #bbf7d0}
+.jg-llib h4{margin:0 0 4px;font-family:Nunito,system-ui,sans-serif;font-size:14px;color:#15803d;text-transform:uppercase;letter-spacing:.3px}
+.jg-llib.jg-err{box-shadow:inset 4px 0 0 #ef4444;border-color:#fecaca;display:flex;flex-direction:column;gap:4px}
 .jg-llib.jg-err h4{color:#b91c1c}
-.jg-lin-ok{background:#dcfce7;border-radius:6px;padding:0 6px;font-weight:800;color:#14532d}
+.jg-lin-ok{background:#dcfce7;border-left:3px solid #16a34a;padding:1px 8px;border-radius:4px;font-weight:800;margin:2px 0;color:#14532d}
 .jg-lin{display:block;width:100%;text-align:left;font:inherit;font-size:17px;line-height:1.45;padding:5px 10px;border:2px dashed transparent;border-radius:8px;background:transparent;cursor:pointer;color:inherit;font-family:inherit}
 .jg-lin:hover{border-color:#93c5fd}
 .jg-lin.mal{border-color:#ef4444;background:#fef2f2;text-decoration:line-through;text-decoration-color:#ef4444}

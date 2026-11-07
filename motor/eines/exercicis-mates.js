@@ -296,7 +296,8 @@ function mxInici(j,examen){mxCss();mxCss2();MX=null;const bar=!!j.mx.barreja;
  app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><p>${txt}</p>${modes}
  <p><b>Tria el nivell:</b></p><div class="mx-niv"><button class="btn sec" onclick="mxComença('${j.id}',1)">🟢 Bàsic</button><button class="btn sec" onclick="mxComença('${j.id}',2)">🟡 Mitjà</button><button class="btn" onclick="mxComença('${j.id}',3)">🔴 D'examen</button></div><div id="zona"></div></div>`}
 function mxMode(m){MX_MODE=m;document.querySelectorAll(".mx-mode").forEach(b=>b.classList.toggle("on",b.dataset.m===m))}
-function mxFitxa(j){mxInici(j,false)}
+let MX_AUTO_LLIB=false;
+function mxFitxa(j){mxInici(j,false);if(!MX_AUTO_LLIB&&typeof location!=="undefined"&&/[?&]llibreta=1\b/.test(location.search)){MX_AUTO_LLIB=true;MX_MODE="mira";mxComença(j.id,1);let g=0;while(MX&&!MX.fi&&g++<20)mxSegMira()}}
 function mxExamen(j){mxInici(j,true)}
 function mxBarreja(j){mxInici(j,false)}
 function mxComença(id,nv){const j=ASSIG.jocs.find(x=>x.id===id),ex=!!j.mx.examen,bar=!!j.mx.barreja,mode=ex?"examen":bar?"barreja":MX_MODE;
