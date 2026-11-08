@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="529c0b268a",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="6718003fd6",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -911,7 +911,7 @@ function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLower
 function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
  ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
 function apuntaNom(n){try{const l=JSON.parse(localStorage.getItem("bn_noms_aparell")||"[]")||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem("bn_noms_aparell",JSON.stringify(l))}}catch(e){}}
-function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{h:new Date().getHours(),dw:new Date().getDay()||7,nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=50).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
+function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{h:new Date().getHours(),dw:new Date().getDay()||7,nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=APROVA).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
@@ -1677,7 +1677,8 @@ async function bnProvaFase1(){const espera=ms=>new Promise(r=>setTimeout(r,ms)),
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaFase1");
 
 // ====================== 👾 BOSS DEL MÓN (Bona Nota 2.0) ======================
-// Repte final del món: s'obre quan has aprovat el 70 % dels temes. Barreja preguntes de test de tots els temes, una de figura,
+// Repte final del món: s'obre quan has aprovat el 70 % dels temes o quan treus un 70 % o més en un examen (sorpresa o de veritat:
+// totes dues barregen preguntes de tot el món, així que un examen aprovat ja demostra que el domines). Barreja preguntes de test de tots els temes, una de figura,
 // una de parelles o de classificar, una d'ordenar i una oberta (només contingut que ja és al món: res inventat).
 // Cada encert treu vida al boss; cada error et treu un cor (en tens 3, i com a màxim se'n perd un per ronda).
 // L'oberta treu vida segons les idees clau que s'hi detecten. El boss té el 80 % de la vida que poden treure totes les rondes:
@@ -1690,10 +1691,11 @@ function bossSpr(cl){const nom=(ASSIG.boss&&ASSIG.boss.spr)||"monstre",p=BOSS_SP
  p.forEach((f,y)=>{let x=0;while(x<16){const c=f[x];if(c==="."){x++;continue}let x2=x;while(x2<16&&f[x2]===c)x2++;r+=`<rect x="${x}" y="${y}" width="${x2-x}" height="1" fill="${pal[c]}"/>`;x=x2}});
  return `<svg class="${cl||""}" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`}
 function bossNom(){return (ASSIG.boss&&ASSIG.boss.nom)||"El Boss del món"}
-function bossEstat(){const n=T.length,ap=T.filter(t=>{const m=millor(t.id);return m!==null&&m>=APROVA}).length,cal=Math.max(1,Math.ceil(n*BOSS_DESBLOQ));
- return {ap,n,cal,obert:ap>=cal,guanyat:!!(S.boss&&S.boss.v),avui:!!diaEst().boss}}
+function bossEstat(){const n=T.length,ap=T.filter(t=>{const m=millor(t.id);return m!==null&&m>=APROVA}).length,cal=Math.max(1,Math.ceil(n*BOSS_DESBLOQ)),
+  exam=(S.examens||[]).some(x=>x&&x.pc>=APROVA);
+ return {ap,n,cal,exam,obert:ap>=cal||exam,guanyat:!!(S.boss&&S.boss.v),avui:!!diaEst().boss}}
 function bossCarta(enInici){if(!S.nom||!T.length)return "";const e=bossEstat();if(enInici&&(!e.obert||e.avui))return "";
- return `<div class="boss-carta${e.obert?"":" tancat"}" ${e.obert?`onclick="boss()" role="button" tabindex="0"`:""}>${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}</b><small>${e.obert?(e.avui?"L'has vençut avui! Pots tornar-hi per practicar.":`El repte final del món. Guanya'l: +${BOSS_ESTRELLES} ⭐${e.guanyat?" · ja l'has vençut "+S.boss.v+(S.boss.v>1?" vegades":" vegada"):""}`):`🔒 Aprova ${e.cal} dels ${e.n} temes per obrir-lo · ara: ${e.ap}`}</small>${e.obert?"":`<i class="bc-b"><i style="width:${Math.round(e.ap*100/e.cal)}%"></i></i>`}</div>${e.obert?`<span class="btn verd">Lluita ⚔️</span>`:""}</div>`}
+ return `<div class="boss-carta${e.obert?"":" tancat"}" ${e.obert?`onclick="boss()" role="button" tabindex="0"`:""}>${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}</b><small>${e.obert?(e.avui?"L'has vençut avui! Pots tornar-hi per practicar.":`El repte final del món. Guanya'l: +${BOSS_ESTRELLES} ⭐${e.guanyat?" · ja l'has vençut "+S.boss.v+(S.boss.v>1?" vegades":" vegada"):""}`):`🔒 Per obrir-lo: aprova ${e.cal} dels ${e.n} temes (ara: ${e.ap}) o treu un ${APROVA} % en un examen`}</small>${e.obert?"":`<i class="bc-b"><i style="width:${Math.round(e.ap*100/e.cal)}%"></i></i>`}</div>${e.obert?`<span class="btn verd">Lluita ⚔️</span>`:""}</div>`}
 // rondes: ~10, amb les especials repartides; si el món no té un tipus de joc, s'hi posa una pregunta de test
 function bossRondes(){const temes=barreja(T.slice()),tests=[];
  for(let i=0;tests.length<9&&i<temes.length*4;i++){const t=temes[i%temes.length],q=barreja(t.q.filter(x=>!tests.some(y=>y[0]===x[0])))[0];if(q){const c=cpQ(q);c.tid=t.id;c.tema=t.titol;tests.push(c)}}
@@ -1773,6 +1775,14 @@ async function bnProvaBoss(){const repAbans=JSON.stringify(S.rep||{}),bossAbans=
   await new Promise(r=>setTimeout(r,1500));return true
  }finally{S.rep=JSON.parse(repAbans);const b=JSON.parse(bossAbans);if(b)S.boss=b;else delete S.boss;e.boss=avuiAbans;e.mf=JSON.parse(mfAbans);e.mt=mtAbans;desa();aturaSeg()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaBoss");
+// prova: un examen aprovat (70 % o més) obre el boss encara que no hi hagi prou temes aprovats; un de suspès, no
+function bnProvaBossExamen(){const t0=S.temes,x0=S.examens;
+ try{S.temes={};S.examens=[{d:avui(),pc:APROVA-10}];if(bossEstat().obert)return `amb 0 temes i un examen del ${APROVA-10} % el boss no s'hauria d'obrir`;
+  vista('jocs');let c=app.querySelector('.boss-carta');if(!c||!c.classList.contains('tancat')||!/examen/.test(c.textContent))return "la targeta tancada hauria de dir que també s'obre amb un examen";
+  S.examens.push({d:avui(),pc:APROVA,real:1});if(!bossEstat().obert)return `amb un examen del ${APROVA} % el boss s'hauria d'obrir`;
+  vista('jocs');c=app.querySelector('.boss-carta');if(!c||c.classList.contains('tancat'))return "després d'aprovar un examen la targeta del boss hauria d'estar oberta";
+  return true}finally{S.temes=t0;S.examens=x0;vista('inici')}}
+window.BN_PROVES.push("bnProvaBossExamen");
 
 // ====================== 🎯 MISSIONS DEL DIA (Bona Nota 2.0) ======================
 // Cada dia, 3 missions curtes per món: les mateixes tot el dia (es trien amb el dia i el món) i es poden fer en uns 10 minuts.
