@@ -719,7 +719,7 @@ const MXE={
 };
 let MXR=null;
 function mxErrRepAnota(E,pas){if(!MXR||MXR.rep||typeof repAnotaExt!=="function"||!E.tipus||!MXE[E.tipus])return;
- repAnotaExt("err",E.tipus,{tipus:E.tipus,pas},false)}
+ repAnotaExt("err",E.tipus,{pas},false)} // tipus «err» (BN_REP_TIPUS) i clau = generador MXE
 function mxError(j){mxCss();mxCss2();const ts=MX_B(j.mx.error||Object.keys(MXE)).slice(0,j.mx.n||5);
  MXR={j,llista:ts.map(t=>{const E=MXE[t]();E.tipus=t;E.nom=MX_T(MX_NOMS);E.ord=MX_B([0,1,2]);return E}),e:0,fase:"linia",v:"",bones:0,errs:0,int:0,ep:[],errE:[],fi:false};mxErrPinta()}
 function mxErrPinta(){const {j,llista,e}=MXR,E=llista[e];MXR.fase="linia";MXR.int=0;MXR.v="";MXR.esp=false;
@@ -772,15 +772,15 @@ function mxErrProva(j){mxError(j);let s=0;while(MXR&&!MXR.fi&&s++<150){const b=d
 const MX_ERR_NOM={mcm_exp:"MCM: exponent dels comuns",mcd_nocomu:"MCD: factors comuns",escala_noprimer:"Escala: només factors primers",escala_divisio:"Escala: divisió exacta",primer_u:"El nombre 1 ni primer ni compost",primer_fals:"Comprovar si és divisible per 3",divisors_falta:"Totes les parelles de divisors",criteri3:"Criteri de divisibilitat del 3",problema_confon:"Problema: triar MCM o MCD",multiple_reves:"Múltiple i divisor",jerarquia:"Jerarquia d'operacions",fraccio_den:"Suma de fraccions amb MCM"};
 function mxErrRepas(items,fi){mxCss();mxCss2();
  const j={id:"rp-err",titol:"🔍 Repàs d'errors que et van enganyar",mx:{}};
- const llista=items.map(r=>{const E=MXE[r.tipus]();E.tipus=r.tipus;E.nom=MX_T(MX_NOMS);E.ord=MX_B([0,1,2]);return E});
+ const llista=items.map(r=>{const E=MXE[r.clau]();E.tipus=r.clau;E.nom=MX_T(MX_NOMS);E.ord=MX_B([0,1,2]);return E});
  const jst=typeof JOCSTAR!=="undefined"?JOCSTAR:0;JOCSTAR=0;
  MXR={j,llista,e:0,fase:"linia",v:"",bones:0,errs:0,int:0,ep:[],errE:[],fi:false,rep:true};
  MXR.onFi=()=>{MXR.fi=true;JOCSTAR=jst;fi(llista.map((_,i)=>!MXR.errE[i]))};
  mxErrPinta();window.scrollTo(0,0)}
 (window.BN_REP_TIPUS=window.BN_REP_TIPUS||{}).err={ic:"🔍",max:3,titol:"Ara, errors que et van enganyar",
  peu:"Un altre exemple amb la mateixa trampa. Troba la línia, digues per què i escriu-ho bé sense cap error.",
- valid:r=>r&&r.tipus&&typeof MXE!=="undefined"&&!!MXE[r.tipus],
- nom:r=>`🔍 ${MX_ERR_NOM[r.tipus]||r.tipus}`,
+ valid:r=>r&&r.clau&&typeof MXE!=="undefined"&&!!MXE[r.clau],
+ nom:r=>`🔍 ${MX_ERR_NOM[r.clau]||r.clau}`,
  juga:mxErrRepas};
 function mxErrRepProva(){const repAbans=JSON.stringify(S.rep||{}),apAbans=S.apresos||0;
  try{const jErr=(ASSIG.jocs||[]).find(x=>x.fn==="mxError");if(!jErr)return true;

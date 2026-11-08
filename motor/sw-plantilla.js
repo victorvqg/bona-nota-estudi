@@ -5,7 +5,8 @@
 const VERSIO = "bn-__VERSIO__";
 const FITXERS = __FITXERS__;
 self.addEventListener("install", e => {
-  e.waitUntil(caches.open(VERSIO).then(c => Promise.all(FITXERS.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
+  // cache:"reload": la còpia es baixa del servidor, no de la memòria cau del navegador (que podria ser d'una versió vella)
+  e.waitUntil(caches.open(VERSIO).then(c => Promise.all(FITXERS.map(f => c.add(new Request(f, { cache: "reload" })).catch(() => {})))).then(() => self.skipWaiting()));
 });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSIO).map(k => caches.delete(k)))).then(() => self.clients.claim()));
@@ -14,6 +15,7 @@ self.addEventListener("fetch", e => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== "GET" || u.hostname.endsWith("supabase.co")) return;
   if (/\/admin(\/|$)/.test(u.pathname)) return; // el tauler d'admin (amb barra o sense), sempre directe de la xarxa
+  if (/\/versio\.json$/.test(u.pathname)) return; // la versió publicada (actualització automàtica), sempre de la xarxa i mai guardada
 
   const esPagina = r.mode === "navigate" || (r.headers.get("accept") || "").includes("text/html");
   if (esPagina) {

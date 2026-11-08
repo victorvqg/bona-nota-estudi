@@ -20,6 +20,7 @@ Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el deta
 - `pissarra.js`: full de brut tàctil.
 - `mapa-comarques.js`: generador del mapa SVG de comarques.
 - `so-mobil.js`: desbloqueig i manteniment d'àudio WebAudio a iOS/mòbil fins i tot en mode silenci.
+- `actualitza.js`: actualització automàtica en obrir la pàgina (portada i mons). Compara la versió de la pàgina amb `versio.json` (generat per `tot.py`) i, si és una còpia vella, esborra la memòria cau `bn-…` i recarrega un sol cop; mai toca el progrés.
 
 ## Proves (`motor/`)
 - `motor/prova-generadors.js`: valida 10.800 exercicis generats del Taller de mates (càlculs, distractors i Troba l'error) sense navegador.

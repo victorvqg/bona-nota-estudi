@@ -9,6 +9,57 @@
 <link rel="apple-touch-icon" href="icones/icona-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Bona Nota">
+<script>
+// actualització automàtica en obrir la portada: si el que es veu és una còpia vella, es recarrega sola (i en tornar-hi després d'una estona)
+window.BN_ACT={arrel:"./",tornaAuto:true};
+/* ACTUALITZA:inici (copiat de motor/eines/actualitza.js per motor/tot.py, no editar a mà) */
+// ===== ACTUALITZACIÓ AUTOMÀTICA (motor/eines/actualitza.js · el mateix codi a la portada i als mons; tot.py el copia a index.html) =====
+// Cada pàgina porta escrita la versió amb què es va generar (VER: la hi posa motor/tot.py). En obrir la pàgina es pregunta
+// al servidor quina versió hi ha publicada (versio.json, sense passar per cap memòria cau). Si no coincideixen, el que es veu
+// és una còpia vella (memòria cau del navegador o del service worker). Llavors: s'esborren les còpies guardades de l'app
+// (memòria cau «bn-…»), es demana al service worker que s'actualitzi i es torna a carregar la pàgina, UN sol cop per versió.
+// MAI s'esborra el progrés, el nom ni el PIN (són a localStorage i no es toquen). Sense connexió, o obrint el fitxer a
+// l'ordinador (file://), no fa res.
+// En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
+// estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
+(function(){
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="529c0b268a",KR="bn_act_recarrega",DEU=6e5;
+ if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
+ let fet=0,amagat=0;
+ const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
+ // esborra la memòria cau de l'app i fa que el service worker es descarregui de nou (màxim 3 s)
+ const neteja=()=>Promise.race([Promise.all([
+   window.caches?caches.keys().then(ks=>Promise.all(ks.filter(k=>k.indexOf("bn-")===0).map(k=>caches.delete(k)))).catch(()=>{}):0,
+   navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.update().catch(()=>{})))).catch(()=>{}):0]),
+  new Promise(r=>setTimeout(r,3000))]);
+ function avis(txt,boto){quan(()=>{let a=document.getElementById("bnAct");
+  if(!a){a=document.createElement("div");a.id="bnAct";a.setAttribute("role","status");
+   a.style.cssText="position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:calc(100% - 24px);padding:10px 14px;border-radius:14px;background:#0b1033f2;border:2px solid #facc15;color:#fff;font:800 14px/1.3 Nunito,system-ui,sans-serif;box-shadow:0 8px 24px #0009";
+   document.body.appendChild(a)}
+  a.innerHTML="";const t=document.createElement("span");t.textContent=txt;a.appendChild(t);
+  if(boto){const b=document.createElement("button");b.type="button";b.textContent="Actualitza";
+   b.style.cssText="font:900 13px Nunito,system-ui,sans-serif;color:#1e1b4b;background:#facc15;border:0;border-radius:999px;padding:8px 12px;cursor:pointer";
+   b.onclick=()=>recarrega(boto,true);a.appendChild(b)}})}
+ // l'adreça sense el «v=…» (la resta de paràmetres, com ?demo, es queden tal qual)
+ const senseV=q=>q.replace(/([?&])v=[^&]*(&|$)/,(m,a,b)=>b?a:"").replace(/^\?$/,"");
+ function recarrega(v,aMa){
+  // una sola vegada per versió (si el servidor encara no serveix la nova, no entra en bucle); amb el botó, sempre
+  if(!aMa){if(new RegExp("[?&]v="+v+"(&|$)").test(location.search))return;try{if(sessionStorage.getItem(KR)===v)return;sessionStorage.setItem(KR,v)}catch(e){}}
+  avis("🔄 Versió nova de Bona Nota! Actualitzant…");
+  const q=senseV(location.search);neteja().then(()=>location.replace(location.pathname+q+(q?"&":"?")+"v="+v+location.hash))}
+ // un cop és la versió bona, treu el «?v=…» de l'adreça
+ function netejaAdreca(){try{const q=senseV(location.search);if(q!==location.search)history.replaceState(history.state,"",location.pathname+q+location.hash)}catch(e){}}
+ function comprova(auto){fet=Date.now();
+  fetch(ARREL+"versio.json?t="+fet,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(!d||!d.v)return;
+   if(d.v===VER){netejaAdreca();return}
+   if(auto)recarrega(d.v);else avis("✨ Hi ha una versió nova de Bona Nota.",d.v)}).catch(()=>{})}
+ comprova(true);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){amagat=Date.now();return}
+  if(amagat&&Date.now()-amagat>DEU&&Date.now()-fet>DEU)comprova(!!C.tornaAuto)});
+ window.bnActualitza=()=>comprova(true); // per provar-ho a mà des de la consola
+})();
+/* ACTUALITZA:fi */
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -57,10 +108,9 @@ h1 span{display:inline-block}
 .intro .peu-intro{margin:0;color:#c7d2fe;font-size:14.5px}
 
 /* canvi de pestanya del rànquing: estrelles daurades, de plata i de colors */
-.hs-est{position:absolute;z-index:6;pointer-events:none;width:var(--m);height:var(--m);filter:drop-shadow(0 0 6px var(--gl)) drop-shadow(0 2px 2px #0007);will-change:transform,opacity}
+.hs-est{position:absolute;z-index:6;pointer-events:none;width:var(--m);height:var(--m);filter:drop-shadow(0 0 5px var(--gl))}
 .hs-est i{position:absolute;inset:0;background:var(--bg);clip-path:polygon(50% 0,61.8% 35.4%,100% 38.2%,69.1% 61.8%,80.9% 100%,50% 76.4%,19.1% 100%,30.9% 61.8%,0 38.2%,38.2% 35.4%)}
-.hs-est i::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#fff9 48%,transparent 60%);background-size:250% 100%;animation:brill .7s linear infinite}
-@keyframes brill{from{background-position:120% 0}to{background-position:-120% 0}}
+.hs-est i::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#fff8 48%,transparent 60%)}
 .hs-espurna{position:absolute;z-index:6;pointer-events:none;width:var(--m);height:var(--m);background:radial-gradient(circle,#fff 0 18%,var(--c) 30%,transparent 70%);clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%);animation:espurna .9s ease-out forwards}
 @keyframes espurna{0%{transform:scale(0) rotate(0)}40%{transform:scale(1.25) rotate(45deg)}100%{transform:scale(0) rotate(90deg);opacity:0}}
 .hs-tab.bota{animation:botaTab .5s cubic-bezier(.3,1.8,.5,1)}
@@ -79,7 +129,7 @@ h1 span{display:inline-block}
 .bt-hs{font-family:'Press Start 2P',monospace;font-size:11px;color:#1e1b4b;background:var(--groc);border-color:#b91c1c;box-shadow:0 4px 0 #b91c1c;animation:parpelleja3 1.4s steps(2) infinite}
 @keyframes parpelleja3{50%{background:#fb923c}}
 .intro{animation:obre .3s cubic-bezier(.2,1.2,.4,1)}@keyframes obre{from{opacity:0;transform:translateY(-8px)}}
-.hs-pop{position:fixed;inset:0;z-index:50;background:#020617d9;backdrop-filter:blur(5px);display:grid;place-items:center;padding:14px;overflow:auto}
+.hs-pop{position:fixed;inset:0;z-index:50;background:#020617ee;display:grid;place-items:center;padding:14px;overflow:auto}
 .hs-pop[hidden]{display:none}
 .hs-caixa{position:relative;width:min(760px,100%);background:#070a2a;border:4px solid var(--groc);border-radius:22px;box-shadow:0 0 0 4px #b91c1c,0 0 50px #facc1555;padding:18px 16px 14px;overflow:hidden;animation:popHs .4s cubic-bezier(.2,1.5,.4,1)}
 @keyframes popHs{from{transform:scale(.8);opacity:0}}
@@ -143,11 +193,12 @@ h1 span{display:inline-block}
 .hs-pop>.hs-caixa{margin:auto}
 .hs-caixa{width:min(1200px,100%);padding:22px 22px 16px}
 .hs-tit{font-size:clamp(18px,4.8vw,36px);margin:4px 36px 10px}
-.hs-ticker{position:relative;z-index:1;overflow:hidden;margin:0 -22px 14px;padding:8px 0;background:linear-gradient(90deg,#b91c1c,#7c3aed,#0e7490,#b91c1c);border-block:2px solid #facc15;white-space:nowrap}
+.hs-ticker{position:relative;z-index:1;overflow:hidden;height:38px;margin:0 -22px 14px;background:linear-gradient(90deg,#b91c1c,#7c3aed,#0e7490,#b91c1c);border-block:2px solid #facc15;white-space:nowrap;contain:paint}
 .hs-ticker:empty{display:none}
-.hs-tk{display:inline-block;padding-left:100%;animation:tkRoda 30s linear infinite;font-family:'Press Start 2P',monospace;font-size:11px;color:#fff;text-shadow:2px 2px 0 #0008}
-.hs-tk span{margin-right:44px}.hs-tk b{color:#fde047}
-@keyframes tkRoda{to{transform:translateX(-100%)}}
+.tk-it{position:absolute;left:0;top:0;line-height:34px;font-family:'Press Start 2P',monospace;font-size:11px;color:#fff;text-shadow:2px 2px 0 #0008;white-space:nowrap}
+.tk-it b{color:#fde047}
+.tk-it.quiet{left:50%;transform:translateX(-50%);max-width:100%;overflow:hidden;text-overflow:ellipsis;animation:tkFon .4s ease-out}
+@keyframes tkFon{from{opacity:0}}
 .hs-tab{font-size:11px;padding:12px 14px}
 /* podi més gran, amb focus de llum i comptador que puja */
 .podi{min-height:360px;padding-top:44px}
@@ -218,7 +269,7 @@ h1 span{display:inline-block}
 .premi .qui span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .premi .qui .av-pr{position:relative;flex:0 0 30px;width:30px;height:30px;border-radius:50%;background:var(--av);box-shadow:0 0 0 3px #1d1631}
 .premi small{display:block;margin-top:2px;font-weight:800;font-size:12.5px;color:#c7d2fe}
-@media(max-width:520px){.hs-caixa{padding:16px 10px 12px}.hs-ticker{margin:0 -10px 12px}.hs-tab{font-size:9px;padding:10px 9px}
+@media(max-width:520px){.hs-caixa{padding:16px 10px 12px}.hs-ticker{margin:0 -10px 12px;height:34px}.tk-it{font-size:10px;line-height:30px}.hs-tab{font-size:9px;padding:10px 9px}
  .podi{min-height:300px}.pd-av{width:62px;height:62px}.p1 .pd-av{width:86px;height:86px}.pd-nom{font-size:15px}.p1 .pd-nom{font-size:20px}
  .pd-val{font-size:10px}.p1 .pd-val{font-size:12px}.p1 .pd-bloc{height:112px}.p2 .pd-bloc{height:80px}.p3 .pd-bloc{height:60px}.pd-xips i{font-size:10.5px;padding:3px 5px}
  .pd-mov{right:calc(50% - 48px)}.p1 .pd-mov{right:calc(50% - 58px)}
@@ -292,7 +343,7 @@ h1 span{display:inline-block}
  .ht-fila.top .pos .spr{width:26px}
  .hs-caixeta .g{gap:8px}
 }
-@media(prefers-reduced-motion:reduce){.hs-tk{animation:none;padding-left:12px}.pd.p1::before,.hs-tu::after,.premi .ic,.mov.up,.mov.nou{animation:none}.hs-fila,.premi,.ht-fila{animation:none}}
+@media(prefers-reduced-motion:reduce){.tk-it.quiet{animation:none}.pd.p1::before,.hs-tu::after,.premi .ic,.mov.up,.mov.nou{animation:none}.hs-fila,.premi,.ht-fila{animation:none}}
 /* ===== sprites de pixel art del rànquing (sprites.js) ===== */
 .spr{display:inline-block;width:1.15em;height:auto;vertical-align:-.2em;shape-rendering:crispEdges}
 .spr-tile{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--mc);border:2px solid #1d1631;box-shadow:inset 0 -3px 0 #0003,inset 0 2px 0 #fff4;vertical-align:middle}
@@ -312,7 +363,7 @@ h1 span{display:inline-block}
 .hs-tanca .spr{width:16px;vertical-align:middle;display:block}
 .hs-tanca{padding:7px}
 .hs-peu .spr{width:1.4em;vertical-align:-.35em}
-.hs-tk .spr{width:1.7em;vertical-align:-.45em}
+.tk-it .spr{width:1.7em;vertical-align:-.45em}
 .hs-buit .spr,.hs-tu .t .spr{width:1.6em;vertical-align:-.4em}
 .hs-tu p .spr{width:1.4em;vertical-align:-.3em}
 .mov{display:inline-flex;align-items:center;gap:1px}
@@ -426,12 +477,13 @@ footer b{color:var(--groc)}
 .admin:hover{opacity:1;border-color:var(--groc);color:var(--groc)}
 /* ---- 🎉 FESTA: ou de Pasqua del rànquing (5 tocs seguits i ràpids dins del rànquing) ---- */
 .hs-caixa{-webkit-user-select:none;user-select:none;touch-action:manipulation}
-.hs-festa{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden}
-.hs-llums{position:absolute;border-radius:50%;mix-blend-mode:screen;opacity:.3;background:conic-gradient(#f472b6 0 6%,transparent 0 12.5%,#38bdf8 0 18.5%,transparent 0 25%,#facc15 0 31%,transparent 0 37.5%,#4ade80 0 43.5%,transparent 0 50%,#a78bfa 0 56%,transparent 0 62.5%,#fb923c 0 68.5%,transparent 0 75%,#22d3ee 0 81%,transparent 0 87.5%,#f472b6 0 93.5%,transparent 0)}
-.hs-fx{position:absolute;left:0;top:0;line-height:1;pointer-events:none;will-change:transform}
+.hs-festa{position:absolute;left:0;right:0;top:0;height:100%;z-index:6;pointer-events:none;overflow:hidden;contain:paint}
+.hs-feix{position:absolute;width:150px;margin-left:-75px;transform-origin:50% 0;opacity:.32;background:linear-gradient(var(--c),transparent 92%);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.hs-fx{position:absolute;left:0;top:0;line-height:1;pointer-events:none}
 .hs-fx>i{display:inline-block;font-style:normal}
-.hs-marx{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:3px;will-change:transform}
-.hs-marx .e{font-size:44px;line-height:1;filter:drop-shadow(0 4px 0 #0007)}
+.hs-marx{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:3px}
+.hs-marx .e{font-size:44px;line-height:1}
+.hs-marx .e .spr{width:44px;display:block}
 .hs-marx .n{font-family:'Press Start 2P',monospace;font-size:8px;color:#fff;background:#000a;border-radius:6px;padding:3px 5px;white-space:nowrap}
 .hs-flash{position:absolute;inset:0;background:#fff;opacity:0}
 .hs-rf b{animation-duration:2.8s}
@@ -579,7 +631,7 @@ footer b{color:var(--groc)}
 
 <footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a></footer>
 
-<script src="sprites.js"></script>
+<script src="sprites.js?v=ece90a43"></script>
 <script>
 /* SO-MOBIL:inici (copiat de motor/eines/so-mobil.js per motor/tot.py, no editar a mà) */
 // ===== SO ALS MÒBILS (motor/eines/so-mobil.js · el mateix codi als mons i a la portada; tot.py el copia a index.html) =====
@@ -718,7 +770,7 @@ function iniciEntrada(){
  let prevFocus=null;
  bi.onclick=()=>{const o=it.hidden;it.hidden=!o;bi.setAttribute("aria-expanded",o)};
  const obreHs=()=>{prevFocus=document.activeElement;pop.hidden=false;document.body.classList.add("modal-obert");carregaHs();setTimeout(()=>document.getElementById("hsTanca").focus(),30)};
- const tanca=()=>{if(pop.hidden)return;pop.hidden=true;document.body.classList.remove("modal-obert");fiFesta(true);if(prevFocus&&prevFocus.focus)prevFocus.focus()};
+ const tanca=()=>{if(pop.hidden)return;pop.hidden=true;document.body.classList.remove("modal-obert");fiFesta(true);tickerStop();netejaFxTab();if(prevFocus&&prevFocus.focus)prevFocus.focus()};
  document.getElementById("btHs").onclick=obreHs;
  if(/[?&]demo\b/.test(location.search))setTimeout(obreHs,300);
  document.getElementById("hsTanca").onclick=tanca;pop.onclick=e=>{if(e.target===pop)tanca()};
@@ -851,12 +903,30 @@ function pintaHs(){
  if(hiHavia)rows.slice(0,10).forEach((r,i)=>{const m=mov(r,i+1);if(m==="nou")nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> entra al rànquing!`);else if(m>=2)nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> puja ${m} llocs!`)});
  if(M.n>=2)nt.push(`${spr("globe")} Meta de la colla: <b>${M.fet} de ${M.obj}</b> a ${M.llindar} ${ST()} aquesta setmana${M.feta?" · aconseguida! 🎉":""}`);
  nt.push(`${spr("star")} ${tots.length} jugadors · ${tots.reduce((a,r)=>a+r.punts,0)} estrelles entre tots`);
- document.getElementById("hsTicker").innerHTML=`<div class="hs-tk">${nt.map(x=>`<span>${x}</span>`).join("")}</div>`;
+ tickerHs(nt);
  // ---- comptadors del podi que pugen ----
  if(!matchMedia("(prefers-reduced-motion:reduce)").matches)document.querySelectorAll("#hs .cnt").forEach(e=>{const n=+e.dataset.n,t0=performance.now(),D=1200,ret=800;e.textContent="0";
   const pas=t=>{const q=Math.min(1,Math.max(0,(t-t0-ret)/D));e.textContent=Math.round(n*(1-Math.pow(1-q,3)));if(q<1)requestAnimationFrame(pas)};requestAnimationFrame(pas)});
  if(rows.length&&!matchMedia("(prefers-reduced-motion:reduce)").matches)confetiHs();
 }
+// ---- 📰 CINTA DE NOTÍCIES (n2490) ----
+// Cada notícia és una peça petita que creua la cinta de dreta a esquerra (Web Animations) i, quan la cua ha deixat
+// prou lloc, n'entra la següent; quan s'acaben, tornen a començar. Abans era UNA sola tira enorme (l'amplada de la
+// pantalla + totes les notícies, més de 10.000 píxels reals en un iPhone) amb una animació CSS: l'iPhone no la podia
+// pintar i es quedava quieta. Peces petites = capes petites per al mòbil, i la primera notícia surt de seguida.
+let TK=null;
+function tickerStop(){if(!TK)return;TK.viu=false;clearTimeout(TK.t);TK.anims.forEach(a=>{try{a.cancel()}catch(e){}});TK=null}
+function tickerHs(nt){const el=document.getElementById("hsTicker");tickerStop();el.innerHTML="";if(!nt.length)return;
+ const g=TK={viu:true,t:null,anims:[]},pop=document.getElementById("hsPop");let i=0;
+ if(suau()){const pas=()=>{if(!g.viu)return;el.innerHTML=`<span class="tk-it quiet">${nt[i++%nt.length]}</span>`;g.t=setTimeout(pas,4000)};pas();return}
+ const V=innerWidth<=520?62:80,GAP=56; // velocitat (px per segon) i espai entre notícies
+ const surt=primera=>{if(!g.viu)return;if(pop.hidden){tickerStop();return}
+  const W=el.clientWidth||innerWidth,s=document.createElement("span");s.className="tk-it";s.innerHTML=nt[i++%nt.length];el.appendChild(s);
+  const w=s.offsetWidth,x0=primera?Math.min(24,W*.06):W;
+  const a=s.animate([{transform:`translateX(${x0}px)`},{transform:`translateX(${-w-4}px)`}],{duration:(x0+w+4)/V*1000,easing:"linear",fill:"both"});
+  g.anims.push(a);a.onfinish=()=>{s.remove();const k=g.anims.indexOf(a);if(k>=0)g.anims.splice(k,1)};
+  g.t=setTimeout(()=>surt(false),Math.max(0,(x0+w+GAP-W)/V*1000))};
+ surt(true)}
 // Meta de la colla: que 3 de cada 4 nens del rànquing (com a mínim 3) facin 30 ⭐ o més els últims 7 dies.
 // Premia que hi participi tothom: un nen sol no la pot fer. Quan s'aconsegueix, la festa del rànquing salta sola
 // a cada aparell, un cop per setmana (de dilluns a diumenge).
@@ -866,8 +936,9 @@ function metaColla(){const tots=(HSD||[]).filter(r=>r.punts>0),n=tots.length,obj
 function setmanaClau(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.toISOString().slice(0,10)}
 function festaMeta(){const k="bn_meta_festa",w=setmanaClau();try{if(localStorage.getItem(k)===w)return;localStorage.setItem(k,w)}catch(e){return}
  setTimeout(()=>{if(typeof festa==="function"&&!FESTA&&document.querySelector(".hs-caixa"))festa()},1800)}
-function confetiHs(){const box=document.querySelector(".hs-caixa"),cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"];
- for(let i=0;i<28;i++){const c=document.createElement("i");c.className="conf";c.style.cssText=`left:${Math.random()*100}%;background:${cols[i%7]};width:${6+Math.random()*6}px;height:${8+Math.random()*8}px;animation-duration:${1.4+Math.random()*1.2}s;animation-delay:${Math.random()*.6}s`;box.appendChild(c);setTimeout(()=>c.remove(),3400)}}
+const MOBIL=()=>innerWidth<=520||matchMedia("(pointer:coarse)").matches;
+function confetiHs(){const box=document.querySelector(".hs-caixa"),cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"],y0=visHs(box).top-16; // cau des de dalt del que es veu
+ for(let i=0,n=MOBIL()?16:28;i<n;i++){const c=document.createElement("i");c.className="conf";c.style.cssText=`top:${y0}px;left:${Math.random()*100}%;background:${cols[i%7]};width:${6+Math.random()*6}px;height:${8+Math.random()*8}px;animation-duration:${1.4+Math.random()*1.2}s;animation-delay:${Math.random()*.6}s`;box.appendChild(c);setTimeout(()=>c.remove(),3400)}}
 // so arcade del rànquing (respecta el 🔊/🔇 de les assignatures: bn_so)
 let ACH=null;const soOk=()=>{try{return localStorage.getItem("bn_vol")!=="0"&&localStorage.getItem("bn_so")!=="0"}catch(e){return true}};
 // un sol context d'àudio per a tota la portada (redoble, musiqueta de les pestanyes, tocs i festa secreta): el de so-mobil.js,
@@ -897,31 +968,46 @@ const FXT={punts:{mix:["or","or","or","plata","tar"],r:"ESTRELLES!",tx:"linear-g
  setmana:{mix:["verd","verd","or","cian","plata"],r:"QUI PUJA MÉS!",tx:"linear-gradient(#dcfce7,#4ade80 55%,#15803d)",gl:"#4ade80"},
  nivell:{mix:["or","plata","rosa","cian","lila","verd","tar"],r:"NIVELL!",tx:"linear-gradient(90deg,#f472b6,#facc15,#4ade80,#22d3ee,#a78bfa)",gl:"#c4b5fd"},
  remuntada:{mix:["rosa","lila","verd","verd","or"],r:"REMUNTADA!",tx:"linear-gradient(#fce7f3,#f472b6 50%,#9d174d)",gl:"#f472b6"}};
-function estrella(box,x,y,tipus,m){const e=document.createElement("span"),[bg,gl]=EST[tipus];e.className="hs-est";e.style.cssText=`left:${x-m/2}px;top:${y-m/2}px;--m:${m}px;--bg:${bg};--gl:${gl}`;e.innerHTML="<i></i>";box.appendChild(e);return e}
-function espurna(box,x,y,c,m,ret){setTimeout(()=>{const e=document.createElement("span");e.className="hs-espurna";e.style.cssText=`left:${x-m/2}px;top:${y-m/2}px;--m:${m}px;--c:${c}`;box.appendChild(e);setTimeout(()=>e.remove(),950)},ret)}
+// Efectes de les pestanyes (n2490): cada toc esborra el que quedava del toc anterior abans de llançar-ne de nous, i al
+// mòbil se'n llancen menys. Abans s'hi anaven acumulant (7 tocs seguits = més de 170 estrelles amb filtres animant-se
+// alhora) i l'iPhone deixava de pintar-les: «quan toques diverses vegades no surten les imatges».
+const FXTAB={els:new Set(),t:[]};
+function netejaFxTab(){FXTAB.t.forEach(clearTimeout);FXTAB.t=[];FXTAB.els.forEach(e=>{try{e.getAnimations&&e.getAnimations().forEach(a=>a.cancel())}catch(x){}e.remove()});FXTAB.els.clear()}
+const fxPosa=(box,e,ms)=>{box.appendChild(e);FXTAB.els.add(e);if(ms)FXTAB.t.push(setTimeout(()=>{e.remove();FXTAB.els.delete(e)},ms));return e};
+function estrella(box,x,y,tipus,m){const e=document.createElement("span"),[bg,gl]=EST[tipus];e.className="hs-est";e.style.cssText=`left:${x-m/2}px;top:${y-m/2}px;--m:${m}px;--bg:${bg};--gl:${gl}`;e.innerHTML="<i></i>";return fxPosa(box,e)}
+function espurna(box,x,y,c,m,ret){FXTAB.t.push(setTimeout(()=>{const e=document.createElement("span");e.className="hs-espurna";e.style.cssText=`left:${x-m/2}px;top:${y-m/2}px;--m:${m}px;--c:${c}`;fxPosa(box,e,950)},ret))}
 function efecteTab(b){const box=document.querySelector(".hs-caixa"),fx=FXT[b.dataset.t]||FXT.punts;musiqueta(b.dataset.t);
  b.classList.remove("bota");void b.offsetWidth;b.classList.add("bota");
+ netejaFxTab();
  if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
- const W=box.clientWidth,H=box.clientHeight,bb=b.getBoundingClientRect(),cb=box.getBoundingClientRect(),x0=bb.left-cb.left+bb.width/2,y0=bb.top-cb.top+bb.height/2;
- // halo i rètol lletra a lletra
- const h=document.createElement("div");h.className="hs-halo";h.style.setProperty("--gl",fx.gl);box.appendChild(h);setTimeout(()=>h.remove(),850);
- const r=document.createElement("div");r.className="hs-rotul";r.style.setProperty("--tx",fx.tx);r.style.setProperty("--gl",fx.gl);
- r.innerHTML=[...fx.r].map((c,i)=>`<b style="animation-delay:${i*45}ms">${c}</b>`).join("");box.appendChild(r);setTimeout(()=>r.remove(),1300+fx.r.length*45);
+ const mob=MOBIL(),NE=mob?12:22,NP=mob?8:16,NS=mob?5:10;
+ const W=box.clientWidth,bb=b.getBoundingClientRect(),cb=box.getBoundingClientRect(),x0=bb.left-cb.left+bb.width/2,y0=bb.top-cb.top+bb.height/2;
+ // la pluja i les espurnes, només a la part del rànquing que es veu
+ const v=visHs(box),H=v.H,T0=v.top;
+ // halo i rètol lletra a lletra (al costat de la pestanya, perquè es vegi encara que el rànquing estigui desplaçat)
+ const yR=Math.max(T0+60,Math.min(y0+110,T0+H-60));
+ const h=document.createElement("div");h.className="hs-halo";h.style.setProperty("--gl",fx.gl);h.style.top=yR+"px";fxPosa(box,h,850);
+ const r=document.createElement("div");r.className="hs-rotul";r.style.setProperty("--tx",fx.tx);r.style.setProperty("--gl",fx.gl);r.style.top=yR+"px";
+ r.innerHTML=[...fx.r].map((c,i)=>`<b style="animation-delay:${i*45}ms">${c}</b>`).join("");fxPosa(box,r,1300+fx.r.length*45);
  // 1) esclat des del botó: corba amb gravetat, gir i rebot de mida
- for(let i=0;i<22;i++){const t=fx.mix[i%fx.mix.length],m=14+Math.random()*16,e=estrella(box,x0,y0,t,m);
-  const a=-Math.PI/2+(Math.random()-.5)*2.6,v=140+Math.random()*170,vx=Math.cos(a)*v,vy=Math.sin(a)*v,g=520,T=.9+Math.random()*.6,rot=(Math.random()<.5?-1:1)*(360+Math.random()*540),K=[];
+ for(let i=0;i<NE;i++){const t=fx.mix[i%fx.mix.length],m=14+Math.random()*16,e=estrella(box,x0,y0,t,m);
+  const a=-Math.PI/2+(Math.random()-.5)*2.6,vl=140+Math.random()*170,vx=Math.cos(a)*vl,vy=Math.sin(a)*vl,g=520,T=.9+Math.random()*.6,rot=(Math.random()<.5?-1:1)*(360+Math.random()*540),K=[];
   for(let k=0;k<=12;k++){const q=k/12,tt=q*T,sc=k<2?.3+k*.7:1-.6*q;K.push({transform:`translate(${vx*tt}px,${vy*tt+.5*g*tt*tt}px) rotate(${rot*q}deg) scale(${sc})`,opacity:q<.75?1:1-(q-.75)/.25})}
-  e.animate(K,{duration:T*1000,delay:i*12,easing:"linear",fill:"both"}).onfinish=()=>e.remove();
+  e.animate(K,{duration:T*1000,delay:i*12,easing:"linear",fill:"both"}).onfinish=()=>{e.remove();FXTAB.els.delete(e)};
   if(i%4===0)espurna(box,x0+vx*T*.55,y0+vy*T*.55+.5*g*(T*.55)**2,EST[t][1],18,T*550)}
- // 2) pluja d'estrelles des de dalt, en zig-zag suau
- for(let i=0;i<16;i++){const t=fx.mix[(i+2)%fx.mix.length],m=10+Math.random()*14,x=Math.random()*W,e=estrella(box,x,-20,t,m),amp=20+Math.random()*30,T=1500+Math.random()*900;
-  e.animate([{transform:"translate(0,0) rotate(0) scale(.6)",opacity:0},{transform:`translate(${amp}px,${H*.3}px) rotate(160deg) scale(1)`,opacity:1,offset:.3},{transform:`translate(${-amp}px,${H*.65}px) rotate(320deg) scale(.9)`,opacity:1,offset:.65},{transform:`translate(${amp/2}px,${H+30}px) rotate(480deg) scale(.7)`,opacity:0}],{duration:T,delay:250+i*70,easing:"cubic-bezier(.4,.1,.6,1)",fill:"both"}).onfinish=()=>e.remove()}
+ // 2) pluja d'estrelles des de dalt de la part visible, en zig-zag suau
+ for(let i=0;i<NP;i++){const t=fx.mix[(i+2)%fx.mix.length],m=10+Math.random()*14,x=Math.random()*W,e=estrella(box,x,T0-20,t,m),amp=20+Math.random()*30,T=1500+Math.random()*900;
+  e.animate([{transform:"translate(0,0) rotate(0) scale(.6)",opacity:0},{transform:`translate(${amp}px,${H*.3}px) rotate(160deg) scale(1)`,opacity:1,offset:.3},{transform:`translate(${-amp}px,${H*.65}px) rotate(320deg) scale(.9)`,opacity:1,offset:.65},{transform:`translate(${amp/2}px,${H+30}px) rotate(480deg) scale(.7)`,opacity:0}],{duration:T,delay:250+i*70,easing:"cubic-bezier(.4,.1,.6,1)",fill:"both"}).onfinish=()=>{e.remove();FXTAB.els.delete(e)}}
  // 3) espurnes que pampallugen al voltant del podi
- for(let i=0;i<10;i++)espurna(box,W*(.15+Math.random()*.7),H*(.3+Math.random()*.4),EST[fx.mix[i%fx.mix.length]][1],14+Math.random()*16,300+i*90);
+ for(let i=0;i<NS;i++)espurna(box,W*(.15+Math.random()*.7),T0+H*(.3+Math.random()*.4),EST[fx.mix[i%fx.mix.length]][1],14+Math.random()*16,300+i*90);
 }
-const activaTabHs=(b,focus)=>{if(!b)return;if(b.dataset.t!==HSTAB)efecteTab(b);HSTAB=b.dataset.t;
+// tocar la pestanya que ja està triada també torna a fer l'efecte (abans no passava res)
+let TAB_T=0;
+const activaTabHs=(b,focus)=>{if(!b)return;const ara=performance.now(),mateixa=b.dataset.t===HSTAB;
+ if(!mateixa||ara-TAB_T>350){TAB_T=ara;efecteTab(b)}
+ HSTAB=b.dataset.t;
  document.querySelectorAll(".hs-tab").forEach(x=>{const on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false");x.tabIndex=on?0:-1});
- if(focus)b.focus();if(HSD)pintaHs()};
+ if(focus)b.focus();if(HSD&&!mateixa)pintaHs()};
 document.getElementById("hsTabs").onclick=e=>{const b=e.target.closest(".hs-tab");if(b)activaTabHs(b,false)};
 document.getElementById("hsTabs").onkeydown=e=>{const ts=[...document.querySelectorAll(".hs-tab")],i=ts.indexOf(e.target.closest(".hs-tab"));if(i<0)return;
  let n=-1;if(e.key==="ArrowRight")n=(i+1)%ts.length;else if(e.key==="ArrowLeft")n=(i-1+ts.length)%ts.length;else if(e.key==="Home")n=0;else if(e.key==="End")n=ts.length-1;
@@ -973,12 +1059,15 @@ function musAbella(){const u=.065,A="E5 D#5 D5 C#5 D5 C#5 C5 B4 C5 B4 A#4 A4 G#4
 // part visible del rànquing (la finestra pot tallar-lo): els efectes es fan allà
 function visHs(box){const cb=box.getBoundingClientRect(),top=Math.max(0,-cb.top),bot=Math.min(box.clientHeight,innerHeight-cb.top);return {W:box.clientWidth,top,H:Math.max(160,bot-top)}}
 function fEm(capa,e,x,y,m){const s=document.createElement("span");s.className="hs-fx";s.innerHTML=`<i>${e}</i>`;s.style.cssText=`font-size:${m}px;left:${x-m/2}px;top:${y-m/2}px`;capa.appendChild(s);return s}
-function fxTerra(box,capa,v,mu){const N=Math.round(mu.bum*14);
- FESTA.anims.push(box.animate(Array.from({length:N+1},(_,k)=>{const q=k/N,A=1+9*q*q;return {transform:k===N?"none":`translate(${(Math.random()*2-1)*A}px,${(Math.random()*2-1)*A}px) rotate(${(Math.random()*2-1)*A*.1}deg)`}}),{duration:mu.bum*1000,easing:"linear"}));
+// peces del rànquing que es veuen ara mateix (per fer-les tremolar sense moure la caixa sencera, que és enorme)
+function pecesVisibles(box){const P=[...box.querySelectorAll(".hs-tit,.hs-tabs,.hs-ticker,.pd,.a-meta,.a-tu,.premi,.ht-fila:not(.ht-cap)")];
+ return P.filter(e=>{const r=e.getBoundingClientRect();return r.height>0&&r.bottom>0&&r.top<innerHeight}).slice(0,24)}
+function fxTerra(box,capa,v,mu){const N=Math.round(mu.bum*14),peces=pecesVisibles(box);
+ peces.forEach((e,j)=>FESTA.anims.push(e.animate(Array.from({length:N+1},(_,k)=>{const q=k/N,A=1+9*q*q;return {transform:k===N?"none":`translate(${(Math.random()*2-1)*A}px,${(Math.random()*2-1)*A}px) rotate(${(Math.random()*2-1)*A*.1}deg)`}}),{duration:mu.bum*1000,easing:"linear"})));
  FESTA.t.push(setTimeout(()=>{const fl=document.createElement("div");fl.className="hs-flash";capa.appendChild(fl);fl.animate([{opacity:.85},{opacity:0}],{duration:550,fill:"forwards"});
-  FESTA.anims.push(box.animate([{transform:"scale(1.04)"},{transform:"scale(.98)"},{transform:"none"}],{duration:420}));
+  peces.forEach(e=>FESTA.anims.push(e.animate([{transform:"scale(1.04)"},{transform:"scale(.98)"},{transform:"none"}],{duration:420})));
   const x0=v.W/2,y0=v.top+v.H*.45;
-  for(let i=0;i<34;i++){const e=fEm(capa,["💥","🪨","🔥","⭐","🌋","🦖"][i%6],x0,y0,22+Math.random()*26),a=Math.random()*Math.PI*2,vel=220+Math.random()*320,vx=Math.cos(a)*vel,vy=Math.sin(a)*vel-180,g=700,T=1.1+Math.random()*.5,K=[];
+  for(let i=0,n=MOBIL()?22:34;i<n;i++){const e=fEm(capa,["💥","🪨","🔥","⭐","🌋","🦖"][i%6],x0,y0,22+Math.random()*26),a=Math.random()*Math.PI*2,vel=220+Math.random()*320,vx=Math.cos(a)*vel,vy=Math.sin(a)*vel-180,g=700,T=1.1+Math.random()*.5,K=[];
    for(let k=0;k<=10;k++){const q=k/10,tt=q*T;K.push({transform:`translate(${vx*tt}px,${vy*tt+.5*g*tt*tt}px) rotate(${(i%2?1:-1)*540*q}deg) scale(${k<2?.4+k*.6:1})`,opacity:q<.7?1:1-(q-.7)/.3})}
    e.animate(K,{duration:T*1000,easing:"linear",fill:"both"})}
   confetiHs()},mu.bum*1000))}
@@ -1002,14 +1091,19 @@ function fxAbella(box,capa,v,mu){const D=mu.d*1000,pt=()=>[20+Math.random()*(v.W
 const FESTES=[{r:"TERRATRÈMOL!",tx:"linear-gradient(#fde68a,#f97316 55%,#b91c1c)",gl:"#f97316",mus:musTerra,fx:fxTerra,em:["💥","🪨","🔥","🌋"]},
  {r:"DESFILADA!",tx:"linear-gradient(90deg,#f472b6,#facc15,#4ade80,#22d3ee,#a78bfa)",gl:"#f0abfc",mus:musDesfi,fx:fxDesfi,em:["🎵","🎶","🥁","🎺"]},
  {r:"ABELLOTS!",tx:"linear-gradient(#fef9c3,#facc15 50%,#a16207)",gl:"#facc15",mus:musAbella,fx:fxAbella,em:["🐝","🌼","🍯","🌸"]}];
-function festa(){const box=document.querySelector(".hs-caixa"),F=FESTES[FESTA_N++%FESTES.length],v=visHs(box);
- FSO=soOk();if(FSO)try{fAc()}catch(e){FSO=false}
- const mu=F.mus(),capa=document.createElement("div");capa.className="hs-festa";box.appendChild(capa);
- FESTA={F,box,capa,anims:[],t:[]};FESTA.t.push(setTimeout(()=>fiFesta(),mu.d*1000+300));window.FESTES_FETES=(window.FESTES_FETES||0)+1;
+// La capa de la festa només ocupa la part del rànquing que es veu (n2490): abans ocupava tota la caixa (milers de
+// píxels d'alt) i, a més, hi havia un disc de llums de 2 pantalles d'ample amb mix-blend-mode que girava. A l'iPhone
+// aquella capa gegant no es pintava i amb ella desapareixien les abelles, la desfilada i els focus.
+function festa(){const box=document.querySelector(".hs-caixa"),F=FESTES[FESTA_N++%FESTES.length],vb=visHs(box),v={W:vb.W,top:0,H:vb.H};
+ netejaFxTab();FSO=soOk();if(FSO)try{fAc()}catch(e){FSO=false}
+ const mu=F.mus(),capa=document.createElement("div");capa.className="hs-festa";capa.style.cssText=`top:${vb.top}px;height:${vb.H}px`;box.appendChild(capa);
+ FESTA={F,box,capa,top:vb.top,anims:[],t:[]};FESTA.t.push(setTimeout(()=>fiFesta(),mu.d*1000+300));window.FESTES_FETES=(window.FESTES_FETES||0)+1;
  if(suau()){const b=document.createElement("div");b.className="hs-suau";b.style.top=(v.top+70)+"px";b.textContent="🎉 "+F.r+" 🎉";capa.appendChild(b);return}
  // llums de discoteca que giren
- const L=2*Math.max(innerWidth,innerHeight),ll=document.createElement("div");ll.className="hs-llums";ll.style.cssText=`width:${L}px;height:${L}px;left:${v.W/2-L/2}px;top:${v.top+v.H/2-L/2}px`;capa.appendChild(ll);
- ll.animate([{transform:"rotate(0)"},{transform:"rotate(360deg)"}],{duration:2600,iterations:Infinity});
+ // focus de discoteca: feixos de llum estrets que giren al voltant del centre (cada un és una capa petita)
+ const cx=v.W/2,cy=v.H*.45,R=Math.ceil(Math.hypot(Math.max(cx,v.W-cx),Math.max(cy,v.H-cy))),COL=["#f472b6","#38bdf8","#facc15","#4ade80","#a78bfa","#fb923c"],NF=MOBIL()?4:6;
+ for(let i=0;i<NF;i++){const f=document.createElement("i");f.className="hs-feix";f.style.cssText=`left:${cx}px;top:${cy}px;height:${R}px;--c:${COL[i%COL.length]}`;capa.appendChild(f);
+  const a0=i*360/NF;FESTA.anims.push(f.animate([{transform:`rotate(${a0}deg)`},{transform:`rotate(${a0+360}deg)`}],{duration:5200,iterations:Infinity}))}
  // rètol lletra a lletra
  const r=document.createElement("div");r.className="hs-rotul hs-rf";r.style.cssText=`top:${v.top+Math.min(260,v.H*.3)}px;--tx:${F.tx};--gl:${F.gl}`;
  r.innerHTML=[...F.r].map((c,i)=>`<b style="animation-delay:${i*55}ms">${c}</b>`).join("");capa.appendChild(r);FESTA.t.push(setTimeout(()=>r.remove(),2800+F.r.length*55));
@@ -1024,7 +1118,7 @@ function fiFesta(rapid){if(!FESTA)return;const f=FESTA;FESTA=null;f.t.forEach(cl
 // comptador de tocs: del 2n al 4t toc surt una guspira i un «bip» cada cop més agut; al 5è, FESTA
 document.querySelector(".hs-caixa").addEventListener("pointerdown",e=>{if(e.button>0||e.target.closest("button,a"))return;
  const box=e.currentTarget,cb=box.getBoundingClientRect(),x=e.clientX-cb.left,y=e.clientY-cb.top,t=performance.now();
- if(FESTA){if(!suau()){const em=FESTA.F.em,s=fEm(FESTA.capa,em[Math.floor(Math.random()*em.length)],x,y,30);
+ if(FESTA){if(!suau()){const em=FESTA.F.em,s=fEm(FESTA.capa,em[Math.floor(Math.random()*em.length)],x,y-FESTA.top,30);
    s.animate([{transform:"scale(.3)",opacity:1},{transform:`translate(${(Math.random()-.5)*50}px,-70px) scale(1.3)`,opacity:1,offset:.5},{transform:`translate(${(Math.random()-.5)*80}px,-120px) scale(1)`,opacity:0}],{duration:800,fill:"forwards"})}return}
  TOC_N=t-TOC_T<500?TOC_N+1:1;TOC_T=t;
  if(TOC_N>=5){TOC_N=0;festa();return}

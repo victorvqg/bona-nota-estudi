@@ -69,7 +69,21 @@ if ini not in s or fi not in s:
     sys.exit("ERROR: a index.html falten les marques SO-MOBIL:inici / SO-MOBIL:fi")
 a, b = s.index(ini) + len(ini), s.index(fi)
 s = s[:a] + "\n" + (d / "eines" / "so-mobil.js").read_text().rstrip("\n") + "\n" + s[b:]
+# l'actualització automàtica (motor/eines/actualitza.js) també és el mateix codi que als mons
+ini, fi = "/* ACTUALITZA:inici (copiat de motor/eines/actualitza.js per motor/tot.py, no editar a mà) */", "/* ACTUALITZA:fi */"
+if ini not in s or fi not in s:
+    sys.exit("ERROR: a index.html falten les marques ACTUALITZA:inici / ACTUALITZA:fi")
+a, b = s.index(ini) + len(ini), s.index(fi)
+s = s[:a] + "\n" + (d / "eines" / "actualitza.js").read_text().rstrip("\n") + "\n" + s[b:]
+# sprites.js amb «?v=<empremta>»: quan canvia, l'adreça és nova i cap memòria cau no en pot servir una còpia vella
+import hashlib, re
+v_spr = hashlib.sha1((arrel / "sprites.js").read_bytes()).hexdigest()[:8]
+s, n = re.subn(r'src="sprites\.js(\?v=[0-9a-f]*)?"', f'src="sprites.js?v={v_spr}"', s)
+if n != 1:
+    sys.exit("ERROR: a index.html hi ha d'haver exactament un <script src=\"sprites.js\">")
 idx.write_text(s)
+adm = arrel / "admin" / "index.html"
+adm.write_text(re.sub(r'src="\.\./sprites\.js(\?v=[0-9a-f]*)?"', f'src="../sprites.js?v={v_spr}"', adm.read_text()))
 print(f"✓ portada: {len(mons)} mons")
 
 # 3b) text de totes les preguntes per al tauler d'admin (admin/preguntes.json): id → text, opcions, correcta, tema
@@ -83,13 +97,21 @@ for m in mons:
 (arrel / "admin" / "preguntes.json").write_text(json.dumps(preguntes, ensure_ascii=False, separators=(",", ":")))
 print(f"✓ admin/preguntes.json: {len(preguntes)} preguntes")
 
-# 4) service worker (app instal·lable i sense connexió): llista de pàgines i versió segons el contingut
-import hashlib
-fitxers_sw = ["./", "index.html", "sprites.js", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png"] + [m["carpeta"] + "/" for m in mons]
+# 4) versió publicada: una empremta del contingut (portada, sprites i mons, calculada amb el buit «__BN_VERSIO__» encara
+#    sense omplir, perquè no depengui d'ella mateixa). Va a: cada pàgina (actualitza.js la compara amb versio.json en obrir-la
+#    i, si no coincideixen, es recarrega sola), versio.json i el service worker (app instal·lable i sense connexió).
+fitxers_sw = ["./", "index.html", f"sprites.js?v={v_spr}", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png"] + [m["carpeta"] + "/" for m in mons]
+pagines = ["index.html"] + [m["carpeta"] + "/index.html" for m in mons]
 h = hashlib.sha1()
-for f in ["index.html", "sprites.js"] + [m["carpeta"] + "/index.html" for m in mons]:
+for f in ["index.html", "sprites.js"] + pagines[1:]:
     h.update((arrel / f).read_bytes())
 versio = h.hexdigest()[:10]
+for f in pagines:
+    t = (arrel / f).read_text()
+    if t.count('VER="__BN_VERSIO__"') != 1:
+        sys.exit(f"ERROR: {f} no porta l'actualització automàtica (motor/eines/actualitza.js)")
+    (arrel / f).write_text(t.replace('VER="__BN_VERSIO__"', f'VER="{versio}"'))
+(arrel / "versio.json").write_text(json.dumps({"v": versio}) + "\n")
 sw = (d / "sw-plantilla.js").read_text().replace("__VERSIO__", versio).replace("__FITXERS__", json.dumps(fitxers_sw, ensure_ascii=False))
 (arrel / "sw.js").write_text(sw)
-print(f"✓ sw.js versió {versio}")
+print(f"✓ versió {versio}: pàgines, versio.json i sw.js")
