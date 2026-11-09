@@ -25,7 +25,7 @@ Data: 2026-11-09
   - Arreglat: els errors de «Troba l'error» de mates tornen a entrar al repàs espaiat (la prova estricta de Divisibilitat tornava a fallar).
 
 ## En curs
-- Branca `tauler-joc`: el tauler d'admin al dia amb el boss, les missions, el repàs i l'examen de mates. Pendent de pujar i fusionar.
+- Branca `docs-avaluacio`: `docs/AVALUACIO.md`, com s'avalua i què vol dir cada nota. Pendent de pujar i fusionar.
 
 ## Pendent
 - `motor/jocs_generics.js` no el carrega ningú i ja no coincideix amb la plantilla, que és on viuen els jocs genèrics. Cal decidir si s'esborra.

@@ -1,6 +1,6 @@
 # 🌍 Els mons de Bona Nota
 
-Què hi ha a cada món i com es juga. Com està fet tècnicament: [README](../README.md).
+Què hi ha a cada món i com es juga. Com es posen les notes: [AVALUACIO.md](AVALUACIO.md). Com està fet tècnicament: [README](../README.md).
 
 Bona Nota serveix per **repassar** els temes de 1r d'ESO **jugant**. Cada tema és un «món» amb fitxes, targetes,
 tests, jocs i preguntes d'examen. Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
