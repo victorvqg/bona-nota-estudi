@@ -35,6 +35,8 @@ jobs:
         run: cd motor && node prova-generadors.js
       - name: Prova de la pàgina de perfil (perfil/, amb Supabase simulat)
         run: node motor/prova-perfil.js
+      - name: Prova dels orígens d'estrelles del tauler (admin/, funcions pures)
+        run: node motor/prova-admin-fonts.js
       - name: Prova automàtica de cada món
         run: |
           cd motor
