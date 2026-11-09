@@ -30,6 +30,7 @@ Data: 2026-11-09
   - Prova nova `motor/prova-perfil.js` a l'Action. Especificació: `docs/superpowers/specs/2026-11-09-perfil-arcade-design.md`.
 
 ## En curs
+- **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0), #14 triple combo a les obertes (v2.9.0) i #15 super combo de preguntes difícils (v2.10.0); #16 dificultat calculada quan hi hagi dades. Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.
 - Branca `treu-canvi-usuari`: «Canviar d'usuari» només a la portada. Pendent de pujar i fusionar.
 - Preguntes obertes: la fase 2, correcció amb IA, queda per decidir quan hi hagi dades del tauler.
 
