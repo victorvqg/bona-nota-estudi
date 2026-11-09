@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a5bdf45445",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="163a2b249d",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -645,7 +645,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.8.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.8.1</small></footer>
 
 <script src="sprites.js?v=15744077"></script>
 <script>
@@ -857,7 +857,8 @@ const DEMO_D=[["Pau",263,9400,150,71,{socials:150,biogeo:36,castellano:40,comarq
  ["Èric",83,2600,83,18,{socials:83}],["Martina",66,3100,30,12,{socials:30,biogeo:21,castellano:15}],["Leo",48,1500,48,48,{comarques:48}],["Júlia",31,2000,20,5,{biogeo:20,castellano:3,divisibilitat:8}],["Max",12,700,12,12,{socials:12}]]
  .map(([nom,punts,temps_s,punts_max,setmana,mons],i)=>({nom,punts,temps_s,punts_max,setmana,mons,apr:[3,0,6,1,8,2,4,0,5,1,2,0][i]||0}));
 const DEMO_PREV={pau:2,jana:1,àlex:5,nora:3,laia:4,hugo:8,ona:6,èric:7,martina:9,júlia:10};
-const SUPER=50,ordinal=n=>n===1?"1r":n===2?"2n":n===3?"3r":n===4?"4t":n+"è";
+// HS_TOP: quants jugadors surten a la classificació; si tu quedes més avall, la teva fila surt a sota, després de «···»
+const SUPER=50,HS_TOP=25,ordinal=n=>n===1?"1r":n===2?"2n":n===3?"3r":n===4?"4t":n+"è";
 const nMons=r=>Object.values(r.mons||{}).filter(x=>x>0).length;
 function movHtml(m){const t=x=>` title="${x}" aria-label="${x}"`;return m==null?"":m==="nou"?`<span class="mov nou"${t("nou al rànquing")}>NOU</span>`:m>0?`<span class="mov up"${t(`ha pujat ${m} ${m===1?"lloc":"llocs"}`)}>${spr("up")}${m}</span>`:m<0?`<span class="mov dn"${t(`ha baixat ${-m} ${m===-1?"lloc":"llocs"}`)}>${spr("down")}${-m}</span>`:`<span class="mov eq"${t("igual que l'última vegada")}>${spr("eq")}</span>`}
 const fTc=s=>{const m=Math.round((s||0)/60);return m<1?"<1m":m>=60?`${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`:`${m}m`};
@@ -895,7 +896,7 @@ function pintaHs(){
  else{
   podi=`<div class="podi">${pd(rows[0],1)}${pd(rows[1],2)}${pd(rows[2],3)}</div>`;
   const ij=rows.findIndex(esJo);
-  taula=`<h3 class="hs-sec"><span>${spr("clipboard")} CLASSIFICACIÓ</span> <small>${rows.length} jugador${rows.length===1?"":"s"}</small></h3><div class="ht-scroll"><div class="hs-taula act-${HSTAB}" role="table" style="--nw:${nw}">${mats}${cap}${rows.slice(0,10).map((r,i)=>fila(r,i+1,i)).join("")}${ij>=10?`<div class="ht-salt">···</div>${fila(rows[ij],ij+1,10,"mes")}`:""}</div></div>`;
+  taula=`<h3 class="hs-sec"><span>${spr("clipboard")} CLASSIFICACIÓ</span> <small>${rows.length} jugador${rows.length===1?"":"s"}</small></h3><div class="ht-scroll"><div class="hs-taula act-${HSTAB}" role="table" style="--nw:${nw}">${mats}${cap}${rows.slice(0,HS_TOP).map((r,i)=>fila(r,i+1,i)).join("")}${ij>=HS_TOP?`<div class="ht-salt">···</div>${fila(rows[ij],ij+1,HS_TOP,"mes")}`:""}</div></div>`;
  }
  // ---- 3) la teva posició ----
  let tu="";const ij=rows.findIndex(esJo);
@@ -925,7 +926,7 @@ function pintaHs(){
  if(r0&&rows[1])nt.push(`${spr("crown")} <b>${esc(r0.nom)}</b> lidera amb ${fmt(r0[c.k]-rows[1][c.k])}${unit} d'avantatge`);
  P.forEach(([ic,nm,,m,tx])=>nt.push(`${spr(ic)} <b>${esc(m.r.nom)}</b>: ${tx(m.v)}`));
  tots.filter(r=>r.punts>=SUPER).sort((a,b)=>b.punts-a.punts).slice(0,4).forEach(r=>nt.push(`${spr("superstar")} <b>${esc(r.nom)}</b> té ${Math.floor(r.punts/SUPER)} superestrell${Math.floor(r.punts/SUPER)===1?"a":"es"}`));
- if(hiHavia)rows.slice(0,10).forEach((r,i)=>{const m=mov(r,i+1);if(m==="nou")nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> entra al rànquing!`);else if(m>=2)nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> puja ${m} llocs!`)});
+ if(hiHavia)rows.slice(0,HS_TOP).forEach((r,i)=>{const m=mov(r,i+1);if(m==="nou")nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> entra al rànquing!`);else if(m>=2)nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> puja ${m} llocs!`)});
  if(M.n>=2)nt.push(`${spr("globe")} Meta de la colla: <b>${M.fet} de ${M.obj}</b> a ${M.llindar} ${ST()} aquesta setmana${M.feta?" · aconseguida! 🎉":""}`);
  nt.push(`${spr("star")} ${tots.length} jugadors · ${tots.reduce((a,r)=>a+r.punts,0)} estrelles entre tots`);
  tickerHs(nt);

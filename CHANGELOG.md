@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.8.1 · 2026-11-09
+
+### Canviat
+- La classificació del rànquing mostra els 25 primers (abans, els 10 primers). Si quedes més avall, la teva fila continua sortint a sota.
+
 ## 2.8.0 · 2026-11-09
 
 ### Canviat
