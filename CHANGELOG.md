@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.8.3 · 2026-11-09
+
+### Canviat
+- Rànquing: els «Premis de la colla» passen a una franja a tota l'amplada, just sota el podi, amb targetes més grans. A l'ordinador surten tots en una fila; al mòbil, de 2 en 2 i abans de la classificació (abans sortien al final).
+
 ## 2.8.2 · 2026-11-09
 
 ### Arreglat

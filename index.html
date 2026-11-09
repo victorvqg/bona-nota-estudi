@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="bdc75ee4bc",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="08477c0665",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -275,14 +275,27 @@ h1 span{display:inline-block}
  .pd-mov{right:calc(50% - 48px)}.p1 .pd-mov{right:calc(50% - 58px)}
  .hs-fila{grid-template-columns:34px 40px minmax(0,1fr) auto;gap:8px;padding:8px}.hs-fila .av{width:40px;height:40px}.hs-fila .nm{font-size:16px}.hs-fila .vl{font-size:10.5px}.hs-fila .pos{font-size:12px}
  .hs-xips i{font-size:10.5px;padding:3px 5px}.hs-premis .g{gap:8px}.premi .qui{font-size:15px}}
-/* composició: mòbil en una columna (podi → tu → classificació → premis);
-   ordinador (≥880 px): a dalt podi | la teva posició + premis, i a sota la classificació a tota l'amplada */
+/* composició: mòbil en una columna (podi → meta → tu → premis → classificació);
+   ordinador (≥880 px): a dalt podi | meta + la teva posició; a sota, a tota l'amplada, els premis i la classificació (n2523) */
 .hs-cos{position:relative;z-index:1;display:flex;flex-direction:column;gap:16px;margin-top:6px}
 .hs-col{display:contents}
-.a-podi{order:1}.a-meta,.a-tu{order:2}.a-taula{order:3}.a-premis{order:4}
+.a-podi{order:1}.a-meta,.a-tu{order:2}.a-premis{order:3}.a-taula{order:4}
 .a-podi,.a-taula{min-width:0}
 @media(min-width:880px){.hs-cos{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start;gap:20px}
- .a-podi{grid-column:1;grid-row:1}.hs-col.dre{grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:16px}.a-taula{grid-column:1/-1;grid-row:2}}
+ .a-podi{grid-column:1;grid-row:1}.hs-col.dre{grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:16px}
+ .hs-cos.sol .a-podi{grid-column:1/-1}.a-premis{grid-column:1/-1;grid-row:2}.a-taula{grid-column:1/-1;grid-row:3}}
+/* premis a tota l'amplada, sota el podi: targetes grans, totes en una fila a l'ordinador (fins a 5) i de 2 en 2 al mòbil */
+.a-premis .hs-caixeta{padding:16px 18px 18px}
+.a-premis .hs-caixeta .g{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.a-premis .premi{padding:20px 14px 18px;border-width:3px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+.a-premis .premi .ic .spr{width:62px}
+.a-premis .premi .nm2{margin-top:10px;font-size:15px;line-height:1.25;min-height:2.5em;display:flex;align-items:center;justify-content:center}
+.a-premis .premi .qui{margin-top:10px;font-size:22px;gap:10px;max-width:100%}
+.a-premis .premi .qui .av-pr{flex-basis:44px;width:44px;height:44px}
+.a-premis .premi small{margin-top:6px;font-size:14.5px}
+@media(max-width:520px){.a-premis .hs-caixeta{padding:14px 10px 12px}.a-premis .hs-caixeta .g{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .a-premis .premi{padding:14px 8px 12px}.a-premis .premi:last-child:nth-child(odd){grid-column:1/-1}.a-premis .premi .ic .spr{width:46px}
+ .a-premis .premi .nm2{font-size:12.5px}.a-premis .premi .qui{font-size:17px;gap:6px}.a-premis .premi .qui .av-pr{flex-basis:32px;width:32px;height:32px}.a-premis .premi small{font-size:12.5px}}
 .hs-sec{margin:0 0 10px;display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-family:'Press Start 2P',monospace;font-size:11px;color:#f0abfc;letter-spacing:1px}
 .hs-sec small{font-family:Nunito,system-ui,sans-serif;font-weight:800;font-size:12.5px;letter-spacing:0;color:#a5b4fc}
 .hs-caixeta{border-radius:18px;padding:14px;background:#ffffff0a;border:2px solid #ffffff1c}
@@ -645,7 +658,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.8.2</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.8.3</small></footer>
 
 <script src="sprites.js?v=15744077"></script>
 <script>
@@ -913,11 +926,12 @@ function pintaHs(){
   ["hourglass","Més constant","#7c3aed",millor(r=>r.temps_s||0,v=>v>0),v=>fTc(v)+" estudiant"],
   ["brain","Remuntada de la setmana","#16a34a",millor(r=>r.apr||0,v=>v>0),v=>`${v} error${v===1?"":"s"} après${v===1?"":"os"} en 7 dies`]].filter(x=>x[3]);
  const premis=P.length?`<div class="hs-caixeta"><h3 class="hs-sec"><span>${spr("trophy")} PREMIS DE LA COLLA</span></h3><div class="g">${P.map(([ic,nm,col,m,tx],i)=>`<div class="premi" style="--pc:${col};animation-delay:${(1.1+i*.15).toFixed(2)}s"><span class="ic">${spr(ic)}</span><span class="nm2">${nm}</span><span class="qui">${avHtml(m.r.nom,"av-pr")}<span>${esc(m.r.nom)}</span></span><small>${tx(m.v)}</small></div>`).join("")}</div></div>`:"";
-  // composició: ordinador → a dalt podi | (la teva posició + premis), a sota la classificació a tota l'amplada; mòbil → podi, tu, classificació, premis
+  // composició: ordinador → a dalt podi | (meta + la teva posició), a sota els premis i la classificació a tota l'amplada; mòbil → podi, meta, tu, premis, classificació
  // ---- 5) meta de la colla (Bona Nota 2.0): compta qui hi participa, no qui en fa més ----
  const M=metaColla();
  const meta=M.n<2?"":`<div class="hs-meta${M.feta?" feta":""}"><div class="t">${spr(M.feta?"trophy":"globe")} META DE LA COLLA</div><p>${M.feta?`<b>Aconseguida!</b> ${M.fet} de ${M.n} heu fet ${M.llindar} ${ST()} o més aquesta setmana. Festa per a tothom! 🎉`:`Que <b>${M.obj} de ${M.n}</b> fem ${M.llindar} ${ST()} o més en 7 dies. Ara: <b>${M.fet}</b>. ${M.obj-M.fet===1?"Només en falta 1!":`En falten ${M.obj-M.fet}.`}`}</p><div class="falta"><i style="width:${Math.min(100,Math.round(M.fet*100/M.obj))}%"></i></div><div class="qui">${M.qui.map(r=>avHtml(r.nom,"av-mini")).join("")}</div></div>`;
- document.getElementById("hs").innerHTML=`<div class="hs-cos"><div class="a-podi">${podi}</div><div class="hs-col dre">${meta?`<div class="a-meta">${meta}</div>`:""}${tu?`<div class="a-tu">${tu}</div>`:""}<div class="a-premis">${premis}</div></div><div class="a-taula">${taula}</div></div>`;
+ const dre=`${meta?`<div class="a-meta">${meta}</div>`:""}${tu?`<div class="a-tu">${tu}</div>`:""}`;
+ document.getElementById("hs").innerHTML=`<div class="hs-cos${dre?"":" sol"}"><div class="a-podi">${podi}</div>${dre?`<div class="hs-col dre">${dre}</div>`:""}${premis?`<div class="a-premis">${premis}</div>`:""}<div class="a-taula">${taula}</div></div>`;
  if(M.feta)festaMeta();
  // quan la classificació es desplaça de costat, el bloc enganxat (posició + nom) fa ombra i la capçalera tapa el que passa per sota
  const sc=document.querySelector("#hs .ht-scroll");if(sc)sc.addEventListener("scroll",()=>sc.classList.toggle("desp",sc.scrollLeft>0),{passive:true});
