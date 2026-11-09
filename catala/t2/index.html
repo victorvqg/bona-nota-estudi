@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="ff8c18f1e5",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="39be72453c",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -1476,10 +1476,10 @@ function test(ordre,k,bones,clau,pool,cb){
   const ok=+b.dataset.i===q[2];anotaQ(q,ok,+b.dataset.i);
   z.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok")});if(bp&&bp.parentNode)bp.parentNode.remove();
   // amb pista, encertar no avança la capsa del repàs (torna demà) ni suma al combo
-  const tidR=q.tid||(esTema?tema.id:null);if(tidR&&!(ok&&pista))repAnota(tidR,q[0],ok);
+  const tidR=q.tid||(esTema?tema.id:null);let rp=0;if(tidR&&!(ok&&pista))rp=repAnota(tidR,q[0],ok)||0;
   if(ok&&pista&&REPAS&&tidR){const r=S.rep&&S.rep[tidR+"|"+q[0]];if(r){r.prox=diaMes(1);desa()}}
   const comboAbans=COMBO;
-  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":REPAS&&rp?`+${rp} ⭐ error corregit`:"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
   document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
@@ -1761,8 +1761,8 @@ async function bnProvaFase1(){const espera=ms=>new Promise(r=>setTimeout(r,ms)),
   const g=document.querySelector('.pregunta.germana').innerHTML,m=tema.q.find(x=>x[0]===g);if(!m)return "escut: la pregunta germana no és del tema";
   [...document.querySelectorAll('.germ')].find(o=>+o.dataset.g===m[2]).click();if(COMBO!==2)return "escut: el combo hauria de ser ×2 i és ×"+COMBO;
   // 3) error après: el 3r repàs encertat el treu del repàs, dona +2 ⭐ i el compta com a après
-  const t=T[0],qq=t.q[0],k=t.id+"|"+qq[0];S.rep=S.rep||{};S.rep[k]={tid:t.id,q:qq[0],c:2,prox:avui()};REPAS=true;REPAPR=0;const p1=S.punts;repAnota(t.id,qq[0],true);REPAS=false;
-  if(S.rep[k])return "après: l'error no surt del repàs";if(S.punts!==p1+2)return `après: +${S.punts-p1} ⭐ i havien de ser +2`;if(REPAPR!==1||(S.apresos||0)!==apAbans+1)return "après: no l'ha comptat";
+  const t=T[0],qq=t.q[0],k=t.id+"|"+qq[0];S.rep=S.rep||{};S.rep[k]={tid:t.id,q:qq[0],c:2,prox:avui()};REPAS=true;REPAPR=0;const p1=S.punts,paga=!((diaEst().r||{})[k])&&(diaEst().rn||0)<REP_MAX?REP_PREMI:0;repAnota(t.id,qq[0],true);REPAS=false;
+  if(S.rep[k])return "après: l'error no surt del repàs";if(S.punts!==p1+2+paga)return `après: +${S.punts-p1} ⭐ i havien de ser +${2+paga}`;if(REPAPR!==1||(S.apresos||0)!==apAbans+1)return "après: no l'ha comptat";
   await espera(1700);return true
  }finally{REPAS=false;COMBO=0;S.rep=JSON.parse(repAbans);S.apresos=apAbans;desa();aturaSeg()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaFase1");
@@ -1791,6 +1791,19 @@ function bnProvaComboNet(){const s0=JSON.stringify({est:S.est||null,rep:S.rep||{
   COMBO=2;tria(true);if(COMBO!==2)return `al repàs, un encert no ha de tocar el combo (×${COMBO})`;
   return true}finally{REPAS=false;COMBO=0;aturaSeg();const b=JSON.parse(s0);if(b.est)S.est=b.est;else delete S.est;S.rep=b.rep;S.temes=b.temes;S.punts=b.p;S.fonts=b.f;S.ftema=b.ft;NIVPEND=null;SUPPEND=0;desa();vista("inici")}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaComboNet");
+// prova (issue #13): el repàs paga +1 ⭐ per error encertat, un cop per error i dia, fins a 10 al dia; «après» continua donant +2
+function bnProvaRepasPaga(){const s0=JSON.stringify({est:S.est||null,rep:S.rep||{},p:S.punts,f:S.fonts||{},ft:S.ftema||{},ap:S.apresos||0}),fo=FONT;
+ try{const qs=T.flatMap(t=>t.q.map(q=>[t.id,q[0]])).slice(0,12);if(qs.length<12)return "calen 12 preguntes";
+  S.rep={};qs.forEach(([tid,q],i)=>{S.rep[tid+"|"+q]={tid,q,c:i===11?2:0,prox:avui()}});
+  const e=diaEst();delete e.r;e.rn=0;REPAS=true;FONT=["repas"];
+  const p0=S.punts,fr0=(S.fonts.repas||0);repAnota(qs[0][0],qs[0][1],true);
+  if(S.punts!==p0+1)return `error encertat al repàs: +${S.punts-p0} ⭐ i havia de ser +1`;if((S.fonts.repas||0)!==fr0+1)return "no s'apunta a la font «repas»";
+  repAnota(qs[0][0],qs[0][1],true);if(S.punts!==p0+1)return "el mateix error dues vegades el mateix dia no ha de tornar a pagar";
+  for(let i=1;i<11;i++)repAnota(qs[i][0],qs[i][1],true);if(S.punts!==p0+10)return `11 errors diferents: +${S.punts-p0} ⭐ i el màxim del dia és +10`;
+  delete e.r;e.rn=0;const p1=S.punts;repAnota(qs[11][0],qs[11][1],true);if(S.punts!==p1+3)return `error après: +${S.punts-p1} ⭐ i havien de ser +3 (+1 i +2)`;
+  const fu=fusiona({est:{d:avui(),q:{},j:{},o:{},rn:4}},{est:{d:avui(),q:{},j:{},o:{},rn:7}});if(!fu.est||fu.est.rn!==7)return "fusiona() ha de quedar-se el màxim de rn";
+  return true}finally{REPAS=false;FONT=fo;const b=JSON.parse(s0);if(b.est)S.est=b.est;else delete S.est;S.rep=b.rep;S.punts=b.p;S.fonts=b.f;S.ftema=b.ft;S.apresos=b.ap;NIVPEND=null;SUPPEND=0;desa()}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaRepasPaga");
 
 // ====================== 👾 BOSS DEL MÓN (Bona Nota 2.0) ======================
 // Repte final del món: s'obre quan has aprovat el 70 % dels temes o quan treus un 70 % o més en un examen (sorpresa o de veritat:
@@ -1962,12 +1975,18 @@ function diaMes(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOStr
 //   · al repàs, juga(items, fi) fa jugar aquells errors i crida fi([true/false per a cada item]); el motor els mou de capsa.
 const REP_TIPUS=window.BN_REP_TIPUS=window.BN_REP_TIPUS||{};
 let REPAPR=0;  // errors apresos en aquest repàs (van al registre com «apr»)
+// 🔁 el repàs paga (issue #13): +1 ⭐ per cada error encertat al repàs, un cop per error i dia, fins a REP_MAX al dia per món
+const REP_PREMI=1,REP_MAX=10;
+function premiRepas(k){const e=diaEst();e.r=e.r||{};if(e.r[k]||(e.rn||0)>=REP_MAX)return 0;e.r[k]=1;e.rn=(e.rn||0)+1;
+ const f=FONT;FONT=["repas"];suma(REP_PREMI);FONT=f;return REP_PREMI}
+// torna les ⭐ que ha pagat el repàs per aquesta resposta (0 o REP_PREMI)
 function repMou(k,nou,ok){S.rep=S.rep||{};const r=S.rep[k];
- if(!ok){if(!r&&!nou.tid&&!nou.tipus)return;S.rep[k]=Object.assign({},r||{},nou,{c:0,prox:REPAS?diaMes(1):avui()});desa();return}
- if(!REPAS||!r)return;
- const c=r.c+1;if(c>=REP_DIES.length){delete S.rep[k];S.apresos=(S.apresos||0)+1;premiApres()}else S.rep[k]={...r,c,prox:diaMes(REP_DIES[c])};desa()}
-function repAnota(tid,txt,ok){repMou(tid+"|"+txt,{tid,q:txt},ok)}
-function repAnotaExt(tipus,clau,dades,ok){repMou(tipus+"|"+clau,Object.assign({tipus,clau},dades||{}),ok)}
+ if(!ok){if(!r&&!nou.tid&&!nou.tipus)return 0;S.rep[k]=Object.assign({},r||{},nou,{c:0,prox:REPAS?diaMes(1):avui()});desa();return 0}
+ if(!REPAS||!r)return 0;
+ const pag=premiRepas(k);
+ const c=r.c+1;if(c>=REP_DIES.length){delete S.rep[k];S.apresos=(S.apresos||0)+1;premiApres()}else S.rep[k]={...r,c,prox:diaMes(REP_DIES[c])};desa();return pag}
+function repAnota(tid,txt,ok){return repMou(tid+"|"+txt,{tid,q:txt},ok)}
+function repAnotaExt(tipus,clau,dades,ok){return repMou(tipus+"|"+clau,Object.assign({tipus,clau},dades||{}),ok)}
 function premiApres(){REPAPR++;const f=FONT;FONT=["repas"];suma(2);FONT=f;
  setTimeout(()=>{const d=document.createElement("div");d.className="combo";d.innerHTML=`APRÈS! 🧠<small>+2 ⭐ · JA NO TORNARÀ</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1500);so("super")},COMBO>=2?750:0)}
 function repValid(r){if(r.tipus){const x=REP_TIPUS[r.tipus];try{return !!(x&&x.valid(r))}catch(e){return false}}return T.some(t=>t.id===r.tid&&t.q.some(q=>q[0]===r.q))}
