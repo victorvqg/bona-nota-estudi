@@ -5,6 +5,22 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.8.0 · 2026-11-09
+
+### Canviat
+- El combo dels tests només puja amb les respostes que donen estrella. Repetir el mateix test el mateix dia, o encertar al repàs, ja no fa pujar el combo (tampoc el trenca). Un error el trenca sempre.
+- La targeta «On guanyes les estrelles» explica totes les maneres de guanyar-ne: tests, jocs, idees, combo, rècords, repàs, missions i boss.
+
+### Afegit
+- El repàs dona +1 ⭐ per cada error que encertes, un cop per error i dia, fins a 10 al dia per món. Les +2 ⭐ quan un error queda après es mantenen.
+- Barra de ratxa a cada pregunta del test (🔥 ×N i 5 caselles fins al proper regal del combo).
+- Cada test, joc, examen i pregunta oberta apunta al registre les estrelles que ha donat (`est`).
+- Tauler d'admin: a «Nens», la targeta «Estrelles per origen» (de tots els nens) amb les estrelles per minut de cada activitat. Els orígens de cada nen agafen el màxim de cada font, de manera que gairebé desapareix la fila «D'abans (sense detall)».
+
+### Arreglat
+- Les +2 ⭐ d'un rècord ara compten dins del test que el fa.
+- Amb «efectes suaus», els rètols de combo i missions ja no s'animen.
+
 ## 2.7.1 · 2026-11-09
 
 ### Canviat
