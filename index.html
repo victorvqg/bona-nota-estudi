@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1dc2b2faff",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="fdced2602a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -352,6 +352,16 @@ h1 span{display:inline-block}
 .av-cl{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;background:repeating-conic-gradient(#1d16311a 0 25%,transparent 0 50%) 0 0/14px 14px,var(--av,#312e81)}
 .av-cl .spr{display:block;width:84%;height:auto;vertical-align:0}
 .av-mini{position:relative;display:inline-block;width:1.7em;height:1.7em;border-radius:50%;vertical-align:middle;margin:0 2px;background:var(--av);box-shadow:0 0 0 3px #1d1631}
+/* insígnia del perfil arcade (triat a perfil/) a la cantonada de baix a la dreta del cercle; mida segons on surt */
+.av-sk{position:absolute;right:-6px;bottom:-5px;width:20px;height:20px;border-radius:6px;background:#1d1631;border:1.5px solid var(--groc);display:grid;place-items:center;z-index:2;box-shadow:0 2px 5px #0008}
+.av-sk .spr{width:14px;vertical-align:0;display:block}
+.pd-av .av-sk{width:28px;height:28px;border-radius:8px;right:-8px;bottom:-4px;border-width:2px}.pd-av .av-sk .spr{width:20px}
+.p1 .pd-av .av-sk{width:34px;height:34px;right:-10px;bottom:-4px}.p1 .pd-av .av-sk .spr{width:24px}
+.av-mini .av-sk{width:14px;height:14px;right:-5px;bottom:-4px;border-radius:4px;border-width:1px}.av-mini .av-sk .spr{width:10px}
+.hola .hola-av{position:relative;display:inline-block;width:44px;height:44px;border-radius:50%;vertical-align:middle;margin:-6px 6px -6px 0;background:var(--av);box-shadow:0 0 0 3px #1d1631,0 0 0 5px #facc1544}
+.hola .hola-av .av-sk{width:22px;height:22px;right:-7px;bottom:-5px}.hola .hola-av .av-sk .spr{width:15px}
+.hola .hola-perfil{display:inline-flex;align-items:center;gap:5px;font:inherit;font-weight:900;font-size:14px;color:#082f49;background:#22d3ee;border:0;border-radius:999px;padding:4px 12px;margin-left:8px;text-decoration:none;vertical-align:middle;box-shadow:0 2px 0 #0e7490;transition:transform .12s}
+.hola .hola-perfil:hover{transform:translateY(-1px)}.hola .hola-perfil:focus-visible{outline:3px solid #22d3ee;outline-offset:3px}
 .corona .spr{width:64px;display:block;filter:drop-shadow(0 4px 0 #0006)}
 .premi .ic .spr{width:44px}
 .ht-fila .pos .spr{width:30px;vertical-align:middle}
@@ -635,9 +645,9 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.6.1</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.7.0</small></footer>
 
-<script src="sprites.js?v=ece90a43"></script>
+<script src="sprites.js?v=15744077"></script>
 <script>
 /* SO-MOBIL:inici (copiat de motor/eines/so-mobil.js per motor/tot.py, no editar a mà) */
 // ===== SO ALS MÒBILS (motor/eines/so-mobil.js · el mateix codi als mons i a la portada; tot.py el copia a index.html) =====
@@ -719,7 +729,7 @@ function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<
 function estrellesTotals(nom){let tot=0;if(!nom)return 0;try{document.querySelectorAll('.as[data-clau]').forEach(a=>{const ps=JSON.parse(localStorage.getItem(a.dataset.clau+'_perfils')||'{}'),k=Object.keys(ps).find(x=>x.trim().toLowerCase()===nom.trim().toLowerCase()),S=k?ps[k]:null;if(S&&S.punts>0)tot+=S.punts})}catch(e){}return tot}
 function pintaHola(){const G=jugador(),h=document.getElementById('hola'),f=document.getElementById('entrada'),t=document.getElementById('tria'),m=document.querySelector('main');
  if(G){const tot=estrellesTotals(G),btEst=tot>0?` <button class="hola-est" id="enEst" type="button" title="Obre el rànquing">⭐ ${tot}</button>`:'';
-  h.innerHTML=`Hola, <em>${G.replace(/[<>&]/g,'')}</em>! 👋${btEst} <button class="canvia" id="enCanvia" type="button">No ets tu?</button>`;f.hidden=true;t.hidden=false;m.classList.remove('bloc');
+  h.innerHTML=`${avHtml(G,'hola-av')}Hola, <em>${G.replace(/[<>&]/g,'')}</em>! 👋${btEst} <a class="hola-perfil" href="perfil/" title="Tria el teu animal i el teu perfil arcade">👾 Perfil</a> <button class="canvia" id="enCanvia" type="button">No ets tu?</button>`;f.hidden=true;t.hidden=false;m.classList.remove('bloc');
   document.getElementById('enCanvia').onclick=()=>{try{localStorage.removeItem('bn_jugador')}catch(e){}location.reload()};
   const eB=document.getElementById('enEst');if(eB)eB.onclick=()=>document.getElementById('btHs').click()}
  else{h.innerHTML='';f.hidden=false;t.hidden=true;m.classList.add('bloc')}}
@@ -779,6 +789,7 @@ function iniciEntrada(){
  const tanca=()=>{if(pop.hidden)return;pop.hidden=true;document.body.classList.remove("modal-obert");fiFesta(true);tickerStop();netejaFxTab();if(prevFocus&&prevFocus.focus)prevFocus.focus()};
  document.getElementById("btHs").onclick=obreHs;
  if(/[?&]demo\b/.test(location.search))setTimeout(obreHs,300);
+ if(location.hash==="#ranquing"){try{history.replaceState(history.state,"",location.pathname+location.search)}catch(e){}setTimeout(obreHs,300)}
  document.getElementById("hsTanca").onclick=tanca;pop.onclick=e=>{if(e.target===pop)tanca()};
  document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&!pop.hidden){e.preventDefault();tanca();return}
@@ -800,9 +811,17 @@ const esc=t=>String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",
 const fT=s=>{const m=Math.round(s/60);return m<1?"<1 MIN":m>=60?`${Math.floor(m/60)}H ${m%60}M`:`${m} MIN`};
 // cada nom té sempre el mateix animal i el mateix color (surt del nom, igual a tots els dispositius)
 // (sprites de pixel art propis: sprites.js · BN_AV té els 20 animals en el mateix ordre que tenien els emojis, així ningú canvia d'animal)
-function avatar(nom){let h=7;for(const c of nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;const an=BN_AV[h%BN_AV.length];return {e:bnSpr(an,"av-spr"),c:BN_AV_BG[an]}}
-// cercle d'avatar: el dibuix va enganxat a baix i el retalla un element interior (així la corona de fora no es talla)
-const avHtml=(nom,cls,dins)=>{const a=avatar(nom);return `<span class="${cls}" style="--av:${a.c}">${dins||""}<span class="av-cl">${a.e}</span></span>`};
+// aspecte triat a perfil/ (animal, insígnia i estil): mapa local bn_aspectes, que es refresca amb bn_aspectes() en obrir el rànquing
+function aspMapa(){try{return JSON.parse(localStorage.getItem("bn_aspectes")||"{}")||{}}catch(e){return {}}}
+function aspecteDe(nom){const a=aspMapa()[String(nom||"").trim().toLowerCase()];return a&&typeof a==="object"?a:null}
+function desaAspectes(llista){const m=aspMapa();(llista||[]).forEach(x=>{if(!x||!x.nom||!x.aspecte||typeof x.aspecte!=="object")return;const k=x.nom.trim().toLowerCase();if(m[k]&&m[k].pendent)return;m[k]=Object.assign({},x.aspecte,{mod:Date.now()})});try{localStorage.setItem("bn_aspectes",JSON.stringify(m))}catch(e){}}
+function avatar(nom){let h=7;for(const c of nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;const a=aspecteDe(nom)||{},an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length];
+ return {e:bnSpr(an,"av-spr"),c:BN_AV_BG[an],sk:BN_SKILLS[a.sk]?a.sk:"",v:BN_SKILL_VAR_PAL[a.v]?a.v:""}}
+// cercle d'avatar: el dibuix va enganxat a baix i el retalla un element interior (així la corona de fora no es talla); la insígnia va a la cantonada
+function avHtml(nom,cls,dins){const a=avatar(nom),x=t=>String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c])),sk=a.sk?`<span class="av-sk" title="Perfil: ${x(BN_SKILL_INFO[a.sk].n)} · ${x(BN_SKILL_ESTILS[a.v])}">${bnSkillSpr(a.sk,a.v)}</span>`:"";return `<span class="${cls}" style="--av:${a.c}">${dins||""}<span class="av-cl">${a.e}</span>${sk}</span>`}
+// pujades pendents del perfil (desat sense connexió o abans d'aplicar l'SQL): en silenci, en obrir la portada
+(function(){const G=jugador();if(!G||!/^https?:/.test(location.protocol))return;const e=aspecteDe(G),p=pinsP()[G.toLowerCase()];if(!e||!e.pendent||!p)return;
+ rpcP("bn_aspecte_desa",{p_nom:G,p_pin:p,p_aspecte:{av:e.av,sk:e.sk,v:e.v||""}}).then(r=>{if(r!=="ok")return;const m=aspMapa();if(m[G.toLowerCase()])delete m[G.toLowerCase()].pendent;try{localStorage.setItem("bn_aspectes",JSON.stringify(m))}catch(x){}}).catch(()=>{})})();
 const spr=(n,cl)=>bnSpr(n,cl),ST=()=>bnSpr("star","st-in"),BR=()=>bnSpr("brain","st-in"),nivIc=n=>bnSpr(BN_NIV[n]);
 document.querySelectorAll("#hsPop [data-spr]").forEach(e=>{e.outerHTML=bnSpr(e.dataset.spr)}); // títol, pestanyes, ✕ i peu
 // mons del rànquing: tot surt de les targetes de la portada (cap llista fixa). Columnes agrupades per assignatura, en l'ordre en què
@@ -826,7 +845,7 @@ function carregaHs(){const hs=document.getElementById("hs");
  if(HSD&&Date.now()-HST<60000){pintaHs();return}
  hs.innerHTML=`<div class="hs-buit">CARREGANT…</div>`;
  const rk=f=>fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:"{}"}).then(r=>r.ok?r.json():Promise.reject());
- Promise.all([rk("bn_ranking_mons").catch(()=>rk("bn_ranking")),rk("bn_ranking_remuntada").catch(()=>[])]).then(([d,ap])=>{HSD=Array.isArray(d)?d:[];
+ Promise.all([rk("bn_ranking_mons").catch(()=>rk("bn_ranking")),rk("bn_ranking_remuntada").catch(()=>[]),rk("bn_aspectes").catch(()=>[])]).then(([d,ap,asp])=>{HSD=Array.isArray(d)?d:[];desaAspectes(asp);
   const ma={};(Array.isArray(ap)?ap:[]).forEach(x=>{if(x&&x.nom)ma[x.nom.trim().toLowerCase()]=+x.apr||0});HSD.forEach(r=>{r.apr=ma[r.nom.trim().toLowerCase()]||0});
   HST=Date.now();pintaHs();redoble()})
   .catch(()=>{hs.innerHTML=`<div class="hs-buit">EL RÀNQUING ARRIBA AVIAT…<br>MENTRESTANT, JUGA I SUMA ${ST()}!</div>`});

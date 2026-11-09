@@ -5,6 +5,7 @@
   1. Per a cada entrada de mons.json: plantilla + dades/<dades>.js -> ../<carpeta>/index.html
   2. Compta temes i jocs de cada món (llegint les dades amb node).
   3. Reescriu les targetes de ../index.html entre <!-- MONS:inici --> i <!-- MONS:fi -->.
+  3a. Omple els blocs copiats de ../perfil/index.html (so als mòbils, actualització automàtica) i el ?v= de sprites.js.
 
 Per afegir un món nou: crea dades/<id>.js i afegeix una entrada a mons.json
 (dades, carpeta, mon, materia, titol, desc, colors [3], ic; opcional llengua:"es"). Després: python3 tot.py
@@ -86,6 +87,22 @@ adm = arrel / "admin" / "index.html"
 adm.write_text(re.sub(r'src="\.\./sprites\.js(\?v=[0-9a-f]*)?"', f'src="../sprites.js?v={v_spr}"', adm.read_text()))
 print(f"✓ portada: {len(mons)} mons")
 
+# 3a) pàgina de perfil (perfil/index.html): els mateixos blocs copiats que la portada (so als mòbils i actualització
+#     automàtica) i el «?v=» de sprites.js. S'escriu a mà, com la portada; tot.py només li omple aquests blocs.
+prf = arrel / "perfil" / "index.html"
+s = prf.read_text()
+for ini, fi, eina in [("/* SO-MOBIL:inici (copiat de motor/eines/so-mobil.js per motor/tot.py, no editar a mà) */", "/* SO-MOBIL:fi */", "so-mobil.js"),
+                      ("/* ACTUALITZA:inici (copiat de motor/eines/actualitza.js per motor/tot.py, no editar a mà) */", "/* ACTUALITZA:fi */", "actualitza.js")]:
+    if ini not in s or fi not in s:
+        sys.exit(f"ERROR: a perfil/index.html falten les marques {eina}")
+    a, b = s.index(ini) + len(ini), s.index(fi)
+    s = s[:a] + "\n" + (d / "eines" / eina).read_text().rstrip("\n") + "\n" + s[b:]
+s, n = re.subn(r'src="\.\./sprites\.js(\?v=[0-9a-f]*)?"', f'src="../sprites.js?v={v_spr}"', s)
+if n != 1:
+    sys.exit("ERROR: a perfil/index.html hi ha d'haver exactament un <script src=\"../sprites.js\">")
+prf.write_text(s)
+print("✓ perfil")
+
 # 3b) text de totes les preguntes per al tauler d'admin (admin/preguntes.json): id → text, opcions, correcta, tema
 from qids import ids_mon
 preguntes = {}
@@ -102,7 +119,7 @@ print(f"✓ admin/preguntes.json: {len(preguntes)} preguntes")
 trobat = re.search(r"^## (\d+\.\d+\.\d+)\b", (arrel / "CHANGELOG.md").read_text(), re.M)
 if not trobat:
     sys.exit("ERROR: a CHANGELOG.md no hi ha cap entrada «## X.Y.Z»")
-for f, es in [("index.html", False)] + [(m["carpeta"] + "/index.html", m.get("llengua") == "es") for m in mons]:
+for f, es in [("index.html", False), ("perfil/index.html", False)] + [(m["carpeta"] + "/index.html", m.get("llengua") == "es") for m in mons]:
     peu = f'<small class="bn-versio">{"versión" if es else "versió"} {trobat.group(1)}</small>'
     t, n = re.subn(r'<small class="bn-versio">[^<]*</small>', peu, (arrel / f).read_text())
     if n != 1:
@@ -117,8 +134,8 @@ print(f"✓ versió {trobat.group(1)} al peu de la portada i dels mons, i al tau
 # 4) versió publicada: una empremta del contingut (portada, sprites i mons, calculada amb el buit «__BN_VERSIO__» encara
 #    sense omplir, perquè no depengui d'ella mateixa). Va a: cada pàgina (actualitza.js la compara amb versio.json en obrir-la
 #    i, si no coincideixen, es recarrega sola), versio.json i el service worker (app instal·lable i sense connexió).
-fitxers_sw = ["./", "index.html", f"sprites.js?v={v_spr}", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png"] + [m["carpeta"] + "/" for m in mons]
-pagines = ["index.html"] + [m["carpeta"] + "/index.html" for m in mons]
+fitxers_sw = ["./", "index.html", f"sprites.js?v={v_spr}", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "perfil/"] + [m["carpeta"] + "/" for m in mons]
+pagines = ["index.html", "perfil/index.html"] + [m["carpeta"] + "/index.html" for m in mons]
 h = hashlib.sha1()
 for f in ["index.html", "sprites.js"] + pagines[1:]:
     h.update((arrel / f).read_bytes())

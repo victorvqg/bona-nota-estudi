@@ -1,7 +1,7 @@
 # Bona Nota · revisió automàtica a cada canvi
 # 1) Torna a generar tots els mons i la portada (motor/tot.py) i comprova que el que hi ha pujat coincideix:
 #    si algú ha editat una pàgina generada a mà, o s'ha oblidat de regenerar, falla i diu quins fitxers.
-# 2) Passa la prova automàtica de cada món (tests, jocs, examen, repàs, obertes) en mode estricte:
+# 2) Passa la prova automàtica de cada món (tests, jocs, examen, repàs, obertes) en mode estricte, i la de la pàgina de perfil:
 #    mínim 8 preguntes per tema i la resposta correcta no pot ser massa sovint la més llarga (ni massa poc).
 name: Revisa Bona Nota
 on:
@@ -33,6 +33,8 @@ jobs:
           fi
       - name: Prova dels generadors del Taller de mates (càlculs, errors típics, Troba l'error)
         run: cd motor && node prova-generadors.js
+      - name: Prova de la pàgina de perfil (perfil/, amb Supabase simulat)
+        run: node motor/prova-perfil.js
       - name: Prova automàtica de cada món
         run: |
           cd motor

@@ -3,7 +3,7 @@
 Data: 2026-11-09
 
 ## Què funciona
-- **Versió actual: 2.6.1** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.7.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **6 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`).
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 5 pestanyes (`punts`, `temps`, `nivell`, `setmana`, `remuntada`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -23,6 +23,11 @@ Data: 2026-11-09
   - Pestanyes: cada toc esborra els efectes de l'anterior (màxim ~20 peces), menys peces al mòbil, el rètol surt a la vista i tocar la pestanya activa torna a fer l'efecte.
   - Actualització automàtica (`motor/eines/actualitza.js` + `versio.json`) a la portada i als mons; `sprites.js?v=…`; el service worker no guarda `versio.json` i baixa la còpia inicial sense memòria cau.
   - Arreglat: els errors de «Troba l'error» de mates tornen a entrar al repàs espaiat (la prova estricta de Divisibilitat tornava a fallar).
+
+- **`n2497` — Perfil arcade (`perfil/`)**:
+  - Pàgina «PLAYER SELECT» on el nen tria animal, perfil arcade (50 insígnies noves a `sprites.js`: `BN_SKILLS`) i estil (Clàssic / Ofensiva / Tàctica), amb animacions, so, Sorpresa i desat al núvol (`supabase/bn_aspecte.sql`: columna `aspecte` + `bn_aspecte_desa` + `bn_aspectes`).
+  - Es veu al rànquing, a la salutació de la portada, a la salutació dels mons (que ara carreguen `sprites.js`) i al tauler.
+  - Prova nova `motor/prova-perfil.js` a l'Action. Especificació: `docs/superpowers/specs/2026-11-09-perfil-arcade-design.md`.
 
 ## En curs
 - Branca `treu-canvi-usuari`: «Canviar d'usuari» només a la portada. Pendent de pujar i fusionar.

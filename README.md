@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.6.1 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
+**Web:** https://bonanota.net · **Versió:** 2.7.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -60,7 +60,7 @@ El títol i l'id es llegeixen amb expressions regulars: `id:"…"`, `nom:"…"` 
 |---|---|
 | 1 | Executa `build.py` per a cada entrada de `mons.json` |
 | 2 | Compta temes i jocs avaluant les dades amb Node |
-| 3 | A `index.html`: reescriu les targetes (`MONS:inici..fi`), copia `so-mobil.js` i `actualitza.js` entre les seves marques i posa `sprites.js?v=<empremta>` |
+| 3 | A `index.html`: reescriu les targetes (`MONS:inici..fi`), copia `so-mobil.js` i `actualitza.js` entre les seves marques i posa `sprites.js?v=<empremta>`; a `perfil/index.html` copia els mateixos blocs i posa el mateix `?v=` (i `build.py` el posa a cada món) |
 | 3b | Escriu `admin/preguntes.json` (id → text, opcions, correcta, tema) |
 | 3c | Llegeix la primera entrada de `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera i a l'entrada del tauler (`VERSIO_ADMIN`) |
 | 4 | Calcula una empremta del contingut i la posa a cada pàgina (`VER`), a `versio.json` i a `sw.js` |
@@ -243,6 +243,15 @@ El Taller desa cada resposta fallada com `exercici|pas|error` (camp `ep`), que e
   (`id: {ic: "un dibuix de BN_SPR", mat: "Assignatura"}`). Si l'assignatura és nova, afegeix-la també a `BN_MAT` (`curt`, `color`, `tint`).
   Sense aquestes entrades no es trenca res: surt amb el seu emoji en una rajola grisa i l'assignatura nova agafa un color de reserva.
 
+### 👾 Perfil del nen (`perfil/index.html`)
+
+També és una pàgina a mà (blocs `SO-MOBIL`, `ACTUALITZA`, `sprites.js?v=` i versió del peu els escriu `tot.py`). El nen hi tria el seu **aspecte**: l'animal (`BN_AV`), el **perfil arcade** (una de les 50 insígnies de `BN_SKILLS`) i l'estil de color (`""` Clàssic, `A` Ofensiva, `B` Tàctica; paletes a `BN_SKILL_VAR_PAL`). `bnSkillSpr(id, estil)` dibuixa la insígnia.
+
+- **On es guarda:** a l'aparell, al mapa `localStorage.bn_aspectes` (`{nom en minúscules: {av, sk, v, mod, pendent}}`), i al núvol, a la columna `aspecte` del perfil del nen (`supabase/bn_aspecte.sql`: `bn_aspecte_desa(nom, pin, aspecte)` amb PIN i `bn_aspectes()`, pública, que és el que llegeix el rànquing). Si la pujada falla (sense connexió o SQL no aplicat), queda `pendent` i la portada o la mateixa pàgina la reintenten en obrir-se.
+- **On es veu:** `avatar(nom)` de la portada i del tauler mira primer l'aspecte; si no n'hi ha, l'animal es calcula pel nom com sempre. La salutació de cada món (`heroAv()` a la plantilla) llegeix el mapa local.
+- `?demo` mostra la pàgina amb un nen inventat i sense núvol. `../#ranquing` obre la portada amb el rànquing desplegat.
+- Prova: `node motor/prova-perfil.js` (Playwright, amb Supabase simulat).
+
 ---
 
 ## 📲 App: sense connexió i actualització
@@ -268,6 +277,7 @@ Mai es toca el progrés, el nom ni el PIN, que són a `localStorage`.
 
 ```
 index.html                     Portada: targetes dels mons + rànquing
+perfil/index.html              Pàgina de perfil del nen: animal, perfil arcade i estil (PLAYER SELECT)
 <assignatura>/<tema>/index.html  Pàgina de cada món (GENERADA: no s'edita a mà)
 motor/
   plantilla-estudi-interactiu.html   El motor (tot el que fa un món)
@@ -281,9 +291,10 @@ motor/
   eines/                             Codi compartit (vegeu «Eines»)
   prova.js                           Prova automàtica d'un món (Playwright)
   prova-generadors.js                Prova dels generadors del Taller de mates (sense navegador)
+  prova-perfil.js                    Prova de la pàgina de perfil (Playwright, Supabase simulat)
   local.py                           Servidor local que es posa al dia sol amb GitHub
 admin/                         Tauler d'administració
-supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol
+supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol, aspecte del nen
 supabase/functions/bn-corregeix/   Correcció de la foto del quadern
 skills/bona-nota/              Skill que genera els PDFs d'estudi (skills/bona-nota.zip és el paquet)
 sw.js, manifest.webmanifest, icones/   App instal·lable (sw.js el genera tot.py)
@@ -372,11 +383,12 @@ Dins dels mons ja no hi ha cap botó per esborrar el progrés: només es pot fer
 
 ## ✅ Proves i revisió automàtica
 
-A cada push, GitHub Actions (`.github/workflows/revisa.yml`) fa tres coses:
+A cada push, GitHub Actions (`.github/workflows/revisa.yml`) fa quatre coses:
 
 1. Torna a generar tots els mons i la portada. Si una pàgina pujada no coincideix (editada a mà o sense regenerar), falla i diu quins fitxers.
 2. Passa la prova dels generadors del Taller de mates (`motor/prova-generadors.js`).
-3. Passa la prova de cada món en mode estricte: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i rànquing de la capçalera.
+3. Passa la prova de la pàgina de perfil (`motor/prova-perfil.js`): tries amb clic i teclat, desat al núvol, sense connexió i amb PIN incorrecte, Sorpresa i «Efectes suaus».
+4. Passa la prova de cada món en mode estricte: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i rànquing de la capçalera.
    També exigeix 8 preguntes per tema, i que la resposta correcta no sigui massa sovint (ni massa poc) la més llarga.
 
 El resultat surt a la pestanya **Actions** del repo.

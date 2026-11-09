@@ -2,8 +2,8 @@
 // Permet instal·lar l'app i fer-la servir sense connexió.
 // Pàgines: primer la xarxa (per tenir sempre l'última versió) i, si no hi ha connexió, la còpia guardada.
 // Fonts i icones: primer la còpia guardada. Supabase (rànquing, registre): sempre xarxa, mai a la memòria cau.
-const VERSIO = "bn-1dc2b2faff";
-const FITXERS = ["./", "index.html", "sprites.js?v=ece90a43", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "sociales/t3-clima/", "bio-i-geo/univers/", "castellano/t2-t3/", "sociales/comarques/", "matematiques/divisibilitat/", "catala/t2/"];
+const VERSIO = "bn-fdced2602a";
+const FITXERS = ["./", "index.html", "sprites.js?v=15744077", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "perfil/", "sociales/t3-clima/", "bio-i-geo/univers/", "castellano/t2-t3/", "sociales/comarques/", "matematiques/divisibilitat/", "catala/t2/"];
 self.addEventListener("install", e => {
   // cache:"reload": la còpia es baixa del servidor, no de la memòria cau del navegador (que podria ser d'una versió vella)
   e.waitUntil(caches.open(VERSIO).then(c => Promise.all(FITXERS.map(f => c.add(new Request(f, { cache: "reload" })).catch(() => {})))).then(() => self.skipWaiting()));
