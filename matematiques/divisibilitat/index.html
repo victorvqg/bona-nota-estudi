@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="54f95cfbbf",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="008672f743",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -2059,7 +2059,11 @@ let ACTV=null;
 function tancaActivitat(){const a=ACTV;ACTV=null;if(!a)return;const s=segs(a.t0);if(s<2)return;
  if(a.tipus==="fitxa")registra("fitxa",{tema:a.tid,titol:a.titol,s,fi:a.fi?1:0});
  else registra("targetes",{tema:a.tid,titol:a.titol,s,vistes:a.vistes.size,n:a.n,girs:a.girs,fi:a.vistes.size>=a.n?1:0})}
-function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO)return;detall=retalla(detall||{});if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
+// estrelles guanyades a cada activitat (issue #13): iniciActivitat() en començar-la; detallLog() hi afegeix «est» en registrar-la
+let PACT=0;const EVENTS_EST=["test","joc","examen","oberta"];
+function iniciActivitat(){PACT=S.punts||0}
+function detallLog(event,detall){if(EVENTS_EST.includes(event)&&detall.est===undefined){detall.est=Math.max(0,(S.punts||0)-PACT);PACT=S.punts||0}return detall}
+function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO)return;detall=detallLog(event,retalla(detall||{}));if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
  try{fetch(BN_LOG.url,{method:"POST",keepalive:true,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json","Prefer":"return=minimal"},
   body:JSON.stringify({assig:ASSIG.id,nom:S.nom.slice(0,40),sessio:SESSIO,aparell:APARELL,event,detall:detall||{}})}).catch(()=>{})}catch(e){}}
 function buidaTemps(){tancaActivitat();if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
@@ -2509,7 +2513,7 @@ function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">$
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
  JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
  return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
-function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
  if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}
@@ -2547,14 +2551,15 @@ function targetes(n){calla();
 function test(ordre,k,bones,clau,pool,cb){
  calla();
  const z=document.getElementById("zona"),llista=pool||tema.q,esTema=!pool;
- if(k===0){TQ=[];TQT=Date.now();TPIST=0}
+ if(k===0){TQ=[];TQT=Date.now();TPIST=0;iniciActivitat()}
  if(k>=ordre.length){
   const pc=Math.round(bones*100/ordre.length);
   ULT={mode:esTema?"tema":clau==="examen"?"sorpresa":clau==="repas"?"repas":"joc",bones,n:ordre.length,s:segs(TQT),q:TQ.slice()};if(TPIST)ULT.pistes=TPIST;
   if(cb){cb(pc,bones,ordre.length);return}
-  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();registra("test",Object.assign({tema:tema.id,titol:tema.titol,pc},ULT));ULT=null;
+  const e=ET(tema.id),ant=millor(tema.id);e.intents.push({d:avui(),pc});desa();
   const idx=T.indexOf(tema),teSeg=idx<T.length-1,aprova=pc>=APROVA;if(aprova)missio("aprova");
   const rec=ant!==null&&pc>ant;if(rec){const f=FONT;FONT=["record"];suma(2);FONT=f}
+  registra("test",Object.assign({tema:tema.id,titol:tema.titol,pc},ULT));ULT=null; // després del rècord: les seves ⭐ compten en aquest test
   if(aprova)arcade(pc,bones,ordre.length,rec);else fracas(pc,bones,ordre.length);
   const msg=pc>=90?"Excel·lent!":pc>=APROVA?"Tema superat!":pc>=50?`Gairebé! Per passar de tema cal un ${APROVA} %`:"Cal repassar més, ànims!";
   z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
@@ -2873,6 +2878,15 @@ async function bnProvaFase1(){const espera=ms=>new Promise(r=>setTimeout(r,ms)),
   await espera(1700);return true
  }finally{REPAS=false;COMBO=0;S.rep=JSON.parse(repAbans);S.apresos=apAbans;desa();aturaSeg()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaFase1");
+// prova (issue #13): cada activitat apunta al registre les estrelles que ha donat (detall.est)
+function bnProvaEstLog(){const p0=S.punts,f0=JSON.stringify({f:S.fonts||null,ft:S.ftema||null}),fo=FONT;
+ try{iniciActivitat();FONT=["temes",T[0].id];suma(3);
+  const a=detallLog("test",{});if(a.est!==3)return `test: est=${a.est} i havia de ser 3`;
+  const b=detallLog("joc",{});if(b.est!==0)return `joc just després: est=${b.est} i havia de ser 0`;
+  if("est" in detallLog("temps",{}))return "temps no ha de portar est";
+  if(detallLog("oberta",{est:7}).est!==7)return "un est que ja hi és no s'ha de canviar";
+  return true}finally{FONT=fo;S.punts=p0;const b=JSON.parse(f0);S.fonts=b.f||{};S.ftema=b.ft||{};NIVPEND=null;SUPPEND=0;desa()}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaEstLog");
 
 // ====================== 👾 BOSS DEL MÓN (Bona Nota 2.0) ======================
 // Repte final del món: s'obre quan has aprovat el 70 % dels temes o quan treus un 70 % o més en un examen (sorpresa o de veritat:
@@ -2905,7 +2919,7 @@ function bossRondes(){const temes=barreja(T.slice()),tests=[];
  const ord=(()=>{const j=de("ordena");if(!j||!j.items||j.items.length<3)return null;const n=Math.min(5,j.items.length),i0=Math.floor(Math.random()*(j.items.length-n+1));return {tipus:"ordena",j,items:j.items.slice(i0,i0+n),dmg:24}})();
  const ob=OB.length?{tipus:"oberta",o:barreja(OB.slice())[0],dmg:24}:null;
  [test(),test(),ord||test(),test(),fig||test(),ob||test(),test(),par||test(),test(),test()].forEach(x=>{if(x)R.push(x)});return R}
-function boss(){aturaSeg();tancaActivitat();REPAS=false;COMBO=0;FONT=["boss"];marcaNav("jocs");window.scrollTo(0,0);const e=bossEstat();
+function boss(){aturaSeg();tancaActivitat();iniciActivitat();REPAS=false;COMBO=0;FONT=["boss"];marcaNav("jocs");window.scrollTo(0,0);const e=bossEstat();
  if(!e.obert){app.innerHTML=`<h2 class="sec">👾 ${bossNom()}</h2>${bossCarta()}<div class="fila"><button class="btn sec" onclick="vista('jocs')">Torna als jocs</button></div>`;return}
  const rondes=bossRondes(),max=rondes.reduce((a,r)=>a+r.dmg,0),hp=Math.round(max*.8);
  BOSS={rondes,k:0,hp,hp0:hp,cors:3,enc:0,err:0,t0:Date.now(),fet:false};TQ=[];
@@ -3056,7 +3070,7 @@ function repValid(r){if(r.tipus){const x=REP_TIPUS[r.tipus];try{return !!(x&&x.v
 function repTots(){return Object.values(S.rep||{}).filter(repValid)}
 function repPendents(){const d=avui();return repTots().filter(r=>r.prox<=d)}
 function repProper(){const f=repTots().map(r=>r.prox).sort();return f[0]||null}
-function repas(){
+function repas(){iniciActivitat();
  const pend=repPendents();aturaSeg();COMBO=0;FONT=["repas"];window.scrollTo(0,0);marcaNav("inici");
  const cap=`<h2 class="sec">🔁 Repassa els teus errors</h2>`;
  if(!pend.length){const pr=repProper();app.innerHTML=`${cap}<div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila">${repasExtra()}<button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
@@ -3216,7 +3230,7 @@ function jgErrRepas(items,fi){jgErrCss();
 // ====================== PREGUNTES OBERTES ======================
 function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}
 let OB0=0;
-function obertes(n){OB0=Date.now();
+function obertes(n){OB0=Date.now();iniciActivitat();
  FONT=["obertes"];window.scrollTo(0,0);marcaNav("obertes");
  const o=OB[n],fet=S.ob[n],bloc=obBloc(n);let rebutjat=0;
  app.innerHTML=`<h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
