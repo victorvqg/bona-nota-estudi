@@ -25,7 +25,8 @@ Data: 2026-11-09
   - Arreglat: els errors de «Troba l'error» de mates tornen a entrar al repàs espaiat (la prova estricta de Divisibilitat tornava a fallar).
 
 ## En curs
-- Branca `versio-peu`: número de versió al peu de la web. Pendent de pujar i fusionar.
+- Branca `readme-tecnic`: README tècnic, centrat en el motor, i els mons a `docs/MONS.md`. Pendent de pujar i fusionar.
 
 ## Pendent
+- `motor/jocs_generics.js` no el carrega ningú i ja no coincideix amb la plantilla, que és on viuen els jocs genèrics. Cal decidir si s'esborra.
 - La 📷 correcció de la foto del quadern: el codi de `bn-corregeix` ja accepta `https://bonanota.net` (a `main`), però cal comprovar que la funció s'ha tornat a desplegar.
