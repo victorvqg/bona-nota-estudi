@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="008672f743",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="ff8c18f1e5",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -1479,7 +1479,7 @@ function test(ordre,k,bones,clau,pool,cb){
   const tidR=q.tid||(esTema?tema.id:null);if(tidR&&!(ok&&pista))repAnota(tidR,q[0],ok);
   if(ok&&pista&&REPAS&&tidR){const r=S.rep&&S.rep[tidR+"|"+q[0]];if(r){r.prox=diaMes(1);desa()}}
   const comboAbans=COMBO;
-  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){ratxa(true);missio("enc")}}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
   document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
@@ -1775,6 +1775,22 @@ function bnProvaEstLog(){const p0=S.punts,f0=JSON.stringify({f:S.fonts||null,ft:
   if(detallLog("oberta",{est:7}).est!==7)return "un est que ja hi és no s'ha de canviar";
   return true}finally{FONT=fo;S.punts=p0;const b=JSON.parse(f0);S.fonts=b.f||{};S.ftema=b.ft||{};NIVPEND=null;SUPPEND=0;desa()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaEstLog");
+// prova (issue #13): combo net. Només el fan pujar les respostes que donen estrella; les repetides del dia i el repàs no el
+// fan pujar ni el trenquen; un error sempre el trenca.
+function bnProvaComboNet(){const s0=JSON.stringify({est:S.est||null,rep:S.rep||{},temes:S.temes,p:S.punts,f:S.fonts||{},ft:S.ftema||{}});
+ try{aturaSeg();obre(0);pest='test';pintaTema();
+  const qa=()=>tema.q.find(x=>x[0]===document.querySelector('.pregunta').innerHTML);
+  const tria=bo=>{const q=qa();[...document.querySelectorAll('.opt')].find(o=>bo?+o.dataset.i===q[2]:+o.dataset.i!==q[2]).click()};
+  const seg=()=>document.getElementById('seg').click();
+  let q=qa();if(!q)return "no trobo la pregunta";delete diaEst().q[tema.id+"|"+q[0]];
+  COMBO=2;tria(true);if(COMBO!==3)return `una resposta que paga hauria de deixar el combo a ×3 (és ×${COMBO})`;
+  seg();q=qa();diaEst().q[tema.id+"|"+q[0]]=1;
+  COMBO=3;tria(true);if(COMBO!==3)return `una pregunta repetida avui ha fet pujar el combo (×${COMBO})`;
+  seg();COMBO=1;tria(false);if(COMBO!==0)return `un error hauria de trencar el combo (×${COMBO})`;
+  seg();q=qa();delete diaEst().q[tema.id+"|"+q[0]];REPAS=true;
+  COMBO=2;tria(true);if(COMBO!==2)return `al repàs, un encert no ha de tocar el combo (×${COMBO})`;
+  return true}finally{REPAS=false;COMBO=0;aturaSeg();const b=JSON.parse(s0);if(b.est)S.est=b.est;else delete S.est;S.rep=b.rep;S.temes=b.temes;S.punts=b.p;S.fonts=b.f;S.ftema=b.ft;NIVPEND=null;SUPPEND=0;desa();vista("inici")}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaComboNet");
 
 // ====================== 👾 BOSS DEL MÓN (Bona Nota 2.0) ======================
 // Repte final del món: s'obre quan has aprovat el 70 % dels temes o quan treus un 70 % o més en un examen (sorpresa o de veritat:
