@@ -15,6 +15,7 @@
 // Necessita supabase/bn_fotos.sql (funcions bn_foto_permis i bn_foto_torna). Instruccions: README.md d'aquesta carpeta.
 
 const ORIGENS = new Set([
+  "https://bonanota.net",
   "https://victorvqg.github.io",
   "http://localhost:8000",
   "http://127.0.0.1:8000",

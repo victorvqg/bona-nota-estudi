@@ -112,7 +112,7 @@ sovint vol dir que falta executar `bn_fotos.sql` (pas 1).
 | `imatge` | No hi ha foto, és massa gran, no és una foto, no es llegeix o no és aquest exercici |
 | `intern` | Qualsevol altra cosa (Claude no respon, la base de dades no respon…) |
 
-Només accepta peticions del navegador des de `https://victorvqg.github.io`, `http://localhost:8000` i `http://127.0.0.1:8000`.
+Només accepta peticions del navegador des de `https://bonanota.net`, `https://victorvqg.github.io`, `http://localhost:8000` i `http://127.0.0.1:8000`.
 
 ## Registres i fotos enviades
 
