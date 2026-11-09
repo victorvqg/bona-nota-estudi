@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.6.1 · 2026-11-09
+
+### Canviat
+- «Canviar d'usuari» ja no surt dins dels mons. Per canviar de nen es fa servir «No ets tu?», a la portada.
+
 ## 2.6.0 · 2026-11-09
 
 ### Afegit

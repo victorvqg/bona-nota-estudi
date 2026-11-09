@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="8ffc92c828",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1dc2b2faff",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -415,11 +415,10 @@ body.tremola main{animation:tremola .4s}
 /* ---- menú fix a baix al mòbil + capçalera neta ---- */
 nav i{font-style:normal;margin-right:5px}
 @media(max-width:600px){
- nav{position:fixed;left:0;right:0;bottom:0;z-index:40;max-width:none;margin:0;padding:4px 2px calc(4px + env(safe-area-inset-bottom));gap:0;display:grid;grid-template-columns:repeat(7,1fr);overflow:visible;background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb));box-shadow:0 -4px 14px #0f172a40}
+ nav{position:fixed;left:0;right:0;bottom:0;z-index:40;max-width:none;margin:0;padding:4px 2px calc(4px + env(safe-area-inset-bottom));gap:0;display:grid;grid-template-columns:repeat(6,1fr);overflow:visible;background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb));box-shadow:0 -4px 14px #0f172a40}
  nav button,nav a.surt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 0 5px;margin:0;border:0;border-radius:12px;font-size:10.5px;font-weight:800;min-height:52px;min-width:0;color:#dbeafe;background:transparent}
  nav i{font-size:21px;margin:0;line-height:1.1}
  nav span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
- nav .ll-u{font-size:0}nav .ll-u::after{content:"Usuari";font-size:10.5px}
  nav button.on{background:#ffffff;color:var(--blau2)}
  nav a.surt{color:#fff}
  body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
@@ -557,11 +556,10 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
   <button data-v="jocs" onclick="vista('jocs')"><i data-ic="jocs"></i><span>Jocs</span></button>
   <button data-v="obertes" onclick="vista('obertes')"><i data-ic="obertes"></i><span>Obertes</span></button>
   <button data-v="analitica" onclick="vista('analitica')"><i data-ic="analitica"></i><span>Com vaig</span></button>
-  <button data-v="usuari" onclick="benvinguda()"><i data-ic="usuari"></i><span class="ll-u">Canviar d'usuari</span></button>
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.6.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.6.1</small></div>
 
 <script>
 // Bona Nota · Estudi interactiu · dades de SOCIALS 1r ESO
@@ -1256,7 +1254,7 @@ function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremo
 // ====================== BENVINGUDA ======================
 // ====================== INICI DE SESSIÓ (NOM + PIN) ======================
 // Per entrar cal el nom i el PIN (4 xifres + 1 lletra; els PIN antics de 4 xifres encara entren i es demana canviar-los). Nom nou → es crea amb aquest PIN (màxim 2 noms per dispositiu).
-// La sessió es manté oberta en aquest dispositiu fins que es toca «Canviar d'usuari».
+// La sessió es manté oberta en aquest dispositiu. Per canviar de nen: «No ets tu?», a la portada.
 const SENSE_NUVOL=()=>/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO;
 function benvinguda(nomPre){
  marcaNav("usuari");calla();
@@ -1324,7 +1322,7 @@ function inici(){
  h+=`${blocsTemes()}
  <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
  ${seccionsJocs()}
- <div class="fila">${btSuau()}${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button><a class="btn sec" href="../../" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
+ <div class="fila">${btSuau()}${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><a class="btn sec" href="../../" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
  app.innerHTML=h;
 }
 function pintaTemes(){app.innerHTML=blocsTemes()}
@@ -2142,7 +2140,7 @@ function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElement
  <h2 class="sec">${ICO.obertes} Preguntes obertes</h2><div class="box">${obN?`<table class="an"><tr><th>Pregunta</th><th>Tema</th><th>Idees</th></tr>${OB.map((o,n)=>n in S.ob?`<tr role="button" tabindex="0" style="cursor:pointer" onclick="obertes(${n})"><td>${o.q.length>80?o.q.slice(0,78)+"…":o.q}</td><td>${o.t}</td><td><span class="semaf" style="background:${color(S.ob[n])}"></span><b>${S.ob[n]}%</b></td></tr>`:"").join("")}</table>`:`<p class="prog" style="margin:0">Encara no n'ha fet cap.</p>`}</div>
  <h2 class="sec">${ICO.jocs} Jocs i examen</h2><div class="box"><table class="an"><tr><th>Joc</th><th>Vegades</th><th>Millor</th><th>Últim</th></tr>${JOCS.map(([id,ic,t])=>{const r=S.jocs[id]||[];return `<tr><td>${ic} ${t}</td><td>${r.length}</td><td>${r.length?Math.max(...r)+"%":"—"}</td><td>${r.length?r[r.length-1]+"%":"—"}</td></tr>`}).join("")}</table></div>
  <p class="prog" style="text-align:center">Cada nom té el seu progrés, guardat amb el seu nom i PIN. Data: ${new Date().toLocaleDateString("ca-ES")}.</p>
- <div class="fila">${btSuau()}<button class="btn sec" onclick="benvinguda()">👥 Canviar d'usuari</button></div>`;
+ <div class="fila">${btSuau()}</div>`;
 }
 
 // ====================== ACCESSIBILITAT I DRECERES DE TECLAT ======================
