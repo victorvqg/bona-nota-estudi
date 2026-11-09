@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.5.1 · 2026-11-09
+
+### Canviat
+- El text de benvinguda de la portada parla de l'escola en general i explica el repàs, les missions, els exàmens, el boss i el rànquing.
+
 ## 2.5.0 · 2026-11-09
 
 ### Afegit

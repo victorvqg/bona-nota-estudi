@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="dd08e0f84b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="0e34768742",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -512,14 +512,19 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
  <div class="intro" id="intro" hidden>
   <h2>Repassa jugant el que ja has estudiat 🎮📚</h2>
-  <p>Aquesta web serveix per <b>repassar i jugar</b>, no per aprendre el tema des de zero. Primer cal estudiar-lo bé amb els <b>llibres i els apunts de l'Escola Anoia</b>. Després, aquí comproves si ho saps de veritat.</p>
+  <p>Primer estudia el tema amb els <b>llibres i els apunts de l'escola</b>. Després vine aquí a jugar i comprova si te'l saps de veritat.</p>
   <ul>
    <li><b>📄 Fitxes i 🃏 targetes</b>: el més important de cada tema, en poques línies.</li>
    <li><b>✅ Tests i 🎮 jocs</b>: cada encert et dona ⭐ estrelles, i amb les estrelles puges de nivell.</li>
+   <li><b>🔁 Repàs dels errors</b>: el que falles torna a sortir fins que t'ho saps.</li>
+   <li><b>🎯 Missions d'avui</b>: 3 reptes curts cada dia.</li>
    <li><b>✍️ Preguntes obertes</b>: practica explicar-ho amb les teves paraules, com a l'examen.</li>
+   <li><b>📝 Exàmens</b>: l'examen sorpresa i l'examen de veritat.</li>
+   <li><b>👾 Boss del món</b>: el repte final de cada món.</li>
    <li><b>📊 Com vaig</b>: mira on encertes més, on et costa i què et toca repassar.</li>
+   <li><b>🏆 Rànquing</b>: mira com vas amb la colla.</li>
   </ul>
-  <p class="peu-intro">Escriu el teu nom per començar. El progrés de cadascú es guarda amb el seu nom i PIN, i es pot continuar des de qualsevol mòbil, tauleta o ordinador.</p>
+  <p class="peu-intro">Escriu el teu nom i el teu PIN per començar. Amb el PIN pots continuar des de qualsevol mòbil, tauleta o ordinador.</p>
  </div>
  <div class="hola" id="hola"></div>
  <form class="entrada" id="entrada" autocomplete="off" hidden>
@@ -630,7 +635,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.5.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.5.1</small></footer>
 
 <script src="sprites.js?v=ece90a43"></script>
 <script>
