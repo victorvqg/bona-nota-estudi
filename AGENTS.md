@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Instruccions per a qualsevol agent de codi (Claude Code, Kimi, Codex) en aquest repo.
+Instruccions per a qualsevol agent de codi (Claude Code, Gemini, Kimi, Codex) en aquest repo.
 
 ## Nucli
 

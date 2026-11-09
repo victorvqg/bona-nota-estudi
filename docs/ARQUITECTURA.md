@@ -2,9 +2,9 @@
 
 Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el detall és al codi.
 
-## Portada i rànquing (`www.bonanota.net`)
+## Portada i rànquing (`bonanota.net`)
 - `index.html`, `CNAME`, `sprites.js`, `manifest.webmanifest`, `sw.js`.
-- Publicat sota el domini `www.bonanota.net` (`CNAME: bonanota.net`).
+- Publicat al domini `bonanota.net` (fitxer `CNAME`). `www.bonanota.net` i l'adreça antiga de GitHub Pages hi redirigeixen.
 - Punt d'entrada de l'alumne (identificació amb nom + PIN `4 números + 1 lletra`), targetes dels 6 mons (bloc marcat amb `<!-- MONS:INICI -->` / `<!-- MONS:FI -->` generat per `motor/tot.py`) i rànquing en temps real connectat a Supabase (Estrelles, Temps, Nivell, Setmana i Remuntada).
 
 ## Motor i plantilla dels mons

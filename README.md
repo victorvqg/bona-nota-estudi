@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://victorvqg.github.io/bona-nota-estudi/
+**Web:** https://bonanota.net · **Versió:** 2.3.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar** els temes de 1r d'ESO **jugant**. Cada tema és un «món» amb fitxes, targetes,
 tests, jocs i preguntes d'examen. Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -19,7 +19,8 @@ Després, aquí es comprova si se sap de veritat.
 
 La llista oficial de mons és `motor/mons.json`.
 
-> 🔢 **El món 5 (Matemàtiques) es publica el 5-11-2026**, amb el Taller de mates complet (branca `mates-millores`).
+> 🌐 La web té domini propi, **bonanota.net** (fitxer `CNAME`). L'adreça antiga de GitHub Pages i `www.bonanota.net` hi redirigeixen soles.
+>
 > La 📷 correcció de la foto del quadern només funciona quan la funció `bn-corregeix` està desplegada a Supabase.
 
 ---
@@ -55,13 +56,21 @@ La llista oficial de mons és `motor/mons.json`.
   (una que el test no ha tret). Si l'encertes, continues amb la meitat del combo.
 - **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de
   les comarques o el garbell dels primers).
+- **🔍 Troba l'error:** un exercici resolt per un company amb una trampa. Cal tocar la línia dolenta i dir per què. A mates, també
+  s'ha de tornar a escriure bé, i al final surt la llibreta corregida. Els errors van al repàs. N'hi ha a mates i al món del clima (climograma).
 - **Exàmens:** l'examen sorpresa (15 preguntes barrejades) i l'examen de veritat, amb nota sobre 10.
 - **Preguntes obertes:** el nen escriu la resposta, la compara amb la resposta model i marca les idees clau que ha posat.
   El motor detecta sol les idees que ja hi són: per les paraules i també pels **números** (si la idea clau diu
   «MCM = 144» i el nen ha escrit 144, compta).
 - **🔊 Escolta:** llegeix en veu alta la fitxa o la pregunta.
 - **Mode suau:** treu les animacions fortes (també s'activa sol si l'aparell ho té demanat).
+- **⌨️ Amb teclat** (a l'ordinador): `1` `2` `3` o `A` `B` `C` trien l'opció, `P` demana la pista i `Enter` o `→` passen a la següent.
+  A les targetes, `Espai` gira i `←` `→` canvien de targeta. `Escape` tanca les finestres.
+- **Dins d'un tema**, una barra porta a «Tots els temes» i canvia entre la fitxa i el test. Els reptes amb compte enrere tenen el botó **⏸ Pausa**.
+- **♿ Accessibilitat:** la portada i els mons es poden fer servir amb teclat i amb lector de pantalla.
 - **App:** es pot afegir a la pantalla d'inici del mòbil i funciona sense connexió.
+- **🔄 Sempre al dia:** en obrir la portada o un món, si la còpia del mòbil és vella, l'app s'actualitza sola (`motor/eines/actualitza.js`).
+  Si el nen torna a un món després de més de 10 minuts, només surt un avís amb un botó, per no tallar-li un test. El progrés, el nom i el PIN no es toquen mai.
 - **So al mòbil:** els efectes i la música s'engeguen al primer toc (els mòbils no deixen sonar res abans). A l'iPhone sonen encara que estigui en silenci, mentre el so de l'app estigui engegat; si el mòbil talla el so (una trucada, canviar d'app), torna en tornar a l'app o al toc següent. El codi és `motor/eines/so-mobil.js`, el mateix als mons i a la portada.
 
 ### ⭐ Estrelles, superestrelles i nivells
@@ -71,6 +80,7 @@ La llista oficial de mons és `motor/mons.json`.
   les preguntes del repàs i les respostes amb pista no en donen.
 - **A dalt de tot** es veu el total de **tots els mons**. Si toques les estrelles, surt el detall per món.
   El total compta el que hi ha en aquell aparell i també el que hi ha al núvol.
+  A la portada, la insígnia ⭐ del costat del nom suma les estrelles de tots els mons i obre el rànquing.
 - **🌠 Superestrelles:** cada 50 ⭐ (sumant tots els mons) en surt una, amb animació i música pròpies.
 - **Nivells:** d'🐣 Aprenent a 🌟 Llegenda d'or, segons les estrelles de cada món.
 
@@ -160,7 +170,9 @@ de les seves dades (`build.py` hi posa el fitxer sencer):
 - **«📒 Així s'escriu a la llibreta»** després de cada apartat.
 - **🔀 Repàs barrejat**: exercicis de tipus diferents seguits (mai dos d'iguals de costat). També surt com a botó
   en acabar el repàs dels errors (`ASSIG.repasExtra`).
-- **🔍 Troba l'error**: un exercici resolt per un company amb un error típic. Cal tocar la primera línia dolenta i dir per què.
+- **🔍 Troba l'error**: un exercici resolt per un company amb un error típic, que pot ser a qualsevol línia. Cal tocar la primera línia dolenta,
+  dir per què i tornar-la a escriure bé (pas «✍️ Escriu-ho bé»). Al final surt la llibreta corregida sencera, i el que falla va al repàs.
+- **Com s'escriu**: la multiplicació porta el punt volat `·`. La llibreta correcta té la vora verda i la que té l'error, vermella.
 - **Examen simulat sobre 10**: 6 exercicis, sense pistes, nota parcial per passos i correcció completa al final.
 - Cada tema de la fitxa té el botó **✏️ Practica-ho com a classe** (camp `practica` del tema).
 - **Registre per pas**: cada resposta fallada es desa com `exercici|pas|error` (camp `ep`) per al tauler d'admin.
@@ -209,12 +221,18 @@ motor/
   tot.py                             Genera TOTS els mons, les targetes de la portada i sw.js
   prova.js                           Prova automàtica d'un món (Playwright)
   prova-generadors.js                Prova dels generadors del Taller de mates (sense navegador)
-  eines/                             Peces compartides que un món inclou amb //@inclou (Taller de mates, dibuixos, quadern, full de brut)
+  jocs_generics.js                   Tipus de joc comuns (ordenar, parelles, classificar, figura i Troba l'error)
+  eines/                             Peces compartides: les que un món inclou amb //@inclou (Taller de mates, dibuixos, quadern, full de brut) i les de tota l'app (so al mòbil, actualització automàtica)
   local.py                           Servidor local que es posa al dia sol amb GitHub
   eines/mapa-comarques.js            Genera el mapa SVG de les comarques
 admin/                         Panell d'administració (activitat, noms, rànquing)
 supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol
+skills/bona-nota/              Skill que genera els PDFs d'estudi (skills/bona-nota.zip és el paquet)
 sw.js, manifest.webmanifest, icones/   App instal·lable i sense connexió (sw.js el genera tot.py)
+versio.json                    Empremta de l'última publicació, per a l'actualització automàtica (la genera tot.py)
+CNAME                          Domini de la web: bonanota.net
+CHANGELOG.md                   Historial de versions
+AGENTS.md, CLAUDE.md, nucli.json, docs/   Regles i memòria del projecte per als agents d'IA
 ```
 
 ---
@@ -258,6 +276,18 @@ Obre http://localhost:8000 i mira-hi els canvis de la branca. Mentre la branca e
 
 Per tornar a la versió de la web: `git checkout main`.
 
+### Obrir una pantalla directament
+
+Per provar una pantalla sense passar pel PIN, afegeix-ho a l'adreça d'un món. Es treballa en mode demo: no es registra res ni es desa al núvol.
+
+| A l'adreça | Què obre |
+|---|---|
+| `?demo` | L'inici del món amb un usuari de prova |
+| `?joc=<id>` | Un joc (a mates, `?joc=err` és Troba l'error) |
+| `?tema=<número>` | Un tema, comptant des de 0 |
+| `?vista=<vista>` | Una vista del món (per exemple, `jocs`) |
+| `?joc=<fitxa>&llibreta=1` | Una fitxa del Taller, directament a l'exemple resolt |
+
 ### Errors propis d'una eina al repàs (Bona Nota 2.0)
 
 Una eina (o un joc propi d'un món) pot posar els seus errors al repàs espaiat, a més de les preguntes de test:
@@ -289,6 +319,8 @@ ESTRICTE=1 node prova.js $PWD/../<carpeta>/index.html
 
 La prova ha d'acabar amb «errors: cap».
 
+Per afegir un **Troba l'error** a qualsevol món, a `ASSIG.jocs` hi va un joc `tipus:"error"`. El format és al comentari de `motor/jocs_generics.js`.
+
 **Regles del contingut:** tot surt dels apunts o del llibre (res inventat). Mínim **8 preguntes per tema**,
 3 opcions i una sola correcta. Els errors falsos han de ser errors típics, mai opcions absurdes.
 Si una dada és dubtosa, no va al test i la fitxa diu «pregunta-ho al profe».
@@ -299,11 +331,67 @@ Els canvis comuns a tots els mons (sons, estrelles, pantalles…) es fan a `moto
 Després, `python3 tot.py` els aplica a tots els mons, i cal passar la prova de cada món.
 **Mai s'edita una pàgina generada** (`<assignatura>/<tema>/index.html`): el canvi es perdria i la revisió fallaria.
 
+### Generar els PDFs d'estudi
+
+La skill `skills/bona-nota/` converteix fotos del llibre o apunts en un paquet de PDFs: resum, esquema visual, examen, full de respostes,
+preguntes orals i connexions, o el dossier d'un llibre de lectura. Comença per `skills/bona-nota/SKILL.md`.
+
 ### Publicar
 
-Fes commit i push a `main`. GitHub Pages ho publica en 1 o 2 minuts.
-Per provar una cosa gran abans de publicar-la, treballa en una altra branca i mira-la en local.
-Quan ja està bé, es fusiona la branca a `main` (per exemple, `mates-millores` → `main`).
+Cada canvi va per una branca i un PR cap a `main`, mai directament a `main`:
+
+1. Branca nova des de `main` actualitzat.
+2. `python3 motor/tot.py`, les proves i el commit.
+3. Push de la branca i PR cap a `main`.
+4. Quan l'Action «Revisa Bona Nota» del PR surt en verd, es fusiona amb squash i s'esborra la branca.
+   Fusionar és publicar: GitHub Pages ho posa a **bonanota.net** en 1 o 2 minuts. Si l'Action falla, s'arregla a la mateixa branca.
+
+Si el canvi el notarà qui fa servir l'app, el mateix PR puja la versió (vegeu l'apartat següent).
+
+---
+
+## 🏷️ Versions
+
+Cada versió de Bona Nota té un número de tres parts: `MAJOR.MENOR.PEDAÇ` (per exemple, `2.3.0`).
+El que ha canviat a cada versió és a [`CHANGELOG.md`](CHANGELOG.md), i la primera entrada és la versió actual.
+
+| Què puja | Quan | Exemple |
+|---|---|---|
+| **MAJOR** (`2.3.0` → `3.0.0`) | Un canvi gran de l'app, o un que obliga a migrar el progrés dels nens | Bona Nota 2.0 |
+| **MENOR** (`2.3.0` → `2.4.0`) | Una cosa nova: un món, un joc, una funció | Món 6 · Català |
+| **PEDAÇ** (`2.3.0` → `2.3.1`) | Una correcció o un ajust de contingut, sense res nou | Arreglar una pregunta mal escrita |
+
+Si un canvi només toca documentació o proves, la versió no puja.
+
+**Com es puja una versió:**
+
+1. Al mateix PR del canvi, afegeix l'entrada nova a dalt de tot de `CHANGELOG.md` (número, data i apartats Afegit, Canviat o Corregit).
+2. Canvia el número a la capçalera d'aquest README.
+3. Quan el PR estigui fusionat, posa l'etiqueta al commit de `main`:
+
+```
+git switch main
+git pull
+git tag -a v2.4.0 -m "Bona Nota 2.4.0"
+git push origin v2.4.0
+```
+
+> `versio.json` i el `VERSIO` de `sw.js` no són aquest número. Són empremtes que genera `motor/tot.py` a cada canvi perquè els mòbils
+> es posin al dia. El `VERSIO_ADMIN` del tauler és una etiqueta de data que es canvia a mà.
+
+---
+
+## 🤖 Qui hi treballa: Claude i Gemini
+
+Bona Nota es programa amb agents d'IA. **Hi treballen Claude (Claude Code) i Gemini**, i les mateixes regles valen per a qualsevol altre agent (Kimi, Codex…).
+
+- **Regles comunes:** tots els agents segueixen [`AGENTS.md`](AGENTS.md) i el nucli (`nucli.json`). `CLAUDE.md` remet a `AGENTS.md`.
+- **Numeració de Gemini:** les tasques i els blocs que fa Gemini es numeren amb la lletra `g` (`g1`, `g2`, `g3`…). L'id surt al final del commit.
+- **Memòria del projecte**, a `docs/`: `ESTAT.md` (com està tot), `DECISIONS.md` (què s'ha decidit i per què), `TRAMPES.md` (errors per no repetir),
+  `CONVENCIONS.md` (com es treballa) i `ARQUITECTURA.md` (on és cada cosa).
+- **Abans de publicar:** `nucli ship plan` diu quines comprovacions demana el canvi, `nucli ship run <check>` les passa i `nucli ship seal` les segella.
+
+Gemini es fa servir per desenvolupar l'app. Dins de l'app només hi ha una IA: Claude, que corregeix les fotos del quadern.
 
 ---
 
@@ -375,6 +463,7 @@ dia, mapa de calor hora × dia, evolució de les notes, constància i ratxa, dom
 fallades amb el parany més triat i, filtrant per un nen, en què passa el temps. Les dades arriben ja agregades
 del servidor amb les funcions de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`,
 `_domini`, `_fallades`, `_evolucio`, `_alertes`), que demanen el correu i la contrasenya d'admin.
+El domini per tema i les preguntes més fallades surten plegats per món.
 L'apartat **✏️ Taller de mates: on s'equivoquen** (exercici · pas · error · vegades · nens) surt de `bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql` (s'executa una vegada, després de `bn_admin_tauler.sql`), i llegeix el camp `ep` (`"exercici|pas|error"`, un per cada resposta fallada) que el Taller afegeix als events `joc` i `examen`.
 
 **Fitxa de cada nen** (`admin/`, pestanya 👤 Nens → toca un nom): canviar el nom, amagar-lo del rànquing, treure el PIN i:
