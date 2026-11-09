@@ -84,13 +84,19 @@ Cada exercici puntua segons els passos ben fets, arrodonit a quarts de punt.
 
 ## Preguntes obertes
 
-El nen escriu la resposta, veu les idees clau i **marca ell mateix** quines ha posat.
+El nen escriu la resposta i **el programa comprova quines idees clau hi ha de veritat**.
 
-- **Nota:** idees marcades sobre el total d'idees de la pregunta.
+**Abans de posar nota**, el text ha de ser una resposta real. Es rebutja si té menys de 6 paraules, si repeteix sempre les mateixes, si no semblen paraules (tecles a l'atzar) o si és una còpia de l'enunciat, de la resposta model o de les idees clau. A la casella tampoc es pot enganxar text.
+
+- **Nota:** idees trobades al text sobre el total d'idees de la pregunta.
+- **Una idea compta** si el text porta prou paraules importants seves que no siguin ja a l'enunciat, o els seus números.
 - **80 o més:** resposta completa. **50 a 79:** falten idees. **Menys de 50:** cal repassar la fitxa.
 - També li diu quant valdria a l'examen, sobre 1,5 punts.
+- **Pràctica:** un cop vista la resposta model, aquella pregunta es pot tornar a fer, però durant 3 dies no canvia la nota ni dona estrelles.
 
-Aquesta nota és una **autoavaluació**, i el nen es pot equivocar o enganyar. Les estrelles són més estrictes: només compten les idees que el programa troba realment escrites al text.
+El programa busca paraules i no entén la frase, així que pot no trobar una idea explicada amb sinònims. El nen pot avisar que creu que l'ha posada: queda apuntat al tauler, però no canvia la nota.
+
+Les notes anteriors a la versió 2.6.0 eren autoavaluacions, perquè les marcava el mateix nen.
 
 **Quadern de mates:** els punts de control donen el percentatge de passos bé a la primera. La foto del quadern no posa nota: diu si està bé o quina és la primera línia equivocada.
 
@@ -174,4 +180,5 @@ Si canvia alguna d'aquestes regles, cal actualitzar aquest document.
 | Boss | `bossEstat()` i `bossFi()`, a la plantilla |
 | Examen de mates | `mxFiExamen()`, a `motor/eines/exercicis-mates.js` i el camp `mx.examen`, a `motor/dades/divisibilitat.js` |
 | Colors i estats del domini | `bandPc()` i `tDomini()`, a `admin/index.html` |
+| Preguntes obertes | `validaOberta()` i `ideaDetectada()`, a la plantilla |
 | Alertes | `bn_admin_alertes`, a `supabase/bn_admin_tauler.sql` |

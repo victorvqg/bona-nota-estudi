@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="0e34768742",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="8ffc92c828",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -256,6 +256,7 @@ textarea{width:100%;font:inherit;padding:12px 14px;border-radius:14px;border:2px
 textarea:focus,input:focus{outline:none;border-color:#93c5fd;box-shadow:0 0 0 4px #bfdbfe66}
 label.chk{display:flex;gap:10px;align-items:flex-start;margin:8px 0;cursor:pointer;padding:8px 10px;border-radius:10px;background:#fff;border:2px solid var(--vora)}
 label.chk input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--verd)}
+.ob-ok{display:flex;gap:10px;align-items:flex-start;margin:8px 0;padding:8px 10px;border-radius:10px;background:#dcfce7}
 details summary{cursor:pointer;font-weight:800;color:var(--blau2)}
 /* benvinguda */
 .benv{max-width:460px;margin:30px auto;text-align:center}
@@ -560,7 +561,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.5.1</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.6.0</small></div>
 
 <script>
 // Bona Nota · Estudi interactiu · dades de LES COMARQUES DE CATALUNYA (Socials 1r ESO)
@@ -1611,14 +1612,39 @@ let JOCSTAR=1;
 const NOM_MAL=/(^|[^a-z])(puta|puto|putes|putos|merda|mierda|cabron|cabro|polla|cony|cono|collons|cojones|gilipolles|gilipollas|imbecil|idiota|subnormal|maricon|marica|mongol|mongolo|joputa|zorra|guarra|pene|penis|culo|cul|caca|pipi|pedo|pet|tonto|tonta|burro|fuck|shit|bitch|dick|ass|nazi|hitler|porno|porn|sexo|sex|teta|tetes|tetas|xixa|chocho|verga|follar|folla)([^a-z]|$)|fill ?de ?puta|hijo ?de ?puta|me cago|em cago/;
 const normT=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/·/g,".");
 function nomProhibit(n){const x=normT(n.trim());return !/^[a-z0-9 ._'-]+$/.test(x)||NOM_MAL.test(x)}
-// idees detectades al text d'una oberta: alguna paraula important (5+ lletres) del punt clau, comparant els 5 primers caràcters
+// ---- validació de les preguntes obertes ----
+// La nota surt del que hi ha escrit de veritat. S'accepta el text només si és una resposta (prou llarga, amb paraules reals i sense copiar l'enunciat ni la resposta model).
+// Una idea compta si el text porta prou paraules importants (5+ lletres, comparant els 5 primers caràcters) que NO siguin ja a l'enunciat.
 const BUIDES=new Set("aquest aquesta aquests aquestes perque quan com amb sense sobre entre també molt mes menys tots totes cada altre altres seva seves seus quan durant despres abans pero porque cuando sobre entre tambien mucho todos todas otra otro otras otros".split(" "));
-function ideaDetectada(punt,text){const t=normT(text).replace(/[^a-z0-9 ]/g," "),paus=new Set(t.split(/\s+/).filter(w=>w.length>=4).map(w=>w.slice(0,5)));
- const claus=normT(punt.replace(/<[^>]+>/g,"")).replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>=5&&!BUIDES.has(w));
- if(claus.some(w=>paus.has(w.slice(0,5))))return true;
- // mates: si el punt clau porta nombres de 2 xifres o més (1.001, 144, 72…), també val si el text els porta tots
+const OB_MIN=6,OB_DIF=4,OB_CONEGUDES=15,OB_COPIA=.5,OB_IDEA=.25,OB_DIES=3;
+const BUIDES_N=new Set([...BUIDES].map(normT));
+const obNet=t=>normT(String(t).replace(/<[^>]+>/g," ")).replace(/[^a-z0-9 ]/g," ");
+const obParaules=t=>obNet(t).split(/\s+/).filter(Boolean);
+const obArrels=t=>new Set(obParaules(t).filter(w=>w.length>=4).map(w=>w.slice(0,5)));
+function ideaDetectada(punt,text,enunciat){const t=obArrels(text),e=obArrels(enunciat||"");
+ // mates: si el punt clau porta nombres de 2 xifres o més (1.001, 144, 72…) que no surten a l'enunciat, val si el text els porta tots
  const nums=x=>(normT(String(x).replace(/<[^>]+>/g,"")).match(/\d+(?:[.,]\d{3})*/g)||[]).map(n=>n.replace(/[.,]/g,""));
- const np=[...new Set(nums(punt).filter(n=>n.length>=2))];if(!np.length)return false;const nt=new Set(nums(text));return np.every(n=>nt.has(n))}
+ const en=new Set(nums(enunciat||"")),np=[...new Set(nums(punt).filter(n=>n.length>=2&&!en.has(n)))];if(np.length){const nt=new Set(nums(text));if(np.every(n=>nt.has(n)))return true}
+ const totes=[...new Set(obParaules(punt).filter(w=>w.length>=5&&!BUIDES_N.has(w)).map(w=>w.slice(0,5)))];
+ let claus=totes.filter(w=>!e.has(w));if(!claus.length)claus=totes;if(!claus.length)return false;
+ return claus.filter(w=>t.has(w)).length>=Math.max(1,Math.ceil(claus.length*OB_IDEA))}
+// quina part del text a són seqüències de 4 paraules que també són a b (0 a 1)
+const obQuatre=t=>{const w=obParaules(t),s=new Set();for(let i=0;i+3<w.length;i++)s.add(w.slice(i,i+4).join(" "));return s};
+function obCopia(a,b){const x=obQuatre(a),y=obQuatre(b);if(!x.size)return 0;let n=0;x.forEach(s=>{if(y.has(s))n++});return n/x.size}
+// vocabulari del món: per distingir paraules reals de tecles a l'atzar (es calcula un sol cop)
+let OB_VOCAB=null;function obVocab(){if(!OB_VOCAB){OB_VOCAB=obArrels(JSON.stringify([T,OB]));BUIDES_N.forEach(w=>OB_VOCAB.add(w.slice(0,5)))}return OB_VOCAB}
+// torna null si el text és acceptable, o el motiu pel qual no ho és
+function validaOberta(text,o){const w=obParaules(text);if(w.length<OB_MIN)return "curt";if(new Set(w).size<OB_DIF)return "repetit";
+ const rar=w.filter(x=>/^[a-z]{3,}$/.test(x)&&(!/[aeiouy]/.test(x)||/(.)\1\1/.test(x)||/asdf|qwer|zxcv|hjkl/.test(x)));if(rar.length*100/w.length>30)return "sense";
+ const g=w.filter(x=>x.length>=4&&/^[a-z]+$/.test(x)),v=obVocab(),k=g.filter(x=>v.has(x.slice(0,5))).length;if(g.length&&(!k||k*100/g.length<OB_CONEGUDES))return "sense";
+ if(obCopia(text,o.q)>=OB_COPIA)return "enunciat";
+ if(obCopia(text,o.m)>=OB_COPIA||obCopia(text,o.p.join(". "))>=OB_COPIA)return "copia";
+ return null}
+const OB_MOTIU={curt:`✏️ Escriu una mica més: com a mínim ${OB_MIN} paraules.`,repetit:"✏️ Has repetit les mateixes paraules. Explica-ho amb frases.",sense:"✏️ Això no semblen paraules. Explica-ho de veritat.",enunciat:"✏️ Això és l'enunciat de la pregunta. Respon-la amb les teves paraules.",copia:"✏️ Aquest text és una còpia de la resposta. Escriu-ho amb les teves paraules."};
+// a les caselles de resposta no s'hi pot enganxar ni arrossegar text; torna una funció que diu quantes vegades s'ha intentat
+function obProtegeix(ta,av){let n=0;const nega=e=>{e.preventDefault();n++;if(av)av.innerHTML=`<div class="fb ko">✏️ Aquí no es pot enganxar: escriu-ho amb les teves paraules.</div>`};ta.addEventListener("paste",nega);ta.addEventListener("drop",nega);return ()=>n}
+// si ja ha vist la resposta model fa poc, torna fins a quin dia no puntua aquella pregunta
+const obBloc=n=>{const d=(S.obv||{})[n];return d&&d>avui()?d:null};
 
 
 // ====================== PIN I PROGRÉS AL NÚVOL ======================
@@ -1876,11 +1902,12 @@ function bossPinta(){const B=BOSS,r=B.rondes[B.k];window.scrollTo(0,0);TQ0=Date.
     if(r.ok>=r.items.length)bossResol(!r.fallat,r.fallat?Math.round(r.dmg/2):r.dmg,r.fallat?"👍 <b>Ordenat!</b> Amb una errada: mig cop.":"⚡ <b>Cop doble!</b> Tot en ordre a la primera.",r.fallat)}
    else{b.classList.add("ko");setTimeout(()=>b.classList.remove("ko"),500);so("ko");if(!r.fallat){r.fallat=true;bossDolor();
     if(BOSS.cors<=0){app.querySelectorAll(".bo-o").forEach(x=>x.disabled=true);bossResol(false,0,"💥 <b>T'has quedat sense cors!</b>",true)}}}});
- else document.getElementById("bossCop").onclick=()=>{const txt=document.getElementById("boResp").value.trim();
-   if(txt.length<15){document.getElementById("boFb").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de llançar el cop.</div>`;return}
-   document.getElementById("bossCop").disabled=true;document.getElementById("boResp").readOnly=true;
-   const det=r.o.p.filter(pt=>ideaDetectada(pt,txt)).length,tot=r.o.p.length,dmg=Math.round(r.dmg*det/Math.max(1,tot));
-   bossResol(det>0,dmg,`${det?`⚡ <b>${det} de ${tot} idees clau!</b>`:"🤔 <b>No hi he trobat cap idea clau.</b>"} <details style="margin-top:6px"><summary>👀 Resposta model</summary><p>${r.o.m}</p></details>`,true)}}
+ else{const ta=document.getElementById("boResp"),fb=document.getElementById("boFb");obProtegeix(ta,fb);
+  document.getElementById("bossCop").onclick=()=>{const txt=ta.value.trim(),mot=validaOberta(txt,r.o);
+   if(mot){fb.innerHTML=`<div class="fb ko">${OB_MOTIU[mot]}</div>`;return}
+   document.getElementById("bossCop").disabled=true;ta.readOnly=true;
+   const det=r.o.p.filter(pt=>ideaDetectada(pt,txt,r.o.q)).length,tot=r.o.p.length,dmg=Math.round(r.dmg*det/Math.max(1,tot));
+   bossResol(det>0,dmg,`${det?`⚡ <b>${det} de ${tot} idees clau!</b>`:"🤔 <b>No hi he trobat cap idea clau.</b>"} <details style="margin-top:6px"><summary>👀 Resposta model</summary><p>${r.o.m}</p></details>`,true)}}}
 // un error: perds un cor (només un per ronda)
 function bossDolor(){const B=BOSS;B.cors=Math.max(0,B.cors-1);B.err++;so("ko");const c=app.querySelector(".boss-cors");if(c){c.innerHTML="❤️".repeat(B.cors)+"🤍".repeat(3-B.cors);c.classList.remove("tremola");void c.offsetWidth;c.classList.add("tremola")}document.body.classList.add("boss-mal");setTimeout(()=>document.body.classList.remove("boss-mal"),350)}
 function bossResol(ok,dmg,txt,jaComptat){const B=BOSS;if(ok){B.enc++;missio("enc")}else if(!jaComptat)bossDolor();
@@ -1904,7 +1931,8 @@ async function bnProvaBoss(){const repAbans=JSON.stringify(S.rep||{}),bossAbans=
   if(r.tipus==="test"){[...app.querySelectorAll(".bo")].find(o=>be?+o.dataset.i===r.q[2]:+o.dataset.i!==r.q[2]).click();continue}
   if(r.tipus==="ordena"){if(!be){const mal=[...app.querySelectorAll(".bo-o")].find(o=>+o.dataset.k!==0);if(mal&&!r.fallat){mal.click();}}
    for(let k=r.ok;k<r.items.length;k++)app.querySelector(`.bo-o[data-k="${k}"]`).click();continue}
-  document.getElementById("boResp").value=be?r.o.m+" "+r.o.p.join(". "):"No me'n recordo gens ni mica, la veritat.";document.getElementById("bossCop").click()}return false};
+  // bona: les idees i la resposta model en ordre invers (no és una còpia); dolenta: frase vàlida sense cap paraula important
+  document.getElementById("boResp").value=be?(r.o.m+" "+r.o.p.join(". ")).split(/\s+/).reverse().join(" "):"aquest perque quan sense sobre entre durant despres";document.getElementById("bossCop").click()}return false};
  const mfAbans=JSON.stringify(e.mf||[]),mtAbans=e.mt;e.mf=missionsAvui().map(m=>m.id);e.mt=1;  // les missions, ja fetes: no han de sumar durant la prova
  try{if(!bossEstat().obert)return "el boss hauria d'estar obert (tots els temes aprovats)";e.boss=0;
   vista('jocs');if(!app.querySelector('.boss-carta'))return "no surt la targeta del boss a Jocs";
@@ -2160,29 +2188,47 @@ function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:
 let OB0=0;
 function obertes(n){OB0=Date.now();
  FONT=["obertes"];window.scrollTo(0,0);marcaNav("obertes");
- const o=OB[n],fet=S.ob[n];
+ const o=OB[n],fet=S.ob[n],bloc=obBloc(n);let rebutjat=0;
  app.innerHTML=`<h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
  <div class="box" style="margin-top:10px">${potEscoltar()?`<div class="escolta-fila">${btEscolta(o.q,"Escolta")}</div>`:""}<div class="pregunta">${o.q}</div>
+ ${bloc?`<p class="prog" id="obBloc">🔒 Ja has vist la resposta d'aquesta pregunta. Pots practicar, però fins al ${bloc.slice(8)}/${bloc.slice(5,7)} no puntua.</p>`:""}
  <textarea id="resp" rows="7" placeholder="Escriu aquí la teva resposta amb les teves paraules…"></textarea>
  <div class="fila"><button class="btn" id="veu">Comprova la meva resposta</button></div><div id="corr"></div></div>
  <div class="fila"><button class="btn sec" ${n==0?'disabled':''} onclick="obertes(${n-1})">← Anterior</button><button class="btn sec" ${n==OB.length-1?'disabled':''} onclick="obertes(${n+1})">Següent →</button></div>`;
  if(typeof obertesExtra==="function")obertesExtra(n,o); // p. ex. 📒 quadern de mates (eines/quadern.js)
+ const resp=document.getElementById("resp"),corr=document.getElementById("corr"),enganxat=obProtegeix(resp,corr);
  document.getElementById("veu").onclick=()=>{
-  const txt=document.getElementById("resp").value.trim();
-  if(txt.length<15){document.getElementById("corr").innerHTML=`<div class="fb ko">✏️ Escriu una mica més abans de comprovar-ho.</div>`;return}
-  document.getElementById("veu").disabled=true;document.getElementById("resp").readOnly=true;
-  document.getElementById("corr").innerHTML=`<div class="fb"><b>Marca les idees que has posat a la teva resposta:</b>${o.p.map(x=>`<label class="chk"><input type="checkbox" class="pk"><span>${x}</span></label>`).join("")}
-  <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p>${btEscolta(o.m,"Escolta la resposta model")}</details>
-  <div class="fila"><button class="btn verd" id="nota">Ja he marcat: quina nota trec?</button></div><div id="res"></div></div>`;
-  document.getElementById("nota").onclick=()=>{
-   const txtR=document.getElementById("resp").value,cks=[...document.querySelectorAll(".pk")],k=cks.filter(c=>c.checked).length,tot=o.p.length,pc=Math.round(k*100/tot);
-   const det=o.p.filter((pt,i)=>cks[i].checked&&ideaDetectada(pt,txtR)).length,primera=!diaEst().o[n];diaEst().o[n]=1;
-   document.getElementById("nota").disabled=true;S.ob[n]=pc;suma(primera?det:0);missio("ob");registra("oberta",{n,tema:o.t,pc,s:segs(OB0),idees:k,de:tot,det,falten:o.p.map((x,i)=>cks[i].checked?null:i).filter(x=>x!==null)});if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300);
-   const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
-   document.getElementById("res").innerHTML=`<p style="text-align:center"><b>${k} de ${tot} idees</b> marcades · n'he trobat <b>${det}</b> escrites al teu text${primera?` → +${det} ⭐`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>A l'examen valdria uns <b>${(k*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
-  };
+  const txt=resp.value.trim(),mot=validaOberta(txt,o);
+  if(mot){rebutjat++;corr.innerHTML=`<div class="fb ko">${OB_MOTIU[mot]}</div>`;return}
+  document.getElementById("veu").disabled=true;resp.readOnly=true;
+  // la nota la posa el programa; si ja havia vist la resposta fa poc, és pràctica i no compta
+  const pract=!!bloc,trob=o.p.map(pt=>ideaDetectada(pt,txt,o.q)),det=trob.filter(Boolean).length,tot=o.p.length,pc=Math.round(det*100/tot),primera=!pract&&!diaEst().o[n];
+  if(!pract){diaEst().o[n]=1;S.ob[n]=pc;(S.obv=S.obv||{})[n]=diaMes(OB_DIES);suma(primera?det:0);missio("ob");desa();if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300)}
+  registra("oberta",Object.assign({n,tema:o.t,pc,s:segs(OB0),idees:det,de:tot,det,falten:trob.map((x,i)=>x?null:i).filter(x=>x!==null)},pract?{mode:"practica"}:{},rebutjat?{rebutjat}:{},enganxat()?{enganxat:enganxat()}:{}));
+  corr.innerHTML=`<div class="fb"><b>He trobat ${det} de ${tot} idees al teu text:</b>${o.p.map((x,i)=>trob[i]?`<div class="ob-ok"><span>✅</span><span>${x}</span></div>`:`<label class="chk"><input type="checkbox" class="pk" data-i="${i}"><span>${x}</span></label>`).join("")}
+  ${det<tot?`<p class="prog" style="margin:6px 0">Si creus que alguna de les que no he trobat sí que l'has posat, marca-la i avisa'ns. No canvia la nota.</p><div class="fila"><button class="btn sec" id="crec">Crec que n'he posat més</button></div>`:""}
+  <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p>${btEscolta(o.m,"Escolta la resposta model")}</details><div id="res"></div></div>`;
+  const bc=document.getElementById("crec");if(bc)bc.onclick=()=>{const ids=[...document.querySelectorAll(".pk:checked")].map(c=>+c.dataset.i);if(!ids.length)return;bc.disabled=true;bc.textContent="Apuntat ✔";registra("valora",{titol:`Pregunta oberta ${n+1}`,v:`Crec que n'he posat ${ids.length} més`,ob:n,crec:ids})};
+  const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
+  document.getElementById("res").innerHTML=`<p style="text-align:center"><b>Nota: ${pc} %</b>${pract?" · és pràctica, no puntua":primera?` → +${det} ⭐`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>A l'examen valdria uns <b>${(det*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
  };
 }
+// prova: la validació rebutja el que no és una resposta i la nota no es pot inflar
+function bnProvaObertes(){const inv=t=>t.split(/\s+/).reverse().join(" "),s0=JSON.stringify({ob:S.ob,obv:S.obv||null,p:S.punts,est:S.est||null,f:S.fonts||null,ft:S.ftema||null});
+ try{let tot=0,ok=0,enun=0;
+  for(const o of OB){for(const [nom,t] of [["l'enunciat",o.q],["la resposta model",o.m],["les idees",o.p.join(". ")],["text sense sentit","asdas dasda sdasa dasad asada sadas"],["tecles","asdf qwer zxcv hjkl asdfg qwert"],["una paraula repetida","clima clima clima clima clima clima"],["massa poc","hola que tal"]])if(!validaOberta(t,o))return `s'ha acceptat ${nom}: ${o.q.slice(0,40)}`;
+   if(validaOberta(inv(o.m),o))return `s'ha rebutjat una resposta real (${validaOberta(inv(o.m),o)}): ${o.q.slice(0,40)}`;
+   o.p.forEach(p=>{tot++;if(ideaDetectada(p,o.m,o.q))ok++;if(ideaDetectada(p,o.q,o.q))enun++})}
+  if(ok*100/tot<75)return `la resposta model només dona el ${Math.round(ok*100/tot)} % de les idees`;
+  if(enun*100/tot>35)return `l'enunciat dona el ${Math.round(enun*100/tot)} % de les idees`;
+  const o=OB[0],txt=inv(o.m);delete S.ob[0];if(S.obv)delete S.obv[0];delete diaEst().o[0];
+  obertes(0);const ta=document.getElementById("resp"),ev=new ClipboardEvent("paste",{cancelable:true,bubbles:true});ta.dispatchEvent(ev);if(!ev.defaultPrevented)return "s'hi pot enganxar text";
+  ta.value="asdas dasda sdasa dasad asada sadas";document.getElementById("veu").click();if(!document.querySelector("#corr .ko")||ta.readOnly||0 in S.ob)return "el text sense sentit no s'ha aturat";
+  ta.value=txt;document.getElementById("veu").click();const n1=S.ob[0];if(!(n1>0))return "una resposta real hauria de tenir nota";if(!obBloc(0))return "després de veure la resposta, la pregunta hauria de quedar bloquejada";
+  S.ob[0]=1;const p1=S.punts;obertes(0);if(!document.getElementById("obBloc"))return "no avisa que és pràctica";
+  document.getElementById("resp").value=txt;document.getElementById("veu").click();if(S.ob[0]!==1||S.punts!==p1)return "la pràctica no hauria de canviar la nota ni donar estrelles";
+  return true}finally{const b=JSON.parse(s0);S.ob=b.ob;if(b.obv)S.obv=b.obv;else delete S.obv;S.punts=b.p;if(b.est)S.est=b.est;if(b.f)S.fonts=b.f;if(b.ft)S.ftema=b.ft;NIVPEND=null;SUPPEND=0;desa();vista("inici")}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaObertes");
 
 // ====================== ANALÍTICA ======================
 function resumGlobal(){

@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.5.1 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
+**Web:** https://bonanota.net · **Versió:** 2.6.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -62,7 +62,7 @@ El títol i l'id es llegeixen amb expressions regulars: `id:"…"`, `nom:"…"` 
 | 2 | Compta temes i jocs avaluant les dades amb Node |
 | 3 | A `index.html`: reescriu les targetes (`MONS:inici..fi`), copia `so-mobil.js` i `actualitza.js` entre les seves marques i posa `sprites.js?v=<empremta>` |
 | 3b | Escriu `admin/preguntes.json` (id → text, opcions, correcta, tema) |
-| 3c | Llegeix la primera entrada de `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera del tauler (`VERSIO_ADMIN`) |
+| 3c | Llegeix la primera entrada de `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera i a l'entrada del tauler (`VERSIO_ADMIN`) |
 | 4 | Calcula una empremta del contingut i la posa a cada pàgina (`VER`), a `versio.json` i a `sw.js` |
 
 L'empremta es calcula amb el buit `__BN_VERSIO__` encara sense omplir, perquè no depengui d'ella mateixa. Si `tot.py` es torna a executar sense canvis, el resultat és idèntic: la revisió automàtica ho aprofita per detectar pàgines editades a mà.
@@ -177,7 +177,7 @@ El motor els desa a `S.rep`, els mou de capsa i dona el +2 ⭐ quan queden apres
 
 - **Boss:** `bossEstat()` l'obre amb el 70 % dels temes aprovats (`BOSS_DESBLOQ`) o amb un examen de 70 o més. Les rondes es construeixen amb el contingut que el món ja té, i guanyar dona `BOSS_ESTRELLES` = 10 un cop al dia.
 - **Missions:** `missionsAvui()` tria 3 missions a partir del dia i del món, de manera que són les mateixes tot el dia. `missio(k, v)` compta el progrés amb el que el motor ja sap.
-- **Obertes:** `ideaDetectada(punt, text)` compara arrels de 5 lletres de les paraules importants, sense accents i sense paraules buides (`BUIDES`). Si la idea clau porta números de 2 xifres o més, també val si el text els conté tots. Una eina pot afegir-hi coses amb el ganxo `obertesExtra(n, o)`.
+- **Obertes:** `validaOberta(text, o)` decideix si el text és una resposta: mínim de paraules (`OB_MIN`), paraules reals comparades amb el vocabulari del món, i sense còpia de l'enunciat, la resposta model o les idees (seqüències de 4 paraules). `ideaDetectada(punt, text, enunciat)` posa la nota: compara arrels de 5 lletres, descarta les paraules que ja són a l'enunciat i demana una quarta part de les paraules clau de la idea (`OB_IDEA`). Si la idea porta números de 2 xifres o més que no surten a l'enunciat, també val si el text els conté tots. Les caselles de resposta no accepten enganxar (`obProtegeix`), i el boss fa servir el mateix validador. Quan el nen veu la resposta model, `S.obv[n]` deixa la pregunta en pràctica durant `OB_DIES`. Una eina pot afegir-hi coses amb el ganxo `obertesExtra(n, o)`.
 
 ### Jocs
 
@@ -332,7 +332,7 @@ Cap dada nova del nen: només el nom de sempre. El camp `detall` de cada registr
 | `test` | tema, `pc`, `mode` (tema · repas), `s` total, `q`: una entrada per pregunta, i `pistes` (preguntes amb pista, si n'hi ha) |
 | `examen` | `joc` (examen · examreal), `pc`, `mode` (sorpresa · real · real-temps), `s`, `temes` i `q`. L'examen de mates porta `nota` sobre 10 en lloc de `pc`, i `nivell` i `ep` |
 | `joc` | `joc`, `pc`, `s`, `enc`, `err`; el MAPA també `mode` i `f` (comarques fallades). El boss (`joc: "boss"`) també porta `guanya`, `cors`, `hp` i `q`. El repàs (`joc: "repas"`) també porta `apr` (errors apresos en aquella sessió) i `ext` (p. ex. `mx:1/2,mapa:2/3`: errors del Taller i del MAPA recordats) |
-| `oberta` | número, tema, `pc`, `s`, `idees`/`de`, `det` (detectades al text), `falten` (punts clau no marcats) |
+| `oberta` | número, tema, `pc`, `s`, `idees`/`de`, `det` (idees trobades al text), `falten` (idees no trobades) i, si n'hi ha, `mode: "practica"`, `rebutjat` i `enganxat`. Des de la versió 2.6.0 `pc` surt de les idees trobades; abans el marcava el nen |
 
 Cada pregunta contestada va a `q` com un text curt **`tema/núm:encert:segons:opció`**, per exemple
 `lle/4:0:7:2` (tema «lle», pregunta 4, fallada, 7 segons, ha triat l'opció 2 del llibre de dades).

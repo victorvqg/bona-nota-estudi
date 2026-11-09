@@ -5,6 +5,20 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.6.0 · 2026-11-09
+
+### Afegit
+- Tauler d'admin: apartat «Preguntes obertes: respostes sospitoses».
+- La pantalla d'entrada del tauler mostra el número de versió.
+
+### Canviat
+- Preguntes obertes i boss: el text ha de ser una resposta real. Es rebutja el text massa curt, sense sentit o copiat, i no es pot enganxar.
+- La nota de les preguntes obertes la posa el programa segons les idees que troba al text. Abans la marcava el nen.
+- Un cop vista la resposta model, aquella pregunta queda 3 dies en pràctica i no puntua.
+
+### Corregit
+- Copiar l'enunciat ja no fa guanyar idees clau, ni amb paraules ni amb els seus números.
+
 ## 2.5.1 · 2026-11-09
 
 ### Canviat
