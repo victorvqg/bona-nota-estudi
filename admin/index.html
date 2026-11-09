@@ -395,7 +395,7 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.7.1";
+const VERSIO_ADMIN="2.8.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -606,11 +606,23 @@ function descriu(l){const d=l.detall||{};switch(l.event){
  case"valora":return `Valora <b>${esc(d.titol||d.tema)}</b>: ${esc(d.v)}`;
  case"temps":return `${fmtT(d.s)} estudiant`;
  default:return esc(JSON.stringify(d))}}
-function nens(ls){ls=ls||LOGS;const m={};ls.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[k]={nom:l.nom,assigs:new Set(),ses:new Set(),ap:new Set(),ult:l.ts,temps:0,tests:[],jocs:0,exam:[],punts:{},fonts:{},fts:{}});
+// [estrelles-pures] orígens de les estrelles (issue #13). Les fonts són comptadors que només pugen dins d'un món (un reinici
+// n'esborra els registres), així que es queda el màxim de cada clau: l'últim registre pot ser d'un dispositiu nou que encara no ho sap tot.
+function afegeixFonts(dest,l){const d=l.detall||{};if(d.fonts==null&&d.punts==null)return;const x=dest[l.assig]||(dest[l.assig]={f:{},p:0});
+ if(d.punts!=null)x.p=Math.max(x.p,+d.punts||0);
+ if(d.fonts&&typeof d.fonts==="object")Object.entries(d.fonts).forEach(([k,v])=>{if(typeof v==="number")x.f[k]=Math.max(x.f[k]||0,v)})}
+// fonts de tots els nens (sumant el màxim de cada nen i món) i ritme: estrelles i segons de cada activitat que porta «est» i «s»
+function resumFonts(ls){const per={},fonts={},ritme={};
+ ls.forEach(l=>{const k=(l.nom||"").trim().toLowerCase();afegeixFonts(per[k]||(per[k]={}),l);const d=l.detall||{};
+  if(["test","joc","examen","oberta"].includes(l.event)&&typeof d.est==="number"&&typeof d.s==="number"&&d.s>0){const r=ritme[l.event]||(ritme[l.event]={est:0,s:0});r.est+=d.est;r.s+=d.s}});
+ Object.values(per).forEach(p=>Object.values(p).forEach(x=>Object.entries(x.f).forEach(([f,v])=>{fonts[f]=(fonts[f]||0)+v})));
+ return {fonts,ritme}}
+// [/estrelles-pures]
+function nens(ls){ls=ls||LOGS;const m={};ls.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[k]={nom:l.nom,assigs:new Set(),ses:new Set(),ap:new Set(),ult:l.ts,temps:0,tests:[],jocs:0,exam:[],punts:{},fonts:{}});
  n.assigs.add(l.assig);n.ses.add(l.sessio);n.ap.add(l.aparell);if(l.ts>n.ult)n.ult=l.ts;const d=l.detall||{};
  if(l.event==="temps")n.temps+=d.s||0;if(l.event==="test")n.tests.push(d.pc);if(l.event==="joc")n.jocs++;if(l.event==="examen"&&pcExam(d)!=null)n.exam.push(pcExam(d));
  if(d.punts!=null&&(n.punts[l.assig]==null||d.punts>n.punts[l.assig]))n.punts[l.assig]=d.punts;
- if(d.fonts&&(!n.fts[l.assig]||l.ts>n.fts[l.assig])){n.fonts[l.assig]={f:d.fonts,p:d.punts||0};n.fts[l.assig]=l.ts}});
+ afegeixFonts(n.fonts,l)});
  return Object.entries(m).map(([k,n])=>({k,...n})).sort((a,b)=>b.ult.localeCompare(a.ult))}
 const mitj=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
 // estat de cada nen (amagat, PIN, PIN nou) amb la mateixa crida que la fitxa (bn_admin_usuari 'estat'); es guarda fins a tornar a carregar
@@ -636,8 +648,15 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-nen]"
 const mini=(v,max,cls,et)=>`<span class="mini"><span>${et??v}</span><span class="b"><i class="${cls||""}" style="width:${Math.max(2,Math.min(100,Math.round(100*(+v||0)/Math.max(1,max))))}%"></i></span></span>`;
 
 // ====================== NENS ======================
+// targeta del començament de «Nens»: d'on surten les estrelles de tothom i quantes estrelles per minut dona cada activitat
+function cartaOrigens(ls){const {fonts,ritme}=resumFonts(ls),tot=Object.values(fonts).reduce((a,b)=>a+b,0);if(!tot)return "";
+ const mx=Math.max(1,...Object.values(fonts)),pc=v=>String(Math.round(v*1000/tot)/10).replace(".",",");
+ const files=FONTS_EST.filter(([k])=>fonts[k]).map(([k,icn,nom])=>`<div class="fest"><span>${ic(icn)}${nom} <span class="muted">${pc(fonts[k])} %</span></span><div class="bfe"><i style="width:${Math.round(fonts[k]*100/mx)}%"></i></div><b>${fonts[k]}</b></div>`).join("");
+ const NOMS=[["test","Tests"],["joc","Jocs"],["examen","Exàmens"],["oberta","Obertes"]];
+ const rit=NOMS.map(([k,n])=>{const r=ritme[k],v=r&&r.s>=120?(r.est*60/r.s).toFixed(1).replace(".",","):"—";return `<span class="pill neutre">${n}: <b>${v}</b> ⭐/min</span>`}).join(" ");
+ return `<div class="targeta" id="origens"><h2>${ic("estrella")}Estrelles per origen (tots els nens)</h2><p class="sub">${tot} estrelles amb origen conegut · el màxim de cada nen i món</p>${files}<p class="sub" style="margin-top:10px">Estrelles per minut: ${rit}</p></div>`}
 function vistaNens(c){const N=nens(LF());
- c.innerHTML=`<div class="targeta"><div class="eines-t"><label class="cerca">${ic("cerca")}<span class="sr">Cerca un nen</span><input id="qn" type="search" placeholder="Cerca un nen…" value="${esc(FN.q)}"></label><span class="esp"></span><span class="muted" id="nN"></span></div><div id="tNens"></div></div>`;
+ c.innerHTML=cartaOrigens(LF())+`<div class="targeta"><div class="eines-t"><label class="cerca">${ic("cerca")}<span class="sr">Cerca un nen</span><input id="qn" type="search" placeholder="Cerca un nen…" value="${esc(FN.q)}"></label><span class="esp"></span><span class="muted" id="nN"></span></div><div id="tNens"></div></div>`;
  const files=()=>{const q=FN.q.trim().toLowerCase();return N.filter(n=>!q||n.nom.toLowerCase().includes(q))};
  const rows=()=>files().map(n=>{const e=ESTATS[n.k+"#v"];return {k:n.k,nom:n.nom,ult:n.ult,temps:n.temps,est:Object.values(n.punts).reduce((a,b)=>a+b,0),nota:mitj(n.tests),tests:n.tests.length,pin:e===undefined?null:e,assigs:[...n.assigs]}});
  const cols=[{k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom)}<span>${esc(r.nom)}</span></button>${idDe(r.k)}</span>`},
