@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="39be72453c",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1365daad04",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -371,6 +371,9 @@ body.tremola main{animation:tremola .4s}
 @keyframes boing{30%{transform:scale(1.35) rotate(-6deg);background:#facc15;color:#422006}}
 .combo{position:fixed;left:50%;top:22%;z-index:91;pointer-events:none;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:clamp(20px,6vw,34px);color:#fb923c;text-shadow:3px 3px 0 #7c2d12,0 0 18px #fdba74;text-align:center;animation:combo 1.3s ease-out forwards;line-height:1.4}
 .combo small{display:block;font-size:.42em;color:#fde68a}
+.ratxa{display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-weight:800;color:#c2410c;white-space:nowrap}
+.ratxa i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e2e8f0}
+.ratxa i.on{background:#f97316}
 @keyframes combo{0%{transform:translateX(-50%) scale(.3);opacity:0}15%{transform:translateX(-50%) scale(1.15);opacity:1}30%{transform:translateX(-50%) scale(1)}80%{opacity:1}100%{transform:translateX(-50%) translateY(-40px);opacity:0}}
 .estrelles{margin-top:14px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
 .estrelles h4{margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;font-size:16px}
@@ -448,6 +451,7 @@ body.suau.tremola main,body.suau .chip.ko{animation:none!important}
 body.suau .arc .t1,body.suau .arc .t4,body.suau .arc .estr span,body.suau .arc.ko .cor{animation:none!important}
 body.suau .arc.sup .raigs,body.suau .arc.sup .orbita,body.suau .arc.sup .sstar,body.suau .arc.sup .sstar span::after{animation:none!important}
 body.suau .confeti,body.suau .vola,body.suau .espurna{display:none}
+body.suau .combo{animation:none!important}
 /* ---- examen de veritat ---- */
 .ex-opts{display:grid;gap:10px;margin:12px 0}
 .ex-opt{display:flex;gap:10px;align-items:center;border:2px solid var(--vora);border-radius:14px;padding:12px 14px;background:#fff;cursor:pointer;font-weight:800}
@@ -998,6 +1002,10 @@ function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO
  const premi=COMBO%10===0?2:COMBO%5===0?1:0;
  const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
  document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
+// com es guanyen les estrelles (una sola llista per a les dues targetes; issue #13)
+const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["🔥","combo ×5 +1 · ×10 +2"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +10"]];
+// barra de ratxa del test: 5 caselles fins al proper regal del combo
+function ratxaHtml(){const n=COMBO%5;return `<span class="ratxa" aria-label="Combo ×${COMBO}">${COMBO>=1?`🔥 ×${COMBO} `:""}${[0,1,2,3,4].map(i=>`<i class="${i<n?"on":""}"></i>`).join("")}</span>`}
 const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
 // el resum d'estrelles només surt quan toques el comptador de dalt a la dreta
 // ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
@@ -1046,7 +1054,7 @@ function cartaEstrelles(gran){
  const fila=(ic,nom,v)=>`<div class="font"><span class="ic2">${ic}</span><span>${nom}</span><div class="bf"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
  if(!gran){ // versió compacta de l'inici: 2 files
   const xips=FONTS.filter(([k])=>fo[k]).map(([k,ic,nom])=>`<span title="${nom}">${ic} ${fo[k]}</span>`).join("")+(abans?`<span title="D'abans">⏳ ${abans}</span>`:"");
-  return `<div class="estrelles mini2" role="button" tabindex="0" onclick="tancaEstrelles();vista('analitica')"><div class="f1"><b>⭐ ${S.punts} en aquest món</b><span class="xs">${xips||`<span>Fes el primer test! ✨</span>`}</span><small>→</small></div><div class="f2">✅ test +1 · 🎮 joc +1 · ✍️ idea +1 · 🔥 combo ×5 +1 · ×10 +2</div></div>`}
+  return `<div class="estrelles mini2" role="button" tabindex="0" onclick="tancaEstrelles();vista('analitica')"><div class="f1"><b>⭐ ${S.punts} en aquest món</b><span class="xs">${xips||`<span>Fes el primer test! ✨</span>`}</span><small>→</small></div><div class="f2">${COM_GUANYAR.map(([i,t])=>`${i} ${t}`).join(" · ")}</div></div>`}
  let h=`<div class="estrelles" ${gran?"":`onclick="vista('analitica')"`}><h4>⭐ On guanyes les estrelles <small>${S.punts} en aquest món${gran?"":" · toca per veure-ho tot"}</small></h4>`;
  h+=FONTS.filter(([k])=>gran||fo[k]).map(([k,ic,nom])=>fila(ic,nom,fo[k]||0)).join("")+(abans?fila("⏳","D'abans",abans):"");
  if(!S.punts)h+=`<p class="prog" style="margin:4px 0 0">Encara cap estrella. Fes el primer test i mira com volen! ✨</p>`;
@@ -1055,7 +1063,7 @@ function cartaEstrelles(gran){
   if(tt.length)h+=`<p style="margin:10px 0 2px"><b>Temes que més ⭐ t'han donat:</b></p>`+tt.map(t=>fila(t.ic,t.titol,S.ftema[t.id])).join("");
   if(jj.length)h+=`<p style="margin:10px 0 2px"><b>Jocs que més ⭐ t'han donat:</b></p>`+jj.map(j=>fila(j.ic,j.titol,S.fjoc[j.id])).join("");
  }
- h+=`<div class="com-guanyar"><span>✅ +1 per encert als tests</span><span>🎮 +1 per encert als jocs</span><span>✍️ +1 per idea a les obertes</span><span>🔥 combo ×5: +1 de regal</span><span>🔥 combo ×10: +2</span></div></div>`;
+ h+=`<div class="com-guanyar">${COM_GUANYAR.map(([i,t])=>`<span>${i} ${t}</span>`).join("")}</div></div>`;
  return h}
 // el «LEVEL UP» surt quan s'acaba el test o el joc (no a mitja pregunta)
 function mostraNivell(){if(SUPPEND)return mostraSuper();if(!NIVPEND)return;if(document.querySelector(".arc")){setTimeout(mostraNivell,400);return}
@@ -1464,7 +1472,7 @@ function test(ordre,k,bones,clau,pool,cb){
  const ops=barreja(q[1].map((o,i)=>[o,i]));
  // 💡 pista i 🛡️ escut del combo: només als tests dels temes i al repàs (els exàmens i els jocs, sense ajuda)
  const ajuda=esTema||clau==="repas",th=ajuda?(q.tid?T.find(t=>t.id===q.tid):tema):null;let pista=0;
- z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
+ z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}${clau==="examen"?"":ratxaHtml()}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
  ${potEscoltar()?`<div class="escolta-fila" style="margin:4px 0 -4px">${btEscolta(q[0]+". "+ops.map(([o],j)=>"ABC"[j]+": "+o).join(". "),"")}</div>`:""}<div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div>${ajuda&&th?`<div class="pista-fila"><button class="btn sec" id="pista" type="button">💡 Pista</button></div>`:""}<div id="fb"></div><p class="drecera-info">⌨️ <kbd>A</kbd>/<kbd>B</kbd>/<kbd>C</kbd> o <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> tria · <kbd>Enter</kbd> següent</p></div>`;
  TQ0=Date.now();
  const bp=document.getElementById("pista");
@@ -1804,6 +1812,17 @@ function bnProvaRepasPaga(){const s0=JSON.stringify({est:S.est||null,rep:S.rep||
   const fu=fusiona({est:{d:avui(),q:{},j:{},o:{},rn:4}},{est:{d:avui(),q:{},j:{},o:{},rn:7}});if(!fu.est||fu.est.rn!==7)return "fusiona() ha de quedar-se el màxim de rn";
   return true}finally{REPAS=false;FONT=fo;const b=JSON.parse(s0);if(b.est)S.est=b.est;else delete S.est;S.rep=b.rep;S.punts=b.p;S.fonts=b.f;S.ftema=b.ft;S.apresos=b.ap;NIVPEND=null;SUPPEND=0;desa()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaRepasPaga");
+// prova (issue #13): barra de ratxa al test, targeta amb totes les fonts d'estrelles i rètols quiets en mode suau
+function bnProvaTargeta(){const suau0=document.body.classList.contains('suau');try{aturaSeg();obre(0);pest='test';COMBO=7;pintaTema();
+  const r=document.querySelector('.ratxa');if(!r)return "no surt la barra de ratxa al test";
+  if(r.querySelectorAll('i.on').length!==2)return `amb ×7 hi ha d'haver 2 caselles enceses (n'hi ha ${r.querySelectorAll('i.on').length})`;
+  if(!/×7/.test(r.textContent))return "la barra no diu ×7";
+  const h=cartaEstrelles(true);for(const t of ["rècord +2","error corregit +1","missió +3","boss +10"])if(!h.includes(t))return `la targeta no explica «${t}»`;
+  if(!COM_GUANYAR.every(([i,t])=>h.includes(t)))return "la targeta no porta totes les fonts de COM_GUANYAR";
+  document.body.classList.add('suau');const d=document.createElement('div');d.className='combo';d.textContent='x';document.body.appendChild(d);
+  const an=getComputedStyle(d).animationName;d.remove();document.body.classList.remove('suau');if(an!=="none")return `amb efectes suaus, .combo encara s'anima (${an})`;
+  return true}finally{COMBO=0;aturaSeg();document.body.classList.toggle('suau',suau0);vista("inici")}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaTargeta");
 
 // ====================== 👾 BOSS DEL MÓN (Bona Nota 2.0) ======================
 // Repte final del món: s'obre quan has aprovat el 70 % dels temes o quan treus un 70 % o més en un examen (sorpresa o de veritat:
@@ -2006,7 +2025,7 @@ function repas(){iniciActivitat();
   document.getElementById("repSeg").onclick=()=>x.juga(its,oks=>{if(!REPAS)return;its.forEach((r,k)=>repMou(t+"|"+r.clau,{},!!oks[k]));const b=its.filter((r,k)=>oks[k]).length;missio("rep",its.length);R.b+=b;R.n+=its.length;R.ext.push(`${t}:${b}/${its.length}`);part(i+1)})};
  if(!pq.length)return part(0);
  const pool=pq.map(r=>{const t=T.find(x=>x.id===r.tid),q=cpQ(t.q.find(x=>x[0]===r.q));q.tema=t.titol;q.tid=t.id;q.capsa=r.c;return q});
- app.innerHTML=`${cap}<p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Si l'encertes, tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après (+2 ⭐)! 🧠</p><div id="zona"></div>`;
+ app.innerHTML=`${cap}<p class="prog" style="margin-top:-6px">Preguntes que vas fallar. Cada una que encertes avui: +1 ⭐. Tornarà d'aquí a uns dies; si l'encertes 3 vegades, ja l'has après (+2 ⭐)! 🧠</p><div id="zona"></div>`;
  test(pool.map((x,i)=>i),0,0,"repas",pool,(pc,b,n)=>{missio("rep",n);R.b+=b;R.n+=n;R.ult=ULT;ULT=null;part(0)});
 }
 function repFi(R){REPAS=false;const pc=R.n?Math.round(R.b*100/R.n):0,b=R.b,n=R.n;

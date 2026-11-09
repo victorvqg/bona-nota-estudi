@@ -121,15 +121,16 @@ Les estrelles premien **l'esforç i la constància**. No són una nota de coneix
 | Encert en un test o examen (cada pregunta, un cop al dia) | +1 |
 | Encert en un joc (només la primera partida del dia de cada joc) | +1 |
 | Idea clau trobada al text d'una oberta (cada pregunta, un cop al dia) | +1 |
-| Combo de 5 seguides | +1 |
+| Combo de 5 seguides (només compten les respostes que donen estrella) | +1 |
 | Combo de 10 seguides | +2 |
 | Millorar el rècord d'un tema | +2 |
-| Error après al repàs | +2 |
+| Error encertat al repàs (cada error, un cop al dia; màxim 10 al dia per món) | +1 |
+| Error après al repàs (encertat 3 cops en dies separats) | +2 |
 | Cada missió del dia | +3 |
 | Les 3 missions del dia | +5 més |
 | Guanyar el boss (un cop al dia) | +10 |
 
-No donen estrella les respostes amb pista ni les preguntes del repàs. Cada 50 estrelles, sumant tots els mons, surt una **superestrella**.
+No donen estrella les respostes amb pista. Les preguntes repetides el mateix dia no donen estrella ni fan pujar el combo. Cada 50 estrelles, sumant tots els mons, surt una **superestrella**.
 
 El nivell depèn de les estrelles de cada món:
 
