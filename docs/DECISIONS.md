@@ -21,3 +21,9 @@ Data: 2026-11-08
 Decisió: cap agent fa push directe a `main`. Treballa en una branca, la puja, obre un PR cap a `main` i, quan l'Action «Revisa Bona Nota» del PR surt en verd, el fusiona amb squash i esborra la branca.
 Motiu: abans l'AGENTS.md prohibia el push als agents, però a la pràctica es pujava directament a `main`. Amb el PR queda un registre de cada canvi i la revisió automàtica passa abans de publicar, sense que el Víctor hagi de fer res. Descartat: que el Víctor fusioni cada PR a mà (més lent i no ho vol).
 Com revertir-la: tornar la línia «Mai: push, merge, deploy…» a l'AGENTS.md i treure l'apartat «Pujar i publicar».
+
+## ADR-0003 · Versions de tres números amb CHANGELOG.md i etiquetes de git
+Data: 2026-11-09
+Decisió: el producte es numera `MAJOR.MENOR.PEDAÇ`. La primera entrada de `CHANGELOG.md` és la versió actual, la capçalera del README en repeteix el número i cada versió porta una etiqueta de git `vX.Y.Z`. Les versions 1.0.0 a 2.3.0 s'han assignat a posteriori a partir de l'historial; el 2 ve de «Bona Nota 2.0», com ja es deia als commits.
+Motiu: fins ara només hi havia empremtes automàtiques (`versio.json`, `VERSIO` de `sw.js`), que serveixen per refrescar les còpies dels mòbils però no diuen què ha canviat. Descartat: fer servir `versio.json` per al número (`tot.py` el reescriu a cada canvi) i un fitxer de versió a part (un lloc més per mantenir).
+Com revertir-la: esborrar `CHANGELOG.md`, la versió de la capçalera i l'apartat «Versions» del README, la regla de `docs/CONVENCIONS.md` i les etiquetes `v*`.
