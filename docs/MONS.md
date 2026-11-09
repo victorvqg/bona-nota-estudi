@@ -52,9 +52,9 @@ Després, aquí es comprova si se sap de veritat.
 - **🔍 Troba l'error:** un exercici resolt per un company amb una trampa. Cal tocar la línia dolenta i dir per què. A mates, també
   s'ha de tornar a escriure bé, i al final surt la llibreta corregida. Els errors van al repàs. N'hi ha a mates i al món del clima (climograma).
 - **Exàmens:** l'examen sorpresa (15 preguntes barrejades) i l'examen de veritat, amb nota sobre 10.
-- **Preguntes obertes:** el nen escriu la resposta, la compara amb la resposta model i marca les idees clau que ha posat.
-  El motor detecta sol les idees que ja hi són: per les paraules i també pels **números** (si la idea clau diu
-  «MCM = 144» i el nen ha escrit 144, compta).
+- **Preguntes obertes:** el nen escriu la resposta i el programa hi busca les idees clau: per les paraules i també pels **números**
+  (si la idea clau diu «MCM = 144» i el nen ha escrit 144, compta). Ha de ser una resposta de veritat: no es pot enganxar text ni copiar l'enunciat.
+  Un cop vista la resposta model, aquella pregunta queda 3 dies en pràctica i no puntua. [Com es posa la nota](AVALUACIO.md).
 - **🔊 Escolta:** llegeix en veu alta la fitxa o la pregunta.
 - **Mode suau:** treu les animacions fortes (també s'activa sol si l'aparell ho té demanat).
 - **⌨️ Amb teclat** (a l'ordinador): `1` `2` `3` o `A` `B` `C` trien l'opció, `P` demana la pista i `Enter` o `→` passen a la següent.

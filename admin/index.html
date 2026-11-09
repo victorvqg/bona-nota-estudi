@@ -392,7 +392,7 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.5.1";
+const VERSIO_ADMIN="2.6.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -510,7 +510,8 @@ function login(msg){$("#shell").hidden=true;const w=$("#loginWrap");w.hidden=fal
   <label for="pw">Contrasenya</label><div class="pw"><input type="password" id="pw" autocomplete="current-password" required>
    <button type="button" class="btn-ic" id="ullet" aria-label="Mostra la contrasenya" aria-pressed="false">${ic("ull")}</button></div>
   <div class="err" id="err" role="alert">${esc(msg||"")}</div>
-  <button class="btn ample" id="entra" type="submit">Entra</button></form></main>`;
+  <button class="btn ample" id="entra" type="submit">Entra</button>
+  <p class="muted" style="margin:14px 0 0;text-align:center;font-size:12px">versió ${esc(VERSIO_ADMIN)}</p></form></main>`;
  $("#em").focus();
  $("#ullet").onclick=()=>{const p=$("#pw"),v=p.type==="password";p.type=v?"text":"password";const b=$("#ullet");b.setAttribute("aria-pressed",v);b.setAttribute("aria-label",v?"Amaga la contrasenya":"Mostra la contrasenya");b.innerHTML=ic(v?"ullno":"ull")};
  $("#fl").onsubmit=async e=>{e.preventDefault();const em=$("#em").value.trim(),pw=$("#pw").value;
@@ -533,7 +534,7 @@ async function carrega(){
 
 // ====================== MENÚ, CAPÇALERA I FILTRES ======================
 const MENU=[["tauler","Tauler"],["nens","Nens"],["sessions","Sessions"],["log","Log complet"],["copies","Còpies de seguretat"]];
-const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
+const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["obertes","Obertes"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
 const PERIODES=[[1,"Avui"],[7,"7 dies"],[30,"30 dies"],[365,"Curs"]];
 function muntaShell(){
  $("#logoMenu").innerHTML=`${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span>`;$("#logoMobil").outerHTML=`<span style="display:inline-flex;align-items:center;gap:8px">${LOGO}Bona Nota · Admin</span>`;
@@ -593,7 +594,7 @@ function descriu(l){const d=l.detall||{};switch(l.event){
  case"examen":return `${d.joc==="examreal"?"Examen de veritat":d.joc==="examen"?"Examen sorpresa":"Examen de mates"}: ${d.nota!=null?`<b>${esc(String(d.nota).replace(".",","))}</b> sobre 10`:cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"oberta":if(d.mode==="control")return `Quadern · punts de control (${esc(d.tema||"")}): ${cpc(d.pc)} bé a la primera${d.pasos?` (${esc(d.pasos)})`:""}`;
    if(d.mode==="foto")return `Foto del quadern (${esc(d.tema||"")}): ${d.ok?(d.correcte?"tot correcte":"hi ha trobat un error"):`no s'ha pogut corregir (${esc(d.error||"?")})`}`;
-   return `Pregunta oberta (${esc(d.tema||"")}): ${cpc(d.pc)} de les idees clau${d.s?` · ${fmtT(d.s)}`:""}`;
+   return `Pregunta oberta (${esc(d.tema||"")})${d.mode==="practica"?" · pràctica":""}: ${cpc(d.pc)} de les idees clau${d.rebutjat?` · ${pl(d.rebutjat,"intent rebutjat","intents rebutjats")}`:""}${d.enganxat?` · ha intentat enganxar`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"valora":return `Valora <b>${esc(d.titol||d.tema)}</b>: ${esc(d.v)}`;
  case"temps":return `${fmtT(d.s)} estudiant`;
  default:return esc(JSON.stringify(d))}}
@@ -805,6 +806,7 @@ async function pintaTauler(){const tok=++TOK;
   ${targeta("notes","c-6","puja","Evolució de les notes","Cada punt és un test (o examen); una línia per nen",`<div class="cv"><canvas id="gEvo" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>`)}
   ${targeta("constancia","c-6","foc","Constància","Dies que ha estudiat en aquest període i ratxa actual de dies seguits",`<div id="tCst"></div>`)}
   ${targeta("motivacio","c-12","trofeu","Repàs, boss i missions","Errors apresos al repàs i intents de boss en aquest període. Les estrelles de missions són el total acumulat de cada nen.",`<div id="tMot"></div>`)}
+  ${targeta("obertes","c-12","llapis","Preguntes obertes: respostes sospitoses","Nens amb textos rebutjats (massa curts, sense sentit o copiats), intents d'enganxar text o que diuen haver posat idees que el programa no ha trobat. Es compta des de la versió 2.6.0.",`<div id="tObe"></div>`)}
   ${TF.nom?targeta("temps","c-12","rellotge",`En què passa el temps ${esc(TF.nom)}`,"Segons registrats per tipus d'activitat (dades del període)",`<div class="cv"><canvas id="gTip" aria-label="Gràfic del temps per tipus d'activitat" role="img"></canvas></div>`):""}
   ${targeta("domini","c-12","diana","Domini per tema","Per a cada assignatura: quants temes té aprovats cada nen (barra) i la millor nota de test a cada tema. Passa el ratolí per una nota per veure intents i última nota.",`<div id="tDom"></div>`)}
   ${targeta("fallades","c-12","creu","Preguntes més fallades","Top 20 per assignatura, amb l'opció equivocada que més trien (el «parany»). Compta des del 4-11-2026, quan es va començar a registrar cada pregunta.",`<div id="tFal"></div>`)}
@@ -813,7 +815,7 @@ async function pintaTauler(){const tok=++TOK;
  // cada apartat per separat: si un falla, la resta es veu igual i l'error surt escrit al seu lloc
  const prova=(id,f)=>{try{f()}catch(e){const el=$(id);if(el)(el.closest(".cv")||el).innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`);console.error(e)}};
  prova("#tAl",()=>tAlertes(alert));prova("#gAct",()=>gActivitat(act));prova("#tCal",()=>tCalor(calor));prova("#gEvo",()=>gEvolucio(evo));
- prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));prova("#tMot",()=>tMotivacio());if(TF.nom)prova("#gTip",()=>gTipus());
+ prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));prova("#tMot",()=>tMotivacio());prova("#tObe",()=>tObertes());if(TF.nom)prova("#gTip",()=>gTipus());
  tErrorsTaller();
 }
 function tAlertes(al){const e=$("#tAl");if(!al.length){e.innerHTML=buit("ok","Cap alerta. Tot en ordre.");return}
@@ -925,6 +927,12 @@ async function tErrorsTaller(){const el=$("#tErr");if(!el)return;const tok=TOK;
    {k:"codi",t:"Error",v:r=>TALLER_ERR[r.codi]||r.codi,h:r=>`<span title="${esc(r.codi)}">${esc(TALLER_ERR[r.codi]||r.codi)}</span>`},{k:"n",t:"Vegades",num:true,v:r=>+r.n||0,h:r=>mini(+r.n||0,mx)},{k:"nens",t:"Nens",num:true,v:r=>+r.nens||0}],ep,{k:"n",alta:true,etiqueta:"Errors del Taller de mates"})}
  catch(e){console.error(e);$("#tErr").innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
 // ---- Repàs, boss i missions: es calcula amb el registre que el tauler ja té (LF(): període i filtres actuals), sense cap funció nova a Supabase ----
+function tObertes(){const el=$("#tObe");if(!el)return;const m={},fila=l=>m[clauNen(l)]||(m[clauNen(l)]={nom:l.nom,fetes:0,rebutjat:0,enganxat:0,crec:0});
+ LF().forEach(l=>{const d=l.detall||{};if(l.event==="oberta"&&d.mode!=="control"&&d.mode!=="foto"){const f=fila(l);f.fetes++;f.rebutjat+=+d.rebutjat||0;f.enganxat+=+d.enganxat||0}
+  if(l.event==="valora"&&Array.isArray(d.crec))fila(l).crec+=d.crec.length});
+ const rows=Object.values(m).filter(r=>r.rebutjat||r.enganxat||r.crec);if(!rows.length){el.innerHTML=buit("ok","Cap resposta sospitosa en aquest període.");return}
+ const num=(k,t)=>({k,t,num:true,v:r=>r[k]});
+ el.innerHTML=taula("tObeT",[{k:"nom",t:"Nen",v:r=>r.nom},num("fetes","Obertes fetes"),num("rebutjat","Textos rebutjats"),num("enganxat","Intents d'enganxar"),num("crec","Idees que diu haver posat")],rows,{k:"rebutjat",etiqueta:"Respostes sospitoses per nen"})}
 function tMotivacio(){const el=$("#tMot");if(!el)return;const ls=LF(),m={};
  const fila=(k,nom)=>m[k]||(m[k]={nom,rep:0,apr:0,boss:0,guanyats:0,mis:0});
  ls.filter(l=>l.event==="joc").forEach(l=>{const d=l.detall||{};
@@ -1029,7 +1037,7 @@ function demoInit(){if(DEMO_L)return;const R=rndD(20261105),tria=a=>a[Math.floor
     if(R()<.12)ev("examen",{joc:R()<.5?"examen":"examreal",pc:Math.max(10,Math.min(100,Math.round(100*(n.hab+(R()-.5)*.3)))),s:ent(300,900)});
     if(R()<.3){const apr=R()<.6?ent(1,3):0;punts[as]+=apr*2;ev("joc",Object.assign({joc:"repas",titol:"Repàs dels errors",pc:ent(45,100),s:ent(60,240)},apr?{apr}:{},as==="divisibilitat"&&R()<.5?{ext:"mx:1/2"}:{}))}
     if(R()<.2){const guanya=R()<n.hab?1:0;if(guanya)punts[as]+=10;ev("joc",{joc:"boss",titol:"Boss del món",pc:guanya?100:ent(30,80),enc:ent(5,9),err:ent(0,3),guanya,cors:guanya?ent(1,3):0,hp:guanya?0:ent(2,8),s:ent(120,300)})}
-    if(R()<.15)ev("oberta",{tema:tema.t,pc:ent(40,100),s:ent(60,300)});
+    if(R()<.15){const dubtos=R()>n.hab;ev("oberta",Object.assign({tema:tema.t,pc:ent(40,100),s:ent(60,300)},dubtos?{rebutjat:ent(1,3)}:{},dubtos&&R()<.5?{enganxat:1}:{}))}
     if(R()<.2)ev("valora",{tema:tema.t,titol:tema.titol,v:tria(["Costa","Bé","Fàcil"])});
     ev("temps",{s:segs+ent(30,200),punts:punts[as],fonts:{temes:Math.round(punts[as]*.5),jocs:Math.round(punts[as]*.25),combo:Math.round(punts[as]*.05),record:Math.round(punts[as]*.05),repas:Math.round(punts[as]*.05),missio:Math.round(punts[as]*.05),boss:Math.round(punts[as]*.05)}})}}});
  DEMO_L=L.sort((a,b)=>a.ts.localeCompare(b.ts))}

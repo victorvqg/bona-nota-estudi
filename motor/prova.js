@@ -63,7 +63,7 @@ const {chromium}=require('playwright');
  if(r0<2||r1[0]!==0||r1[1]!==r0||!r1[2])errs.push(`repàs: abans ${r0}, després ${r1}`);
  console.log(`repàs: ${r0} errors → repassats, ara pendents ${r1[0]} (tornaran d'aquí a 3 dies)`);
  await p.evaluate(()=>{aturaSeg();joc('examen')});for(let k=0;k<15;k++){await p.locator('.opt').first().click();await p.click('#seg')}
- await p.evaluate(()=>{const a=document.querySelector('.arc');if(a)a.click();obertes(0)});await p.fill('#resp','Resposta de prova prou llarga per comprovar-ho tot.');await p.click('#veu');await p.check('.pk >> nth=0');await p.click('#nota');
+ await p.evaluate(()=>{const a=document.querySelector('.arc');if(a)a.click();obertes(0);document.getElementById('resp').value=OB[0].m.split(/\s+/).reverse().join(' ')});await p.click('#veu');await p.waitForSelector('#res b');
  await p.evaluate(()=>vista('analitica'));await p.screenshot({path:f.replace(/\.html$/,'_analitica.png'),fullPage:true});
  await p.evaluate(()=>vista('inici'));await p.screenshot({path:f.replace(/\.html$/,'_inici.png')});
  const nv=await p.evaluate(()=>[nivell(S.punts).n,window.NIVELLS_MOSTRATS||0]);if(nv[0]<2||nv[1]<1)errs.push('nivells: '+nv);
