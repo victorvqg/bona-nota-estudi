@@ -5,6 +5,12 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.8.2 · 2026-11-09
+
+### Arreglat
+- Un aparell amb el progrés vell ja no pot fer baixar les estrelles del núvol. En obrir un món on el nen ja era l'actiu, ara es baixa el progrés del núvol abans de desar-hi res, i el núvol no accepta un progrés amb menys estrelles que el que ja té (`supabase/bn_progres_no_baixa.sql`). Això feia que les estrelles d'un món no quadressin amb les del rànquing.
+- Les estrelles de cada test, joc, examen i pregunta oberta s'apunten al registre en el moment, i no només en tancar la pàgina. Així el rànquing no se'n perd cap si el navegador es tanca de cop.
+
 ## 2.8.1 · 2026-11-09
 
 ### Canviat

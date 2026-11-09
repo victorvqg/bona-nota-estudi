@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.8.1 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
+**Web:** https://bonanota.net · **Versió:** 2.8.2 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -106,7 +106,10 @@ Al `localStorage` hi ha `<clau>_perfils` (tots els noms d'aquell món), `<clau>_
 
 Cada canvi passa per `desa()`, que marca `S.mod`, guarda al dispositiu, repinta la capçalera i programa la pujada. La pujada s'agrupa: `nuvolProg()` espera 8 segons i crida la RPC `bn_progres_desa`. En tancar la pàgina, `pagehide` envia el que quedi amb `keepalive`.
 
-En entrar, `bn_progres_llegeix` baixa el núvol i `fusiona()` el combina amb el dispositiu **sense perdre mai res**:
+En entrar, i també en obrir un món on el nen ja era l'actiu, `bn_progres_llegeix` baixa el núvol i `fusiona()` el combina amb el dispositiu **sense perdre mai res**.
+Fins que aquesta baixada no ha anat bé (`NUV_LLEST`), `nuvolPuja()` no puja res: un aparell amb el progrés vell no pot trepitjar el del núvol.
+Si tot i així el núvol té més estrelles que el que arriba, `bn_progres_desa` no ho desa i retorna `-2`; l'app baixa, fusiona i torna a pujar (un sol cop).
+Els tests, jocs, exàmens i obertes registren també `punts` i `fonts`, de manera que el rànquing no perd estrelles si el navegador es tanca de cop.
 
 | Tipus de dada | Es queda |
 |---|---|
@@ -312,6 +315,7 @@ motor/
   prova.js                           Prova automàtica d'un món (Playwright)
   prova-generadors.js                Prova dels generadors del Taller de mates (sense navegador)
   prova-perfil.js                    Prova de la pàgina de perfil (Playwright, Supabase simulat)
+  prova-nuvol.js                     Prova de la sincronització d'un món amb el núvol (Playwright, Supabase simulat)
   local.py                           Servidor local que es posa al dia sol amb GitHub
 admin/                         Tauler d'administració
 supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol, aspecte del nen
@@ -407,6 +411,7 @@ A cada push, GitHub Actions (`.github/workflows/revisa.yml`) fa quatre coses:
 
 1. Torna a generar tots els mons i la portada. Si una pàgina pujada no coincideix (editada a mà o sense regenerar), falla i diu quins fitxers.
 2. Passa la prova dels generadors del Taller de mates (`motor/prova-generadors.js`).
+   I la del núvol d'un món (`motor/prova-nuvol.js`, Supabase simulat): un aparell vell no trepitja el progrés del núvol, sense connexió no puja res i el `-2` es resol sense bucles.
 3. Passa la prova de la pàgina de perfil (`motor/prova-perfil.js`): tries amb clic i teclat, desat al núvol, sense connexió i amb PIN incorrecte, Sorpresa i «Efectes suaus».
 4. Passa la prova de cada món en mode estricte: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i rànquing de la capçalera.
    També exigeix 8 preguntes per tema, i que la resposta correcta no sigui massa sovint (ni massa poc) la més llarga.

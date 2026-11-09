@@ -33,6 +33,8 @@ jobs:
           fi
       - name: Prova dels generadors del Taller de mates (càlculs, errors típics, Troba l'error)
         run: cd motor && node prova-generadors.js
+      - name: Prova del núvol d'un món (aparell vell, sense connexió, -2; amb Supabase simulat)
+        run: node motor/prova-nuvol.js
       - name: Prova de la pàgina de perfil (perfil/, amb Supabase simulat)
         run: node motor/prova-perfil.js
       - name: Prova dels orígens d'estrelles del tauler (admin/, funcions pures)

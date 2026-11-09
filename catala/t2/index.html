@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="163a2b249d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="bdc75ee4bc",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -571,7 +571,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.8.1</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.8.2</small></div>
 
 <script src="../../sprites.js?v=15744077"></script>
 <script>
@@ -954,8 +954,11 @@ function tancaActivitat(){const a=ACTV;ACTV=null;if(!a)return;const s=segs(a.t0)
 // estrelles guanyades a cada activitat (issue #13): iniciActivitat() en començar-la; detallLog() hi afegeix «est» en registrar-la
 let PACT=0;const EVENTS_EST=["test","joc","examen","oberta"];
 function iniciActivitat(){PACT=S.punts||0}
-function detallLog(event,detall){if(EVENTS_EST.includes(event)&&detall.est===undefined){detall.est=Math.max(0,(S.punts||0)-PACT);PACT=S.punts||0}return detall}
-function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO)return;detall=detallLog(event,retalla(detall||{}));if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
+// també hi posa «punts» (estrelles del món ara) i «fonts»: el rànquing surt del màxim de «punts» del registre, i si només els portés el
+// «temps» (que s'envia en tancar o amagar la pàgina) es perdrien les estrelles d'un joc si el navegador es tanca de cop (n2522)
+function detallLog(event,detall){if(!EVENTS_EST.includes(event))return detall;if(detall.est===undefined){detall.est=Math.max(0,(S.punts||0)-PACT);PACT=S.punts||0}
+ if(detall.punts===undefined)detall.punts=S.punts||0;if(detall.fonts===undefined)detall.fonts=S.fonts||{};return detall}
+function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO)return;detall=retalla(detallLog(event,detall||{}));if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
  try{fetch(BN_LOG.url,{method:"POST",keepalive:true,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json","Prefer":"return=minimal"},
   body:JSON.stringify({assig:ASSIG.id,nom:S.nom.slice(0,40),sessio:SESSIO,aparell:APARELL,event,detall:detall||{}})}).catch(()=>{})}catch(e){}}
 function buidaTemps(){tancaActivitat();if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
@@ -971,7 +974,7 @@ function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLower
 function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
  ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
 function apuntaNom(n){try{const l=JSON.parse(localStorage.getItem("bn_noms_aparell")||"[]")||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem("bn_noms_aparell",JSON.stringify(l))}}catch(e){}}
-function entra(nom){const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{h:new Date().getHours(),dw:new Date().getDay()||7,nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=APROVA).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
+function entra(nom){NUV_LLEST=false;const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{h:new Date().getHours(),dw:new Date().getDay()||7,nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=APROVA).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
@@ -1595,10 +1598,16 @@ let PIN_AJORNA=false;try{PIN_AJORNA=sessionStorage.getItem("bn_pin_ajorna")==="1
 function pins(){try{return JSON.parse(localStorage.getItem("bn_pins")||"{}")||{}}catch(e){return {}}}
 function pinDe(n){return pins()[(n||"").trim().toLowerCase()]||null}
 function desaPin(n,p){const x=pins();x[n.trim().toLowerCase()]=p;try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}
-let NUV_T=null,NUV_OK=null;
+// NUV_LLEST: ja s'ha baixat i fusionat el núvol en aquesta sessió. Fins llavors no es puja res: un aparell amb el progrés vell
+// (p. ex. 71 ⭐ quan el núvol en té 366) el desaria per sobre amb l'hora d'ara (n2522, docs/TRAMPES.md)
+let NUV_T=null,NUV_OK=null,NUV_LLEST=false;
 function nuvolProg(){if(!S.nom||!pinDe(S.nom)||/^file:/.test(location.protocol))return;clearTimeout(NUV_T);NUV_T=setTimeout(()=>nuvolPuja(),8000)}
-function nuvolPuja(keep){const p=pinDe(S.nom);if(!S.nom||!p||/^file:/.test(location.protocol))return Promise.resolve();clearTimeout(NUV_T);
+function nuvolPuja(keep,reintent){const p=pinDe(S.nom);if(!S.nom||!p||/^file:/.test(location.protocol))return Promise.resolve();clearTimeout(NUV_T);
+ // encara no s'ha baixat el núvol: primer es baixa i es fusiona (si falla, no es puja res). En tancar la pàgina no hi ha temps: no es puja
+ if(!NUV_LLEST){if(keep)return Promise.resolve();const n=S.nom;return nuvolBaixa(n,p).then(()=>{if(S.nom!==n)return;NUV_LLEST=true;return nuvolPuja()}).catch(()=>{})}
  return rpc("bn_progres_desa",{p_nom:S.nom,p_pin:p,p_assig:ASSIG.id,p_estat:S,p_mod:S.mod||Date.now()},keep).then(x=>{
+  // -2 = el núvol té més estrelles que aquest aparell (un altre hi ha avançat): no s'ha desat; es baixa, es fusiona i es torna a pujar, un sol cop
+  if(x===-2){if(reintent||keep)return;return nuvolBaixa(S.nom,p).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");return nuvolPuja(false,true)})}
   // -1 = l'admin ha esborrat el progrés i aquest dispositiu encara no ho sabia: no s'ha desat; es baixa el núvol, que buida el d'aquí
   if(x===-1)return nuvolBaixa(S.nom,p).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici")});NUV_OK=Date.now()}).catch(()=>{})}
 addEventListener("pagehide",()=>{if(NUV_T)nuvolPuja(true)});
@@ -1685,7 +1694,7 @@ function nouNom(n){if(!potNouNom(n)){const a=app.querySelector("#nomAvis");if(a)
   if(ex)pantallaPin(n,"entra",(ok,r)=>entra(n));
   else pantallaPin(n,"crea",()=>entra(n))}).catch(()=>entra(n))}
 // perfil d'aquest dispositiu: si té PIN, sincronitza; si no, carta per posar-n'hi
-function sincronitzaEntrada(modAbans){const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;rpc("bn_perfil_id",{p_nom:S.nom}).then(id=>{if(id&&S.id!==id){S.id=id;guarda();pintaCap();const h=document.querySelector(".hero h1");if(h&&!h.querySelector(".nid"))h.insertAdjacentHTML("beforeend",` <small class="nid" style="font-size:15px;color:var(--suau)">#${id}</small>`)}}).catch(()=>{});nuvolBaixa(S.nom,p).catch(m=>{if(m==="pin")throw m;return false}).then(nou=>rpc("bn_punts_maxim",{p_nom:S.nom,p_assig:ASSIG.id}).then(mx=>{if(mx>S.punts){S.punts=mx;S.mod=Date.now();guarda();pintaCap();return true}return nou}).catch(()=>nou)).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");nuvolPuja()}).catch(m=>{if(m==="pin"){const x=pins();delete x[S.nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}})}
+function sincronitzaEntrada(modAbans){const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;rpc("bn_perfil_id",{p_nom:S.nom}).then(id=>{if(id&&S.id!==id){S.id=id;guarda();pintaCap();const h=document.querySelector(".hero h1");if(h&&!h.querySelector(".nid"))h.insertAdjacentHTML("beforeend",` <small class="nid" style="font-size:15px;color:var(--suau)">#${id}</small>`)}}).catch(()=>{});const nm=S.nom;nuvolBaixa(S.nom,p).then(nou=>{if(S.nom===nm)NUV_LLEST=true;return nou}).catch(m=>{if(m==="pin")throw m;return false}).then(nou=>rpc("bn_punts_maxim",{p_nom:S.nom,p_assig:ASSIG.id}).then(mx=>{if(mx>S.punts){S.punts=mx;S.mod=Date.now();guarda();pintaCap();return true}return nou}).catch(()=>nou)).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");nuvolPuja()}).catch(m=>{if(m==="pin"){const x=pins();delete x[S.nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}})}
 function cartaPin(){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return "";
  if(!pinDe(S.nom))return "";
  if(pinDe(S.nom))return `<p class="prog" style="text-align:center;margin:10px 0 0">☁️ Progrés guardat al núvol amb PIN${NUV_OK?" · desat fa un moment":""}</p>`;
@@ -1777,7 +1786,7 @@ async function bnProvaFase1(){const espera=ms=>new Promise(r=>setTimeout(r,ms)),
 // prova (issue #13): cada activitat apunta al registre les estrelles que ha donat (detall.est)
 function bnProvaEstLog(){const p0=S.punts,f0=JSON.stringify({f:S.fonts||null,ft:S.ftema||null}),fo=FONT;
  try{iniciActivitat();FONT=["temes",T[0].id];suma(3);
-  const a=detallLog("test",{});if(a.est!==3)return `test: est=${a.est} i havia de ser 3`;
+  const a=detallLog("test",{});if(a.est!==3)return `test: est=${a.est} i havia de ser 3`;if(a.punts!==S.punts||!a.fonts||typeof a.fonts!=="object")return `test: ha de portar punts (${S.punts}) i fonts`;
   const b=detallLog("joc",{});if(b.est!==0)return `joc just després: est=${b.est} i havia de ser 0`;
   if("est" in detallLog("temps",{}))return "temps no ha de portar est";
   if(detallLog("oberta",{est:7}).est!==7)return "un est que ja hi és no s'ha de canviar";
@@ -2332,6 +2341,8 @@ pintaCap();pintaSo();
  let G="";try{G=localStorage.getItem("bn_jugador")||""}catch(e){}
  if(directe&&!S.nom){S=BUIT();S.nom=G||"Demo";pintaCap()}
  if(!directe&&G&&(pinDe(G)||SENSE_NUVOL())&&(!S.nom||S.nom.toLowerCase()!==G.toLowerCase())&&potNouNom(G)){entra(G);return}
+ // el nen ja era l'actiu d'aquest món: baixa i fusiona el núvol igualment (un altre aparell pot haver avançat) (n2522)
+ if(!directe&&S.nom)sincronitzaEntrada();
  carregaPuntsMons();
  if(S.nom&&jP){joc(jP);return}
  if(S.nom&&tP!==null&&T[+tP]){obre(+tP);return}
