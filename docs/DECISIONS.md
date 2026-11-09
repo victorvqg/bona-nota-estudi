@@ -27,3 +27,10 @@ Data: 2026-11-09
 Decisió: el producte es numera `MAJOR.MENOR.PEDAÇ`. La primera entrada de `CHANGELOG.md` és la versió actual, la capçalera del README en repeteix el número i cada versió porta una etiqueta de git `vX.Y.Z`. Les versions 1.0.0 a 2.3.0 s'han assignat a posteriori a partir de l'historial; el 2 ve de «Bona Nota 2.0», com ja es deia als commits.
 Motiu: fins ara només hi havia empremtes automàtiques (`versio.json`, `VERSIO` de `sw.js`), que serveixen per refrescar les còpies dels mòbils però no diuen què ha canviat. Descartat: fer servir `versio.json` per al número (`tot.py` el reescriu a cada canvi) i un fitxer de versió a part (un lloc més per mantenir).
 Com revertir-la: esborrar `CHANGELOG.md`, la versió de la capçalera i l'apartat «Versions» del README, la regla de `docs/CONVENCIONS.md` i les etiquetes `v*`.
+
+## ADR-0004 · L'aspecte del nen viu al seu perfil (`bn_priv.perfils`) i es llegeix amb `bn_aspectes()`
+Data: 2026-11-09
+Decisió: el que el nen tria a `/perfil/` (animal, perfil arcade i estil) es guarda a la columna `aspecte` de la seva fila de `bn_priv.perfils`, amb `bn_aspecte_desa(nom, pin, aspecte)` protegida pel PIN, i es llegeix per a tothom amb `bn_aspectes()`, pública. A l'aparell es cacheja al mapa `bn_aspectes` i, si la pujada falla, queda pendent i es reintenta.
+Motiu: l'aspecte l'han de veure tots els nens (rànquing) i tots els aparells del mateix nen, així que ha de ser al núvol i llegible sense PIN. Descartat: guardar-lo com a event de `bn_log` (és només d'inserció, té la llista d'events tancada per un `check` i ningú el pot llegir des del navegador) i guardar-lo només a l'aparell (els altres no el veurien i es perdria en canviar de mòbil). La lectura pública no exposa res que no surti ja al rànquing.
+Com revertir-la: treure la columna i les dues funcions (`supabase/bn_aspecte.sql`), la pàgina `perfil/`, `bn_aspectes` de `carregaHs()` i d'`avatar()` a la portada i al tauler, i `heroAv()`/`heroAsp()` de la plantilla; regenerar amb `python3 motor/tot.py`.
+

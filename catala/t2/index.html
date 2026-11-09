@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1dc2b2faff",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="fdced2602a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -117,6 +117,14 @@ h2.sec:first-child{margin-top:4px}
 /* hero */
 .hero{background:linear-gradient(135deg,#fff,#eff6ff);border-radius:22px;padding:20px 22px;box-shadow:var(--om);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 .hero .av{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:32px;flex:none}
+/* salutació amb el perfil arcade del nen (sprites.js + localStorage.bn_aspectes, que omple la portada): tocar-lo porta a /perfil/ */
+.hero a.av{position:relative;text-decoration:none;background:var(--av,#312e81);border:3px solid #fff;box-shadow:0 0 0 2px #1d1631,0 6px 16px #6366f155;overflow:visible}
+.hero .av .av-cl{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;background:repeating-conic-gradient(#1d16311a 0 25%,transparent 0 50%) 0 0/12px 12px,var(--av,#312e81)}
+.hero .av .av-cl svg{display:block;width:84%;height:auto;shape-rendering:crispEdges}
+.hero .av .av-sk{position:absolute;right:-9px;bottom:-7px;width:30px;height:30px;border-radius:9px;background:#1d1631;border:2px solid #facc15;display:grid;place-items:center;box-shadow:0 2px 6px #0006}
+.hero .av .av-sk svg{width:22px;height:auto;display:block;shape-rendering:crispEdges}
+.hero .asp{margin:2px 0 0;font-weight:900;font-size:13.5px;color:#4338ca}
+.hero .asp a{color:inherit;text-decoration:none;border-bottom:1.5px dotted #a5b4fc}
 .hero h1{margin:0;font-size:24px}
 .hero p{margin:2px 0 0;color:var(--suau)}
 .hero .stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
@@ -559,8 +567,9 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.6.1</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.7.0</small></div>
 
+<script src="../../sprites.js?v=15744077"></script>
 <script>
 const ASSIG={
  id:"catala",
@@ -1078,6 +1087,15 @@ function mostraSuper(){if(!SUPPEND)return mostraNivell();if(document.querySelect
  const d=document.createElement("div");d.className="arc sup";let orb="";for(let i=0;i<12;i++)orb+=`<i style="--a:${i*30}deg;--r:${i%2?46:38}vmin;animation-delay:${(i*.07).toFixed(2)}s"></i>`;
  d.innerHTML=`<div class="raigs"></div><div class="orbita">${orb}</div><div class="flash"></div><div class="t1">SUPER<br>ESTRELLA!</div><div class="sstar"><span></span></div><div class="t3">🌠 × ${n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}HAS ARRIBAT A<br>${n*SUPER} ⭐ ENTRE TOTS ELS MONS</div><div class="t4">PROPERA A ${(n+1)*SUPER} ⭐ · TOCA PER CONTINUAR</div>`;
  document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},5200)}
+// aspecte del nen (animal, perfil arcade i estil triats a /perfil/): el llegeix del mapa bn_aspectes de l'aparell, que omple la portada.
+// Si sprites.js no ha carregat (p. ex. obrint el fitxer en local), es queda l'emoji de sempre.
+function aspecteNen(){try{const m=JSON.parse(localStorage.getItem("bn_aspectes")||"{}")||{},a=m[S.nom.trim().toLowerCase()];return a&&typeof a==="object"?a:{}}catch(e){return {}}}
+function heroAv(){if(typeof bnSpr!=="function"||!S.nom)return `<div class="av">🧒</div>`;const a=aspecteNen();
+ let h=7;for(const c of S.nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;const an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length];
+ const sk=typeof bnSkillSpr==="function"&&BN_SKILLS[a.sk]?`<span class="av-sk">${bnSkillSpr(a.sk,a.v)}</span>`:"";
+ return `<a class="av" href="../../perfil/" title="Canvia el teu perfil" aria-label="El teu perfil: canvia l'animal i la insígnia" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${sk}</a>`}
+function heroAsp(){if(typeof bnSkillSpr!=="function")return "";const a=aspecteNen();if(!BN_SKILLS[a.sk])return `<p class="asp"><a href="../../perfil/">👾 Tria el teu perfil arcade</a></p>`;
+ return `<p class="asp">${BN_SKILL_INFO[a.sk].n} · ${BN_SKILL_ESTILS[BN_SKILL_VAR_PAL[a.v]?a.v:""]}</p>`}
 function pintaCap(){const nv=nivell(S.punts),tot=puntsTots(),sup=Math.floor(tot/SUPER);document.getElementById("punts").textContent=`⭐ ${tot}${sup?` · 🌠 ${sup}`:""} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · 🌠 ${sup} superestrelles (1 cada ${SUPER} ⭐) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom}${S.id?" · #"+S.id:""} · ${ASSIG.curs}`:ASSIG.curs}
 // temps d'estudi: cada 15 s amb la pestanya visible
 setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;TPEND+=15;guarda();if(TPEND>=300)buidaTemps()}},15000);
@@ -1356,7 +1374,7 @@ function inici(){
  marcaDia();
  const aprov=T.filter(t=>(millor(t.id)??0)>=APROVA).length, sp=seguentPendent();
  const res=resumGlobal();
- let h=`<div class="hero"><div class="av">🧒</div><div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}</h1><p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ let h=`<div class="hero">${heroAv()}<div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}</h1>${heroAsp()}<p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
  <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
  h+=cartaPin()+cartaRepas();
  // joc destacat (opcional): ASSIG.destacat = id del joc → botó gran a l'inici

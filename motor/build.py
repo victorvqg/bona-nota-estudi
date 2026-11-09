@@ -28,8 +28,11 @@ mons_js = "const MONS=" + json.dumps(mons, ensure_ascii=False) + ";"
 from qids import ids_mon
 _, qids, _p = ids_mon(d / "dades" / f"{assig}.js")
 mons_js += "\nconst QIDS=" + json.dumps(qids, separators=(",", ":")) + ";"
-html = plant.replace("/*DADES*/", dades, 1).replace("/*MONS*/", mons_js, 1).replace("{{TITOL}}", f"{nom}{tema} · {curs} | Bona Nota")
-assert "{{" not in html and "/*DADES*/" not in html and "/*MONS*/" not in html
+# sprites.js (els avatars de la salutació) amb «?v=<empremta>», la mateixa que tot.py posa a la portada
+import hashlib
+v_spr = hashlib.sha1((d.parent / "sprites.js").read_bytes()).hexdigest()[:8]
+html = plant.replace("/*DADES*/", dades, 1).replace("/*MONS*/", mons_js, 1).replace("{{TITOL}}", f"{nom}{tema} · {curs} | Bona Nota").replace("sprites.js?v=__SPR__", f"sprites.js?v={v_spr}")
+assert "{{" not in html and "/*DADES*/" not in html and "/*MONS*/" not in html and "__SPR__" not in html
 out = d.parent / (sys.argv[2] if len(sys.argv) > 2 else assig) / "index.html"
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(html)

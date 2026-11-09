@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.7.0 · 2026-11-09
+
+### Afegit
+- Pàgina de perfil (`bonanota.net/perfil/`, «PLAYER SELECT»): cada nen tria el seu animal, el seu perfil arcade (50 insígnies de pixel art) i l'estil de color (Clàssic, 🔥 Ofensiva, ❄️ Tàctica), amb animacions, so i el botó «Sorpresa». S'hi arriba des de la salutació de la portada i tocant l'avatar de la salutació de cada món.
+- La tria es veu al rànquing (podi i files), a la portada, a la salutació dels mons i al tauler d'admin, i es guarda al perfil del nen a Supabase (SQL nou: `supabase/bn_aspecte.sql`). Sense connexió queda guardada a l'aparell i es puja sola després.
+
+### Canviat
+- `sprites.js` incorpora els 50 perfils arcade (`BN_SKILLS`) amb els seus noms, categories i paletes d'estil.
+- Qui no ha triat res es veu exactament com abans (animal calculat pel nom, sense insígnia).
+
 ## 2.6.1 · 2026-11-09
 
 ### Canviat

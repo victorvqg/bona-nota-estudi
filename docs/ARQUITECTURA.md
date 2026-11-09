@@ -6,6 +6,7 @@ Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el deta
 - `index.html`, `CNAME`, `sprites.js`, `manifest.webmanifest`, `sw.js`.
 - Publicat al domini `bonanota.net` (fitxer `CNAME`). `www.bonanota.net` i l'adreça antiga de GitHub Pages hi redirigeixen.
 - Punt d'entrada de l'alumne (identificació amb nom + PIN `4 números + 1 lletra`), targetes dels 6 mons (bloc marcat amb `<!-- MONS:INICI -->` / `<!-- MONS:FI -->` generat per `motor/tot.py`) i rànquing en temps real connectat a Supabase (Estrelles, Temps, Nivell, Setmana i Remuntada).
+- `perfil/index.html`: pàgina de perfil («PLAYER SELECT») on el nen tria l'aspecte (animal, perfil arcade de `BN_SKILLS` i estil). Es guarda a l'aparell (`bn_aspectes`) i al perfil del nen a Supabase; el rànquing, la portada, els mons i el tauler el mostren.
 
 ## Motor i plantilla dels mons
 - `motor/plantilla-estudi-interactiu.html`: motor únic compartit per tots els mons (fitxes, targetes, tests amb pistes i escut del combo, missions d'avui, Boss del món, jocs, repàs espaiat `BN_REP_TIPUS`, exàmens, preguntes obertes, estrelles i sincronització al núvol).
@@ -25,7 +26,8 @@ Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el deta
 ## Proves (`motor/`)
 - `motor/prova-generadors.js`: valida 10.800 exercicis generats del Taller de mates (càlculs, distractors i Troba l'error) sense navegador.
 - `motor/prova.js`: prova E2E amb Playwright en mode `ESTRICTE=1` per a cada món.
+- `motor/prova-perfil.js`: prova E2E de la pàgina de perfil amb un servidor local i Supabase simulat.
 
 ## Panell d'administració (`bonanota.net/admin`) i Supabase
 - `admin/index.html` i `admin/preguntes.json`: backend d'administració a `bonanota.net/admin` (tauler d'activitat, domini plegable per món, preguntes més fallades plegables per món, gestió de nens/PINs i còpies de seguretat).
-- `supabase/*.sql` i `supabase/functions/bn-corregeix/`: esquema, RPCs (`bn_admin_*`, `bn_ranking_remuntada`, etc.) i Edge Function del projecte Supabase `bonanota` (`agippwtqvhpxdockuigl`).
+- `supabase/*.sql` i `supabase/functions/bn-corregeix/`: esquema, RPCs (`bn_admin_*`, `bn_ranking_remuntada`, `bn_aspecte_desa`, `bn_aspectes`, etc.) i Edge Function del projecte Supabase `bonanota` (`agippwtqvhpxdockuigl`).

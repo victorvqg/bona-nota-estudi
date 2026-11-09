@@ -167,6 +167,9 @@ tr.det td{background:var(--card2)}
 .av{position:relative;display:inline-block;flex:none;width:30px;height:30px;border-radius:50%;background:var(--av,#64748b);box-shadow:0 0 0 1px rgba(15,23,42,.18)}
 .av-cl{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;background:repeating-conic-gradient(#1d16311a 0 25%,transparent 0 50%) 0 0/8px 8px,var(--av,#64748b)}
 .av-cl .spr{display:block;width:84%;height:auto;shape-rendering:crispEdges}
+/* insígnia del perfil arcade que el nen ha triat a /perfil/ (bn_aspectes), a la cantonada del cercle */
+.av .av-sk{position:absolute;right:-6px;bottom:-4px;width:16px;height:16px;border-radius:5px;background:#1d1631;border:1px solid #facc15;display:grid;place-items:center;z-index:1}
+.av .av-sk .spr{width:11px;display:block;shape-rendering:crispEdges}
 .av.g{width:68px;height:68px}.av.g .av-cl{background-size:14px 14px}
 .av.p{width:22px;height:22px}
 .nen{display:inline-flex;align-items:center;gap:10px;font-weight:600;min-width:0}
@@ -353,7 +356,7 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
-<script src="../sprites.js?v=ece90a43"></script>
+<script src="../sprites.js?v=15744077"></script>
 </head>
 <body>
 <a class="salta" href="#contingut">Salta al contingut</a>
@@ -392,7 +395,7 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.6.1";
+const VERSIO_ADMIN="2.7.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -479,10 +482,15 @@ const nomAssig=a=>ASSIGS[a]||a;
 const colAssig=a=>{try{if(typeof BN_MON!=="undefined"&&BN_MON[a])return bnMat(BN_MON[a].mat).color}catch(e){}return "#94a3b8"};
 const xipAssig=a=>`<span class="xa"><i style="background:${colAssig(a)}"></i>${esc(nomAssig(a))}</span>`;
 const xipEv=e=>`<span class="ev ev-${esc(e)}">${esc(e)}</span>`;
-// avatar: el mateix animal i el mateix color que al rànquing (sprites.js; si no s'ha pogut carregar, un cercle amb la inicial)
+// avatar: el mateix animal i el mateix color que al rànquing (sprites.js; si no s'ha pogut carregar, un cercle amb la inicial).
+// Si el nen ha triat aspecte a /perfil/ (ASPECTES, de bn_aspectes()), surt el seu animal i la seva insígnia.
+let ASPECTES={};
 function avatar(nom,cls){const k=String(nom||"").trim().toLowerCase();let h=7;for(const c of k)h=(h*31+c.charCodeAt(0))>>>0;
  if(typeof BN_AV==="undefined")return `<span class="av${cls?" "+cls:""}" aria-hidden="true" style="--av:#64748b;display:inline-grid;place-items:center;color:#fff;font-weight:700;font-size:12px">${esc(k.charAt(0).toUpperCase())}</span>`;
- const an=BN_AV[h%BN_AV.length];return `<span class="av${cls?" "+cls:""}" aria-hidden="true" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span></span>`}
+ const a=ASPECTES[k]||{},an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length],sk=typeof bnSkillSpr==="function"&&BN_SKILLS[a.sk]?`<span class="av-sk" title="Perfil: ${esc(BN_SKILL_INFO[a.sk].n)}">${bnSkillSpr(a.sk,a.v)}</span>`:"";
+ return `<span class="av${cls?" "+cls:""}" aria-hidden="true" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${sk}</span>`}
+// aspectes de tots els nens (lectura pública, la mateixa que fa el rànquing); si falla, es queden els animals calculats pel nom
+async function carregaAspectes(){try{const r=await fetch(API.replace("bn_admin_logs","bn_aspectes"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:"{}"});if(!r.ok)return;const m={};(await r.json()).forEach(x=>{if(x&&x.nom&&x.aspecte&&typeof x.aspecte==="object")m[x.nom.trim().toLowerCase()]=x.aspecte});ASPECTES=m}catch(e){}}
 const nenH=nom=>`<span class="nen">${avatar(nom)}<span>${esc(nom)}</span></span>`;
 
 // ====================== PECES COMUNES: avisos, buit, esquelets, diàlegs ======================
@@ -527,7 +535,7 @@ async function carrega(){
  if(DEMO){await preguntes();demoInit();LOGS=demoLogsDies(DIES);IDS=demoIds();mostraApp();ACT=new Date();pinta();return true}
  try{const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:DIES})});
   if(!r.ok){CRED=null;sessionStorage.removeItem("bn_admin");login(r.status===404?"El panell encara no està activat a la base de dades.":"Correu o contrasenya incorrectes.");return false}
-  LOGS=await r.json();try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});IDS={};if(ri.ok)(await ri.json()).forEach(x=>IDS[x.k]=x.id)}catch(e){}
+  LOGS=await r.json();await carregaAspectes();try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});IDS={};if(ri.ok)(await ri.json()).forEach(x=>IDS[x.k]=x.id)}catch(e){}
   mostraApp();ACT=new Date();pinta();return true;
  }catch(e){login("No hi ha connexió. Torna-ho a provar.");return false}
 }
