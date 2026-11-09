@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f4e9d5c5c4",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a4af5c52e0",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -277,7 +277,6 @@ table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middl
 .valoracio h3{margin:0 0 6px}
 .llista-err li{margin:6px 0}
 .peu-pag{text-align:center;color:#94a3b8;font-size:13px;margin:26px 0 8px}
-.peu-pag.versio{margin-top:0}
 .confeti{position:fixed;top:-20px;font-size:22px;z-index:60;pointer-events:none;animation:cau 1.8s linear forwards}
 @keyframes cau{to{transform:translateY(105vh) rotate(540deg);opacity:.2}}
 
@@ -561,8 +560,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag" id="peu"></div>
-<div class="peu-pag versio"><small class="bn-versio">versión 2.4.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versión 2.4.0</small></div>
 
 <script>
 const ASSIG={
@@ -902,7 +900,7 @@ const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciènc
 const QIDS={"texto":[1,2,3,4,5,6,7,8],"tipos":[1,2,3,4,5,6,7,8],"sustantivo":[1,2,3,4,5,6,7,8],"genero":[1,2,3,4,5,6,7,8],"diccionario":[1,2,3,4,5,6,7,8],"puntuacion":[1,2,3,4,5,6,7,8],"noticia":[1,2,3,4,5,6,7,8],"fake":[1,2,3,4,5,6,7,8],"lirica":[1,2,3,4,5,6,7,8],"narrativa":[1,2,3,4,5,6,7,8],"articulos":[1,2,3,4,5,6,7,8],"demostrativos":[1,2,3,4,5,6,7,8],"cuantificadores":[1,2,3,4,5,6,7,8],"polisemia":[1,2,3,4,5,6,7,8],"letrab":[1,2,3,4,5,6,7,8]};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
-document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
+document.getElementById("logoic").textContent=ASSIG.ic;
 
 // ====================== ESTAT ======================
 const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null,fonts:{},ftema:{},fjoc:{}});

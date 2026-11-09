@@ -10,6 +10,9 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 ### Afegit
 - 🏷️ El número de versió surt al peu de la portada i de cada món.
 
+### Canviat
+- El peu dels mons ja no mostra la línia amb el llibre i el tema.
+
 ### Corregit
 - 📷 La funció que corregeix la foto del quadern accepta peticions des de bonanota.net.
 
