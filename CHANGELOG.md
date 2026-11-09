@@ -5,6 +5,17 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.5.0 · 2026-11-09
+
+### Afegit
+- Tauler d'admin: apartat «Repàs, boss i missions», amb errors apresos, repassos, intents i victòries de boss i estrelles de missions per nen.
+- La capçalera del tauler mostra el número de versió.
+
+### Corregit
+- Tauler: les estrelles de boss, missions, repàs i rècords ja no surten com «D'abans (sense detall)».
+- Tauler: l'examen de mates surt amb la seva nota, en lloc de «undefined%» i d'un «Millor examen» sense número.
+- Tauler: les sessions expliquen el resultat del boss, els errors apresos al repàs i les pistes.
+
 ## 2.4.0 · 2026-11-09
 
 ### Afegit
