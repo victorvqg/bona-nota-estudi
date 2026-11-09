@@ -23,7 +23,7 @@ Després, aquí es comprova si se sap de veritat.
 
 - **Entrar:** a la portada, el nen escriu el seu **nom i un PIN** i de seguida **tria el món**. Dins dels mons ja no
   li torna a demanar res. Amb el PIN, el progrés es desa al núvol i el pot recuperar des d'un altre aparell.
-  En un mateix aparell hi poden entrar com a màxim 2 noms. «No ets tu?» (a la portada) o «Canviar d'usuari» (dins d'un món) canvien de nen.
+  En un mateix aparell hi poden entrar com a màxim 2 noms. Per canviar de nen, «No ets tu?», a la portada.
 - **El PIN:** **4 números i 1 lletra al final** (per exemple `4587R`). Es pot escriure com es vulgui: sempre surt en
   majúscules, i al principi només deixa posar números. El PIN d'exemple no es pot fer servir.
 - **🛡️ Actualització de seguretat:** qui encara té el PIN antic (només 4 números) pot entrar igual, però tot seguit

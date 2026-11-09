@@ -3,7 +3,7 @@
 Data: 2026-11-09
 
 ## Què funciona
-- **Versió actual: 2.6.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.6.1** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **6 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`).
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 5 pestanyes (`punts`, `temps`, `nivell`, `setmana`, `remuntada`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -25,7 +25,8 @@ Data: 2026-11-09
   - Arreglat: els errors de «Troba l'error» de mates tornen a entrar al repàs espaiat (la prova estricta de Divisibilitat tornava a fallar).
 
 ## En curs
-- Branca `obertes-valida` (sobre `text-portada`): validació de les preguntes obertes, fase 1. La fase 2, correcció amb IA, queda per decidir quan hi hagi dades del tauler.
+- Branca `treu-canvi-usuari`: «Canviar d'usuari» només a la portada. Pendent de pujar i fusionar.
+- Preguntes obertes: la fase 2, correcció amb IA, queda per decidir quan hi hagi dades del tauler.
 
 ## Pendent
 - `motor/jocs_generics.js` no el carrega ningú i ja no coincideix amb la plantilla, que és on viuen els jocs genèrics. Cal decidir si s'esborra.
