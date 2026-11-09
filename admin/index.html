@@ -611,10 +611,10 @@ function descriu(l){const d=l.detall||{};switch(l.event){
 function afegeixFonts(dest,l){const d=l.detall||{};if(d.fonts==null&&d.punts==null)return;const x=dest[l.assig]||(dest[l.assig]={f:{},p:0});
  if(d.punts!=null)x.p=Math.max(x.p,+d.punts||0);
  if(d.fonts&&typeof d.fonts==="object")Object.entries(d.fonts).forEach(([k,v])=>{if(typeof v==="number")x.f[k]=Math.max(x.f[k]||0,v)})}
-// fonts de tots els nens (sumant el màxim de cada nen i món) i ritme: estrelles i segons de cada activitat que porta «est»
+// fonts de tots els nens (sumant el màxim de cada nen i món) i ritme: estrelles i segons de cada activitat que porta «est» i «s»
 function resumFonts(ls){const per={},fonts={},ritme={};
  ls.forEach(l=>{const k=(l.nom||"").trim().toLowerCase();afegeixFonts(per[k]||(per[k]={}),l);const d=l.detall||{};
-  if(["test","joc","examen","oberta"].includes(l.event)&&typeof d.est==="number"){const r=ritme[l.event]||(ritme[l.event]={est:0,s:0});r.est+=d.est;r.s+=+d.s||0}});
+  if(["test","joc","examen","oberta"].includes(l.event)&&typeof d.est==="number"&&typeof d.s==="number"&&d.s>0){const r=ritme[l.event]||(ritme[l.event]={est:0,s:0});r.est+=d.est;r.s+=d.s}});
  Object.values(per).forEach(p=>Object.values(p).forEach(x=>Object.entries(x.f).forEach(([f,v])=>{fonts[f]=(fonts[f]||0)+v})));
  return {fonts,ritme}}
 // [/estrelles-pures]

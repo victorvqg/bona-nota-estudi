@@ -32,5 +32,9 @@ eq(r.ritme.test, { est: 5, s: 60 }, 'ritme dels tests');
 eq(r.ritme.joc, { est: 3, s: 30 }, 'ritme dels jocs');
 eq('temps' in r.ritme, false, 'temps no és una activitat');
 
+// un registre amb est però sense segons (examen del Taller, repàs només d'eines) no ha d'inflar les estrelles per minut
+const r2 = resumFonts([L('Anna', 'matematiques', 'examen', { est: 4 }), L('Anna', 'matematiques', 'examen', { est: 2, s: 130 })]);
+eq(r2.ritme.examen, { est: 2, s: 130 }, 'est sense segons fora del ritme');
+
 if (errs.length) { console.error('prova-admin-fonts: ' + errs.join(' · ')); process.exit(1); }
 console.log('prova-admin-fonts: ok');

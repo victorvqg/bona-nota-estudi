@@ -1043,7 +1043,7 @@ function test(ordre,k,bones,clau,pool,cb){
  const ops=barreja(q[1].map((o,i)=>[o,i]));
  // 💡 pista i 🛡️ escut del combo: només als tests dels temes i al repàs (els exàmens i els jocs, sense ajuda)
  const ajuda=esTema||clau==="repas",th=ajuda?(q.tid?T.find(t=>t.id===q.tid):tema):null;let pista=0;
- z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}${clau==="examen"?"":ratxaHtml()}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
+ z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}${clau==="examen"||clau==="repas"?"":ratxaHtml()}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
  ${potEscoltar()?`<div class="escolta-fila" style="margin:4px 0 -4px">${btEscolta(q[0]+". "+ops.map(([o],j)=>"ABC"[j]+": "+o).join(". "),"")}</div>`:""}<div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div>${ajuda&&th?`<div class="pista-fila"><button class="btn sec" id="pista" type="button">💡 Pista</button></div>`:""}<div id="fb"></div><p class="drecera-info">⌨️ <kbd>A</kbd>/<kbd>B</kbd>/<kbd>C</kbd> o <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> tria · <kbd>Enter</kbd> següent</p></div>`;
  TQ0=Date.now();
  const bp=document.getElementById("pista");
@@ -1388,6 +1388,7 @@ function bnProvaTargeta(){const suau0=document.body.classList.contains('suau');t
   const r=document.querySelector('.ratxa');if(!r)return "no surt la barra de ratxa al test";
   if(r.querySelectorAll('i.on').length!==2)return `amb ×7 hi ha d'haver 2 caselles enceses (n'hi ha ${r.querySelectorAll('i.on').length})`;
   if(!/×7/.test(r.textContent))return "la barra no diu ×7";
+  {const pool=[cpQ(T[0].q[0])];pool[0].tid=T[0].id;REPAS=true;app.innerHTML='<div id="zona"></div>';test([0],0,0,"repas",pool,()=>{});const hiEs=!!document.querySelector('#zona .ratxa');REPAS=false;if(hiEs)return "al repàs no hi ha d'haver barra de ratxa (el combo no hi puja)"}
   const h=cartaEstrelles(true);for(const t of ["rècord +2","error corregit +1","missió +3","boss +10"])if(!h.includes(t))return `la targeta no explica «${t}»`;
   if(!COM_GUANYAR.every(([i,t])=>h.includes(t)))return "la targeta no porta totes les fonts de COM_GUANYAR";
   document.body.classList.add('suau');const d=document.createElement('div');d.className='combo';d.textContent='x';document.body.appendChild(d);
