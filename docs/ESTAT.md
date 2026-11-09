@@ -3,7 +3,7 @@
 Data: 2026-11-09
 
 ## Què funciona
-- **Versió actual: 2.4.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món.
+- **Versió actual: 2.5.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **6 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`).
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 5 pestanyes (`punts`, `temps`, `nivell`, `setmana`, `remuntada`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -25,7 +25,7 @@ Data: 2026-11-09
   - Arreglat: els errors de «Troba l'error» de mates tornen a entrar al repàs espaiat (la prova estricta de Divisibilitat tornava a fallar).
 
 ## En curs
-- Branca `readme-tecnic`: README tècnic, centrat en el motor, i els mons a `docs/MONS.md`. Pendent de pujar i fusionar.
+- Branca `tauler-joc`: el tauler d'admin al dia amb el boss, les missions, el repàs i l'examen de mates. Pendent de pujar i fusionar.
 
 ## Pendent
 - `motor/jocs_generics.js` no el carrega ningú i ja no coincideix amb la plantilla, que és on viuen els jocs genèrics. Cal decidir si s'esborra.

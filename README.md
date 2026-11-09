@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.4.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md)
+**Web:** https://bonanota.net · **Versió:** 2.5.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -62,7 +62,7 @@ El títol i l'id es llegeixen amb expressions regulars: `id:"…"`, `nom:"…"` 
 | 2 | Compta temes i jocs avaluant les dades amb Node |
 | 3 | A `index.html`: reescriu les targetes (`MONS:inici..fi`), copia `so-mobil.js` i `actualitza.js` entre les seves marques i posa `sprites.js?v=<empremta>` |
 | 3b | Escriu `admin/preguntes.json` (id → text, opcions, correcta, tema) |
-| 3c | Llegeix la primera entrada de `CHANGELOG.md` i posa el número al peu de la portada i de cada món |
+| 3c | Llegeix la primera entrada de `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera del tauler (`VERSIO_ADMIN`) |
 | 4 | Calcula una empremta del contingut i la posa a cada pàgina (`VER`), a `versio.json` i a `sw.js` |
 
 L'empremta es calcula amb el buit `__BN_VERSIO__` encara sense omplir, perquè no depengui d'ella mateixa. Si `tot.py` es torna a executar sense canvis, el resultat és idèntic: la revisió automàtica ho aprofita per detectar pàgines editades a mà.
@@ -330,8 +330,8 @@ Cap dada nova del nen: només el nom de sempre. El camp `detall` de cada registr
 | `fitxa` | tema, `s` (segons llegint-la), `fi` (1 si ha arribat al final) — s'envia en sortir |
 | `targetes` | tema, `s`, `vistes` de `n`, `girs`, `fi` — s'envia en sortir |
 | `test` | tema, `pc`, `mode` (tema · repas), `s` total, `q`: una entrada per pregunta, i `pistes` (preguntes amb pista, si n'hi ha) |
-| `examen` | `joc` (examen · examreal), `pc`, `mode` (sorpresa · real · real-temps), `s`, `temes` i `q` |
-| `joc` | `joc`, `pc`, `s`, `enc`, `err`; el MAPA també `mode` i `f` (comarques fallades). El repàs (`joc: "repas"`) també porta `apr` (errors apresos en aquella sessió) i `ext` (p. ex. `mx:1/2,mapa:2/3`: errors del Taller i del MAPA recordats) |
+| `examen` | `joc` (examen · examreal), `pc`, `mode` (sorpresa · real · real-temps), `s`, `temes` i `q`. L'examen de mates porta `nota` sobre 10 en lloc de `pc`, i `nivell` i `ep` |
+| `joc` | `joc`, `pc`, `s`, `enc`, `err`; el MAPA també `mode` i `f` (comarques fallades). El boss (`joc: "boss"`) també porta `guanya`, `cors`, `hp` i `q`. El repàs (`joc: "repas"`) també porta `apr` (errors apresos en aquella sessió) i `ext` (p. ex. `mx:1/2,mapa:2/3`: errors del Taller i del MAPA recordats) |
 | `oberta` | número, tema, `pc`, `s`, `idees`/`de`, `det` (detectades al text), `falten` (punts clau no marcats) |
 
 Cada pregunta contestada va a `q` com un text curt **`tema/núm:encert:segons:opció`**, per exemple
@@ -351,6 +351,7 @@ fallades amb el parany més triat i, filtrant per un nen, en què passa el temps
 del servidor amb les funcions de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`,
 `_domini`, `_fallades`, `_evolucio`, `_alertes`), que demanen el correu i la contrasenya d'admin.
 El domini per tema i les preguntes més fallades surten plegats per món.
+L'apartat **Repàs, boss i missions** (`tMotivacio()`) no necessita cap funció a Supabase: es calcula al navegador amb el registre que el tauler ja ha carregat i respecta el període i els filtres. Les missions no es registren una per una: la xifra surt de `fonts.missio`, el total d'estrelles de missions de cada nen.
 L'apartat **✏️ Taller de mates: on s'equivoquen** (exercici · pas · error · vegades · nens) surt de `bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql` (s'executa una vegada, després de `bn_admin_tauler.sql`), i llegeix el camp `ep` (`"exercici|pas|error"`, un per cada resposta fallada) que el Taller afegeix als events `joc` i `examen`.
 
 **Fitxa de cada nen** (`admin/`, pestanya 👤 Nens → toca un nom): canviar el nom, amagar-lo del rànquing, treure el PIN i:
@@ -501,7 +502,7 @@ Si un canvi només toca documentació o proves, la versió no puja.
 
 1. Al mateix PR del canvi, afegeix l'entrada nova a dalt de tot de `CHANGELOG.md` (número, data i apartats Afegit, Canviat o Corregit).
 2. Canvia el número a la capçalera d'aquest README.
-3. Executa `python3 motor/tot.py`: llegeix la primera entrada del `CHANGELOG.md` i posa el número al peu de la portada i de cada món.
+3. Executa `python3 motor/tot.py`: llegeix la primera entrada del `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera del tauler.
 4. Quan el PR estigui fusionat, posa l'etiqueta al commit de `main`:
 
 ```
@@ -512,7 +513,7 @@ git push origin v2.4.0
 ```
 
 > `versio.json` i el `VERSIO` de `sw.js` no són aquest número. Són empremtes que genera `motor/tot.py` a cada canvi perquè els mòbils
-> es posin al dia. El `VERSIO_ADMIN` del tauler és una etiqueta de data que es canvia a mà.
+> es posin al dia.
 
 ---
 

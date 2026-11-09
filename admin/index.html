@@ -392,7 +392,7 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="5-11 17:00";
+const VERSIO_ADMIN="2.5.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -533,7 +533,7 @@ async function carrega(){
 
 // ====================== MENÚ, CAPÇALERA I FILTRES ======================
 const MENU=[["tauler","Tauler"],["nens","Nens"],["sessions","Sessions"],["log","Log complet"],["copies","Còpies de seguretat"]];
-const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
+const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
 const PERIODES=[[1,"Avui"],[7,"7 dies"],[30,"30 dies"],[365,"Curs"]];
 function muntaShell(){
  $("#logoMenu").innerHTML=`${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span>`;$("#logoMobil").outerHTML=`<span style="display:inline-flex;align-items:center;gap:8px">${LOGO}Bona Nota · Admin</span>`;
@@ -578,13 +578,19 @@ function pinta(){
  return Promise.resolve()}
 
 // ====================== DADES DELS NENS (a partir del registre) ======================
+// l'examen de mates (eines/exercicis-mates.js) registra «nota» sobre 10 en lloc de «pc»
+const pcExam=d=>d.pc!=null?d.pc:d.nota!=null?Math.round(d.nota*10):null;
+const REP_EXT={mx:"Taller",mapa:"MAPA",err:"Troba l'error",err_gen:"Troba l'error"};
+const extRepas=x=>String(x).split(",").map(p=>{const [t,v]=p.split(":");return `${REP_EXT[t]||t} ${v||""}`.trim()}).join(", ");
 function descriu(l){const d=l.detall||{};switch(l.event){
  case"entra":return d.nou?"Perfil nou creat":`Entra · ${d.punts??0} estrelles · ${d.aprovats??0}/${d.temes??"?"} temes aprovats`;
  case"fitxa":return `Llegeix la fitxa: <b>${esc(d.titol||d.tema)}</b>${d.s?` · ${fmtT(d.s)}${d.fi?" · fins al final":""}`:""}`;
  case"targetes":return `Targetes de <b>${esc(d.titol||d.tema)}</b>: ${d.vistes}/${d.n} vistes · ${d.girs||0} girs · ${fmtT(d.s)}`;
- case"test":return `Test de <b>${esc(d.titol||d.tema)}</b>: ${d.bones}/${d.n} · ${cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
- case"joc":return `Joc <b>${esc(d.titol||d.joc)}</b>: ${cpc(d.pc)}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.mode&&d.joc==="mapa43"?` · ${esc(d.mode)}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
- case"examen":return `${d.joc==="examreal"?"Examen de veritat":"Examen sorpresa"}: ${cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
+ case"test":return `Test de <b>${esc(d.titol||d.tema)}</b>: ${d.bones}/${d.n} · ${cpc(d.pc)}${d.pistes?` · ${pl(d.pistes,"pista","pistes")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
+ case"joc":if(d.joc==="boss")return `Boss <b>${esc(d.titol||"del món")}</b>: ${d.guanya?"guanyat":"perdut"}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.guanya&&d.cors!=null?` · ${pl(d.cors,"cor","cors")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
+   if(d.joc==="repas")return `Repàs dels errors: ${cpc(d.pc)}${d.apr?` · ${pl(d.apr,"error après","errors apresos")}`:""}${d.ext?` · ${esc(extRepas(d.ext))}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
+   return `Joc <b>${esc(d.titol||d.joc)}</b>: ${cpc(d.pc)}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.mode&&d.joc==="mapa43"?` · ${esc(d.mode)}`:""}${d.pistes?` · ${pl(d.pistes,"pista","pistes")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
+ case"examen":return `${d.joc==="examreal"?"Examen de veritat":d.joc==="examen"?"Examen sorpresa":"Examen de mates"}: ${d.nota!=null?`<b>${esc(String(d.nota).replace(".",","))}</b> sobre 10`:cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"oberta":if(d.mode==="control")return `Quadern · punts de control (${esc(d.tema||"")}): ${cpc(d.pc)} bé a la primera${d.pasos?` (${esc(d.pasos)})`:""}`;
    if(d.mode==="foto")return `Foto del quadern (${esc(d.tema||"")}): ${d.ok?(d.correcte?"tot correcte":"hi ha trobat un error"):`no s'ha pogut corregir (${esc(d.error||"?")})`}`;
    return `Pregunta oberta (${esc(d.tema||"")}): ${cpc(d.pc)} de les idees clau${d.s?` · ${fmtT(d.s)}`:""}`;
@@ -593,7 +599,7 @@ function descriu(l){const d=l.detall||{};switch(l.event){
  default:return esc(JSON.stringify(d))}}
 function nens(ls){ls=ls||LOGS;const m={};ls.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[k]={nom:l.nom,assigs:new Set(),ses:new Set(),ap:new Set(),ult:l.ts,temps:0,tests:[],jocs:0,exam:[],punts:{},fonts:{},fts:{}});
  n.assigs.add(l.assig);n.ses.add(l.sessio);n.ap.add(l.aparell);if(l.ts>n.ult)n.ult=l.ts;const d=l.detall||{};
- if(l.event==="temps")n.temps+=d.s||0;if(l.event==="test")n.tests.push(d.pc);if(l.event==="joc")n.jocs++;if(l.event==="examen")n.exam.push(d.pc);
+ if(l.event==="temps")n.temps+=d.s||0;if(l.event==="test")n.tests.push(d.pc);if(l.event==="joc")n.jocs++;if(l.event==="examen"&&pcExam(d)!=null)n.exam.push(pcExam(d));
  if(d.punts!=null&&(n.punts[l.assig]==null||d.punts>n.punts[l.assig]))n.punts[l.assig]=d.punts;
  if(d.fonts&&(!n.fts[l.assig]||l.ts>n.fts[l.assig])){n.fonts[l.assig]={f:d.fonts,p:d.punts||0};n.fts[l.assig]=l.ts}});
  return Object.entries(m).map(([k,n])=>({k,...n})).sort((a,b)=>b.ult.localeCompare(a.ult))}
@@ -638,7 +644,7 @@ function vistaNens(c){const N=nens(LF());
 }
 
 // ====================== FITXA DEL NEN ======================
-const FONTS_EST=[["temes","llibre","Tests dels temes"],["jocs","joc","Jocs"],["examen","trofeu","Examen sorpresa"],["obertes","llapis","Preguntes obertes"],["combo","foc","Combos"]];
+const FONTS_EST=[["temes","llibre","Tests dels temes"],["jocs","joc","Jocs"],["examen","trofeu","Examen sorpresa"],["obertes","llapis","Preguntes obertes"],["combo","foc","Combos"],["record","puja","Rècords millorats"],["repas","reinicia","Repàs dels errors"],["missio","diana","Missions del dia"],["boss","llamp","Boss del món"]];
 function blocEstrelles(n){const as=[...n.assigs].filter(a=>n.punts[a]!=null);if(!as.length)return buit("estrella","Encara no hi ha estrelles registrades.");
  return as.map(a=>{const fo=(n.fonts[a]||{}).f||{},p=n.punts[a]||0,tot=FONTS_EST.reduce((s,[k])=>s+(fo[k]||0),0),ab=Math.max(0,p-tot),mx=Math.max(1,ab,...FONTS_EST.map(([k])=>fo[k]||0));
   const fila=(icn,nom,v)=>`<div class="fest"><span>${ic(icn)}${nom}</span><div class="bfe"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
@@ -798,6 +804,7 @@ async function pintaTauler(){const tok=++TOK;
   ${targeta("calor","c-6","graella","Quan estudien","Activitat per hora i dia de la setmana",`<div id="tCal"></div>`)}
   ${targeta("notes","c-6","puja","Evolució de les notes","Cada punt és un test (o examen); una línia per nen",`<div class="cv"><canvas id="gEvo" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>`)}
   ${targeta("constancia","c-6","foc","Constància","Dies que ha estudiat en aquest període i ratxa actual de dies seguits",`<div id="tCst"></div>`)}
+  ${targeta("motivacio","c-12","trofeu","Repàs, boss i missions","Errors apresos al repàs i intents de boss en aquest període. Les estrelles de missions són el total acumulat de cada nen.",`<div id="tMot"></div>`)}
   ${TF.nom?targeta("temps","c-12","rellotge",`En què passa el temps ${esc(TF.nom)}`,"Segons registrats per tipus d'activitat (dades del període)",`<div class="cv"><canvas id="gTip" aria-label="Gràfic del temps per tipus d'activitat" role="img"></canvas></div>`):""}
   ${targeta("domini","c-12","diana","Domini per tema","Per a cada assignatura: quants temes té aprovats cada nen (barra) i la millor nota de test a cada tema. Passa el ratolí per una nota per veure intents i última nota.",`<div id="tDom"></div>`)}
   ${targeta("fallades","c-12","creu","Preguntes més fallades","Top 20 per assignatura, amb l'opció equivocada que més trien (el «parany»). Compta des del 4-11-2026, quan es va començar a registrar cada pregunta.",`<div id="tFal"></div>`)}
@@ -806,7 +813,7 @@ async function pintaTauler(){const tok=++TOK;
  // cada apartat per separat: si un falla, la resta es veu igual i l'error surt escrit al seu lloc
  const prova=(id,f)=>{try{f()}catch(e){const el=$(id);if(el)(el.closest(".cv")||el).innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`);console.error(e)}};
  prova("#tAl",()=>tAlertes(alert));prova("#gAct",()=>gActivitat(act));prova("#tCal",()=>tCalor(calor));prova("#gEvo",()=>gEvolucio(evo));
- prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));if(TF.nom)prova("#gTip",()=>gTipus());
+ prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));prova("#tMot",()=>tMotivacio());if(TF.nom)prova("#gTip",()=>gTipus());
  tErrorsTaller();
 }
 function tAlertes(al){const e=$("#tAl");if(!al.length){e.innerHTML=buit("ok","Cap alerta. Tot en ordre.");return}
@@ -907,7 +914,7 @@ function tFallades(fall){if(!fall.length){$("#tFal").innerHTML=buit("creu","Enca
 // ---- Taller de mates: on s'equivoquen (supabase/bn_admin_errors_taller.sql) ----
 // Es carrega a part de la resta: si la funció encara no és a la base de dades o falla, només aquest apartat ho diu.
 const TALLER_GEN={error:"Troba l'error",control:"Quadern (punts de control)",escala:"Escala (descompondre)",mcmmcd:"MCM i MCD",problema:"Problemes",criteri:"Criteris",divisors:"Divisors",multiples:"Múltiples",primer:"Primer o compost",divisio:"Divisió llarga",combinades:"Operacions combinades",fraccions:"Fraccions",equacio:"Equacions"};
-const TALLER_ERR={estima:"Estimació equivocada (abans de calcular)",linia:"Ha tocat una línia bona",per:"No ha sabut dir per què",no_primer:"Divisor que no és primer",no_divideix:"No és divisible pel que ha posat",no_menor:"No comença pel primer més petit",quocient:"Divisió mal feta",exponent:"Exponent mal comptat",mcm_exp_petit:"MCM amb l'exponent petit",mcd_exp_gran:"MCD amb l'exponent gran",mcd_no_comu:"MCD amb un factor no comú",mcm_falta:"Al MCM li falta un factor",confon_mcm_mcd:"Confon MCM i MCD",dada_sobrant:"Agafa la dada que no serveix",u_primer:"Diu que l'1 és primer",primer_compost:"Primer/compost equivocat",suma_xifres:"Suma de xifres mal feta",criteri_xifra:"Mira la xifra equivocada",multiple_no:"No és múltiple",fora_rang:"Fora de l'interval",falten:"N'hi falten",divisor_no:"No és divisor",calcul:"Error de càlcul",resta:"Resta mal feta",baixar:"No baixa la xifra",jerarquia:"No respecta la jerarquia",signe:"Error de signe",denominador:"Suma els denominadors",simplifica:"No simplifica",unitat:"Resposta/unitat equivocada","-":"Altres"};
+const TALLER_ERR={estima:"Estimació equivocada (abans de calcular)",linia:"Ha tocat una línia bona",per:"No ha sabut dir per què",escriu:"No ha sabut escriure-ho bé",no_primer:"Divisor que no és primer",no_divideix:"No és divisible pel que ha posat",no_menor:"No comença pel primer més petit",quocient:"Divisió mal feta",exponent:"Exponent mal comptat",mcm_exp_petit:"MCM amb l'exponent petit",mcd_exp_gran:"MCD amb l'exponent gran",mcd_no_comu:"MCD amb un factor no comú",mcm_falta:"Al MCM li falta un factor",confon_mcm_mcd:"Confon MCM i MCD",dada_sobrant:"Agafa la dada que no serveix",u_primer:"Diu que l'1 és primer",primer_compost:"Primer/compost equivocat",suma_xifres:"Suma de xifres mal feta",criteri_xifra:"Mira la xifra equivocada",multiple_no:"No és múltiple",fora_rang:"Fora de l'interval",falten:"N'hi falten",divisor_no:"No és divisor",calcul:"Error de càlcul",resta:"Resta mal feta",baixar:"No baixa la xifra",jerarquia:"No respecta la jerarquia",signe:"Error de signe",denominador:"Suma els denominadors",simplifica:"No simplifica",unitat:"Resposta/unitat equivocada","-":"Altres"};
 async function tErrorsTaller(){const el=$("#tErr");if(!el)return;const tok=TOK;
  let ep;try{ep=await rpcT("bn_admin_errors_taller")}
  catch(e){console.error(e);if(tok!==TOK||!$("#tErr"))return;$("#tErr").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_errors_taller.sql","Aquest apartat encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar els errors del Taller de mates (${e&&e.message||e}).`);return}
@@ -917,6 +924,18 @@ async function tErrorsTaller(){const el=$("#tErr");if(!el)return;const tok=TOK;
   $("#tErr").innerHTML=taula("tErrT",[{k:"gen",t:"Exercici",v:r=>TALLER_GEN[r.gen]||r.gen,h:r=>`<span class="q-t" title="${esc(r.gen)}">${esc(TALLER_GEN[r.gen]||r.gen)}</span>`},{k:"pas",t:"Pas"},
    {k:"codi",t:"Error",v:r=>TALLER_ERR[r.codi]||r.codi,h:r=>`<span title="${esc(r.codi)}">${esc(TALLER_ERR[r.codi]||r.codi)}</span>`},{k:"n",t:"Vegades",num:true,v:r=>+r.n||0,h:r=>mini(+r.n||0,mx)},{k:"nens",t:"Nens",num:true,v:r=>+r.nens||0}],ep,{k:"n",alta:true,etiqueta:"Errors del Taller de mates"})}
  catch(e){console.error(e);$("#tErr").innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
+// ---- Repàs, boss i missions: es calcula amb el registre que el tauler ja té (LF(): període i filtres actuals), sense cap funció nova a Supabase ----
+function tMotivacio(){const el=$("#tMot");if(!el)return;const ls=LF(),m={};
+ const fila=(k,nom)=>m[k]||(m[k]={nom,rep:0,apr:0,boss:0,guanyats:0,mis:0});
+ ls.filter(l=>l.event==="joc").forEach(l=>{const d=l.detall||{};
+  if(d.joc==="repas"){const f=fila(clauNen(l),l.nom);f.rep++;f.apr+=+d.apr||0}
+  if(d.joc==="boss"){const f=fila(clauNen(l),l.nom);f.boss++;if(d.guanya)f.guanyats++}});
+ nens(ls).forEach(n=>{const mis=Object.values(n.fonts).reduce((a,x)=>a+(+(x.f||{}).missio||0),0);if(mis)fila(n.k,n.nom).mis=mis});
+ const rows=Object.values(m);if(!rows.length){el.innerHTML=buit("trofeu","Encara no hi ha repassos, boss ni missions en aquest període.");return}
+ const sum=k=>rows.reduce((a,r)=>a+r[k],0),kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
+ const num=(k,t)=>({k,t,num:true,v:r=>r[k]});
+ el.innerHTML=`<div class="kpis" style="margin-bottom:12px">${kp("Errors apresos",sum("apr"),pl(sum("rep"),"repàs fet","repassos fets"))}${kp("Boss guanyats",sum("guanyats"),`de ${pl(sum("boss"),"intent","intents")}`)}${kp("Estrelles de missions",sum("mis"),"acumulat")}</div>`+
+  taula("tMotT",[{k:"nom",t:"Nen",v:r=>r.nom},num("rep","Repassos"),num("apr","Errors apresos"),num("boss","Intents de boss"),num("guanyats","Boss guanyats"),num("mis","Estrelles de missions")],rows,{k:"apr",etiqueta:"Repàs, boss i missions per nen"})}
 function gTipus(){const k=TF.nom.trim().toLowerCase(),t={"Fitxes":0,"Targetes":0,"Tests":0,"Jocs":0,"Exàmens":0,"Obertes":0};
  LOGS.filter(l=>l.nom.trim().toLowerCase()===k&&(!TF.assig||l.assig===TF.assig)).forEach(l=>{const s=+(l.detall||{}).s||0;if(!s)return;
   const m={fitxa:"Fitxes",targetes:"Targetes",test:"Tests",joc:"Jocs",examen:"Exàmens",oberta:"Obertes"}[l.event];if(m)t[m]+=s});
@@ -986,11 +1005,11 @@ function demoInit(){if(DEMO_L)return;const R=rndD(20261105),tria=a=>a[Math.floor
  // temes i preguntes de veritat (preguntes.json), perquè el domini i les preguntes fallades semblin reals
  const temes={};Object.entries(PREG||{}).forEach(([k,v])=>{const p=k.split("/");if(p.length<3||p[1].startsWith("j-"))return;const T=temes[p[0]]=temes[p[0]]||{};(T[p[1]]=T[p[1]]||{t:p[1],titol:v.tema,q:[]}).q.push({id:p[1]+"/"+p[2],c:v.c||0,no:(v.o||[]).length||4})});
  Object.keys(ASSIGS).forEach(a=>{if(!temes[a]||!Object.keys(temes[a]).length)temes[a]={t1:{t:"t1",titol:"Tema 1",q:[...Array(12)].map((_,i)=>({id:"t1/"+(i+1),c:0,no:4}))}}});
- const JOCS={socials:["climo","capes","parelles"],biogeo:["planetes","celules","cossos"],castellano:["concretos","generos","byv"],comarques:["mapa43","capitals","ruta"],divisibilitat:["fx-mcm","fx-criteris","fx-divisio","er-troba"]};
+ const JOCS={socials:["climo","capes","parelles"],biogeo:["planetes","celules","cossos"],castellano:["concretos","generos","byv"],comarques:["mapa43","capitals","ruta"],divisibilitat:["fx-mcm","fx-criteris","fx-divisio","er-troba"],catala:["subgeneres","oralescrit"]};
  const EP=[["mcmmcd","exp","mcm_exp_petit"],["mcmmcd","factors","confon_mcm_mcd"],["escala","quocient","quocient"],["divisio","baixar","baixar"],["criteri","suma","suma_xifres"],["primer","tria","u_primer"],["problema","dades","dada_sobrant"],["error","divisio","linia"],["mcmmcd","exp","mcm_exp_petit"]];
- const NENS=[{nom:"Àlex",hab:.84,vel:9,act:.8,mons:["socials","biogeo","divisibilitat"]},{nom:"Jana",hab:.9,vel:11,act:.85,mons:["socials","castellano","comarques"]},
+ const NENS=[{nom:"Àlex",hab:.84,vel:9,act:.8,mons:["socials","biogeo","divisibilitat"]},{nom:"Jana",hab:.9,vel:11,act:.85,mons:["socials","castellano","comarques","catala"]},
   {nom:"Pau",hab:.72,vel:8,act:.75,mons:["socials","biogeo","castellano","comarques","divisibilitat"]},{nom:"Laia",hab:.64,vel:10,act:.6,mons:["biogeo","divisibilitat"]},
-  {nom:"Nora",hab:.6,vel:2.2,act:.55,mons:["socials","castellano"]},{nom:"Hugo",hab:.45,vel:7,act:.5,mons:["comarques","divisibilitat"],para:9},{nom:"Ona",hab:.78,vel:12,act:.4,mons:["castellano","biogeo"]}];
+  {nom:"Nora",hab:.6,vel:2.2,act:.55,mons:["socials","castellano"]},{nom:"Hugo",hab:.45,vel:7,act:.5,mons:["comarques","divisibilitat"],para:9},{nom:"Ona",hab:.78,vel:12,act:.4,mons:["castellano","biogeo","catala"]}];
  const ara=Date.now(),L=[];let sid=0;
  NENS.forEach((n,ni)=>{const punts={},millor={};
   for(let d=29;d>=0;d--){if(n.para&&d<n.para)continue;if(R()>n.act)continue;
@@ -1008,9 +1027,11 @@ function demoInit(){if(DEMO_L)return;const R=rndD(20261105),tria=a=>a[Math.floor
     if(R()<.55){const j=tria(JOCS[as]||["joc"]),enc=ent(5,14),err=Math.max(0,Math.round(enc*(1-n.hab)*1.4)),x=ent(60,300);segs+=x;punts[as]+=Math.round(enc/3);
      const det={joc:j,titol:j,pc:Math.round(100*enc/(enc+err)),enc,err,s:x};if(as==="divisibilitat"&&err)det.ep=[...Array(Math.min(err,6))].map(()=>tria(EP).join("|"));ev("joc",det)}
     if(R()<.12)ev("examen",{joc:R()<.5?"examen":"examreal",pc:Math.max(10,Math.min(100,Math.round(100*(n.hab+(R()-.5)*.3)))),s:ent(300,900)});
+    if(R()<.3){const apr=R()<.6?ent(1,3):0;punts[as]+=apr*2;ev("joc",Object.assign({joc:"repas",titol:"Repàs dels errors",pc:ent(45,100),s:ent(60,240)},apr?{apr}:{},as==="divisibilitat"&&R()<.5?{ext:"mx:1/2"}:{}))}
+    if(R()<.2){const guanya=R()<n.hab?1:0;if(guanya)punts[as]+=10;ev("joc",{joc:"boss",titol:"Boss del món",pc:guanya?100:ent(30,80),enc:ent(5,9),err:ent(0,3),guanya,cors:guanya?ent(1,3):0,hp:guanya?0:ent(2,8),s:ent(120,300)})}
     if(R()<.15)ev("oberta",{tema:tema.t,pc:ent(40,100),s:ent(60,300)});
     if(R()<.2)ev("valora",{tema:tema.t,titol:tema.titol,v:tria(["Costa","Bé","Fàcil"])});
-    ev("temps",{s:segs+ent(30,200),punts:punts[as],fonts:{temes:Math.round(punts[as]*.6),jocs:Math.round(punts[as]*.3),combo:Math.round(punts[as]*.1)}})}}});
+    ev("temps",{s:segs+ent(30,200),punts:punts[as],fonts:{temes:Math.round(punts[as]*.5),jocs:Math.round(punts[as]*.25),combo:Math.round(punts[as]*.05),record:Math.round(punts[as]*.05),repas:Math.round(punts[as]*.05),missio:Math.round(punts[as]*.05),boss:Math.round(punts[as]*.05)}})}}});
  DEMO_L=L.sort((a,b)=>a.ts.localeCompare(b.ts))}
 const demoLogsDies=d=>{const des=Date.now()-d*864e5;return DEMO_L.filter(l=>Date.parse(l.ts)>=des).slice().reverse()};
 const demoIds=()=>({"àlex":1,"jana":2,"pau":3,"laia":4,"nora":5});

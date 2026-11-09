@@ -108,7 +108,11 @@ for f, es in [("index.html", False)] + [(m["carpeta"] + "/index.html", m.get("ll
     if n != 1:
         sys.exit(f'ERROR: {f} ha de portar exactament un <small class="bn-versio">')
     (arrel / f).write_text(t)
-print(f"✓ versió {trobat.group(1)} al peu de la portada i dels mons")
+t, n = re.subn(r'const VERSIO_ADMIN="[^"]*";', f'const VERSIO_ADMIN="{trobat.group(1)}";', adm.read_text())
+if n != 1:
+    sys.exit("ERROR: admin/index.html ha de portar exactament un const VERSIO_ADMIN")
+adm.write_text(t)
+print(f"✓ versió {trobat.group(1)} al peu de la portada i dels mons, i al tauler")
 
 # 4) versió publicada: una empremta del contingut (portada, sprites i mons, calculada amb el buit «__BN_VERSIO__» encara
 #    sense omplir, perquè no depengui d'ella mateixa). Va a: cada pàgina (actualitza.js la compara amb versio.json en obrir-la
