@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.3.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.4.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar** els temes de 1r d'ESO **jugant**. Cada tema és un «món» amb fitxes, targetes,
 tests, jocs i preguntes d'examen. Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -367,7 +367,8 @@ Si un canvi només toca documentació o proves, la versió no puja.
 
 1. Al mateix PR del canvi, afegeix l'entrada nova a dalt de tot de `CHANGELOG.md` (número, data i apartats Afegit, Canviat o Corregit).
 2. Canvia el número a la capçalera d'aquest README.
-3. Quan el PR estigui fusionat, posa l'etiqueta al commit de `main`:
+3. Executa `python3 motor/tot.py`: llegeix la primera entrada del `CHANGELOG.md` i posa el número al peu de la portada i de cada món.
+4. Quan el PR estigui fusionat, posa l'etiqueta al commit de `main`:
 
 ```
 git switch main

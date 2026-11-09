@@ -3,7 +3,7 @@
 Data: 2026-11-09
 
 ## Què funciona
-- **Versió actual: 2.3.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README).
+- **Versió actual: 2.4.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món.
 - **6 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`).
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 5 pestanyes (`punts`, `temps`, `nivell`, `setmana`, `remuntada`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -25,7 +25,7 @@ Data: 2026-11-09
   - Arreglat: els errors de «Troba l'error» de mates tornen a entrar al repàs espaiat (la prova estricta de Divisibilitat tornava a fallar).
 
 ## En curs
-- Branca `versions-readme`: README al dia, sistema de versions i Gemini per escrit. Pendent de pujar i fusionar.
+- Branca `versio-peu`: número de versió al peu de la web. Pendent de pujar i fusionar.
 
 ## Pendent
-- La 📷 correcció de la foto del quadern: `ORIGENS` de `supabase/functions/bn-corregeix/index.ts` no inclou `https://bonanota.net`, i el navegador bloqueja la resposta. Cal afegir-hi l'origen i tornar a desplegar la funció.
+- La 📷 correcció de la foto del quadern: el codi de `bn-corregeix` ja accepta `https://bonanota.net` (a `main`), però cal comprovar que la funció s'ha tornat a desplegar.
