@@ -97,6 +97,19 @@ for m in mons:
 (arrel / "admin" / "preguntes.json").write_text(json.dumps(preguntes, ensure_ascii=False, separators=(",", ":")))
 print(f"✓ admin/preguntes.json: {len(preguntes)} preguntes")
 
+# 3c) número de versió del producte (la primera entrada de CHANGELOG.md) al peu de la portada i de cada món.
+#     Va abans de l'empremta perquè un canvi de número també arribi als mòbils.
+trobat = re.search(r"^## (\d+\.\d+\.\d+)\b", (arrel / "CHANGELOG.md").read_text(), re.M)
+if not trobat:
+    sys.exit("ERROR: a CHANGELOG.md no hi ha cap entrada «## X.Y.Z»")
+for f, es in [("index.html", False)] + [(m["carpeta"] + "/index.html", m.get("llengua") == "es") for m in mons]:
+    peu = f'<small class="bn-versio">{"versión" if es else "versió"} {trobat.group(1)}</small>'
+    t, n = re.subn(r'<small class="bn-versio">[^<]*</small>', peu, (arrel / f).read_text())
+    if n != 1:
+        sys.exit(f'ERROR: {f} ha de portar exactament un <small class="bn-versio">')
+    (arrel / f).write_text(t)
+print(f"✓ versió {trobat.group(1)} al peu de la portada i dels mons")
+
 # 4) versió publicada: una empremta del contingut (portada, sprites i mons, calculada amb el buit «__BN_VERSIO__» encara
 #    sense omplir, perquè no depengui d'ella mateixa). Va a: cada pàgina (actualitza.js la compara amb versio.json en obrir-la
 #    i, si no coincideixen, es recarrega sola), versio.json i el service worker (app instal·lable i sense connexió).

@@ -515,14 +515,14 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag" id="peu"></div>
+<div class="peu-pag"><small class="bn-versio">versió</small></div>
 
 <script>
 /*DADES*/
 /*MONS*/
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
-document.getElementById("peu").innerHTML=ASSIG.peu;document.getElementById("logoic").textContent=ASSIG.ic;
+document.getElementById("logoic").textContent=ASSIG.ic;
 
 // ====================== ESTAT ======================
 const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null,fonts:{},ftema:{},fjoc:{}});
