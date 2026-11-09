@@ -148,6 +148,26 @@ En arrencar, els paràmetres `?joc=`, `?tema=` i `?vista=` obren directament una
 - `diaEst()` guarda a `S.est` què ja ha premiat avui. `estPregunta()` només dona estrella el primer cop del dia, i `JOCSTAR` fa el mateix amb els jocs.
 - Els nivells surten de la taula `NIVELLS` i depenen de les estrelles de cada món.
 - `puntsTots()` suma tots els mons, llegint el `localStorage` de cadascun i el que ha baixat `carregaPuntsMons()`. Cada `SUPER` = 50 ⭐ surt una superestrella.
+- **Combo net** (2.8.0): el combo (`ratxa()`) només puja amb respostes que donen estrella. Les preguntes repetides el mateix dia i el repàs no el fan pujar ni el trenquen; un error el trenca sempre. `ratxaHtml()` en mostra la barra a cada pregunta.
+- **El repàs paga** (2.8.0): `premiRepas()` dona +1 ⭐ per cada error encertat al repàs, un cop per error i dia, fins a `REP_MAX` = 10 al dia per món (`S.est.r` i `S.est.rn`). Les +2 ⭐ d'«après» es mantenen.
+- **Com es guanyen**: la llista `COM_GUANYAR` és l'única font de les dues targetes d'estrelles. Si un premi canvia, es canvia aquí i a `docs/AVALUACIO.md`.
+- **Estrelles per activitat**: `iniciActivitat()` en començar un test, joc, oberta, boss o repàs, i `detallLog()` posa `est` (estrelles guanyades) als registres `test`, `joc`, `examen` i `oberta`. El tauler en treu les estrelles per minut de cada activitat.
+
+#### Pla de millora de les estrelles (2.8 → 2.10)
+
+L'estudi n2505 va trobar que les estrelles surten sobretot dels jocs (la meitat) i que les preguntes obertes, les més semblants a l'examen, en donen molt poques. També que el combo es podia inflar repetint tests i que el repàs no pagava res mentre es feia. El pla n2506 ho arregla en tres passos, cada un amb el seu PR i la seva versió:
+
+| Pas | Versió | Issue | Què canvia |
+|---|---|---|---|
+| 1 · Mesurar i tapar forats | 2.8.0 | #13 | Combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts i tauler amb l'origen de les estrelles i les estrelles per minut |
+| 2 · ✍️ Triple combo | 2.9.0 | #14 | 3 obertes ben explicades seguides +3 ⭐, 6 seguides +5 ⭐ (topall 8 al dia per món), «resposta de 10» +1 ⭐ i filtre perquè una llista de paraules no compti |
+| 3 · ⚡ Super combo | 2.10.0 | #15 | Preguntes difícils marcades a `motor/dificultat.json` amb ⚡; 3 difícils seguides +3 ⭐, 5 seguides +5 ⭐ (topall 10 al dia per món) |
+| 4 · Calibrar | — | #16 | Quan hi hagi prou respostes, la dificultat es calcula amb l'encert real dels nens |
+
+Les estrelles ja guanyades no es toquen. Una setmana després de cada pas es miren al tauler les xifres de la secció 5 de l'estudi.
+
+- Estudi, amb les dades i les 7 decisions aprovades: [`docs/superpowers/specs/2026-11-09-estrelles-estudi.md`](docs/superpowers/specs/2026-11-09-estrelles-estudi.md)
+- Pla d'implementació, tasca per tasca: [`docs/superpowers/plans/2026-11-09-estrelles-combos.md`](docs/superpowers/plans/2026-11-09-estrelles-combos.md)
 
 ### Repàs espaiat
 
