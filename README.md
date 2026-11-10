@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.12.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md)
+**Web:** https://bonanota.net · **Versió:** 2.12.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md) · **Xat:** [com funciona](docs/XAT.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -271,6 +271,8 @@ El Taller desa cada resposta fallada com `exercici|pas|error` (camp `ep`), que e
   Sense aquestes entrades no es trenca res: surt amb el seu emoji en una rajola grisa i l'assignatura nova agafa un color de reserva.
 
 ### 💬 Xat de la colla (pestanya «Xat» del rànquing)
+
+> Explicat en paraules planeres (crèdits, regla d'or, desbloquejos, admin i on és cada cosa al codi): [`docs/XAT.md`](docs/XAT.md).
 
 Els nens es parlen **amb peces**, sense escriure: una frase amb un forat (`___`) i el que l'omple (una paraula d'estudi, una cosa de classe, una cosa seva o el nom d'un company del rànquing). Regles i motius: `docs/DECISIONS.md` (ADR-0006) i l'encàrrec `docs/superpowers/specs/2026-11-10-xat-colla.md`.
 
