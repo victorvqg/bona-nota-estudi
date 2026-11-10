@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.12.0 · 2026-11-10
+
+### Afegit
+- Admin, fitxa del nen: pestanya «Al núvol» amb l'estat real de cada món (temes amb la millor nota, intents i preguntes que més falla, errors pendents de repàs, obertes, exàmens, boss, dies d'estudi i d'on surten les estrelles). Abans la fitxa només veia el registre del període triat.
+- Admin, vista Nens: targeta «Nens nous» amb les altes del període (primer registre, PIN creat, perfil triat, mons, estrelles i dies actius la primera setmana), també els que han creat el PIN però encara no han jugat.
+- Base de dades: `supabase/bn_admin_fitxa.sql` (s'ha d'executar una vegada a Supabase): `bn_admin_fitxa`, `bn_admin_altes` i la data d'alta dels perfils nous (`perfils.creat`).
+
 ## 2.11.0 · 2026-11-10
 
 ### Afegit
