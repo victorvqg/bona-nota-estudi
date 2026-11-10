@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.10.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
+**Web:** https://bonanota.net · **Versió:** 2.10.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -145,6 +145,8 @@ En arrencar, els paràmetres `?joc=`, `?tema=` i `?vista=` obren directament una
 - **Escut del combo:** amb un combo de 3 o més, un error ofereix una pregunta germana del mateix tema que aquell test no ha tret.
 
 ### Estrelles i nivells
+
+> La puntuació sencera, explicada perquè l'entengui tothom (què dona cada cosa, els tres combos, els límits, els nivells, el rànquing i on és cada cosa al codi), és a [`docs/PUNTUACIO.md`](docs/PUNTUACIO.md).
 
 `suma(n)` afegeix estrelles i les atribueix a la font activa (`FONT`), que alimenta `fonts`, `ftema` i `fjoc`. Perquè no es puguin inflar:
 
