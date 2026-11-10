@@ -323,8 +323,8 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 .cst{display:grid;grid-template-columns:minmax(110px,160px) minmax(60px,1fr) auto;gap:10px;align-items:center;margin:8px 0;font-size:13.5px}
 .cst .r{color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 /* benestar (n2540, supabase/bn_admin_benestar.sql): semàfor per nen, motius, mons i dates d'examen */
-.bs-avis{display:flex;gap:8px;align-items:flex-start;margin:0 0 14px;padding:8px 12px;border-radius:var(--r1);background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:12.5px}
-.bs-avis .ic{width:16px;height:16px;margin-top:1px;color:var(--soft)}
+.bs-avis,.fr-nota{display:flex;gap:8px;align-items:flex-start;margin:0 0 14px;padding:8px 12px;border-radius:var(--r1);background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:12.5px}
+.bs-avis .ic,.fr-nota .ic{width:16px;height:16px;margin-top:1px;color:var(--soft)}
 .bs-res{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 10px;font-size:13px;color:var(--muted)}
 .bs-l,.bs-m,.bs-vg,.bs-ll{list-style:none;margin:0;padding:0}
 .bs-l{border:1px solid var(--border);border-radius:var(--r1)}
@@ -356,6 +356,20 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 .bs-ll b{color:var(--text);font-weight:600}
 #tBen .grup{margin-top:22px}
 @media (max-width:767px){.bs-f{grid-template-columns:auto minmax(0,1fr);padding:10px 12px}.bs-m{grid-column:1/-1}.bs-sem{margin-top:3px}.bs-ll{grid-template-columns:minmax(0,1fr)}.bs-mons{grid-template-columns:minmax(0,1fr)}}
+/* combos i repàs (M3) i errors pendents de la colla (M4) · supabase/bn_admin_fonts_rep.sql: xifres amb el color de la font, gràfic i plegables */
+.fr-k .kpi-t{display:flex;align-items:center;gap:6px}
+.fr-k .kpi-t .punt{width:10px;height:10px;border-radius:3px}
+#tCom .grup,#tRep .grup{margin-top:22px}
+.fr-altres .cv{height:240px;margin:6px 0 14px}
+.fr-altres .fest{grid-template-columns:minmax(150px,230px) minmax(60px,1fr) 52px}
+.fr-l{display:none;font-size:11.5px;font-weight:500;color:var(--muted)}
+/* al mòbil, cada tema dels errors pendents és un bloc: el títol i les preguntes a tota l'amplada, i les tres xifres en una fila */
+@media (max-width:767px){.fr-altres .fest{grid-template-columns:minmax(110px,150px) minmax(40px,1fr) 44px}
+ #tRep .taula-w table,#tRep .taula-w tbody{display:block}#tRep .taula-w thead{display:none}
+ #tRep .taula-w tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 10px;padding:10px 12px;border-bottom:1px solid var(--border)}
+ #tRep .taula-w tr:last-child{border-bottom:0}
+ #tRep .taula-w td{padding:0;border:0;text-align:left;min-width:0}#tRep .taula-w td.tmn,#tRep .taula-w td.tfa{grid-column:1/-1}
+ #tRep .fr-l{display:block}#tRep td .mini{justify-content:flex-start}}
 /* xat de la colla (n2528): missatges, silencis, configuració, catàleg i peça nova */
 .xm-l{max-height:max(480px,calc(100vh - 260px));overflow:auto;margin:0 -4px;padding:0 4px}
 .xm-l .grup{position:sticky;top:0;z-index:1;background:var(--card);margin:0;padding:12px 0 6px}
@@ -516,7 +530,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.13.0";
+const VERSIO_ADMIN="2.14.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -659,7 +673,7 @@ function login(msg){$("#shell").hidden=true;const w=$("#loginWrap");w.hidden=fal
 let IDS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN">sense PIN</span>`;
 function mostraApp(){$("#loginWrap").hidden=true;$("#loginWrap").innerHTML="";$("#shell").hidden=false;document.body.classList.toggle("demo",DEMO);$("#demoBar").hidden=!DEMO}
 async function carrega(){
- ESTATS={};NUV=null;ALTES=null;BEN=null;
+ ESTATS={};NUV=null;ALTES=null;BEN=null;FDIA=null;REPP=null;
  if(!$("#shell").hidden&&VISTA!=="tauler")$("#contingut").innerHTML=esqTaula();
  if(DEMO){await preguntes();demoInit();LOGS=demoLogsDies(DIES);IDS=demoIds();mostraApp();ACT=new Date();pinta();return true}
  try{const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:DIES})});
@@ -671,7 +685,7 @@ async function carrega(){
 
 // ====================== MENÚ, CAPÇALERA I FILTRES ======================
 const MENU=[["tauler","Tauler"],["nens","Nens"],["sessions","Sessions"],["log","Log complet"],["xat","Xat"],["copies","Còpies de seguretat"]];
-const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["benestar","Benestar"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["obertes","Obertes"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
+const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["benestar","Benestar"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["combos","Combos i repàs"],["pendents","Errors pendents de la colla"],["obertes","Obertes"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
 const PERIODES=[[1,"Avui"],[7,"7 dies"],[30,"30 dies"],[365,"Curs"]];
 function muntaShell(){
  $("#logoMenu").innerHTML=`${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span>`;$("#logoMobil").outerHTML=`<span style="display:inline-flex;align-items:center;gap:8px">${LOGO}Bona Nota · Admin</span>`;
@@ -764,7 +778,7 @@ const pillPin=v=>v==null?`<span class="muted">…</span>`:v&2?(v&4?`<span class=
 // ====================== TAULES ORDENABLES ======================
 const TAULES={};
 function taula(id,cols,rows,o={}){TAULES[id]={cols,rows,k:o.k||(cols.find(c=>c.ord!==false)||{}).k,desc:o.desc!==false,fila:o.fila,etiqueta:o.etiqueta||""};
- return `<div class="taula-w${o.alta?" alta":""}" id="${id}" role="region" aria-label="${esc(o.etiqueta||"Taula")}" tabindex="0">${taulaHTML(id)}</div>`}
+ return `<div class="taula-w${o.alta?" alta":""}" id="${esc(id)}" role="region" aria-label="${esc(o.etiqueta||"Taula")}" tabindex="0">${taulaHTML(id)}</div>`}
 function taulaHTML(id){const T=TAULES[id],c=T.cols.find(x=>x.k===T.k),rs=[...T.rows];
  if(c){const v=r=>c.v?c.v(r):r[c.k];rs.sort((a,b)=>{const x=v(a),y=v(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;const r=(typeof x==="number"&&typeof y==="number")?x-y:String(x).localeCompare(String(y),"ca",{numeric:true});return T.desc?-r:r})}
  return `<table><thead><tr>${T.cols.map(x=>x.ord===false?`<th scope="col" class="${x.num?"num":""}">${x.t}</th>`
@@ -1059,6 +1073,7 @@ async function pintaTauler(){const tok=++TOK;
  GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
  const c=$("#contingut");c.innerHTML=esqTauler();
  benestarDe(); // el benestar es demana alhora que la resta, però va a part (tBenestar): si falla, només ho diu el seu apartat
+ fontsDiaDe();repPendentsDe(); // el mateix amb «Combos i repàs» (tCombos) i «Errors pendents de la colla» (tPendents)
  let dades;try{const [resum,act,calor,domini,fall,evo,alert]=await Promise.all(["bn_admin_resum","bn_admin_activitat","bn_admin_calor","bn_admin_domini","bn_admin_fallades","bn_admin_evolucio","bn_admin_alertes"].map(rpcT));
   dades={resum,act,calor,domini,fall,evo,alert};await preguntes()}
  catch(e){console.error(e);if(tok!==TOK)return;c.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El tauler encara no està activat a la base de dades. Mentrestant, tens les altres pantalles."):avisErr(`No s'han pogut carregar les dades del tauler (${e}).`);return}
@@ -1085,6 +1100,8 @@ async function pintaTauler(){const tok=++TOK;
   ${targeta("notes","c-6","puja","Evolució de les notes","Cada punt és un test (o examen); una línia per nen",`<div class="cv"><canvas id="gEvo" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>`)}
   ${targeta("constancia","c-6","foc","Constància","Dies que ha estudiat en aquest període i ratxa actual de dies seguits",`<div id="tCst"></div>`)}
   ${targeta("motivacio","c-12","trofeu","Repàs, boss i missions","Errors apresos al repàs i intents de boss en aquest període. Les estrelles de missions són el total acumulat de cada nen.",`<div id="tMot"></div>`)}
+  ${targeta("combos","c-12","foc","Combos i repàs","Estrelles de combo, triple combo, super combo i repàs guanyades cada dia, i de qui són. Surt de les diferències del comptador d'estrelles de cada font entre registres del mateix nen i món (cada test, joc, examen, oberta o sessió): l'estrella cau el dia d'aquell registre, i el primer registre de cada nen i món és la base. El triple combo va arribar amb la 2.9.0 i el super combo amb la 2.10.0: abans no n'hi ha.",`<div id="tCom" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  ${targeta("pendents","c-12","reinicia","Errors pendents de la colla","Per a cada món, els temes on els nens acumulen més errors per repassar: on cal reforçar. És el que hi ha desat al núvol ara mateix (només els nens amb PIN), així que no depèn del període. «Toquen avui»: el repàs del joc ja els demana avui.",`<div id="tRep" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   ${targeta("obertes","c-12","llapis","Preguntes obertes: respostes sospitoses","Nens amb textos rebutjats (massa curts, sense sentit o copiats), intents d'enganxar text o que diuen haver posat idees que el programa no ha trobat. Es compta des de la versió 2.6.0.",`<div id="tObe"></div>`)}
   ${TF.nom?targeta("temps","c-12","rellotge",`En què passa el temps ${esc(TF.nom)}`,"Segons registrats per tipus d'activitat (dades del període)",`<div class="cv"><canvas id="gTip" aria-label="Gràfic del temps per tipus d'activitat" role="img"></canvas></div>`):""}
   ${targeta("domini","c-12","diana","Domini per tema","Per a cada assignatura: quants temes té aprovats cada nen (barra) i la millor nota de test a cada tema. Passa el ratolí per una nota per veure intents i última nota.",`<div id="tDom"></div>`)}
@@ -1095,7 +1112,7 @@ async function pintaTauler(){const tok=++TOK;
  const prova=(id,f)=>{try{f()}catch(e){const el=$(id);if(el)(el.closest(".cv")||el).innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`);console.error(e)}};
  prova("#tAl",()=>tAlertes(alert));prova("#gAct",()=>gActivitat(act));prova("#tCal",()=>tCalor(calor));prova("#gEvo",()=>gEvolucio(evo));
  prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));prova("#tMot",()=>tMotivacio());prova("#tObe",()=>tObertes());if(TF.nom)prova("#gTip",()=>gTipus());
- tErrorsTaller();tBenestar();
+ tErrorsTaller();tBenestar();tCombos();tPendents();
 }
 function tAlertes(al){const e=$("#tAl");if(!al.length){e.innerHTML=buit("ok","Cap alerta. Tot en ordre.");return}
  const icT={inactiu:"son",baixa:"baixa",encallat:"mur",rapid:"llamp",pregunta:"pregunta",pendent:"safata"};
@@ -1375,6 +1392,110 @@ function gTipus(){const k=TF.nom.trim().toLowerCase(),t={"Fitxes":0,"Targetes":0
   const m={fitxa:"Fitxes",targetes:"Targetes",test:"Tests",joc:"Jocs",examen:"Exàmens",oberta:"Obertes"}[l.event];if(m)t[m]+=s});
  const ks=Object.keys(t).filter(x=>t[x]>0);if(!ks.length){const c=$("#gTip");if(c)c.parentNode.innerHTML=buit("rellotge","Encara no hi ha temps registrat per activitat.","Es compta des del 4-11-2026.");return}
  nouG("gTip",{type:"doughnut",data:{labels:ks.map(x=>`${x} (${Math.round(t[x]/60)} min)`),datasets:[{data:ks.map(x=>t[x]),backgroundColor:PAL().slice(0,ks.length),borderColor:cssV("--card"),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"}}}})}
+// ---- Combos i repàs (M3) i errors pendents de la colla (M4) · supabase/bn_admin_fonts_rep.sql (n2537 fase B pas 2) ----
+// Cada apartat té la seva crida i es carrega a part de la resta, com el Taller i el Benestar: si la funció encara no és a la base de dades
+// o falla, només ho diu el seu apartat. Tot el que ve del servidor passa per esc(); els números, per nN(); els dies, per esDia().
+let FDIA=null,REPP=null,COM_OBERT=false; // crides en memòria fins a tornar a carregar ({p,a,n,prom} i {a,prom}) i si «Les altres fonts» és desplegat
+const FONTS_M3=["combo","triple","super","repas"],CURT_M3={combo:"Combo",triple:"Triple",super:"Super",repas:"Repàs"};
+// un color per font, el mateix al gràfic i a les xifres (en tema fosc, més clar)
+const COL_F={combo:["#ea580c","#fb923c"],triple:["#9333ea","#c084fc"],super:["#ca8a04","#facc15"],repas:["#0891b2","#22d3ee"],temes:["#2563eb","#60a5fa"],jocs:["#db2777","#f472b6"],
+ examen:["#dc2626","#f87171"],obertes:["#16a34a","#4ade80"],record:["#65a30d","#a3e635"],missio:["#0d9488","#2dd4bf"],boss:["#475569","#94a3b8"]};
+const colF=k=>(Object.prototype.hasOwnProperty.call(COL_F,k)?COL_F[k]:["#64748b","#cbd5e1"])[TEMA==="fosc"?1:0];
+// noms i icones de les fonts: els de «D'on surten les estrelles» (FONTS_EST); una clau desconeguda surt tal qual (text pla: qui la pinta en HTML la passa per esc())
+const fontE=k=>FONTS_EST.find(f=>f[0]===k),nomF=k=>{const f=fontE(k);return f?f[2]:String(k)},icF=k=>{const f=fontE(k);return f?f[1]:"estrella"};
+async function rpcR(f,extra){if(DEMO)return demoFontsRepRpc(f,extra||{});const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
+ body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,...(extra||{})})});if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
+// bn_admin_fonts_dia porta el període, l'assignatura i el nen; bn_admin_rep_pendents, només l'assignatura (és l'estat d'ara i no porta noms).
+// No s'hi envia cap paràmetre que la funció no tingui: PostgREST tornaria 404. Si la crida falla, no es guarda (la propera vegada es torna a provar).
+function fontsDiaDe(){const p=PERIODE[DIES]||"7d",a=TF.assig||null,n=TF.nom.trim()||null;
+ if(!FDIA||FDIA.p!==p||FDIA.a!==a||FDIA.n!==n){const o={p,a,n};o.prom=rpcR("bn_admin_fonts_dia",{p_periode:p,p_assig:a,p_nom:n});o.prom.catch(()=>{if(FDIA===o)FDIA=null});FDIA=o}return FDIA.prom}
+function repPendentsDe(){const a=TF.assig||null;
+ if(!REPP||REPP.a!==a){const o={a};o.prom=rpcR("bn_admin_rep_pendents",{p_assig:a});o.prom.catch(()=>{if(REPP===o)REPP=null});REPP=o}return REPP.prom}
+async function tCombos(){const el=$("#tCom");if(!el)return;const tok=TOK;let d;
+ try{d=await fontsDiaDe()}
+ catch(e){console.error(e);const x=$("#tCom");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+  x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_fonts_rep.sql","L'historial de combos i repàs encara no està activat a la base de dades. La resta del tauler funciona igual."):avisErr(`No s'ha pogut carregar l'historial de combos i repàs (${e&&e.message||e}).`);return}
+ const x=$("#tCom");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+ try{const D=dadesCombos(d);x.innerHTML=htmlCombos(D);if(D.m3)gFontsDia("gCom",D,FONTS_M3);lligaAltres(x,D)}
+ catch(e){console.error(e);x.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
+// resposta {periode, dies:[{dia, k, nom, assig, f:{font: estrelles}}], total:{font: estrelles}} → xifres per font, per dia i per nen
+function dadesCombos(d){d=oB(d);const nouO=()=>Object.create(null);
+ const files=aR(d.dies).filter(r=>r&&typeof r==="object"&&!Array.isArray(r)&&esDia(r.dia)).map(r=>{const f=nouO();
+   Object.entries(oB(r.f)).forEach(([k,v])=>{const n=nN(v);if(n!=null&&n>0)f[k]=n});const nom=String(r.nom??r.k??"").trim()||"?";
+   return {dia:r.dia,k:String(r.k??nom).trim().toLowerCase(),nom,f}}).filter(r=>Object.keys(r.f).length);
+ // el total del període és el del servidor (compta encara que la llista s'hagi retallat a 5.000 files); si no n'hi ha, la suma de les files
+ const tot=nouO(),T=d.total&&typeof d.total==="object"&&!Array.isArray(d.total)?d.total:null;
+ if(T)Object.entries(T).forEach(([k,v])=>{const n=nN(v);if(n!=null&&n>0)tot[k]=n});else files.forEach(r=>Object.entries(r.f).forEach(([k,v])=>{tot[k]=(tot[k]||0)+v}));
+ const perDia=nouO(),perNen=new Map();
+ files.forEach(r=>{const x=perDia[r.dia]||(perDia[r.dia]=nouO());let n=perNen.get(r.k);if(!n){n={k:r.k,nom:r.nom,f:nouO()};perNen.set(r.k,n)}
+  Object.entries(r.f).forEach(([k,v])=>{x[k]=(x[k]||0)+v;n.f[k]=(n.f[k]||0)+v})});
+ // l'eix del gràfic: tots els dies seguits, des del començament del període (o del primer dia amb estrelles) fins avui, també els que no en tenen.
+ // El servidor compta dies sencers des de la mitjanit del dia on comença el període: «7 dies» va d'avui fa 7 dies fins avui.
+ const ds=Object.keys(perDia).sort(),avui=diaMad(),periode=String(d.periode||PERIODE[DIES]||""),ini={avui,"7d":sumaD(avui,-7),"30d":sumaD(avui,-30)}[periode];
+ let dies=ds;if(ds.length){const a=ini&&ini<ds[0]?ini:ds[0],b=ds[ds.length-1]>avui?ds[ds.length-1]:avui;if(difD(b,a)<=400){dies=[];for(let x=a;x<=b;x=sumaD(x,1))dies.push(x)}}
+ const sum=ks=>ks.reduce((s,k)=>s+(tot[k]||0),0),coneg=FONTS_EST.map(f=>f[0]);
+ const altres=Object.keys(tot).filter(k=>!FONTS_M3.includes(k)).sort((x,y)=>(coneg.includes(x)?coneg.indexOf(x):99)-(coneg.includes(y)?coneg.indexOf(y):99)||tot[y]-tot[x]);
+ return {periode,tot,perDia,perNen:[...perNen.values()],dies,altres,m3:sum(FONTS_M3),totAll:sum(Object.keys(tot)),retallat:aR(d.dies).length>=5000}}
+function htmlCombos(D){
+ if(!D.totAll)return buit("foc",TF.nom||TF.assig?"Cap estrella de combo ni de repàs amb aquests filtres.":"Cap estrella de combo ni de repàs en aquest període.","Prova amb un període més llarg (30 dies o Curs). El primer registre de cada nen i món és la base: no compta.");
+ const titolP={avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[D.periode]||"";
+ const kp=(k,t,v,s)=>`<div class="kpi${k?" fr-k":""}"${k?` data-font="${esc(k)}"`:""}><div class="kpi-t">${k?`<span class="punt" style="background:${colF(k)}" aria-hidden="true"></span>`:""}${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
+ const nensF=k=>D.perNen.filter(n=>n.f[k]>0).length,diesF=k=>D.dies.filter(d=>D.perDia[d]&&D.perDia[d][k]>0).length;
+ const kpis=`<div class="kpis">${FONTS_M3.map(k=>kp(k,esc(nomF(k)),D.tot[k]||0,D.tot[k]?`${pl(nensF(k),"nen","nens")} · ${pl(diesF(k),"dia","dies")}`:"cap en aquest període")).join("")}
+  ${kp(null,"Totes les fonts",D.totAll,`${Math.round(D.m3*100/D.totAll)} % de combos i repàs`)}</div>`;
+ const graf=D.m3?`<div class="cv"><canvas id="gCom" role="img" aria-label="Gràfic de barres apilades: estrelles de combo, triple combo, super combo i repàs de cada dia"></canvas></div>`
+  :buit("foc","Cap estrella de combo, triple combo, super combo ni repàs en aquest període.",D.altres.length?"Les altres fonts són a sota.":"");
+ // la resta de fonts (tests, jocs, rècords, missions, boss…), plegada: un altre gràfic (es dibuixa en obrir-la) i el total de cada una
+ const totA=D.altres.reduce((s,k)=>s+D.tot[k],0),mxA=Math.max(1,...D.altres.map(k=>D.tot[k]));
+ const altres=D.altres.length?`<details class="mes fr-altres"${COM_OBERT?" open":""}><summary>Les altres fonts: ${pl(totA,"estrella","estrelles")} (${D.altres.slice(0,3).map(k=>esc(nomF(k).toLowerCase())).join(", ")}${D.altres.length>3?"…":""})</summary>
+   <div class="cv"><canvas id="gComA" role="img" aria-label="Gràfic de barres apilades: estrelles de les altres fonts de cada dia"></canvas></div>
+   ${D.altres.map(k=>`<div class="fest" data-font="${esc(k)}"><span>${ic(icF(k))}${esc(nomF(k))}</span><div class="bfe"><i style="width:${Math.round(D.tot[k]*100/mxA)}%;background:${colF(k)}"></i></div><b>${D.tot[k]}</b></div>`).join("")}</details>`:"";
+ // per nen: les estrelles de cada font en el període; el nom obre la fitxa si el nen té registre en aquest període
+ const hi=new Set(LOGS.map(clauNen)),z=v=>v?String(v):`<span class="muted">0</span>`;
+ const rows=D.perNen.map(n=>({k:n.k,nom:n.nom,f:n.f,m3:FONTS_M3.reduce((s,k)=>s+(n.f[k]||0),0),tot:Object.values(n.f).reduce((s,v)=>s+v,0)}));
+ const cols=[{k:"nom",t:"Nen",cls:"nw",v:r=>r.nom,h:r=>hi.has(r.k)?`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}" title="Obre la fitxa de ${esc(r.nom)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`:`<span class="nen">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></span>`},
+  ...FONTS_M3.map(k=>({k,t:CURT_M3[k],num:true,v:r=>r.f[k]||0,h:r=>z(r.f[k]||0)})),{k:"m3",t:"Combos i repàs",num:true,h:r=>`<b>${r.m3}</b>`},{k:"tot",t:"Totes les fonts",num:true}];
+ const prev=TAULES.tComN;
+ return kpis+`<h3 class="grup">Per dia · ${esc(titolP)}</h3>`+graf+altres+`<h3 class="grup">Per nen</h3>`+taula("tComN",cols,rows,{k:prev?prev.k:"m3",desc:prev?prev.desc:true,etiqueta:"Combos i repàs per nen"})+
+  (D.retallat?`<p class="sub" style="margin:8px 0 0">Hi ha moltes files: el gràfic i la taula només en mostren les primeres 5.000 (les xifres de dalt sí que ho compten tot).</p>`:"")}
+// barres apilades per dia, una sèrie per font (els noms i els colors són constants del panell: el gràfic no pinta res del servidor com a HTML)
+function gFontsDia(id,D,ks){const o=GOPC();o.scales.x.stacked=true;o.scales.x.grid={display:false};o.scales.y.stacked=true;o.scales.y.ticks.precision=0;
+ o.scales.y.title={display:true,text:"estrelles",color:cssV("--muted")};o.interaction={mode:"index",intersect:false};
+ o.plugins={tooltip:{filter:it=>it.raw>0,callbacks:{label:it=>`${it.dataset.label}: ${it.raw} ⭐`,footer:its=>its.length>1?`Total: ${its.reduce((s,i)=>s+i.raw,0)} ⭐`:""}}};
+ nouG(id,{type:"bar",data:{labels:D.dies.map(d=>diaC(d+"T12:00")),datasets:ks.map(k=>({label:nomF(k),backgroundColor:colF(k),borderRadius:3,maxBarThickness:44,data:D.dies.map(d=>(D.perDia[d]&&D.perDia[d][k])||0)}))},options:o})}
+function lligaAltres(el,D){const det=el.querySelector("details.fr-altres");if(!det)return;
+ const fes=()=>{if(det.open&&!det.dataset.g){det.dataset.g="1";gFontsDia("gComA",D,D.altres)}};
+ det.addEventListener("toggle",()=>{COM_OBERT=det.open;fes()});fes()}
+async function tPendents(){const el=$("#tRep");if(!el)return;const tok=TOK;let d;
+ try{d=(await Promise.all([repPendentsDe(),preguntes()]))[0]}
+ catch(e){console.error(e);const x=$("#tRep");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+  x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_fonts_rep.sql","Els errors pendents de la colla encara no estan activats a la base de dades. La resta del tauler funciona igual."):avisErr(`No s'han pogut carregar els errors pendents de la colla (${e&&e.message||e}).`);return}
+ const x=$("#tRep");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+ try{const r=htmlPendents(d);x.innerHTML=r.h;if(r.PL)r.PL.lliga(x)}
+ catch(e){console.error(e);x.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
+// resposta [{assig, tid, n, nens, avui, preguntes:[{q, n}]}] (tid null = errors sense tema, com els de «Troba l'error») → un bloc plegable per món
+function htmlPendents(d){const fa=TF.assig;
+ const L=(Array.isArray(d)?d:aR(oB(d).temes)).filter(r=>r&&typeof r==="object"&&!Array.isArray(r)).map(r=>{const a=r.assig==null||r.assig===""?"?":String(r.assig),tid=r.tid==null||r.tid===""?null:String(r.tid),T=titols().get(a);
+   const pr=aR(r.preguntes).filter(q=>q&&typeof q==="object"&&!Array.isArray(q)).map(q=>({q:q.q==null||q.q===""?"—":String(q.q),n:nN(q.n)||0})).filter(q=>q.n>0).sort((x,y)=>y.n-x.n).slice(0,5);
+   return {assig:a,tid,tit:tid==null?"Sense tema":titolTema(a,tid),conegut:tid!=null&&!!T&&T.has(tid),n:nN(r.n)||0,nens:nN(r.nens)||0,avui:nN(r.avui)||0,pr}})
+  .filter(r=>r.n>0&&(!fa||r.assig===fa));
+ const nota=TF.nom.trim()?`<p class="fr-nota">${ic("info")}<span>És de tota la colla: el filtre de nen no s'hi aplica (la resposta no porta noms, només quants nens).</span></p>`:"";
+ if(!L.length)return {h:nota+buit("ok",fa?"Cap error pendent de repàs en aquest món.":"Cap error pendent de repàs.","Només hi surten els nens amb PIN: és el que tenen desat al núvol.")};
+ const sumA=a=>L.filter(r=>r.assig===a).reduce((s,r)=>s+r.n,0);
+ const assigs=[...new Set(L.map(r=>r.assig))].sort((x,y)=>sumA(y)-sumA(x)||nomAssig(x).localeCompare(nomAssig(y),"ca")),PL=plegables("bn_admin_rep",assigs);
+ const N=L.reduce((s,r)=>s+r.n,0),AV=L.reduce((s,r)=>s+r.avui,0),nT=L.filter(r=>r.tid!=null).length;
+ const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
+ const kpis=`<div class="kpis" style="margin-bottom:16px">${kp("Errors pendents",N,`a ${pl(assigs.length,"món","mons")}`)}${kp("Toquen avui",AV,`${Math.round(AV*100/N)} % dels pendents`)}${kp("Temes amb errors",nT,L.length>=300?"es mostren els 300 amb més errors":"")}</div>`;
+ const cols=mx=>[{k:"tema",t:"Tema",cls:"tmn",v:r=>r.tid==null?"￿":r.tit,h:r=>r.tid==null?`<span class="q-t">Sense tema</span><span class="nv-id">errors de jocs com «Troba l'error»</span>`:`<span class="q-t">${esc(r.tit)}</span>${r.conegut?"":`<span class="nv-id">no és a preguntes.json</span>`}`},
+  {k:"n",t:"Errors pendents",num:true,h:r=>`<span class="fr-l">Errors pendents</span>${mini(r.n,mx,"bad",String(r.n))}`},{k:"nens",t:"Nens",num:true,h:r=>`<span class="fr-l">Nens</span>${r.nens}`},
+  {k:"avui",t:"Toquen avui",num:true,h:r=>`<span class="fr-l">Toquen avui</span>${r.avui?`<span class="pill warn">${r.avui}</span>`:`<span class="muted">0</span>`}`},
+  {k:"pr",t:"Preguntes més repetides",cls:"tfa",ord:false,h:r=>`<span class="fr-l">Preguntes més repetides</span>`+(r.pr.length?`<ul class="nv-f">${r.pr.map(q=>`<li><b>×${q.n}</b><span class="nv-q" title="${esc(q.q)}">${esc(q.q)}</span></li>`).join("")}</ul>`:`<span class="muted">—</span>`)}];
+ const h=assigs.map((a,i)=>{const rs=L.filter(r=>r.assig===a),n=sumA(a),av=rs.reduce((s,r)=>s+r.avui,0),nt=rs.filter(r=>r.tid!=null).length,top=rs.reduce((m,r)=>r.n>m.n?r:m,rs[0]),mx=Math.max(1,...rs.map(r=>r.n));
+  return PL.bloc(a,`${pl(nt,"tema","temes")}${nt<rs.length?" i errors sense tema":""} · ${pl(n,"error pendent","errors pendents")} · ${pl(av,"toca","toquen")} avui`,"",
+   `<span class="dm-bar" aria-hidden="true"><i style="width:${Math.round(top.n*100/n)}%;background:var(--bad)"></i></span><small><span class="dm-pit" title="${esc(top.tit)}">Més: <b>${esc(top.tit)}</b></span><span>${top.n}</span></small>`,
+   taula("tRepT-"+i,cols(mx),rs,{k:"n",etiqueta:`Errors pendents de la colla · ${nomAssig(a)}`}))}).join("");
+ const lleg=`<div class="llegenda"><span><b>×3</b>: la tenen pendent 3 nens.</span><span><b>Toquen avui</b>: el repàs del joc ja els demana (data de repàs d'avui o d'abans).</span><span><b>Sense tema</b>: errors que el joc no lliga a cap tema, com els de «Troba l'error».</span></div>`;
+ return {h:nota+kpis+PL.eines()+h+lleg,PL}}
 
 // ====================== CÒPIES DE SEGURETAT (supabase/bn_copies.sql) ======================
 // Còpies de les dades de Bona Nota dins de la mateixa base de dades: automàtiques cada nit, abans d'esborrar o canviar res
@@ -1718,6 +1839,31 @@ function demoBenestarRpc(f,x){if(f!=="bn_admin_benestar")throw "demo";const avui
  const mons=[{assig:"comarques",dia0:d(-8),examen:null,vigilies:[d(-1)],normal:25},{assig:"divisibilitat",dia0:d(-6),examen:d(2),vigilies:[],normal:30},{assig:"catala",dia0:d(-5),examen:null,vigilies:[avui],normal:18},
   {assig:"castellano",dia0:d(-1),examen:null,vigilies:[],normal:null},{assig:"biogeo",dia0:d(-10),examen:null,vigilies:[],normal:20},{assig:"socials",dia0:d(-21),examen:null,vigilies:[d(-14)],normal:22}];
  return {periode:p,mons,nens}}
+// demo de «Combos i repàs» i «Errors pendents de la colla»: surten del mateix registre inventat (DEMO_L), perquè quadrin amb la resta del panell.
+// Les estrelles de cada sessió es compten amb el que hi va passar: repàs = 2 per error après (els de «Repàs, boss i missions»), boss = 10 si el guanya,
+// combo i super pels tests gairebé perfectes, triple per les obertes bones. El triple i el super només surten als últims 6 dies (la 2.9.0 i la 2.10.0 són noves).
+// Els errors pendents són els de «Al núvol» (demoMon) de tots els nens amb PIN i estat desat.
+function demoFontsRepRpc(f,x){
+ if(f==="bn_admin_fonts_dia"){const p=x.p_periode||"30d",des=diaMad(demoDesde(p)),k0=String(x.p_nom||"").trim().toLowerCase(),a0=x.p_assig||"",nou=Date.now()-6*864e5,ses=new Map(),millor={};
+  DEMO_L.forEach(l=>{const d=l.detall||{},k=clauNen(l);let s=ses.get(l.sessio);if(!s){s={k,nom:l.nom,assig:l.assig,dia:diaMad(l.ts),f:{}};ses.set(l.sessio,s)}
+   const add=(c,v)=>{if(v>0)s.f[c]=(s.f[c]||0)+v},recent=Date.parse(l.ts)>=nou;
+   if(l.event==="test"){add("temes",d.bones||0);const mk=k+"|"+l.assig+"|"+d.tema;if(millor[mk]!=null&&d.pc>millor[mk])add("record",1);millor[mk]=Math.max(millor[mk]||0,d.pc);
+    add("combo",d.bones>=5?2:d.bones>=4?1:0);if(recent&&d.bones>=6)add("super",3)}
+   else if(l.event==="joc"){if(d.joc==="repas")add("repas",(+d.apr||0)*2);else if(d.joc==="boss")add("boss",d.guanya?10:0);else add("jocs",Math.round((d.enc||0)/3))}
+   else if(l.event==="examen")add("examen",d.pc>=50?Math.round(d.pc/25):0);
+   else if(l.event==="oberta"){add("obertes",d.pc>=70?2:d.pc>=40?1:0);if(recent&&d.pc>=60&&!d.rebutjat)add("triple",3)}
+   else if(l.event==="temps"){s.dia=diaMad(l.ts);if(s.f.temes&&(s.f.jocs||s.f.repas))add("missio",2)}});
+  const G=new Map();
+  ses.forEach(s=>{if(s.dia<des||(a0&&s.assig!==a0)||(k0&&s.k!==k0)||!Object.keys(s.f).length)return;const key=s.dia+"|"+s.k+"|"+s.assig;let g=G.get(key);if(!g){g={dia:s.dia,k:s.k,nom:s.nom,assig:s.assig,f:{}};G.set(key,g)}
+   Object.entries(s.f).forEach(([c,v])=>{g.f[c]=(g.f[c]||0)+v})});
+  const dies=[...G.values()].sort((a,b)=>a.dia.localeCompare(b.dia)||a.k.localeCompare(b.k)),total={};dies.forEach(g=>Object.entries(g.f).forEach(([c,v])=>{total[c]=(total[c]||0)+v}));
+  return {periode:p,dies,total}}
+ if(f==="bn_admin_rep_pendents"){const a0=x.p_assig||"",av=avuiUTC(),G=new Map();
+  Object.keys(DEMO_PERF).forEach(k=>{const P=DEMO_PERF[k];if(P.res)return;let as=[...new Set(DEMO_L.filter(l=>clauNen(l)===k).map(l=>l.assig))].sort();if(P.mons)as=as.slice(0,P.mons);
+   as.filter(a=>!a0||a===a0).forEach(a=>demoMon(k,a).rep.forEach(r=>{const key=a+"|"+(r.tid==null?"":r.tid);let g=G.get(key);if(!g){g={assig:a,tid:r.tid==null?null:r.tid,n:0,ks:new Set(),avui:0,q:new Map()};G.set(key,g)}
+    g.n++;g.ks.add(k);if(r.prox<=av)g.avui++;g.q.set(r.q,(g.q.get(r.q)||0)+1)}))});
+  return [...G.values()].map(g=>({assig:g.assig,tid:g.tid,n:g.n,nens:g.ks.size,avui:g.avui,preguntes:[...g.q].sort((p,q)=>q[1]-p[1]).slice(0,5).map(([q,n])=>({q,n}))})).sort((p,q)=>q.n-p.n||p.assig.localeCompare(q.assig)).slice(0,300)}
+ throw "demo"}
 function demoDesde(p){const n=new Date();if(p==="avui"){n.setHours(0,0,0,0);return n.getTime()}if(p==="30d")return Date.now()-30*864e5;if(p==="curs"){const y=n.getMonth()<8?n.getFullYear()-1:n.getFullYear();return new Date(y,8,1).getTime()}return Date.now()-7*864e5}
 const demoLogs=(des,fins)=>{const k=TF.nom.trim().toLowerCase();return DEMO_L.filter(l=>{const t=Date.parse(l.ts);return t>=des&&t<fins&&(!TF.assig||l.assig===TF.assig)&&(!k||clauNen(l)===k)})};
 const demoResp=ls=>{const r=[];ls.forEach(l=>{if(!["test","examen","joc"].includes(l.event))return;(l.detall.q||[]).forEach(x=>{const p=x.split(":");r.push({ts:l.ts,assig:l.assig,k:clauNen(l),nom:l.nom,qid:p[0],ok:p[1]==="1",segons:+p[2],op:p[3]==="-"?null:p[3],event:l.event})})});return r};

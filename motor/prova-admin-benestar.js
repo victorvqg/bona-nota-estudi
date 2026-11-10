@@ -68,6 +68,9 @@ function respon(st, f, cos) {
  if (f === "bn_admin_usuari" && cos.p_accio === "estat") return 0;
  if (f === "bn_admin_resum") return RESUM(cos.p_periode);
  if (["bn_admin_activitat", "bn_admin_calor", "bn_admin_domini", "bn_admin_fallades", "bn_admin_evolucio", "bn_admin_alertes", "bn_admin_errors_taller"].includes(f)) return [];
+ // les targetes del pas 2 (bn_admin_fonts_rep.sql) també es carreguen al tauler: respostes buides perquè no surtin avisos de més
+ if (f === "bn_admin_fonts_dia") return { periode: cos.p_periode || "30d", dies: [], total: {} };
+ if (f === "bn_admin_rep_pendents") return [];
  if (!st.sql) return undefined;
  if (f === "bn_admin_benestar") { const k = String(cos.p_nom || "").trim().toLowerCase(); return { periode: cos.p_periode || "7d", mons: st.d.mons(st), nens: st.d.nens.filter(n => !k || n.k === k) } }
  if (f === "bn_admin_examen_desa") { if (cos.p_data == null) delete st.examens[cos.p_assig]; else st.examens[cos.p_assig] = cos.p_data; return Object.entries(st.examens).map(([assig, data]) => ({ assig, data })) }
