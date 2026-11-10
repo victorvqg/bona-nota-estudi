@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.9.0 · 2026-11-10
+
+### Afegit
+- ✍️ Triple combo a les preguntes obertes: 3 respostes bones seguides el mateix dia donen +3 ⭐ i 6 en donen +5 (després es torna a començar), fins a 8 ⭐ al dia per món. Una resposta és bona si puntua, té com a mínim el 60 % de les idees i està explicada amb frases.
+- Resposta de 10: si una oberta té totes les idees, +1 ⭐ més.
+- La targeta «On guanyes les estrelles» i el tauler (font «Triple combo») ja ho expliquen.
+
+### Canviat
+- Si una oberta té prou idees però és una llista de paraules, el programa demana «explica-ho amb frases» i la ratxa no avança.
+
 ## 2.8.3 · 2026-11-09
 
 ### Canviat

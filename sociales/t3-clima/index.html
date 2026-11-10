@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="3f43cc54c2",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f08c2b7c48",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -571,7 +571,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.8.3</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.9.0</small></div>
 
 <script src="../../sprites.js?v=15744077"></script>
 <script>
@@ -962,7 +962,7 @@ function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO
  const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
  document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
 // com es guanyen les estrelles (una sola llista per a les dues targetes; issue #13)
-const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["🔥","combo ×5 +1 · ×10 +2"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +10"]];
+const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["✍️","triple combo ×3 +3 · ×6 +5 · resposta de 10 +1"],["🔥","combo ×5 +1 · ×10 +2"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +10"]];
 // barra de ratxa del test: 5 caselles fins al proper regal del combo
 function ratxaHtml(){const n=COMBO%5;return `<span class="ratxa" aria-label="Combo ×${COMBO}">${COMBO>=1?`🔥 ×${COMBO} `:""}${[0,1,2,3,4].map(i=>`<i class="${i<n?"on":""}"></i>`).join("")}</span>`}
 const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["triple","✍️","Triple combo (obertes)"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
