@@ -89,11 +89,19 @@ function servidor() {
   ok(b && !b.pendent && b.sk === "piro", "i treu la marca de pendent");
   ok((await t.p.textContent("#fSk")) === "PIRO", "la fitxa surt amb el perfil guardat"); await t.ctx.close() }
 
- console.log("4) PIN incorrecte");
+ console.log("4) PIN incorrecte (tant per HTTP 400 com per codi normal sense raise, issue #33)");
  { const { p, ctx, asp } = await obre(SEED, { bn_aspecte_desa: { status: 400, body: '{"message":"pin incorrecte"}' } });
   await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
-  ok((await asp()).prova.pendent === true, "queda pendent");
-  ok(/PIN/.test(await p.textContent("#avis")) && (await p.$("#avis a")) !== null, "avís de PIN amb enllaç a la portada"); await ctx.close() }
+  ok((await asp()).prova.pendent === true, "queda pendent (HTTP 400)");
+  ok(/PIN/.test(await p.textContent("#avis")) && (await p.$("#avis a")) !== null, "avís de PIN amb enllaç a la portada (HTTP 400)"); await ctx.close() }
+ { const { p, ctx, asp } = await obre(SEED, { bn_aspecte_desa: "pin" });
+  await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
+  ok((await asp()).prova.pendent === true, "queda pendent (codi 'pin' sense raise)");
+  ok(/PIN/.test(await p.textContent("#avis")) && (await p.$("#avis a")) !== null, "avís de PIN amb enllaç a la portada (codi 'pin')"); await ctx.close() }
+ { const { p, ctx, asp } = await obre(SEED, { bn_aspecte_desa: { ok: false, codi: "pin" } });
+  await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
+  ok((await asp()).prova.pendent === true, "queda pendent (codi JSON {ok:false,codi:'pin'})");
+  ok(/PIN/.test(await p.textContent("#avis")) && (await p.$("#avis a")) !== null, "avís de PIN amb enllaç a la portada (codi JSON)"); await ctx.close() }
 
  console.log("5) Sorpresa");
  { const { p, ctx } = await obre(SEED, { bn_aspecte_desa: "ok" });

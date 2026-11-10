@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="7a351ef31b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="8cf5f8b8c8",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -805,7 +805,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.17.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.17.1</small></footer>
 
 <script src="sprites.js?v=fd512289"></script>
 <script>
@@ -882,7 +882,7 @@ function pinsP(){try{return JSON.parse(localStorage.getItem('bn_pins')||'{}')||{
 function nomsDispositiu(){const m={};try{(JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[]).forEach(n=>{m[n.trim().toLowerCase()]=n});
  for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c))continue;Object.keys(JSON.parse(localStorage.getItem(c)||'{}')||{}).forEach(n=>{m[n.trim().toLowerCase()]=m[n.trim().toLowerCase()]||n})}}catch(e){}return m}
 function rpcP(f,body){return fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:JSON.stringify(body)})
- .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa"}return t?JSON.parse(t):null})}
+ .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa"}const j=t?JSON.parse(t):null;if(j==="pin"||(j&&typeof j==="object"&&j.codi==="pin")||(f==="bn_progres_desa"&&j===-3))throw "pin";if(j==="bloc"||(j&&typeof j==="object"&&j.codi==="bloc"))throw "bloc";return j})}
 // PIN = 4 xifres + 1 lletra al final (ex. 4587R), sempre en MAJÚSCULES. Els antics (4 xifres) entren i es demana canviar-los.
 const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
 function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
