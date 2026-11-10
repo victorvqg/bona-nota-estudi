@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="cedfee48a3",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="69d0ac5d40",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -290,7 +290,7 @@ body.suau *,body.suau *::before,body.suau *::after{animation:none!important;tran
  <a class="en-bt" href="../">ANAR A LA PORTADA ▶</a>
 </div>
 
-<footer>Bona Nota · el teu perfil es guarda amb el teu nom i PIN <small class="bn-versio">versió 2.15.0</small></footer>
+<footer>Bona Nota · el teu perfil es guarda amb el teu nom i PIN <small class="bn-versio">versió 2.16.0</small></footer>
 
 <script src="../sprites.js?v=fd512289"></script>
 <script>
@@ -371,6 +371,13 @@ const rpcP=(f,body)=>fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc
  .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":"xarxa"}return t?JSON.parse(t):null});
 const pinDe=nom=>(lsJ("bn_pins",{})||{})[nom.trim().toLowerCase()]||"";
 const AMB_XARXA=/^https?:/.test(location.protocol)&&!DEMO;
+// embut d'alta (M7 · n2537): apunta el pas «perfil» quan el nen desa el perfil arcade (sense PIN ni dades personals)
+const SESSIO_ALTA=Math.random().toString(36).slice(2,12);
+function aparellAlta(){let a=ls("bn_aparell","");if(!a){a=Math.random().toString(36).slice(2,12);try{localStorage.setItem("bn_aparell",a)}catch(e){a="?"}}return a}
+function logAltaPerfil(nom){if(!AMB_XARXA||window.BN_NO_LOG||!nom)return;
+ try{fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/bn_log",{method:"POST",keepalive:true,
+  headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json","Prefer":"return=minimal"},
+  body:JSON.stringify({assig:"portada",nom:String(nom).slice(0,40),sessio:SESSIO_ALTA,aparell:aparellAlta().slice(0,40),event:"alta",detall:{pas:"perfil",ok:1}})}).catch(()=>{})}catch(e){}}
 
 // ====================== SO (curt, respecta 🔇 i el volum dels mons) ======================
 const soOk=()=>ls("bn_vol","3")!=="0"&&ls("bn_so","1")!=="0";
@@ -455,15 +462,15 @@ async function desa(){const bt=$("btDesa");if(bt.getAttribute("aria-disabled")==
  const pin=pinDe(NOM);let res="local";
  if(DEMO)res="ok";
  else if(pin&&AMB_XARXA){try{res=await rpcP("bn_aspecte_desa",{p_nom:NOM,p_pin:pin,p_aspecte:{av:a.av||undefined,sk:a.sk||undefined,v:a.v||""}})}catch(m){res=m}}
- if(res==="ok"){desaAspecteLocal(NOM,a,false);avis("")}
+ if(res==="ok"){desaAspecteLocal(NOM,a,false);logAltaPerfil(NOM);avis("")}
  else if(res==="pin")avis(`🔐 El PIN guardat ja no serveix. <a href="../">Torna a entrar a la portada</a> amb el PIN nou i el perfil es pujarà sol.`);
  else if(res==="bloc")avis("⏳ Massa intents. Espera 15 minuts: el perfil queda guardat en aquest aparell.");
- else avis("📵 Guardat en aquest aparell. Es pujarà sol quan hi hagi connexió.");
+ else{logAltaPerfil(NOM);avis("📵 Guardat en aquest aparell. Es pujarà sol quan hi hagi connexió.")}
  pintaFitxa(false);bt.classList.add("ok");bt.textContent="GUARDAT! ✓";bt.setAttribute("aria-disabled","false");setTimeout(()=>{if(bt.classList.contains("ok"))bt.textContent="VEURE'M AL RÀNQUING →"},SUAU?600:1500);
  toast("GUARDAT!");pluja();soTada();viu(res==="ok"?"Perfil guardat":"Perfil guardat en aquest aparell")}
 // pujades pendents (desades sense connexió o abans d'aplicar l'SQL): en silenci, cada cop que s'obre la pàgina
 function reintentaPendents(){const e=aspecteDe(NOM),pin=pinDe(NOM);if(!e||!e.pendent||!pin||!AMB_XARXA)return;
- rpcP("bn_aspecte_desa",{p_nom:NOM,p_pin:pin,p_aspecte:{av:e.av,sk:e.sk,v:e.v||""}}).then(r=>{if(r==="ok")desaAspecteLocal(NOM,e,false)}).catch(()=>{})}
+ rpcP("bn_aspecte_desa",{p_nom:NOM,p_pin:pin,p_aspecte:{av:e.av,sk:e.sk,v:e.v||""}}).then(r=>{if(r==="ok"){desaAspecteLocal(NOM,e,false);logAltaPerfil(NOM)}}).catch(()=>{})}
 
 // ====================== ARRENCADA ======================
 if(!NOM){$("sense").hidden=false;$("senseAv").innerHTML=bnSpr("owl");$("accions").hidden=true;$("qui").textContent="";}

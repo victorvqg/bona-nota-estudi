@@ -128,7 +128,7 @@ begin
 
   -- mons: dia 0, data d'examen, vigílies (la data mana; si no, el pic del grup) i el dia normal
   with mm as (
-    select distinct x.assig from public.bn_log x where x.ts >= v_d0 and x.ts < v_fins
+    select distinct x.assig from public.bn_log x where x.ts >= v_d0 and x.ts < v_fins and x.event <> 'alta'
     union
     select e.assig from bn_priv.examens e
   ),
@@ -187,7 +187,7 @@ begin
   l as (    -- registres que calen (primer pel temps: índex bn_log_ts), del nen triat si n'hi ha
     select x.ts, x.assig, x.nom, lower(trim(x.nom)) k, x.aparell, x.event, x.detall, x.ts at time zone 'Europe/Madrid' lt
     from public.bn_log x
-    where x.ts >= v_dmin and x.ts < v_fins and (v_kk is null or lower(trim(x.nom)) = v_kk)
+    where x.ts >= v_dmin and x.ts < v_fins and x.event <> 'alta' and lower(trim(x.nom)) <> '_alta' and (v_kk is null or lower(trim(x.nom)) = v_kk)
   ),
   lp as (select l.* from l where l.ts >= v_d0),   -- només el període
   tm as (   -- temps del període: cada event és un tram [ini, fi] de s segons d'un aparell
@@ -252,7 +252,7 @@ begin
   ia as (   -- com l'alerta «inactiu»: ha vingut els últims 30 dies, però no els últims 3
     select lower(trim(x.nom)) k, max(x.nom) nom, max(x.ts) ult
     from public.bn_log x
-    where x.ts >= v_ara - interval '30 days' and x.ts < v_fins and (v_kk is null or lower(trim(x.nom)) = v_kk)
+    where x.ts >= v_ara - interval '30 days' and x.ts < v_fins and x.event <> 'alta' and lower(trim(x.nom)) <> '_alta' and (v_kk is null or lower(trim(x.nom)) = v_kk)
     group by 1 having max(x.ts) < v_ara - interval '3 days'
   ),
   xt as (

@@ -60,6 +60,10 @@ jobs:
         run: node motor/prova-admin-fonts-rep-sql.js
       - name: Prova de «Combos i repàs» i «Errors pendents de la colla» al tauler (amb Supabase simulat)
         run: node motor/prova-admin-fonts-rep.js
+      - name: Prova de l'embut d'alta a la base de dades (supabase/bn_admin_alta.sql dins de PGlite)
+        run: node motor/prova-admin-alta-sql.js
+      - name: Prova dels nivells al tauler i l'embut d'alta (amb Supabase simulat)
+        run: node motor/prova-admin-alta.js
       - name: Prova automàtica de cada món
         run: |
           cd motor

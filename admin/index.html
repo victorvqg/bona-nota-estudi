@@ -530,7 +530,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.15.0";
+const VERSIO_ADMIN="2.16.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -634,7 +634,7 @@ function avatar(nom,cls){const k=String(nom||"").trim().toLowerCase();let h=7;fo
  return `<span class="av${cls?" "+cls:""}" aria-hidden="true" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${sk}</span>`}
 // aspectes de tots els nens (lectura pública, la mateixa que fa el rànquing); si falla, es queden els animals calculats pel nom
 async function carregaAspectes(){try{const r=await fetch(API.replace("bn_admin_logs","bn_aspectes"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:"{}"});if(!r.ok)return;const m={};(await r.json()).forEach(x=>{if(x&&x.nom&&x.aspecte&&typeof x.aspecte==="object")m[x.nom.trim().toLowerCase()]=x.aspecte});ASPECTES=m}catch(e){}}
-const nenH=nom=>`<span class="nen">${avatar(nom)}<span>${esc(nom)}</span></span>`;
+const nenH=nom=>String(nom||"").trim().toLowerCase()==="_alta"?`<span class="muted">Aparell (abans de perfil)</span>`:`<span class="nen">${avatar(nom)}<span>${esc(nom)}</span></span>`;
 
 // ====================== PECES COMUNES: avisos, buit, esquelets, diàlegs ======================
 function toast(txt,tipus){const t=document.createElement("div");t.className="toast"+(tipus==="avis"?" avis-t":tipus==="err"?" err-t":"");
@@ -673,8 +673,9 @@ function login(msg){$("#shell").hidden=true;const w=$("#loginWrap");w.hidden=fal
 let IDS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN">sense PIN</span>`;
 function mostraApp(){$("#loginWrap").hidden=true;$("#loginWrap").innerHTML="";$("#shell").hidden=false;document.body.classList.toggle("demo",DEMO);$("#demoBar").hidden=!DEMO}
 async function carrega(){
- ESTATS={};NUV=null;ALTES=null;BEN=null;FDIA=null;REPP=null;
+ ESTATS={};NUV=null;ALTES=null;EMBUT=null;BEN=null;FDIA=null;REPP=null;
  if(!$("#shell").hidden&&VISTA!=="tauler")$("#contingut").innerHTML=esqTaula();
+ await carregaRegles();
  if(DEMO){await preguntes();demoInit();LOGS=demoLogsDies(DIES);IDS=demoIds();mostraApp();ACT=new Date();pinta();return true}
  try{const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:DIES})});
   if(!r.ok){CRED=null;sessionStorage.removeItem("bn_admin");login(r.status===404?"El panell encara no està activat a la base de dades.":"Correu o contrasenya incorrectes.");return false}
@@ -710,13 +711,14 @@ function muntaShell(){
 function tancaMenu(){document.body.classList.remove("menu-obert");const b=$("#obreMenu");if(b)b.setAttribute("aria-expanded","false")}
 function marcaMenu(){const v=VISTA==="fitxa"?"nens":VISTA;$$("#nav .nav-b").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")})}
 function pintaFiltres(){
- const as=[...new Set([...Object.keys(ASSIGS),...LOGS.map(l=>l.assig)])];
- const noms=[...new Map(LOGS.map(l=>[clauNen(l),l.nom])).values()].sort((a,b)=>a.localeCompare(b,"ca"));
+ const ls=LOGS.filter(l=>l.event!=="alta"&&clauNen(l)!=="_alta");
+ const as=[...new Set([...Object.keys(ASSIGS),...ls.map(l=>l.assig)])].filter(a=>a&&a!=="portada");
+ const noms=[...new Map(ls.map(l=>[clauNen(l),l.nom])).values()].sort((a,b)=>a.localeCompare(b,"ca"));
  $("#fAssig").innerHTML=`<option value="">Totes les assignatures</option>${as.map(a=>`<option value="${esc(a)}" ${TF.assig===a?"selected":""}>${esc(nomAssig(a))}</option>`).join("")}`;
  $("#fNen").innerHTML=`<option value="">Tots els nens</option>${noms.map(n=>`<option ${TF.nom.toLowerCase()===n.toLowerCase()?"selected":""}>${esc(n)}</option>`).join("")}`;
  $("#actualitzat").textContent=ACT?`Actualitzat a les ${hora(ACT)}`:""}
-// registres amb els filtres globals (assignatura i nen) per a Nens, Sessions i Log
-const LF=()=>LOGS.filter(l=>(!TF.assig||l.assig===TF.assig)&&(!TF.nom||clauNen(l)===TF.nom.trim().toLowerCase()));
+// registres amb els filtres globals (assignatura i nen) per a Nens i Sessions (exclou «alta» i «_alta»); al Log complet s'inclouen tots
+const LF=o=>LOGS.filter(l=>(o&&o.tot?true:l.event!=="alta"&&clauNen(l)!=="_alta")&&(!TF.assig||l.assig===TF.assig)&&(!TF.nom||clauNen(l)===TF.nom.trim().toLowerCase()));
 
 function pinta(){
  marcaMenu();pintaFiltres();
@@ -726,8 +728,8 @@ function pinta(){
  if(VISTA==="fitxa"&&FITXA){detall(FITXA,true);return Promise.resolve()}
  if(VISTA==="copies"){vistaCopies(c);return Promise.resolve()}
  if(VISTA==="xat"){vistaXat(c);return Promise.resolve()}
- // a «Nens», les altes surten encara que no hi hagi registres (un nen pot tenir perfil i no haver jugat)
- if(!LOGS.length){c.innerHTML=`<div class="pila">${VISTA==="nens"?cartaAltes():""}<div class="targeta">${buit("safata","Encara no hi ha cap registre en aquest període.","Prova amb un període més llarg (30 dies o Curs).")}</div></div>`;if(VISTA==="nens")pintaAltes();return Promise.resolve()}
+ // a «Nens», les altes i l'embut d'alta surten encara que no hi hagi registres (un nen pot tenir perfil i no haver jugat)
+ if(!LOGS.length){c.innerHTML=`<div class="pila">${VISTA==="nens"?cartaAltes()+cartaEmbutAlta():""}<div class="targeta">${buit("safata","Encara no hi ha cap registre en aquest període.","Prova amb un període més llarg (30 dies o Curs).")}</div></div>`;if(VISTA==="nens"){pintaAltes();pintaEmbutAlta()}return Promise.resolve()}
  if(VISTA==="nens")vistaNens(c);else if(VISTA==="sessions")vistaSessions(c);else vistaLog(c);
  return Promise.resolve()}
 
@@ -750,6 +752,9 @@ function descriu(l){const d=l.detall||{};switch(l.event){
    return `Pregunta oberta (${esc(d.tema||"")})${d.mode==="practica"?" · pràctica":""}: ${cpc(d.pc)} de les idees clau${d.rebutjat?` · ${pl(d.rebutjat,"intent rebutjat","intents rebutjats")}`:""}${d.enganxat?` · ha intentat enganxar`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"valora":return `Valora <b>${esc(d.titol||d.tema)}</b>: ${esc(d.v)}`;
  case"temps":return `${fmtT(d.s)} estudiant`;
+ case"alta":{const p={nom:"Nom escrit",pin_creat:"PIN creat",pin_ko:"Error de PIN",perfil:"Perfil arcade triat",pin_ara_no:"PIN nou ajornat («Ara no»)"}[d.pas]||esc(d.pas||"?"),
+   m={massa_noms:"límit de 2 noms a l'aparell",prohibit:"nom no permès pel filtre",existeix:"nom ja agafat",format:"format sense lletra",exemple:"PIN d'exemple (4587R)",incorrecte:"PIN incorrecte",no_coincideix:"els dos PIN no coincideixen",bloc:"bloqueig de 15 min",canvi:"actualització de PIN antic"}[d.motiu]||esc(d.motiu||"");
+  return `Alta · <b>${p}</b> · ${d.ok?"bé":"encallat"}${m?` (${m})`:""}`}
  default:return esc(JSON.stringify(d))}}
 // [estrelles-pures] orígens de les estrelles (issue #13). Les fonts són comptadors que només pugen dins d'un món (un reinici
 // n'esborra els registres), així que es queda el màxim de cada clau: l'últim registre pot ser d'un dispositiu nou que encara no ho sap tot.
@@ -763,8 +768,8 @@ function resumFonts(ls){const per={},fonts={},ritme={};
  Object.values(per).forEach(p=>Object.values(p).forEach(x=>Object.entries(x.f).forEach(([f,v])=>{fonts[f]=(fonts[f]||0)+v})));
  return {fonts,ritme}}
 // [/estrelles-pures]
-function nens(ls){ls=ls||LOGS;const m={};ls.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[k]={nom:l.nom,assigs:new Set(),ses:new Set(),ap:new Set(),ult:l.ts,temps:0,tests:[],jocs:0,exam:[],punts:{},fonts:{}});
- n.assigs.add(l.assig);n.ses.add(l.sessio);n.ap.add(l.aparell);if(l.ts>n.ult)n.ult=l.ts;const d=l.detall||{};
+function nens(ls){ls=(ls||LOGS).filter(l=>l.event!=="alta"&&clauNen(l)!=="_alta");const m={};ls.forEach(l=>{const k=clauNen(l);const n=m[k]||(m[k]={nom:l.nom,assigs:new Set(),ses:new Set(),ap:new Set(),ult:l.ts,temps:0,tests:[],jocs:0,exam:[],punts:{},fonts:{}});
+ if(l.assig&&l.assig!=="portada")n.assigs.add(l.assig);n.ses.add(l.sessio);n.ap.add(l.aparell);if(l.ts>n.ult)n.ult=l.ts;const d=l.detall||{};
  if(l.event==="temps")n.temps+=d.s||0;if(l.event==="test")n.tests.push(d.pc);if(l.event==="joc")n.jocs++;if(l.event==="examen"&&pcExam(d)!=null)n.exam.push(pcExam(d));
  if(d.punts!=null&&(n.punts[l.assig]==null||d.punts>n.punts[l.assig]))n.punts[l.assig]=d.punts;
  afegeixFonts(n.fonts,l)});
@@ -801,17 +806,18 @@ function cartaOrigens(ls){const {fonts,ritme}=resumFonts(ls),tot=Object.values(f
  const rit=NOMS.map(([k,n])=>{const r=ritme[k],v=r&&r.s>=120?(r.est*60/r.s).toFixed(1).replace(".",","):"—";return `<span class="pill neutre">${n}: <b>${v}</b> ⭐/min</span>`}).join(" ");
  return `<div class="targeta" id="origens"><h2>${ic("estrella")}Estrelles per origen (tots els nens)</h2><p class="sub">${tot} estrelles amb origen conegut · el màxim de cada nen i món</p>${files}<p class="sub" style="margin-top:10px">Estrelles per minut: ${rit}</p></div>`}
 function vistaNens(c){const N=nens(LF());
- c.innerHTML=`<div class="pila">${cartaAltes()}${cartaOrigens(LF())}<div class="targeta"><div class="eines-t"><label class="cerca">${ic("cerca")}<span class="sr">Cerca un nen</span><input id="qn" type="search" placeholder="Cerca un nen…" value="${esc(FN.q)}"></label><span class="esp"></span><span class="muted" id="nN"></span></div><div id="tNens"></div></div></div>`;
+ c.innerHTML=`<div class="pila">${cartaAltes()}${cartaEmbutAlta()}${cartaOrigens(LF())}<div class="targeta"><div class="eines-t"><label class="cerca">${ic("cerca")}<span class="sr">Cerca un nen</span><input id="qn" type="search" placeholder="Cerca un nen…" value="${esc(FN.q)}"></label><span class="esp"></span><span class="muted" id="nN"></span></div><div id="tNens"></div></div></div>`;
  const files=()=>{const q=FN.q.trim().toLowerCase();return N.filter(n=>!q||n.nom.toLowerCase().includes(q))};
- const rows=()=>files().map(n=>{const e=ESTATS[n.k+"#v"];return {k:n.k,nom:n.nom,ult:n.ult,temps:n.temps,est:Object.values(n.punts).reduce((a,b)=>a+b,0),nota:mitj(n.tests),tests:n.tests.length,pin:e===undefined?null:e,assigs:[...n.assigs]}});
+ const rows=()=>files().map(n=>{const e=ESTATS[n.k+"#v"],vals=Object.values(n.punts),est=vals.reduce((a,b)=>a+b,0),estMax=vals.length?Math.max(0,...vals):0;return {k:n.k,nom:n.nom,ult:n.ult,temps:n.temps,est,estMax,nota:mitj(n.tests),tests:n.tests.length,pin:e===undefined?null:e,assigs:[...n.assigs]}});
  const cols=[{k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom)}<span>${esc(r.nom)}</span></button>${idDe(r.k)}</span>`},
   {k:"ult",t:"Últim dia",cls:"nw",h:r=>diaC(r.ult)},{k:"temps",t:"Temps",num:true,h:r=>fmtT(r.temps)},{k:"est",t:"Estrelles",num:true,h:r=>`${r.est}`},
+  {k:"niv",t:"Nivell",num:true,cls:"nw",v:r=>r.estMax,h:r=>pillNivell(r.estMax)},
   {k:"nota",t:"Nota mitjana",num:true,h:r=>r.nota==null?`<span class="muted">—</span>`:`${cpc(r.nota)} <span class="muted">(${r.tests})</span>`},
   {k:"pin",t:"PIN",v:r=>r.pin==null?null:r.pin&6,h:r=>pillPin(r.pin)},{k:"amagat",t:"Al rànquing",v:r=>r.pin==null?null:r.pin&1,h:r=>r.pin==null?`<span class="muted">…</span>`:r.pin&1?`<span class="pill warn">${ic("ullno")}Amagat</span>`:`<span class="pill neutre">Visible</span>`},
   {k:"assigs",t:"Assignatures",ord:false,h:r=>r.assigs.map(xipAssig).join(" · ")}];
  const pintaT=()=>{const prev=TAULES.tNens;const rs=rows();$("#nN").textContent=`${rs.length} ${rs.length===1?"nen":"nens"}`;
   $("#tNens").innerHTML=rs.length?taula("tNens",cols,rs,{k:prev?prev.k:"ult",desc:prev?prev.desc:true,etiqueta:"Llista de nens",fila:r=>` class="clic" data-nen="${esc(r.k)}" tabindex="0"`}):buit("cerca","Cap nen coincideix amb la cerca.")};
- $("#qn").oninput=e=>{FN.q=e.target.value;pintaT()};pintaT();pintaAltes();
+ $("#qn").oninput=e=>{FN.q=e.target.value;pintaT()};pintaT();pintaAltes();pintaEmbutAlta();
  // estat del PIN i si està amagat: es demana per a cada nen i s'omple quan arriba
  N.forEach(n=>estatDe(n.nom).then(v=>{ESTATS[n.k+"#v"]=v;if(VISTA==="nens"&&$("#tNens"))pintaT()}));
 }
@@ -821,7 +827,7 @@ const FONTS_EST=[["temes","llibre","Tests dels temes"],["jocs","joc","Jocs"],["e
 function blocEstrelles(n){const as=[...n.assigs].filter(a=>n.punts[a]!=null);if(!as.length)return buit("estrella","Encara no hi ha estrelles registrades.");
  return as.map(a=>{const fo=(n.fonts[a]||{}).f||{},p=n.punts[a]||0,tot=FONTS_EST.reduce((s,[k])=>s+(fo[k]||0),0),ab=Math.max(0,p-tot),mx=Math.max(1,ab,...FONTS_EST.map(([k])=>fo[k]||0));
   const fila=(icn,nom,v)=>`<div class="fest"><span>${ic(icn)}${nom}</span><div class="bfe"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;
-  return `<div class="est-assig"><h4>${xipAssig(a)} <span class="pill neutre">${ic("estrella")}${p}</span></h4>${FONTS_EST.filter(([k])=>fo[k]).map(([k,icn,nom])=>fila(icn,nom,fo[k])).join("")}${ab?fila("rellotge","D'abans (sense detall)",ab):""}</div>`}).join("")}
+  return `<div class="est-assig"><h4>${xipAssig(a)} <span class="pill neutre">${ic("estrella")}${p}</span> ${pillNivell(p)}</h4>${FONTS_EST.filter(([k])=>fo[k]).map(([k,icn,nom])=>fila(icn,nom,fo[k])).join("")}${ab?fila("rellotge","D'abans (sense detall)",ab):""}</div>`}).join("")}
 function blocSessions(ls){const g={};ls.forEach(l=>(g[l.sessio]=g[l.sessio]||[]).push(l));
  const ss=Object.values(g).map(a=>a.sort((x,y)=>x.ts.localeCompare(y.ts))).sort((a,b)=>b[0].ts.localeCompare(a[0].ts));
  if(!ss.length)return buit("sessions","Cap sessió en aquest període.");
@@ -832,20 +838,20 @@ function blocSessions(ls){const g={};ls.forEach(l=>(g[l.sessio]=g[l.sessio]||[])
 let PEST=null;
 function detall(k,manté){const n=nens(LOGS).find(x=>x.k===k);if(!n){VISTA="nens";FITXA=null;pinta();return}
  VISTA="fitxa";FITXA=k;marcaMenu();pintaFiltres();$("#titol").textContent="Fitxa del nen";
- const ls=LOGS.filter(l=>clauNen(l)===k),est=Object.values(n.punts).reduce((a,b)=>a+b,0),c=$("#contingut");
+ const ls=LOGS.filter(l=>clauNen(l)===k&&l.event!=="alta"),vals=Object.values(n.punts),est=vals.reduce((a,b)=>a+b,0),estMax=vals.length?Math.max(0,...vals):0,nv=nivellDe(estMax),c=$("#contingut");
  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
  const ndTxt=DEMO?`<small class="nodemo">No disponible en demo</small>`:"";
  c.innerHTML=`<button class="btn sec petit" type="button" id="torna">${ic("enrere")} Tots els nens</button>
- <section class="targeta perfil" style="margin-top:16px">${avatar(n.nom,"g")}<div><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}<span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin"></span></div></div></section>
+ <section class="targeta perfil" style="margin-top:16px">${avatar(n.nom,"g")}<div><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}${pillNivell(estMax)}<span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin"></span></div></div></section>
  <div class="pestanyes" role="tablist" aria-label="Seccions de la fitxa">
   <button role="tab" type="button" id="tb-resum" aria-controls="tp-resum" aria-selected="true">Resum</button>
   <button role="tab" type="button" id="tb-est" aria-controls="tp-est" aria-selected="false" tabindex="-1">Estrelles</button>
   <button role="tab" type="button" id="tb-ses" aria-controls="tp-ses" aria-selected="false" tabindex="-1">Sessions</button>
   <button role="tab" type="button" id="tb-nuv" aria-controls="tp-nuv" aria-selected="false" tabindex="-1">Al núvol</button></div>
- <section role="tabpanel" id="tp-resum" aria-labelledby="tb-resum"><div class="kpis">${kp("Estrelles",est,[...n.assigs].map(a=>n.punts[a]!=null?`${esc(nomAssig(a))}: ${n.punts[a]}`:"").filter(Boolean).join(" · "))}${kp("Temps d'estudi",fmtT(n.temps))}${kp("Sessions",n.ses.size)}
+ <section role="tabpanel" id="tp-resum" aria-labelledby="tb-resum"><div class="kpis">${kp("Estrelles",est,[...n.assigs].map(a=>n.punts[a]!=null?`${esc(nomAssig(a))}: ${n.punts[a]}`:"").filter(Boolean).join(" · "))}${kp("Nivell",`${esc(nv.ic)} ${nv.n} · ${esc(nv.nom)}`,nv.seg!=null?`falten ${nv.falten} ⭐ per a ${esc(nv.segNom)}`:`nivell màxim (${estMax} ⭐)`)}${kp("Temps d'estudi",fmtT(n.temps))}${kp("Sessions",n.ses.size)}
   ${kp("Tests",n.tests.length,n.tests.length?`nota mitjana ${mitj(n.tests)}%`:"")}${kp("Jocs",n.jocs)}${kp("Millor examen",n.exam.length?Math.max(...n.exam)+"%":"—",n.exam.length?pl(n.exam.length,"examen","exàmens"):"")}${kp("Dispositius",n.ap.size)}${kp("Última vegada",diaC(n.ult),hora(n.ult))}</div>
-  <div class="targeta" style="margin-top:16px"><h2>${ic("llibre")}Assignatures</h2><p class="sub">On ha estudiat en aquest període</p>${[...n.assigs].map(a=>`<div class="fest"><span>${xipAssig(a)}</span><div class="bfe"><i style="width:${Math.round(100*ls.filter(l=>l.assig===a).length/Math.max(1,ls.length))}%;background:${colAssig(a)}"></i></div><b>${ls.filter(l=>l.assig===a).length}</b></div>`).join("")}<p class="sub" style="margin:8px 0 0">Nombre d'accions registrades a cada assignatura.</p></div></section>
+  <div class="targeta" style="margin-top:16px"><h2>${ic("llibre")}Assignatures</h2><p class="sub">On ha estudiat en aquest període</p>${[...n.assigs].map(a=>`<div class="fest"><span>${xipAssig(a)} ${n.punts[a]!=null?pillNivell(n.punts[a]):""}</span><div class="bfe"><i style="width:${Math.round(100*ls.filter(l=>l.assig===a).length/Math.max(1,ls.length))}%;background:${colAssig(a)}"></i></div><b>${ls.filter(l=>l.assig===a).length}</b></div>`).join("")}<p class="sub" style="margin:8px 0 0">Nombre d'accions registrades a cada assignatura.</p></div></section>
  <section role="tabpanel" id="tp-est" aria-labelledby="tb-est" hidden><div class="targeta"><h2>${ic("estrella")}D'on surten les estrelles</h2><p class="sub">Per assignatura, segons el que ha fet</p>${blocEstrelles(n)}</div></section>
  <section role="tabpanel" id="tp-ses" aria-labelledby="tb-ses" hidden><div class="targeta"><h2>${ic("sessions")}Sessions</h2><p class="sub">Cada sessió amb tot el que ha fet, de la més nova a la més antiga</p>${blocSessions(ls)}</div></section>
  <section role="tabpanel" id="tp-nuv" aria-labelledby="tb-nuv" hidden><div class="targeta"><h2>${ic("copies")}Al núvol</h2><p class="sub">El que el joc ha desat al núvol a cada món (només els nens amb PIN). És l'estat de sempre: no depèn del període de dalt.</p><div id="nuv"></div></div></section>
@@ -886,8 +892,12 @@ function detall(k,manté){const n=nens(LOGS).find(x=>x.k===k);if(!n){VISTA="nens
 // ====================== AL NÚVOL I ALTES (supabase/bn_admin_fitxa.sql) ======================
 // L'estat de bn_priv.progres el va escriure el navegador d'un nen: no és de fiar. Tot el que en surt (preguntes, ids de tema,
 // claus de jocs i de fonts, dates…) passa per esc(), també als atributs; els números es comproven amb nN() abans de pintar-los.
-const APROVAT=70; // el mateix 70 que el tauler (bn_admin_tauler.sql i tDomini); al pas 3 vindrà d'admin/regles.json
-let NUV=null,ALTES=null; // la resposta de la fitxa oberta {k,p} i la de les altes {p,prom}: en memòria fins a tornar a carregar
+let APROVAT=70; // el mateix 70 que el tauler; es carrega d'admin/regles.json
+let NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","🔍"],[45,"Savi","📜"],[70,"Expert","🎓"],[100,"Mestre","🧠"],[140,"Campió","🏅"],[190,"Heroi","🦸"],[250,"Llegenda","👑"],[330,"Llegenda d'or","🌟"]],REGLES=null;
+async function carregaRegles(){if(REGLES)return REGLES;try{const r=await fetch("regles.json",{cache:"no-cache"});if(r.ok){REGLES=await r.json();if(Array.isArray(REGLES.NIVELLS)&&REGLES.NIVELLS.length){NIVELLS=REGLES.NIVELLS;XNIV=NIVELLS.map(x=>x[1])}if(typeof REGLES.APROVA==="number")APROVAT=REGLES.APROVA}}catch(e){REGLES={NIVELLS,APROVA:APROVAT}}return REGLES}
+function nivellDe(p){p=Math.max(0,+p||0);let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];return {n:i+1,nom,ic,min,seg:seg?seg[0]:null,segNom:seg?seg[1]:null,falten:seg?seg[0]-p:0}}
+const pillNivell=p=>{const nv=nivellDe(p);return `<span class="pill neutre niv-p" title="Nivell ${nv.n} · ${esc(nv.nom)}${nv.seg!=null?` (${p} ⭐ · en falten ${nv.falten} per a ${esc(nv.segNom)})`:` (${p} ⭐ · nivell màxim)`}">${esc(nv.ic)} ${nv.n} · ${esc(nv.nom)}</span>`};
+let NUV=null,ALTES=null,EMBUT=null; // la resposta de la fitxa oberta {k,p}, la de les altes {p,prom} i la de l'embut d'alta {p,prom}
 async function rpcF(f,extra){if(DEMO)return demoFitxaRpc(f,extra||{});const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
  body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,...(extra||{})})});if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
 const nN=v=>{const x=typeof v==="number"?v:typeof v==="string"&&v.trim()!==""?+v:NaN;return Number.isFinite(x)?x:null};
@@ -916,16 +926,16 @@ async function pintaNuvol(n){const el=$("#nuv");if(!el||el.dataset.estat)return;
 let NUV_PL=null;
 function htmlNuvol(d){d=oB(d);NUV_PL=null;const pf=d.perfil&&typeof d.perfil==="object"&&!Array.isArray(d.perfil)?d.perfil:null,mons=aR(d.mons).filter(m=>m&&typeof m==="object"&&!Array.isArray(m));
  const xi=(t,v,tt)=>`<span class="xip"${tt?` title="${esc(tt)}"`:""}>${t}${v!=null?` <b>${v}</b>`:""}</span>`;
- const id=nN(pf&&pf.id),pv=nN(pf&&pf.pin_v);
+ const id=nN(pf&&pf.id),pv=nN(pf&&pf.pin_v),estMax=mons.length?Math.max(0,...mons.map(m=>nN(m.punts)||0)):null;
  const cap=`<div class="nv-perfil">${pf?[id!=null?xi(`#${id}`,null,"Número d'identificació"):"",pv===2?`<span class="pill ok">${ic("escut")}PIN nou</span>`:`<span class="pill warn" title="PIN antic de 4 números">PIN antic</span>`,
    xi("Alta:",msS(pf.creat)||"d'abans","Quan va crear el perfil amb el PIN (els perfils d'abans de la 2.12.0 no ho tenen)"),msS(pf.pin_ts)?xi("PIN:",msS(pf.pin_ts),"Quan va posar o canviar el PIN · "+msL(pf.pin_ts)):"",
-   xi("Perfil triat:",msS(pf.aspecte_ts)||"encara no","Quan va triar el perfil arcade a /perfil/")].join(""):`<span class="pill neutre">Sense PIN</span>`}${d.amagat===true?`<span class="pill warn">${ic("ullno")}Amagat del rànquing</span>`:""}</div>`;
+   xi("Perfil triat:",msS(pf.aspecte_ts)||"encara no","Quan va triar el perfil arcade a /perfil/")].join(""):`<span class="pill neutre">Sense PIN</span>`}${estMax!=null?pillNivell(estMax):""}${d.amagat===true?`<span class="pill warn">${ic("ullno")}Amagat del rànquing</span>`:""}</div>`;
  if(!mons.length)return cap+(pf?buit("copies","Té PIN, però encara no ha desat res al núvol.","Quan jugui amb el PIN posat, aquí sortirà el que porta a cada món."):buit("clau","No té PIN: només hi ha el registre (pestanyes anteriors).","Sense PIN, el progrés es queda només al seu dispositiu."));
  const as=mons.map(m=>String(m.assig??"?")),PL=NUV_PL=plegables("bn_admin_nuv",as);
  return cap+(pf?"":`<div class="avis" style="margin-bottom:12px">${ic("info")}<div><p style="margin:0">Ara no té PIN, però el progrés que havia desat es manté al núvol.</p></div></div>`)+PL.eines()+mons.map((m,i)=>monNuvol(m,as[i],i,PL)).join("")}
 function monNuvol(m,a,i,PL){
  if(m.error===true)return PL.bloc(a,"L'estat d'aquest món està mal format","","",avisErr("No s'ha pogut llegir l'estat d'aquest món: està mal format. La resta de mons es veuen igual."));
- const punts=nN(m.punts)||0,temps=nN(m.temps),dies=Array.isArray(m.dies)?m.dies.length:nN(m.dies),diaU=esDia(m.dia_ult)?m.dia_ult:Array.isArray(m.dies)?m.dies.filter(esDia).sort().pop():null,ts=nN(m.ts),rein=nN(m.reinici);
+ const punts=nN(m.punts)||0,nv=nivellDe(punts),temps=nN(m.temps),dies=Array.isArray(m.dies)?m.dies.length:nN(m.dies),diaU=esDia(m.dia_ult)?m.dia_ult:Array.isArray(m.dies)?m.dies.filter(esDia).sort().pop():null,ts=nN(m.ts),rein=nN(m.reinici);
  // temes: tots els del món (preguntes.json, en ordre) i els de l'estat que no hi siguin
  const TS=oB(m.temes),T=titols().get(a)||new Map(),ids=[...T.keys()];Object.keys(TS).forEach(t=>{if(!T.has(t))ids.push(t)});
  const temes=ids.map((t,o)=>{const x=oB(TS[t]),fall=Object.entries(oB(x.fallades)).map(([q,v])=>[q,nN(v)]).filter(y=>y[1]>0).sort((p,q)=>q[1]-p[1]);
@@ -937,7 +947,7 @@ function monNuvol(m,a,i,PL){
  const ex=aR(m.examens).filter(e=>e&&typeof e==="object"&&nN(e.pc)!=null),exM=ex.length?Math.max(...ex.map(e=>nN(e.pc))):null;
  const boss=oB(m.boss),bv=nN(boss.v)||0,bc=nN(boss.cors),apr=nN(m.apresos)||0;
  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
- const kpis=`<div class="kpis">${kp("Estrelles",punts,temps!=null?`${fmtT(temps)} jugant en aquest món`:"")}${kp("Dies d'estudi",dies??"—",diaU?`l'últim: ${diaS(diaU)}`:"")}
+ const kpis=`<div class="kpis">${kp("Estrelles",punts,temps!=null?`${fmtT(temps)} jugant en aquest món`:"")}${kp("Nivell",`${esc(nv.ic)} ${nv.n} · ${esc(nv.nom)}`,nv.seg!=null?`falten ${nv.falten} ⭐ per a ${esc(nv.segNom)}`:"nivell màxim")}${kp("Dies d'estudi",dies??"—",diaU?`l'últim: ${diaS(diaU)}`:"")}
   ${kp("Temes aprovats",`${ap}/${tot}`,`amb un ${APROVAT}% o més al test`)}${kp("Errors per repassar",repN,`${pl(repAvui,"toca","toquen")} avui · ${pl(apr,"après","apresos")}`)}${kp("Boss",bv?pl(bv,"victòria","victòries"):"—",bv?(bc!=null?`millor: ${pl(bc,"cor","cors")}${esDia(boss.d)?` · ${diaS(boss.d)}`:""}`:""):"encara no l'ha guanyat")}</div>`;
  // temes amb títol, notes, estat i les preguntes que més falla
  const estatT=r=>r.n?(r.max!=null&&r.max>=APROVAT?`<span class="pill ok">Aprovat</span>`:`<span class="pill bad">Per millorar</span>`):r.fitxa||r.fc?`<span class="pill neutre">Només ha estudiat</span>`:r.obert?`<span class="pill neutre">Obert</span>`:`<span class="muted">Sense obrir</span>`;
@@ -970,9 +980,9 @@ function monNuvol(m,a,i,PL){
   <div class="nv-2"><div><h4>${ic("joc")}Jocs <small>${jocs.length?pl(jocs.length,"joc","jocs"):"cap"}</small></h4>${jocs.length?taula("tNuvJ-"+i,cJ,jocs,{k:"n",etiqueta:`Jocs · ${nomAssig(a)}`}):`<p class="muted" style="margin:0">Encara no ha jugat a cap joc.</p>`}</div>
    <div><h4>${ic("estrella")}D'on surten les estrelles <small>${punts} en total</small></h4>${fonts||`<p class="muted" style="margin:0">Sense detall de fonts.</p>`}${ft.length?`<p class="sub" style="margin:10px 0 6px">Temes que més estrelles li han donat:</p><div class="nv-xs">${ft.map(([t,v])=>`<span class="xip">${esc(titolTema(a,t))} <b>${v}</b> ⭐</span>`).join("")}</div>`:""}</div></div></div>`;
  const meta=`Desat ${ts&&ts>0?esc(dataC(ts)):"—"} · ${punts} ⭐ · ${dies!=null?pl(dies,"dia","dies"):"— dies"} d'estudi${rein&&rein>0?` · reiniciat ${esc(diaC(rein))}`:""}`;
- return PL.bloc(a,meta,`<span class="pill neutre">${ic("estrella")}${punts}</span>`,
+ return PL.bloc(a,meta,`${pillNivell(punts)}<span class="pill neutre">${ic("estrella")}${punts}</span>`,
   `<span class="dm-bar" aria-hidden="true"><i style="width:${pcA_}%;background:var(--ok)"></i></span><small><span><b>${ap}/${tot}</b> temes aprovats</span><span>${repN?pl(repN,"error","errors")+" per repassar":"res per repassar"}</span></small>`,cos)}
-// ---- «Nens nous» (bn_admin_altes): a dalt de la vista Nens, amb el període de la capçalera ----
+// ---- «Nens nous» (bn_admin_altes) i «Embut d'alta» (bn_admin_alta_embut): a dalt de la vista Nens, amb el període de la capçalera ----
 const cartaAltes=()=>`<section class="targeta" id="altes" aria-labelledby="altesT"><h2 id="altesT">${ic("usuari")}Nens nous</h2><p class="sub" id="altesSub">Altes ${esc({avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[PERIODE[DIES]]||"")}: la data d'alta és la primera vegada que el veiem: el primer registre o el dia que va crear el perfil amb el PIN, el que sigui abans.</p><div id="altesCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div></section>`;
 function altesDe(p){if(!ALTES||ALTES.p!==p)ALTES={p,prom:rpcF("bn_admin_altes",{p_periode:p})};return ALTES.prom}
 async function pintaAltes(){const p=PERIODE[DIES]||"7d";if(!$("#altesCos"))return;let L;
@@ -995,6 +1005,34 @@ async function pintaAltes(){const p=PERIODE[DIES]||"7d";if(!$("#altesCos"))retur
   el.innerHTML=`<div class="kpis" style="margin-bottom:12px">${kp("Nens nous",N)}${kp("Amb PIN",nPin,`de ${N}`)}${kp("Han triat perfil",nAsp,`de ${N}`)}${kp("Encara no han jugat",nNo,"tenen perfil però cap registre")}</div>`+
    taula("tAltes",cols,rows,{k:prev?prev.k:"alta",desc:prev?prev.desc:true,alta:true,etiqueta:"Nens nous"})}
  catch(e){console.error(e);el.innerHTML=avisErr(`Les altes no s'han pogut dibuixar: ${e&&e.message||e}`)}}
+const EMBUT_PASSOS={nom:["1. Tria el nom","Quan escriu el nom i prem Continua (sense desar quin nom escriu abans de tenir perfil)"],
+ pin_ko:["2. S'encalla al PIN","Format incorrecte, l'exemple 4587R, els dos PIN no coincideixen, PIN equivocat o bloqueig"],
+ pin_creat:["3. Crea o posa el PIN","Perfil creat amb PIN nou de 4 números + lletra, o canvi al PIN nou"],
+ perfil:["4. Tria el perfil","Desa l'animal i l'habilitat a la pàgina /perfil/"],
+ pin_ara_no:["Ajorna el PIN nou","Té un PIN antic de 4 xifres i prem «Ara no» quan se li ofereix el PIN nou"]};
+const EMBUT_MOTIUS={prohibit:"Nom no permès",massa_noms:"Massa noms a l'aparell",existeix:"El nom ja té PIN",format:"Format incorrecte",
+ exemple:"Ha posat l'exemple 4587R",incorrecte:"PIN incorrecte",no_coincideix:"Els dos PIN no coincideixen",bloc:"5 intents fallits (bloqueig)",canvi:"Canvi al PIN nou"};
+const cartaEmbutAlta=()=>`<section class="targeta" id="embutAlta" aria-labelledby="embutT"><h2 id="embutT">${ic("clau")}Embut d'alta</h2><p class="sub" id="embutSub">Passos d'alta ${esc({avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[PERIODE[DIES]]||"")}: on s'encallen els aparells quan trien nom, creen el PIN o trien perfil (sense desar mai el PIN ni el nom escrit abans de tenir perfil).</p><div id="embutCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div></section>`;
+function embutDe(p){if(!EMBUT||EMBUT.p!==p)EMBUT={p,prom:rpcF("bn_admin_alta_embut",{p_periode:p})};return EMBUT.prom}
+async function pintaEmbutAlta(){const p=PERIODE[DIES]||"7d";if(!$("#embutCos"))return;let D;
+ const viu=()=>{const e=$("#embutCos");return e&&(PERIODE[DIES]||"7d")===p?e:null};
+ try{D=await embutDe(p)}catch(e){if(EMBUT&&EMBUT.p===p)EMBUT=null;const el=viu();if(!el)return;el.removeAttribute("aria-busy");
+  el.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_alta.sql","L'embut d'alta encara no està activat a la base de dades. La resta de la pantalla funciona igual."):avisErr(`No s'ha pogut carregar l'embut d'alta (${e&&e.message||e}).`);return}
+ const el=viu();if(!el)return;el.removeAttribute("aria-busy");
+ try{D=oB(D);const res=oB(D.resum),ps=aR(D.passos).filter(r=>r&&typeof r==="object"&&r.pas);
+  const apInici=nN(res.aparells_inici)||0,apPin=nN(res.aparells_pin_creat)||0,apKo=nN(res.aparells_encallats_pin)||0,apPerf=nN(res.aparells_perfil)||0,apAraNo=nN(res.aparells_ara_no)||0,apDir=nN(res.entrades_directes_mon)||0,apNomOk=nN(res.aparells_nom_ok)||0;
+  if(!apInici&&!apDir&&!ps.some(x=>(nN(x.total)||0)>0)){el.innerHTML=buit("clau","Cap pas d'alta registrat en aquest període.","Quan algú triï nom, creï el PIN o triï el perfil a /perfil/, aquí veuràs l'embut pas a pas.");return}
+  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
+  const rows=ps.map((r,i)=>{const pas=String(r.pas),info=EMBUT_PASSOS[pas]||[pas,""],mot=oB(r.motius);
+   return {ord:i,pas,tit:info[0],sub:info[1],total:nN(r.total)||0,ok:nN(r.ok)||0,ko:nN(r.ko)||0,aparells:nN(r.aparells)||0,mot:Object.entries(mot).map(([k,v])=>[k,nN(v)||0]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])}});
+  const cols=[{k:"ord",t:"Pas",cls:"tmn",v:r=>r.ord,h:r=>`<span class="q-t">${esc(r.tit)}</span>${r.sub?`<span class="nv-id">${esc(r.sub)}</span>`:""}`},
+   {k:"aparells",t:"Aparells",num:true},{k:"total",t:"Intents",num:true},
+   {k:"ok",t:"Correctes",num:true,h:r=>r.ok?`<span class="pill ok">${r.ok}</span>`:`<span class="muted">0</span>`},
+   {k:"ko",t:"Entrebancs",num:true,h:r=>r.ko?`<span class="pill warn">${r.ko}</span>`:`<span class="muted">0</span>`},
+   {k:"mot",t:"Per què s'encallen",ord:false,h:r=>r.mot.length?`<div class="nv-xs">${r.mot.map(([m,v])=>`<span class="xip">${esc(EMBUT_MOTIUS[m]||m)} <b>${v}</b></span>`).join("")}</div>`:`<span class="muted">—</span>`}];
+  el.innerHTML=`<div class="kpis" style="margin-bottom:12px">${kp("Aparells que ho proven",apInici,apNomOk?`${apNomOk} passen el nom`:"")}${kp("PIN creat",apPin,apInici?`de ${apInici} aparells`:"")}${kp("Encallats al PIN",apKo,"sense acabar creant el PIN")}${kp("Perfil triat",apPerf,"a /perfil/")}${kp("PIN nou ajornat",apAraNo,"premen «Ara no»")}${kp("Entrada directa a un món",apDir,"juguen sense passar per l'alta")}</div>`+
+   taula("tEmbut",cols,rows,{k:"ord",desc:false,etiqueta:"Embut d'alta"})}
+ catch(e){console.error(e);el.innerHTML=avisErr(`L'embut d'alta no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
 // mons per al selector: motor/mons.json (títol + assignatura); si no es pot llegir, els noms curts d'ASSIGS
 let MONSL=null;async function monsLlista(){if(MONSL)return MONSL;
  try{const r=await fetch("../motor/mons.json",{cache:"no-cache"});if(r.ok)MONSL=(await r.json()).map(m=>({id:m.dades,nom:`${m.titol} · ${m.materia}`.trim()}))}catch(e){}
@@ -1038,7 +1076,7 @@ function vistaSessions(c){const ls=LF(),g={};ls.forEach(l=>(g[l.sessio]=g[l.sess
  $("#fsq").oninput=e=>{FS.q=e.target.value;pintaT()};$("#fsa").onchange=e=>{FS.assig=e.target.value;pintaT()};$("#fse").onchange=e=>{FS.event=e.target.value;pintaT()};
  $("#fscsv").onclick=()=>baixaCSV("bona-nota-sessions",[["inici","fi","nom","assignatura","durada_s","accions","tipus","sessio"],...files().map(s=>[s.ini,s.fi,s.nom,s.assig,Math.round(s.durada),s.n,s.evs.join(" "),s.id])]);
  pintaT()}
-function vistaLog(c){const ls=LF();
+function vistaLog(c){const ls=LF({tot:true});
  c.innerHTML=`<div class="targeta">${filtresT(FILTRE,"fl",[...new Set(ls.map(l=>l.event))],[...new Set(ls.map(l=>l.assig))],"Cerca nom o text…")}<div id="tl"></div></div>`;
  const files=()=>{const q=FILTRE.q.toLowerCase();return ls.filter(l=>(!FILTRE.assig||l.assig===FILTRE.assig)&&(!FILTRE.event||l.event===FILTRE.event)&&(!q||(l.nom+" "+JSON.stringify(l.detall)).toLowerCase().includes(q)))};
  const pintaT=()=>{const f=files().slice().sort((a,b)=>b.ts.localeCompare(a.ts));$("#fln").textContent=pl(f.length,"registre","registres");
@@ -1557,7 +1595,7 @@ function demoCopiesRpc(f){if(f!=="bn_admin_copies")throw "demo";const n=DEMO_L.l
 // Moderació del xat de la portada: resum del dia, missatges (també els esborrats), silencis, configuració, catàleg i peça nova.
 // Del servidor només arriben números (frase, peça o company): el text es compon aquí amb el catàleg de bn_admin_xat_cataleg,
 // amb les mateixes regles que la portada. Tot el que ve del servidor passa per esc(). Les accions perilloses demanen confirmació.
-const XNIV=["Aprenent","Explorador","Investigador","Savi","Expert","Mestre","Campió","Heroi","Llegenda","Llegenda d'or"];
+let XNIV=["Aprenent","Explorador","Investigador","Savi","Expert","Mestre","Campió","Heroi","Llegenda","Llegenda d'or"];
 const XCAT={repte:["Repte","ev-oberta"],aura:["Aura","ev-test"],classe:["Classe","ev-joc"],colla:["Colla","ev-targetes"]};
 const XSLOT={P:"Paraula d'estudi",E:"Cosa de classe",J:"Cosa teva",C:"Company"};
 const XMON={divisibilitat:"Mates · Divisibilitat",socials:"Socials · El clima",biogeo:"Bio-Geo · Bloc 1",comarques:"Socials · Comarques",castellano:"Castellano · Temas 2 y 3",catala:"Català · Tema 2"};
@@ -1823,6 +1861,13 @@ function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
   return Object.values(per).map(r=>{const pf=demoPerfil(r.k,r.primer),alta=pf&&pf.creat||r.primer,set=new Set(DEMO_L.filter(l=>{const t=Date.parse(l.ts);return clauNen(l)===r.k&&t>=alta&&t<alta+7*864e5}).map(l=>diaL(l.ts))),pts=Object.values(r.pts).filter(v=>v>0);
    return {k:r.k,nom:r.nom,alta,primer:r.primer,creat:pf?pf.creat:null,pin_ts:pf?pf.pin_ts:null,aspecte_ts:pf?pf.aspecte_ts:null,id:pf?pf.id:null,mons:pts.length,punts:pts.reduce((s,v)=>s+v,0),dies7:set.size,amagat:!!(demoEstat(r.k)&1),te_pin:!!pf}})
    .filter(r=>r.alta>=des).sort((a,b)=>b.alta-a.alta)}
+ if(f==="bn_admin_alta_embut"){const p=x.p_periode||"30d";
+  return {periode:p,resum:{aparells_inici:9,aparells_nom_ok:7,aparells_pin_creat:5,aparells_encallats_pin:2,aparells_perfil:4,aparells_ara_no:1,entrades_directes_mon:2},
+   passos:[{pas:"nom",total:10,ok:7,ko:3,aparells:8,motius:{existeix:2,prohibit:1}},
+    {pas:"pin_ko",total:5,ok:0,ko:5,aparells:3,motius:{exemple:2,format:2,no_coincideix:1}},
+    {pas:"pin_creat",total:5,ok:5,ko:0,aparells:5,motius:{}},
+    {pas:"perfil",total:4,ok:4,ko:0,aparells:4,motius:{}},
+    {pas:"pin_ara_no",total:1,ok:1,ko:0,aparells:1,motius:{}}]}}
  throw "demo"}
 // demo del Benestar: els mateixos nens que la resta de la demo (la Nora respon de pressa, l'Hugo fa dies que no ve), un cas de cada color,
 // una vigília en blau (la Jana, a Comarques), un nen amb dos aparells (en Pau) i una data d'examen posada (Mates, d'aquí a 2 dies)

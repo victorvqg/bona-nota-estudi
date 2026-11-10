@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.16.0 · 2026-11-10
+
+### Afegit
+- Admin, nivells al tauler (M5): el tauler llegeix `admin/regles.json` i mostra el nivell de cada nen a la llista de Nens, a la capçalera i els KPIs de la fitxa, a cada assignatura i a la pestanya «Al núvol» (amb les estrelles que li falten per al nivell següent).
+- Portada, perfil i admin: embut d'alta (M7). La portada (`index.html`) i la pàgina de perfil (`perfil/index.html`) apunten els passos d'alta (`nom`, `pin_ko`, `pin_creat`, `perfil` i `pin_ara_no`) a `bn_log` sense desar mai el PIN ni el nom escrit abans de tenir perfil (`_alta` amb aparell `alta:…`, exclòs de rànquing, llistes i filtres). A la vista Nens de l'admin hi ha la targeta «Embut d'alta».
+- Base de dades: `supabase/bn_admin_alta.sql` (amplia `bn_log_event_check` amb `'alta'`, afegeix el trigger `aa_bn_log_alta_net`, actualitza `bn_priv.logs`, `bn_admin_altes` i `bn_admin_benestar` i crea `bn_admin_alta_embut`).
+- Proves: `motor/prova-admin-alta-sql.js` (PGlite) i `motor/prova-admin-alta.js` (Playwright) afegides a l'Action.
+
 ## 2.15.0 · 2026-11-10
 
 ### Afegit
