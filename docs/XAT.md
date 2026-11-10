@@ -10,6 +10,7 @@ Completa els altres documents de regles:
 | [`PUNTUACIO.md`](PUNTUACIO.md) | Com es premia l'esforç? |
 | [`BON-US.md`](BON-US.md) | L'ús és sa? |
 | **`XAT.md`** (aquest) | Com es parlen els nens? |
+| [`BENESTAR.md`](BENESTAR.md) | Com ho porta cada nen? (el que veu el pare al tauler) |
 
 ## 1. La idea en tres frases
 
