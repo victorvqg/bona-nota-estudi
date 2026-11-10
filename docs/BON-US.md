@@ -131,7 +131,7 @@ Decisions que ha de prendre l'administrador abans dels canvis al motor:
 | PR | Què fa | Toca el motor? | SQL nou | Estat |
 |---|---|---|---|---|
 | A | Aquest document, ADR-0007 i els enllaços | No | No | Fet |
-| B | Apartat «Benestar» al tauler: semàfor, pic de vigília en blau, alertes noves i data d'examen per món | No | `bn_admin_benestar`, `bn_priv.examens` | Dins de la revisió del tauler (n2536) |
+| B | Apartat «Benestar» al tauler: semàfor, pic de vigília en blau, alertes noves i data d'examen per món | No | `bn_admin_benestar`, `bn_priv.examens` | Fet (2.13.0, n2540) |
 | C | Fases del món: camp `neix` a `motor/mons.json`, `bn_vigilia(assig)`, avís de temps i descans segons la fase, registre del descans, botó «Demà tinc examen» | Sí, i la configuració | `bn_vigilia` | Pendent de les decisions 1, 3 i 4 |
 | D | Franja de nit segons la fase, amb l'hora a `bn_priv.config`: avís, mode suau i xat tancat | Sí | Una clau de config | Pendent de la decisió 2 |
 | E | Pla de 10 dies: el tema del dia segons l'edat del món i els temes que falten | Sí | No | Pendent |

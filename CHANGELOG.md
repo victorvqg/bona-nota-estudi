@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.13.0 · 2026-11-10
+
+### Afegit
+- Admin, Tauler: apartat «Benestar» (`docs/BON-US.md`). Té una fila per nen amb un semàfor (verd, groc o vermell) i el motiu en paraules planeres. Els senyals són: marató, nit, pressa, repetir sense aprendre, frustració, enganxar text, entrar per xatejar, deixar de venir, estudiar poc i sovint, aprendre dels errors i fer servir dos aparells.
+- La vigília d'examen es detecta sola pel pic del grup a cada món. Aquells dies, les sessions llargues surten en blau i no en vermell. També es pot posar la data de l'examen de cada món, que mana sobre el pic. En dissabte i diumenge, el llindar de marató puja 30 minuts.
+- Base de dades: `supabase/bn_admin_benestar.sql` (s'ha d'executar una vegada a Supabase), amb `bn_admin_benestar`, `bn_admin_examen_desa` i la taula de dates d'examen.
+
 ## 2.12.0 · 2026-11-10
 
 ### Afegit

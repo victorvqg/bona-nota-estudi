@@ -50,6 +50,10 @@ jobs:
         run: node motor/prova-admin-fitxa-sql.js
       - name: Prova de la fitxa al núvol i les altes a l'admin (amb Supabase simulat)
         run: node motor/prova-admin-fitxa.js
+      - name: Prova del benestar a la base de dades (supabase/bn_admin_benestar.sql dins de PGlite)
+        run: node motor/prova-admin-benestar-sql.js
+      - name: Prova de l'apartat Benestar del tauler (amb Supabase simulat)
+        run: node motor/prova-admin-benestar.js
       - name: Prova automàtica de cada món
         run: |
           cd motor
