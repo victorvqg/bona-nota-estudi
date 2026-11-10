@@ -1,0 +1,111 @@
+{
+  "NIVELLS": [
+    [
+      0,
+      "Aprenent",
+      "🐣"
+    ],
+    [
+      10,
+      "Explorador",
+      "🧭"
+    ],
+    [
+      25,
+      "Investigador",
+      "🔍"
+    ],
+    [
+      45,
+      "Savi",
+      "📜"
+    ],
+    [
+      70,
+      "Expert",
+      "🎓"
+    ],
+    [
+      100,
+      "Mestre",
+      "🧠"
+    ],
+    [
+      140,
+      "Campió",
+      "🏅"
+    ],
+    [
+      190,
+      "Heroi",
+      "🦸"
+    ],
+    [
+      250,
+      "Llegenda",
+      "👑"
+    ],
+    [
+      330,
+      "Llegenda d'or",
+      "🌟"
+    ]
+  ],
+  "COM_GUANYAR": [
+    [
+      "✅",
+      "test +1"
+    ],
+    [
+      "🎮",
+      "joc +1"
+    ],
+    [
+      "✍️",
+      "idea +1"
+    ],
+    [
+      "✍️",
+      "triple combo ×3 +3 · ×6 +5 · resposta de 10 +1"
+    ],
+    [
+      "🔥",
+      "combo ×5 +1 · ×10 +2"
+    ],
+    [
+      "⚡",
+      "super combo: 3 difícils seguides +3 · 5 seguides +5"
+    ],
+    [
+      "🏅",
+      "rècord +2"
+    ],
+    [
+      "🔁",
+      "error corregit +1 · après +2"
+    ],
+    [
+      "🎯",
+      "missió +3 · les 3 +5"
+    ],
+    [
+      "👾",
+      "boss +10"
+    ]
+  ],
+  "SUPER_PREMIS": {
+    "3": 3,
+    "5": 5
+  },
+  "SUPER_MAX": 10,
+  "OB_COMBO_PC": 60,
+  "OB_COMBO_PREMIS": {
+    "3": 3,
+    "6": 5
+  },
+  "OB_COMBO_MAX": 8,
+  "OB_PARAULES_IDEA": 4,
+  "APROVA": 70,
+  "REP_PREMI": 1,
+  "REP_MAX": 10
+}

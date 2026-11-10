@@ -13,7 +13,7 @@ Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el deta
 - `motor/plantilla-estudi-interactiu.html`: motor únic compartit per tots els mons (fitxes, targetes, tests amb pistes i escut del combo, missions d'avui, Boss del món, jocs, repàs espaiat `BN_REP_TIPUS`, exàmens, preguntes obertes, estrelles i sincronització al núvol).
 - `motor/dades/<id>.js`: contingut de cada món (`ASSIG`, `T`, `OB`) i directives `//@inclou` (`socials`, `biogeo`, `castellano`, `comarques`, `divisibilitat`, `catala`).
 - `motor/mons.json`: catàleg oficial de mons (carpeta, número, títol, colors, icona, llengua).
-- `motor/build.py` i `motor/tot.py`: combinen plantilla + dades + eines per generar `<assignatura>/<tema>/index.html`, actualitzen la portada, `motor/qids.json`, `admin/preguntes.json` i `sw.js`.
+- `motor/build.py` i `motor/tot.py`: combinen plantilla + dades + eines per generar `<assignatura>/<tema>/index.html`, actualitzen la portada, `motor/qids.json`, `admin/preguntes.json`, `motor/regles.json`, `admin/regles.json` i `sw.js`.
 
 ## Eines compartides (`motor/eines/`)
 - `exercicis-mates.js`: Taller de mates (generadors, teclat numèric, fitxes en 3 modes, examen, repàs barrejat i Troba l'error).
@@ -26,6 +26,7 @@ Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el deta
 
 ## Proves (`motor/`)
 - `motor/prova-generadors.js`: valida 10.800 exercicis generats del Taller de mates (càlculs, distractors i Troba l'error) sense navegador.
+- `motor/prova-regles.js`: comprova que `motor/regles.json` i `admin/regles.json` coincideixen amb les constants de la plantilla i amb les còpies de `index.html`, `perfil/index.html`, `admin/index.html`, `supabase/bn_xat.sql` i `supabase/bn_admin_tauler.sql`.
 - `motor/prova.js`: prova E2E amb Playwright en mode `ESTRICTE=1` per a cada món.
 - `motor/prova-perfil.js`: prova E2E de la pàgina de perfil amb un servidor local i Supabase simulat.
 - `motor/prova-xat.js` i `motor/prova-admin-xat.js`: proves E2E del xat de la colla a la portada i a l'admin (Supabase simulat).

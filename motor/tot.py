@@ -114,6 +114,25 @@ for m in mons:
 (arrel / "admin" / "preguntes.json").write_text(json.dumps(preguntes, ensure_ascii=False, separators=(",", ":")))
 print(f"✓ admin/preguntes.json: {len(preguntes)} preguntes")
 
+# 3b2) regles del joc per al motor i el tauler d'admin (motor/regles.json i admin/regles.json), extretes de la plantilla
+js_regles = r"""
+const fs=require('fs'),s=fs.readFileSync(process.argv[1],'utf8');
+const linies=['NIVELLS','COM_GUANYAR','SUPER_PREMIS','OB_COMBO_PC','APROVA','REP_PREMI'].map(k=>{
+ const m=s.match(new RegExp('^\\s*const '+k+'=[^;]+;','m'));
+ if(!m)throw new Error('Falta const '+k+' a la plantilla');
+ return m[0];
+}).join('\n');
+const r=new Function(linies+'\nreturn {NIVELLS,COM_GUANYAR,SUPER_PREMIS,SUPER_MAX,OB_COMBO_PC,OB_COMBO_PREMIS,OB_COMBO_MAX,OB_PARAULES_IDEA,APROVA,REP_PREMI,REP_MAX}')();
+console.log(JSON.stringify(r));
+"""
+r_reg = subprocess.run(["node", "-e", js_regles, str(d / "plantilla-estudi-interactiu.html")], capture_output=True, text=True)
+if r_reg.returncode:
+    sys.exit("ERROR extraient regles de la plantilla:\n" + r_reg.stderr)
+regles_txt = json.dumps(json.loads(r_reg.stdout), ensure_ascii=False, indent=2) + "\n"
+(d / "regles.json").write_text(regles_txt)
+(arrel / "admin" / "regles.json").write_text(regles_txt)
+print("✓ motor/regles.json i admin/regles.json")
+
 # 3c) número de versió del producte (la primera entrada de CHANGELOG.md) al peu de la portada i de cada món.
 #     Va abans de l'empremta perquè un canvi de número també arribi als mòbils.
 trobat = re.search(r"^## (\d+\.\d+\.\d+)\b", (arrel / "CHANGELOG.md").read_text(), re.M)
