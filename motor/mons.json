@@ -83,5 +83,19 @@
    "#fbbf24"
   ],
   "ic": "📖"
+ },
+ {
+  "dades": "angles",
+  "carpeta": "angles/t2",
+  "mon": "7",
+  "materia": "Anglès",
+  "titol": "Tema 2: That's Entertainment",
+  "desc": "Descriure algú, els dos presents, gèneres de pel·lis i llibres, el tresor de Fenn i com proposar un pla.",
+  "colors": [
+   "#831843",
+   "#db2777",
+   "#fbbf24"
+  ],
+  "ic": "🎬"
  }
 ]

@@ -11,7 +11,7 @@ Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el deta
 
 ## Motor i plantilla dels mons
 - `motor/plantilla-estudi-interactiu.html`: motor únic compartit per tots els mons (fitxes, targetes, tests amb pistes i escut del combo, missions d'avui, Boss del món, jocs, repàs espaiat `BN_REP_TIPUS`, exàmens, preguntes obertes, estrelles i sincronització al núvol).
-- `motor/dades/<id>.js`: contingut de cada món (`ASSIG`, `T`, `OB`) i directives `//@inclou` (`socials`, `biogeo`, `castellano`, `comarques`, `divisibilitat`, `catala`).
+- `motor/dades/<id>.js`: contingut de cada món (`ASSIG`, `T`, `OB`) i directives `//@inclou` (`socials`, `biogeo`, `castellano`, `comarques`, `divisibilitat`, `catala`, `angles`).
 - `motor/mons.json`: catàleg oficial de mons (carpeta, número, títol, colors, icona, llengua).
 - `motor/build.py` i `motor/tot.py`: combinen plantilla + dades + eines per generar `<assignatura>/<tema>/index.html`, actualitzen la portada, `motor/qids.json`, `admin/preguntes.json`, `motor/regles.json`, `admin/regles.json` i `sw.js`.
 

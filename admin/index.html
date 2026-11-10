@@ -550,13 +550,13 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.17.1";
+const VERSIO_ADMIN="2.18.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
 (function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 const API="https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p";
-const ASSIGS={socials:"Socials (clima)",biogeo:"Bio i Geo",castellano:"Castellano",comarques:"Comarques",divisibilitat:"Mates (divisibilitat)",catala:"Català (tema 2)"};
+const ASSIGS={socials:"Socials (clima)",biogeo:"Bio i Geo",castellano:"Castellano",comarques:"Comarques",divisibilitat:"Mates (divisibilitat)",catala:"Català (tema 2)",angles:"Anglès (tema 2)"};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let CRED=null,LOGS=[],VISTA="tauler",FITXA=null,FILTRE={q:"",assig:"",event:""},FS={q:"",assig:"",event:""},FN={q:""},DIES=7,ACT=null,ESTATS={};
@@ -1655,7 +1655,7 @@ function demoCopiesRpc(f){if(f!=="bn_admin_copies")throw "demo";const n=DEMO_L.l
 let XNIV=["Aprenent","Explorador","Investigador","Savi","Expert","Mestre","Campió","Heroi","Llegenda","Llegenda d'or"];
 const XCAT={repte:["Repte","ev-oberta"],aura:["Aura","ev-test"],classe:["Classe","ev-joc"],colla:["Colla","ev-targetes"]};
 const XSLOT={P:"Paraula d'estudi",E:"Cosa de classe",J:"Cosa teva",C:"Company"};
-const XMON={divisibilitat:"Mates · Divisibilitat",socials:"Socials · El clima",biogeo:"Bio-Geo · Bloc 1",comarques:"Socials · Comarques",castellano:"Castellano · Temas 2 y 3",catala:"Català · Tema 2"};
+const XMON={divisibilitat:"Mates · Divisibilitat",socials:"Socials · El clima",biogeo:"Bio-Geo · Bloc 1",comarques:"Socials · Comarques",castellano:"Castellano · Temas 2 y 3",catala:"Català · Tema 2",angles:"Anglès · Tema 2"};
 const XMARCA={frase_off:"Frase desactivada",peca_off:"Peça desactivada",peca_falta:"La peça ja no existeix",frase_falta:"La frase no existeix"};
 const XCFG0={est_credit:10,max_dia:5,espera_s:10,actiu:true};
 // [xat-pures] text d'un missatge (motor/prova-admin-xat.js l'avalua tal qual). Les MATEIXES regles que la portada: ___ és el forat;

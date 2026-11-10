@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.18.0 · 2026-11-10
+
+### Afegit
+- **Món 7 · Anglès: Tema 2 · That's Entertainment** (`angles/t2/`): 8 temes en 3 blocs (adjectius per descriure algú per fora i per dins, Present Continuous, Present Simple / Continuous i stative verbs, gèneres de pel·lis i llibres, les lectures «Museum exhibits» i «Fenn's Treasure» i com proposar un pla), 85 preguntes de test, 12 preguntes obertes, 8 jocs i el boss «El Fantasma del Cinema». Fet a partir del resum, la pràctica extra, l'examen i els fulls de respostes del tema 2, el Module 2 del llibre (n2555).
+- Preguntes obertes: les respostes escrites en anglès amb frases senceres (amb `is`, `are`, `and`, `but` o `because`) també compten per al ✍️ triple combo.
+- Admin: el món nou surt amb el seu nom a les llistes i es pot obrir o tancar des del «Control ràpid» (`supabase/bn_control.sql` accepta `angles`).
+
 ## 2.17.1 · 2026-11-10
 
 ### Arreglat

@@ -16,6 +16,7 @@ Després, aquí es comprova si se sap de veritat.
 | 4 | Ciències socials | Les comarques de Catalunya | 7 | 56 | 7 | 7 | El Drac de les Comarques | [obre'l](https://bonanota.net/sociales/comarques/) |
 | 5 | Matemàtiques | Tema 2: Divisibilitat | 8 | 71 | 15 | 20 | El Gegant Primer | [obre'l](https://bonanota.net/matematiques/divisibilitat/) |
 | 6 | Català | Tema 2: La literatura, el nom i la puntuació | 12 | 109 | 15 | 10 | El Monstre dels Signes | [obre'l](https://bonanota.net/catala/t2/) |
+| 7 | Anglès | Tema 2: That's Entertainment | 8 | 85 | 12 | 8 | El Fantasma del Cinema | [obre'l](https://bonanota.net/angles/t2/) |
 
 ---
 
@@ -178,3 +179,28 @@ Fet a partir dels 4 fulls del tema 2 (llibre de Llengua catalana de 1r d'ESO, Ba
   ✏️ Puntuació (Quin signe hi va? · Majúscula o minúscula?).
 - 👾 Boss: **El Monstre dels Signes**.
 - Falten les pàgines 52-53 del llibre (inici d'ortografia): la puntuació surt de la taula de la pàgina 54.
+
+---
+
+## 🎬 Món 7 · Anglès: Tema 2 · That's Entertainment
+
+Fet a partir dels 5 fulls del tema 2 (Module 2 del llibre d'anglès de 1r d'ESO, pàg. 31-38, 40 i 41):
+**resum**, **pràctica extra**, **solucions de la pràctica**, **examen** i **full de respostes**. Les dades són a `motor/dades/angles.js`.
+El contingut és en anglès i les explicacions, en català.
+
+**8 temes en 3 blocs:**
+
+| Bloc | Temes |
+|---|---|
+| 🎭 A · Costumes and Disguises | A1 Adjectives of description 1 · A2 Reading: Museum exhibits · A3 Present Continuous |
+| 📚 B · A Great Story | B1 Film and book genres · B2 Reading: Fenn's Treasure · B3 Present Simple / Present Continuous |
+| 🍿 C · Activate Your English | C1 Adjectives of description 2 · C2 Make suggestions |
+
+- **85 preguntes de test.** Les respostes falses són els errors típics que avisen els fulls
+  (`danceing`, `She dancing`, `I am wanting`, `I like really`, `two millions dollars`, `Let's watching`, `womans`…).
+- **12 preguntes obertes**, tretes de l'examen, de la pràctica extra i dels «Comprova» del resum.
+- **8 jocs en 4 seccions:** 🎭 Descriure algú (Opposites · Com és per dins?) · ⏱️ Els dos presents (Verb + -ing · Simple o Continuous?) ·
+  📚 Llibres i pel·lis (Quin gènere és? · Fenn's Treasure · Paraules trampa) · 🍿 Proposar un pla (Triem pel·li).
+- 👾 Boss: **El Fantasma del Cinema**.
+- Falta la pàgina 39 del llibre (exercicis 12 i 13 de gramàtica i un listening). Els listenings i els vídeos no hi surten.
+- El botó 🔊 Escolta llegeix amb la veu en català: serveix per a les explicacions, no per a la pronunciació de l'anglès.

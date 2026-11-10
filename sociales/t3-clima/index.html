@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="39c8a8bea8",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="fc09495e49",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -572,7 +572,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.17.1</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.18.0</small></div>
 
 <script src="../../sprites.js?v=fd512289"></script>
 <script>
@@ -871,7 +871,7 @@ function svgClimo(){
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
 ASSIG.boss={nom:"La Gran Borrasca",spr:"borrasca"};
 
-const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}];
+const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}, {"id": "angles", "clau": "bn_angles", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/"}];
 const QIDS={"temps":[1,2,3,4,5,6,7,8],"atmos":[1,2,3,4,5,9,7,8],"elements":[1,2,3,4,5,6,7,8],"pressio":[1,2,3,4,5,6,7,8],"mapes":[1,2,3,4,5,6,7,8],"canvi":[1,2,3,4,5,6,7,8],"relleu":[1,2,3,4,5,6,7,8],"riu":[1,2,3,4,5,6,7,8],"climaig":[1,2,3,4,5,6,7,8],"paisatge":[1,2,3,4,5,6,7,8],"j-climo":[1,2,3,4,5,6]};
 const QDIF={"atmos/4":3,"atmos/9":3,"climaig/1":3,"climaig/2":3,"elements/1":3,"elements/5":3,"elements/7":3,"mapes/4":3,"mapes/7":3,"paisatge/6":3,"pressio/5":3,"pressio/6":3,"relleu/3":3,"riu/6":3,"temps/2":3,"temps/8":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
@@ -1557,7 +1557,8 @@ const obBloc=n=>{const d=(S.obv||{})[n];return d&&d>avui()?d:null};
 // ✍️ triple combo (issue #14): obertes bones seguides el mateix dia i al mateix món. Bona = puntua, com a mínim el 60 % de les idees
 // i explicada amb frases (obFrases). ×3 +3 ⭐, ×6 +5 ⭐ (i torna a 0), fins a OB_COMBO_MAX al dia. Si no arriba al 60 %, la ratxa torna a 0.
 const OB_COMBO_PC=60,OB_COMBO_PREMIS={3:3,6:5},OB_COMBO_MAX=8,OB_PARAULES_IDEA=4;
-const OB_CONNECTORS=new Set("es son perque que quan per aixo llavors tambe pero i o te tenen hi ha com amb fa fan si no porque cuando entonces tambien y tiene tienen hay como con hace hacen por para".split(" ").map(normT));
+const OB_CONNECTORS=new Set("es son perque que quan per aixo llavors tambe pero i o te tenen hi ha com amb fa fan si no porque cuando entonces tambien y tiene tienen hay como con hace hacen por para and but because is are".split(" ").map(normT));
+// (els cinc últims connectors són per als mons en anglès)
 // frases i no una llista de paraules: prou paraules per idea (els números compten) i algun connector o el signe =
 function obFrases(text,det){const w=obParaules(text);if(w.length<OB_PARAULES_IDEA*Math.max(1,det))return false;return w.some(x=>OB_CONNECTORS.has(x))||/=/.test(text)}
 // estat: "bona" fa avançar la ratxa, "fluixa" la posa a 0 i "filtre" (bona però sense frases) no la toca; torna les ⭐ pagades

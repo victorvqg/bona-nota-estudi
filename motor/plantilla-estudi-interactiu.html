@@ -1171,7 +1171,8 @@ const obBloc=n=>{const d=(S.obv||{})[n];return d&&d>avui()?d:null};
 // ✍️ triple combo (issue #14): obertes bones seguides el mateix dia i al mateix món. Bona = puntua, com a mínim el 60 % de les idees
 // i explicada amb frases (obFrases). ×3 +3 ⭐, ×6 +5 ⭐ (i torna a 0), fins a OB_COMBO_MAX al dia. Si no arriba al 60 %, la ratxa torna a 0.
 const OB_COMBO_PC=60,OB_COMBO_PREMIS={3:3,6:5},OB_COMBO_MAX=8,OB_PARAULES_IDEA=4;
-const OB_CONNECTORS=new Set("es son perque que quan per aixo llavors tambe pero i o te tenen hi ha com amb fa fan si no porque cuando entonces tambien y tiene tienen hay como con hace hacen por para".split(" ").map(normT));
+const OB_CONNECTORS=new Set("es son perque que quan per aixo llavors tambe pero i o te tenen hi ha com amb fa fan si no porque cuando entonces tambien y tiene tienen hay como con hace hacen por para and but because is are".split(" ").map(normT));
+// (els cinc últims connectors són per als mons en anglès)
 // frases i no una llista de paraules: prou paraules per idea (els números compten) i algun connector o el signe =
 function obFrases(text,det){const w=obParaules(text);if(w.length<OB_PARAULES_IDEA*Math.max(1,det))return false;return w.some(x=>OB_CONNECTORS.has(x))||/=/.test(text)}
 // estat: "bona" fa avançar la ratxa, "fluixa" la posa a 0 i "filtre" (bona però sense frases) no la toca; torna les ⭐ pagades
