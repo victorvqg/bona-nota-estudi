@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.13.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md) · **Xat:** [com funciona](docs/XAT.md)
+**Web:** https://bonanota.net · **Versió:** 2.14.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md) · **Xat:** [com funciona](docs/XAT.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -415,6 +415,8 @@ L'apartat **Repàs, boss i missions** (`tMotivacio()`) no necessita cap funció 
 L'apartat **✏️ Taller de mates: on s'equivoquen** (exercici · pas · error · vegades · nens) surt de `bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql` (s'executa una vegada, després de `bn_admin_tauler.sql`), i llegeix el camp `ep` (`"exercici|pas|error"`, un per cada resposta fallada) que el Taller afegeix als events `joc` i `examen`.
 
 **Benestar** (`admin/`, pestanya 📊 Tauler): l'ús sa de cada nen segons [`docs/BON-US.md`](docs/BON-US.md) (apartats 2 i 5), amb `bn_admin_benestar` (`supabase/bn_admin_benestar.sql`). Una fila per nen amb el semàfor i els motius. Per món, la fase (novetat, aprendre, vigília, després) i la vigília d'examen: la data que posa l'admin (`bn_admin_examen_desa`, taula `bn_priv.examens`) o, si no n'hi ha, el pic del grup (5 nens o la meitat, el triple de minuts d'un dia normal, només del dia 3 al 12 del món). Els llindars són els inicials de BON-US.md. El temps es compta per aparell: amb dos aparells alhora, els minuts poden sortir doblats (el tauler ho avisa).
+
+**Combos i repàs** i **Errors pendents de la colla** (`admin/`, pestanya 📊 Tauler; `supabase/bn_admin_fonts_rep.sql`). `bn_admin_fonts_dia` treu les estrelles de cada font per dia de les diferències del camp `fonts` entre registres del mateix nen i món: el porten `entra` i `temps` i, des de la 2.8.2, també `test`, `joc`, `examen` i `oberta`. Cada increment es compta contra el màxim anterior, de manera que un aparell vell que envia valors baixos no fa comptar dues vegades el mateix. El primer registre de cada nen i món, i el primer després d'un reinici, només serveixen de base, i un valor que baixa compta 0. `bn_admin_rep_pendents` agrega els errors pendents de repàs (`estat.rep` de `bn_priv.progres`) per món i tema, sense noms.
 
 **Nens nous** (`admin/`, pestanya 👤 Nens, a dalt): les altes del període de dalt, amb `bn_admin_altes` (`supabase/bn_admin_fitxa.sql`). La data d'alta és la primera vegada que es veu el nen: el primer registre o `perfils.creat` (quan crea el perfil amb el PIN; els perfils d'abans del 10-11-2026 no la tenen), el que sigui abans. No es fa servir `nou` de l'event `entra`, que vol dir «nou en aquell aparell».
 
