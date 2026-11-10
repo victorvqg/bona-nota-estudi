@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.10.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md)
+**Web:** https://bonanota.net · **Versió:** 2.11.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -264,11 +264,26 @@ El Taller desa cada resposta fallada com `exercici|pas|error` (camp `ep`), que e
 
 És una pàgina a part, que no surt de la plantilla. S'edita a mà, excepte els blocs marcats que escriu `tot.py`: `MONS`, `SO-MOBIL`, `ACTUALITZA`, l'adreça de `sprites.js` i la versió del peu.
 
-- **Rànquing:** combina les RPC `bn_ranking_mons` (amb `bn_ranking` de reserva) i `bn_ranking_remuntada`. Sense la segona, la pestanya Remuntada surt buida. La classificació mostra els `HS_TOP` = 25 primers i, si el nen queda més avall, la seva fila a sota. `?demo` el mostra amb nens inventats.
+- **Rànquing:** combina les RPC `bn_ranking_mons` (amb `bn_ranking` de reserva) i `bn_ranking_remuntada`, i hi afegeix el xat de la colla (vegeu més avall). Sense la segona, la pestanya Remuntada surt buida. La classificació mostra els `HS_TOP` = 25 primers i, si el nen queda més avall, la seva fila a sota. `?demo` el mostra amb nens inventats.
 - **Icones:** `sprites.js` dibuixa el pixel art com a SVG a partir de graelles de 16×16, de manera que es veu igual a tots els aparells.
 - **Afegir un món al rànquing:** surt sol de la seva targeta (`data-id`, `.mat`, `h2`). Per donar-li dibuix i color, a `sprites.js` afegeix-lo a `BN_MON`
   (`id: {ic: "un dibuix de BN_SPR", mat: "Assignatura"}`). Si l'assignatura és nova, afegeix-la també a `BN_MAT` (`curt`, `color`, `tint`).
   Sense aquestes entrades no es trenca res: surt amb el seu emoji en una rajola grisa i l'assignatura nova agafa un color de reserva.
+
+### 💬 Xat de la colla (pestanya «Xat» del rànquing)
+
+Els nens es parlen **amb peces**, sense escriure: una frase amb un forat (`___`) i el que l'omple (una paraula d'estudi, una cosa de classe, una cosa seva o el nom d'un company del rànquing). Regles i motius: `docs/DECISIONS.md` (ADR-0006) i l'encàrrec `docs/superpowers/specs/2026-11-10-xat-colla.md`.
+
+- **Catàleg:** el bloc `XAT-CATALEG` d'`index.html` (`XAT_FR`: 26 frases; `XAT_PC`: 63 peces) és el mateix que carrega `supabase/bn_xat.sql`. Si en canvies un, canvia l'altre: `motor/prova-xat-sql.js` comprova que coincideixen. Les peces noves que afegeix l'admin (id ≥ 1001) arriben del servidor amb el seu text.
+- **Regla d'or:** el nom d'un company només va en frases de forat `C` (felicitar, donar aura o reptar); per riure, coses de classe (`E`) o un mateix (`J`).
+- **Text:** `xatCompon()` el compon al navegador amb el catàleg: contraccions (a/de/per + el/els → al, als, del, dels, pel, pels) i majúscula si la frase comença pel forat. Del servidor només arriben números. L'admin fa servir les mateixes regles.
+- **Crèdits:** els calcula el servidor (`bn_xat_estat`): cada `est_credit` (10) ⭐ guanyades avui = 1 crèdit, fins a `max_dia` (5) al dia; tornen a zero a mitjanit (Europe/Madrid). Votar «Ben dit» demana el primer crèdit d'avui. Entre missatges, `espera_s` (10 s). Els valors es canvien des de l'admin.
+- **Lectures:** `bn_xat_llegeix` (sense PIN) en obrir el rànquing i cada 10 s només mentre la pestanya Xat és oberta; `bn_xat_estat` (amb PIN) en obrir-lo i després d'enviar o votar. No es fa servir Realtime.
+- **A l'aparell:** `bn_xat_vist` (l'últim missatge vist, per al comptador vermell de la pestanya) i `bn_xat_cred` (per al rètol «CRÈDIT +1» quan en tornar hi ha crèdits nous).
+- **Sense el SQL aplicat** (o sense connexió), el rànquing es veu igual que abans i la pestanya Xat diu «El xat arriba aviat».
+- **`?demo`:** el xat amb missatges inventats i un servidor local, sense núvol. La Laia porta 14 ⭐ avui; amb `?demo&estrelles=4` (INSERT COIN), `=10` (en enviar, SENSE CRÈDITS) o `=60` (5 crèdits i després TORNA DEMÀ) es veuen els bloquejos.
+- **Admin** (`admin/` → Xat): resum del dia, missatges (també els esborrats) per esborrar o recuperar, silenciar un nom 1, 3 o 7 dies, configuració, catàleg amb interruptors i peça nova.
+- Proves: `node motor/prova-xat-sql.js` (el SQL dins de PGlite), `node motor/prova-xat.js` (portada) i `node motor/prova-admin-xat.js` (admin).
 
 ### 👾 Perfil del nen (`perfil/index.html`)
 
@@ -320,9 +335,12 @@ motor/
   prova-generadors.js                Prova dels generadors del Taller de mates (sense navegador)
   prova-perfil.js                    Prova de la pàgina de perfil (Playwright, Supabase simulat)
   prova-nuvol.js                     Prova de la sincronització d'un món amb el núvol (Playwright, Supabase simulat)
+  prova-xat.js                       Prova del xat de la colla a la portada (Playwright, Supabase simulat)
+  prova-xat-sql.js                   Prova de supabase/bn_xat.sql dins d'un Postgres de prova (PGlite)
+  prova-admin-xat.js                 Prova de la pestanya Xat de l'admin (Playwright, Supabase simulat)
   local.py                           Servidor local que es posa al dia sol amb GitHub
 admin/                         Tauler d'administració
-supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol, aspecte del nen
+supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol, aspecte del nen, xat de la colla
 supabase/functions/bn-corregeix/   Correcció de la foto del quadern
 skills/bona-nota/              Skill que genera els PDFs d'estudi (skills/bona-nota.zip és el paquet)
 sw.js, manifest.webmanifest, icones/   App instal·lable (sw.js el genera tot.py)
@@ -343,6 +361,7 @@ AGENTS.md, CLAUDE.md, nucli.json, docs/   Regles i memòria del projecte per als
 - **Registre d'activitat** (`bn_log`): què fa cada nen i quan, per al panell d'admin i el rànquing. Només s'hi pot escriure; llegir-lo només ho pot fer l'admin.
 - **Rànquing:** `bn_ranking_mons` (total i estrelles per món). Els noms amagats o no permesos no hi surten.
 - **Reinicis** (`bn_priv.reinicis`): quan l'admin esborra el progrés d'un nen, es desa la data per món (o «tots»). L'app la rep amb `bn_progres_llegeix`, buida el progrés vell del dispositiu i el servidor no accepta progrés ni estrelles d'abans d'aquella data (`supabase/bn_admin_reinicia.sql`).
+- **Xat de la colla** (`supabase/bn_xat.sql`): taules privades `bn_priv.xat_*` (catàleg, missatges, vots i silencis) i la clau `xat` de `bn_priv.config`. De cada missatge només es guarden números: qui, quina frase i quina peça o quin company del rànquing; mai text. Cap taula del xat es pot llegir des del navegador: tot passa per funcions (`bn_xat_estat`, `bn_xat_envia` i `bn_xat_vota` demanen el PIN; `bn_xat_llegeix` és pública com el rànquing i no diu qui ha votat). Els missatges dels noms amagats o no permesos no surten. Les taules del xat encara no entren a les còpies de seguretat de l'admin (la configuració sí).
 - **PIN:** xifrat (bcrypt), mai es guarda tal qual. 5 errors en 15 minuts bloquegen el nom 15 minuts. Format i canvi: `supabase/bn_pin_nou.sql`.
 - Els canvis a la base de dades es fan a Supabase i el seu SQL es desa a `supabase/`.
 
@@ -411,13 +430,14 @@ Dins dels mons ja no hi ha cap botó per esborrar el progrés: només es pot fer
 
 ## ✅ Proves i revisió automàtica
 
-A cada push, GitHub Actions (`.github/workflows/revisa.yml`) fa quatre coses:
+A cada push, GitHub Actions (`.github/workflows/revisa.yml`) fa cinc coses:
 
 1. Torna a generar tots els mons i la portada. Si una pàgina pujada no coincideix (editada a mà o sense regenerar), falla i diu quins fitxers.
 2. Passa la prova dels generadors del Taller de mates (`motor/prova-generadors.js`).
    I la del núvol d'un món (`motor/prova-nuvol.js`, Supabase simulat): un aparell vell no trepitja el progrés del núvol, sense connexió no puja res i el `-2` es resol sense bucles.
 3. Passa la prova de la pàgina de perfil (`motor/prova-perfil.js`): tries amb clic i teclat, desat al núvol, sense connexió i amb PIN incorrecte, Sorpresa i «Efectes suaus».
-4. Passa la prova de cada món en mode estricte: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i rànquing de la capçalera.
+4. Passa les proves del xat de la colla: `motor/prova-xat-sql.js` executa `supabase/bn_xat.sql` (dues vegades, per comprovar que és idempotent) dins de PGlite, un Postgres de prova sense xarxa, i prova cada codi de `bn_xat_envia`, el canvi de dia a mitjanit, els vots, la lectura, l'admin i els permisos; `motor/prova-xat.js` prova la portada (crèdits, bloquejos, enviar, votar, contraccions, «Digues-li», mòbil, `?demo` i el rànquing igual que abans sense el SQL); `motor/prova-admin-xat.js` prova la pestanya Xat de l'admin.
+5. Passa la prova de cada món en mode estricte: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i rànquing de la capçalera.
    També exigeix 8 preguntes per tema, i que la resposta correcta no sigui massa sovint (ni massa poc) la més llarga.
 
 El resultat surt a la pestanya **Actions** del repo.
