@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.9.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
+**Web:** https://bonanota.net · **Versió:** 2.10.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -154,6 +154,7 @@ En arrencar, els paràmetres `?joc=`, `?tema=` i `?vista=` obren directament una
 - **Combo net** (2.8.0): el combo (`ratxa()`) només puja amb respostes que donen estrella. Les preguntes repetides el mateix dia i el repàs no el fan pujar ni el trenquen; un error el trenca sempre. `ratxaHtml()` en mostra la barra a cada pregunta.
 - **El repàs paga** (2.8.0): `premiRepas()` dona +1 ⭐ per cada error encertat al repàs, un cop per error i dia, fins a `REP_MAX` = 10 al dia per món (`S.est.r` i `S.est.rn`). Les +2 ⭐ d'«après» es mantenen.
 - **✍️ Triple combo** (2.9.0): `obRatxa()` porta la ratxa d'obertes bones del dia (`S.est.oc`) i paga ×3 +3 ⭐ i ×6 +5 ⭐ fins a `OB_COMBO_MAX` = 8 al dia per món (`S.est.ocp`, font «triple»). Una oberta és bona si puntua, té el 60 % de les idees i passa `obFrases()` (4 paraules per idea i un connector o =). Amb totes les idees, +1 ⭐ «resposta de 10».
+- **⚡ Super combo** (2.10.0): `ratxaDif()` compta les preguntes difícils (`difDe(q)===3`, de `motor/dificultat.json` via `QDIF`) encertades seguides que donen estrella; 3 seguides +3 ⭐, 5 seguides +5 ⭐ fins a `SUPER_MAX` = 10 al dia per món (`S.est.sp`, font «super»). La llista per revisar-les és `docs/DIFICILS.md` (`python3 motor/dificultat.py`).
 - **Com es guanyen**: la llista `COM_GUANYAR` és l'única font de les dues targetes d'estrelles. Si un premi canvia, es canvia aquí i a `docs/AVALUACIO.md`.
 - **Estrelles per activitat**: `iniciActivitat()` en començar un test, joc, oberta, boss o repàs, i `detallLog()` posa `est` (estrelles guanyades) als registres `test`, `joc`, `examen` i `oberta`. El tauler en treu les estrelles per minut de cada activitat.
 
