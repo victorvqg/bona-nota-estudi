@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="4b8c9486f2",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="3f43cc54c2",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -2168,14 +2168,19 @@ function obertes(n){OB0=Date.now();iniciActivitat();
   document.getElementById("veu").disabled=true;resp.readOnly=true;
   // la nota la posa el programa; si ja havia vist la resposta fa poc, és pràctica i no compta
   const pract=!!bloc,trob=o.p.map(pt=>ideaDetectada(pt,txt,o.q)),det=trob.filter(Boolean).length,tot=o.p.length,pc=Math.round(det*100/tot),primera=!pract&&!diaEst().o[n];
-  if(!pract){diaEst().o[n]=1;S.ob[n]=pc;(S.obv=S.obv||{})[n]=diaMes(OB_DIES);suma(primera?det:0);missio("ob");desa();if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300)}
-  registra("oberta",Object.assign({n,tema:o.t,pc,s:segs(OB0),idees:det,de:tot,det,falten:trob.map((x,i)=>x?null:i).filter(x=>x!==null)},pract?{mode:"practica"}:{},rebutjat?{rebutjat}:{},enganxat()?{enganxat:enganxat()}:{}));
+  // ✍️ triple combo i resposta de 10 (issue #14): només la primera vegada del dia que puntua
+  let estat=null,fr=false,pagC=0,ple=0;
+  if(!pract){diaEst().o[n]=1;S.ob[n]=pc;(S.obv=S.obv||{})[n]=diaMes(OB_DIES);suma(primera?det:0);
+   if(primera){fr=obFrases(txt,det);estat=pc<OB_COMBO_PC?"fluixa":fr?"bona":"filtre";pagC=obRatxa(estat);
+    if(pc===100){ple=1;suma(1);retolMissio("RESPOSTA DE 10!","+1 ⭐",1800)}}
+   missio("ob");desa();if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300)}
+  registra("oberta",Object.assign({n,tema:o.t,pc,s:segs(OB0),idees:det,de:tot,det,falten:trob.map((x,i)=>x?null:i).filter(x=>x!==null)},pract?{mode:"practica"}:{},rebutjat?{rebutjat}:{},enganxat()?{enganxat:enganxat()}:{},estat?{oc:diaEst().oc||0,frases:fr?1:0}:{}));
   corr.innerHTML=`<div class="fb"><b>He trobat ${det} de ${tot} idees al teu text:</b>${o.p.map((x,i)=>trob[i]?`<div class="ob-ok"><span>✅</span><span>${x}</span></div>`:`<label class="chk"><input type="checkbox" class="pk" data-i="${i}"><span>${x}</span></label>`).join("")}
   ${det<tot?`<p class="prog" style="margin:6px 0">Si creus que alguna de les que no he trobat sí que l'has posat, marca-la i avisa'ns. No canvia la nota.</p><div class="fila"><button class="btn sec" id="crec">Crec que n'he posat més</button></div>`:""}
   <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p>${btEscolta(o.m,"Escolta la resposta model")}</details><div id="res"></div></div>`;
   const bc=document.getElementById("crec");if(bc)bc.onclick=()=>{const ids=[...document.querySelectorAll(".pk:checked")].map(c=>+c.dataset.i);if(!ids.length)return;bc.disabled=true;bc.textContent="Apuntat ✔";registra("valora",{titol:`Pregunta oberta ${n+1}`,v:`Crec que n'he posat ${ids.length} més`,ob:n,crec:ids})};
   const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
-  document.getElementById("res").innerHTML=`<p style="text-align:center"><b>Nota: ${pc} %</b>${pract?" · és pràctica, no puntua":primera?` → +${det} ⭐`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>A l'examen valdria uns <b>${(det*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
+  document.getElementById("res").innerHTML=`<p style="text-align:center"><b>Nota: ${pc} %</b>${pract?" · és pràctica, no puntua":primera?` → +${det} ⭐${ple?" · +1 ⭐ resposta de 10":""}${pagC?` · +${pagC} ⭐ triple combo`:""}`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>${estat==="filtre"?"✏️ Per al combo, explica-ho amb frases.<br>":estat==="bona"&&diaEst().oc?`✍️ Ratxa d'obertes ×${diaEst().oc}<br>`:""}A l'examen valdria uns <b>${(det*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
  };
 }
 // prova: la validació rebutja el que no és una resposta i la nota no es pot inflar
@@ -2189,9 +2194,15 @@ function bnProvaObertes(){const inv=t=>t.split(/\s+/).reverse().join(" "),s0=JSO
   const o=OB[0],txt=inv(o.m);delete S.ob[0];if(S.obv)delete S.obv[0];delete diaEst().o[0];
   obertes(0);const ta=document.getElementById("resp"),ev=new ClipboardEvent("paste",{cancelable:true,bubbles:true});ta.dispatchEvent(ev);if(!ev.defaultPrevented)return "s'hi pot enganxar text";
   ta.value="asdas dasda sdasa dasad asada sadas";document.getElementById("veu").click();if(!document.querySelector("#corr .ko")||ta.readOnly||0 in S.ob)return "el text sense sentit no s'ha aturat";
+  const det0=o.p.filter(pt=>ideaDetectada(pt,txt,o.q)).length,fo0=S.fonts.obertes||0;diaEst().oc=0;
   ta.value=txt;document.getElementById("veu").click();const n1=S.ob[0];if(!(n1>0))return "una resposta real hauria de tenir nota";if(!obBloc(0))return "després de veure la resposta, la pregunta hauria de quedar bloquejada";
+  {const ple=n1===100?1:0,res=document.getElementById("res").textContent;if((S.fonts.obertes||0)!==fo0+det0+ple)return `obertes: +${(S.fonts.obertes||0)-fo0} ⭐ i havien de ser +${det0+ple} (idees${ple?" + resposta de 10":""})`;
+   if(ple&&!/resposta de 10/i.test(res))return "amb totes les idees, el resultat ha de dir «resposta de 10»";
+   const oc=diaEst().oc||0,esp=n1>=OB_COMBO_PC&&obFrases(txt,det0)?1:0;if(oc!==esp)return `triple combo: la ratxa és ${oc} i havia de ser ${esp}`;
+   if(n1>=OB_COMBO_PC&&!esp&&!/explica-ho amb frases/.test(res))return "si no passa el filtre de frases, ho ha de dir";}
+  const oc1=diaEst().oc||0;
   S.ob[0]=1;const p1=S.punts;obertes(0);if(!document.getElementById("obBloc"))return "no avisa que és pràctica";
-  document.getElementById("resp").value=txt;document.getElementById("veu").click();if(S.ob[0]!==1||S.punts!==p1)return "la pràctica no hauria de canviar la nota ni donar estrelles";
+  document.getElementById("resp").value=txt;document.getElementById("veu").click();if(S.ob[0]!==1||S.punts!==p1)return "la pràctica no hauria de canviar la nota ni donar estrelles";if((diaEst().oc||0)!==oc1)return "la pràctica no ha de tocar la ratxa del triple combo";
   return true}finally{const b=JSON.parse(s0);S.ob=b.ob;if(b.obv)S.obv=b.obv;else delete S.obv;S.punts=b.p;if(b.est)S.est=b.est;if(b.f)S.fonts=b.f;if(b.ft)S.ftema=b.ft;NIVPEND=null;SUPPEND=0;desa();vista("inici")}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaObertes");
 // prova (issue #14): triple combo de preguntes obertes i filtre de frases
