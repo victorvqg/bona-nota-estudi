@@ -97,6 +97,18 @@ const nuvol = p => ({ estat: { nom: "Prova", id: 77, punts: p, temes: {}, fonts:
   ok(j && j.detall.punts === 366, "el joc porta punts: 366");
   ok(errors.length === 0, "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
+ console.log("6) PIN incorrecte com a codi normal sense raise (issue #33: {ok:false,codi:'pin'} i -3)");
+ { const { p, ctx, errors, desades } = await obre(base({ bn_progres_llegeix: { ok: false, codi: "pin" }, bn_punts_maxim: 0 }));
+  await p.waitForTimeout(400);
+  const pins = await p.evaluate(() => JSON.parse(localStorage.getItem("bn_pins") || "{}"));
+  ok(!pins.prova, "quan bn_progres_llegeix torna {ok:false,codi:'pin'}, esborra el PIN caducat de l'aparell");
+  ok(desades().length === 0, "i no intenta pujar el progrés amb el PIN caducat");
+  const errDesa = await p.evaluate(() => rpc("bn_progres_desa", { p_nom: "Prova", p_pin: "0000A", p_assig: "biogeo", p_estat: {}, p_mod: 1 }).then(() => "ok", e => e));
+  ok(errors.length === 0, "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
+ { const { p, ctx } = await obre(base({ bn_progres_llegeix: nuvol(366), bn_punts_maxim: 366, bn_progres_desa: -3 }));
+  const errDesa = await p.evaluate(() => rpc("bn_progres_desa", { p_nom: "Prova", p_pin: "0000A", p_assig: "biogeo", p_estat: {}, p_mod: 1 }).then(() => "ok", e => e));
+  ok(errDesa === "pin", `bn_progres_desa amb resposta -3 es tracta com a error 'pin' (rebut: ${errDesa})`); await ctx.close() }
+
  await nav.close(); srv.close();
  console.log(fallades ? `errors: ${fallades}` : "errors: cap");
  process.exit(fallades ? 1 : 0);

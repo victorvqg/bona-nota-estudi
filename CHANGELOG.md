@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.17.1 · 2026-11-10
+
+### Arreglat
+- Portada, perfil i mons: `rpcP` i `rpc` accepten tant l'error HTTP 400 `'pin incorrecte'` com les respostes sense excepció (`"pin"`, `{"ok":false,"codi":"pin"}` i `-3` a `bn_progres_desa`), com a pas 1 per conservar el comptador de 5 intents de PIN fallits a la base de dades (#33).
+
 ## 2.17.0 · 2026-11-10
 
 ### Afegit

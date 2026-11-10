@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="7a351ef31b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="39c8a8bea8",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -572,7 +572,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.17.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.17.1</small></div>
 
 <script src="../../sprites.js?v=fd512289"></script>
 <script>
@@ -1574,7 +1574,7 @@ function obRatxa(estat){const e=diaEst();if(estat==="fluixa"){e.oc=0;desa();retu
 // i es pot recuperar en un altre dispositiu. Sense PIN tot funciona igual, però només en aquest dispositiu.
 const SB_RPC=BN_LOG.url.replace("/bn_log","/rpc/");
 function rpc(f,body,keep){return fetch(SB_RPC+f,{method:"POST",keepalive:!!keep,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json"},body:JSON.stringify(body)})
- .then(async r=>{const t=await r.text();if(!r.ok){const m=/massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa";throw m}return t?JSON.parse(t):null})}
+ .then(async r=>{const t=await r.text();if(!r.ok){const m=/massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa";throw m}const j=t?JSON.parse(t):null;if(j==="pin"||(j&&typeof j==="object"&&j.codi==="pin")||(f==="bn_progres_desa"&&j===-3))throw "pin";if(j==="bloc"||(j&&typeof j==="object"&&j.codi==="bloc"))throw "bloc";return j})}
 // PIN = 4 xifres + 1 lletra al final (ex. 4587R). Els PIN antics de 4 xifres encara serveixen per entrar,
 // però en entrar es demana l'«actualització de seguretat» (pantallaNouPin).
 const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
