@@ -21,7 +21,7 @@ Bona Nota va bé quan el nen aprèn en sessions curtes, sense por i sense que li
 5. **Millor poc i sovint.** Tres sessions de 20 minuts en dies diferents valen més que una de 90 (repàs espaiat). L'«error après», que demana tres encerts en dies separats, ja ho aplica.
 6. **Comparar-se amb cura.** El rànquing ha de donar motius als que van darrere, com fan Setmana i Remuntada. Mai no ha d'humiliar ningú.
 7. **El son i la família manen.** A la nit, l'app convida a plegar. El pare veu al tauler com va l'ús, no només les notes.
-8. **El mínim de dades i res de text lliure entre nens.** El xat amb peces ([ADR-0006](DECISIONS.md)) és el model a seguir.
+8. **El mínim de dades i res de text lliure entre nens.** El xat amb peces ([ADR-0006](DECISIONS.md), detallat a [`XAT.md`](XAT.md)) és el model a seguir.
 
 ## 2. Fases del món i vigília d'examen
 
