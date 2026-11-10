@@ -3,6 +3,7 @@
 #    si algú ha editat una pàgina generada a mà, o s'ha oblidat de regenerar, falla i diu quins fitxers.
 # 2) Passa la prova automàtica de cada món (tests, jocs, examen, repàs, obertes) en mode estricte, i la de la pàgina de perfil:
 #    mínim 8 preguntes per tema i la resposta correcta no pot ser massa sovint la més llarga (ni massa poc).
+# 3) Passa les proves del xat de la colla: el SQL (supabase/bn_xat.sql dins d'un Postgres de prova, PGlite), la portada i l'admin.
 name: Revisa Bona Nota
 on:
   push:
@@ -18,9 +19,9 @@ jobs:
         with: { python-version: "3.12" }
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
-      - name: Instal·la Playwright (Chromium)
+      - name: Instal·la Playwright (Chromium) i PGlite (Postgres de prova per al SQL del xat)
         run: |
-          npm install --no-save playwright@1
+          npm install --no-save playwright@1 @electric-sql/pglite@0.5
           npx playwright install --with-deps chromium
       - name: Regenera mons i portada
         run: cd motor && python3 tot.py
@@ -39,6 +40,12 @@ jobs:
         run: node motor/prova-perfil.js
       - name: Prova dels orígens d'estrelles del tauler (admin/, funcions pures)
         run: node motor/prova-admin-fonts.js
+      - name: Prova del xat a la base de dades (supabase/bn_xat.sql dins de PGlite)
+        run: node motor/prova-xat-sql.js
+      - name: Prova del xat de la colla a la portada (amb Supabase simulat)
+        run: node motor/prova-xat.js
+      - name: Prova de la pestanya Xat de l'admin (amb Supabase simulat)
+        run: node motor/prova-admin-xat.js
       - name: Prova automàtica de cada món
         run: |
           cd motor
