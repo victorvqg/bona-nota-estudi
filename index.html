@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="69d0ac5d40",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="7a351ef31b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -629,6 +629,12 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px
 .juga span{display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Press Start 2P',monospace;font-size:13px;color:#fff;
  background:linear-gradient(180deg,var(--c3),var(--c2));padding:15px;border-radius:14px;box-shadow:0 5px 0 var(--c1);transition:transform .1s,box-shadow .1s}
 .as:active .juga span{transform:translateY(4px);box-shadow:0 1px 0 var(--c1)}
+.as.mon-tancat{filter:grayscale(.85) brightness(.8);opacity:.78;cursor:not-allowed}
+.as.mon-tancat:hover,.as.mon-tancat:focus-visible{transform:none;box-shadow:0 0 0 3px #64748b,0 18px 40px -12px #000a}
+.as.mon-tancat .portada .tag-tancat{position:absolute;right:14px;top:14px;font-family:'Press Start 2P',monospace;font-size:9px;color:#fecaca;background:#7f1d1de6;border:1.5px solid #f87171;padding:7px 9px;border-radius:8px;letter-spacing:1px}
+.as.mon-tancat .juga span{background:linear-gradient(180deg,#64748b,#475569);box-shadow:0 5px 0 #1e293b}
+.mon-tancat-toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:85;transform:translate(-50%,16px);opacity:0;pointer-events:none;width:max-content;max-width:min(520px,calc(100% - 32px));padding:10px 16px;border-radius:14px;background:#0b1033f2;border:2px solid #f87171;font:800 14.5px/1.4 Nunito,system-ui,sans-serif;color:#fecaca;box-shadow:0 8px 24px #0009;transition:opacity .2s,transform .2s}
+.mon-tancat-toast.vis{opacity:1;transform:translate(-50%,0)}
 
 .prox{background:transparent;border:3px dashed #ffffff33;box-shadow:none;color:#c7d2fe;display:grid;place-items:center;text-align:center;min-height:300px;pointer-events:none}
 .prox .ic{font-size:56px;opacity:.6;display:block;animation:flota 5s ease-in-out infinite}
@@ -799,7 +805,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.16.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.17.0</small></footer>
 
 <script src="sprites.js?v=fd512289"></script>
 <script>
@@ -875,18 +881,8 @@ function jugador(){try{return localStorage.getItem('bn_jugador')||''}catch(e){re
 function pinsP(){try{return JSON.parse(localStorage.getItem('bn_pins')||'{}')||{}}catch(e){return {}}}
 function nomsDispositiu(){const m={};try{(JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[]).forEach(n=>{m[n.trim().toLowerCase()]=n});
  for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c))continue;Object.keys(JSON.parse(localStorage.getItem(c)||'{}')||{}).forEach(n=>{m[n.trim().toLowerCase()]=m[n.trim().toLowerCase()]||n})}}catch(e){}return m}
-const rpcP=(f,body)=>fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:JSON.stringify(body)})
- .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa"}return t?JSON.parse(t):null});
-// embut d'alta (M7 · n2537): només el pas i si ha anat bé; mai el PIN ni el nom abans que el nen tingui perfil
-const SESSIO_ALTA=Math.random().toString(36).slice(2,12);
-function aparellAlta(){let a="";try{a=localStorage.getItem("bn_aparell")||"";if(!a){a=Math.random().toString(36).slice(2,12);localStorage.setItem("bn_aparell",a)}}catch(e){a="?"}return a}
-function logAlta(pas,ok,motiu,nomPerfil){
- if(!/^https?:/.test(location.protocol)||window.BN_NO_LOG||/[?&]demo\b/.test(location.search))return;
- const pre=pas==="nom"||pas==="pin_ko",ap=aparellAlta(),detall={pas,ok:ok?1:0};
- if(motiu)detall.motiu=motiu;
- try{fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/bn_log",{method:"POST",keepalive:true,
-  headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json","Prefer":"return=minimal"},
-  body:JSON.stringify({assig:"portada",nom:pre?"_alta":String(nomPerfil||"_alta").slice(0,40),sessio:SESSIO_ALTA,aparell:pre?("alta:"+ap).slice(0,40):ap.slice(0,40),event:"alta",detall})}).catch(()=>{})}catch(e){}}
+function rpcP(f,body){return fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:JSON.stringify(body)})
+ .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa"}return t?JSON.parse(t):null})}
 // PIN = 4 xifres + 1 lletra al final (ex. 4587R), sempre en MAJÚSCULES. Els antics (4 xifres) entren i es demana canviar-los.
 const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
 function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
@@ -911,39 +907,70 @@ function iniciEntrada(){
  f.onsubmit=async e=>{e.preventDefault();let n=iN.value.trim().replace(/\s+/g,' ');if(!n)return err('Escriu el teu nom.');
   n=n.charAt(0).toUpperCase()+n.slice(1);const p=netPin(iP.value);
   const coneguts=nomsDispositiu(),local=coneguts[n.toLowerCase()];if(local)n=local;
-  if(!local&&Object.keys(coneguts).length>=2){logAlta("nom",0,"massa_noms");return err(`📵 En aquest aparell ja hi ha 2 noms (${Object.values(coneguts).join(' i ')}). Toca el teu nom per entrar.`)}
-  if(!PIN_NOU.test(p)&&!PIN_VELL.test(p)){logAlta("pin_ko",0,"format");return err(`🔢 Escriu el PIN: 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,iP)}
+  if(!local&&Object.keys(coneguts).length>=2)return err(`📵 En aquest aparell ja hi ha 2 noms (${Object.values(coneguts).join(' i ')}). Toca el teu nom per entrar.`);
+  if(!PIN_NOU.test(p)&&!PIN_VELL.test(p))return err(`🔢 Escriu el PIN: 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,iP);
   av.className='en-avis ok';av.textContent='Un moment…';
   let ex;try{ex=await rpcP('bn_perfil_existeix',{p_nom:n})}catch(x){ex=null}
   if(ex===null){const pl=pinsP()[n.toLowerCase()];if(local&&(!pl||pl===p)){if(!pl)desaPinP(n,p);return dins(n)}
    return err(pl?'❌ PIN incorrecte.':'📡 Cal connexió a internet per entrar amb un nom nou.',pl?iP:iN)}
   const primer=(document.querySelector('.as[data-id]')||{dataset:{}}).dataset.id||'socials';
   if(ex){try{await rpcP('bn_progres_llegeix',{p_nom:n,p_pin:p,p_assig:primer});desaPinP(n,p);if(PIN_VELL.test(p))return demanaNouPin(n,()=>dins(n));dins(n)}
-   catch(m){if(m==='pin'||m==='bloc')logAlta("pin_ko",0,m==='bloc'?'bloc':'incorrecte');err(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar.':m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':'📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
-  if(!PIN_NOU.test(p)){logAlta("pin_ko",0,"format");return err(`🔤 Al final del PIN hi va una lletra. Per exemple: ${PIN_EX}. Inventa't el teu!`,iP)}
-  if(p===PIN_EX){logAlta("pin_ko",0,"exemple");return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",iP)}
-  try{const r=await rpcP('bn_perfil_crea',{p_nom:n,p_pin:p});if(r==='existeix'){logAlta("nom",0,"existeix");return err('Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.',iP)}logAlta("nom",1);logAlta("pin_creat",1,null,n);desaPinP(n,p);dins(n)}
-  catch(m){if(m==='nom')logAlta("nom",0,"prohibit");else if(m==='pinfmt')logAlta("pin_ko",0,"format");err(m==='nom'?'🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.':m==='pinfmt'?`🔤 El PIN són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió. Prova-ho més tard.',m==='pinfmt'?iP:iN)}};
+   catch(m){err(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar.':m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':'📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
+  if(!PIN_NOU.test(p))return err(`🔤 Al final del PIN hi va una lletra. Per exemple: ${PIN_EX}. Inventa't el teu!`,iP);
+  if(p===PIN_EX)return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",iP);
+  try{const r=await rpcP('bn_perfil_crea',{p_nom:n,p_pin:p});if(r==='existeix')return err('Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.',iP);desaPinP(n,p);dins(n)}
+  catch(m){err(m==='nom'?'🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.':m==='pinfmt'?`🔤 El PIN són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió. Prova-ho més tard.',m==='pinfmt'?iP:iN)}};
  // 🛡️ actualització de seguretat: qui té el PIN antic (4 xifres) en tria un de nou (4 xifres + 1 lletra)
  function demanaNouPin(n,despres){const pop=document.getElementById('npPop'),fm=document.getElementById('npForm'),p1=document.getElementById('npP1'),p2=document.getElementById('npP2'),na=document.getElementById('npAvis'),ara=document.getElementById('npAra');
   document.getElementById('npNom').textContent=n;p1.value=p2.value='';na.className='en-avis';na.textContent='';ara.hidden=true;pop.hidden=false;setTimeout(()=>p1.focus(),50);
   const ko=(m,el)=>{na.className='en-avis';na.textContent=m;fm.classList.remove('tremola');void fm.offsetWidth;fm.classList.add('tremola');(el||p1).focus()};
   p1.oninput=()=>{p1.value=netPin(p1.value);na.textContent='';if(p1.value.length===5)p2.focus()};p2.oninput=()=>{p2.value=netPin(p2.value);na.textContent=''};
-  ara.onclick=()=>{logAlta("pin_ara_no",1,null,n);try{sessionStorage.setItem('bn_pin_ajorna','1')}catch(e){}pop.hidden=true;despres()};
+  ara.onclick=()=>{try{sessionStorage.setItem('bn_pin_ajorna','1')}catch(e){}pop.hidden=true;despres()};
   fm.onsubmit=async e=>{e.preventDefault();const a=netPin(p1.value),b=netPin(p2.value),vell=pinsP()[n.toLowerCase()];
-   if(!PIN_NOU.test(a)){logAlta("pin_ko",0,"format");return ko(`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,p1)}
-   if(a===PIN_EX){logAlta("pin_ko",0,"exemple");return ko("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",p1)}
-   if(a!==b){logAlta("pin_ko",0,"no_coincideix");return ko("Els dos PIN no són iguals. Torna'ls a escriure.",p2)}
+   if(!PIN_NOU.test(a))return ko(`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,p1);
+   if(a===PIN_EX)return ko("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",p1);
+   if(a!==b)return ko("Els dos PIN no són iguals. Torna'ls a escriure.",p2);
    na.className='en-avis ok';na.textContent='Un moment…';
-   try{await rpcP('bn_perfil_canvia_pin',{p_nom:n,p_pin:vell,p_nou:a});logAlta("pin_creat",1,"canvi",n);desaPinP(n,a);na.textContent='🛡️ PIN actualitzat! Recorda\'l bé.';setTimeout(()=>{pop.hidden=true;despres()},900)}
+   try{await rpcP('bn_perfil_canvia_pin',{p_nom:n,p_pin:vell,p_nou:a});desaPinP(n,a);na.textContent='🛡️ PIN actualitzat! Recorda\'l bé.';setTimeout(()=>{pop.hidden=true;despres()},900)}
    catch(m){if(m==='pin'){ // el PIN guardat ja no serveix (potser ja l'ha canviat en un altre aparell): que torni a entrar
      const x=pinsP();delete x[n.toLowerCase()];try{localStorage.setItem('bn_pins',JSON.stringify(x));localStorage.removeItem('bn_jugador')}catch(er){}
      pop.hidden=true;pintaHola();iN.value=n;iP.value='';av.className='en-avis';av.textContent='🔐 Sembla que ja havies canviat el PIN en un altre aparell. Entra amb el PIN nou.';iP.focus();return}
-    if(m==='bloc'||m==='pinfmt')logAlta("pin_ko",0,m==='bloc'?'bloc':'format');
     ko(m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':m==='pinfmt'?`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió i ara no es pot canviar el PIN.');if(m==='xarxa')ara.hidden=false}}}
  setTimeout(()=>{const G=jugador(),pg=G&&pinsP()[G.toLowerCase()];let aj=false;try{aj=sessionStorage.getItem('bn_pin_ajorna')==='1'}catch(e){}if(G&&PIN_VELL.test(pg||'')&&!aj)demanaNouPin(G,()=>{})},0);
- // sense nom, els mons esperen: primer el nom
- document.querySelectorAll('main .as[href]').forEach(a=>a.addEventListener('click',e=>{if(jugador())return;e.preventDefault();err('👆 Primer escriu el teu nom i el PIN.');f.scrollIntoView({behavior:'smooth',block:'center'})}));
+ // mons tancats des de l'admin (bn_estat_web) i avís si un nen hi fa clic; el rànquing conserva totes les estrelles
+ let tToast=null;
+ const avisMonTancat=msg=>{let el=document.getElementById('monTancatToast');if(!el){el=document.createElement('div');el.id='monTancatToast';el.className='mon-tancat-toast';el.setAttribute('role','status');document.body.appendChild(el)}
+  el.textContent=msg;el.classList.add('vis');clearTimeout(tToast);tToast=setTimeout(()=>el.classList.remove('vis'),3200)};
+ const aplicaMonsTancats=llista=>{
+  const tancats=new Set(Array.isArray(llista)?llista.map(x=>String(x||'')):[]);
+  try{localStorage.setItem('bn_mons_tancats',JSON.stringify([...tancats]))}catch(e){}
+  document.querySelectorAll('main .as[data-id]').forEach(a=>{
+   const id=a.dataset.id,tancat=tancats.has(id),jSpan=a.querySelector('.juga span'),port=a.querySelector('.portada');
+   let badge=port&&port.querySelector('.tag-tancat');
+   if(tancat){
+    a.classList.add('mon-tancat');a.setAttribute('aria-disabled','true');
+    if(port&&!badge){badge=document.createElement('span');badge.className='tag-tancat';badge.textContent='🔒 TANCAT';port.appendChild(badge)}
+    if(jSpan){if(!a.dataset.jugaOrig)a.dataset.jugaOrig=jSpan.textContent;jSpan.textContent='🔒 TANCAT'}
+   }else{
+    a.classList.remove('mon-tancat');a.removeAttribute('aria-disabled');
+    if(badge)badge.remove();
+    if(jSpan&&a.dataset.jugaOrig){jSpan.textContent=a.dataset.jugaOrig;delete a.dataset.jugaOrig}
+   }
+  });
+ };
+ try{const mem=JSON.parse(localStorage.getItem('bn_mons_tancats')||'[]');if(Array.isArray(mem)&&mem.length)aplicaMonsTancats(mem)}catch(e){}
+ if(/^https?:/.test(location.protocol)&&!/[?&]demo\b/.test(location.search)){
+  setTimeout(()=>rpcP('bn_estat_web',{}).then(r=>{
+   if(!r||typeof r!=='object')return;
+   if(Array.isArray(r.mons_tancats))aplicaMonsTancats(r.mons_tancats);
+   if(r.xat&&typeof r.xat.actiu==='boolean'&&typeof XAT==='object')XAT.actiu=r.xat.actiu;
+  }).catch(()=>{}),0);
+ }
+ // sense nom, els mons esperen: primer el nom; si el món està tancat, no deixa entrar
+ document.querySelectorAll('main .as[href]').forEach(a=>a.addEventListener('click',e=>{
+  if(a.classList.contains('mon-tancat')){e.preventDefault();avisMonTancat('🔒 Aquest món està tancat ara mateix. Tria un altre món!');return}
+  if(jugador())return;e.preventDefault();err('👆 Primer escriu el teu nom i el PIN.');f.scrollIntoView({behavior:'smooth',block:'center'})
+ }));
  pintaHola();
 }
 // botons: explicació plegable i rànquing en popup
@@ -1543,8 +1570,8 @@ function xatObre(id,pre){if(pre){XAT.cat=pre.cat;XAT.selF=pre.f;XAT.selP=pre.c!=
  const x=document.querySelector(pre?"#hs .x-compo":"#hs .a-xat");if(x&&matchMedia("(max-width:879px)").matches)setTimeout(()=>x.scrollIntoView({behavior:suau()?"auto":"smooth",block:"start"}),80)}
 // «CONTINUA ESTUDIANT»: al món on ha jugat més recentment en aquest aparell (allà dins hi ha «Continua per: …»); si no, al primer
 function xatContinua(){const G=xatK(xatJo().nom);let a0=null,mod=-1;
- document.querySelectorAll(".as[data-clau][href]").forEach(a=>{try{const ps=JSON.parse(localStorage.getItem(a.dataset.clau+"_perfils")||"{}")||{},k=Object.keys(ps).find(x=>xatK(x)===G),S=k?ps[k]:null;if(S&&(+S.mod||0)>mod){mod=+S.mod||0;a0=a}}catch(e){}});
- const a=a0||document.querySelector(".as[data-clau][href]");if(a)location.href=a.getAttribute("href")}
+ document.querySelectorAll(".as[data-clau][href]:not(.mon-tancat)").forEach(a=>{try{const ps=JSON.parse(localStorage.getItem(a.dataset.clau+"_perfils")||"{}")||{},k=Object.keys(ps).find(x=>xatK(x)===G),S=k?ps[k]:null;if(S&&(+S.mod||0)>mod){mod=+S.mod||0;a0=a}}catch(e){}});
+ const a=a0||document.querySelector(".as[data-clau][href]:not(.mon-tancat)");if(a)location.href=a.getAttribute("href")}
 async function xatEnvia(){const f=xatFr(XAT.selF),sp=XAT.selP;if(!f||sp==null||XAT.enviant||!xatPotEnviar()||XAT.cool>Date.now())return;
  const j=xatJo(),C=f.s==="C",cos={p_nom:j.nom,p_pin:j.pin,p_frase:f.id,p_peca:C?null:+sp,p_company:C?String(sp).slice(2):null}; // només números (i un nom del rànquing): cap text
  XAT.enviant=true;xatCompo();let r=null;

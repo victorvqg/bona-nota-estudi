@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="69d0ac5d40",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="7a351ef31b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -572,7 +572,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versión 2.16.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versión 2.17.0</small></div>
 
 <script src="../../sprites.js?v=fd512289"></script>
 <script>
@@ -1129,8 +1129,12 @@ const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.i
 const fmtT=s=>{const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
 function confeti(){const e=["⭐","🎉","✨","🌟","🎈"];for(let i=0;i<22;i++){const d=document.createElement("div");d.className="confeti";d.textContent=e[i%e.length];d.style.left=Math.random()*100+"vw";d.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
 let temp=null;function aturaSeg(){if(temp){clearInterval(temp);temp=null}}
+let MON_TANCAT=false;
+function pantallaMonTancat(){tancaActivitat();calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;
+ document.querySelectorAll("#nav button").forEach(b=>{b.disabled=true;b.classList.remove("on")});
+ app.innerHTML=`<div class="box benv" id="monTancatBox"><div style="font-size:56px;line-height:1">🔒</div><h2 style="margin:8px 0 4px">Aquest món està tancat ara mateix</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p><p class="prog">Les teves estrelles continuen guardades al rànquing! Tria un altre món a la portada.</p><a class="btn verd" href="../../" style="display:inline-block;text-decoration:none;width:100%;max-width:320px;padding:14px;font-size:18px;margin-top:8px">🚪 Tots els mons</a></div>`}
 function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>{const on=b.dataset.v===v;b.classList.toggle("on",on);if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")})}
-function vista(v){tancaActivitat();REPAS=false;if(S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
+function vista(v){if(MON_TANCAT){pantallaMonTancat();return}tancaActivitat();REPAS=false;if(S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
  if(S.nom&&!SENSE_NUVOL()&&pinVell(S.nom)&&!PIN_AJORNA&&v!=="benvinguda"){pantallaNouPin();return}calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
 
 
@@ -2422,6 +2426,17 @@ aplicaSuau();
 (function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc?/[?&]sw\b/.test(location.search):location.protocol==="https:"){navigator.serviceWorker.register("../../sw.js").catch(()=>{});return}if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 pintaCap();pintaSo();
 (function(){const usp=new URLSearchParams(location.search),jP=usp.get("joc"),tP=usp.get("tema"),vP=usp.get("vista"),directe=MODE_DEMO||jP||tP!==null||vP;
+ if(!SENSE_NUVOL()){
+  try{const mem=JSON.parse(localStorage.getItem("bn_mons_tancats")||"[]");if(Array.isArray(mem)&&mem.includes(ASSIG.id))MON_TANCAT=true}catch(e){}
+  rpc("bn_estat_web",{}).then(r=>{
+   if(!r||!Array.isArray(r.mons_tancats))return;
+   try{localStorage.setItem("bn_mons_tancats",JSON.stringify(r.mons_tancats))}catch(e){}
+   const tancat=r.mons_tancats.includes(ASSIG.id);
+   if(tancat&&!MON_TANCAT){MON_TANCAT=true;pantallaMonTancat()}
+   else if(!tancat&&MON_TANCAT){MON_TANCAT=false;document.querySelectorAll("#nav button").forEach(b=>b.disabled=false);vista("inici")}
+  }).catch(()=>{});
+  if(MON_TANCAT){pantallaMonTancat();return}
+ }
  let G="";try{G=localStorage.getItem("bn_jugador")||""}catch(e){}
  if(directe&&!S.nom){S=BUIT();S.nom=G||"Demo";pintaCap()}
  if(!directe&&G&&(pinDe(G)||SENSE_NUVOL())&&(!S.nom||S.nom.toLowerCase()!==G.toLowerCase())&&potNouNom(G)){entra(G);return}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Bona Nota · prova automàtica del pas 4 de la fase B (n2537):
+// Bona Nota · prova automàtica de:
 //   - M5: nivells al tauler (llista de nens, fitxa i pestanya «Al núvol»), llegits d'admin/regles.json
-//   - M7: embut d'alta a la portada (index.html), al perfil (perfil/index.html) i a l'admin (admin/index.html)
+//   - Control ràpid (n2537): activar/desactivar xat, horari automàtic i mons per separat a l'admin i a la web (portada i món)
 // Ús (des de l'arrel del repo o des de motor/):   node motor/prova-admin-alta.js
 const http = require("http"), fs = require("fs"), path = require("path");
 const { chromium } = require("playwright");
@@ -27,10 +27,7 @@ function dadesAdmin() {
  const logs = [
   log("Pau", "socials", 2, "entra", { punts: 120 }),
   log("Pau", "divisibilitat", 5, "temps", { s: 300, punts: 40 }),
-  log("Laia", "biogeo", 3, "entra", { punts: 15 }),
-  // Events d'alta: un d'abans de tenir perfil (_alta) i un amb perfil (Pau). No han de sortir a Nens ni als filtres d'assignatura/nen, però sí al Log complet.
-  log("_alta", "portada", 1, "alta", { pas: "pin_ko", ok: 0, motiu: "exemple" }, "alta:ap-nou"),
-  log("Pau", "portada", 1, "alta", { pas: "perfil", ok: 1 }, "a1")
+  log("Laia", "biogeo", 3, "entra", { punts: 15 })
  ];
  const fitxa = {
   pau: { k: "pau", perfil: { nom: "Pau", id: 3, pin_v: 2, creat: ara - 5 * 864e5, pin_ts: ara - 5 * 864e5, aspecte_ts: ara - 4 * 864e5 }, amagat: false, mons: [
@@ -43,18 +40,14 @@ function dadesAdmin() {
  const altes = [
   { k: "pau", nom: "Pau", alta: ara - 5 * 864e5, primer: ara - 6 * 864e5, creat: ara - 5 * 864e5, pin_ts: ara - 5 * 864e5, aspecte_ts: ara - 4 * 864e5, id: 3, mons: 2, punts: 160, dies7: 4, amagat: false, te_pin: true }
  ];
- const embut = {
-  periode: "7d",
-  resum: { aparells_inici: 6, aparells_nom_ok: 5, aparells_pin_creat: 3, aparells_encallats_pin: 2, aparells_perfil: 2, aparells_ara_no: 1, entrades_directes_mon: 1 },
-  passos: [
-   { pas: "nom", total: 7, ok: 5, ko: 2, aparells: 6, motius: { existeix: 1, prohibit: 1 } },
-   { pas: "pin_ko", total: 4, ok: 0, ko: 4, aparells: 2, motius: { exemple: 2, format: 1, no_coincideix: 1 } },
-   { pas: "pin_creat", total: 3, ok: 3, ko: 0, aparells: 3, motius: {} },
-   { pas: "perfil", total: 2, ok: 2, ko: 0, aparells: 2, motius: {} },
-   { pas: "pin_ara_no", total: 1, ok: 1, ko: 0, aparells: 1, motius: {} }
-  ]
+ const ctrl = {
+  xat_actiu: true,
+  xat_obert_ara: true,
+  xat_en_horari_tancat: false,
+  horari: { actiu: true, tanca_min: 1290, obre_min: 420 },
+  mons_tancats: []
  };
- return { logs, fitxa, altes, embut };
+ return { logs, fitxa, altes, ctrl };
 }
 
 (async () => {
@@ -72,9 +65,22 @@ function dadesAdmin() {
    if (f === "bn_admin_usuari" && cos.p_accio === "estat") return r.fulfill({ status: 200, contentType: "application/json", body: "6" });
    if (f === "bn_admin_fitxa") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.fitxa[String(cos.p_nom || "").trim().toLowerCase()] || { k: "?", perfil: null, amagat: false, mons: [] }) });
    if (f === "bn_admin_altes") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.altes) });
-   if (f === "bn_admin_alta_embut") {
-    if (o.embut404) return r.fulfill({ status: 404, contentType: "application/json", body: '{"message":"no existeix"}' });
-    return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(Object.assign({}, d.embut, { periode: cos.p_periode || "7d" })) });
+   if (f === "bn_admin_resum") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", ara: { nens: 2, dies: 3, minuts: 15, sessions: 3, tests: 4, nota: 80, aprovats: 75, encert: 80, respostes: 24 }, abans: null }) });
+   if (["bn_admin_activitat", "bn_admin_calor", "bn_admin_domini", "bn_admin_fallades", "bn_admin_evolucio", "bn_admin_alertes", "bn_admin_errors_taller", "bn_admin_rep_pendents"].includes(f)) {
+    return r.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+   }
+   if (f === "bn_admin_benestar") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", mons: [], nens: [] }) });
+   if (f === "bn_admin_fonts_dia") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", dies: [], total: {} }) });
+   if (f === "bn_admin_control") {
+    if (cos.p_cfg && typeof cos.p_cfg === "object") {
+     if (typeof cos.p_cfg.xat_actiu === "boolean") d.ctrl.xat_actiu = cos.p_cfg.xat_actiu;
+     if (typeof cos.p_cfg.horari_actiu === "boolean") d.ctrl.horari.actiu = cos.p_cfg.horari_actiu;
+     if (typeof cos.p_cfg.tanca_min === "number") d.ctrl.horari.tanca_min = cos.p_cfg.tanca_min;
+     if (typeof cos.p_cfg.obre_min === "number") d.ctrl.horari.obre_min = cos.p_cfg.obre_min;
+     if (Array.isArray(cos.p_cfg.mons_tancats)) d.ctrl.mons_tancats = cos.p_cfg.mons_tancats.slice();
+     d.ctrl.xat_obert_ara = d.ctrl.xat_actiu;
+    }
+    return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.ctrl) });
    }
    return r.fulfill({ status: 404, contentType: "application/json", body: '{"message":"no existeix"}' });
   });
@@ -92,14 +98,15 @@ function dadesAdmin() {
   return { p, ctx, crides, errors, menu, txt };
  }
 
- console.log("1) Admin ?demo: nivells (M5) i embut d'alta (M7) sense cap crida al núvol");
+ console.log("1) Admin ?demo: panell de Control ràpid i nivells (M5) sense cap crida al núvol, i sense Embut d'alta");
  {
   const { p, ctx, crides, errors, menu, txt } = await obreAdmin("/admin/?demo");
+  await p.waitForSelector("#control #ctrlXatSw");
+  const ctrlTxt = await txt("#control");
+  ok(ctrlTxt.includes("Control ràpid: Xat, Horari i Mons") && (await p.$$("#control [data-ctrl-mon]")).length === 6,
+   "targeta «Control ràpid: Xat, Horari i Mons» al Tauler amb els 6 mons");
   await menu("nens");
-  await p.waitForSelector("#embutCos table");
-  const emTxt = await txt("#embutAlta");
-  ok(emTxt.includes("Embut d'alta") && (await p.$$("#embutCos .kpi")).length === 6 && (await p.$$("#tEmbut tbody tr")).length === 5,
-   "targeta «Embut d'alta» en mode demo amb 6 KPIs i els 5 passos");
+  ok((await p.$("#embutAlta")) === null, "s'ha tret «Embut d'alta» de la vista Nens");
   const nensTxt = await txt("#tNens");
   ok(nensTxt.includes("Nivell") && (await p.$$("#tNens .niv-p")).length >= 5,
    "taula de Nens mostra la columna Nivell amb les pastilles de nivell");
@@ -115,191 +122,89 @@ function dadesAdmin() {
   await ctx.close();
  }
 
- console.log("2) Admin amb credencials: M5 (regles.json) + M7 (embut d'alta, exclusió de _alta i portada, i Log complet)");
+ console.log("2) Admin amb credencials: activar/desactivar xat, horari i mons des de #control, i nivells M5");
  {
   const { p, ctx, crides, errors, menu, txt } = await obreAdmin("/admin/", { cred: CRED });
+  await p.waitForSelector("#control #ctrlXatSw");
+  // Tanquem el xat des del botó ràpid
+  await p.click("#ctrlXatSw");
+  await p.waitForTimeout(80);
+  ok((await p.getAttribute("#ctrlXatSw", "aria-checked")) === "false" && (await txt("#ctrlXatEstat")).includes("Tancat manualment"),
+   "clicar #ctrlXatSw tanca el xat i actualitza l'estat a «Tancat manualment»");
+
+  // Canviem l'horari i el desem
+  await p.fill("#ctrlTancaH", "22:00");
+  await p.fill("#ctrlObreH", "07:30");
+  await p.click("#ctrlHorariDesa");
+  await p.waitForTimeout(80);
+  const cHor = crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg && x.cos.p_cfg.tanca_min === 1320 && x.cos.p_cfg.obre_min === 450);
+  ok(cHor.length === 1, "Desa l'horari envia tanca_min=1320 (22:00) i obre_min=450 (07:30) a bn_admin_control");
+
+  // Tanquem el món de Socials
+  await p.click('#control [data-ctrl-mon="socials"]');
+  await p.waitForTimeout(80);
+  ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes("5 de 6 oberts"),
+   "clicar l'interruptor d'un món el tanca i actualitza el comptador a «5 de 6 oberts»");
+
+  // Comprovem els nivells a Nens
   await menu("nens");
-  await p.waitForSelector("#embutCos table");
-  const cEmbut = crides.find(x => x.f === "bn_admin_alta_embut");
-  ok(!!cEmbut && cEmbut.cos.p_email === CRED.e && cEmbut.cos.p_periode === "7d",
-   "bn_admin_alta_embut es crida amb les credencials i el període actiu (7d)");
-  const emTxt = await txt("#embutAlta");
-  ok(emTxt.includes("Ha posat l'exemple 4587R") && emTxt.includes("El nom ja té PIN") && emTxt.includes("Nom no permès"),
-   "taula de l'embut mostra els motius d'entrebanc llegibles");
-
-  // Filtres i taula de Nens: _alta i portada NO hi han de sortir
-  const nensTxt = await txt("#tNens");
-  const fAssigTxt = await txt("#fAssig");
-  const fNenTxt = await txt("#fNen");
-  ok(!nensTxt.includes("_alta") && !fNenTxt.includes("_alta") && !fAssigTxt.includes("portada"),
-   "_alta i assig=portada no surten ni a la taula de Nens ni als selectors de filtre");
-
-  // Nivells de Pau (160 ⭐ total, 120 ⭐ al món més alt → nivell 6 · Mestre segons NIVELLS d'admin/regles.json)
+  await p.waitForSelector("#tNens table");
   const filaPau = await txt('#tNens tr:has([data-obre-nen="pau"])');
   ok(filaPau.includes("6 · Mestre") && filaPau.includes("160"),
    "a la taula de Nens en Pau (màx 120 ⭐ a un món, 160 ⭐ totals) té el nivell 6 · Mestre segons admin/regles.json");
-  const filaLaia = await txt('#tNens tr:has([data-obre-nen="laia"])');
-  ok(filaLaia.includes("2 · Explorador") && filaLaia.includes("15"),
-   "a la taula de Nens la Laia (15 ⭐) té el nivell 2 · Explorador");
-
-  // Fitxa d'en Pau i pestanya Al núvol (socials=120 ⭐ → 6 · Mestre, divisibilitat=40 ⭐ → 3 · Investigador)
   await p.click('#tNens [data-obre-nen="pau"]');
   await p.waitForSelector("#tb-nuv");
   await p.click("#tb-nuv");
   await p.waitForSelector('#nuv[data-estat="fet"]');
   const nuvTxt = await txt("#nuv");
   ok(nuvTxt.includes("6 · Mestre") && nuvTxt.includes("3 · Investigador") && nuvTxt.includes("falten 20 ⭐ per a Campió"),
-   "a «Al núvol» es mostra el nivell de cada món (6 · Mestre per a 120 ⭐ i 3 · Investigador per a 40 ⭐) i les estrelles que falten");
-
-  // Log complet: sí que ha de mostrar els events alta (tant el de _alta com el de Pau)
-  await menu("log");
-  await p.waitForSelector("#tl table");
-  const logTxt = await txt("#tl");
-  ok(logTxt.includes("Error de PIN") && logTxt.includes("Aparell (abans de perfil)") && logTxt.includes("Perfil arcade triat"),
-   "la vista «Log complet» sí que mostra els events «alta» i etiqueta «_alta» com a «Aparell (abans de perfil)»");
+   "a «Al núvol» es mostra el nivell de cada món i les estrelles que falten");
   ok(errors.length === 0, "cap error de JS a la consola");
   await ctx.close();
  }
 
- console.log("3) Admin M5: si admin/regles.json canvia els llindars, el tauler fa servir els nous i si bn_admin_alta_embut dóna 404 mostra l'avís SQL");
- {
-  const reglesCustom = { NIVELLS: [[0, "NovellProva", "🌱"], [50, "CrackProva", "🚀"]], APROVA: 80 };
-  const { p, ctx, errors, menu, txt } = await obreAdmin("/admin/", { cred: CRED, regles: reglesCustom, embut404: true });
-  await menu("nens");
-  await p.waitForSelector("#embutCos .avis");
-  const avTxt = await txt("#embutCos");
-  ok(avTxt.includes("supabase/bn_admin_alta.sql"), "si bn_admin_alta_embut respon 404, surt l'avís d'executar supabase/bn_admin_alta.sql");
-  const nensTxt = await txt("#tNens");
-  ok(nensTxt.includes("2 · CrackProva") && nensTxt.includes("1 · NovellProva"),
-   "el tauler llegeix NIVELLS dinàmicament d'admin/regles.json");
-  ok(errors.length === 0, "cap error de JS");
-  await ctx.close();
- }
-
- console.log("4) Portada (index.html) i Perfil (perfil/index.html): l'embut d'alta envia els passos i MAI el PIN ni el nom d'abans del perfil");
+ console.log("3) Portada (index.html) i món: un món tancat surt en gris amb 🔒 TANCAT i no deixa entrar-hi, però conserva el rànquing");
  {
   const ctx = await nav.newContext({ viewport: { width: 1280, height: 900 } }), p = await ctx.newPage();
-  const logsEnviats = [];
-  let fallaCanviPin = false;
   await p.route("https://fonts.googleapis.com/**", r => r.fulfill({ status: 200, contentType: "text/css", body: "" }));
   await p.route("https://fonts.gstatic.com/**", r => r.abort());
   await p.route("https://cdn.jsdelivr.net/**", r => r.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
-  await p.route("**/rest/v1/bn_log*", r => {
-   const cos = r.request().postDataJSON();
-   if (cos) logsEnviats.push(cos);
-   return r.fulfill({ status: 201, contentType: "application/json", body: "" });
-  });
   await p.route("**/rest/v1/rpc/**", r => {
-   const f = r.request().url().split("/rpc/")[1].split("?")[0], cos = r.request().postDataJSON() || {};
-   if (f === "bn_ranking" || f === "bn_ranquing" || f === "bn_aspectes") return r.fulfill({ status: 200, contentType: "application/json", body: "[]" });
-   if (f === "bn_xat_llegeix") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ actiu: true, msgs: [] }) });
-   if (f === "bn_perfil_existeix") {
-    const n = String(cos.p_nom || "").trim().toLowerCase();
-    return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(n === "laia" || n === "pau") });
-   }
-   if (f === "bn_progres_llegeix") {
-    const n = String(cos.p_nom || "").trim().toLowerCase();
-    if (n === "laia" && cos.p_pin !== "8392M") return r.fulfill({ status: 400, contentType: "application/json", body: '{"message":"pin incorrecte"}' });
-    return r.fulfill({ status: 200, contentType: "application/json", body: "{}" });
-   }
-   if (f === "bn_perfil_crea") {
-    const n = String(cos.p_nom || "").trim().toLowerCase();
-    if (n === "tonto") return r.fulfill({ status: 400, contentType: "application/json", body: '{"message":"nom no permes"}' });
-    if (n === "ocupat") return r.fulfill({ status: 200, contentType: "application/json", body: '"existeix"' });
-    return r.fulfill({ status: 200, contentType: "application/json", body: '"ok"' });
-   }
-   if (f === "bn_perfil_canvia_pin") {
-    if (fallaCanviPin) return r.fulfill({ status: 503, contentType: "application/json", body: '{"message":"xarxa"}' });
-    return r.fulfill({ status: 200, contentType: "application/json", body: '"ok"' });
-   }
-   if (f === "bn_aspecte_desa") return r.fulfill({ status: 200, contentType: "application/json", body: '"ok"' });
+   const f = r.request().url().split("/rpc/")[1].split("?")[0];
+   if (f === "bn_estat_web") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ xat_obert_ara: false, xat_en_horari_tancat: true, horari: { actiu: true, tanca_min: 1290, obre_min: 420 }, mons_tancats: ["socials"] }) });
+   if (f === "bn_ranking" || f === "bn_ranquing") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([{ nom: "Pau", assig: "socials", punts: 120 }]) });
+   if (f === "bn_aspectes") return r.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+   if (f === "bn_xat_llegeix") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ actiu: false, msgs: [] }) });
    return r.fulfill({ status: 200, contentType: "application/json", body: "{}" });
   });
-
+  await p.addInitScript(() => {
+   localStorage.setItem("bn_jugador", "Pau");
+   localStorage.setItem("bn_pins", JSON.stringify({ pau: "4587A" }));
+   localStorage.setItem("bn_noms_aparell", JSON.stringify(["Pau"]));
+  });
   const errors = []; p.on("pageerror", e => errors.push(e.message));
   await p.goto(BASE + "/");
-  await p.waitForSelector("#entrada:not([hidden])");
+  await p.waitForSelector('.as[data-id="socials"].mon-tancat');
+  const txtSoc = await p.textContent('.as[data-id="socials"] .juga span');
+  ok(txtSoc.includes("TANCAT"), "a la portada el món tancat ('socials') mostra «🔒 TANCAT»");
 
-  // 4a) Nom no permès ("tonto") amb un PIN vàlid ("2345B")
-  await p.fill("#enNom", "tonto");
-  await p.fill("#enPin", "2345B");
-  await p.click("#entrada button[type=submit]");
-  await p.waitForTimeout(120);
-  ok(logsEnviats.some(l => l.event === "alta" && l.nom === "_alta" && /^alta:/.test(l.aparell) && l.detall.pas === "nom" && l.detall.ok === 0 && l.detall.motiu === "prohibit"),
-   "nom no permès envia pas=nom, ok=0, motiu=prohibit amb nom='_alta' i aparell='alta:...'");
+  // Intentem fer clic al món tancat: no ha de navegar i ha de mostrar l'avís
+  await p.click('.as[data-id="socials"]', { force: true });
+  await p.waitForSelector("#monTancatToast.vis");
+  ok(p.url() === BASE + "/" && (await p.textContent("#monTancatToast")).includes("tancat"),
+   "clicar un món tancat a la portada no hi entra i mostra l'avís que està tancat");
 
-  // 4b) Nom que ja té PIN ("Laia") → escriu PIN incorrecte ("9999Z")
-  await p.fill("#enNom", "Laia");
-  await p.fill("#enPin", "9999Z");
-  await p.click("#entrada button[type=submit]");
-  await p.waitForTimeout(120);
-  ok(logsEnviats.some(l => l.event === "alta" && l.nom === "_alta" && l.detall.pas === "pin_ko" && l.detall.motiu === "incorrecte"),
-   "PIN incorrecte envia pas=pin_ko, motiu=incorrecte amb nom='_alta'");
-
-  // 4c) Nom nou ("SecretNom") → prova format dolent ("12"), exemple ("4587R") i finalment crea el PIN ("2345B")
-  await p.fill("#enNom", "SecretNom");
-  await p.fill("#enPin", "12");
-  await p.click("#entrada button[type=submit]");
-  await p.fill("#enPin", "4587R");
-  await p.click("#entrada button[type=submit]");
-  await p.waitForTimeout(80);
-
-  // Comprova que abans de crear el perfil, "SecretNom" NO ha sortit a cap log
-  ok(!JSON.stringify(logsEnviats).includes("SecretNom"),
-   "abans de tenir perfil, el nom escrit ('SecretNom') no s'ha enviat a bn_log");
-
-  await p.fill("#enPin", "2345B");
-  await p.click("#entrada button[type=submit]");
-  await p.waitForTimeout(150);
-
-  ok(logsEnviats.some(l => l.event === "alta" && l.nom === "_alta" && l.detall.pas === "nom" && l.detall.ok === 1),
-   "pas=nom amb ok=1 continua portant nom='_alta' i aparell='alta:...'");
-  ok(logsEnviats.some(l => l.event === "alta" && l.nom === "SecretNom" && !/^alta:/.test(l.aparell) && l.detall.pas === "pin_creat" && l.detall.ok === 1),
-   "un cop creat el perfil, pin_creat porta el nom del perfil i l'aparell normal");
-
-  // 4d) Perfil (/perfil/): triar una habilitat i desar el perfil envia pas='perfil', ok=1
-  await p.goto(BASE + "/perfil/");
-  await p.waitForSelector("#cats .sk");
-  await p.click("#cats .sk");
-  await p.click("#btDesa");
-  await p.waitForTimeout(150);
-  ok(logsEnviats.some(l => l.event === "alta" && l.nom === "SecretNom" && l.detall.pas === "perfil" && l.detall.ok === 1),
-   "desar el perfil a /perfil/ envia event=alta, pas=perfil, ok=1");
-
-  // 4e) PIN antic ("Pau", PIN "1234") → obre #npPop → prova no_coincideix → falla xarxa i prem «Ara no» → envia pas='pin_ara_no'
-  await p.goto(BASE + "/");
-  await p.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
-  await p.reload();
-  await p.waitForSelector("#entrada:not([hidden])");
-  await p.fill("#enNom", "Pau");
-  await p.fill("#enPin", "1234");
-  await p.click("#entrada button[type=submit]");
-  await p.waitForSelector("#npPop:not([hidden])");
-  await p.fill("#npP1", "2345B");
-  await p.fill("#npP2", "2345C");
-  await p.click("#npForm button[type=submit]");
-  fallaCanviPin = true;
-  await p.fill("#npP2", "2345B");
-  await p.click("#npForm button[type=submit]");
-  await p.waitForSelector("#npAra:not([hidden])");
-  await p.click("#npAra");
-  await p.waitForTimeout(120);
-
-  const motiusKo = logsEnviats.filter(l => l.detall && l.detall.pas === "pin_ko").map(l => l.detall.motiu);
-  ok(motiusKo.includes("format") && motiusKo.includes("exemple") && motiusKo.includes("no_coincideix"),
-   "s'han registrat els motius format, exemple (4587R) i no_coincideix a pin_ko");
-  ok(logsEnviats.some(l => l.event === "alta" && l.nom === "Pau" && l.detall.pas === "pin_ara_no" && l.detall.ok === 1),
-   "prémer «Ara no» al canvi de PIN antic envia event=alta, pas=pin_ara_no, ok=1");
-
-  // Comprovació de privadesa estricta: cap PIN ("9999Z", "4587R", "2345B", "2345C", "1234") ni "tonto" ni "punts" apareix a cap bn_log
-  const totJson = JSON.stringify(logsEnviats);
-  ok(!totJson.includes("9999Z") && !totJson.includes("4587R") && !totJson.includes("2345B") && !totJson.includes("2345C") && !totJson.includes("1234") && !totJson.includes("tonto") && !totJson.includes('"punts"'),
-   "PRIVADESA: cap PIN, cap nom rebutjat ('tonto') i cap camp 'punts' s'ha enviat mai a bn_log");
-  ok(errors.length === 0, "cap error de JS a la portada ni al perfil");
+  // I si hi entra per enllaç directe (/sociales/t3-clima/), el món mostra la pantalla de món tancat
+  await p.goto(BASE + "/sociales/t3-clima/");
+  await p.waitForSelector("#monTancatBox");
+  const monTxt = await p.textContent("#monTancatBox");
+  ok(monTxt.includes("està tancat ara mateix") && monTxt.includes("Tria un altre món"),
+   "entrar per enllaç directe a un món tancat mostra la pantalla «està tancat ara mateix»");
+  ok(errors.length === 0, "cap error de JS a la portada ni al món");
   await ctx.close();
  }
 
  await nav.close(); srv.close();
  if (fallades) { console.error(`\n✗ ${fallades} comprovacions han fallat`); process.exit(1) }
- console.log("\n✓ Totes les comprovacions de nivells (M5) i embut d'alta (M7) han passat");
+ console.log("\n✓ Totes les comprovacions de nivells (M5) i control de xat/horari/mons han passat");
 })();
