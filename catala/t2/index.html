@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="db1ba349ce",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1fe190021a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -374,6 +374,7 @@ body.tremola main{animation:tremola .4s}
 .ratxa{display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-weight:800;color:#c2410c;white-space:nowrap}
 .ratxa i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e2e8f0}
 .ratxa i.on{background:#f97316}
+.dif{display:inline-block;margin-left:8px;padding:0 7px;border-radius:999px;background:#fef3c7;color:#b45309;font-weight:800;font-size:.9em;white-space:nowrap}
 @keyframes combo{0%{transform:translateX(-50%) scale(.3);opacity:0}15%{transform:translateX(-50%) scale(1.15);opacity:1}30%{transform:translateX(-50%) scale(1)}80%{opacity:1}100%{transform:translateX(-50%) translateY(-40px);opacity:0}}
 .estrelles{margin-top:14px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
 .estrelles h4{margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;font-size:16px}
@@ -571,7 +572,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.9.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.10.0</small></div>
 
 <script src="../../sprites.js?v=15744077"></script>
 <script>
@@ -680,12 +681,12 @@ const T=[
   truc:"L'<b>oral</b> és com el joc del <b>telèfon espatllat</b>: passa de boca en boca i cadascú la canvia una mica. L'<b>escrita</b> és com una <b>foto</b>: queda quieta (versió única) i porta la firma (d'autor).",
   compte:"<b>Anònima</b> vol dir que <b>no sabem qui</b> la va fer, no que la van fer molts autors junts. I l'escriptura <b>no</b> va amagar els autors: va fer que el text quedés fixat i que l'obra tingués un autor amb nom.",
   fc:[["Què va portar la invenció de l'alfabet?","L'escriptura, un nou procediment per crear literatura."],["Què vol dir «anònima»?","Que no sabem qui l'ha feta."],["Qui era un copista?","La persona que copiava els llibres a mà, abans de la impremta."],["Quantes versions té una obra escrita?","Una de sola: el text queda invariable."],["Per què l'oral té diverses versions?","Perquè cada orador l'adapta als gustos del seu públic."],["Qui va quedar arraconat amb l'escriptura?","L'artista que recitava de viva veu i el grup que l'escoltava."]],
-  q:[["Què va provocar la invenció de l'alfabet?",["Que les obres quedessin en l'anonimat","L'escriptura: el text quedava fixat i l'obra tenia autor","Que cada orador canviés la història al seu gust"],1,"Amb l'escriptura, versió única i d'autor."],
+  q:[["Quina conseqüència va tenir la invenció de l'alfabet?",["Que les obres quedessin en l'anonimat","L'escriptura: el text quedava fixat i l'obra tenia autor","Que cada orador canviés la història al seu gust"],1,"Amb l'escriptura, versió única i d'autor."],
      ["Què vol dir que una obra és anònima?",["Que la van fer molts autors junts","Que no sabem qui la va fer","Que és molt antiga i ja no s'explica"],1,"Anònima = d'autor desconegut."],
      ["Com es transmetia la literatura escrita abans de la impremta?",["En llibres manuscrits copiats pels copistes","De viva veu: un orador recitava i el públic l'escoltava","En llibres impresos a la impremta"],0,"Abans de la impremta, els copistes copiaven els llibres a mà."],
      ["Quantes versions té el text d'una obra de literatura oral?",["Una de sola, invariable","Diverses, perquè cada orador l'adapta","Només dues: la del pare i la del fill"],1,"L'oral canvia una mica cada vegada que s'explica."],
      ["Quina característica és de la literatura escrita?",["És anònima","Té diverses versions","Té un autor concret"],2,"L'escrita és d'autor: el seu nom surt a la portada."],
-     ["Qui va anar arraconant l'escriptor solitari i reflexiu?",["L'artista popular que recitava de viva veu","Els copistes que copiaven a mà","Els lectors silenciosos"],0,"L'escriptor sol a la taula va prendre el lloc de l'artista que recitava."],
+     ["A qui va anar arraconant l'escriptor solitari i reflexiu?",["L'artista popular que recitava de viva veu","Els copistes que copiaven a mà","Els lectors silenciosos"],0,"L'escriptor sol a la taula va prendre el lloc de l'artista que recitava."],
      ["Amb l'escriptura, com es va tornar la lectura?",["Cantada en grup, al voltant d'un foc","Solitària i silenciosa","Sempre en veu alta davant del públic"],1,"Una persona sola amb un llibre va relegar el grup d'oients."],
      ["Quina d'aquestes frases és de la literatura oral tradicional?",["Té el nom de l'autor a la portada","El text es manté sempre igual","És patrimoni popular"],2,"L'oral és anònima: és de tothom, patrimoni popular."],
      ["Qui era el copista?",["La persona que copiava els llibres a mà","L'orador que recitava davant del públic","L'autor que inventava les històries"],0,"Feia les còpies dels llibres manuscrits."]]},
@@ -784,8 +785,8 @@ const T=[
   truc:"L'<b>article és el xivato del gènere</b>: <i>un / el</i> → masculí; <i>una / la</i> → femení. Si dubtes, mira el diccionari: l'abreviatura <b>m.</b> o <b>f.</b> et diu quin article li toca.",
   compte:"En català: <b>el costum</b>, <b>la dent</b>, <b>les postres</b> (en castellà van al revés). I el femení de cavall és <b>l'euga</b>, no «cavalla».",
   fc:[["Què ens diu el gènere d'un nom?","L'article: un/el, masculí; una/la, femení."],["Com es diuen les marques de gènere i de nombre?","Morfemes flexius."],["Femení de cavall","L'euga."],["Femení de gendre","La jove o la nora."],["Femení i plurals de psicòleg","Psicòloga, psicòlegs, psicòlogues."],["Com dius que un rossinyol és femella?","Un rossinyol femella."]],
-  q:[["Com es diu en català?",["el costum","la costum","Totes dues formes són correctes"],0,"En català és masculí: el costum."],
-     ["Com es diu en català?",["la dent","el dent","Totes dues formes són correctes"],0,"En català és femení: la dent."],
+  q:[["«Costum»: com es diu en català?",["el costum","la costum","Totes dues formes són correctes"],0,"En català és masculí: el costum."],
+     ["«Dent»: com es diu en català?",["la dent","el dent","Totes dues formes són correctes"],0,"En català és femení: la dent."],
      ["Quin és el femení de «cavall»?",["la cavalla","l'euga","la somera"],1,"Somera és la femella de l'ase."],
      ["Com es diuen les marques que fan canviar de forma els noms de persones i animals?",["Morfemes flexius","Topònims","Especificadors"],0,"Marquen el gènere i el nombre: nebot, neboda, nebots, nebodes."],
      ["Quin és el femení plural de «psicòleg»?",["psicòlegues","psicòlogues","psicòlegs"],1,"La terminació canvia per sonar bé, com amic → amigues."],
@@ -793,7 +794,7 @@ const T=[
      ["El rossinyol té una sola forma. Com dius que és femella?",["una rossinyola","un rossinyol femella","la rossinyol"],1,"S'hi afegeix mascle o femella."],
      ["Quina parella fa servir paraules diferents per a cada gènere?",["l'oncle / la tia","el nebot / la neboda","el gall / la gallina"],0,"Les altres canvien la terminació."],
      ["Quin és el femení de «gendre»?",["la gendra","la jove o la nora","la madrastra"],1,"Madrastra és el femení de padrastre."],
-     ["Com es diu en català?",["les postres","els postres","el postre"],0,"En català és femení i plural: les postres."]]},
+     ["«Postres»: com es diu en català?",["les postres","els postres","el postre"],0,"En català és femení i plural: les postres."]]},
  {id:"invariables",ic:"🔒",col:"#0284c7",titol:"Els noms invariables",font:"Llibre · Gramàtica 1.4 · pàg. 50",
   idea:"Alguns noms no canvien: uns tenen la mateixa forma en masculí i en femení (només canvia l'article) i uns altres, la mateixa forma en singular i en plural.",
   pts:["<b>Invariables en gènere</b>: <i>un / una cantant, periodista, captaire, conserge, pilot, gimnasta</i>. Només canvia l'article.",
@@ -915,7 +916,8 @@ const OB=[
 ASSIG.boss={nom:"El Monstre dels Signes",spr:"monstre"};
 
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}];
-const QIDS={"literatura":[1,2,3,4,5,6,7,8],"oral":[1,2,3,4,5,6,7,8],"escrita":[1,2,3,4,5,6,7,8,9],"generes":[1,2,3,4,5,6,7,8,9],"teatre":[1,2,3,4,5,6,7,8,9,10],"nom":[1,2,3,4,5,6,7,8,9],"classes":[1,2,3,4,5,6,7,8,9,10],"genere":[1,1,2,3,4,5,6,7,8,1],"invariables":[1,2,3,4,5,6,7,8,9],"clau":[1,2,3,4,5,6,7,8,9],"punts":[1,2,3,4,5,6,7,8,9],"puntcoma":[1,2,3,4,5,6,7,8,9]};
+const QIDS={"literatura":[1,2,3,4,5,6,7,8],"oral":[1,2,3,4,5,6,7,8],"escrita":[10,2,3,4,5,11,7,8,9],"generes":[1,2,3,4,5,6,7,8,9],"teatre":[1,2,3,4,5,6,7,8,9,10],"nom":[1,2,3,4,5,6,7,8,9],"classes":[1,2,3,4,5,6,7,8,9,10],"genere":[9,10,2,3,4,5,6,7,8,11],"invariables":[1,2,3,4,5,6,7,8,9],"clau":[1,2,3,4,5,6,7,8,9],"punts":[1,2,3,4,5,6,7,8,9],"puntcoma":[1,2,3,4,5,6,7,8,9]};
+const QDIF={"classes/6":3,"classes/9":3,"clau/3":3,"clau/4":3,"clau/5":3,"escrita/10":3,"escrita/11":3,"genere/4":3,"genere/7":3,"genere/8":3,"generes/1":3,"generes/7":3,"invariables/7":3,"invariables/8":3,"nom/4":3,"nom/7":3,"oral/8":3,"puntcoma/3":3,"puntcoma/9":3,"punts/7":3,"teatre/2":3,"teatre/7":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("logoic").textContent=ASSIG.ic;
@@ -935,7 +937,9 @@ try{APARELL=localStorage.getItem("bn_aparell")||"";if(!APARELL){APARELL=Math.ran
 // ---- id estable de cada pregunta («tema/núm.»; l'assignatura ja va a la columna assig). Ve de motor/qids.json via build.py ----
 (function(){if(typeof QIDS==="undefined")return;const posa=(qs,tid)=>{const ns=QIDS[tid];if(ns&&qs)qs.forEach((q,i)=>{if(ns[i])q.id=tid+"/"+ns[i]})};
  T.forEach(t=>posa(t.q,t.id));(ASSIG.jocs||[]).forEach(j=>{if(Array.isArray(j.q))posa(j.q,"j-"+j.id)})})();
-const cpQ=q=>Object.assign(q.slice(),{id:q.id});
+// dificultat d'una pregunta: 1 fàcil, 2 normal (per defecte), 3 difícil (motor/dificultat.json via build.py; issue #15)
+const difDe=q=>(typeof QDIF!=="undefined"&&q&&q.id&&QDIF[q.id])||2;
+const cpQ=q=>Object.assign(q.slice(),{id:q.id,d:difDe(q)});
 // cada resposta d'un test: "tema/núm:encert(1/0):segons:opció triada" (text curt: ocupa molt menys que una llista a la base de dades)
 let TQ=[],TQ0=0,TQT=0;
 const anotaQ=(q,ok,op)=>{TQ.push(`${q.id||"?"}:${ok?1:0}:${Math.min(600,Math.round((Date.now()-TQ0)/1000))}:${op==null?"-":op}`)};
@@ -1006,10 +1010,21 @@ function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO
  const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
  document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
 // com es guanyen les estrelles (una sola llista per a les dues targetes; issue #13)
-const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["✍️","triple combo ×3 +3 · ×6 +5 · resposta de 10 +1"],["🔥","combo ×5 +1 · ×10 +2"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +10"]];
+const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["✍️","triple combo ×3 +3 · ×6 +5 · resposta de 10 +1"],["🔥","combo ×5 +1 · ×10 +2"],["⚡","super combo: 3 difícils seguides +3 · 5 seguides +5"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +10"]];
 // barra de ratxa del test: 5 caselles fins al proper regal del combo
+// ⚡ super combo (issue #15): difícils (difDe=3) encertades seguides, sense pista i que donin estrella. Les normals no el toquen; un error el
+// posa a 0. La ratxa és del dia (diaEst().sd), com la del triple combo: canviar de tema no la trenca. 3 seguides +3 ⭐, 5 seguides +5 ⭐
+// (i torna a 0), fins a SUPER_MAX al dia per món (diaEst().sp). «SUPER» ja és la superestrella.
+const SUPER_PREMIS={3:3,5:5},SUPER_MAX=10;
+function ratxaDif(ok,q,paga){const e=diaEst();if(!ok){if(e.sd){e.sd=0;desa()}return 0}if(!paga||difDe(q)!==3)return 0;
+ const sd=(e.sd||0)+1,pr=SUPER_PREMIS[sd]||0,pag=Math.max(0,Math.min(pr,SUPER_MAX-(e.sp||0)));
+ if(pag){e.sp=(e.sp||0)+pag;const f=FONT;FONT=["super"];suma(pag);FONT=f}
+ if(pr)retolMissio(sd>=5?"⚡⚡ HIPER COMBO":"⚡ SUPER COMBO",pag?`+${pag} ⭐`:"avui ja no dona ⭐",300);
+ e.sd=sd>=5?0:sd;desa();return pag}
+// marca de pregunta difícil a la capçalera (s'hi juga el super combo)
+const marcaDif=q=>difDe(q)===3?`<span class="dif" title="Pregunta difícil: compta per al super combo">⚡ difícil</span>`:"";
 function ratxaHtml(){const n=COMBO%5;return `<span class="ratxa" aria-label="Combo ×${COMBO}">${COMBO>=1?`🔥 ×${COMBO} `:""}${[0,1,2,3,4].map(i=>`<i class="${i<n?"on":""}"></i>`).join("")}</span>`}
-const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["triple","✍️","Triple combo (obertes)"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
+const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["triple","✍️","Triple combo (obertes)"],["super","⚡","Super combo (difícils)"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
 // el resum d'estrelles només surt quan toques el comptador de dalt a la dreta
 // ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
 let COMP=null,COMPT=0;
@@ -1475,7 +1490,7 @@ function test(ordre,k,bones,clau,pool,cb){
  const ops=barreja(q[1].map((o,i)=>[o,i]));
  // 💡 pista i 🛡️ escut del combo: només als tests dels temes i al repàs (els exàmens i els jocs, sense ajuda)
  const ajuda=esTema||clau==="repas",th=ajuda?(q.tid?T.find(t=>t.id===q.tid):tema):null;let pista=0;
- z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}${clau==="examen"||clau==="repas"?"":ratxaHtml()}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
+ z.innerHTML=`<div class="box"><div class="prog">Pregunta ${k+1} de ${ordre.length} · encertades ${bones}${q.tema?` · ${q.tema}`:""}${marcaDif(q)}${clau==="examen"||clau==="repas"?"":ratxaHtml()}</div><div class="barra-test"><i style="width:${k*100/ordre.length}%"></i></div>
  ${potEscoltar()?`<div class="escolta-fila" style="margin:4px 0 -4px">${btEscolta(q[0]+". "+ops.map(([o],j)=>"ABC"[j]+": "+o).join(". "),"")}</div>`:""}<div class="pregunta">${q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div>${ajuda&&th?`<div class="pista-fila"><button class="btn sec" id="pista" type="button">💡 Pista</button></div>`:""}<div id="fb"></div><p class="drecera-info">⌨️ <kbd>A</kbd>/<kbd>B</kbd>/<kbd>C</kbd> o <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> tria · <kbd>Enter</kbd> següent</p></div>`;
  TQ0=Date.now();
  const bp=document.getElementById("pista");
@@ -1490,7 +1505,7 @@ function test(ordre,k,bones,clau,pool,cb){
   const tidR=q.tid||(esTema?tema.id:null);let rp=0;if(tidR&&!(ok&&pista))rp=repAnota(tidR,q[0],ok)||0;
   if(ok&&pista&&REPAS&&tidR){const r=S.rep&&S.rep[tidR+"|"+q[0]];if(r){r.prox=diaMes(1);desa()}}
   const comboAbans=COMBO;
-  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":REPAS&&rp?`+${rp} ⭐ error corregit`:"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}}else{ratxa(false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":REPAS&&rp?`+${rp} ⭐ error corregit`:"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}ratxaDif(true,q,nova>0&&!pista)}else{ratxa(false);ratxaDif(false,q,false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
   document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
@@ -1749,7 +1764,7 @@ function examenReal(){aturaSeg();calla();window.scrollTo(0,0);marcaNav("jocs");
   if(EXR.fi)EXR.t=setInterval(()=>{const el=document.getElementById("exRel");const s=Math.max(0,Math.round((EXR.fi-Date.now())/1000));if(el){el.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;el.classList.toggle("poc",s<=60)}if(s<=0)fiExamenReal(true)},500);
   pintaExR()}}
 function pintaExR(){const e=EXR,q=e.qs[e.k],n=e.qs.length;calla();
- app.innerHTML=`<h2 class="sec">📝 Examen de veritat</h2><div class="box"><div class="prog">Pregunta ${e.k+1} de ${n} · ${q.tema}${e.fi?`<span class="ex-rel" id="exRel"></span>`:""}</div><div class="barra-test"><i style="width:${Object.keys(e.r).length*100/n}%"></i></div>
+ app.innerHTML=`<h2 class="sec">📝 Examen de veritat</h2><div class="box"><div class="prog">Pregunta ${e.k+1} de ${n} · ${q.tema}${marcaDif(q)}${e.fi?`<span class="ex-rel" id="exRel"></span>`:""}</div><div class="barra-test"><i style="width:${Object.keys(e.r).length*100/n}%"></i></div>
  ${potEscoltar()?`<div class="escolta-fila" style="margin:4px 0 -4px">${btEscolta(q[0]+". "+q.ops.map(([o],j)=>"ABC"[j]+": "+o).join(". "),"")}</div>`:""}<div class="pregunta">${q[0]}</div>
  <div>${q.ops.map(([o,i],j)=>`<button class="opt ${e.r[e.k]===i?"ex-sel":""}" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div>
  <div class="fila"><button class="btn sec" id="exAnt" ${e.k?"":"disabled"}>← Anterior</button>${e.k<n-1?`<button class="btn" id="exSeg">Següent →</button>`:`<button class="btn verd" id="exFi">Lliura l'examen ✔</button>`}</div>
@@ -1762,7 +1777,7 @@ function pintaExR(){const e=EXR,q=e.qs[e.k],n=e.qs.length;calla();
  if(e.fi){const el=document.getElementById("exRel");if(el){const s=Math.max(0,Math.round((e.fi-Date.now())/1000));el.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`}}}
 function fiExamenReal(perTemps){const e=EXR;if(!e||e.acabat)return;e.acabat=1;missio("exam");if(e.t)clearInterval(e.t);calla();
  let b=0,nova=0;const n=e.qs.length;
- e.qs.forEach((q,k)=>{const ok=e.r[k]===q[2];if(ok){b++;nova+=estPregunta(q.tid+"|"+q[0])}repAnota(q.tid,q[0],ok);if(!ok){const x=ET(q.tid);x.fallades[q[0]]=(x.fallades[q[0]]||0)+1}});
+ e.qs.forEach((q,k)=>{const ok=e.r[k]===q[2];let nv=0;if(ok){b++;nv=estPregunta(q.tid+"|"+q[0]);nova+=nv}ratxaDif(ok,q,nv>0);repAnota(q.tid,q[0],ok);if(!ok){const x=ET(q.tid);x.fallades[q[0]]=(x.fallades[q[0]]||0)+1}});
  const f=FONT;FONT=["examen"];suma(nova);FONT=f;
  const nota=Math.round(b*100/n)/10,pc=Math.round(b*100/n);
  ULT={mode:e.tl?"real-temps":"real",bones:b,n,s:segs(e.t0),q:e.qs.map((q,k)=>`${q.id||"?"}:${e.r[k]===q[2]?1:0}:-:${e.r[k]===undefined?"-":e.r[k]}`)};desaJoc("examreal",pc);S.examens.push({d:avui(),pc,real:1});desa();
@@ -2271,6 +2286,35 @@ function bnProvaTriple(){const s0=JSON.stringify({est:S.est||null,p:S.punts,f:S.
   {const fx=fusiona({mod:2,est:{d:avui(),q:{},j:{},o:{},oc:0}},{mod:1,est:{d:"2000-01-01",q:{},j:{},o:{},oc:2,ocp:8}});if(fx.est.d!==avui()||fx.est.ocp)return "fusiona() barreja els comptadors d'un altre dia amb els d'avui"}
   return true}finally{FONT=fo;const x=JSON.parse(s0);if(x.est)S.est=x.est;else delete S.est;S.punts=x.p;S.fonts=x.f;S.ftema=x.ft;NIVPEND=null;SUPPEND=0;desa()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaTriple");
+// prova (issue #15): dificultat de cada pregunta (motor/dificultat.json → QDIF; sense entrada = 2, normal)
+function bnProvaDificultat(){const q=T[0].q[0],k=q.id,ab=QDIF[k];
+ try{delete QDIF[k];if(difDe(q)!==2)return `sense entrada, una pregunta és normal (2) i surt ${difDe(q)}`;
+  if(difDe({})!==2||difDe(null)!==2)return "una pregunta sense id ha de ser normal (2)";
+  QDIF[k]=3;if(difDe(q)!==3)return "no llegeix la dificultat de QDIF";if(cpQ(q).d!==3)return "cpQ() no copia la dificultat";
+  return true}finally{if(ab===undefined)delete QDIF[k];else QDIF[k]=ab}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaDificultat");
+// prova (issue #15): super combo de preguntes difícils, marca ⚡ i escut
+function bnProvaSuper(){const s0=JSON.stringify({est:S.est||null,p:S.punts,f:S.fonts||{},ft:S.ftema||{},rep:S.rep||{},temes:S.temes,ul:S.ultim}),fo=FONT,q0=JSON.stringify(QDIF),sd=()=>diaEst().sd||0;
+ try{const q=T[0].q[0],qn=T[0].q[1];Object.keys(QDIF).forEach(k=>delete QDIF[k]);QDIF[q.id]=3;delete S.est;RETOL_LLIURE=0;const f0=S.fonts.super||0,r=()=>ratxaDif(true,q,true);
+  const a=[r(),r(),r()];if(a.join()!=="0,0,3")return `3 difícils seguides: ${a.join()} i havia de ser 0,0,3`;
+  if((S.fonts.super||0)!==f0+3)return "no s'apunta a la font «super»";
+  const b=[r(),r()];if(b.join()!=="0,5"||sd()!==0)return `4a i 5a: ${b.join()} (ratxa ${sd()}) i havia de ser 0,5 i tornar a 0`;
+  const c=[r(),r(),r()];if(c.join()!=="0,0,2")return `amb el topall de 10: ${c.join()} i havia de ser 0,0,2`;
+  diaEst().sd=1;ratxaDif(true,qn,true);if(sd()!==1)return "una pregunta normal no ha de tocar el super combo";
+  ratxaDif(true,q,false);if(sd()!==1)return "una difícil que no paga (repetida o amb pista) no ha de tocar el super combo";
+  ratxaDif(false,qn,true);if(sd()!==0)return "qualsevol error ha de posar el super combo a 0";
+  // la ratxa és del dia: canviar de tema no la trenca (si no, amb 2 o 3 difícils per tema no arribaria mai a 3)
+  delete S.est;diaEst().sd=2;aturaSeg();obre(1);if(sd()!==2)return "canviar de tema no ha de trencar el super combo";if(r()!==3)return "la 3a difícil seguida, en un altre tema, ha de pagar +3";
+  // a la pantalla: totes les del tema 0 difícils → marca ⚡ a la capçalera; l'escut salva el combo però no el super combo
+  T[0].q.forEach(x=>{QDIF[x.id]=3});aturaSeg();obre(0);pest='test';pintaTema();
+  if(!document.querySelector('.prog .dif'))return "una pregunta difícil no porta la marca ⚡";
+  const qa=()=>tema.q.find(x=>x[0]===document.querySelector('.pregunta').innerHTML);let x=qa();COMBO=4;diaEst().sd=2;
+  [...document.querySelectorAll('.opt')].find(o=>+o.dataset.i!==x[2]).click();if(sd()!==0)return "fallar una difícil ha de posar el super combo a 0";
+  const be=document.getElementById('escut');if(be){be.click();const g=document.querySelector('.pregunta.germana').innerHTML,m=tema.q.find(y=>y[0]===g);
+   if(m)[...document.querySelectorAll('.germ')].find(o=>+o.dataset.g===m[2]).click();if(COMBO!==2||sd()!==0)return `escut: combo ×${COMBO} i super ${sd()} (havien de ser 2 i 0)`}
+  return true}finally{FONT=fo;COMBO=0;RETOL_LLIURE=0;aturaSeg();Object.keys(QDIF).forEach(k=>delete QDIF[k]);Object.assign(QDIF,JSON.parse(q0));
+  const b=JSON.parse(s0);if(b.est)S.est=b.est;else delete S.est;S.punts=b.p;S.fonts=b.f;S.ftema=b.ft;S.rep=b.rep;S.temes=b.temes;S.ultim=b.ul;NIVPEND=null;SUPPEND=0;desa();vista("inici")}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaSuper");
 
 // ====================== ANALÍTICA ======================
 function resumGlobal(){

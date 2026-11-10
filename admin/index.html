@@ -395,7 +395,7 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.9.0";
+const VERSIO_ADMIN="2.10.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -672,7 +672,7 @@ function vistaNens(c){const N=nens(LF());
 }
 
 // ====================== FITXA DEL NEN ======================
-const FONTS_EST=[["temes","llibre","Tests dels temes"],["jocs","joc","Jocs"],["examen","trofeu","Examen sorpresa"],["obertes","llapis","Preguntes obertes"],["triple","llapis","Triple combo (obertes)"],["combo","foc","Combos"],["record","puja","Rècords millorats"],["repas","reinicia","Repàs dels errors"],["missio","diana","Missions del dia"],["boss","llamp","Boss del món"]];
+const FONTS_EST=[["temes","llibre","Tests dels temes"],["jocs","joc","Jocs"],["examen","trofeu","Examen sorpresa"],["obertes","llapis","Preguntes obertes"],["triple","llapis","Triple combo (obertes)"],["super","llamp","Super combo (difícils)"],["combo","foc","Combos"],["record","puja","Rècords millorats"],["repas","reinicia","Repàs dels errors"],["missio","diana","Missions del dia"],["boss","llamp","Boss del món"]];
 function blocEstrelles(n){const as=[...n.assigs].filter(a=>n.punts[a]!=null);if(!as.length)return buit("estrella","Encara no hi ha estrelles registrades.");
  return as.map(a=>{const fo=(n.fonts[a]||{}).f||{},p=n.punts[a]||0,tot=FONTS_EST.reduce((s,[k])=>s+(fo[k]||0),0),ab=Math.max(0,p-tot),mx=Math.max(1,ab,...FONTS_EST.map(([k])=>fo[k]||0));
   const fila=(icn,nom,v)=>`<div class="fest"><span>${ic(icn)}${nom}</span><div class="bfe"><i style="width:${Math.round(v*100/mx)}%"></i></div><b>${v}</b></div>`;

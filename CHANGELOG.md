@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.10.0 · 2026-11-10
+
+### Afegit
+- ⚡ Super combo: les preguntes difícils porten la marca «⚡ difícil». Encertar-ne 3 seguides dona +3 ⭐ i 5 seguides +5 ⭐ (després es torna a començar), fins a 10 ⭐ al dia per món. La ratxa dura tot el dia, encara que canviïs de tema; les preguntes normals no la fan pujar ni la trenquen, i un error sí. Funciona als tests, a l'examen sorpresa i a l'examen de veritat (es compta en lliurar-lo).
+- La dificultat de cada pregunta és a `motor/dificultat.json` (primera passada: 111 de 524 preguntes). `motor/dificultat.py` en fa la llista `docs/DIFICILS.md`.
+
+### Arreglat
+- Preguntes amb el text o la resposta discutibles: l'Acord de París (2 °C i 1,5 °C), l'ozó com a resposta falsa d'un gas d'efecte d'hivernacle, «meteorits» on calia «meteoroides», Ptolemeu (Alexandria, segle II), el delta de l'Ebre, dues preguntes de català que es podien llegir de dues maneres, i a castellà «primero», «treintaiséis», «clubs» i Teseu amb el Minotaure.
+- Les tres preguntes de català «Com es diu en català?» ara tenen cada una el seu enunciat, i per tant el seu identificador.
+
 ## 2.9.0 · 2026-11-10
 
 ### Afegit
