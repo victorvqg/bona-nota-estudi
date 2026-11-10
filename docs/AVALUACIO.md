@@ -93,6 +93,8 @@ El nen escriu la resposta i **el programa comprova quines idees clau hi ha de ve
 - **80 o més:** resposta completa. **50 a 79:** falten idees. **Menys de 50:** cal repassar la fitxa.
 - També li diu quant valdria a l'examen, sobre 1,5 punts.
 - **Pràctica:** un cop vista la resposta model, aquella pregunta es pot tornar a fer, però durant 3 dies no canvia la nota ni dona estrelles.
+- **✍️ Triple combo:** una oberta és «bona» si puntua, té com a mínim el 60 % de les idees i està explicada amb frases (4 paraules per idea i algun connector com «és», «que», «perquè» o el signe =). 3 bones seguides el mateix dia donen +3 ⭐ i 6 en donen +5 (després la ratxa torna a començar), fins a 8 ⭐ al dia per món. Una resposta per sota del 60 % la posa a 0; una de bona però sense frases no la fa avançar i el programa ho diu.
+- **Resposta de 10:** si es troben totes les idees, +1 ⭐ més.
 
 El programa busca paraules i no entén la frase, així que pot no trobar una idea explicada amb sinònims. El nen pot avisar que creu que l'ha posada: queda apuntat al tauler, però no canvia la nota.
 
@@ -121,6 +123,8 @@ Les estrelles premien **l'esforç i la constància**. No són una nota de coneix
 | Encert en un test o examen (cada pregunta, un cop al dia) | +1 |
 | Encert en un joc (només la primera partida del dia de cada joc) | +1 |
 | Idea clau trobada al text d'una oberta (cada pregunta, un cop al dia) | +1 |
+| Resposta de 10: totes les idees d'una oberta | +1 més |
+| Triple combo: 3 obertes bones seguides el mateix dia (6 per al «mega»; màxim 8 al dia per món) | +3 (+5 al mega) |
 | Combo de 5 seguides (només compten les respostes que donen estrella) | +1 |
 | Combo de 10 seguides | +2 |
 | Millorar el rècord d'un tema | +2 |

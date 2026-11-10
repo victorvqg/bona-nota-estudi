@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="08477c0665",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="db1ba349ce",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -571,7 +571,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.8.3</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.9.0</small></div>
 
 <script src="../../sprites.js?v=15744077"></script>
 <script>
@@ -1006,10 +1006,10 @@ function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO
  const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
  document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
 // com es guanyen les estrelles (una sola llista per a les dues targetes; issue #13)
-const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["🔥","combo ×5 +1 · ×10 +2"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +10"]];
+const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["✍️","triple combo ×3 +3 · ×6 +5 · resposta de 10 +1"],["🔥","combo ×5 +1 · ×10 +2"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +10"]];
 // barra de ratxa del test: 5 caselles fins al proper regal del combo
 function ratxaHtml(){const n=COMBO%5;return `<span class="ratxa" aria-label="Combo ×${COMBO}">${COMBO>=1?`🔥 ×${COMBO} `:""}${[0,1,2,3,4].map(i=>`<i class="${i<n?"on":""}"></i>`).join("")}</span>`}
-const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
+const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["triple","✍️","Triple combo (obertes)"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
 // el resum d'estrelles només surt quan toques el comptador de dalt a la dreta
 // ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
 let COMP=null,COMPT=0;
@@ -1579,6 +1579,19 @@ const OB_MOTIU={curt:`✏️ Escriu una mica més: com a mínim ${OB_MIN} paraul
 function obProtegeix(ta,av){let n=0;const nega=e=>{e.preventDefault();n++;if(av)av.innerHTML=`<div class="fb ko">✏️ Aquí no es pot enganxar: escriu-ho amb les teves paraules.</div>`};ta.addEventListener("paste",nega);ta.addEventListener("drop",nega);return ()=>n}
 // si ja ha vist la resposta model fa poc, torna fins a quin dia no puntua aquella pregunta
 const obBloc=n=>{const d=(S.obv||{})[n];return d&&d>avui()?d:null};
+// ✍️ triple combo (issue #14): obertes bones seguides el mateix dia i al mateix món. Bona = puntua, com a mínim el 60 % de les idees
+// i explicada amb frases (obFrases). ×3 +3 ⭐, ×6 +5 ⭐ (i torna a 0), fins a OB_COMBO_MAX al dia. Si no arriba al 60 %, la ratxa torna a 0.
+const OB_COMBO_PC=60,OB_COMBO_PREMIS={3:3,6:5},OB_COMBO_MAX=8,OB_PARAULES_IDEA=4;
+const OB_CONNECTORS=new Set("es son perque que quan per aixo llavors tambe pero i o te tenen hi ha com amb fa fan si no porque cuando entonces tambien y tiene tienen hay como con hace hacen por para".split(" ").map(normT));
+// frases i no una llista de paraules: prou paraules per idea (els números compten) i algun connector o el signe =
+function obFrases(text,det){const w=obParaules(text);if(w.length<OB_PARAULES_IDEA*Math.max(1,det))return false;return w.some(x=>OB_CONNECTORS.has(x))||/=/.test(text)}
+// estat: "bona" fa avançar la ratxa, "fluixa" la posa a 0 i "filtre" (bona però sense frases) no la toca; torna les ⭐ pagades
+function obRatxa(estat){const e=diaEst();if(estat==="fluixa"){e.oc=0;desa();return 0}if(estat!=="bona")return 0;
+ const oc=(e.oc||0)+1,pr=OB_COMBO_PREMIS[oc]||0,pag=Math.max(0,Math.min(pr,OB_COMBO_MAX-(e.ocp||0)));
+ if(pag){e.ocp=(e.ocp||0)+pag;const f=FONT;FONT=["triple"];suma(pag);FONT=f}
+ const ret=oc===2?["DOBLE ✍️✍️","una més i és triple!"]:oc===3?["TRIPLE COMBO ✍️✍️✍️",pag?`+${pag} ⭐`:"avui ja no dona ⭐"]:oc===6?["MEGA COMBO ✍️",pag?`+${pag} ⭐`:"avui ja no dona ⭐"]:null;
+ if(ret)retolMissio(ret[0],ret[1],500);
+ e.oc=oc>=6?0:oc;desa();return pag}
 
 
 // ====================== PIN I PROGRÉS AL NÚVOL ======================
@@ -1615,6 +1628,7 @@ addEventListener("pagehide",()=>{if(NUV_T)nuvolPuja(true)});
 // (dies: unió), sí/no → sí si algun és sí, textos → del més recent. Així un dispositiu nou (buit) no esborra el progrés d'un altre.
 function fusiona(a,b){const nouA=(a&&a.mod||0)>=(b&&b.mod||0);
  const f=(x,y,k)=>{if(x===undefined||x===null)return y;if(y===undefined||y===null)return x;
+  if(k==="est"&&typeof x==="object"&&typeof y==="object"&&x.d!==y.d)return String(x.d||"")>String(y.d||"")?x:y; // comptadors d'un altre dia: es queda el del dia més nou
   if(k==="dies"&&Array.isArray(x)&&Array.isArray(y))return [...new Set([...x,...y])].sort();
   if(Array.isArray(x)||Array.isArray(y))return (Array.isArray(x)?x:[]).length>=(Array.isArray(y)?y:[]).length?x:y;
   if(typeof x==="number"&&typeof y==="number")return Math.max(x,y);
@@ -1966,7 +1980,9 @@ function misValor(id){const c=diaEst().mc||{};return id==="jocs"?(c.jocs||[]).le
 function missio(k,v){if(!S||!S.nom)return;const e=diaEst();e.mc=e.mc||{};
  if(k==="jocs"){const l=e.mc.jocs||(e.mc.jocs=[]);if(!l.includes(v))l.push(v)}else if(k==="combo")e.mc.combo=Math.max(e.mc.combo||0,v||0);else e.mc[k]=(e.mc[k]||0)+(v||1);
  revisaMissions()}
-function retolMissio(txt,sub,ret){setTimeout(()=>{const d=document.createElement("div");d.className="combo missio";d.innerHTML=`${txt}<small>${sub}</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1600);so("super")},ret)}
+// els rètols van en cua (issue #14): cadascun dura 1,6 s al mateix lloc, així que el següent espera que el d'abans acabi
+let RETOL_LLIURE=0;function horaRetol(ret){const ara=Date.now(),t=Math.max(ara+ret,RETOL_LLIURE);RETOL_LLIURE=t+1700;return t-ara}
+function retolMissio(txt,sub,ret){ret=horaRetol(ret);setTimeout(()=>{const d=document.createElement("div");d.className="combo missio";d.innerHTML=`${txt}<small>${sub}</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1600);so("super")},ret)}
 function revisaMissions(){const e=diaEst(),ms=missionsAvui();e.mf=e.mf||[];let nou=0;
  ms.forEach(m=>{if(e.mf.includes(m.id)||misValor(m.id)<m.n)return;e.mf.push(m.id);nou++;const f=FONT;FONT=["missio"];suma(MIS_PREMI);FONT=f;retolMissio("🎯 MISSIÓ FETA!",`+${MIS_PREMI} ⭐`,900+nou*1700)});
  if(ms.length&&ms.every(m=>e.mf.includes(m.id))&&!e.mt){e.mt=1;nou++;const f=FONT;FONT=["missio"];suma(MIS_TOTES);FONT=f;retolMissio("🎉 LES 3 MISSIONS!",`+${MIS_TOTES} ⭐ DE REGAL`,900+nou*1700)}
@@ -2199,14 +2215,19 @@ function obertes(n){OB0=Date.now();iniciActivitat();
   document.getElementById("veu").disabled=true;resp.readOnly=true;
   // la nota la posa el programa; si ja havia vist la resposta fa poc, és pràctica i no compta
   const pract=!!bloc,trob=o.p.map(pt=>ideaDetectada(pt,txt,o.q)),det=trob.filter(Boolean).length,tot=o.p.length,pc=Math.round(det*100/tot),primera=!pract&&!diaEst().o[n];
-  if(!pract){diaEst().o[n]=1;S.ob[n]=pc;(S.obv=S.obv||{})[n]=diaMes(OB_DIES);suma(primera?det:0);missio("ob");desa();if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300)}
-  registra("oberta",Object.assign({n,tema:o.t,pc,s:segs(OB0),idees:det,de:tot,det,falten:trob.map((x,i)=>x?null:i).filter(x=>x!==null)},pract?{mode:"practica"}:{},rebutjat?{rebutjat}:{},enganxat()?{enganxat:enganxat()}:{}));
+  // ✍️ triple combo i resposta de 10 (issue #14): només la primera vegada del dia que puntua
+  let estat=null,fr=false,pagC=0,ple=0;
+  if(!pract){diaEst().o[n]=1;S.ob[n]=pc;(S.obv=S.obv||{})[n]=diaMes(OB_DIES);suma(primera?det:0);
+   if(primera){fr=obFrases(txt,det);estat=pc<OB_COMBO_PC?"fluixa":fr?"bona":"filtre";pagC=obRatxa(estat);
+    if(pc===100){ple=1;suma(1);retolMissio("RESPOSTA DE 10!","+1 ⭐",1800)}}
+   missio("ob");desa();if(pc>=80)confeti();setTimeout(mostraNivell,pc>=80?1600:300)}
+  registra("oberta",Object.assign({n,tema:o.t,pc,s:segs(OB0),idees:det,de:tot,det,falten:trob.map((x,i)=>x?null:i).filter(x=>x!==null)},pract?{mode:"practica"}:{},rebutjat?{rebutjat}:{},enganxat()?{enganxat:enganxat()}:{},estat?{oc:diaEst().oc||0,frases:fr?1:0}:{}));
   corr.innerHTML=`<div class="fb"><b>He trobat ${det} de ${tot} idees al teu text:</b>${o.p.map((x,i)=>trob[i]?`<div class="ob-ok"><span>✅</span><span>${x}</span></div>`:`<label class="chk"><input type="checkbox" class="pk" data-i="${i}"><span>${x}</span></label>`).join("")}
   ${det<tot?`<p class="prog" style="margin:6px 0">Si creus que alguna de les que no he trobat sí que l'has posat, marca-la i avisa'ns. No canvia la nota.</p><div class="fila"><button class="btn sec" id="crec">Crec que n'he posat més</button></div>`:""}
   <details style="margin-top:10px"><summary>👀 Veure la resposta model</summary><p>${o.m}</p>${btEscolta(o.m,"Escolta la resposta model")}</details><div id="res"></div></div>`;
   const bc=document.getElementById("crec");if(bc)bc.onclick=()=>{const ids=[...document.querySelectorAll(".pk:checked")].map(c=>+c.dataset.i);if(!ids.length)return;bc.disabled=true;bc.textContent="Apuntat ✔";registra("valora",{titol:`Pregunta oberta ${n+1}`,v:`Crec que n'he posat ${ids.length} més`,ob:n,crec:ids})};
   const msg=pc>=80?"Resposta completa! 🌟":pc>=50?"Bé, però et falten idees: mira la resposta model 📖":"Repassa la fitxa del tema i torna-hi 💪";
-  document.getElementById("res").innerHTML=`<p style="text-align:center"><b>Nota: ${pc} %</b>${pract?" · és pràctica, no puntua":primera?` → +${det} ⭐`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>A l'examen valdria uns <b>${(det*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
+  document.getElementById("res").innerHTML=`<p style="text-align:center"><b>Nota: ${pc} %</b>${pract?" · és pràctica, no puntua":primera?` → +${det} ⭐${ple?" · +1 ⭐ resposta de 10":""}${pagC?` · +${pagC} ⭐ triple combo`:""}`:" (avui ja n'havies fet aquesta: sense ⭐)"}<br>${estat==="filtre"?"✏️ Per al combo, explica-ho amb frases.<br>":estat==="bona"&&diaEst().oc?`✍️ Ratxa d'obertes ×${diaEst().oc}<br>`:""}A l'examen valdria uns <b>${(det*1.5/tot).toFixed(2).replace(".",",")} de 1,5 punts</b>.<br>${msg}</p>${n<OB.length-1?`<div class="fila"><button class="btn" onclick="obertes(${n+1})">Següent pregunta →</button></div>`:`<p style="text-align:center">🎉 Has fet totes les preguntes obertes!</p>`}`;
  };
 }
 // prova: la validació rebutja el que no és una resposta i la nota no es pot inflar
@@ -2220,11 +2241,36 @@ function bnProvaObertes(){const inv=t=>t.split(/\s+/).reverse().join(" "),s0=JSO
   const o=OB[0],txt=inv(o.m);delete S.ob[0];if(S.obv)delete S.obv[0];delete diaEst().o[0];
   obertes(0);const ta=document.getElementById("resp"),ev=new ClipboardEvent("paste",{cancelable:true,bubbles:true});ta.dispatchEvent(ev);if(!ev.defaultPrevented)return "s'hi pot enganxar text";
   ta.value="asdas dasda sdasa dasad asada sadas";document.getElementById("veu").click();if(!document.querySelector("#corr .ko")||ta.readOnly||0 in S.ob)return "el text sense sentit no s'ha aturat";
+  const det0=o.p.filter(pt=>ideaDetectada(pt,txt,o.q)).length,fo0=S.fonts.obertes||0;diaEst().oc=0;
   ta.value=txt;document.getElementById("veu").click();const n1=S.ob[0];if(!(n1>0))return "una resposta real hauria de tenir nota";if(!obBloc(0))return "després de veure la resposta, la pregunta hauria de quedar bloquejada";
+  {const ple=n1===100?1:0,res=document.getElementById("res").textContent;if((S.fonts.obertes||0)!==fo0+det0+ple)return `obertes: +${(S.fonts.obertes||0)-fo0} ⭐ i havien de ser +${det0+ple} (idees${ple?" + resposta de 10":""})`;
+   if(ple&&!/resposta de 10/i.test(res))return "amb totes les idees, el resultat ha de dir «resposta de 10»";
+   const oc=diaEst().oc||0,esp=n1>=OB_COMBO_PC&&obFrases(txt,det0)?1:0;if(oc!==esp)return `triple combo: la ratxa és ${oc} i havia de ser ${esp}`;
+   if(n1>=OB_COMBO_PC&&!esp&&!/explica-ho amb frases/.test(res))return "si no passa el filtre de frases, ho ha de dir";}
+  const oc1=diaEst().oc||0;
   S.ob[0]=1;const p1=S.punts;obertes(0);if(!document.getElementById("obBloc"))return "no avisa que és pràctica";
-  document.getElementById("resp").value=txt;document.getElementById("veu").click();if(S.ob[0]!==1||S.punts!==p1)return "la pràctica no hauria de canviar la nota ni donar estrelles";
+  document.getElementById("resp").value=txt;document.getElementById("veu").click();if(S.ob[0]!==1||S.punts!==p1)return "la pràctica no hauria de canviar la nota ni donar estrelles";if((diaEst().oc||0)!==oc1)return "la pràctica no ha de tocar la ratxa del triple combo";
   return true}finally{const b=JSON.parse(s0);S.ob=b.ob;if(b.obv)S.obv=b.obv;else delete S.obv;S.punts=b.p;if(b.est)S.est=b.est;if(b.f)S.fonts=b.f;if(b.ft)S.ftema=b.ft;NIVPEND=null;SUPPEND=0;desa();vista("inici")}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaObertes");
+// prova (issue #14): triple combo de preguntes obertes i filtre de frases
+function bnProvaTriple(){const s0=JSON.stringify({est:S.est||null,p:S.punts,f:S.fonts||{},ft:S.ftema||{}}),fo=FONT;
+ try{if(obFrases("clima temps pluja vent sol neu",2))return "una llista de paraules ha passat el filtre de frases";
+  if(!obFrases("El clima és el temps que fa durant molts anys en un lloc",2))return "una frase de veritat no ha passat el filtre";
+  if(!obFrases("72 = 2 · 2 · 2 · 3 · 3 i per tant és divisible per 6",1))return "una resposta de mates amb = i números no ha passat el filtre";
+  delete S.est;const t0=S.fonts.triple||0,b=()=>obRatxa("bona");
+  const a=[b(),b(),b()];if(a.join()!=="0,0,3")return `3 obertes bones: ${a.join()} i havia de ser 0,0,3`;
+  if((S.fonts.triple||0)!==t0+3)return "no s'apunta a la font «triple»";
+  obRatxa("filtre");if(diaEst().oc!==3)return `el filtre no ha de tocar la ratxa (oc=${diaEst().oc})`;
+  const c=[b(),b(),b()];if(c.join()!=="0,0,5")return `de la 4a a la 6a: ${c.join()} i havia de ser 0,0,5`;
+  if(diaEst().ocp!==8||diaEst().oc!==0)return `després del MEGA: ocp=${diaEst().ocp} oc=${diaEst().oc} (havia de ser 8 i 0)`;
+  const d=[b(),b(),b()];if(d.join()!=="0,0,0")return `amb el topall d'avui gastat: ${d.join()} i havia de ser 0,0,0`;
+  b();obRatxa("fluixa");if(diaEst().oc!==0)return "una resposta fluixa ha de posar la ratxa a 0";
+  b();b();S.est.d="2000-01-01";b();if(diaEst().oc!==1)return `l'endemà la ratxa ha de tornar a començar (oc=${diaEst().oc})`;
+  for(const o of OB)if(!obFrases(o.m,o.p.length))return `la resposta model no passa el filtre de frases: ${o.q.slice(0,50)}`;
+  RETOL_LLIURE=0;{const r1=horaRetol(500),r2=horaRetol(500);if(r2-r1<1700)return `dos rètols seguits es trepitgen (${r1} i ${r2} ms)`}RETOL_LLIURE=0;
+  {const fx=fusiona({mod:2,est:{d:avui(),q:{},j:{},o:{},oc:0}},{mod:1,est:{d:"2000-01-01",q:{},j:{},o:{},oc:2,ocp:8}});if(fx.est.d!==avui()||fx.est.ocp)return "fusiona() barreja els comptadors d'un altre dia amb els d'avui"}
+  return true}finally{FONT=fo;const x=JSON.parse(s0);if(x.est)S.est=x.est;else delete S.est;S.punts=x.p;S.fonts=x.f;S.ftema=x.ft;NIVPEND=null;SUPPEND=0;desa()}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaTriple");
 
 // ====================== ANALÍTICA ======================
 function resumGlobal(){
