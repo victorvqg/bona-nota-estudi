@@ -1153,7 +1153,7 @@ const obBloc=n=>{const d=(S.obv||{})[n];return d&&d>avui()?d:null};
 // ✍️ triple combo (issue #14): obertes bones seguides el mateix dia i al mateix món. Bona = puntua, com a mínim el 60 % de les idees
 // i explicada amb frases (obFrases). ×3 +3 ⭐, ×6 +5 ⭐ (i torna a 0), fins a OB_COMBO_MAX al dia. Si no arriba al 60 %, la ratxa torna a 0.
 const OB_COMBO_PC=60,OB_COMBO_PREMIS={3:3,6:5},OB_COMBO_MAX=8,OB_PARAULES_IDEA=4;
-const OB_CONNECTORS=new Set("es son perque que quan per aixo llavors tambe pero porque cuando entonces tambien".split(" ").map(normT));
+const OB_CONNECTORS=new Set("es son perque que quan per aixo llavors tambe pero i o te tenen hi ha com amb fa fan si no porque cuando entonces tambien y tiene tienen hay como con hace hacen por para".split(" ").map(normT));
 // frases i no una llista de paraules: prou paraules per idea (els números compten) i algun connector o el signe =
 function obFrases(text,det){const w=obParaules(text);if(w.length<OB_PARAULES_IDEA*Math.max(1,det))return false;return w.some(x=>OB_CONNECTORS.has(x))||/=/.test(text)}
 // estat: "bona" fa avançar la ratxa, "fluixa" la posa a 0 i "filtre" (bona però sense frases) no la toca; torna les ⭐ pagades
@@ -1199,6 +1199,7 @@ addEventListener("pagehide",()=>{if(NUV_T)nuvolPuja(true)});
 // (dies: unió), sí/no → sí si algun és sí, textos → del més recent. Així un dispositiu nou (buit) no esborra el progrés d'un altre.
 function fusiona(a,b){const nouA=(a&&a.mod||0)>=(b&&b.mod||0);
  const f=(x,y,k)=>{if(x===undefined||x===null)return y;if(y===undefined||y===null)return x;
+  if(k==="est"&&typeof x==="object"&&typeof y==="object"&&x.d!==y.d)return String(x.d||"")>String(y.d||"")?x:y; // comptadors d'un altre dia: es queda el del dia més nou
   if(k==="dies"&&Array.isArray(x)&&Array.isArray(y))return [...new Set([...x,...y])].sort();
   if(Array.isArray(x)||Array.isArray(y))return (Array.isArray(x)?x:[]).length>=(Array.isArray(y)?y:[]).length?x:y;
   if(typeof x==="number"&&typeof y==="number")return Math.max(x,y);
@@ -1550,7 +1551,9 @@ function misValor(id){const c=diaEst().mc||{};return id==="jocs"?(c.jocs||[]).le
 function missio(k,v){if(!S||!S.nom)return;const e=diaEst();e.mc=e.mc||{};
  if(k==="jocs"){const l=e.mc.jocs||(e.mc.jocs=[]);if(!l.includes(v))l.push(v)}else if(k==="combo")e.mc.combo=Math.max(e.mc.combo||0,v||0);else e.mc[k]=(e.mc[k]||0)+(v||1);
  revisaMissions()}
-function retolMissio(txt,sub,ret){setTimeout(()=>{const d=document.createElement("div");d.className="combo missio";d.innerHTML=`${txt}<small>${sub}</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1600);so("super")},ret)}
+// els rètols van en cua (issue #14): cadascun dura 1,6 s al mateix lloc, així que el següent espera que el d'abans acabi
+let RETOL_LLIURE=0;function horaRetol(ret){const ara=Date.now(),t=Math.max(ara+ret,RETOL_LLIURE);RETOL_LLIURE=t+1700;return t-ara}
+function retolMissio(txt,sub,ret){ret=horaRetol(ret);setTimeout(()=>{const d=document.createElement("div");d.className="combo missio";d.innerHTML=`${txt}<small>${sub}</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1600);so("super")},ret)}
 function revisaMissions(){const e=diaEst(),ms=missionsAvui();e.mf=e.mf||[];let nou=0;
  ms.forEach(m=>{if(e.mf.includes(m.id)||misValor(m.id)<m.n)return;e.mf.push(m.id);nou++;const f=FONT;FONT=["missio"];suma(MIS_PREMI);FONT=f;retolMissio("🎯 MISSIÓ FETA!",`+${MIS_PREMI} ⭐`,900+nou*1700)});
  if(ms.length&&ms.every(m=>e.mf.includes(m.id))&&!e.mt){e.mt=1;nou++;const f=FONT;FONT=["missio"];suma(MIS_TOTES);FONT=f;retolMissio("🎉 LES 3 MISSIONS!",`+${MIS_TOTES} ⭐ DE REGAL`,900+nou*1700)}
@@ -1834,6 +1837,9 @@ function bnProvaTriple(){const s0=JSON.stringify({est:S.est||null,p:S.punts,f:S.
   const d=[b(),b(),b()];if(d.join()!=="0,0,0")return `amb el topall d'avui gastat: ${d.join()} i havia de ser 0,0,0`;
   b();obRatxa("fluixa");if(diaEst().oc!==0)return "una resposta fluixa ha de posar la ratxa a 0";
   b();b();S.est.d="2000-01-01";b();if(diaEst().oc!==1)return `l'endemà la ratxa ha de tornar a començar (oc=${diaEst().oc})`;
+  for(const o of OB)if(!obFrases(o.m,o.p.length))return `la resposta model no passa el filtre de frases: ${o.q.slice(0,50)}`;
+  RETOL_LLIURE=0;{const r1=horaRetol(500),r2=horaRetol(500);if(r2-r1<1700)return `dos rètols seguits es trepitgen (${r1} i ${r2} ms)`}RETOL_LLIURE=0;
+  {const fx=fusiona({mod:2,est:{d:avui(),q:{},j:{},o:{},oc:0}},{mod:1,est:{d:"2000-01-01",q:{},j:{},o:{},oc:2,ocp:8}});if(fx.est.d!==avui()||fx.est.ocp)return "fusiona() barreja els comptadors d'un altre dia amb els d'avui"}
   return true}finally{FONT=fo;const x=JSON.parse(s0);if(x.est)S.est=x.est;else delete S.est;S.punts=x.p;S.fonts=x.f;S.ftema=x.ft;NIVPEND=null;SUPPEND=0;desa()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaTriple");
 
