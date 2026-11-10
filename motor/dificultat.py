@@ -5,7 +5,8 @@
     python3 motor/dificultat.py [--motius fitxer.json]
 
 Escriu docs/DIFICILS.md: per a cada món, una taula amb l'id, el tema, la pregunta i la resposta correcta
-de cada pregunta difícil (dificultat 3) i, si es passa --motius ({"<món>": {"<id>": "motiu"}}), per què.
+de cada pregunta difícil (dificultat 3) i per què. Els motius ({"<món>": {"<id>": "motiu"}}) són a
+motor/dificultat-motius.json (o al fitxer de --motius).
 Issue #15 (super combo).
 """
 import json
@@ -21,15 +22,14 @@ net = lambda t: re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", str(t))).replace("|",
 
 
 def main():
-    motius = {}
-    if "--motius" in sys.argv:
-        motius = json.loads(Path(sys.argv[sys.argv.index("--motius") + 1]).read_text())
+    fm = Path(sys.argv[sys.argv.index("--motius") + 1]) if "--motius" in sys.argv else D / "dificultat-motius.json"
+    motius = json.loads(fm.read_text()) if fm.exists() else {}
     dif = json.loads((D / "dificultat.json").read_text())
     mons = json.loads((D / "mons.json").read_text())
     out = ["# Preguntes difícils (⚡ super combo)", "",
            "Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.json`. "
            "Una pregunta difícil porta la marca «⚡ difícil» i compta per al super combo: 3 difícils seguides +3 ⭐, 5 seguides +5 ⭐. "
-           "Per treure'n o afegir-ne una, edita `motor/dificultat.json` (clau = món, i dins `\"tema/núm\": 3`) i torna a generar aquesta llista.", ""]
+           "Per treure'n o afegir-ne una, edita `motor/dificultat.json` (clau = món, i dins `\"tema/núm\": 3`), posa'n el motiu a `motor/dificultat-motius.json` i torna a generar aquesta llista.", ""]
     total = 0
     for m in mons:
         a = m["dades"]

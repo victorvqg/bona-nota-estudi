@@ -8,7 +8,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 ## 2.10.0 · 2026-11-10
 
 ### Afegit
-- ⚡ Super combo: les preguntes difícils porten la marca «⚡ difícil». Encertar-ne 3 seguides dona +3 ⭐ i 5 seguides +5 ⭐ (després es torna a començar), fins a 10 ⭐ al dia per món. Les preguntes normals no el fan pujar ni el trenquen; un error sí. Funciona als tests, a l'examen sorpresa i a l'examen de veritat (es compta en lliurar-lo).
+- ⚡ Super combo: les preguntes difícils porten la marca «⚡ difícil». Encertar-ne 3 seguides dona +3 ⭐ i 5 seguides +5 ⭐ (després es torna a començar), fins a 10 ⭐ al dia per món. La ratxa dura tot el dia, encara que canviïs de tema; les preguntes normals no la fan pujar ni la trenquen, i un error sí. Funciona als tests, a l'examen sorpresa i a l'examen de veritat (es compta en lliurar-lo).
 - La dificultat de cada pregunta és a `motor/dificultat.json` (primera passada: 117 de 524 preguntes). `motor/dificultat.py` en fa la llista `docs/DIFICILS.md`.
 
 ## 2.9.0 · 2026-11-10

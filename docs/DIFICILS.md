@@ -1,6 +1,6 @@
 # Preguntes difícils (⚡ super combo)
 
-Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.json`. Una pregunta difícil porta la marca «⚡ difícil» i compta per al super combo: 3 difícils seguides +3 ⭐, 5 seguides +5 ⭐. Per treure'n o afegir-ne una, edita `motor/dificultat.json` (clau = món, i dins `"tema/núm": 3`) i torna a generar aquesta llista.
+Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.json`. Una pregunta difícil porta la marca «⚡ difícil» i compta per al super combo: 3 difícils seguides +3 ⭐, 5 seguides +5 ⭐. Per treure'n o afegir-ne una, edita `motor/dificultat.json` (clau = món, i dins `"tema/núm": 3`), posa'n el motiu a `motor/dificultat-motius.json` i torna a generar aquesta llista.
 
 ## 🌍 Tema 3: El clima (`socials`) · 18 de 80
 

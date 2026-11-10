@@ -127,7 +127,7 @@ Les estrelles premien **l'esforç i la constància**. No són una nota de coneix
 | Triple combo: 3 obertes bones seguides el mateix dia (6 per al «mega»; màxim 8 al dia per món) | +3 (+5 al mega) |
 | Combo de 5 seguides (només compten les respostes que donen estrella) | +1 |
 | Combo de 10 seguides | +2 |
-| ⚡ Super combo: 3 preguntes difícils seguides sense error (5 per a l'«hiper»; màxim 10 al dia per món) | +3 (+5 a l'hiper) |
+| ⚡ Super combo: 3 preguntes difícils encertades seguides (5 per a l'«hiper»; la ratxa dura tot el dia, un error la trenca; màxim 10 al dia per món) | +3 (+5 a l'hiper) |
 | Millorar el rècord d'un tema | +2 |
 | Error encertat al repàs (cada error, un cop al dia; màxim 10 al dia per món) | +1 |
 | Error après al repàs (encertat 3 cops en dies separats) | +2 |
