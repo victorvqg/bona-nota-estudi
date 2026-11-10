@@ -46,6 +46,10 @@ jobs:
         run: node motor/prova-xat.js
       - name: Prova de la pestanya Xat de l'admin (amb Supabase simulat)
         run: node motor/prova-admin-xat.js
+      - name: Prova de la fitxa al núvol i les altes a la base de dades (supabase/bn_admin_fitxa.sql dins de PGlite)
+        run: node motor/prova-admin-fitxa-sql.js
+      - name: Prova de la fitxa al núvol i les altes a l'admin (amb Supabase simulat)
+        run: node motor/prova-admin-fitxa.js
       - name: Prova automàtica de cada món
         run: |
           cd motor
