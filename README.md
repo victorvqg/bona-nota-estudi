@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.11.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md)
+**Web:** https://bonanota.net · **Versió:** 2.12.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -411,6 +411,10 @@ del servidor amb les funcions de `supabase/bn_admin_tauler.sql` (`bn_admin_resum
 El domini per tema i les preguntes més fallades surten plegats per món.
 L'apartat **Repàs, boss i missions** (`tMotivacio()`) no necessita cap funció a Supabase: es calcula al navegador amb el registre que el tauler ja ha carregat i respecta el període i els filtres. Les missions no es registren una per una: la xifra surt de `fonts.missio`, el total d'estrelles de missions de cada nen.
 L'apartat **✏️ Taller de mates: on s'equivoquen** (exercici · pas · error · vegades · nens) surt de `bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql` (s'executa una vegada, després de `bn_admin_tauler.sql`), i llegeix el camp `ep` (`"exercici|pas|error"`, un per cada resposta fallada) que el Taller afegeix als events `joc` i `examen`.
+
+**Nens nous** (`admin/`, pestanya 👤 Nens, a dalt): les altes del període de dalt, amb `bn_admin_altes` (`supabase/bn_admin_fitxa.sql`). La data d'alta és la primera vegada que es veu el nen: el primer registre o `perfils.creat` (quan crea el perfil amb el PIN; els perfils d'abans del 10-11-2026 no la tenen), el que sigui abans. No es fa servir `nou` de l'event `entra`, que vol dir «nou en aquell aparell».
+
+**Fitxa de cada nen → Al núvol:** l'estat que el nen ha desat al núvol a cada món (`bn_priv.progres`, amb `bn_admin_fitxa`): temes, preguntes que falla, errors pendents de repàs, obertes, exàmens, boss i fonts de les estrelles. Només hi són els nens que han jugat amb el PIN (si l'admin li treu el PIN, el progrés es continua veient); dels altres, només hi ha el registre. L'aprovat (70) és el mateix número que fa servir el tauler.
 
 **Fitxa de cada nen** (`admin/`, pestanya 👤 Nens → toca un nom): canviar el nom, amagar-lo del rànquing, treure el PIN i:
 - **♻️ Esborrar el progrés:** tries «Tots els mons» o un món concret i confirmes (surten el nom del nen i el món, i «No es pot desfer»).
