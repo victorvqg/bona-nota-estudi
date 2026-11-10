@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.13.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md) · **Xat:** [com funciona](docs/XAT.md)
+**Web:** https://bonanota.net · **Versió:** 2.13.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md) · **Xat:** [com funciona](docs/XAT.md) · **Benestar:** [com es llegeix al tauler](docs/BENESTAR.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)

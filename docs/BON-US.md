@@ -7,6 +7,8 @@ Aquest document explica quan Bona Nota ajuda el nen a aprendre i quan comença a
 | [`AVALUACIO.md`](AVALUACIO.md) | Què sap el nen? |
 | [`PUNTUACIO.md`](PUNTUACIO.md) | Com es premia l'esforç? |
 | **`BON-US.md`** (aquest) | L'ús és sa? |
+| [`XAT.md`](XAT.md) | Com es parlen els nens? |
+| [`BENESTAR.md`](BENESTAR.md) | Com ho porta cada nen? (el que veu el pare al tauler) |
 
 > **Estat (10 de novembre de 2026).** Els principis estan decidits ([ADR-0007](DECISIONS.md)). Els números (minuts, hores, quantes vegades es pot saltar el descans) són **valors inicials pendents de confirmar** (apartat 7). Avui l'app només aplica el descans de 25 minuts; la resta són canvis previstos.
 
@@ -77,6 +79,8 @@ La base ja és sana: les estrelles són justes, hi ha topalls i no hi ha ratxa d
 | Valoració «Costa / Bé / Fàcil» | El nen pensa com li ha anat | Ningú no la fa servir | Fer-la servir per a l'alerta de frustració |
 
 ## 5. Senyals per al tauler (apartat «Benestar»)
+
+Com es llegeixen al tauler (colors, fases, data d'examen) és a [`BENESTAR.md`](BENESTAR.md).
 
 Gairebé tots es poden calcular ja amb el registre (`bn_log`). Les excepcions són el descans (fet o saltat) i el botó «Demà tinc examen». Els llindars són una proposta per ajustar amb dades, no una norma mèdica. Al tauler, una fila per nen amb un semàfor (verd, groc, vermell) i el motiu en paraules planeres; els dies de vigília, les sessions llargues surten en blau.
 
