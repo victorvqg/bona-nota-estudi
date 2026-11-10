@@ -92,7 +92,7 @@ begin
     select coalesce(jsonb_agg(distinct v order by v), '[]'::jsonb)
       into arr
       from jsonb_array_elements_text(j->'tancats') as x(v)
-     where v in ('socials','biogeo','castellano','comarques','divisibilitat','catala');
+     where v in ('socials','biogeo','castellano','comarques','divisibilitat','catala','angles');
   else
     arr := '[]'::jsonb;
   end if;
@@ -227,7 +227,7 @@ begin
       end if;
       if exists (
         select 1 from jsonb_array_elements_text(p_cfg->'mons_tancats') as x(v)
-        where v not in ('socials','biogeo','castellano','comarques','divisibilitat','catala')
+        where v not in ('socials','biogeo','castellano','comarques','divisibilitat','catala','angles')
       ) then
         raise exception 'mon no valid' using errcode = '22023';
       end if;
@@ -243,7 +243,7 @@ begin
     -- D) Activar o desactivar un món individual (mon + mon_actiu)
     if (p_cfg ? 'mon') or (p_cfg ? 'mon_actiu') then
       mon_id := lower(trim(coalesce(p_cfg->>'mon', '')));
-      if mon_id not in ('socials','biogeo','castellano','comarques','divisibilitat','catala') then
+      if mon_id not in ('socials','biogeo','castellano','comarques','divisibilitat','catala','angles') then
         raise exception 'mon no valid' using errcode = '22023';
       end if;
       t := p_cfg->>'mon_actiu';

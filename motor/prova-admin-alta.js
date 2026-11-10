@@ -103,8 +103,8 @@ function dadesAdmin() {
   const { p, ctx, crides, errors, menu, txt } = await obreAdmin("/admin/?demo");
   await p.waitForSelector("#control #ctrlXatSw");
   const ctrlTxt = await txt("#control");
-  ok(ctrlTxt.includes("Control ràpid: Xat, Horari i Mons") && (await p.$$("#control [data-ctrl-mon]")).length === 6,
-   "targeta «Control ràpid: Xat, Horari i Mons» al Tauler amb els 6 mons");
+  ok(ctrlTxt.includes("Control ràpid: Xat, Horari i Mons") && (await p.$$("#control [data-ctrl-mon]")).length === 7,
+   "targeta «Control ràpid: Xat, Horari i Mons» al Tauler amb els 7 mons");
   await menu("nens");
   ok((await p.$("#embutAlta")) === null, "s'ha tret «Embut d'alta» de la vista Nens");
   const nensTxt = await txt("#tNens");
@@ -143,8 +143,8 @@ function dadesAdmin() {
   // Tanquem el món de Socials
   await p.click('#control [data-ctrl-mon="socials"]');
   await p.waitForTimeout(80);
-  ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes("5 de 6 oberts"),
-   "clicar l'interruptor d'un món el tanca i actualitza el comptador a «5 de 6 oberts»");
+  ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes("6 de 7 oberts"),
+   "clicar l'interruptor d'un món el tanca i actualitza el comptador a «6 de 7 oberts»");
 
   // Comprovem els nivells a Nens
   await menu("nens");

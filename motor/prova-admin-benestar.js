@@ -229,7 +229,7 @@ function respon(st, f, cos) {
   const F = await files(), x = F.find(f => f.nom === XSS);
   ok(x && x.sem === "vermell", "un semàfor que no és cap color es calcula amb els senyals (vermell)");
   ok(!t.includes("NaN") && !t.includes("undefined"), "cap «NaN» ni «undefined» amb valors que no són números");
-  ok((await p.$$("#tBen .bs-mon")).length === 7 && (await p.$$eval("#tBen .bs-mon h4", hs => hs.some(h => h.textContent.includes("<img")))), "el món amb HTML (i dates que no ho són) es pinta com a text, sense trencar res");
+  ok((await p.$$("#tBen .bs-mon")).length === 8 && (await p.$$eval("#tBen .bs-mon h4", hs => hs.some(h => h.textContent.includes("<img")))), "el món amb HTML (i dates que no ho són) es pinta com a text, sense trencar res");
   await p.click("#tema"); await llest(); await p.waitForTimeout(200);
   ok((await p.evaluate(() => window.__xss)) === undefined, "window.__xss no s'ha posat");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }

@@ -134,7 +134,7 @@ function respon(st, f, cos) {
   const apr = +(await p.$$eval("#tMot .kpi", ks => (ks.find(k => k.querySelector(".kpi-t").textContent.trim() === "Errors apresos") || { querySelector: () => ({ textContent: "-1" }) }).querySelector(".kpi-v").textContent.trim()));
   const rep = +(await kpis("#tCom")).find(k => k.font === "repas").v;
   ok(apr > 0 && rep === 2 * apr, `demo coherent: repàs ${rep} ⭐ = 2 × ${apr} errors apresos`);
-  await p.click('#nav .sub [data-sec="pendents"]'); await p.waitForTimeout(700);
+  await p.click('#nav .sub [data-sec="pendents"]'); await p.waitForTimeout(1500);
   ok(await p.evaluate(() => { const r = document.getElementById("pendents").getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }), "l'entrada del menú porta a l'apartat");
   ok(crides.length === 0, "cap crida a Supabase en demo (" + crides.map(c => c.f).join(", ") + ")");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }

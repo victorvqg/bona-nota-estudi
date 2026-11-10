@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="39c8a8bea8",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="fc09495e49",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -776,6 +776,17 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
  </a>
+ <a class="as" href="angles/t2/" data-clau="bn_angles" data-id="angles" data-ic="🎬" data-temes="8" style="--c1:#831843;--c2:#db2777;--c3:#fbbf24">
+  <div class="portada"><span class="tag">MÓN 7</span><span class="ic">🎬</span></div>
+  <div class="cos">
+   <small class="mat">Anglès</small>
+   <h2>Tema 2: That's Entertainment</h2>
+   <p>Descriure algú, els dos presents, gèneres de pel·lis i llibres, el tresor de Fenn i com proposar un pla.</p>
+   <div class="xips"><span>📖 8 fitxes</span><span>🎮 8 jocs</span><span>📝 Examen</span></div>
+   <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
+   <div class="juga"><span>JUGA ▶</span></div>
+  </div>
+ </a>
  <!-- MONS:fi -->
  <!-- Per afegir un món: dades a motor/dades/<id>.js + entrada a motor/mons.json i executar «python3 motor/tot.py» -->
  <div class="as prox" aria-hidden="true"><div><span class="ic">🔒</span><b>PRÒXIMAMENT</b><small>Nous mons en camí…</small></div></div>
@@ -805,7 +816,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.17.1</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.18.0</small></footer>
 
 <script src="sprites.js?v=fd512289"></script>
 <script>
