@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.14.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md) · **Xat:** [com funciona](docs/XAT.md) · **Benestar:** [com es llegeix al tauler](docs/BENESTAR.md)
+**Web:** https://bonanota.net · **Versió:** 2.15.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md) · **Xat:** [com funciona](docs/XAT.md) · **Benestar:** [com es llegeix al tauler](docs/BENESTAR.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -62,6 +62,7 @@ El títol i l'id es llegeixen amb expressions regulars: `id:"…"`, `nom:"…"` 
 | 2 | Compta temes i jocs avaluant les dades amb Node |
 | 3 | A `index.html`: reescriu les targetes (`MONS:inici..fi`), copia `so-mobil.js` i `actualitza.js` entre les seves marques i posa `sprites.js?v=<empremta>`; a `perfil/index.html` copia els mateixos blocs i posa el mateix `?v=` (i `build.py` el posa a cada món) |
 | 3b | Escriu `admin/preguntes.json` (id → text, opcions, correcta, tema) |
+| 3b2 | Extreu les constants de regles de `motor/plantilla-estudi-interactiu.html` i escriu `motor/regles.json` i `admin/regles.json` |
 | 3c | Llegeix la primera entrada de `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera i a l'entrada del tauler (`VERSIO_ADMIN`) |
 | 4 | Calcula una empremta del contingut i la posa a cada pàgina (`VER`), a `versio.json` i a `sw.js` |
 

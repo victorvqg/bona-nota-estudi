@@ -5,6 +5,12 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.15.0 · 2026-11-10
+
+### Afegit
+- Motor: `motor/tot.py` extreu les regles del joc (`NIVELLS`, `COM_GUANYAR`, `SUPER_PREMIS`/`SUPER_MAX`, `OB_COMBO_*`, `APROVA` i `REP_PREMI`/`REP_MAX`) de `motor/plantilla-estudi-interactiu.html` i escriu `motor/regles.json` i `admin/regles.json`. La plantilla continua sent l'única font de veritat i el joc funciona exactament igual.
+- Proves: `motor/prova-regles.js` (afegida a l'Action) comprova que `motor/regles.json` i `admin/regles.json` coincideixen amb la plantilla i que cap còpia manual dels nivells o de l'aprovat (`index.html`, `perfil/index.html`, `admin/index.html`, `supabase/bn_xat.sql` i `supabase/bn_admin_tauler.sql`) es desquadra.
+
 ## 2.14.0 · 2026-11-10
 
 ### Afegit
