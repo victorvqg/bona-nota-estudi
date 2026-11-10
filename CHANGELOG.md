@@ -5,6 +5,17 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.11.0 · 2026-11-10
+
+### Afegit
+- **Xat de la colla** al rànquing de la portada (pestanya «Xat»). Els nens es parlen amb peces: una frase amb un forat i una paraula, una cosa de classe, una cosa seva o el nom d'un company. No hi ha cap text lliure, i el nom d'un company només surt en frases bones.
+- **Per parlar, t'ho guanyes estudiant:** cada 10 ⭐ guanyades avui donen 1 crèdit, és a dir, 1 frase, fins a 5 al dia. A mitjanit tornen a zero. Les estrelles no es gasten: parlar no fa baixar ningú al rànquing. Les monedes de crèdit i els cartells INSERT COIN, SENSE CRÈDITS i TORNA DEMÀ diuen què falta.
+- Frases i peces que es desbloquegen pujant de nivell o fent 25 ⭐ en un món.
+- Bafarades al podi amb l'últim missatge dels tres primers, targeta «Xat de la colla», botó «Digues-li alguna cosa a…» per al company que tens al davant i missatges a la cinta de notícies.
+- «Ben dit» per votar els missatges dels altres i missatge del dia (sense premi en aquesta versió).
+- Admin: pestanya «Xat» per veure i esborrar missatges, silenciar un nom 1, 3 o 7 dies, canviar les regles (estrelles per crèdit, màxim al dia, espera i xat obert o tancat), activar o desactivar frases i peces i afegir-ne de noves.
+- Base de dades: `supabase/bn_xat.sql` (s'ha d'executar una vegada a Supabase). Només es guarden números (qui, quina frase i quina peça o company), mai text.
+
 ## 2.8.3 · 2026-11-09
 
 ### Canviat

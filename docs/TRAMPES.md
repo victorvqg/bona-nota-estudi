@@ -28,3 +28,8 @@ Com s'escriu una entrada:
 - Símptoma: els errors de «🔍 Troba l'error» de mates no sortien mai a «Repassa els teus errors» (la prova `mxErrRepProva` fallava).
 - Causa: `repAnotaExt("err", clau, {tipus:…})`: el `tipus` de les dades trepitjava el `"err"` i el repàs no trobava el seu tipus a `BN_REP_TIPUS`.
 - Com evitar-la: el tipus del repàs és el primer paràmetre; el que identifica l'exercici va a `clau` (i a les dades, amb un altre nom).
+
+### Un `raise` després de `pin_ok` desfà el comptador d'intents
+- Símptoma: el bloqueig de 15 minuts després de 5 PIN dolents no salta mai amb `bn_aspecte_desa`, `bn_progres_desa`, `bn_progres_llegeix` ni `bn_perfil_canvia_pin` (amb `bn_xat_*` i `bn_fotos` sí).
+- Causa: `bn_priv.pin_ok` apunta l'intent fallit a `bn_priv.intents` i torna `false`; si la funció que la crida llança `raise exception 'pin incorrecte'`, PostgREST desfà tota la petició, també aquell apunt (Postgres no té transaccions autònomes). Trobat a la revisió del xat (n2528, 10/11/2026); comprovat amb PGlite.
+- Com evitar-la: a les funcions noves amb PIN, tornar un codi (`{"codi":"pin"}`, com `bn_xat.sql`) en lloc d'una excepció. Per arreglar les antigues cal fer-ho en dos passos: primer, clients (portada, perfil, plantilla dels mons) que acceptin tant l'error «pin incorrecte» com el codi; després, el SQL.
