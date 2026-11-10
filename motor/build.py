@@ -28,6 +28,14 @@ mons_js = "const MONS=" + json.dumps(mons, ensure_ascii=False) + ";"
 from qids import ids_mon
 _, qids, _p = ids_mon(d / "dades" / f"{assig}.js")
 mons_js += "\nconst QIDS=" + json.dumps(qids, separators=(",", ":")) + ";"
+# dificultat de cada pregunta (motor/dificultat.json → const QDIF={"tema/núm":3}); sense entrada vol dir 2 (normal). Issue #15.
+_fd = d / "dificultat.json"
+_dif = (json.loads(_fd.read_text()) if _fd.exists() else {}).get(assig, {})
+_valids = {f"{t}/{n}" for t, ns in qids.items() for n in ns if n}
+_dolents = sorted(k for k in _dif if k not in _valids)
+assert not _dolents, f"motor/dificultat.json ({assig}): aquests ids no existeixen a motor/qids.json: {', '.join(_dolents)}"
+assert all(v in (1, 2, 3) for v in _dif.values()), f"motor/dificultat.json ({assig}): la dificultat ha de ser 1, 2 o 3"
+mons_js += "\nconst QDIF=" + json.dumps(_dif, separators=(",", ":")) + ";"
 # sprites.js (els avatars de la salutació) amb «?v=<empremta>», la mateixa que tot.py posa a la portada
 import hashlib
 v_spr = hashlib.sha1((d.parent / "sprites.js").read_bytes()).hexdigest()[:8]

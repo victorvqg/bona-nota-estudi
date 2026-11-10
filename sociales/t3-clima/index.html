@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="db1ba349ce",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e239cfae73",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -872,6 +872,7 @@ ASSIG.boss={nom:"La Gran Borrasca",spr:"borrasca"};
 
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}];
 const QIDS={"temps":[1,2,3,4,5,6,7,8],"atmos":[1,2,3,4,5,6,7,8],"elements":[1,2,3,4,5,6,7,8],"pressio":[1,2,3,4,5,6,7,8],"mapes":[1,2,3,4,5,6,7,8],"canvi":[1,2,3,4,5,6,7,8],"relleu":[1,2,3,4,5,6,7,8],"riu":[1,2,3,4,5,6,7,8],"climaig":[1,2,3,4,5,6,7,8],"paisatge":[1,2,3,4,5,6,7,8],"j-climo":[1,2,3,4,5,6]};
+const QDIF={};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("logoic").textContent=ASSIG.ic;
@@ -891,7 +892,9 @@ try{APARELL=localStorage.getItem("bn_aparell")||"";if(!APARELL){APARELL=Math.ran
 // ---- id estable de cada pregunta («tema/núm.»; l'assignatura ja va a la columna assig). Ve de motor/qids.json via build.py ----
 (function(){if(typeof QIDS==="undefined")return;const posa=(qs,tid)=>{const ns=QIDS[tid];if(ns&&qs)qs.forEach((q,i)=>{if(ns[i])q.id=tid+"/"+ns[i]})};
  T.forEach(t=>posa(t.q,t.id));(ASSIG.jocs||[]).forEach(j=>{if(Array.isArray(j.q))posa(j.q,"j-"+j.id)})})();
-const cpQ=q=>Object.assign(q.slice(),{id:q.id});
+// dificultat d'una pregunta: 1 fàcil, 2 normal (per defecte), 3 difícil (motor/dificultat.json via build.py; issue #15)
+const difDe=q=>(typeof QDIF!=="undefined"&&q&&q.id&&QDIF[q.id])||2;
+const cpQ=q=>Object.assign(q.slice(),{id:q.id,d:difDe(q)});
 // cada resposta d'un test: "tema/núm:encert(1/0):segons:opció triada" (text curt: ocupa molt menys que una llista a la base de dades)
 let TQ=[],TQ0=0,TQT=0;
 const anotaQ=(q,ok,op)=>{TQ.push(`${q.id||"?"}:${ok?1:0}:${Math.min(600,Math.round((Date.now()-TQ0)/1000))}:${op==null?"-":op}`)};
@@ -2227,6 +2230,13 @@ function bnProvaTriple(){const s0=JSON.stringify({est:S.est||null,p:S.punts,f:S.
   {const fx=fusiona({mod:2,est:{d:avui(),q:{},j:{},o:{},oc:0}},{mod:1,est:{d:"2000-01-01",q:{},j:{},o:{},oc:2,ocp:8}});if(fx.est.d!==avui()||fx.est.ocp)return "fusiona() barreja els comptadors d'un altre dia amb els d'avui"}
   return true}finally{FONT=fo;const x=JSON.parse(s0);if(x.est)S.est=x.est;else delete S.est;S.punts=x.p;S.fonts=x.f;S.ftema=x.ft;NIVPEND=null;SUPPEND=0;desa()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaTriple");
+// prova (issue #15): dificultat de cada pregunta (motor/dificultat.json → QDIF; sense entrada = 2, normal)
+function bnProvaDificultat(){const q=T[0].q[0],k=q.id,ab=QDIF[k];
+ try{delete QDIF[k];if(difDe(q)!==2)return `sense entrada, una pregunta és normal (2) i surt ${difDe(q)}`;
+  if(difDe({})!==2||difDe(null)!==2)return "una pregunta sense id ha de ser normal (2)";
+  QDIF[k]=3;if(difDe(q)!==3)return "no llegeix la dificultat de QDIF";if(cpQ(q).d!==3)return "cpQ() no copia la dificultat";
+  return true}finally{if(ab===undefined)delete QDIF[k];else QDIF[k]=ab}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaDificultat");
 
 // ====================== ANALÍTICA ======================
 function resumGlobal(){
