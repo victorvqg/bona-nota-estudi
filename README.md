@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.11.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md)
+**Web:** https://bonanota.net · **Versió:** 2.11.0 ([historial de canvis](CHANGELOG.md)) · **Mons:** [què hi ha i com es juga](docs/MONS.md) · **Notes:** [com s'avalua](docs/AVALUACIO.md) · **Estrelles:** [com es guanyen](docs/PUNTUACIO.md) · **Bon ús:** [temps, descans i vigília d'examen](docs/BON-US.md)
 
 Bona Nota és una web per repassar els temes de 1r d'ESO jugant. Aquest README explica **com està feta**.
 La llista de mons, el contingut i les regles del joc són a [`docs/MONS.md`](docs/MONS.md)
@@ -250,7 +250,7 @@ El Taller desa cada resposta fallada com `exercici|pas|error` (camp `ep`), que e
 
 - **So:** tot es sintetitza amb WebAudio, sense fitxers. Les veus passen per un bus d'efectes o de música, un volum general i un compressor. La música de fons té la tonalitat i el tempo que surten de l'id del món.
 - **Escolta:** `speechSynthesis`, amb la veu del mateix dispositiu.
-- **Descans:** cada 25 minuts de pàgina visible (`DESCANS_S`) proposa una pausa.
+- **Descans:** cada 25 minuts de pàgina visible (`DESCANS_S`) proposa una pausa. Com ha de ser l'ús sa (temps segons la fase del món, nit, vigília d'examen i el filtre per a mecàniques noves) és a [`docs/BON-US.md`](docs/BON-US.md).
 - **Mode suau:** la classe `suau` del `body` treu les animacions fortes.
 - **Teclat:** un únic `keydown` reparteix les tecles segons la pantalla. No interfereix amb camps de text, la pissarra ni el teclat del Taller.
 

@@ -2,7 +2,7 @@
 
 Aquest document explica, de cap a peus, com funcionen les estrelles de Bona Nota a la versió **2.10.0**: què dona cada cosa, els combos, els límits, els nivells i el rànquing. Al final hi ha on és cada cosa al codi.
 
-Si només vols la taula, és a l'apartat 2.
+Si només vols la taula, és a l'apartat 2. Si el que vols saber és si l'ús és sa (temps, descans, nit i vigília d'examen), és a [`BON-US.md`](BON-US.md).
 
 ## 1. La idea: estrelles justes
 
