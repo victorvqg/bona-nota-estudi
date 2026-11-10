@@ -322,6 +322,40 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
 .dm-c.buit{color:var(--soft);background:transparent}
 .cst{display:grid;grid-template-columns:minmax(110px,160px) minmax(60px,1fr) auto;gap:10px;align-items:center;margin:8px 0;font-size:13.5px}
 .cst .r{color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+/* benestar (n2540, supabase/bn_admin_benestar.sql): semàfor per nen, motius, mons i dates d'examen */
+.bs-avis{display:flex;gap:8px;align-items:flex-start;margin:0 0 14px;padding:8px 12px;border-radius:var(--r1);background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:12.5px}
+.bs-avis .ic{width:16px;height:16px;margin-top:1px;color:var(--soft)}
+.bs-res{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 10px;font-size:13px;color:var(--muted)}
+.bs-l,.bs-m,.bs-vg,.bs-ll{list-style:none;margin:0;padding:0}
+.bs-l{border:1px solid var(--border);border-radius:var(--r1)}
+.bs-f{display:grid;grid-template-columns:92px minmax(150px,210px) minmax(0,1fr);gap:8px 16px;align-items:start;padding:10px 14px;border-top:1px solid var(--border)}
+.bs-f:first-child{border-top:0}
+.bs-sem{justify-self:start;margin-top:4px}
+.bs-sem i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.bs-n{min-width:0;padding-top:2px}
+.bs-n .nen,.bs-n .nen-b{max-width:100%}
+.bs-n .nen-b>span:last-child,.bs-n .nen>span:last-child{overflow-wrap:anywhere}
+.bs-m{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.bs-x{display:inline-flex;align-items:baseline;gap:7px;max-width:100%;border-radius:var(--r1);padding:4px 10px;font-size:13px;font-weight:500;line-height:1.45;overflow-wrap:anywhere}
+.bs-x>i{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none;transform:translateY(-1px)}
+.bs-x.vermell{background:var(--bad-bg);color:var(--bad)}.bs-x.groc{background:var(--warn-bg);color:var(--warn)}.bs-x.blau{background:var(--info-bg);color:var(--info)}
+.bs-x.bo{background:var(--ok-bg);color:var(--ok)}.bs-x.context{background:var(--card2);color:var(--muted);border:1px solid var(--border)}
+.bs-x.res{background:transparent;color:var(--muted);padding-left:0}
+.bs-mons{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.bs-mon{position:relative;display:flex;flex-direction:column;gap:6px;min-width:0;border:1px solid var(--border);border-radius:var(--r1);background:var(--card);padding:12px 14px 12px 18px;overflow:hidden}
+.bs-mon::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--mc,#94a3b8)}
+.bs-mon h4{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0;font-size:14px;font-weight:700}
+.bs-mon h4>span:first-child{min-width:0;overflow-wrap:anywhere}
+.bs-mon p{margin:0;color:var(--muted);font-size:12.5px}
+.bs-vg{display:flex;flex-direction:column;gap:4px}
+.bs-vg li{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:12.5px;color:var(--muted)}
+.bs-ex{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px;padding-top:10px;border-top:1px solid var(--border)}
+.bs-ex label{width:100%;font-size:12.5px;font-weight:600;color:var(--text)}
+.bs-ex input{flex:1 1 140px;min-width:0;max-width:190px}
+.bs-ll{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px 24px;padding:6px 0 4px;font-size:12.5px;color:var(--muted)}
+.bs-ll b{color:var(--text);font-weight:600}
+#tBen .grup{margin-top:22px}
+@media (max-width:767px){.bs-f{grid-template-columns:auto minmax(0,1fr);padding:10px 12px}.bs-m{grid-column:1/-1}.bs-sem{margin-top:3px}.bs-ll{grid-template-columns:minmax(0,1fr)}.bs-mons{grid-template-columns:minmax(0,1fr)}}
 /* xat de la colla (n2528): missatges, silencis, configuració, catàleg i peça nova */
 .xm-l{max-height:max(480px,calc(100vh - 260px));overflow:auto;margin:0 -4px;padding:0 4px}
 .xm-l .grup{position:sticky;top:0;z-index:1;background:var(--card);margin:0;padding:12px 0 6px}
@@ -482,7 +516,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.12.0";
+const VERSIO_ADMIN="2.13.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -551,7 +585,8 @@ const IC={
  polze:'<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>',
  ajust:'<path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-9"/><path d="M8 12H3"/><path d="M21 20h-5"/><path d="M12 20H3"/><path d="M14 2v4"/><path d="M8 10v4"/><path d="M16 18v4"/>',
  cataleg:'<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
- mes:'<path d="M5 12h14"/><path d="M12 5v14"/>'};
+ mes:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+ cor:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>'};
 const ic=(n,cls)=>`<svg class="ic${cls?" "+cls:""}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${IC[n]||""}</svg>`;
 const LOGO=`<svg class="logo-m" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#facc15"/><path d="m16 6 3 6.2 6.8 1-4.9 4.8 1.2 6.8L16 21.6l-6.1 3.2 1.2-6.8L6.2 13.2l6.8-1z" fill="#1e1b4b"/></svg>`;
 
@@ -624,7 +659,7 @@ function login(msg){$("#shell").hidden=true;const w=$("#loginWrap");w.hidden=fal
 let IDS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN">sense PIN</span>`;
 function mostraApp(){$("#loginWrap").hidden=true;$("#loginWrap").innerHTML="";$("#shell").hidden=false;document.body.classList.toggle("demo",DEMO);$("#demoBar").hidden=!DEMO}
 async function carrega(){
- ESTATS={};NUV=null;ALTES=null;
+ ESTATS={};NUV=null;ALTES=null;BEN=null;
  if(!$("#shell").hidden&&VISTA!=="tauler")$("#contingut").innerHTML=esqTaula();
  if(DEMO){await preguntes();demoInit();LOGS=demoLogsDies(DIES);IDS=demoIds();mostraApp();ACT=new Date();pinta();return true}
  try{const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:DIES})});
@@ -636,7 +671,7 @@ async function carrega(){
 
 // ====================== MENÚ, CAPÇALERA I FILTRES ======================
 const MENU=[["tauler","Tauler"],["nens","Nens"],["sessions","Sessions"],["log","Log complet"],["xat","Xat"],["copies","Còpies de seguretat"]];
-const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["obertes","Obertes"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
+const SECCIONS=[["resum","Resum"],["alertes","Alertes"],["benestar","Benestar"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["obertes","Obertes"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
 const PERIODES=[[1,"Avui"],[7,"7 dies"],[30,"30 dies"],[365,"Curs"]];
 function muntaShell(){
  $("#logoMenu").innerHTML=`${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span>`;$("#logoMobil").outerHTML=`<span style="display:inline-flex;align-items:center;gap:8px">${LOGO}Bona Nota · Admin</span>`;
@@ -1023,6 +1058,7 @@ const targeta=(id,col,icona,titol,sub,cos)=>`<section class="targeta seccio ${co
 async function pintaTauler(){const tok=++TOK;
  GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
  const c=$("#contingut");c.innerHTML=esqTauler();
+ benestarDe(); // el benestar es demana alhora que la resta, però va a part (tBenestar): si falla, només ho diu el seu apartat
  let dades;try{const [resum,act,calor,domini,fall,evo,alert]=await Promise.all(["bn_admin_resum","bn_admin_activitat","bn_admin_calor","bn_admin_domini","bn_admin_fallades","bn_admin_evolucio","bn_admin_alertes"].map(rpcT));
   dades={resum,act,calor,domini,fall,evo,alert};await preguntes()}
  catch(e){console.error(e);if(tok!==TOK)return;c.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El tauler encara no està activat a la base de dades. Mentrestant, tens les altres pantalles."):avisErr(`No s'han pogut carregar les dades del tauler (${e}).`);return}
@@ -1043,6 +1079,7 @@ async function pintaTauler(){const tok=++TOK;
   <h3 class="grup">Volum</h3><div class="kpis">${kpi("Tests",A.tests,"tests")}${kpi("Exàmens",A.examens,"examens")}${kpi("Jocs",A.jocs,"jocs")}${kpi("Preguntes obertes",A.obertes,"obertes")}${kpi("Fitxes llegides",A.fitxes,"fitxes")}</div></section>
  <div class="graella" style="margin-top:24px">
   ${targeta("alertes","c-12","alerta","Alertes","El que convé mirar ara, de més a menys important.",`<div id="tAl"></div>`)}
+  ${targeta("benestar","c-12","cor","Benestar","Si l'ús és sa: un semàfor per nen amb els motius en paraules planeres, i la fase de cada món. El dia abans d'un examen és normal estudiar més: aquelles sessions llargues surten en blau.",`<div id="tBen" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   ${targeta("activitat","c-6","calendari","Activitat per dia","Minuts d'estudi de cada nen per dia",`<div class="cv"><canvas id="gAct" aria-label="Gràfic de minuts d'estudi per dia i nen" role="img"></canvas></div>`)}
   ${targeta("calor","c-6","graella","Quan estudien","Activitat per hora i dia de la setmana",`<div id="tCal"></div>`)}
   ${targeta("notes","c-6","puja","Evolució de les notes","Cada punt és un test (o examen); una línia per nen",`<div class="cv"><canvas id="gEvo" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>`)}
@@ -1058,7 +1095,7 @@ async function pintaTauler(){const tok=++TOK;
  const prova=(id,f)=>{try{f()}catch(e){const el=$(id);if(el)(el.closest(".cv")||el).innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`);console.error(e)}};
  prova("#tAl",()=>tAlertes(alert));prova("#gAct",()=>gActivitat(act));prova("#tCal",()=>tCalor(calor));prova("#gEvo",()=>gEvolucio(evo));
  prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));prova("#tMot",()=>tMotivacio());prova("#tObe",()=>tObertes());if(TF.nom)prova("#gTip",()=>gTipus());
- tErrorsTaller();
+ tErrorsTaller();tBenestar();
 }
 function tAlertes(al){const e=$("#tAl");if(!al.length){e.innerHTML=buit("ok","Cap alerta. Tot en ordre.");return}
  const icT={inactiu:"son",baixa:"baixa",encallat:"mur",rapid:"llamp",pregunta:"pregunta",pendent:"safata"};
@@ -1168,6 +1205,153 @@ async function tErrorsTaller(){const el=$("#tErr");if(!el)return;const tok=TOK;
   $("#tErr").innerHTML=taula("tErrT",[{k:"gen",t:"Exercici",v:r=>TALLER_GEN[r.gen]||r.gen,h:r=>`<span class="q-t" title="${esc(r.gen)}">${esc(TALLER_GEN[r.gen]||r.gen)}</span>`},{k:"pas",t:"Pas"},
    {k:"codi",t:"Error",v:r=>TALLER_ERR[r.codi]||r.codi,h:r=>`<span title="${esc(r.codi)}">${esc(TALLER_ERR[r.codi]||r.codi)}</span>`},{k:"n",t:"Vegades",num:true,v:r=>+r.n||0,h:r=>mini(+r.n||0,mx)},{k:"nens",t:"Nens",num:true,v:r=>+r.nens||0}],ep,{k:"n",alta:true,etiqueta:"Errors del Taller de mates"})}
  catch(e){console.error(e);$("#tErr").innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
+// ---- Benestar (n2540 · supabase/bn_admin_benestar.sql · docs/BON-US.md §2 i §5) ----
+// Es demana a part de la resta, com el Taller: si la funció encara no és a la base de dades o falla, només aquest apartat ho diu.
+// El servidor calcula els senyals de cada nen (marató, nit, pressa…) i les vigílies de cada món; aquí s'escriuen en paraules planeres.
+// Tot el que ve del servidor passa per esc(); els números, per nN(); els dies, per esDia().
+let BEN=null,BEN_D=null,BEN_DESA=false; // la crida {p,n,prom} (en memòria fins a tornar a carregar), l'última resposta pintada i si s'està desant una data
+async function rpcB(f,extra){if(DEMO)return demoBenestarRpc(f,extra||{});const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
+ body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,...(extra||{})})});if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
+// la funció no té p_assig (el filtre d'assignatura es fa aquí); el període i el nen sí que van al servidor
+function benestarDe(){const p=PERIODE[DIES]||"7d",n=TF.nom.trim()||null;
+ if(!BEN||BEN.p!==p||BEN.n!==n){BEN={p,n,prom:rpcB("bn_admin_benestar",{p_periode:p,p_nom:n})};BEN.prom.catch(()=>{})}return BEN.prom}
+// dies «AAAA-MM-DD» a l'hora de Catalunya (com el servidor), sense passar per l'hora de l'ordinador
+const MESOS=["gener","febrer","març","abril","maig","juny","juliol","agost","setembre","octubre","novembre","desembre"],DLL=["diumenge","dilluns","dimarts","dimecres","dijous","divendres","dissabte"];
+const diaMad=t=>{const x=t==null?new Date():new Date(t);try{return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(x)}catch(e){return diaL(x)}};
+const dU=d=>Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10)),difD=(a,b)=>Math.round((dU(a)-dU(b))/864e5),sumaD=(d,n)=>new Date(dU(d)+n*864e5).toISOString().slice(0,10);
+const diaLl=d=>{if(!esDia(d))return "—";const x=new Date(dU(d)),m=MESOS[x.getUTCMonth()];return `${x.getUTCDate()} ${/^[aeiou]/.test(m)?"d'":"de "}${m}`}; // «3 de novembre», «7 d'octubre»
+const diaR=d=>{if(!esDia(d))return "";const n=difD(diaMad(),d);return n===0?"avui":n===1?"ahir":n===-1?"demà":n>1&&n<7?DLL[new Date(dU(d)).getUTCDay()]:"el "+diaLl(d)};
+const majus=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+const minT=m=>{m=Math.max(0,Math.round(+m||0));const h=Math.floor(m/60),r=m%60;return h?(r?`${h} h ${r} min`:`${h} h`):`${r} min`};
+const NIV={vermell:{c:"bad",t:"Vermell",o:0},groc:{c:"warn",t:"Groc",o:1},blau:{c:"info",t:"Blau",o:2},context:{c:"neutre",t:"Context",o:3},bo:{c:"ok",t:"Bo",o:4}};
+const SEM={vermell:["bad","Vermell",0],groc:["warn","Groc",1],verd:["ok","Verd",2]};
+const semDe=ss=>ss.some(s=>s.nivell==="vermell")?"vermell":ss.some(s=>s.nivell==="groc")?"groc":"verd";
+const FASES={novetat:["neutre","Novetat"],aprendre:["ok","Aprendre"],vigilia:["info","Vigília"],despres:["neutre","Després"]};
+// fase d'un món avui (docs/BON-US.md §2): la vigília mana; dies 0-2, novetat; després de la vigília, del dia de l'examen o del dia 12, després
+function faseMon(m,avui){const f=senseAccents(m.fase);if(FASES[f])return f;
+ if(m.vig.includes(avui)||(m.examen&&sumaD(m.examen,-1)===avui))return "vigilia";if(!m.dia0)return null;const d=difD(avui,m.dia0);
+ if(d<=2)return "novetat";if(d>12||m.vig.some(v=>v<avui)||(m.examen&&m.examen<=avui))return "despres";return "aprendre"}
+// el codi del servidor (supabase/bn_admin_benestar.sql: marato_bloc, marato_dia, nit, pressa, repetir, frustracio_suspesos, frustracio_costa,
+// enganxa, xat, inactiu, poc_sovint, apren_errors, dos_aparells) a la família que fa servir el panell
+const senseAccents=c=>String(c||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const codiB=c=>{c=senseAccents(c);
+ for(const [k,re] of [["marato",/marat/],["nit",/^nit/],["pressa",/press|rapid/],["repetir",/repet/],["frustracio",/frustr|costa/],["enganxa",/engan/],["xat",/xat/],["sovint",/sovint/],["inactiu",/inactiu|deixa|venir/],["apren",/apren|error/],["aparells",/aparell/]])if(re.test(c))return k;return c};
+// hora d'una entrada de nit: minuts des de la mitjanit de la nit (22:40 = 1360; 0:30 de la matinada = 1470)
+const horaN=v=>{const n=nN(v);if(n==null||n<0||n>=2880)return null;const m=Math.round(n)%1440;return `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`};
+const deDia=d=>{const r=diaR(d);return !r?"":r.startsWith("el ")?"del "+r.slice(3):/^[aeiou]/.test(r)?"d'"+r:"de "+r}; // «de dimarts», «d'ahir», «del 3 de novembre»
+// valor i llindar són números al servidor; per si de cas, també s'accepta un objecte ({bloc, dia, nits, hora, encert…})
+const valB=(s,...ks)=>{const o=oB(s.valor);for(const k of ks){const v=nN(o[k]);if(v!=null)return v}return nN(s.valor)};
+// motiu d'un senyal en paraules planeres (text pla: qui el pinta el passa per esc()); amb = cal dir el món (la pressa, si n'hi ha de dos mons)
+function motiuB(s,amb){const c=codiB(s.codi),raw=senseAccents(s.codi),dia=diaR(s.dia),Dia=majus(dia)||"Un dia",A=s.assig!=null&&s.assig!==""?nomAssig(String(s.assig)):"",ll=nN(s.llindar);
+ switch(c){
+  case"marato":{const bloc=/bloc/.test(raw)||nN(oB(s.valor).bloc)!=null,v=bloc?valB(s,"bloc","min"):valB(s,"dia","min","minuts");
+   if(s.nivell==="blau")return `Vigília${A?` de ${A}`:""}: ${minT(v)}${bloc?" seguides":""}`;
+   return `${Dia} va estudiar ${minT(v)} ${bloc?"seguides":"en total"}`}
+  case"nit":{const h=horaN(valB(s,"hora","mins")),n=nN(s.valor)??0;
+   return !h?`${Dia} va entrar de nit`:n>=1440?`La nit ${deDia(s.dia)||"d'un dia"} va entrar a les ${h}`:`${Dia} va entrar a les ${h}`}
+  case"pressa":{const sg=valB(s,"seg","segons"),en=nN(s.encert)??nN(oB(s.valor).encert);
+   return `Respon molt de pressa${A&&amb?` a ${A}`:""}${sg!=null?`: ${fmtD(Math.round(sg*10)/10)} s per pregunta`:""}${en!=null?`${sg!=null?" i":":"} un ${Math.round(en)} % d'encert`:`${sg!=null?" i":","} encerta menys de la meitat`}`}
+  case"repetir":{const t=valB(s,"tests","n");return `${Dia} va repetir ${t!=null?t+" vegades ":""}un test${A?` de ${A}`:""} sense estrelles noves`}
+  case"frustracio":{const v=valB(s,"n");
+   if(/costa/.test(raw))return `Ha dit ${v!=null?v+" vegades ":""}que un tema${A?` de ${A}`:""} li costa`;
+   return `Ha suspès ${v!=null?v+" vegades seguides ":""}un tema${A?` de ${A}`:""}`}
+  case"enganxa":{const v=valB(s,"n");return `Ha intentat enganxar text a les preguntes obertes${v>1?` (${v} vegades)`:""}`}
+  case"xat":{const fr=valB(s,"frases","n"),mi=nN(oB(s.valor).min);return `Entra sobretot per xatejar${fr!=null?`: ${fr} frases en 7 dies`:""}${mi!=null?` i ${minT(mi)} d'estudi`:" i menys d'1 h d'estudi"}`}
+  case"inactiu":{const d=valB(s,"dies");return d!=null?`Fa ${pl(d,"dia","dies")} que no entra`:"Fa dies que no entra"}
+  case"sovint":{const d=valB(s,"dies");return `Estudia poc i sovint${d!=null?`: ${pl(d,"dia","dies")}`:""}`}
+  case"apren":{const a=valB(s,"ara"),b=nN(oB(s.valor).abans)??ll;return `Aprèn dels errors${a!=null?`: ${a} aquesta setmana${b!=null?`, ${b} la passada`:""}`:""}`}
+  case"aparells":return "Fa servir dos aparells alhora: els minuts poden sortir doblats";
+  default:{const v=nN(s.valor);return `${String(s.codi??"?")}${v!=null?` (${v})`:""}`}}}
+// els motius d'un nen, en ordre (vermell, groc, blau, context, bo; i el dia més recent primer). Les nits i els dies amb dos aparells
+// es junten en un sol motiu; de marató, surten els 2 dies més recents i «i N dies més».
+function motiusB(ss){const ord=[...ss].sort((x,y)=>NIV[x.nivell].o-NIV[y.nivell].o||String(esDia(y.dia)?y.dia:"").localeCompare(String(esDia(x.dia)?x.dia:""))),G=new Map(),fil=[];
+ const tt=s=>[s.assig!=null&&s.assig!==""?nomAssig(String(s.assig)):"",esDia(s.dia)?diaS(s.dia):""].filter(Boolean).join(" · ");
+ const nPr=ss.filter(s=>codiB(s.codi)==="pressa").length,u=s=>({nivell:s.nivell,codi:codiB(s.codi),text:motiuB(s,nPr>1),tt:tt(s)});
+ ord.forEach(s=>{const c=codiB(s.codi),g=c==="nit"||c==="aparells"?c:c==="marato"?"marato-"+s.nivell:null;if(!g){fil.push({s});return}if(!G.has(g)){G.set(g,[]);fil.push({g})}G.get(g).push(s)});
+ return fil.flatMap(x=>{if(x.s)return [u(x.s)];const L=G.get(x.g),c=codiB(L[0].codi);if(L.length===1)return [u(L[0])];
+  const dies=L.map(s=>esDia(s.dia)?diaS(s.dia):"").filter(Boolean);
+  if(c==="nit"){const lim=L.map(s=>nN(s.llindar)).filter(v=>v!=null),niv=L.some(s=>s.nivell==="vermell")?"vermell":L[0].nivell;
+   return [{nivell:niv,codi:"nit",text:`Va entrar ${L.length} nits després de les ${horaN(lim.length?Math.min(...lim):1290)||"21:30"}`,tt:L.map(s=>[esDia(s.dia)?diaS(s.dia):"",horaN(s.valor)].filter(Boolean).join(" ")).join(" · ")}]}
+  if(c==="aparells")return [{nivell:L[0].nivell,codi:"aparells",text:`Fa servir dos aparells alhora (${L.length} dies): els minuts poden sortir doblats`,tt:dies.join(" · ")}];
+  const r=L.slice(0,2).map(u);if(L.length>2)r.push({nivell:L[0].nivell,codi:"marato",text:`i ${pl(L.length-2,"dia","dies")} més${L[0].nivell==="blau"?" de vigília":""} amb molta estona`,tt:L.slice(2).map(s=>`${esDia(s.dia)?diaS(s.dia):"?"}: ${minT(valB(s,"bloc","dia","min"))}`).join(" · ")});return r})}
+async function tBenestar(){const el=$("#tBen");if(!el)return;const tok=TOK;let d;
+ try{d=await benestarDe()}
+ catch(e){BEN=null;console.error(e);if(tok!==TOK||!$("#tBen"))return;const x=$("#tBen");x.removeAttribute("aria-busy");
+  x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_benestar.sql","L'apartat de benestar encara no està activat a la base de dades. La resta del tauler funciona igual."):avisErr(`No s'ha pogut carregar el benestar (${e&&e.message||e}).`);return}
+ if(tok!==TOK||!$("#tBen"))return;BEN_D=d;pintaBenestar()}
+function pintaBenestar(){const el=$("#tBen");if(!el||!BEN_D)return;el.removeAttribute("aria-busy");
+ try{el.innerHTML=htmlBenestar(BEN_D)}catch(e){console.error(e);el.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`);return}
+ el.onclick=e=>{const b=e.target.closest("button[data-bs-desa],button[data-bs-esb]");if(!b||b.disabled)return;
+  if(b.dataset.bsEsb!=null){desaExamen(b.dataset.bsEsb,"");return}const i=inpEx(b.dataset.bsDesa);desaExamen(b.dataset.bsDesa,i?i.value:"")};
+ el.onkeydown=e=>{const i=e.key==="Enter"&&e.target.closest&&e.target.closest("input[data-bs-in]");if(!i)return;e.preventDefault();desaExamen(i.dataset.bsIn,i.value)}}
+const inpEx=a=>[...document.querySelectorAll("#tBen input[data-bs-in]")].find(x=>x.dataset.bsIn===a)||null;
+function htmlBenestar(d){d=oB(d);const avui=diaMad(),fa=TF.assig,k0=TF.nom.trim().toLowerCase();
+ const avis=`<p class="bs-avis">${ic("dispositiu")}<span>El temps es compta per aparell: si un nen en fa servir dos alhora, els minuts poden sortir doblats.</span></p>`;
+ // mons: fase, vigílies (les del servidor i, si hi ha data d'examen, la del dia abans) i la casella de la data
+ const mons=aR(d.mons).filter(m=>m&&typeof m==="object"&&!Array.isArray(m)&&m.assig!=null&&m.assig!=="").map(m=>({assig:String(m.assig),dia0:esDia(m.dia0)?m.dia0:null,examen:esDia(m.examen)?m.examen:null,
+  vig:[...new Set(aR(m.vigilies).filter(esDia))].sort(),normal:nN(m.normal),fase:m.fase}));
+ // el servidor només dona els mons amb activitat al període (o amb data): els altres també hi són, per poder-los posar la data abans
+ const ja=new Set(mons.map(m=>m.assig));Object.keys(ASSIGS).forEach(a=>{if(!ja.has(a))mons.push({assig:a,dia0:null,examen:null,vig:[],normal:null,sense:true})});
+ mons.splice(0,mons.length,...mons.filter(m=>!fa||m.assig===fa));
+ mons.forEach(m=>{m.f=m.sense?null:faseMon(m,avui)});
+ const PRI={vigilia:0,aprendre:1,novetat:2,despres:3};
+ mons.sort((a,b)=>(PRI[a.f]??4)-(PRI[b.f]??4)||String(b.dia0||"").localeCompare(String(a.dia0||""))||nomAssig(a.assig).localeCompare(nomAssig(b.assig),"ca"));
+ // nens: el filtre d'assignatura es queda els senyals d'aquell món i els generals (sense món), i torna a calcular el semàfor
+ const hi=new Set(LOGS.map(clauNen)),delMon=new Set(LOGS.filter(l=>l.assig===fa).map(clauNen));
+ const nensL=aR(d.nens).filter(n=>n&&typeof n==="object"&&!Array.isArray(n)&&n.k!=null&&n.k!=="").map(n=>{const k=String(n.k).trim().toLowerCase();
+   const ss=aR(n.senyals).filter(s=>s&&typeof s==="object"&&NIV[s.nivell]&&(!fa||s.assig==null||String(s.assig)===fa));
+   return {k,nom:String(n.nom??n.k),ss,sem:!fa&&SEM[n.semafor]?n.semafor:semDe(ss)}})
+  .filter(n=>(!k0||n.k===k0)&&(!fa||delMon.has(n.k)||n.ss.some(s=>s.assig!=null)));
+ const nV=(ss,nv)=>ss.filter(s=>s.nivell===nv).length;
+ nensL.sort((a,b)=>SEM[a.sem][2]-SEM[b.sem][2]||nV(b.ss,"vermell")-nV(a.ss,"vermell")||nV(b.ss,"groc")-nV(a.ss,"groc")||a.nom.localeCompare(b.nom,"ca"));
+ const titolP={avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[d.periode]||{avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[PERIODE[DIES]]||"";
+ const comp=nv=>nensL.filter(n=>n.sem===nv).length,nB=nensL.reduce((s,n)=>s+nV(n.ss,"blau"),0);
+ const fila=n=>{const [c,t]=SEM[n.sem],ms0=motiusB(n.ss);
+  const nom=hi.has(n.k)?`<button type="button" class="nen-b" data-obre-nen="${esc(n.k)}" title="Obre la fitxa de ${esc(n.nom)}">${avatar(n.nom)}<span>${esc(n.nom)}</span></button>`:nenH(n.nom);
+  const ms=ms0.length?ms0.map(m=>`<li class="bs-x ${m.nivell}" data-codi="${esc(m.codi)}"${m.tt?` title="${esc(m.tt)}"`:""}><i aria-hidden="true"></i><span><span class="sr">${NIV[m.nivell].t}: </span>${esc(m.text)}</span></li>`).join("")
+   :`<li class="bs-x res">Res a vigilar en aquest període</li>`;
+  return `<li class="bs-f" data-k="${esc(n.k)}" data-sem="${n.sem}"><span class="pill ${c} bs-sem"><i aria-hidden="true"></i>${t}</span><span class="bs-n">${nom}</span><ul class="bs-m" aria-label="Motius de ${esc(n.nom)}">${ms}</ul></li>`};
+ const nens=nensL.length?`<div class="bs-res"><span>Senyals ${esc(titolP)}${fa?` · ${esc(nomAssig(fa))}`:""}:</span>${comp("vermell")?`<span class="pill bad">${comp("vermell")} en vermell</span>`:""}${comp("groc")?`<span class="pill warn">${comp("groc")} en groc</span>`:""}${comp("verd")?`<span class="pill ok">${comp("verd")} en verd</span>`:""}${nB?`<span class="pill info">${pl(nB,"vigília","vigílies")} en blau</span>`:""}</div><ul class="bs-l">${nensL.map(fila).join("")}</ul>`
+  :buit("cor",k0||fa?"Cap nen amb aquests filtres.":"Encara no hi ha prou activitat per veure com va l'ús.","Prova amb un període més llarg (30 dies o Curs).");
+ const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ const mon=(m,i)=>{const [fc,ft]=FASES[m.f]||["neutre","—"],dd=m.dia0?difD(avui,m.dia0):null,vEx=m.examen?sumaD(m.examen,-1):null,vs=[...new Set([...m.vig,...(vEx?[vEx]:[])])].sort(),nomM=nomAssig(m.assig);
+  const vig=m.sense&&!vs.length?"":vs.length?`<ul class="bs-vg" aria-label="Vigílies de ${esc(nomM)}">${vs.map(v=>`<li><span class="pill info">${esc(diaS(v))}${v===avui?" · avui":""}</span><span>${v===vEx?"per la data de l'examen":"pic del grup"}</span></li>`).join("")}</ul>`:`<p>Cap vigília detectada${dd!=null&&dd>12?"":" encara"}.</p>`;
+  return `<div class="bs-mon" data-a="${esc(m.assig)}" style="--mc:${colAssig(m.assig)}"><h4><span>${esc(nomM)}</span><span class="pill ${fc}" data-fase="${esc(m.f||"")}">${m.sense?"Sense activitat":ft}</span></h4>
+   <p>${m.sense?"Sense activitat en aquest període.":m.dia0?`Va començar ${dd===0?"avui":dd===1?"ahir":`el ${esc(diaLl(m.dia0))}`}${dd>1?` · fa ${dd} dies`:""}`:"Encara sense registres"}</p>${m.normal!=null?`<p>Un dia normal: ${esc(minT(m.normal))} entre tots.</p>`:""}${vig}
+   <div class="bs-ex"><label for="bsEx${i}">Data de l'examen</label><input type="date" id="bsEx${i}" data-bs-in="${esc(m.assig)}" value="${esc(m.examen||"")}"${nd}>
+    <button class="btn sec petit" type="button" data-bs-desa="${esc(m.assig)}"${nd}>Desa</button>${m.examen?`<button class="btn-ic perill" type="button" data-bs-esb="${esc(m.assig)}" aria-label="Esborra la data de l'examen de ${esc(nomM)}" title="Esborra la data"${nd}>${ic("paperera")}</button>`:""}</div>
+   <p>${m.examen?`Examen el ${esc(diaLl(m.examen))}: la vigília és el ${esc(diaLl(vEx))} i mana sobre el pic del grup.`:"Sense data, la vigília es detecta pel pic del grup (entre els dies 3 i 12 del món)."}</p></div>`};
+ const monsH=mons.length?`<div class="bs-mons">${mons.map(mon).join("")}</div>`:buit("calendari",fa?"Aquest món encara no té registres.":"Encara no hi ha cap món amb registres.");
+ const q=(col,t)=>`<span class="q"><i style="background:var(${col})"></i>${t}</span>`;
+ const lleg=`<div class="llegenda" style="margin-top:0">${q("--ok","Verd: res a vigilar")}${q("--warn","Groc: un senyal per vigilar")}${q("--bad","Vermell: cal parlar-ne (marató, 2 nits o més)")}${q("--info","Blau: estudi llarg la vigília d'un examen; no compta com a vermell")}${q("--soft","Gris: context")}</div>
+  <details class="mes"><summary>Llindars (inicials, per ajustar amb les dades: docs/BON-US.md, apartat 5)</summary><ul class="bs-ll">
+   <li><b>Marató</b> (vermell): més de 60 min seguits sense una pausa de 5 min, o més de 90 min al dia (+30 en dissabte i diumenge). La vigília, fins a 120 min, i surt en blau.</li>
+   <li><b>Nit</b> (groc; 2 nits o més, vermell): entrar entre les 21:30 (22:00 la vigília) i les 6:00.</li>
+   <li><b>Pressa</b> (groc): menys de 3 s per pregunta i menys del 50 % d'encert, amb 10 respostes o més.</li>
+   <li><b>Repetir sense aprendre</b> (groc): 4 tests o més del mateix tema el mateix dia, sense estrelles noves.</li>
+   <li><b>Frustració</b> (groc): 3 suspesos seguits d'un tema, o 2 «Costa».</li>
+   <li><b>Enganxa text</b> (groc): qualsevol intent a les preguntes obertes.</li>
+   <li><b>Entra per xatejar</b> (groc): 10 frases o més i menys de 60 min d'estudi en els últims 7 dies.</li>
+   <li><b>Deixa de venir</b> (groc): com l'alerta «Fa dies que no estudia»: 3 dies o més sense entrar.</li>
+   <li><b>Poc i sovint</b> (verd): 3 dies o més amb 10-40 min, en els últims 7 dies.</li>
+   <li><b>Aprèn dels errors</b> (verd): més errors apresos al repàs els últims 7 dies que els 7 d'abans.</li>
+   <li><b>Dos aparells</b> (gris): minuts de dos aparells que se solapen el mateix dia.</li>
+   <li><b>Vigília</b>: el dia abans de la data de l'examen; si no n'hi ha, quan 5 nens o més (o la meitat dels del món) fan el triple de minuts d'un dia normal, entre els dies 3 i 12 del món.</li></ul></details>`;
+ return avis+nens+`<h3 class="grup">Mons i vigílies d'examen</h3>`+monsH+`<h3 class="grup">Llegenda</h3>`+lleg}
+// desa (o esborra, amb v = "") la data de l'examen d'un món: bn_admin_examen_desa(p_assig, p_data) → [{assig, data}]
+async function desaExamen(a,v){if(DEMO){toast("No disponible en demo","avis");return}if(BEN_DESA)return;
+ const m=aR(BEN_D&&BEN_D.mons).find(x=>x&&String(x.assig)===a),ara=m&&esDia(m.examen)?m.examen:null,nom=nomAssig(a);v=String(v||"").trim();
+ if(v&&!(esDia(v)&&+v.slice(0,4)>=2020&&+v.slice(0,4)<=2100)){toast("Aquesta data no és vàlida.","avis");return}
+ if(v===(ara||"")){toast(v?"Aquesta data ja està desada.":"Aquest món no té cap data d'examen.","avis");return}
+ if(!v&&!await dialeg({titol:`Esborrar la data de l'examen de ${nom}?`,ok:"Sí, esborra-la",icona:"paperera",cos:`<p>Ara l'examen és el <b>${esc(diaLl(ara))}</b>.</p><p>Sense data, la vigília es tornarà a detectar pel pic del grup.</p>`})){const i=inpEx(a);if(i)i.value=ara||"";return}
+ BEN_DESA=true;const bl=x=>$$("#tBen .bs-ex input,#tBen .bs-ex button").forEach(e=>{e.disabled=x});bl(true);
+ try{const L=await rpcB("bn_admin_examen_desa",{p_assig:a,p_data:v||null});BEN_DESA=false;
+  // al moment, la data nova (la resposta porta totes les dates); després es torna a demanar el benestar per tenir les vigílies i els senyals d'ara
+  if(BEN_D){if(Array.isArray(L)){const x=new Map(L.filter(r=>r&&typeof r==="object"&&r.assig!=null).map(r=>[String(r.assig),esDia(r.data)?r.data:null]));aR(BEN_D.mons).forEach(mm=>{if(mm&&mm.assig!=null)mm.examen=x.get(String(mm.assig))||null})}else if(m)m.examen=v||null}
+  pintaBenestar();const i=inpEx(a);if(i)i.focus();
+  toast(v?`Examen de ${nom}: ${diaLl(v)}. La vigília és el ${diaLl(sumaD(v,-1))}.`:`Data de l'examen de ${nom} esborrada`);
+  BEN=null;tBenestar().then(()=>{const j=inpEx(a);if(j&&document.activeElement===document.body)j.focus()})}
+ catch(e){BEN_DESA=false;bl(false);toast(e==="falta"?"Falta executar supabase/bn_admin_benestar.sql":`No s'ha pogut desar la data (${e&&e.message||e})`,"err")}}
 // ---- Repàs, boss i missions: es calcula amb el registre que el tauler ja té (LF(): període i filtres actuals), sense cap funció nova a Supabase ----
 function tObertes(){const el=$("#tObe");if(!el)return;const m={},fila=l=>m[clauNen(l)]||(m[clauNen(l)]={nom:l.nom,fetes:0,rebutjat:0,enganxat:0,crec:0});
  LF().forEach(l=>{const d=l.detall||{};if(l.event==="oberta"&&d.mode!=="control"&&d.mode!=="foto"){const f=fila(l);f.fetes++;f.rebutjat+=+d.rebutjat||0;f.enganxat+=+d.enganxat||0}
@@ -1519,6 +1703,21 @@ function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
    return {k:r.k,nom:r.nom,alta,primer:r.primer,creat:pf?pf.creat:null,pin_ts:pf?pf.pin_ts:null,aspecte_ts:pf?pf.aspecte_ts:null,id:pf?pf.id:null,mons:pts.length,punts:pts.reduce((s,v)=>s+v,0),dies7:set.size,amagat:!!(demoEstat(r.k)&1),te_pin:!!pf}})
    .filter(r=>r.alta>=des).sort((a,b)=>b.alta-a.alta)}
  throw "demo"}
+// demo del Benestar: els mateixos nens que la resta de la demo (la Nora respon de pressa, l'Hugo fa dies que no ve), un cas de cada color,
+// una vigília en blau (la Jana, a Comarques), un nen amb dos aparells (en Pau) i una data d'examen posada (Mates, d'aquí a 2 dies)
+function demoBenestarRpc(f,x){if(f!=="bn_admin_benestar")throw "demo";const avui=diaMad(),d=n=>sumaD(avui,n),p=x.p_periode||"7d",des=diaMad(demoDesde(p)),k0=String(x.p_nom||"").trim().toLowerCase();
+ const S=(codi,nivell,o)=>Object.assign({codi,nivell,dia:null,assig:null,valor:null,llindar:null},o);
+ const N=[["pau","Pau",[S("marato_bloc","vermell",{dia:d(-2),assig:"comarques",valor:110,llindar:90}),S("nit","vermell",{dia:d(-1),assig:"comarques",valor:1330,llindar:1290}),S("nit","vermell",{dia:d(-4),assig:"socials",valor:1310,llindar:1290}),S("dos_aparells","context",{dia:d(-2),valor:2,llindar:2})]],
+  ["nora","Nora",[S("pressa","groc",{dia:d(-1),assig:"socials",valor:2.1,llindar:3}),S("enganxa","groc",{dia:d(-3),assig:"castellano",valor:1,llindar:1})]],
+  ["laia","Laia",[S("frustracio_suspesos","groc",{dia:d(-1),assig:"divisibilitat",valor:3,llindar:3}),S("repetir","groc",{dia:d(-1),assig:"divisibilitat",valor:5,llindar:4})]],
+  ["hugo","Hugo",[S("inactiu","groc",{dia:d(-9),valor:9,llindar:3})]],
+  ["ona","Ona",[S("xat","groc",{dia:d(-1),valor:14,llindar:10}),S("nit","groc",{dia:d(-3),assig:"catala",valor:1305,llindar:1290})]],
+  ["jana","Jana",[S("marato_dia","blau",{dia:d(-1),assig:"comarques",valor:130,llindar:120}),S("poc_sovint","bo",{dia:d(-1),valor:4,llindar:3}),S("apren_errors","bo",{dia:d(-2),valor:6,llindar:2})]],
+  ["àlex","Àlex",[S("poc_sovint","bo",{dia:d(-2),valor:3,llindar:3})]]];
+ const nens=N.map(([k,nom,ss])=>{ss=ss.filter(s=>!s.dia||s.dia>=des||/inactiu|xat|sovint|apren/.test(s.codi));return {k,nom,semafor:semDe(ss),senyals:ss}}).filter(n=>!k0||n.k===k0);
+ const mons=[{assig:"comarques",dia0:d(-8),examen:null,vigilies:[d(-1)],normal:25},{assig:"divisibilitat",dia0:d(-6),examen:d(2),vigilies:[],normal:30},{assig:"catala",dia0:d(-5),examen:null,vigilies:[avui],normal:18},
+  {assig:"castellano",dia0:d(-1),examen:null,vigilies:[],normal:null},{assig:"biogeo",dia0:d(-10),examen:null,vigilies:[],normal:20},{assig:"socials",dia0:d(-21),examen:null,vigilies:[d(-14)],normal:22}];
+ return {periode:p,mons,nens}}
 function demoDesde(p){const n=new Date();if(p==="avui"){n.setHours(0,0,0,0);return n.getTime()}if(p==="30d")return Date.now()-30*864e5;if(p==="curs"){const y=n.getMonth()<8?n.getFullYear()-1:n.getFullYear();return new Date(y,8,1).getTime()}return Date.now()-7*864e5}
 const demoLogs=(des,fins)=>{const k=TF.nom.trim().toLowerCase();return DEMO_L.filter(l=>{const t=Date.parse(l.ts);return t>=des&&t<fins&&(!TF.assig||l.assig===TF.assig)&&(!k||clauNen(l)===k)})};
 const demoResp=ls=>{const r=[];ls.forEach(l=>{if(!["test","examen","joc"].includes(l.event))return;(l.detall.q||[]).forEach(x=>{const p=x.split(":");r.push({ts:l.ts,assig:l.assig,k:clauNen(l),nom:l.nom,qid:p[0],ok:p[1]==="1",segons:+p[2],op:p[3]==="-"?null:p[3],event:l.event})})});return r};
