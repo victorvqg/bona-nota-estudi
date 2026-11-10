@@ -118,7 +118,7 @@ Les notes anteriors a la versió 2.6.0 eren autoavaluacions, perquè les marcava
 
 Les estrelles premien **l'esforç i la constància**. No són una nota de coneixement: un nen amb moltes estrelles no necessàriament domina el tema.
 
-El detall de cada premi (combos, límits, nivells i rànquing) és a [`PUNTUACIO.md`](PUNTUACIO.md).
+El detall de cada premi (combos, límits, nivells i rànquing) és a [`PUNTUACIO.md`](PUNTUACIO.md). Quant temps, quan parar i què passa la vigília de l'examen és a [`BON-US.md`](BON-US.md).
 
 | Com es guanyen | Estrelles |
 |---|---|
