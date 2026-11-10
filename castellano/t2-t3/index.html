@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="973e39e404",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="6972198d3b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -911,7 +911,7 @@ ASSIG.boss={nom:"El Monstruo de las Faltas",spr:"monstre"};
 
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}];
 const QIDS={"texto":[1,2,3,4,5,6,7,8],"tipos":[1,2,3,4,5,6,7,8],"sustantivo":[1,2,3,4,5,6,7,8],"genero":[1,2,3,4,5,6,7,8],"diccionario":[1,2,3,4,5,6,7,8],"puntuacion":[1,2,3,4,5,6,7,8],"noticia":[1,2,3,4,5,6,7,8],"fake":[1,2,3,4,5,6,7,8],"lirica":[1,2,3,4,5,6,7,8],"narrativa":[1,2,3,4,5,6,7,8],"articulos":[1,2,3,4,5,6,7,8],"demostrativos":[1,2,3,4,5,6,7,8],"cuantificadores":[1,2,3,4,5,6,7,8],"polisemia":[1,2,3,4,5,6,7,8],"letrab":[1,2,3,4,5,6,7,8]};
-const QDIF={};
+const QDIF={"articulos/6":3,"articulos/8":3,"cuantificadores/4":3,"cuantificadores/6":3,"cuantificadores/7":3,"demostrativos/3":3,"demostrativos/4":3,"demostrativos/7":3,"diccionario/3":3,"diccionario/4":3,"genero/1":3,"genero/3":3,"genero/4":3,"letrab/3":3,"letrab/4":3,"lirica/6":3,"narrativa/6":3,"noticia/6":3,"polisemia/2":3,"puntuacion/3":3,"puntuacion/4":3,"puntuacion/5":3,"sustantivo/4":3,"sustantivo/8":3,"texto/8":3,"tipos/2":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("logoic").textContent=ASSIG.ic;

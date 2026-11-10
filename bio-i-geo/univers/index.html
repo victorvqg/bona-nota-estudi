@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="973e39e404",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="6972198d3b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -850,7 +850,7 @@ ASSIG.boss={nom:"El Cometa Rebel",spr:"monstre"};
 
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}];
 const QIDS={"ciencia":[1,2,3,4,5,6,7,8],"caract":[1,2,3,4,5,6,7,8],"passos":[1,2,3,4,5,6,7,8],"univers":[1,2,3,4,5,6,7,8],"galaxies":[1,2,3,4,5,6,7,8],"cossos":[1,2,3,4,5,6,7,8],"sistema":[1,2,3,4,5,6,7,8],"geosfera":[1,2,3,4,5,6,7,8],"teoria":[1,2,3,4,5,6,7,8],"animalveg":[1,2,3,4,5,6,7,8],"organuls":[1,2,3,4,5,6,7,8],"j-figura":[1,2,3,4,5,6]};
-const QDIF={};
+const QDIF={"animalveg/2":3,"animalveg/7":3,"caract/3":3,"caract/7":3,"ciencia/3":3,"ciencia/4":3,"cossos/3":3,"cossos/5":3,"galaxies/3":3,"geosfera/5":3,"geosfera/8":3,"organuls/6":3,"passos/3":3,"passos/8":3,"sistema/5":3,"sistema/7":3,"teoria/7":3,"univers/3":3,"univers/6":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("logoic").textContent=ASSIG.ic;
