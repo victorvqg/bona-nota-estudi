@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="cedfee48a3",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="69d0ac5d40",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -799,7 +799,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.15.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.16.0</small></footer>
 
 <script src="sprites.js?v=fd512289"></script>
 <script>
@@ -877,6 +877,16 @@ function nomsDispositiu(){const m={};try{(JSON.parse(localStorage.getItem('bn_no
  for(let i=0;i<localStorage.length;i++){const c=localStorage.key(i);if(!/^bn_.*_perfils$/.test(c))continue;Object.keys(JSON.parse(localStorage.getItem(c)||'{}')||{}).forEach(n=>{m[n.trim().toLowerCase()]=m[n.trim().toLowerCase()]||n})}}catch(e){}return m}
 const rpcP=(f,body)=>fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:JSON.stringify(body)})
  .then(async r=>{const t=await r.text();if(!r.ok){throw /massa intents/.test(t)?"bloc":/pin incorrecte/.test(t)?"pin":/pin no valid/.test(t)?"pinfmt":/nom no permes/.test(t)?"nom":"xarxa"}return t?JSON.parse(t):null});
+// embut d'alta (M7 · n2537): només el pas i si ha anat bé; mai el PIN ni el nom abans que el nen tingui perfil
+const SESSIO_ALTA=Math.random().toString(36).slice(2,12);
+function aparellAlta(){let a="";try{a=localStorage.getItem("bn_aparell")||"";if(!a){a=Math.random().toString(36).slice(2,12);localStorage.setItem("bn_aparell",a)}}catch(e){a="?"}return a}
+function logAlta(pas,ok,motiu,nomPerfil){
+ if(!/^https?:/.test(location.protocol)||window.BN_NO_LOG||/[?&]demo\b/.test(location.search))return;
+ const pre=pas==="nom"||pas==="pin_ko",ap=aparellAlta(),detall={pas,ok:ok?1:0};
+ if(motiu)detall.motiu=motiu;
+ try{fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/bn_log",{method:"POST",keepalive:true,
+  headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json","Prefer":"return=minimal"},
+  body:JSON.stringify({assig:"portada",nom:pre?"_alta":String(nomPerfil||"_alta").slice(0,40),sessio:SESSIO_ALTA,aparell:pre?("alta:"+ap).slice(0,40):ap.slice(0,40),event:"alta",detall})}).catch(()=>{})}catch(e){}}
 // PIN = 4 xifres + 1 lletra al final (ex. 4587R), sempre en MAJÚSCULES. Els antics (4 xifres) entren i es demana canviar-los.
 const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
 function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
@@ -901,34 +911,35 @@ function iniciEntrada(){
  f.onsubmit=async e=>{e.preventDefault();let n=iN.value.trim().replace(/\s+/g,' ');if(!n)return err('Escriu el teu nom.');
   n=n.charAt(0).toUpperCase()+n.slice(1);const p=netPin(iP.value);
   const coneguts=nomsDispositiu(),local=coneguts[n.toLowerCase()];if(local)n=local;
-  if(!local&&Object.keys(coneguts).length>=2)return err(`📵 En aquest aparell ja hi ha 2 noms (${Object.values(coneguts).join(' i ')}). Toca el teu nom per entrar.`);
-  if(!PIN_NOU.test(p)&&!PIN_VELL.test(p))return err(`🔢 Escriu el PIN: 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,iP);
+  if(!local&&Object.keys(coneguts).length>=2){logAlta("nom",0,"massa_noms");return err(`📵 En aquest aparell ja hi ha 2 noms (${Object.values(coneguts).join(' i ')}). Toca el teu nom per entrar.`)}
+  if(!PIN_NOU.test(p)&&!PIN_VELL.test(p)){logAlta("pin_ko",0,"format");return err(`🔢 Escriu el PIN: 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,iP)}
   av.className='en-avis ok';av.textContent='Un moment…';
   let ex;try{ex=await rpcP('bn_perfil_existeix',{p_nom:n})}catch(x){ex=null}
   if(ex===null){const pl=pinsP()[n.toLowerCase()];if(local&&(!pl||pl===p)){if(!pl)desaPinP(n,p);return dins(n)}
    return err(pl?'❌ PIN incorrecte.':'📡 Cal connexió a internet per entrar amb un nom nou.',pl?iP:iN)}
   const primer=(document.querySelector('.as[data-id]')||{dataset:{}}).dataset.id||'socials';
   if(ex){try{await rpcP('bn_progres_llegeix',{p_nom:n,p_pin:p,p_assig:primer});desaPinP(n,p);if(PIN_VELL.test(p))return demanaNouPin(n,()=>dins(n));dins(n)}
-   catch(m){err(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar.':m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':'📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
-  if(!PIN_NOU.test(p))return err(`🔤 Al final del PIN hi va una lletra. Per exemple: ${PIN_EX}. Inventa't el teu!`,iP);
-  if(p===PIN_EX)return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",iP);
-  try{const r=await rpcP('bn_perfil_crea',{p_nom:n,p_pin:p});if(r==='existeix')return err('Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.',iP);desaPinP(n,p);dins(n)}
-  catch(m){err(m==='nom'?'🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.':m==='pinfmt'?`🔤 El PIN són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió. Prova-ho més tard.',m==='pinfmt'?iP:iN)}};
+   catch(m){if(m==='pin'||m==='bloc')logAlta("pin_ko",0,m==='bloc'?'bloc':'incorrecte');err(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar.':m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':'📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
+  if(!PIN_NOU.test(p)){logAlta("pin_ko",0,"format");return err(`🔤 Al final del PIN hi va una lletra. Per exemple: ${PIN_EX}. Inventa't el teu!`,iP)}
+  if(p===PIN_EX){logAlta("pin_ko",0,"exemple");return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",iP)}
+  try{const r=await rpcP('bn_perfil_crea',{p_nom:n,p_pin:p});if(r==='existeix'){logAlta("nom",0,"existeix");return err('Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.',iP)}logAlta("nom",1);logAlta("pin_creat",1,null,n);desaPinP(n,p);dins(n)}
+  catch(m){if(m==='nom')logAlta("nom",0,"prohibit");else if(m==='pinfmt')logAlta("pin_ko",0,"format");err(m==='nom'?'🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.':m==='pinfmt'?`🔤 El PIN són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió. Prova-ho més tard.',m==='pinfmt'?iP:iN)}};
  // 🛡️ actualització de seguretat: qui té el PIN antic (4 xifres) en tria un de nou (4 xifres + 1 lletra)
  function demanaNouPin(n,despres){const pop=document.getElementById('npPop'),fm=document.getElementById('npForm'),p1=document.getElementById('npP1'),p2=document.getElementById('npP2'),na=document.getElementById('npAvis'),ara=document.getElementById('npAra');
   document.getElementById('npNom').textContent=n;p1.value=p2.value='';na.className='en-avis';na.textContent='';ara.hidden=true;pop.hidden=false;setTimeout(()=>p1.focus(),50);
   const ko=(m,el)=>{na.className='en-avis';na.textContent=m;fm.classList.remove('tremola');void fm.offsetWidth;fm.classList.add('tremola');(el||p1).focus()};
   p1.oninput=()=>{p1.value=netPin(p1.value);na.textContent='';if(p1.value.length===5)p2.focus()};p2.oninput=()=>{p2.value=netPin(p2.value);na.textContent=''};
-  ara.onclick=()=>{try{sessionStorage.setItem('bn_pin_ajorna','1')}catch(e){}pop.hidden=true;despres()};
+  ara.onclick=()=>{logAlta("pin_ara_no",1,null,n);try{sessionStorage.setItem('bn_pin_ajorna','1')}catch(e){}pop.hidden=true;despres()};
   fm.onsubmit=async e=>{e.preventDefault();const a=netPin(p1.value),b=netPin(p2.value),vell=pinsP()[n.toLowerCase()];
-   if(!PIN_NOU.test(a))return ko(`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,p1);
-   if(a===PIN_EX)return ko("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",p1);
-   if(a!==b)return ko("Els dos PIN no són iguals. Torna'ls a escriure.",p2);
+   if(!PIN_NOU.test(a)){logAlta("pin_ko",0,"format");return ko(`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,p1)}
+   if(a===PIN_EX){logAlta("pin_ko",0,"exemple");return ko("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",p1)}
+   if(a!==b){logAlta("pin_ko",0,"no_coincideix");return ko("Els dos PIN no són iguals. Torna'ls a escriure.",p2)}
    na.className='en-avis ok';na.textContent='Un moment…';
-   try{await rpcP('bn_perfil_canvia_pin',{p_nom:n,p_pin:vell,p_nou:a});desaPinP(n,a);na.textContent='🛡️ PIN actualitzat! Recorda\'l bé.';setTimeout(()=>{pop.hidden=true;despres()},900)}
+   try{await rpcP('bn_perfil_canvia_pin',{p_nom:n,p_pin:vell,p_nou:a});logAlta("pin_creat",1,"canvi",n);desaPinP(n,a);na.textContent='🛡️ PIN actualitzat! Recorda\'l bé.';setTimeout(()=>{pop.hidden=true;despres()},900)}
    catch(m){if(m==='pin'){ // el PIN guardat ja no serveix (potser ja l'ha canviat en un altre aparell): que torni a entrar
      const x=pinsP();delete x[n.toLowerCase()];try{localStorage.setItem('bn_pins',JSON.stringify(x));localStorage.removeItem('bn_jugador')}catch(er){}
      pop.hidden=true;pintaHola();iN.value=n;iP.value='';av.className='en-avis';av.textContent='🔐 Sembla que ja havies canviat el PIN en un altre aparell. Entra amb el PIN nou.';iP.focus();return}
+    if(m==='bloc'||m==='pinfmt')logAlta("pin_ko",0,m==='bloc'?'bloc':'format');
     ko(m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':m==='pinfmt'?`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió i ara no es pot canviar el PIN.');if(m==='xarxa')ara.hidden=false}}}
  setTimeout(()=>{const G=jugador(),pg=G&&pinsP()[G.toLowerCase()];let aj=false;try{aj=sessionStorage.getItem('bn_pin_ajorna')==='1'}catch(e){}if(G&&PIN_VELL.test(pg||'')&&!aj)demanaNouPin(G,()=>{})},0);
  // sense nom, els mons esperen: primer el nom
