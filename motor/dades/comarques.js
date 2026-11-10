@@ -156,7 +156,7 @@ const T=[
   ["El Vendrell és la capital de…",["el Baix Penedès","l'Alt Penedès","el Garraf"],0,"Del Baix Penedès, que toca la demarcació de Barcelona."],
   ["Quina és la capital del Baix Ebre?", ["Amposta", "Tortosa", "Móra d'Ebre"], 1, "Tortosa. Amposta és del Montsià i Móra d'Ebre, de la Ribera d'Ebre."],
   ["Valls és la capital de…", ["l'Alt Camp", "el Baix Camp", "la Conca de Barberà"], 0, "De l'Alt Camp. La Conca de Barberà té Montblanc."],
-  ["En quina comarca hi ha el delta de l'Ebre?", ["Montsià", "Priorat", "Terra Alta"], 0, "Al Montsià (capital Amposta), a la desembocadura del riu."]]},
+  ["En quina d'aquestes comarques hi ha part del delta de l'Ebre?", ["Montsià", "Priorat", "Terra Alta"], 0, "Al Montsià (capital Amposta), a la desembocadura del riu."]]},
 {id:"trucs",ic:"🧠",col:"#F39C12",titol:"Trucs i paranys de les capitals",font:"Comarques · trucs i errors",
  idea:"No cal empollar 43 noms a cegues: hi ha capitals regalades, parelles Alt/Baix i uns quants paranys que cal vigilar.",
  pts:["<b>Regalades</b> (el nom s'assembla): Girona → Gironès, Tarragona → Tarragonès, Barcelona → Barcelonès, Solsona → Solsonès, Ripoll → Ripollès, Moià → Moianès, Berga → Berguedà.",
