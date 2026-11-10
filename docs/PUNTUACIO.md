@@ -93,7 +93,8 @@ Els rètols dels premis surten **d'un en un**, en cua, perquè no es trepitgin. 
   | 330 | 🌟 Llegenda d'or |
 
 - **🌠 Superestrella**: cada 50 ⭐ sumant tots els mons, amb animació i música pròpies.
-- **Rànquing** (a la portada): suma la millor xifra de cada món dels últims 120 dies. Té les pestanyes Estrelles, Temps, Nivell, Setmana i Remuntada (errors apresos).
+- **Rànquing** (a la portada): suma la millor xifra de cada món dels últims 120 dies. Té les pestanyes Estrelles, Temps, Nivell, Setmana, Remuntada (errors apresos) i Xat.
+- **Xat de la colla:** cada 10 ⭐ guanyades avui donen 1 crèdit per dir una frase (fins a 5 al dia), sense gastar mai les estrelles; com funciona del tot és a [`XAT.md`](XAT.md).
 - **Fre del servidor**: si un aparell envia un salt de més de 150 ⭐ de cop, o de més de 300 ⭐ en 24 hores en un món, el servidor el retalla.
 
 ## 7. Com es comprova que és just (tauler de l'admin)

@@ -83,7 +83,8 @@ Després, aquí es comprova si se sap de veritat.
 
 - Podi, taula de classificació amb les estrelles de cada món, fletxes ▲▼ (llocs pujats o baixats des de l'última
   vegada), la teva posició («Et falten 13 ⭐ per atrapar…») i els premis de la colla.
-- Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell, 📈 Setmana i 🧠 **Remuntada** (errors apresos al repàs els últims 7 dies). Compta els últims 120 dies.
+- Pestanyes: ⭐ Estrelles, ⏱ Temps, 🏅 Nivell, 📈 Setmana, 🧠 **Remuntada** (errors apresos al repàs els últims 7 dies) i 💬 **Xat**. Compta els últims 120 dies.
+- **💬 Xat de la colla:** et parles amb els companys combinant una frase i una peça (una paraula d'estudi, una cosa de classe, una cosa teva o el nom d'un company per felicitar-lo o reptar-lo), sense escriure. Cada **10 ⭐ que guanyes avui** et donen **1 crèdit** (1 frase), fins a 5 al dia, sense gastar les teves estrelles; llegir és gratis i amb el primer crèdit del dia pots votar «Ben dit». Tot el detall és a [`docs/XAT.md`](XAT.md).
 - **Meta de la colla:** que 3 de cada 4 nens del rànquing (com a mínim 3) facin 30 ⭐ o més en 7 dies. Premia que hi participi
   tothom. Quan s'aconsegueix, la festa del rànquing salta sola a cada aparell, un cop per setmana.
 - **Premis de la colla:** Màquina de la setmana, Cohet, Explorador de mons, Més constant i Remuntada de la setmana.
