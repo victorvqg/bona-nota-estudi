@@ -68,9 +68,11 @@ Després, aquí es comprova si se sap de veritat.
 
 ### ⭐ Estrelles, superestrelles i nivells
 
-- **Estrelles:** +1 per cada encert als tests i als jocs, +1 per idea clau a les obertes, regals per combos
-  (×5 seguides: +1; ×10: +2) i +2 per cada error après al repàs. Per jugar net, cada pregunta només dona estrella un cop al dia;
-  les preguntes del repàs i les respostes amb pista no en donen.
+- **Estrelles:** +1 per cada encert als tests, als jocs i als exàmens, +1 per idea clau a les obertes (+1 més si hi ha totes les idees),
+  regals per combos (🔥 ×5: +1; ×10: +2), ✍️ triple combo a les obertes (×3: +3; ×6: +5), ⚡ super combo amb les preguntes
+  difícils (3 seguides: +3; 5: +5), +1 per cada error corregit al repàs i +2 quan queda après. Per jugar net, cada pregunta només
+  dona estrella un cop al dia, les respostes amb pista no en donen i cada premi extra té un topall diari.
+  Tot el detall és a [`docs/PUNTUACIO.md`](PUNTUACIO.md).
 - **A dalt de tot** es veu el total de **tots els mons**. Si toques les estrelles, surt el detall per món.
   El total compta el que hi ha en aquell aparell i també el que hi ha al núvol.
   A la portada, la insígnia ⭐ del costat del nom suma les estrelles de tots els mons i obre el rànquing.
