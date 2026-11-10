@@ -2,7 +2,7 @@
 // Permet instal·lar l'app i fer-la servir sense connexió.
 // Pàgines: primer la xarxa (per tenir sempre l'última versió) i, si no hi ha connexió, la còpia guardada.
 // Fonts i icones: primer la còpia guardada. Supabase (rànquing, registre): sempre xarxa, mai a la memòria cau.
-const VERSIO = "bn-08477c0665";
+const VERSIO = "bn-4b8c9486f2";
 const FITXERS = ["./", "index.html", "sprites.js?v=15744077", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "perfil/", "sociales/t3-clima/", "bio-i-geo/univers/", "castellano/t2-t3/", "sociales/comarques/", "matematiques/divisibilitat/", "catala/t2/"];
 self.addEventListener("install", e => {
   // cache:"reload": la còpia es baixa del servidor, no de la memòria cau del navegador (que podria ser d'una versió vella)

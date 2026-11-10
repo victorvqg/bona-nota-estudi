@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="08477c0665",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="4b8c9486f2",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -1003,7 +1003,7 @@ function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO
 const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["🔥","combo ×5 +1 · ×10 +2"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +10"]];
 // barra de ratxa del test: 5 caselles fins al proper regal del combo
 function ratxaHtml(){const n=COMBO%5;return `<span class="ratxa" aria-label="Combo ×${COMBO}">${COMBO>=1?`🔥 ×${COMBO} `:""}${[0,1,2,3,4].map(i=>`<i class="${i<n?"on":""}"></i>`).join("")}</span>`}
-const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
+const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen","🏆","Examen sorpresa"],["obertes","✍️","Preguntes obertes"],["triple","✍️","Triple combo (obertes)"],["combo","🔥","Combos (ratxes)"],["record","🏅","Rècords millorats"],["repas","🔁","Repàs dels errors"],["missio","🎯","Missions del dia"],["boss","👾","Boss del món"]];
 // el resum d'estrelles només surt quan toques el comptador de dalt a la dreta
 // ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
 let COMP=null,COMPT=0;
@@ -1573,6 +1573,19 @@ const OB_MOTIU={curt:`✏️ Escriu una mica més: com a mínim ${OB_MIN} paraul
 function obProtegeix(ta,av){let n=0;const nega=e=>{e.preventDefault();n++;if(av)av.innerHTML=`<div class="fb ko">✏️ Aquí no es pot enganxar: escriu-ho amb les teves paraules.</div>`};ta.addEventListener("paste",nega);ta.addEventListener("drop",nega);return ()=>n}
 // si ja ha vist la resposta model fa poc, torna fins a quin dia no puntua aquella pregunta
 const obBloc=n=>{const d=(S.obv||{})[n];return d&&d>avui()?d:null};
+// ✍️ triple combo (issue #14): obertes bones seguides el mateix dia i al mateix món. Bona = puntua, com a mínim el 60 % de les idees
+// i explicada amb frases (obFrases). ×3 +3 ⭐, ×6 +5 ⭐ (i torna a 0), fins a OB_COMBO_MAX al dia. Si no arriba al 60 %, la ratxa torna a 0.
+const OB_COMBO_PC=60,OB_COMBO_PREMIS={3:3,6:5},OB_COMBO_MAX=8,OB_PARAULES_IDEA=4;
+const OB_CONNECTORS=new Set("es son perque que quan per aixo llavors tambe pero porque cuando entonces tambien".split(" ").map(normT));
+// frases i no una llista de paraules: prou paraules per idea (els números compten) i algun connector o el signe =
+function obFrases(text,det){const w=obParaules(text);if(w.length<OB_PARAULES_IDEA*Math.max(1,det))return false;return w.some(x=>OB_CONNECTORS.has(x))||/=/.test(text)}
+// estat: "bona" fa avançar la ratxa, "fluixa" la posa a 0 i "filtre" (bona però sense frases) no la toca; torna les ⭐ pagades
+function obRatxa(estat){const e=diaEst();if(estat==="fluixa"){e.oc=0;desa();return 0}if(estat!=="bona")return 0;
+ const oc=(e.oc||0)+1,pr=OB_COMBO_PREMIS[oc]||0,pag=Math.max(0,Math.min(pr,OB_COMBO_MAX-(e.ocp||0)));
+ if(pag){e.ocp=(e.ocp||0)+pag;const f=FONT;FONT=["triple"];suma(pag);FONT=f}
+ const ret=oc===2?["DOBLE ✍️✍️","una més i és triple!"]:oc===3?["TRIPLE COMBO ✍️✍️✍️",pag?`+${pag} ⭐`:"avui ja no dona ⭐"]:oc===6?["MEGA COMBO ✍️",pag?`+${pag} ⭐`:"avui ja no dona ⭐"]:null;
+ if(ret)retolMissio(ret[0],ret[1],500);
+ e.oc=oc>=6?0:oc;desa();return pag}
 
 
 // ====================== PIN I PROGRÉS AL NÚVOL ======================
@@ -2219,6 +2232,22 @@ function bnProvaObertes(){const inv=t=>t.split(/\s+/).reverse().join(" "),s0=JSO
   document.getElementById("resp").value=txt;document.getElementById("veu").click();if(S.ob[0]!==1||S.punts!==p1)return "la pràctica no hauria de canviar la nota ni donar estrelles";
   return true}finally{const b=JSON.parse(s0);S.ob=b.ob;if(b.obv)S.obv=b.obv;else delete S.obv;S.punts=b.p;if(b.est)S.est=b.est;if(b.f)S.fonts=b.f;if(b.ft)S.ftema=b.ft;NIVPEND=null;SUPPEND=0;desa();vista("inici")}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaObertes");
+// prova (issue #14): triple combo de preguntes obertes i filtre de frases
+function bnProvaTriple(){const s0=JSON.stringify({est:S.est||null,p:S.punts,f:S.fonts||{},ft:S.ftema||{}}),fo=FONT;
+ try{if(obFrases("clima temps pluja vent sol neu",2))return "una llista de paraules ha passat el filtre de frases";
+  if(!obFrases("El clima és el temps que fa durant molts anys en un lloc",2))return "una frase de veritat no ha passat el filtre";
+  if(!obFrases("72 = 2 · 2 · 2 · 3 · 3 i per tant és divisible per 6",1))return "una resposta de mates amb = i números no ha passat el filtre";
+  delete S.est;const t0=S.fonts.triple||0,b=()=>obRatxa("bona");
+  const a=[b(),b(),b()];if(a.join()!=="0,0,3")return `3 obertes bones: ${a.join()} i havia de ser 0,0,3`;
+  if((S.fonts.triple||0)!==t0+3)return "no s'apunta a la font «triple»";
+  obRatxa("filtre");if(diaEst().oc!==3)return `el filtre no ha de tocar la ratxa (oc=${diaEst().oc})`;
+  const c=[b(),b(),b()];if(c.join()!=="0,0,5")return `de la 4a a la 6a: ${c.join()} i havia de ser 0,0,5`;
+  if(diaEst().ocp!==8||diaEst().oc!==0)return `després del MEGA: ocp=${diaEst().ocp} oc=${diaEst().oc} (havia de ser 8 i 0)`;
+  const d=[b(),b(),b()];if(d.join()!=="0,0,0")return `amb el topall d'avui gastat: ${d.join()} i havia de ser 0,0,0`;
+  b();obRatxa("fluixa");if(diaEst().oc!==0)return "una resposta fluixa ha de posar la ratxa a 0";
+  b();b();S.est.d="2000-01-01";b();if(diaEst().oc!==1)return `l'endemà la ratxa ha de tornar a començar (oc=${diaEst().oc})`;
+  return true}finally{FONT=fo;const x=JSON.parse(s0);if(x.est)S.est=x.est;else delete S.est;S.punts=x.p;S.fonts=x.f;S.ftema=x.ft;NIVPEND=null;SUPPEND=0;desa()}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaTriple");
 
 // ====================== ANALÍTICA ======================
 function resumGlobal(){
