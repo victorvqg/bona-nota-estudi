@@ -190,6 +190,60 @@ begin
     'actiu',      case when j->>'actiu' in ('true', 'false') then (j->>'actiu')::boolean else true end);
 end $$;
 
+-- configuració d'horari automàtic del xat (clau 'xat_horari' a bn_priv.config; per defecte desactivat, 21:30 -> 07:00)
+create or replace function bn_priv.xat_horari_cfg() returns jsonb
+language plpgsql stable set search_path = '' as $$
+declare t text; j jsonb;
+begin
+  select c.valor into t from bn_priv.config c where c.clau = 'xat_horari';
+  begin j := t::jsonb; exception when others then j := null; end;
+  if jsonb_typeof(j) is distinct from 'object' then j := '{}'::jsonb; end if;
+  return jsonb_build_object(
+    'actiu',   case when j->>'actiu' in ('true', 'false') then (j->>'actiu')::boolean else false end,
+    'tanca_h', case when j->>'tanca_h' ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then j->>'tanca_h' else '21:30' end,
+    'obre_h',  case when j->>'obre_h'  ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then j->>'obre_h'  else '07:00' end);
+end $$;
+
+-- comprova si una hora cau dins la franja de tancament automàtic (en hora de Catalunya, Europe/Madrid)
+create or replace function bn_priv.xat_en_horari_tancat(
+  p_horari_actiu boolean,
+  p_tanca_h text,
+  p_obre_h text,
+  p_ara timestamptz default now()
+) returns boolean
+language plpgsql stable set search_path = '' as $$
+declare
+  hm text;
+  tanca text := coalesce(p_tanca_h, '21:30');
+  obre text := coalesce(p_obre_h, '07:00');
+begin
+  if not coalesce(p_horari_actiu, false) then return false; end if;
+  if tanca !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then tanca := '21:30'; end if;
+  if obre  !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then obre  := '07:00'; end if;
+  if tanca = obre then return true; end if;
+  hm := to_char(p_ara at time zone 'Europe/Madrid', 'HH24:MI');
+  if tanca < obre then
+    return hm >= tanca and hm < obre;
+  else
+    return hm >= tanca or hm < obre;
+  end if;
+end $$;
+
+-- estat efectiu del xat (actiu manualment I fora d'horari tancat)
+create or replace function bn_priv.xat_obert_ara(
+  p_cfg jsonb default null,
+  p_ara timestamptz default now()
+) returns boolean
+language plpgsql stable set search_path = '' as $$
+declare
+  c jsonb := coalesce(p_cfg, bn_priv.xat_cfg());
+  h jsonb := bn_priv.xat_horari_cfg();
+begin
+  if not coalesce((c->>'actiu')::boolean, true) then return false; end if;
+  if bn_priv.xat_en_horari_tancat((h->>'actiu')::boolean, h->>'tanca_h', h->>'obre_h', p_ara) then return false; end if;
+  return true;
+end $$;
+
 -- «avui» comença a la mitjanit de Catalunya, també els dies de canvi d'hora (el càlcul es fa en hora local, no en UTC)
 create or replace function bn_priv.xat_mitjanit() returns timestamptz
 language sql stable set search_path = '' as $$
@@ -312,6 +366,9 @@ language sql stable set search_path = '' as $$
 $$;
 
 revoke all on function bn_priv.xat_cfg() from public, anon, authenticated;
+revoke all on function bn_priv.xat_horari_cfg() from public, anon, authenticated;
+revoke all on function bn_priv.xat_en_horari_tancat(boolean, text, text, timestamptz) from public, anon, authenticated;
+revoke all on function bn_priv.xat_obert_ara(jsonb, timestamptz) from public, anon, authenticated;
 revoke all on function bn_priv.xat_mitjanit() from public, anon, authenticated;
 revoke all on function bn_priv.xat_fi_dia() from public, anon, authenticated;
 revoke all on function bn_priv.xat_ms(timestamptz) from public, anon, authenticated;
@@ -349,7 +406,7 @@ begin
     'meus', coalesce((select jsonb_agg(v.msg order by v.msg) from bn_priv.xat_vots v join bn_priv.xat_msg m on m.id = v.msg
                        where v.k = kk and (m.ts > now() - interval '2 days'
                                            or m.id >= (select coalesce(min(u.id), 0) from bn_priv.xat_ultims60() u))), '[]'::jsonb),
-    'cfg', c,
+    'cfg', c || jsonb_build_object('actiu', bn_priv.xat_obert_ara(c)),
     'espera_fins', case when ef > now() then bn_priv.xat_ms(ef) end,
     'silenci', case when bn_priv.xat_ocult(kk, p_nom) then jsonb_build_object('fins', null)
                     when s is not null then jsonb_build_object('fins', bn_priv.xat_ms(s)) end);
@@ -371,7 +428,7 @@ begin
   select x.fins into s from bn_priv.xat_silenci x where x.k = kk and x.fins > now();
   if s is not null then return jsonb_build_object('codi', 'silenci', 'fins', bn_priv.xat_ms(s)); end if;
   c := bn_priv.xat_cfg();
-  if not (c->>'actiu')::boolean then return jsonb_build_object('codi', 'tancat'); end if;
+  if not bn_priv.xat_obert_ara(c) then return jsonb_build_object('codi', 'tancat'); end if;
   select * into r from bn_priv.xat_nen(kk, c);
   -- frase activa i desbloquejada; el forat, omplert amb el que demana (peça del seu tipus o company, mai totes dues coses)
   select * into fr from bn_priv.xat_frases x where x.id = p_frase;
@@ -429,7 +486,7 @@ language sql stable security definer set search_path = '' as $$
     limit 1)
   select jsonb_build_object(
     'ara', bn_priv.xat_ms(now()),
-    'actiu', (bn_priv.xat_cfg()->>'actiu')::boolean,
+    'actiu', bn_priv.xat_obert_ara(),
     'msgs', coalesce((select jsonb_agg(jsonb_build_object('id', u.id, 'nom', u.nom, 'f', u.frase, 'p', u.peca, 'c', u.company,
                                                           'ts', bn_priv.xat_ms(u.ts), 'v', coalesce(vc.n, 0)) order by u.id)
                       from ult u left join vc on vc.msg = u.id where p_des_de is null or u.id > p_des_de), '[]'::jsonb),
@@ -459,7 +516,7 @@ begin
   select x.fins into s from bn_priv.xat_silenci x where x.k = kk and x.fins > now();
   if s is not null then return jsonb_build_object('codi', 'silenci', 'fins', bn_priv.xat_ms(s)); end if;
   c := bn_priv.xat_cfg();
-  if not (c->>'actiu')::boolean then return jsonb_build_object('codi', 'tancat'); end if;
+  if not bn_priv.xat_obert_ara(c) then return jsonb_build_object('codi', 'tancat'); end if;
   select m.k into autor from bn_priv.xat_msg m where m.id = p_msg and bn_priv.xat_vis(m.k, m.nom, m.company, m.esborrat);
   if autor is null then return jsonb_build_object('codi', 'no_existeix'); end if;
   if autor = kk then return jsonb_build_object('codi', 'propi'); end if;

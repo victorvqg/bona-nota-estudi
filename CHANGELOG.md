@@ -5,6 +5,17 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.17.0 · 2026-11-10
+
+### Afegit
+- Admin, Tauler i Xat: panell «Control ràpid: Xat, Horari i Mons» (`#control`, a dalt de tot del Tauler, i horari també a la pestanya Xat). Permet obrir o tancar el xat amb un clic, programar-ne l'horari automàtic de tancament i obertura (hora de Madrid, per exemple `21:30` → `07:00`) i activar o desactivar cada món per separat.
+- Portada i mons: quan l'admin desactiva un món, la seva targeta a la portada surt en gris amb «🔒 TANCAT» i no deixa entrar-hi (tampoc per enllaç directe), mentre que totes les estrelles es conserven al rànquing.
+- Base de dades: `supabase/bn_control.sql` (funcions `public.bn_estat_web`, `public.bn_admin_control`, `bn_priv.xat_horari_cfg`, `bn_priv.xat_en_horari_tancat`, `bn_priv.xat_obert_ara` i `bn_priv.mons_tancats`).
+- Proves: `motor/prova-control-sql.js` (PGlite) i `motor/prova-admin-alta.js` actualitzada a l'Action.
+
+### Eliminat
+- Admin, portada i perfil: s'ha tret la targeta «Embut d'alta» (`M7`) i l'enviament de l'esdeveniment `alta` per simplificar el panell.
+
 ## 2.16.0 · 2026-11-10
 
 ### Afegit
