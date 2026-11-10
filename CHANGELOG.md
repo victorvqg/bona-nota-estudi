@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.14.0 · 2026-11-10
+
+### Afegit
+- Admin, Tauler: apartat «Combos i repàs», amb les estrelles de combo, triple combo, super combo i repàs de cada dia i de cada nen. Així es pot veure si les millores d'estrelles de la 2.9.0 i la 2.10.0 funcionen. Surt de les diferències entre registres, sense canviar res de l'app dels nens.
+- Admin, Tauler: apartat «Errors pendents de la colla», amb els temes de cada món que acumulen més errors per repassar entre tots els nens, quants nens hi ha, quants toquen avui i les preguntes que més es repeteixen.
+- Base de dades: `supabase/bn_admin_fonts_rep.sql`, amb `bn_admin_fonts_dia` i `bn_admin_rep_pendents`.
+
 ## 2.13.0 · 2026-11-10
 
 ### Afegit
