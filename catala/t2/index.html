@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="abe7326d69",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1fe190021a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -681,12 +681,12 @@ const T=[
   truc:"L'<b>oral</b> és com el joc del <b>telèfon espatllat</b>: passa de boca en boca i cadascú la canvia una mica. L'<b>escrita</b> és com una <b>foto</b>: queda quieta (versió única) i porta la firma (d'autor).",
   compte:"<b>Anònima</b> vol dir que <b>no sabem qui</b> la va fer, no que la van fer molts autors junts. I l'escriptura <b>no</b> va amagar els autors: va fer que el text quedés fixat i que l'obra tingués un autor amb nom.",
   fc:[["Què va portar la invenció de l'alfabet?","L'escriptura, un nou procediment per crear literatura."],["Què vol dir «anònima»?","Que no sabem qui l'ha feta."],["Qui era un copista?","La persona que copiava els llibres a mà, abans de la impremta."],["Quantes versions té una obra escrita?","Una de sola: el text queda invariable."],["Per què l'oral té diverses versions?","Perquè cada orador l'adapta als gustos del seu públic."],["Qui va quedar arraconat amb l'escriptura?","L'artista que recitava de viva veu i el grup que l'escoltava."]],
-  q:[["Què va provocar la invenció de l'alfabet?",["Que les obres quedessin en l'anonimat","L'escriptura: el text quedava fixat i l'obra tenia autor","Que cada orador canviés la història al seu gust"],1,"Amb l'escriptura, versió única i d'autor."],
+  q:[["Quina conseqüència va tenir la invenció de l'alfabet?",["Que les obres quedessin en l'anonimat","L'escriptura: el text quedava fixat i l'obra tenia autor","Que cada orador canviés la història al seu gust"],1,"Amb l'escriptura, versió única i d'autor."],
      ["Què vol dir que una obra és anònima?",["Que la van fer molts autors junts","Que no sabem qui la va fer","Que és molt antiga i ja no s'explica"],1,"Anònima = d'autor desconegut."],
      ["Com es transmetia la literatura escrita abans de la impremta?",["En llibres manuscrits copiats pels copistes","De viva veu: un orador recitava i el públic l'escoltava","En llibres impresos a la impremta"],0,"Abans de la impremta, els copistes copiaven els llibres a mà."],
      ["Quantes versions té el text d'una obra de literatura oral?",["Una de sola, invariable","Diverses, perquè cada orador l'adapta","Només dues: la del pare i la del fill"],1,"L'oral canvia una mica cada vegada que s'explica."],
      ["Quina característica és de la literatura escrita?",["És anònima","Té diverses versions","Té un autor concret"],2,"L'escrita és d'autor: el seu nom surt a la portada."],
-     ["Qui va anar arraconant l'escriptor solitari i reflexiu?",["L'artista popular que recitava de viva veu","Els copistes que copiaven a mà","Els lectors silenciosos"],0,"L'escriptor sol a la taula va prendre el lloc de l'artista que recitava."],
+     ["A qui va anar arraconant l'escriptor solitari i reflexiu?",["L'artista popular que recitava de viva veu","Els copistes que copiaven a mà","Els lectors silenciosos"],0,"L'escriptor sol a la taula va prendre el lloc de l'artista que recitava."],
      ["Amb l'escriptura, com es va tornar la lectura?",["Cantada en grup, al voltant d'un foc","Solitària i silenciosa","Sempre en veu alta davant del públic"],1,"Una persona sola amb un llibre va relegar el grup d'oients."],
      ["Quina d'aquestes frases és de la literatura oral tradicional?",["Té el nom de l'autor a la portada","El text es manté sempre igual","És patrimoni popular"],2,"L'oral és anònima: és de tothom, patrimoni popular."],
      ["Qui era el copista?",["La persona que copiava els llibres a mà","L'orador que recitava davant del públic","L'autor que inventava les històries"],0,"Feia les còpies dels llibres manuscrits."]]},
@@ -785,8 +785,8 @@ const T=[
   truc:"L'<b>article és el xivato del gènere</b>: <i>un / el</i> → masculí; <i>una / la</i> → femení. Si dubtes, mira el diccionari: l'abreviatura <b>m.</b> o <b>f.</b> et diu quin article li toca.",
   compte:"En català: <b>el costum</b>, <b>la dent</b>, <b>les postres</b> (en castellà van al revés). I el femení de cavall és <b>l'euga</b>, no «cavalla».",
   fc:[["Què ens diu el gènere d'un nom?","L'article: un/el, masculí; una/la, femení."],["Com es diuen les marques de gènere i de nombre?","Morfemes flexius."],["Femení de cavall","L'euga."],["Femení de gendre","La jove o la nora."],["Femení i plurals de psicòleg","Psicòloga, psicòlegs, psicòlogues."],["Com dius que un rossinyol és femella?","Un rossinyol femella."]],
-  q:[["Com es diu en català?",["el costum","la costum","Totes dues formes són correctes"],0,"En català és masculí: el costum."],
-     ["Com es diu en català?",["la dent","el dent","Totes dues formes són correctes"],0,"En català és femení: la dent."],
+  q:[["«Costum»: com es diu en català?",["el costum","la costum","Totes dues formes són correctes"],0,"En català és masculí: el costum."],
+     ["«Dent»: com es diu en català?",["la dent","el dent","Totes dues formes són correctes"],0,"En català és femení: la dent."],
      ["Quin és el femení de «cavall»?",["la cavalla","l'euga","la somera"],1,"Somera és la femella de l'ase."],
      ["Com es diuen les marques que fan canviar de forma els noms de persones i animals?",["Morfemes flexius","Topònims","Especificadors"],0,"Marquen el gènere i el nombre: nebot, neboda, nebots, nebodes."],
      ["Quin és el femení plural de «psicòleg»?",["psicòlegues","psicòlogues","psicòlegs"],1,"La terminació canvia per sonar bé, com amic → amigues."],
@@ -794,7 +794,7 @@ const T=[
      ["El rossinyol té una sola forma. Com dius que és femella?",["una rossinyola","un rossinyol femella","la rossinyol"],1,"S'hi afegeix mascle o femella."],
      ["Quina parella fa servir paraules diferents per a cada gènere?",["l'oncle / la tia","el nebot / la neboda","el gall / la gallina"],0,"Les altres canvien la terminació."],
      ["Quin és el femení de «gendre»?",["la gendra","la jove o la nora","la madrastra"],1,"Madrastra és el femení de padrastre."],
-     ["Com es diu en català?",["les postres","els postres","el postre"],0,"En català és femení i plural: les postres."]]},
+     ["«Postres»: com es diu en català?",["les postres","els postres","el postre"],0,"En català és femení i plural: les postres."]]},
  {id:"invariables",ic:"🔒",col:"#0284c7",titol:"Els noms invariables",font:"Llibre · Gramàtica 1.4 · pàg. 50",
   idea:"Alguns noms no canvien: uns tenen la mateixa forma en masculí i en femení (només canvia l'article) i uns altres, la mateixa forma en singular i en plural.",
   pts:["<b>Invariables en gènere</b>: <i>un / una cantant, periodista, captaire, conserge, pilot, gimnasta</i>. Només canvia l'article.",
@@ -916,8 +916,8 @@ const OB=[
 ASSIG.boss={nom:"El Monstre dels Signes",spr:"monstre"};
 
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}];
-const QIDS={"literatura":[1,2,3,4,5,6,7,8],"oral":[1,2,3,4,5,6,7,8],"escrita":[1,2,3,4,5,6,7,8,9],"generes":[1,2,3,4,5,6,7,8,9],"teatre":[1,2,3,4,5,6,7,8,9,10],"nom":[1,2,3,4,5,6,7,8,9],"classes":[1,2,3,4,5,6,7,8,9,10],"genere":[1,1,2,3,4,5,6,7,8,1],"invariables":[1,2,3,4,5,6,7,8,9],"clau":[1,2,3,4,5,6,7,8,9],"punts":[1,2,3,4,5,6,7,8,9],"puntcoma":[1,2,3,4,5,6,7,8,9]};
-const QDIF={"classes/6":3,"classes/9":3,"clau/3":3,"clau/4":3,"clau/5":3,"escrita/1":3,"escrita/6":3,"genere/4":3,"genere/7":3,"genere/8":3,"generes/1":3,"generes/7":3,"invariables/1":3,"invariables/7":3,"invariables/8":3,"literatura/6":3,"nom/4":3,"nom/7":3,"oral/8":3,"puntcoma/3":3,"puntcoma/9":3,"punts/7":3,"teatre/2":3,"teatre/7":3};
+const QIDS={"literatura":[1,2,3,4,5,6,7,8],"oral":[1,2,3,4,5,6,7,8],"escrita":[10,2,3,4,5,11,7,8,9],"generes":[1,2,3,4,5,6,7,8,9],"teatre":[1,2,3,4,5,6,7,8,9,10],"nom":[1,2,3,4,5,6,7,8,9],"classes":[1,2,3,4,5,6,7,8,9,10],"genere":[9,10,2,3,4,5,6,7,8,11],"invariables":[1,2,3,4,5,6,7,8,9],"clau":[1,2,3,4,5,6,7,8,9],"punts":[1,2,3,4,5,6,7,8,9],"puntcoma":[1,2,3,4,5,6,7,8,9]};
+const QDIF={"classes/6":3,"classes/9":3,"clau/3":3,"clau/4":3,"clau/5":3,"escrita/10":3,"escrita/11":3,"genere/4":3,"genere/7":3,"genere/8":3,"generes/1":3,"generes/7":3,"invariables/7":3,"invariables/8":3,"nom/4":3,"nom/7":3,"oral/8":3,"puntcoma/3":3,"puntcoma/9":3,"punts/7":3,"teatre/2":3,"teatre/7":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("logoic").textContent=ASSIG.ic;

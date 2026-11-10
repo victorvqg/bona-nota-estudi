@@ -2,14 +2,12 @@
 
 Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.json`. Una pregunta difícil porta la marca «⚡ difícil» i compta per al super combo: 3 difícils seguides +3 ⭐, 5 seguides +5 ⭐. Per treure'n o afegir-ne una, edita `motor/dificultat.json` (clau = món, i dins `"tema/núm": 3`), posa'n el motiu a `motor/dificultat-motius.json` i torna a generar aquesta llista.
 
-## 🌍 Tema 3: El clima (`socials`) · 18 de 80
+## 🌍 Tema 3: El clima (`socials`) · 16 de 80
 
 | Id | Tema | Pregunta | Resposta correcta | Per què |
 |---|---|---|---|---|
 | `atmos/4` | L'atmosfera: capes i funcions | Com es diu la pedra que arriba a tocar terra? | Meteorit | Meteor, estel fugaç i meteorit es confonen sovint |
-| `atmos/6` | L'atmosfera: capes i funcions | On es desintegren la majoria de meteorits (estels fugaços)? | A la mesosfera (50-80 km) | Cal saber la capa exacta; capes fàcils de confondre |
-| `canvi/1` | Efecte d'hivernacle i canvi climàtic | Quin d'aquests és un gas d'efecte d'hivernacle? | Metà | L'ozó sembla resposta bona; distractor molt proper |
-| `canvi/6` | Efecte d'hivernacle i canvi climàtic | Què es va acordar a la cimera de París (2015)? | Que la temperatura no pugi més de 2 °C | 1,5 °C i 2 °C gairebé iguals; encert real 33 % |
+| `atmos/9` | L'atmosfera: capes i funcions | On es desintegren la majoria de meteoroides (els que fan els estels fugaços)? | A la mesosfera (50-80 km) | Cal saber la capa exacta; capes fàcils de confondre |
 | `climaig/1` | El clima d'Igualada | A Igualada, a l'hivern, fa més fred… | al fons de la conca | Inversió tèrmica: va contra la intuïció |
 | `climaig/2` | El clima d'Igualada | La continentalitat vol dir… | hiverns freds i estius calorosos | Concepte abstracte que es confon amb clima suau |
 | `elements/1` | Elements i factors del clima | A la platja fa 21 °C. Al cim de 2 000 m farà més o menys… | 9 °C | Càlcul en diversos passos: gradient tèrmic per altitud |
@@ -46,10 +44,10 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `sistema/5` | El sistema solar | Quina temperatura té la superfície del Sol, aproximadament? | Uns 5.500 °C | Distractor 4.600 és l'altra dada del Sol |
 | `sistema/7` | El sistema solar | Quants anys té el Sol, aproximadament? | Uns 4.600 milions | Distractor 5.500 és l'altra dada del Sol |
 | `teoria/7` | La teoria cel·lular | Que la cèl·lula sigui la «unitat funcional» vol dir que… | Fa les funcions vitals de l'ésser viu | Tres principis de la teoria cel·lular barrejats |
-| `univers/3` | L'Univers i l'any llum | Qui va crear el model geocèntric? | Ptolemeu, a l'antiga Grècia | Distractor amb el mateix nom (Ptolemeu); encert real 33 % |
+| `univers/3` | L'Univers i l'any llum | Qui va crear el model geocèntric? | Ptolemeu, astrònom grec d'Alexandria (segle II) | Distractor amb el mateix nom (Ptolemeu); encert real 33 % |
 | `univers/6` | L'Univers i l'any llum | Durant quins segles es va fer servir el model geocèntric? | Del segle II al segle XVI | Intervals de segles semblants |
 
-## 📝 Temas 2 y 3 (`castellano`) · 26 de 120
+## 📝 Temas 2 y 3 (`castellano`) · 25 de 120
 
 | Id | Tema | Pregunta | Resposta correcta | Per què |
 |---|---|---|---|---|
@@ -57,7 +55,7 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `articulos/8` | Los determinantes y los artículos | «___ difícil es empezar.» ¿Qué artículo va delante del adjetivo? | Lo | Article neutre «lo», que no existeix igual en català |
 | `cuantificadores/4` | Cuantificadores, interrogativos y exclamativos | En «¿Quién ha venido?», «quién» es... | pronombre | Pronom o determinant: distinció gramatical fina |
 | `cuantificadores/6` | Cuantificadores, interrogativos y exclamativos | ¿Cómo se escribe el número 23? | veintitrés | Tres grafies gairebé iguals; cal l'accent |
-| `cuantificadores/7` | Cuantificadores, interrogativos y exclamativos | ¿«Primero» es un determinante? | No: es un ordinal | Ordinal contra cardinal i determinant |
+| `cuantificadores/9` | Cuantificadores, interrogativos y exclamativos | ¿Qué clase de numeral es «primero»? | Ordinal | Ordinal, cardinal i partitiu es confonen |
 | `demostrativos/3` | Demostrativos y posesivos | En «un amigo mío», «mío» es... | adjetivo | Possessiu posposat: adjectiu, no determinant |
 | `demostrativos/4` | Demostrativos y posesivos | ¿Qué expresión es incorrecta? | detrás nuestro | Error molt estès; dues opcions gairebé iguals |
 | `demostrativos/7` | Demostrativos y posesivos | En «Ese chico, cuyo padre es médico...», «cuyo» es... | un relativo-posesivo | «Cuyo»: categoria poc habitual i difícil |
@@ -65,7 +63,6 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `diccionario/4` | Cómo usar el diccionario | ¿Cuántas letras tiene el alfabeto castellano? | 27 | Xifres properes: 26, 27 i 29 lletres |
 | `genero/1` | Género, número y concordancia | El femenino de «caballo» es «yegua». ¿Qué tipo de cambio es? | Heterónimo | Terme tècnic (heterónimo) poc conegut |
 | `genero/3` | Género, número y concordancia | ¿Cuál es la forma correcta? | el calor | Interferència del català (la calor); encert real 33 % |
-| `genero/4` | Género, número y concordancia | ¿Cómo se forma el plural de «club»? | clubes | Plural irregular d'un mot acabat en consonant |
 | `letrab/3` | El uso de la b | ¿Cuál es la excepción de la regla de -bir? | servir | Excepció de la regla de -bir |
 | `letrab/4` | El uso de la b | ¿Cómo se escribe «gavardina» en castellano? | gabardina | Interferència del català: gavardina / gabardina |
 | `lirica/6` | Los géneros literarios: lírica y teatro | Una obra de teatro en la que las pasiones llevan a un final desgraciado es... | una tragedia | Tragedia y drama se confunden |
@@ -80,13 +77,12 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `texto/8` | El texto y sus propiedades | Un texto salta de tu perro a la Luna y luego a una receta, sin ningún orden. ¿Qué propiedad le falta? | La coherencia | Coherencia y cohesión se confunden a menudo |
 | `tipos/2` | Los tipos de textos | «Mañana lloverá en el Pirineo.» ¿Qué tipo de texto es? | Predictivo | Tipus poc habitual (predictivo); sembla expositiu |
 
-## 🗺️ Les comarques de Catalunya (`comarques`) · 13 de 56
+## 🗺️ Les comarques de Catalunya (`comarques`) · 12 de 56
 
 | Id | Tema | Pregunta | Resposta correcta | Per què |
 |---|---|---|---|---|
 | `bcn/4` | Demarcació de Barcelona (13) | Quina és la capital del Baix Llobregat? | Sant Feliu de Llobregat | La capital no és la ciutat més coneguda |
 | `bcn/8` | Demarcació de Barcelona (13) | Vilafranca del Penedès és la capital de… | l'Alt Penedès | Alt i Baix Penedès es confonen; encert real 60 % |
-| `comarca/7` | Què és una comarca | Igualada, Òdena i Vilanova del Camí formen… | la comarca de l'Anoia | Comarca, província i municipi es confonen; encert real 60 % |
 | `gir/2` | Demarcació de Girona (8) | Quina és la capital de la Selva? | Santa Coloma de Farners | Blanes i Lloret són més grans que la capital |
 | `gir/3` | Demarcació de Girona (8) | Figueres és la capital de… | l'Alt Empordà | Alt i Baix Empordà es confonen |
 | `lle/3` | Demarcació de Lleida (12) | Tàrrega és la capital de… | l'Urgell | Tres comarques amb «Urgell» al nom |
@@ -95,7 +91,7 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `provincia/6` | Comarques, províncies i l'Aran | Quina comarca està repartida entre dues províncies? | La Cerdanya | Dada poc coneguda: comarca entre dues províncies |
 | `tgn/4` | Demarcació de Tarragona (10) | Quina és la capital de la Terra Alta? | Gandesa | Tres capitals veïnes de les Terres de l'Ebre |
 | `tgn/5` | Demarcació de Tarragona (10) | El Vendrell és la capital de… | el Baix Penedès | Alt/Baix Penedès i Garraf; encert real 40 % |
-| `tgn/8` | Demarcació de Tarragona (10) | En quina comarca hi ha el delta de l'Ebre? | Montsià | Montsià o veïnes; encert real 60 % (10 respostes) |
+| `tgn/9` | Demarcació de Tarragona (10) | En quina d'aquestes comarques hi ha part del delta de l'Ebre? | Montsià | Montsià o veïnes; encert real 60 % (10 respostes) |
 | `trucs/4` | Trucs i paranys de les capitals | Mollerussa és la capital de… | el Pla d'Urgell | Tres comarques amb «Urgell»; capital poc coneguda |
 
 ## 🔢 Tema 2: Divisibilitat (`divisibilitat`) · 17 de 71
@@ -120,7 +116,7 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `relacio/3` | La relació de divisibilitat | 40 : 8 = 5 i és exacta. Quina frase és certa? | 40 és múltiple de 8 | Múltiple i divisor es confonen; encert real 33 % |
 | `relacio/4` | La relació de divisibilitat | 35 : 5 = 7 exacte. Llavors 5 és … de 35. | divisor | Múltiple o divisor; encert real 50 % (4 respostes) |
 
-## 📖 Tema 2: La literatura, el nom i la puntuació (`catala`) · 24 de 109
+## 📖 Tema 2: La literatura, el nom i la puntuació (`catala`) · 22 de 109
 
 | Id | Tema | Pregunta | Resposta correcta | Per què |
 |---|---|---|---|---|
@@ -129,17 +125,15 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `clau/3` | Noms iguals amb gènere i significat diferents | «Tinc molta son.» Què vol dir aquí «son»? | Ganes de dormir | «La son» i «el son»: significats molt propers |
 | `clau/4` | Noms iguals amb gènere i significat diferents | Què vol dir «el son»? | L'acte de dormir | «El son» contra «la son»; encert real 50 % |
 | `clau/5` | Noms iguals amb gènere i significat diferents | El metge et pren… per saber com batega el cor. | el pols | «El pols» i «la pols» es confonen |
-| `escrita/1` | La literatura escrita | Què va provocar la invenció de l'alfabet? | L'escriptura: el text quedava fixat i l'obra tenia autor | Enunciat de causa i efecte; encert real 64 % |
-| `escrita/6` | La literatura escrita | Qui va anar arraconant l'escriptor solitari i reflexiu? | L'artista popular que recitava de viva veu | Enunciat difícil d'interpretar; encert real 60 % (15 respostes) |
+| `escrita/10` | La literatura escrita | Quina conseqüència va tenir la invenció de l'alfabet? | L'escriptura: el text quedava fixat i l'obra tenia autor | Causa i conseqüència es confonen; encert real 64 % |
+| `escrita/11` | La literatura escrita | A qui va anar arraconant l'escriptor solitari i reflexiu? | L'artista popular que recitava de viva veu | Cal llegir bé a qui arracona; encert real 60 % |
 | `genere/4` | Les marques de gènere i de nombre | Quin és el femení plural de «psicòleg»? | psicòlogues | Canvi de vocal irregular: psicòleg, psicòlogues |
 | `genere/7` | Les marques de gènere i de nombre | Quina parella fa servir paraules diferents per a cada gènere? | l'oncle / la tia | Cal distingir arrel diferent de simple terminació |
 | `genere/8` | Les marques de gènere i de nombre | Quin és el femení de «gendre»? | la jove o la nora | Femení amb paraula diferent i poc usada |
 | `generes/1` | Els gèneres literaris: vers i prosa | Quins són els quatre grans gèneres literaris? | Poesia, narrativa, teatre i assaig | Distractor barreja gèneres i subgèneres reals |
 | `generes/7` | Els gèneres literaris: vers i prosa | Un poema narra la història llegendària d'uns herois excepcionals. Quin subgènere és? | Èpica | Èpica i lírica es confonen |
-| `invariables/1` | Els noms invariables | Quin és el plural de «llapis»? | llapis | Excepció: llapis no canvia en plural |
 | `invariables/7` | Els noms invariables | Quina d'aquestes professions té una sola forma per als dos gèneres? | fisioterapeuta | Àrbitre i ministre sí que tenen femení |
 | `invariables/8` | Els noms invariables | A «el pilot / la pilot», què ens diu el gènere? | Només l'article | Gènere marcat només per l'article; encert real 40 % |
-| `literatura/6` | La literatura: l'art de la paraula | Què fa Maria Dolors Alibés per parlar dels bons records? | Els compara amb roses que punxen | Depèn d'un text concret; encert real 60 % |
 | `nom/4` | El nom i el sintagma nominal | A «un sobre groguenc», què és «groguenc»? | El complement | Complement o especificador; encert real 56 % (9 respostes) |
 | `nom/7` | El nom i el sintagma nominal | Quin és el nucli de «una pregunta difícil de respondre»? | pregunta | Nucli amb complement llarg que despista |
 | `oral/8` | La literatura oral tradicional | Com eren els primers textos literaris? | Textos no escrits | Distractor «en vers» molt plausible; encert real 50 % |

@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="abe7326d69",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1fe190021a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -674,7 +674,7 @@ const T=[
   q:[["El femenino de «caballo» es «yegua». ¿Qué tipo de cambio es?",["Terminación variable","Heterónimo","Invariable"],1,"Son palabras totalmente distintas."],
      ["¿Cuál es el masculino de «baronesa»?",["barones","barón","baronés"],1,"«Barones» es el plural de barón."],
      ["¿Cuál es la forma correcta?",["la calor","el calor","los calor"],1,"En castellano «calor» es masculino."],
-     ["¿Cómo se forma el plural de «club»?",["clubes","clubs nunca","club no tiene plural"],0,"Unas palabras extranjeras añaden -es (clubes) y otras -s (récords)."],
+     ["¿Cómo se forma el plural de «club»?",["clubes (o clubs)","clubos","club no tiene plural"],0,"Unas palabras extranjeras añaden -es (clubes) y otras -s (récords)."],
      ["¿Qué grupo concuerda bien?",["unas gatas negro","unos gatos negros","un gatos negro"],1,"Mismo género y número en todo el grupo."],
      ["¿Cuál es el femenino de «escritor»?",["escritora","escritriz","la escritor"],0,"Es de terminación variable: escritor, escritora, igual que chico, chica."],
      ["¿Qué forma es correcta en castellano?",["la costumbre","el costumbre","lo costumbre"],0,"En castellano «costumbre» es femenino, aunque en catalán sea «el costum»."],
@@ -776,7 +776,7 @@ const T=[
   truc:"Mito = mandan los dioses. Leyenda = algo real + un toque mágico (Sant Jordi existió... el dragón, ya me dirás).",
   compte:"No confundas mito y leyenda: el mito va de dioses; la leyenda parte de algo real.",
   fc:[["¿Qué es una fábula?","Un cuento protagonizado por animales."],["Mito: ¿quién lo protagoniza?","Dioses, héroes o monstruos."],["Leyenda de Cataluña del libro","Sant Jordi."],["¿Cómo se divide una novela?","En capítulos."],["Recopiladores de cuentos populares","Grimm, Perrault, Andersen."]],
-  q:[["Hércules y el Minotauro aparecen en...",["mitos","leyendas","fábulas"],0,"Son seres sobrenaturales de la mitología grecolatina."],
+  q:[["Teseo y el Minotauro aparecen en...",["mitos","leyendas","fábulas"],0,"Son seres sobrenaturales de la mitología grecolatina."],
      ["La historia de Sant Jordi es...",["un mito","una leyenda","una novela"],1,"Parte de un personaje con elementos sobrenaturales."],
      ["Un cuento protagonizado por animales es...",["una fábula","una tragedia","una leyenda"],0,"Las fábulas suelen dejar una enseñanza."],
      ["¿Qué narración es más larga y se divide en capítulos?",["El cuento","La novela","La fábula"],1,"La novela es extensa y compleja."],
@@ -834,11 +834,11 @@ const T=[
   fc:[["Tres cuantificadores no numerales","Algún, mucho, poco (bastante, otro, varios)."],["¿Cómo se escribe 36?","Treinta y seis."],["¿Cómo se escribe 23?","Veintitrés."],["¿«Primero» es determinante?","No, es un ordinal."],["En «¿Cuántos goles habéis marcado?», ¿qué se subraya?","Solo «Cuántos»."]],
   q:[["En «¿Cuántos goles habéis marcado?», ¿cuál es el determinante interrogativo?",["Cuántos","habéis","goles"],0,"Va delante del sustantivo «goles». «Habéis» es un verbo."],
      ["¿Cuál es un cuantificador no numeral?",["bastante","la","primero"],0,"Indica una cantidad imprecisa."],
-     ["¿Cómo se escribe el número 36?",["treintaiséis","treinta y seis","treinta seis"],1,"Desde el 31, en dos palabras con «y»."],
+     ["¿Cómo se escribe el número 36?",["treinta i seis","treinta y seis","treinta seis"],1,"Desde el 31, en dos palabras con «y»."],
      ["En «¿Quién ha venido?», «quién» es...",["determinante","pronombre","artículo"],1,"No va delante de un sustantivo."],
      ["En «Algunas niñas juegan con otras compañeras», los cuantificadores no numerales son...",["Algunas y otras","niñas y compañeras","juegan y con"],0,"Los dos van delante de un sustantivo e indican cantidad imprecisa."],
      ["¿Cómo se escribe el número 23?",["veintitres","veinte y tres","veintitrés"],2,"Hasta el 30 va en una palabra, y veintitrés lleva tilde."],
-     ["¿«Primero» es un determinante?",["Sí, es un numeral cardinal","No: es un ordinal","Sí, es un cuantificador no numeral"],1,"Los ordinales como primero no son determinantes."],
+     ["¿Qué clase de numeral es «primero»?",["Cardinal","Ordinal","Partitivo"],1,"«Primero» indica el orden: es un numeral ordinal."],
      ["En «¡Cuánta gente hay!», «cuánta» es un determinante...",["interrogativo","numeral","exclamativo"],2,"Va delante de «gente» y llama la atención con exclamación."]]},
  {id:"polisemia",ic:"🔀",col:"#0f766e",titol:"Polisemia y monosemia",font:"Tema 3 · p. 92",
   idea:"Una palabra polisémica tiene varios significados y el contexto elige cuál; una monosémica tiene uno solo.",
@@ -910,8 +910,8 @@ const OB=[
 ASSIG.boss={nom:"El Monstruo de las Faltas",spr:"monstre"};
 
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}];
-const QIDS={"texto":[1,2,3,4,5,6,7,8],"tipos":[1,2,3,4,5,6,7,8],"sustantivo":[1,2,3,4,5,6,7,8],"genero":[1,2,3,4,5,6,7,8],"diccionario":[1,2,3,4,5,6,7,8],"puntuacion":[1,2,3,4,5,6,7,8],"noticia":[1,2,3,4,5,6,7,8],"fake":[1,2,3,4,5,6,7,8],"lirica":[1,2,3,4,5,6,7,8],"narrativa":[1,2,3,4,5,6,7,8],"articulos":[1,2,3,4,5,6,7,8],"demostrativos":[1,2,3,4,5,6,7,8],"cuantificadores":[1,2,3,4,5,6,7,8],"polisemia":[1,2,3,4,5,6,7,8],"letrab":[1,2,3,4,5,6,7,8]};
-const QDIF={"articulos/6":3,"articulos/8":3,"cuantificadores/4":3,"cuantificadores/6":3,"cuantificadores/7":3,"demostrativos/3":3,"demostrativos/4":3,"demostrativos/7":3,"diccionario/3":3,"diccionario/4":3,"genero/1":3,"genero/3":3,"genero/4":3,"letrab/3":3,"letrab/4":3,"lirica/6":3,"narrativa/6":3,"noticia/6":3,"polisemia/2":3,"puntuacion/3":3,"puntuacion/4":3,"puntuacion/5":3,"sustantivo/4":3,"sustantivo/8":3,"texto/8":3,"tipos/2":3};
+const QIDS={"texto":[1,2,3,4,5,6,7,8],"tipos":[1,2,3,4,5,6,7,8],"sustantivo":[1,2,3,4,5,6,7,8],"genero":[1,2,3,4,5,6,7,8],"diccionario":[1,2,3,4,5,6,7,8],"puntuacion":[1,2,3,4,5,6,7,8],"noticia":[1,2,3,4,5,6,7,8],"fake":[1,2,3,4,5,6,7,8],"lirica":[1,2,3,4,5,6,7,8],"narrativa":[9,2,3,4,5,6,7,8],"articulos":[1,2,3,4,5,6,7,8],"demostrativos":[1,2,3,4,5,6,7,8],"cuantificadores":[1,2,3,4,5,6,9,8],"polisemia":[1,2,3,4,5,6,7,8],"letrab":[1,2,3,4,5,6,7,8]};
+const QDIF={"articulos/6":3,"articulos/8":3,"cuantificadores/4":3,"cuantificadores/6":3,"cuantificadores/9":3,"demostrativos/3":3,"demostrativos/4":3,"demostrativos/7":3,"diccionario/3":3,"diccionario/4":3,"genero/1":3,"genero/3":3,"letrab/3":3,"letrab/4":3,"lirica/6":3,"narrativa/6":3,"noticia/6":3,"polisemia/2":3,"puntuacion/3":3,"puntuacion/4":3,"puntuacion/5":3,"sustantivo/4":3,"sustantivo/8":3,"texto/8":3,"tipos/2":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("logoic").textContent=ASSIG.ic;

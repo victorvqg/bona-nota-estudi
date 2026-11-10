@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="abe7326d69",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1fe190021a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -667,10 +667,10 @@ const T=[
    "Sabies que…? La llum del Sol triga uns 8 minuts a arribar a la Terra. (De regal: no cau a l'examen.)"],
   truc:"Geo vol dir «Terra» (com geografia). Model geocèntric = la Terra al centre. I l'any llum porta «any» però és una distància!",
   compte:"L'any llum NO és un temps: és una distància.",
-  fc:[["Què és l'Univers?","Tot el que existeix: matèria, energia, espai i temps."],["Qui va crear el model geocèntric?","Ptolemeu, a l'antiga Grècia."],["Què deia el model geocèntric?","Que la Terra era el centre i tot girava al seu voltant."],["Fins quan es va fer servir?","Del segle II al segle XVI."],["Què és un any llum?","La distància que recorre la llum en un any (uns 10 bilions de km)."],["Per a què serveix l'any llum?","Per mesurar distàncies dins i entre galàxies."]],
+  fc:[["Què és l'Univers?","Tot el que existeix: matèria, energia, espai i temps."],["Qui va crear el model geocèntric?","Ptolemeu, un astrònom grec que vivia a Alexandria al segle II."],["Què deia el model geocèntric?","Que la Terra era el centre i tot girava al seu voltant."],["Fins quan es va fer servir?","Del segle II al segle XVI."],["Què és un any llum?","La distància que recorre la llum en un any (uns 10 bilions de km)."],["Per a què serveix l'any llum?","Per mesurar distàncies dins i entre galàxies."]],
   q:[["Què deia el model geocèntric?",["Que la Terra era el centre i tot girava al seu voltant","Que el Sol era el centre de tot","Que la Via Làctia era el centre de tot"],0,"Geo vol dir «Terra»: la Terra al centre i tot girant al seu voltant."],
      ["Un any llum és…",["Un temps","Una velocitat","Una distància"],2,"Porta «any» però és la distància que recorre la llum en un any."],
-     ["Qui va crear el model geocèntric?",["Un astrònom del segle XXI","Ptolemeu, a l'antiga Grècia","Ptolemeu, al segle XVI"],1,"El va crear Ptolemeu a l'antiga Grècia."],
+     ["Qui va crear el model geocèntric?",["Un astrònom del segle XXI","Ptolemeu, astrònom grec d'Alexandria (segle II)","Ptolemeu, al segle XVI"],1,"El va crear Ptolemeu, un astrònom grec que vivia a Alexandria al segle II."],
      ["Per a què serveix l'any llum?",["Per mesurar quants anys fa que brilla una estrella","Per mesurar el temps que triga la llum","Per mesurar distàncies dins i entre galàxies"],2,"Les distàncies a l'espai són tan grans que es mesuren en anys llum."],
      ["Què inclou l'Univers?",["Només les estrelles i els planetes","Només el sistema solar i el Sol","Matèria, energia, espai i temps"],2,"L'Univers és el conjunt de tot el que existeix."],
      ["Durant quins segles es va fer servir el model geocèntric?",["Del segle XVI al segle XX","Del segle II al segle XVI","Del segle I al segle II"],1,"Es va fer servir des del segle II fins al segle XVI."],

@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="abe7326d69",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1fe190021a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -734,7 +734,7 @@ const T=[
   ["El Vendrell és la capital de…",["el Baix Penedès","l'Alt Penedès","el Garraf"],0,"Del Baix Penedès, que toca la demarcació de Barcelona."],
   ["Quina és la capital del Baix Ebre?", ["Amposta", "Tortosa", "Móra d'Ebre"], 1, "Tortosa. Amposta és del Montsià i Móra d'Ebre, de la Ribera d'Ebre."],
   ["Valls és la capital de…", ["l'Alt Camp", "el Baix Camp", "la Conca de Barberà"], 0, "De l'Alt Camp. La Conca de Barberà té Montblanc."],
-  ["En quina comarca hi ha el delta de l'Ebre?", ["Montsià", "Priorat", "Terra Alta"], 0, "Al Montsià (capital Amposta), a la desembocadura del riu."]]},
+  ["En quina d'aquestes comarques hi ha part del delta de l'Ebre?", ["Montsià", "Priorat", "Terra Alta"], 0, "Al Montsià (capital Amposta), a la desembocadura del riu."]]},
 {id:"trucs",ic:"🧠",col:"#F39C12",titol:"Trucs i paranys de les capitals",font:"Comarques · trucs i errors",
  idea:"No cal empollar 43 noms a cegues: hi ha capitals regalades, parelles Alt/Baix i uns quants paranys que cal vigilar.",
  pts:["<b>Regalades</b> (el nom s'assembla): Girona → Gironès, Tarragona → Tarragonès, Barcelona → Barcelonès, Solsona → Solsonès, Ripoll → Ripollès, Moià → Moianès, Berga → Berguedà.",
@@ -1014,8 +1014,8 @@ const MAPA={w:600,h:640,c:[[1,"M227.3,388.8L233.2,383.8L237.1,386.7L243.8,383.2L
 ASSIG.boss={nom:"El Drac de les Comarques",spr:"monstre"};
 
 const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}];
-const QIDS={"comarca":[1,2,3,4,5,6,7,8],"provincia":[1,2,3,4,5,6,7,8],"bcn":[1,2,3,4,5,6,7,8],"gir":[1,2,3,4,5,6,7,8],"lle":[1,2,3,4,5,6,7,8],"tgn":[1,2,3,4,5,6,7,8],"trucs":[1,2,3,4,5,6,7,8],"j-capses":[1,2,3,4]};
-const QDIF={"bcn/4":3,"bcn/8":3,"comarca/7":3,"gir/2":3,"gir/3":3,"lle/3":3,"lle/7":3,"provincia/4":3,"provincia/6":3,"tgn/4":3,"tgn/5":3,"tgn/8":3,"trucs/4":3};
+const QIDS={"comarca":[1,2,3,4,5,6,7,8],"provincia":[1,2,3,4,5,6,7,8],"bcn":[1,2,3,4,5,6,7,8],"gir":[1,2,3,4,5,6,7,8],"lle":[1,2,3,4,5,6,7,8],"tgn":[1,2,3,4,5,6,7,9],"trucs":[1,2,3,4,5,6,7,8],"j-capses":[1,2,3,4]};
+const QDIF={"bcn/4":3,"bcn/8":3,"gir/2":3,"gir/3":3,"lle/3":3,"lle/7":3,"provincia/4":3,"provincia/6":3,"tgn/4":3,"tgn/5":3,"tgn/9":3,"trucs/4":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));
 document.getElementById("logoic").textContent=ASSIG.ic;
