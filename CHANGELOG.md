@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.26.0 · 2026-11-11
+
+### Afegit
+- **Mode tast anònim** a la portada, als 7 mons, a la guia de famílies i al perfil (`index.html`, `motor/plantilla-estudi-interactiu.html`, `pares/index.html`, `perfil/index.html`, `supabase/bn_ranking_net.sql`, `motor/prova-tast.js`, `docs/superpowers/specs/2026-11-11-mode-tast-anonim-design.md` · g10):
+  - **Tres portes d'entrada sense compte ni PIN**: botó «👀 Fes un tast sense compte (anònim)» a la portada (`/?tast=1`), «👀 Tasta aquest món sense compte (anònim)» a la benvinguda de cada món (`/<mon>/?tast=1`) i «👀 Tasta un món per dins (sense registrar-te)» des de `/pares/`.
+  - **Mostra controlada dins de cada món**: obre sencers el **Tema 1** (fitxa, targetes i 5 preguntes de mostra explicades sense rellotge d'avanç), el **primer joc** del món (`ASSIG.jocs[0]`) i l'enunciat de mostra de la **primera pregunta oberta** (`OB[0]`, només lectura); la resta de temes, jocs, exàmens i el Boss conviden amablement a entrar amb nom i PIN (`convidaPin()`).
+  - **100 % anònim, zero rànquing i zero petjada a l'aparell**: no envia res a `bn_log` ni a cap RPC d'usuari, no desa estrelles (`suma()` no acumula punts), mostra el xat en mode lectura, viu només a `sessionStorage` mentre la pestanya és oberta (respectant intactes els noms desats dels germans i el topall de 2 perfils per aparell) i reserva al client i a la base de dades (`bn_priv.nom_prohibit`) els noms genèrics (`_…`, `tast`, `convidat`, `anònim`, `visitant`, `guest`).
+  - **Documentació i guia per a famílies**: explicació completa del mode tast anònim a `README.md`, `docs/BON-US.md`, `docs/ESTAT.md` i `pares/index.html` (`#privadesa` i `#dubtes`).
+
 ## 2.25.0 · 2026-11-11
 
 ### Afegit

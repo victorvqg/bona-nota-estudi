@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e4f1f5b0a4",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="474e801ad4",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -584,6 +584,9 @@ h1 span{display:inline-block}
 .en-camps input:focus{outline:none;border-color:#facc15;box-shadow:0 0 0 4px #facc1555}
 .en-bt{font-family:'Press Start 2P',monospace;font-size:14px;color:#1e1b4b;background:#facc15;border:0;border-radius:14px;padding:14px;cursor:pointer;box-shadow:0 4px 0 #b91c1c}
 .en-bt:active{transform:translateY(2px);box-shadow:0 2px 0 #b91c1c}
+.en-tast{font:inherit;font-weight:800;font-size:14.5px;color:#e0e7ff;background:#ffffff14;border:1.5px solid #ffffff40;border-radius:12px;padding:10px 12px;cursor:pointer;transition:border-color .15s,background .15s}
+.en-tast:hover{border-color:#facc15;background:#ffffff24;color:#fff}
+.en-avis-lk{font:inherit;font-weight:900;color:#fde68a;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
 .en-avis:empty{display:none}
 .en-avis{font-weight:800;font-size:14.5px;color:#fecaca;background:#7f1d1d99;border-radius:10px;padding:8px 10px}
 .en-avis.ok{color:#d9f99d;background:#14532d99}
@@ -591,6 +594,11 @@ h1 span{display:inline-block}
 .entrada.tremola{animation:tremolaEn .4s}
 @keyframes tremolaEn{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .hola .canvia{font:inherit;font-weight:800;font-size:13px;color:#c7d2fe;background:none;border:1px solid #ffffff40;border-radius:999px;padding:3px 10px;margin-left:8px;cursor:pointer;vertical-align:middle}
+.hola-tast{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;max-width:740px;background:#172554cc;border:1.5px solid #38bdf8;border-radius:16px;padding:10px 14px;font-size:14.5px;line-height:1.4;color:#e0f2fe}
+.hola-tast b{color:#fde68a}
+.hola-tast-acc{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.hola-tast-entra{font:inherit;font-weight:900;font-size:13px;color:#1e1b4b;background:#facc15;border:0;border-radius:999px;padding:5px 12px;cursor:pointer;box-shadow:0 2px 0 #b45309}
+main.en-tast .prog.on{display:none}
 .tria{margin-top:18px;font-family:'Press Start 2P',monospace;font-size:clamp(12px,3vw,16px);color:#facc15;text-shadow:2px 2px 0 #b91c1c;animation:triaBota 1.2s ease-in-out infinite}
 .tria[hidden]{display:none}
 @keyframes triaBota{50%{transform:translateY(6px)}}
@@ -696,7 +704,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <li><b>📊 Com vaig</b>: mira on encertes més, on et costa i què et toca repassar.</li>
    <li><b>🏆 Rànquing</b>: mira com vas amb la colla.</li>
   </ul>
-  <p class="peu-intro">Escriu el teu nom i el teu PIN per començar. Amb el PIN pots continuar des de qualsevol mòbil, tauleta o ordinador. <a href="pares/" style="color:var(--groc);font-weight:900">👨‍👩‍👧 Guia per a les famílies →</a></p>
+  <p class="peu-intro">Escriu el teu nom i el teu PIN per començar (o fes un <b>tast anònim sense compte</b> per provar un món per dins). Amb el PIN pots continuar des de qualsevol mòbil, tauleta o ordinador. <a href="pares/" style="color:var(--groc);font-weight:900">👨‍👩‍👧 Guia per a les famílies →</a></p>
  </div>
  <div class="hola" id="hola"></div>
  <form class="entrada" id="entrada" autocomplete="off" hidden>
@@ -705,6 +713,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
   <div class="en-camps"><input id="enNom" maxlength="20" placeholder="El teu nom"><input id="enPin" class="pin-in" maxlength="5" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="PIN" aria-label="PIN (4 números i 1 lletra)"></div>
   <div class="en-avis" id="enAvis" role="status"></div>
   <button class="en-bt" type="submit">Entra ▶</button>
+  <button class="en-tast" id="btTastPortada" type="button">👀 Fes un tast sense compte (anònim)</button>
   <p class="en-peu">El PIN són <b>4 números i 1 lletra al final</b> (per exemple 4587R). El primer cop, inventa-te'n un i recorda'l: amb el PIN continues des de qualsevol aparell.</p>
  </form>
  <div class="tria" id="tria" hidden>👇 Ara tria el teu món 👇</div>
@@ -818,7 +827,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.25.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.26.0</small></footer>
 
 <script src="sprites.js?v=0be9e885"></script>
 <script>
@@ -873,23 +882,36 @@ const bnSo=(()=>{let ctx=null,armat=false,tocat=false,volOn=true,mut=null;const 
 (function(){const c=document.getElementById('cel');let h='';for(let i=0;i<90;i++){const s=Math.random()<.15?4:Math.random()<.5?2:3;
  h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
 // progrés guardat per cada assignatura (mateix navegador)
+let TAST_ACTIU=false,MOSTRA_FORM=false;
+(function(){try{const u=new URLSearchParams(location.search),g=localStorage.getItem('bn_jugador')||'';TAST_ACTIU=u.get('tast')==='1'||(!g&&sessionStorage.getItem('bn_tast')==='1');if(TAST_ACTIU)sessionStorage.setItem('bn_tast','1')}catch(e){}})();
+function tastActiu(){return TAST_ACTIU}
+function fixaUrlTast(on){try{const u=new URL(location.href);if(on)u.searchParams.set('tast','1');else u.searchParams.delete('tast');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}catch(e){}}
+function refrescaJugaTargetes(){const tast=tastActiu();document.querySelectorAll('main .as[data-id]').forEach(a=>{const jSpan=a.querySelector('.juga span');if(!jSpan)return;if(!a.dataset.jugaBase)a.dataset.jugaBase=jSpan.textContent;if(a.classList.contains('mon-tancat')){jSpan.textContent='🔒 TANCAT';return}jSpan.textContent=tast?'TASTA ▶':a.dataset.jugaBase})}
+function activaTastPortada(ambScroll){TAST_ACTIU=true;MOSTRA_FORM=false;try{sessionStorage.setItem('bn_tast','1')}catch(e){}fixaUrlTast(true);pintaHola();if(ambScroll){const m=document.querySelector('main');m.classList.remove('ilumina');void m.offsetWidth;m.classList.add('ilumina');setTimeout(()=>document.getElementById('tria').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'}),120)}}
+function surtTastPortada(obreForm){TAST_ACTIU=false;MOSTRA_FORM=!!obreForm;try{sessionStorage.removeItem('bn_tast')}catch(e){}fixaUrlTast(false);pintaHola();if(obreForm){const f=document.getElementById('entrada'),iN=document.getElementById('enNom');if(f)f.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});if(iN)setTimeout(()=>iN.focus(),80)}}
 (function(){let nom='',G='';try{G=localStorage.getItem('bn_jugador')||''}catch(e){}const pintades=[];
  document.querySelectorAll('.as[data-clau]').forEach(a=>{try{
   const cl=a.dataset.clau+'_',per=JSON.parse(localStorage.getItem(cl+'perfils')||'{}')||{},S=G?per[Object.keys(per).find(x=>x.toLowerCase()===G.toLowerCase())]:null;
   if(!S)return;nom=nom||S.nom;
   const total=+a.dataset.temes||1,fets=Object.values(S.temes||{}).filter(t=>t&&t.intents&&t.intents.length&&Math.max(...t.intents.map(i=>i.pc))>=70).length,pc=Math.min(100,Math.round(fets/total*100));
   const p=a.querySelector('.prog');p.classList.add('on');p.querySelector('.pt').textContent=`⭐ ${S.punts||0} punts`;p.querySelector('.pc').textContent=`✅ ${fets}/${total} aprovats`;
-  a.querySelector('.juga span').textContent='CONTINUA ▶';requestAnimationFrame(()=>setTimeout(()=>p.querySelector('.barra i').style.width=pc+'%',500));
+  a.querySelector('.juga span').textContent='CONTINUA ▶';a.dataset.jugaBase='CONTINUA ▶';requestAnimationFrame(()=>setTimeout(()=>p.querySelector('.barra i').style.width=pc+'%',500));
   pintades.push([a,+S.reinici||0]);
  }catch(e){}});
  iniciEntrada();
  // si l'admin ha esborrat el progrés d'un món (supabase/bn_admin_reinicia.sql), el que hi ha desat aquí d'abans del reinici no es mostra
  // (el món el buidarà del tot quan s'obri). bn_reinicis torna {món: ms, "*": ms}.
- if(G&&pintades.length&&/^https?:/.test(location.protocol))setTimeout(()=>rpcP('bn_reinicis',{p_nom:G}).then(ri=>{if(!ri||typeof ri!=='object')return;
+ if(!tastActiu()&&G&&pintades.length&&/^https?:/.test(location.protocol))setTimeout(()=>rpcP('bn_reinicis',{p_nom:G}).then(ri=>{if(!ri||typeof ri!=='object')return;
   pintades.forEach(([a,r])=>{if(r>=Math.max(+ri[a.dataset.id]||0,+ri['*']||0))return;
-   const p=a.querySelector('.prog');p.classList.remove('on');p.querySelector('.barra i').style.width='0';a.querySelector('.juga span').textContent='JUGA ▶'})}).catch(()=>{}),0);
+   const p=a.querySelector('.prog');p.classList.remove('on');p.querySelector('.barra i').style.width='0';a.dataset.jugaBase='JUGA ▶';refrescaJugaTargetes()})}).catch(()=>{}),0);
 })();
 // ---- entrada: el nen escriu el nom (i el PIN) i de seguida tria el món ----
+function nomProhibit(n){
+ if(!/^[A-Za-zÀ-ÿ0-9]+( [A-Za-zÀ-ÿ0-9]+)*$/.test(n)||!/[A-Za-zÀ-ÿ]/.test(n)||n.length<2)return true;
+ const s=n.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+ if(/^_|^(tast|convidat|anonim|visitant|guest|demo_tast)$/.test(s))return true;
+ return /(puta|puto|merda|mierda|caca|cul\b|culo|polla|pito|teta| cony|cono|joder|hostia|ostia|cabro|imbecil|idiota|tonto|tonta|gilipoll|marica|maricon|foll|porn|sexe|sexo|pene|vagin|hitler|nazi|matar|mort\b|muerte|suicid|drog|cerdo|cerda|burro|burra|zorra|perra|mamona|pendej|chinga|verga|carajo|cojon|collon|capull|subnormal|retrasad|mongol|petard|bitch|fuck|shit|dick|cock|pussy|asshole|cunt|nigga|nigger|whore|slut)/.test(" "+s+" ");
+}
 function jugador(){try{return localStorage.getItem('bn_jugador')||''}catch(e){return ''}}
 function pinsP(){try{return JSON.parse(localStorage.getItem('bn_pins')||'{}')||{}}catch(e){return {}}}
 function nomsDispositiu(){const m={};try{(JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[]).forEach(n=>{m[n.trim().toLowerCase()]=n});
@@ -900,25 +922,38 @@ function rpcP(f,body){return fetch("https://agippwtqvhpxdockuigl.supabase.co/res
 const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
 function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
 function estrellesTotals(nom){let tot=0;if(!nom)return 0;try{document.querySelectorAll('.as[data-clau]').forEach(a=>{const ps=JSON.parse(localStorage.getItem(a.dataset.clau+'_perfils')||'{}'),k=Object.keys(ps).find(x=>x.trim().toLowerCase()===nom.trim().toLowerCase()),S=k?ps[k]:null;if(S&&S.punts>0)tot+=S.punts})}catch(e){}return tot}
-function pintaHola(){const G=jugador(),h=document.getElementById('hola'),f=document.getElementById('entrada'),t=document.getElementById('tria'),m=document.querySelector('main');
- if(G){const tot=estrellesTotals(G),btEst=tot>0?` <button class="hola-est" id="enEst" type="button" title="Obre el rànquing">⭐ ${tot}</button>`:'';
+function pintaHola(){const G=jugador(),tast=tastActiu(),h=document.getElementById('hola'),f=document.getElementById('entrada'),t=document.getElementById('tria'),m=document.querySelector('main');
+ m.classList.toggle('en-tast',tast);refrescaJugaTargetes();
+ if(tast){
+  h.innerHTML=`<span class="hola-tast"><span>👀 <b>Mode tast anònim</b> · Cap estrella ni nom es guarda ni surt al rànquing</span><span class="hola-tast-acc"><button class="hola-tast-entra" id="enTastEntra" type="button">🔐 Entra amb nom i PIN</button><button class="canvia" id="enTastSurt" type="button" style="margin-left:0">✕ Surt del tast</button></span></span>`;
+  f.hidden=true;t.hidden=false;t.textContent='👇 Tria un món per fer-ne un tast 👇';m.classList.remove('bloc');
+  document.getElementById('enTastEntra').onclick=()=>surtTastPortada(true);
+  document.getElementById('enTastSurt').onclick=()=>surtTastPortada(false);
+  return}
+ t.textContent='👇 Ara tria el teu món 👇';
+ if(G&&!MOSTRA_FORM){const tot=estrellesTotals(G),btEst=tot>0?` <button class="hola-est" id="enEst" type="button" title="Obre el rànquing">⭐ ${tot}</button>`:'';
   h.innerHTML=`${avHtml(G,'hola-av')}Hola, <em>${G.replace(/[<>&]/g,'')}</em>! 👋${btEst} <a class="hola-perfil" href="perfil/" title="Tria el teu animal i el teu perfil arcade">👾 Perfil</a> <button class="canvia" id="enCanvia" type="button">No ets tu?</button>`;f.hidden=true;t.hidden=false;m.classList.remove('bloc');
   document.getElementById('enCanvia').onclick=()=>{try{localStorage.removeItem('bn_jugador')}catch(e){}location.reload()};
   const eB=document.getElementById('enEst');if(eB)eB.onclick=()=>document.getElementById('btHs').click()}
  else{h.innerHTML='';f.hidden=false;t.hidden=true;m.classList.add('bloc')}}
 function iniciEntrada(){
- const f=document.getElementById('entrada'),iN=document.getElementById('enNom'),iP=document.getElementById('enPin'),av=document.getElementById('enAvis'),ns=document.getElementById('enNoms');
+ const f=document.getElementById('entrada'),iN=document.getElementById('enNom'),iP=document.getElementById('enPin'),av=document.getElementById('enAvis'),ns=document.getElementById('enNoms'),btTast=document.getElementById('btTastPortada');
+ if(btTast)btTast.onclick=()=>activaTastPortada(true);
  const noms=Object.values(nomsDispositiu());
  ns.innerHTML=noms.map(n=>`<button type="button" data-n="${n.replace(/"/g,'&quot;')}">${n.replace(/[<>&]/g,'')}</button>`).join('');
  ns.querySelectorAll('button').forEach(b=>b.onclick=()=>{iN.value=b.dataset.n;ns.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));iP.value='';iP.focus()});
  const err=(m,el)=>{av.className='en-avis';av.textContent=m;f.classList.remove('tremola');void f.offsetWidth;f.classList.add('tremola');(el||iN).focus()};
+ const errTast=()=>{av.className='en-avis';av.innerHTML=`👆 Primer escriu el teu nom i el PIN — o <button type="button" class="en-avis-lk" id="enAvisTast">fes un tast anònim 👀</button>.`;document.getElementById('enAvisTast').onclick=()=>{av.textContent='';activaTastPortada(true)};f.classList.remove('tremola');void f.offsetWidth;f.classList.add('tremola');iN.focus()};
  iP.oninput=()=>{iP.value=netPin(iP.value);av.textContent=''};iN.oninput=()=>{av.textContent=''};
- const dins=n=>{try{localStorage.setItem('bn_jugador',n);const l=JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem('bn_noms_aparell',JSON.stringify(l))}}catch(e){}
+ const dins=n=>{TAST_ACTIU=false;MOSTRA_FORM=false;try{sessionStorage.removeItem('bn_tast')}catch(e){}fixaUrlTast(false);
+  try{localStorage.setItem('bn_jugador',n);const l=JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem('bn_noms_aparell',JSON.stringify(l))}}catch(e){}
   pintaHola();const m=document.querySelector('main');m.classList.remove('ilumina');void m.offsetWidth;m.classList.add('ilumina');
   setTimeout(()=>document.getElementById('tria').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'}),150)};
  const desaPinP=(n,p)=>{const x=pinsP();x[n.trim().toLowerCase()]=p;try{localStorage.setItem('bn_pins',JSON.stringify(x))}catch(e){}};
  f.onsubmit=async e=>{e.preventDefault();let n=iN.value.trim().replace(/\s+/g,' ');if(!n)return err('Escriu el teu nom.');
-  n=n.charAt(0).toUpperCase()+n.slice(1);const p=netPin(iP.value);
+  n=n.charAt(0).toUpperCase()+n.slice(1);
+  if(nomProhibit(n))return err('🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.');
+  const p=netPin(iP.value);
   const coneguts=nomsDispositiu(),local=coneguts[n.toLowerCase()];if(local)n=local;
   if(!local&&Object.keys(coneguts).length>=2)return err(`📵 En aquest aparell ja hi ha 2 noms (${Object.values(coneguts).join(' i ')}). Toca el teu nom per entrar.`);
   if(!PIN_NOU.test(p)&&!PIN_VELL.test(p))return err(`🔢 Escriu el PIN: 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,iP);
@@ -949,27 +984,26 @@ function iniciEntrada(){
      const x=pinsP();delete x[n.toLowerCase()];try{localStorage.setItem('bn_pins',JSON.stringify(x));localStorage.removeItem('bn_jugador')}catch(er){}
      pop.hidden=true;pintaHola();iN.value=n;iP.value='';av.className='en-avis';av.textContent='🔐 Sembla que ja havies canviat el PIN en un altre aparell. Entra amb el PIN nou.';iP.focus();return}
     ko(m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':m==='pinfmt'?`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió i ara no es pot canviar el PIN.');if(m==='xarxa')ara.hidden=false}}}
- setTimeout(()=>{const G=jugador(),pg=G&&pinsP()[G.toLowerCase()];let aj=false;try{aj=sessionStorage.getItem('bn_pin_ajorna')==='1'}catch(e){}if(G&&PIN_VELL.test(pg||'')&&!aj)demanaNouPin(G,()=>{})},0);
+ setTimeout(()=>{if(tastActiu())return;const G=jugador(),pg=G&&pinsP()[G.toLowerCase()];let aj=false;try{aj=sessionStorage.getItem('bn_pin_ajorna')==='1'}catch(e){}if(G&&PIN_VELL.test(pg||'')&&!aj)demanaNouPin(G,()=>{})},0);
  // mons tancats des de l'admin (bn_estat_web) i avís si un nen hi fa clic; el rànquing conserva totes les estrelles
  let tToast=null;
  const avisMonTancat=msg=>{let el=document.getElementById('monTancatToast');if(!el){el=document.createElement('div');el.id='monTancatToast';el.className='mon-tancat-toast';el.setAttribute('role','status');document.body.appendChild(el)}
   el.textContent=msg;el.classList.add('vis');clearTimeout(tToast);tToast=setTimeout(()=>el.classList.remove('vis'),3200)};
  const aplicaMonsTancats=llista=>{
   const tancats=new Set(Array.isArray(llista)?llista.map(x=>String(x||'')):[]);
-  try{localStorage.setItem('bn_mons_tancats',JSON.stringify([...tancats]))}catch(e){}
+  if(!tastActiu())try{localStorage.setItem('bn_mons_tancats',JSON.stringify([...tancats]))}catch(e){}
   document.querySelectorAll('main .as[data-id]').forEach(a=>{
-   const id=a.dataset.id,tancat=tancats.has(id),jSpan=a.querySelector('.juga span'),port=a.querySelector('.portada');
+   const id=a.dataset.id,tancat=tancats.has(id),port=a.querySelector('.portada');
    let badge=port&&port.querySelector('.tag-tancat');
    if(tancat){
     a.classList.add('mon-tancat');a.setAttribute('aria-disabled','true');
     if(port&&!badge){badge=document.createElement('span');badge.className='tag-tancat';badge.textContent='🔒 TANCAT';port.appendChild(badge)}
-    if(jSpan){if(!a.dataset.jugaOrig)a.dataset.jugaOrig=jSpan.textContent;jSpan.textContent='🔒 TANCAT'}
    }else{
     a.classList.remove('mon-tancat');a.removeAttribute('aria-disabled');
     if(badge)badge.remove();
-    if(jSpan&&a.dataset.jugaOrig){jSpan.textContent=a.dataset.jugaOrig;delete a.dataset.jugaOrig}
    }
   });
+  refrescaJugaTargetes();
  };
  try{const mem=JSON.parse(localStorage.getItem('bn_mons_tancats')||'[]');if(Array.isArray(mem)&&mem.length)aplicaMonsTancats(mem)}catch(e){}
  if(/^https?:/.test(location.protocol)&&!/[?&]demo\b/.test(location.search)){
@@ -979,10 +1013,11 @@ function iniciEntrada(){
    if(r.xat&&typeof r.xat.actiu==='boolean'&&typeof XAT==='object')XAT.actiu=r.xat.actiu;
   }).catch(()=>{}),0);
  }
- // sense nom, els mons esperen: primer el nom; si el món està tancat, no deixa entrar
+ // sense nom, els mons esperen: primer el nom (o mode tast); si el món està tancat, no deixa entrar
  document.querySelectorAll('main .as[href]').forEach(a=>a.addEventListener('click',e=>{
   if(a.classList.contains('mon-tancat')){e.preventDefault();avisMonTancat('🔒 Aquest món està tancat ara mateix. Tria un altre món!');return}
-  if(jugador())return;e.preventDefault();err('👆 Primer escriu el teu nom i el PIN.');f.scrollIntoView({behavior:'smooth',block:'center'})
+  if(tastActiu()){e.preventDefault();const h=a.getAttribute('href');location.href=h+(h.includes('?')?'&':'?')+'tast=1';return}
+  if(jugador()&&!MOSTRA_FORM)return;e.preventDefault();errTast();f.scrollIntoView({behavior:'smooth',block:'center'})
  }));
  pintaHola();
 }
@@ -1118,13 +1153,13 @@ const fT=s=>{const m=Math.round(s/60);return m<1?"<1 MIN":m>=60?`${Math.floor(m/
 // aspecte triat a perfil/ (animal, insígnia i estil): mapa local bn_aspectes, que es refresca amb bn_aspectes() en obrir el rànquing
 function aspMapa(){try{return JSON.parse(localStorage.getItem("bn_aspectes")||"{}")||{}}catch(e){return {}}}
 function aspecteDe(nom){const a=aspMapa()[String(nom||"").trim().toLowerCase()];return a&&typeof a==="object"?a:null}
-function desaAspectes(llista){const m=aspMapa();(llista||[]).forEach(x=>{if(!x||!x.nom||!x.aspecte||typeof x.aspecte!=="object")return;const k=x.nom.trim().toLowerCase();if(m[k]&&m[k].pendent)return;m[k]=Object.assign({},x.aspecte,{mod:Date.now()})});try{localStorage.setItem("bn_aspectes",JSON.stringify(m))}catch(e){}}
+function desaAspectes(llista){if(tastActiu())return;const m=aspMapa();(llista||[]).forEach(x=>{if(!x||!x.nom||!x.aspecte||typeof x.aspecte!=="object")return;const k=x.nom.trim().toLowerCase();if(m[k]&&m[k].pendent)return;m[k]=Object.assign({},x.aspecte,{mod:Date.now()})});try{localStorage.setItem("bn_aspectes",JSON.stringify(m))}catch(e){}}
 function avatar(nom){let h=7;for(const c of nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;const a=aspecteDe(nom)||{},an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length];
  return {e:bnSpr(an,"av-spr"),c:BN_AV_BG[an],sk:BN_SKILLS[a.sk]?a.sk:"",v:BN_SKILL_VAR_PAL[a.v]?a.v:""}}
 // cercle d'avatar: el dibuix va enganxat a baix i el retalla un element interior (així la corona de fora no es talla); la insígnia va a la cantonada
 function avHtml(nom,cls,dins){const a=avatar(nom),x=t=>String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c])),sk=a.sk?`<span class="av-sk" title="Perfil: ${x(BN_SKILL_INFO[a.sk].n)} · ${x(BN_SKILL_ESTILS[a.v])}">${bnSkillSpr(a.sk,a.v)}</span>`:"";return `<span class="${cls}" style="--av:${a.c}">${dins||""}<span class="av-cl">${a.e}</span>${sk}</span>`}
 // pujades pendents del perfil (desat sense connexió o abans d'aplicar l'SQL): en silenci, en obrir la portada
-(function(){const G=jugador();if(!G||!/^https?:/.test(location.protocol))return;const e=aspecteDe(G),p=pinsP()[G.toLowerCase()];if(!e||!e.pendent||!p)return;
+(function(){if(tastActiu())return;const G=jugador();if(!G||!/^https?:/.test(location.protocol))return;const e=aspecteDe(G),p=pinsP()[G.toLowerCase()];if(!e||!e.pendent||!p)return;
  rpcP("bn_aspecte_desa",{p_nom:G,p_pin:p,p_aspecte:{av:e.av,sk:e.sk,v:e.v||""}}).then(r=>{if(r!=="ok")return;const m=aspMapa();if(m[G.toLowerCase()])delete m[G.toLowerCase()].pendent;try{localStorage.setItem("bn_aspectes",JSON.stringify(m))}catch(x){}}).catch(()=>{})})();
 const spr=(n,cl)=>bnSpr(n,cl),ST=()=>bnSpr("star","st-in"),BR=()=>bnSpr("brain","st-in"),nivIc=n=>bnSpr(BN_NIV[n]);
 document.querySelectorAll("#hsPop [data-spr]").forEach(e=>{e.outerHTML=bnSpr(e.dataset.spr)}); // títol, pestanyes, ✕ i peu
@@ -1172,12 +1207,12 @@ function pintaHs(){
  // pestanya Xat (n2528): el podi és el d'Estrelles (TB), però no desa cap moviment (ni bn_hs_prev_xat ni trepitja bn_hs_prev_punts)
  const XV=HSTAB==="xat",TB=XV?"punts":HSTAB;
  const c=HSCFG[TB],rows=HSD.filter(r=>(r[c.k]||0)>0).sort((a,b)=>(b[c.k]||0)-(a[c.k]||0)||(b.punts||0)-(a.punts||0));
- const meu=DEMO?"laia":((document.querySelector("#hola em")||{}).textContent||"").trim().toLowerCase();
+ const meu=DEMO?"laia":tastActiu()?"":((document.querySelector("#hola em")||{}).textContent||"").trim().toLowerCase();
  const k=r=>r.nom.trim().toLowerCase(),esJo=r=>meu&&k(r)===meu;
  // moviment respecte a l'última vegada que es va mirar el rànquing en aquest aparell (per pestanya)
  let prev={};try{prev=DEMO?(TB==="punts"?DEMO_PREV:{}):JSON.parse(localStorage.getItem("bn_hs_prev_"+TB)||"{}")||{}}catch(e){}
  const hiHavia=Object.keys(prev).length>0,mov=(r,pos)=>!hiHavia?null:prev[k(r)]==null?"nou":prev[k(r)]-pos;
- if(!DEMO&&!XV)try{const nou={};rows.forEach((r,i)=>nou[k(r)]=i+1);localStorage.setItem("bn_hs_prev_"+TB,JSON.stringify(nou))}catch(e){}
+ if(!DEMO&&!XV&&!tastActiu())try{const nou={};rows.forEach((r,i)=>nou[k(r)]=i+1);localStorage.setItem("bn_hs_prev_"+TB,JSON.stringify(nou))}catch(e){}
  const unit=TB==="dies"?" d'estudi":" "+(TB==="remuntada"?BR():ST()),fmt=v=>TB==="dies"?`${v} ${v===1?"dia":"dies"}`:v;
  // ---- 1) podi: només avatar, nom, valor i moviment ----
  const vPodi=r=>TB==="punts"?`<span class="cnt" data-n="${r.punts}">${r.punts}</span> ${ST()}`:TB==="setmana"?`+<span class="cnt" data-n="${r.setmana}">${r.setmana}</span> ${ST()}`:TB==="remuntada"?`<span class="cnt" data-n="${r.apr}">${r.apr}</span> ${BR()}<small>errors apresos</small>`:TB==="dies"?`<span class="cnt" data-n="${r.dies}">${r.dies}</span><small>${r.dies===1?"dia d'estudi":"dies d'estudi"}</small>`:(()=>{const n=niv(r.punts_max);return `${nivIc(n)} ${n+1}<small>${NIV[n][1]}</small>`})();
@@ -1273,7 +1308,7 @@ const META_LLINDAR=30;
 function metaColla(){const tots=(HSD||[]).filter(r=>r.punts>0),n=tots.length,obj=Math.max(3,Math.ceil(n*.75)),qui=tots.filter(r=>(r.setmana||0)>=META_LLINDAR);
  return {n,obj,llindar:META_LLINDAR,fet:qui.length,qui,feta:n>=2&&qui.length>=obj}}
 function setmanaClau(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.toISOString().slice(0,10)}
-function festaMeta(){const k="bn_meta_festa",w=setmanaClau();try{if(localStorage.getItem(k)===w)return;localStorage.setItem(k,w)}catch(e){return}
+function festaMeta(){if(tastActiu())return;const k="bn_meta_festa",w=setmanaClau();try{if(localStorage.getItem(k)===w)return;localStorage.setItem(k,w)}catch(e){return}
  setTimeout(()=>{if(typeof festa==="function"&&!FESTA&&document.querySelector(".hs-caixa"))festa()},1800)}
 const MOBIL=()=>innerWidth<=520||matchMedia("(pointer:coarse)").matches;
 function confetiHs(){const box=document.querySelector(".hs-caixa"),cols=["#facc15","#f472b6","#38bdf8","#4ade80","#fb923c","#a78bfa","#fff"],y0=visHs(box).top-16; // cau des de dalt del que es veu
@@ -1369,12 +1404,12 @@ const XAT_CONTR={"a el":"al","a els":"als","de el":"del","de els":"dels","per el
 const xatFr=id=>XAT.off.f.includes(+id)?null:XAT_FR.find(f=>f.id===+id)||null;
 const xatPc=id=>XAT.off.p.includes(+id)?null:XAT_PC.find(w=>w.id===+id)||XAT.noves.find(w=>w.id===+id)||null;
 const xatFrases=()=>XAT_FR.filter(f=>!XAT.off.f.includes(f.id)),xatPeces=()=>XAT_PC.concat(XAT.noves).filter(w=>!XAT.off.p.includes(w.id));
-// a ?demo no es desa res a l'aparell (com la resta del rànquing de mostra)
-const xatLS=k=>{if(DEMO)return XAT.mem[k]||"";try{return localStorage.getItem(k)||""}catch(e){return ""}};
-const xatLSDesa=(k,v)=>{if(DEMO){XAT.mem[k]=v;return}try{localStorage.setItem(k,v)}catch(e){}};
-// qui parla: el nen entrat en aquest aparell, amb el seu PIN (a ?demo, la Laia)
+// a ?demo o mode tast no es desa res a l'aparell (com la resta del rànquing de mostra)
+const xatLS=k=>{if(DEMO||tastActiu())return XAT.mem[k]||"";try{return localStorage.getItem(k)||""}catch(e){return ""}};
+const xatLSDesa=(k,v)=>{if(DEMO||tastActiu()){XAT.mem[k]=v;return}try{localStorage.setItem(k,v)}catch(e){}};
+// qui parla: el nen entrat en aquest aparell, amb el seu PIN (a ?demo, la Laia; en mode tast, ningú)
 const xatK=s=>String(s||"").trim().toLowerCase();
-function xatJo(){if(DEMO)return {nom:"Laia",pin:"demo"};const n=jugador();return {nom:n,pin:n?pinsP()[xatK(n)]||"":""}}
+function xatJo(){if(DEMO)return {nom:"Laia",pin:"demo"};if(tastActiu())return {nom:"",pin:""};const n=jugador();return {nom:n,pin:n?pinsP()[xatK(n)]||"":""}}
 const xatEsJo=n=>{const j=xatJo().nom;return !!j&&xatK(n)===xatK(j)};
 const xatFila=()=>{const j=xatK(xatJo().nom);return j?(HSD||[]).find(r=>xatK(r.nom)===j)||null:null};
 const xatPot=()=>{const j=xatJo();return !!(j.nom&&j.pin)};
@@ -1456,7 +1491,8 @@ function xatBadge(){const b=document.getElementById("xatNou"),t=b&&b.parentNode;
  b.textContent=n>9?"9+":n;b.hidden=!n;if(n)t.setAttribute("aria-label",`Xat, ${n} missatge${n===1?"":"s"} nou${n===1?"":"s"}`);else t.removeAttribute("aria-label")}
 const xatTicker=()=>XAT.ok?XAT.msgs.slice(-3).reverse().map(m=>`${bnSpr("bafarada")} <b>${esc(m.nom)}</b>: «${esc(xatTxt(m).text)}»`):[];
 const xatDiguesHtml=r=>XAT.ok&&XAT.actiu&&r?`<button class="xat-digues" type="button" data-xdigues="${esc(r.nom)}">${bnSpr("bafarada")} Digues-li alguna cosa a ${esc(r.nom)}</button>`:"";
-function xatCredLinia(){if(XAT.est&&XAT.est.codi==="pin")return "Torna a entrar amb el teu nom i PIN per parlar.";
+function xatCredLinia(){if(tastActiu())return "👀 Mode tast: pots llegir el xat. Entra amb nom i PIN per parlar.";
+ if(XAT.est&&XAT.est.codi==="pin")return "Torna a entrar amb el teu nom i PIN per parlar.";
  if(!xatPot())return "Entra amb el teu nom per parlar. Llegir és gratis!";
  if(!xatEstOk())return "Llegir és gratis!";
  const E=XAT.est,c=xatCfg(),q=+E.queden||0;
@@ -1515,7 +1551,8 @@ function xatCred(){const e=document.getElementById("xCred"),l=document.getElemen
   xatSet(e,`<div class="x-cred"><div class="xc-t"><b>CRÈDITS</b><span class="xmons" role="img" aria-label="${q} per gastar, ${env} gastats, ${Math.max(0,c.max_dia-g)} per guanyar">${mons}</span><b class="xc-n">${String(q).padStart(2,"0")}</b></div><div class="xc-s">Avui portes <b>${+E.est_avui||0} ${ST()}</b> · ${g>=c.max_dia?`Ja tens els ${c.max_dia} crèdits d'avui`:`Següent crèdit a ${(g+1)*c.est_credit} · et falten ${fal}`}</div><div class="xc-barra"><i style="transform:scaleX(${pc.toFixed(3)})"></i></div></div>`)}
  else xatSet(e,"");
  const lk=(t,p,cl,bt)=>`<div class="x-lock${cl||""}"><b class="xl-t${cl===" coin"?" parpa":""}">${t}</b><p>${p}</p>${bt?`<button class="x-bt" type="button" data-xtest="1">▶ CONTINUA ESTUDIANT</button>`:""}</div>`;
- xatSet(l,XAT.est&&XAT.est.codi==="pin"?lk("TORNA A ENTRAR","El PIN guardat en aquest aparell no és correcte. Torna a entrar amb el teu nom i el teu PIN per parlar.")
+ xatSet(l,tastActiu()?lk("MODE TAST ANÒNIM","En mode tast pots llegir els missatges de la colla, però per escriure o votar cal entrar amb <b>nom i PIN</b>.")
+  :XAT.est&&XAT.est.codi==="pin"?lk("TORNA A ENTRAR","El PIN guardat en aquest aparell no és correcte. Torna a entrar amb el teu nom i el teu PIN per parlar.")
   :!xatPot()?lk("ENTRA PER PARLAR","Entra amb el teu nom per parlar. Mentrestant, pots llegir el xat.")
   :XAT.estErr==="bloc"?lk("ESPERA","Massa intents de PIN. Espera 15 minuts i torna-ho a provar.")
   :!E?lk("SENSE CONNEXIÓ","Ara no es poden comprovar els teus crèdits. Pots llegir el xat i tornar-ho a provar d'aquí a una estona.")

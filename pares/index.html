@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e4f1f5b0a4",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="474e801ad4",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -188,9 +188,12 @@ section.bloc h2{margin:0;font-size:clamp(20px,3.4vw,25px);font-weight:900;line-h
 .faq-cos b{color:#fff}
 
 /* tancament i peu */
-.tancament{text-align:center;padding:8px 8px 4px}
-.cta-portada{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:13px 24px;border-radius:16px;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:17px;text-decoration:none;box-shadow:0 5px 0 var(--vermell),0 10px 24px #0008;transition:transform .12s}
+.tancament{text-align:center;padding:8px 8px 4px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.cta-portada{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:13px 22px;border-radius:16px;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:16.5px;text-decoration:none;box-shadow:0 5px 0 var(--vermell),0 10px 24px #0008;transition:transform .12s;max-width:100%;text-align:center}
 .cta-portada:hover{transform:translateY(-2px)}
+.cta-tast{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:11px 20px;border-radius:15px;background:#38bdf822;border:2px solid #38bdf899;color:#e0f2fe;font-weight:900;font-size:15.5px;text-decoration:none;transition:transform .12s,background .15s;max-width:100%;text-align:center}
+.cta-tast:hover{transform:translateY(-2px);background:#38bdf836;border-color:#7dd3fc}
+.hero-accions{margin-top:16px;display:flex;justify-content:center}
 footer{position:relative;z-index:1;text-align:center;padding:18px 16px 34px;color:#94a3b8;font-weight:800;font-size:13.5px}
 footer b{color:var(--groc)}
 footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:12.5px}
@@ -228,6 +231,9 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 <header class="hero">
  <h1>COM FUNCIONA BONA NOTA</h1>
  <p class="resum">Bona Nota converteix <b>els apunts i els temes que el teu fill o filla fa a classe</b> en sessions de repàs curtes, que pot fer pel seu compte. Hi repassa el que ja ha treballat a l'escola i a casa fins que <b>ho entén de debò, veu on s'equivoca i per què, i quan acaba la sessió, plega</b>. Sense enganxar-se a la pantalla.</p>
+ <div class="hero-accions">
+  <a class="cta-tast" id="btParesTast" href="../?tast=1#mons">👀 Tasta un món per dins (sense registrar-te) ▶</a>
+ </div>
  <div class="pilars" aria-label="Quatre idees clau">
   <div class="pilar"><span class="ic" aria-hidden="true">📖</span><b>Temari real de classe</b><span>Res de jocs buits: practica exactament el que li entra a l'examen.</span></div>
   <div class="pilar"><span class="ic" aria-hidden="true">🔁</span><b>Aprendre dels errors</b><span>El que falla torna a sortir en dies diferents fins que queda après.</span></div>
@@ -391,6 +397,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
     <p>Cap anunci, cap perfil comercial i cap venda ni cessió d'informació d'activitat a plataformes publicitàries.</p>
    </div>
   </div>
+  <div class="destacat" style="margin-top:14px">👀 <b>Mode tast anònim per a famílies i curiosos:</b> podeu entrar a qualsevol assignatura sense escriure cap nom ni codi PIN per provar el primer tema, el primer joc i veure una pregunta d'examen per dins. En aquest mode <b>no es guarda res a l'aparell, no s'esborra la sessió de cap germà i mai no surt cap nom ni estrella al rànquing</b>.</div>
  </section>
 
  <section class="bloc" id="a-casa" aria-labelledby="t-casa">
@@ -444,6 +451,10 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
     <div class="faq-cos">Dins de qualsevol món, a dalt a la dreta, pot silenciar el so amb un toc i activar <b>Efectes suaus</b>: desapareixen el confeti, els coets i els moviments d'adorn, i l'elecció queda desada a l'aparell. A més, a partir de les 21:30 h el mode suau s'activa sol.</div>
    </details>
    <details>
+    <summary>Puc veure com és una assignatura per dins abans que el meu fill o filla s'hi faci un nom?</summary>
+    <div class="faq-cos">Sí: amb el <b>mode tast anònim</b> podeu obrir qualsevol món sense escriure cap nom ni codi PIN. Hi veureu el primer tema sencer (fitxa, targetes giratòries i 5 preguntes de mostra explicades), el primer joc interactiu i com es planteja una pregunta oberta d'examen. No suma estrelles, no apareix en cap rànquing i no toca res del que ja hi hagi guardat a la tauleta o al mòbil de casa.</div>
+   </details>
+   <details>
     <summary>Té algun cost, subscripció o compra dins de l'aplicació?</summary>
     <div class="faq-cos">No. És una eina d'estudi <b>totalment oberta i gratuïta</b> per als alumnes, sense cap pagament, sense anuncis i sense cap funció de pagament amagada.</div>
    </details>
@@ -452,10 +463,11 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
  <div class="tancament">
   <a class="cta-portada" href="../">Vés a la portada de Bona Nota ▶</a>
+  <a class="cta-tast" href="../?tast=1#mons">👀 Fes un tast anònim ▶</a>
  </div>
 
 </main>
 
-<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.25.0</small></footer>
+<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.26.0</small></footer>
 </body>
 </html>

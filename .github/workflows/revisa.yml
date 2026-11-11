@@ -105,6 +105,8 @@ jobs:
         run: node motor/prova-perfil.js
       - name: Prova de la guia per a les famílies (pares/)
         run: node motor/prova-pares.js
+      - name: Prova del mode tast anònim (portada, pares i mons)
+        run: node motor/prova-tast.js
       - name: Prova del xat de la colla a la portada
         run: node motor/prova-xat.js
       - name: Prova de la pestanya Xat de l'admin
