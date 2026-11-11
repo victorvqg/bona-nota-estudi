@@ -53,7 +53,8 @@ as $function$
 declare nn text := upper(trim(coalesce(p_nou,'')));
 begin
   if nn !~ '^[0-9]{4}[A-Z]$' then raise exception 'pin no valid' using errcode = '22023'; end if;
-  if not bn_priv.pin_ok(p_nom, p_pin) then raise exception 'pin incorrecte' using errcode = '28000'; end if;
+  -- sense raise quan pin_ok torna false: així l'intent fallit es conserva a bn_priv.intents (issue #33)
+  if not bn_priv.pin_ok(p_nom, p_pin) then return 'pin'; end if;
   update bn_priv.perfils p set pin = extensions.crypt(nn, extensions.gen_salt('bf')), pin_v = 2, pin_ts = now()
    where p.k = lower(trim(p_nom));
   return 'ok';

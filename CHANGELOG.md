@@ -5,6 +5,12 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.18.1 · 2026-11-11
+
+### Arreglat
+- Seguretat, PIN al núvol: `bn_aspecte_desa`, `bn_perfil_canvia_pin`, `bn_progres_llegeix` i `bn_progres_desa` tornen un codi (`'pin'`, `{"ok":false,"codi":"pin"}` o `-3`) en lloc de fer `raise exception 'pin incorrecte'` quan `bn_priv.pin_ok` torna `false`, de manera que el comptador d'intents fallits de `bn_priv.intents` no es desfà i el bloqueig de 15 minuts al 5è intent fallit s'aplica a totes les crides amb PIN (#33).
+- Proves: `motor/prova-pin-intents-sql.js` (PGlite) afegida a l'Action (#33).
+
 ## 2.18.0 · 2026-11-10
 
 ### Afegit
