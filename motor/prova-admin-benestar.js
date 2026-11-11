@@ -43,14 +43,14 @@ function dades(xss) {
  const S = (codi, nivell, o) => Object.assign({ codi, nivell, dia: null, assig: null, valor: null, llindar: null }, o);
  // amb la forma de supabase/bn_admin_benestar.sql (valor i llindar, números) i, a propòsit, NO en l'ordre bo: el panell ordena de pitjor a millor
  const nens = [
-  { k: "jana", nom: "Jana", semafor: "verd", senyals: [S("marato_dia", "blau", { dia: D(-1), assig: "comarques", valor: 130, llindar: 120 }), S("poc_sovint", "bo", { dia: D(-1), valor: 4, llindar: 3 }), S("apren_errors", "bo", { dia: D(-2), valor: 6, llindar: 2 })] },
+  { k: "jana", nom: "Jana", semafor: "verd", senyals: [S("marato_dia", "blau", { dia: D(-1), assig: "comarques", valor: 130, llindar: 120 }), S("examen_dema", "context", { dia: D(-1), assig: "comarques", valor: 1, llindar: 2 }), S("poc_sovint", "bo", { dia: D(-1), valor: 4, llindar: 3 }), S("apren_errors", "bo", { dia: D(-2), valor: 6, llindar: 2 }), S("fa_descans", "bo", { dia: AVUI, valor: 3, llindar: 4 })] },
   { k: "nora", nom: "Nora", semafor: "groc", senyals: [S("pressa", "groc", { dia: D(-1), assig: "socials", valor: 2, llindar: 3 })] },
   { k: "pau", nom: "Pau", semafor: "vermell", senyals: [S("dos_aparells", "context", { dia: AVUI, valor: 2, llindar: 2 }),
    S("nit", "vermell", { dia: D(-1), assig: "comarques", valor: 1330, llindar: 1290 }), S("nit", "vermell", { dia: D(-2), assig: "comarques", valor: 1300, llindar: 1290 }), S("nit", "vermell", { dia: D(-3), assig: "comarques", valor: 1470, llindar: 1290 }),
    S("marato_bloc", "vermell", { dia: D(-5), assig: "comarques", valor: 70, llindar: 60 }), S("marato_bloc", "vermell", { dia: AVUI, assig: "comarques", valor: 110, llindar: 60 }), S("marato_dia", "vermell", { dia: D(-3), assig: "comarques", valor: 100, llindar: 90 })] },
   { k: "biel", nom: "Biel", semafor: "groc", senyals: [S("inactiu", "groc", { dia: D(-9), valor: 9, llindar: 3 })] },
   { k: "ot", nom: "Ot", semafor: "groc", senyals: [S("nit", "groc", { dia: D(-2), assig: "socials", valor: 1470, llindar: 1290 }), S("frustracio_costa", "groc", { dia: D(-1), assig: "socials", valor: 2, llindar: 2 }),
-   S("frustracio_suspesos", "groc", { dia: D(-2), assig: "divisibilitat", valor: 3, llindar: 3 }), S("repetir", "groc", { dia: D(-1), assig: "socials", valor: 5, llindar: 4 }), S("enganxa", "groc", { dia: D(-1), assig: "castellano", valor: 2, llindar: 1 }),
+   S("frustracio_suspesos", "groc", { dia: D(-2), assig: "divisibilitat", valor: 3, llindar: 3 }), S("repetir", "groc", { dia: D(-1), assig: "socials", valor: 5, llindar: 4 }), S("salta_descans", "groc", { dia: D(-1), assig: "socials", valor: 2, llindar: 2 }), S("enganxa", "groc", { dia: D(-1), assig: "castellano", valor: 2, llindar: 1 }),
    S("xat", "groc", { dia: AVUI, valor: 14, llindar: 10 }), S("dos_aparells", "context", { dia: D(-1), valor: 2, llindar: 2 }), S("dos_aparells", "context", { dia: D(-2), valor: 2, llindar: 2 })] }];
  if (xss) nens.push({ k: XSS.toLowerCase(), nom: XSS, semafor: XSS, senyals: [S(XSS, "groc", { dia: XSS, assig: XSS, valor: XSS, llindar: XSS }), S("nit", "groc", { dia: XSS, valor: XSS, llindar: XSS }), S("nit", "groc", { dia: D(-1), valor: { hora: XSS }, llindar: XSS }),
   S("marato_bloc", "vermell", { dia: XSS, assig: XSS, valor: XSS }), S("pressa", "groc", { assig: XSS, valor: XSS, llindar: XSS })] });
@@ -145,13 +145,15 @@ function respon(st, f, cos) {
   ok(te(pau, "context", "Fa servir dos aparells alhora: els minuts poden sortir doblats"), "dos aparells, com a context: «Fa servir dos aparells alhora: els minuts poden sortir doblats»");
   ok(pau.motius[pau.motius.length - 1].nivell === "context", "els motius de vigilar van abans que el context");
   ok(jana.sem === "verd" && jana.motius[0].nivell === "blau" && jana.motius[0].text === "Vigília de Comarques: 2 h 10 min", "vigília en blau: «Vigília de Comarques: 2 h 10 min», i la Jana es queda en verd (el blau no compta com a vermell)");
-  ok(te(jana, "bo", "Estudia poc i sovint: 4 dies") && te(jana, "bo", "Aprèn dels errors: 6 aquesta setmana, 2 la passada"), "bons en verd: «Estudia poc i sovint: 4 dies», «Aprèn dels errors: 6 aquesta setmana, 2 la passada»");
+  ok(te(jana, "bo", "Estudia poc i sovint: 4 dies") && te(jana, "bo", "Aprèn dels errors: 6 aquesta setmana, 2 la passada") && te(jana, "bo", "Fa els descansos quan toca: 3 de 4"), "bons en verd: poc i sovint, aprèn dels errors i fa els descansos (3 de 4)");
+  ok(te(jana, "context", "Ahir va marcar «Demà tinc examen» a Comarques (1 de 2)"), "examen_dema com a context: «Ahir va marcar «Demà tinc examen» a Comarques (1 de 2)»");
   ok(te(nora, "groc", "Respon molt de pressa: 2 s per pregunta i encerta menys de la meitat") && nora.motius[0].tt === undefined, "pressa: «Respon molt de pressa: 2 s per pregunta i encerta menys de la meitat»");
   ok(await p.evaluate(() => { const x = document.querySelector('#tBen .bs-f[data-k="nora"] .bs-x'); return !!x && x.title.startsWith("Socials (clima)") }), "el món i el dia del senyal surten en passar-hi el ratolí (title)");
   ok(te(biel, "groc", "Fa 9 dies que no entra"), "deixa de venir: «Fa 9 dies que no entra»");
   ok(te(ot, "groc", `La nit de ${DIA(2).toLowerCase()} va entrar a les 0:30`), `una nit (després de mitjanit): «La nit de ${DIA(2).toLowerCase()} va entrar a les 0:30»`);
   ok(te(ot, "groc", "Ha dit 2 vegades que un tema de Socials (clima) li costa") && te(ot, "groc", "Ha suspès 3 vegades seguides un tema de Mates (divisibilitat)"), "frustració: «Ha dit 2 vegades que un tema … li costa» i «Ha suspès 3 vegades seguides un tema …»");
   ok(te(ot, "groc", "Ahir va repetir 5 vegades un test de Socials (clima) sense estrelles noves"), "repetir: «Ahir va repetir 5 vegades un test de Socials (clima) sense estrelles noves»");
+  ok(te(ot, "groc", "Ahir es va saltar el descans 2 vegades seguides a Socials (clima)"), "salta_descans: «Ahir es va saltar el descans 2 vegades seguides a Socials (clima)»");
   ok(te(ot, "groc", "Ha intentat enganxar text a les preguntes obertes (2 vegades)") && te(ot, "groc", "Entra sobretot per xatejar: 14 frases en 7 dies i menys d'1 h d'estudi"), "enganxa text i entra per xatejar");
   ok(te(ot, "context", "Fa servir dos aparells alhora (2 dies): els minuts poden sortir doblats"), "dos aparells en dos dies, en un sol motiu");
   ok(pau.boto && jana.boto && nora.boto && ot.boto && !biel.boto, "el nom obre la fitxa si el nen té registre (en Biel no en té al període)");

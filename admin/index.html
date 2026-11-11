@@ -550,7 +550,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.20.0";
+const VERSIO_ADMIN="2.21.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -1354,11 +1354,11 @@ const FASES={novetat:["neutre","Novetat"],aprendre:["ok","Aprendre"],vigilia:["i
 function faseMon(m,avui){const f=senseAccents(m.fase);if(FASES[f])return f;
  if(m.vig.includes(avui)||(m.examen&&sumaD(m.examen,-1)===avui))return "vigilia";if(!m.dia0)return null;const d=difD(avui,m.dia0);
  if(d<=2)return "novetat";if(d>12||m.vig.some(v=>v<avui)||(m.examen&&m.examen<=avui))return "despres";return "aprendre"}
-// el codi del servidor (supabase/bn_admin_benestar.sql: marato_bloc, marato_dia, nit, pressa, repetir, frustracio_suspesos, frustracio_costa,
-// enganxa, xat, inactiu, poc_sovint, apren_errors, dos_aparells) a la família que fa servir el panell
+// el codi del servidor (supabase/bn_admin_benestar.sql: marato_bloc, marato_dia, nit, salta_descans, pressa, repetir, frustracio_suspesos, frustracio_costa,
+// enganxa, xat, inactiu, poc_sovint, apren_errors, fa_descans, dos_aparells, examen_dema) a la família que fa servir el panell
 const senseAccents=c=>String(c||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const codiB=c=>{c=senseAccents(c);
- for(const [k,re] of [["marato",/marat/],["nit",/^nit/],["pressa",/press|rapid/],["repetir",/repet/],["frustracio",/frustr|costa/],["enganxa",/engan/],["xat",/xat/],["sovint",/sovint/],["inactiu",/inactiu|deixa|venir/],["apren",/apren|error/],["aparells",/aparell/]])if(re.test(c))return k;return c};
+ for(const [k,re] of [["salta_descans",/salta.*descans/],["fa_descans",/fa.*descans/],["examen_dema",/examen_dema/],["marato",/marat/],["nit",/^nit/],["pressa",/press|rapid/],["repetir",/repet/],["frustracio",/frustr|costa/],["enganxa",/engan/],["xat",/xat/],["sovint",/sovint/],["inactiu",/inactiu|deixa|venir/],["apren",/apren|error/],["aparells",/aparell/]])if(re.test(c))return k;return c};
 // hora d'una entrada de nit: minuts des de la mitjanit de la nit (22:40 = 1360; 0:30 de la matinada = 1470)
 const horaN=v=>{const n=nN(v);if(n==null||n<0||n>=2880)return null;const m=Math.round(n)%1440;return `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`};
 const deDia=d=>{const r=diaR(d);return !r?"":r.startsWith("el ")?"del "+r.slice(3):/^[aeiou]/.test(r)?"d'"+r:"de "+r}; // «de dimarts», «d'ahir», «del 3 de novembre»
@@ -1381,8 +1381,11 @@ function motiuB(s,amb){const c=codiB(s.codi),raw=senseAccents(s.codi),dia=diaR(s
   case"enganxa":{const v=valB(s,"n");return `Ha intentat enganxar text a les preguntes obertes${v>1?` (${v} vegades)`:""}`}
   case"xat":{const fr=valB(s,"frases","n"),mi=nN(oB(s.valor).min);return `Entra sobretot per xatejar${fr!=null?`: ${fr} frases en 7 dies`:""}${mi!=null?` i ${minT(mi)} d'estudi`:" i menys d'1 h d'estudi"}`}
   case"inactiu":{const d=valB(s,"dies");return d!=null?`Fa ${pl(d,"dia","dies")} que no entra`:"Fa dies que no entra"}
+  case"salta_descans":{const v=valB(s,"n","salts");return `${Dia} es va saltar el descans${v!=null?` ${v} vegades seguides`:""}${A?` a ${A}`:""}`}
   case"sovint":{const d=valB(s,"dies");return `Estudia poc i sovint${d!=null?`: ${pl(d,"dia","dies")}`:""}`}
   case"apren":{const a=valB(s,"ara"),b=nN(oB(s.valor).abans)??ll;return `Aprèn dels errors${a!=null?`: ${a} aquesta setmana${b!=null?`, ${b} la passada`:""}`:""}`}
+  case"fa_descans":{const v=valB(s,"fets","n");return `Fa els descansos quan toca${v!=null&&ll!=null?`: ${v} de ${ll}`:v!=null?`: ${v}`:""}`}
+  case"examen_dema":{const v=valB(s,"n");return `${Dia} va marcar «Demà tinc examen»${A?` a ${A}`:""}${v!=null&&ll!=null?` (${v} de ${ll})`:""}`}
   case"aparells":return "Fa servir dos aparells alhora: els minuts poden sortir doblats";
   default:{const v=nN(s.valor);return `${String(s.codi??"?")}${v!=null?` (${v})`:""}`}}}
 // els motius d'un nen, en ordre (vermell, groc, blau, context, bo; i el dia més recent primer). Les nits i els dies amb dos aparells
@@ -1456,8 +1459,11 @@ function htmlBenestar(d){d=oB(d);const avui=diaMad(),fa=TF.assig,k0=TF.nom.trim(
    <li><b>Enganxa text</b> (groc): qualsevol intent a les preguntes obertes.</li>
    <li><b>Entra per xatejar</b> (groc): 10 frases o més i menys de 60 min d'estudi en els últims 7 dies.</li>
    <li><b>Deixa de venir</b> (groc): com l'alerta «Fa dies que no estudia»: 3 dies o més sense entrar.</li>
+   <li><b>Salta el descans</b> (groc): saltar-se el descans de 25 min 2 vegades seguides o més (3 la vigília).</li>
    <li><b>Poc i sovint</b> (verd): 3 dies o més amb 10-40 min, en els últims 7 dies.</li>
    <li><b>Aprèn dels errors</b> (verd): més errors apresos al repàs els últims 7 dies que els 7 d'abans.</li>
+   <li><b>Fa el descans</b> (verd): fer almenys 2 de cada 3 descansos proposats (mínim 2 fets).</li>
+   <li><b>Demà tinc examen</b> (gris): dies que el nen ha marcat que l'endemà tenia examen (màxim 2 per món; sense data d'admin, es compten com a vigília individual).</li>
    <li><b>Dos aparells</b> (gris): minuts de dos aparells que se solapen el mateix dia.</li>
    <li><b>Vigília</b>: el dia abans de la data de l'examen; si no n'hi ha, quan 5 nens o més (o la meitat dels del món) fan el triple de minuts d'un dia normal, entre els dies 3 i 12 del món.</li></ul></details>`;
  return avis+nens+`<h3 class="grup">Mons i vigílies d'examen</h3>`+monsH+`<h3 class="grup">Llegenda</h3>`+lleg}
@@ -1952,10 +1958,10 @@ function demoBenestarRpc(f,x){if(f!=="bn_admin_benestar")throw "demo";const avui
  const S=(codi,nivell,o)=>Object.assign({codi,nivell,dia:null,assig:null,valor:null,llindar:null},o);
  const N=[["pau","Pau",[S("marato_bloc","vermell",{dia:d(-2),assig:"comarques",valor:110,llindar:90}),S("nit","vermell",{dia:d(-1),assig:"comarques",valor:1330,llindar:1290}),S("nit","vermell",{dia:d(-4),assig:"socials",valor:1310,llindar:1290}),S("dos_aparells","context",{dia:d(-2),valor:2,llindar:2})]],
   ["nora","Nora",[S("pressa","groc",{dia:d(-1),assig:"socials",valor:2.1,llindar:3}),S("enganxa","groc",{dia:d(-3),assig:"castellano",valor:1,llindar:1})]],
-  ["laia","Laia",[S("frustracio_suspesos","groc",{dia:d(-1),assig:"divisibilitat",valor:3,llindar:3}),S("repetir","groc",{dia:d(-1),assig:"divisibilitat",valor:5,llindar:4})]],
+  ["laia","Laia",[S("frustracio_suspesos","groc",{dia:d(-1),assig:"divisibilitat",valor:3,llindar:3}),S("repetir","groc",{dia:d(-1),assig:"divisibilitat",valor:5,llindar:4}),S("salta_descans","groc",{dia:d(-1),assig:"divisibilitat",valor:2,llindar:2})]],
   ["hugo","Hugo",[S("inactiu","groc",{dia:d(-9),valor:9,llindar:3})]],
   ["ona","Ona",[S("xat","groc",{dia:d(-1),valor:14,llindar:10}),S("nit","groc",{dia:d(-3),assig:"catala",valor:1305,llindar:1290})]],
-  ["jana","Jana",[S("marato_dia","blau",{dia:d(-1),assig:"comarques",valor:130,llindar:120}),S("poc_sovint","bo",{dia:d(-1),valor:4,llindar:3}),S("apren_errors","bo",{dia:d(-2),valor:6,llindar:2})]],
+  ["jana","Jana",[S("marato_dia","blau",{dia:d(-1),assig:"comarques",valor:130,llindar:120}),S("examen_dema","context",{dia:d(-1),assig:"comarques",valor:1,llindar:2}),S("poc_sovint","bo",{dia:d(-1),valor:4,llindar:3}),S("apren_errors","bo",{dia:d(-2),valor:6,llindar:2}),S("fa_descans","bo",{dia:avui,valor:3,llindar:4})]],
   ["àlex","Àlex",[S("poc_sovint","bo",{dia:d(-2),valor:3,llindar:3})]]];
  const nens=N.map(([k,nom,ss])=>{ss=ss.filter(s=>!s.dia||s.dia>=des||/inactiu|xat|sovint|apren/.test(s.codi));return {k,nom,semafor:semDe(ss),senyals:ss}}).filter(n=>!k0||n.k===k0);
  const mons=[{assig:"comarques",dia0:d(-8),examen:null,vigilies:[d(-1)],normal:25},{assig:"divisibilitat",dia0:d(-6),examen:d(2),vigilies:[],normal:30},{assig:"catala",dia0:d(-5),examen:null,vigilies:[avui],normal:18},

@@ -3,9 +3,9 @@
 Data: 2026-11-11
 
 ## Què funciona
-- **Versió actual: 2.19.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.21.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`).
-- **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `temps`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
+- **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
 - **Bloc `g1` (Nucli)**: instal·lat i configurat amb les 3 portes de verificació (`generat`, `generadors`, `estricte`).
 - **Bloc `g2` (`n2448` — Troba l'error i Llibreta)**:
@@ -38,12 +38,14 @@ Data: 2026-11-11
 - **Revisió del tauler i seguretat (`n2536`/`n2537` i `#33`, 2.12.0 → 2.19.0, publicat i actiu)**:
   - Fitxa «Al núvol» i «Nens nous» (`2.12.0`), apartat «Benestar» (`2.13.0`), «Combos i repàs» i «Errors pendents de la colla» (`2.14.0`), `regles.json` extret de la plantilla (`2.15.0`), nivells al tauler (`2.16.0`), panell «Control ràpid: Xat, Horari i Mons» (`2.17.0`), bloqueig de 5 intents de PIN fallits a totes les funcions (`2.17.1` i `2.18.1`, `#33`), filtre `#fNen` amb tots els nens + paginació de `bn_admin_logs` + còpies de `xat_*` + canvi de nom amb missatges/vots/silencis del xat (`2.19.0`).
 
+- **Bloc `g5` (`docs/BON-US.md` PRs C–G · 2.20.0 i 2.21.0, publicat i actiu)**:
+  - Fases del món (`aprendre`, `vigilia`, `despres`, `supabase/bn_bon_us.sql`), pla de 10 dies (`#plaDia`), botó «Demà tinc examen» (màx. 2 dies/món), descans de 25 min registrat (`fet`/`salta`) amb límit de 2 salts (3 a la vigília), avís amable als 60/120 min, franja de nit (`21:30`/`22:00`) amb mode suau automàtic, textos amables de mentalitat de creixement, pestanya «Dies» («Dies d'estudi») al rànquing (`bn_ranking_mons`) i senyals nous `fa_descans`, `salta_descans` i `examen_dema` al Benestar.
+
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i primera passada de 111 difícils a `motor/dificultat.json`); #16 dificultat calculada quan hi hagi dades. Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.
 - Preguntes obertes: la fase 2, correcció amb IA, queda per decidir quan hi hagi dades del tauler.
 
 ## Pendent
-- Decisions d'en Víctor sobre l'ús sa (`docs/BON-US.md`, apartat 7: 7 decisions prèvies als PR C-G del motor).
 - Xat de la colla: els noms que es poden triar com a company són els del rànquing, que surt d'un registre on es pot escriure sense PIN. Un nom inventat que passi el filtre de paraules surt al rànquing (ja passava abans) i al xat. L'admin el pot amagar i desapareix de tots dos.
 - Xat de la colla: el premi del missatge del dia es decidirà més endavant (ara no en té, i no s'han d'apuntar estrelles al registre perquè sortiria un món «xat» al rànquing).
 - `motor/jocs_generics.js` no el carrega ningú i ja no coincideix amb la plantilla, que és on viuen els jocs genèrics. Cal decidir si s'esborra.

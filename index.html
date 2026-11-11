@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a9e5a6e6bc",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a12e38af7d",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -339,15 +339,15 @@ h1 span{display:inline-block}
 .ht-fila .w.buit,.ht-fila .num:not(.c-punts):empty{color:#475569}
 .ht-fila .w.buit{color:#475569}
 .ht-fila .c-punts{color:#fde68a}
-.act-punts .c-punts,.act-setmana .c-x,.act-temps .c-x,.act-remuntada .c-x{background:#facc151f;border-radius:8px;padding:4px 0;color:#facc15}
-.act-punts .ht-cap .c-punts,.act-setmana .ht-cap .c-x,.act-temps .ht-cap .c-x,.act-remuntada .ht-cap .c-x{color:#facc15;background:none}
+.act-punts .c-punts,.act-setmana .c-x,.act-dies .c-x,.act-remuntada .c-x{background:#facc151f;border-radius:8px;padding:4px 0;color:#facc15}
+.act-punts .ht-cap .c-punts,.act-setmana .ht-cap .c-x,.act-dies .ht-cap .c-x,.act-remuntada .ht-cap .c-x{color:#facc15;background:none}
 .act-nivell .tags i.nv{background:#facc15;border-color:#fff;color:#422006}
 .ht-salt{text-align:center;color:#64748b;font-weight:900;letter-spacing:4px}
 /* mòbil: la taula es plega (mons dins del nom; només la columna activa) */
 @media(max-width:640px){
  .ht-fila{grid-template-columns:30px 34px minmax(0,1fr) 66px;gap:6px;padding:8px}
  .ht-fila .w,.ht-fila .num{display:none}
- .act-punts .c-punts,.act-setmana .c-x,.act-temps .c-x,.act-remuntada .c-x,.act-nivell .c-punts{display:block}
+ .act-punts .c-punts,.act-setmana .c-x,.act-dies .c-x,.act-remuntada .c-x,.act-nivell .c-punts{display:block}
  .ht-fila .mw{display:flex;flex-wrap:wrap;gap:3px;grid-column:2;margin-top:3px}
  .ht-fila .nom{grid-template-rows:auto auto auto}
  .ht-fila .av{grid-row:1/4;width:34px;height:34px}
@@ -810,13 +810,13 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  <div class="hs-caixa"><button class="hs-tanca" id="hsTanca" aria-label="Tanca"><i data-spr="x"></i></button>
   <p class="hs-tit"><i data-spr="star"></i> HIGH SCORES <i data-spr="star"></i></p>
   <div class="hs-ticker" id="hsTicker" aria-hidden="true"></div>
-  <div class="hs-tabs" id="hsTabs" role="tablist" aria-label="Categories del rànquing"><button class="hs-tab on" role="tab" aria-selected="true" aria-controls="hs" tabindex="0" data-t="punts"><i data-spr="star"></i> Estrelles</button><button class="hs-tab" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="temps"><i data-spr="stopwatch"></i> Temps</button><button class="hs-tab" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="nivell"><i data-spr="medal_tab"></i> Nivell</button><button class="hs-tab" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="setmana"><i data-spr="chart"></i> Setmana</button><button class="hs-tab" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="remuntada"><i data-spr="brain"></i> Remuntada</button><button class="hs-tab hs-tab-xat" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="xat"><i data-spr="bafarada"></i> Xat<span class="xat-nou" id="xatNou" aria-hidden="true" hidden></span></button></div>
+  <div class="hs-tabs" id="hsTabs" role="tablist" aria-label="Categories del rànquing"><button class="hs-tab on" role="tab" aria-selected="true" aria-controls="hs" tabindex="0" data-t="punts"><i data-spr="star"></i> Estrelles</button><button class="hs-tab" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="dies" title="Dies d'estudi"><i data-spr="hourglass"></i> Dies</button><button class="hs-tab" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="nivell"><i data-spr="medal_tab"></i> Nivell</button><button class="hs-tab" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="setmana"><i data-spr="chart"></i> Setmana</button><button class="hs-tab" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="remuntada"><i data-spr="brain"></i> Remuntada</button><button class="hs-tab hs-tab-xat" role="tab" aria-selected="false" aria-controls="hs" tabindex="-1" data-t="xat"><i data-spr="bafarada"></i> Xat<span class="xat-nou" id="xatNou" aria-hidden="true" hidden></span></button></div>
   <div id="hs" role="tabpanel" aria-live="polite"></div>
   <p class="hs-peu">HAVE FUN! <i data-spr="play"></i> JUGA I PUJA AL PODI!<small>Compta tots els mons dels últims 120 dies. Les estrelles tenen un límit diari per jugar net.</small></p>
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.20.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.21.0</small></footer>
 
 <script src="sprites.js?v=fd512289"></script>
 <script>
@@ -1138,7 +1138,7 @@ const MONS_IC=(()=>{const xs=[...document.querySelectorAll('.as[data-id]')].map(
  return xs.sort((a,b)=>ord.indexOf(a.mat)-ord.indexOf(b.mat)||a.i-b.i).map(x=>[x.id,rajola(x.id,x.ic,x.t,x.mat),x.t,x.mat,x.h])})();
 const MONS_GR=MONS_IC.reduce((g,m)=>{const u=g[g.length-1];if(u&&u.mat===m[3])u.n++;else g.push(Object.assign({mat:m[3],n:1},matDe(m[3])));return g},[]);
 const monsHtml=r=>{const m=r.mons||{};const xs=MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<i>${ic} ${m[id]}</i>`);return xs.join("")};
-const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ${ST()}`,m:monsHtml(r)})},temps:{k:"temps_s",v:r=>({v:fT(r.temps_s)})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${nivIc(n)} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ${ST()}`,s:"últims 7 dies"})},remuntada:{k:"apr",v:r=>({v:`${r.apr} ${BR()}`,s:"errors apresos · 7 dies"})}};
+const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ${ST()}`,m:monsHtml(r)})},dies:{k:"dies",v:r=>({v:`${r.dies||0} ${r.dies===1?"DIA":"DIES"}`})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${nivIc(n)} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ${ST()}`,s:"últims 7 dies"})},remuntada:{k:"apr",v:r=>({v:`${r.apr} ${BR()}`,s:"errors apresos · 7 dies"})}};
 function carregaHs(){const hs=document.getElementById("hs");
  // xat de la colla (n2528): es llegeix (i l'estat del nen) cada cop que s'obre el rànquing, en paral·lel; el rànquing l'espera com a molt 1,5 s
  if(DEMO){HSD=DEMO_D;HST=Date.now();xatCarrega().then(()=>{pintaHs();redoble()});return}
@@ -1147,7 +1147,7 @@ function carregaHs(){const hs=document.getElementById("hs");
  const rk=f=>fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:"{}"}).then(r=>r.ok?r.json():Promise.reject());
  const xc=xatCarrega();
  Promise.all([rk("bn_ranking_mons").catch(()=>rk("bn_ranking")),rk("bn_ranking_remuntada").catch(()=>[]),rk("bn_aspectes").catch(()=>[]),Promise.race([xc,new Promise(r=>setTimeout(r,1500))])]).then(([d,ap,asp])=>{HSD=Array.isArray(d)?d:[];desaAspectes(asp);
-  const ma={};(Array.isArray(ap)?ap:[]).forEach(x=>{if(x&&x.nom)ma[x.nom.trim().toLowerCase()]=+x.apr||0});HSD.forEach(r=>{r.apr=ma[r.nom.trim().toLowerCase()]||0});
+  const ma={};(Array.isArray(ap)?ap:[]).forEach(x=>{if(x&&x.nom)ma[x.nom.trim().toLowerCase()]=+x.apr||0});HSD.forEach(r=>{r.apr=ma[r.nom.trim().toLowerCase()]||0;r.dies=+r.dies||(r.punts>0||r.temps_s>0?1:0)});
   HST=Date.now();pintaHs();redoble();xc.then(xatRefresca)})
   .catch(()=>{hs.innerHTML=`<div class="hs-buit">EL RÀNQUING ARRIBA AVIAT…<br>MENTRESTANT, JUGA I SUMA ${ST()}!</div>`});
 }
@@ -1156,7 +1156,7 @@ const DEMO=/[?&]demo\b/.test(location.search);
 const DEMO_D=[["Pau",263,9400,150,71,{socials:150,biogeo:36,castellano:40,comarques:15,divisibilitat:22}],["Jana",241,7100,190,22,{socials:190,biogeo:51}],["Àlex",198,8800,96,64,{socials:96,biogeo:44,castellano:12,comarques:20,divisibilitat:26}],
  ["Nora",151,5200,120,9,{socials:120,castellano:31}],["Laia",139,6100,70,35,{socials:70,biogeo:25,comarques:28,divisibilitat:16}],["Hugo",112,3900,112,40,{castellano:112}],["Ona",97,4400,60,0,{biogeo:60,comarques:37}],
  ["Èric",83,2600,83,18,{socials:83}],["Martina",66,3100,30,12,{socials:30,biogeo:21,castellano:15}],["Leo",48,1500,48,48,{comarques:48}],["Júlia",31,2000,20,5,{biogeo:20,castellano:3,divisibilitat:8}],["Max",12,700,12,12,{socials:12}]]
- .map(([nom,punts,temps_s,punts_max,setmana,mons],i)=>({nom,punts,temps_s,punts_max,setmana,mons,apr:[3,0,6,1,8,2,4,0,5,1,2,0][i]||0}));
+ .map(([nom,punts,temps_s,punts_max,setmana,mons],i)=>({nom,punts,temps_s,punts_max,setmana,mons,dies:[14,11,12,9,13,7,8,5,6,3,4,2][i]||1,apr:[3,0,6,1,8,2,4,0,5,1,2,0][i]||0}));
 const DEMO_PREV={pau:2,jana:1,àlex:5,nora:3,laia:4,hugo:8,ona:6,èric:7,martina:9,júlia:10};
 // HS_TOP: quants jugadors surten a la classificació; si tu quedes més avall, la teva fila surt a sota, després de «···»
 const SUPER=50,HS_TOP=25,ordinal=n=>n===1?"1r":n===2?"2n":n===3?"3r":n===4?"4t":n+"è";
@@ -1166,16 +1166,16 @@ const fTc=s=>{const m=Math.round((s||0)/60);return m<1?"<1m":m>=60?`${Math.floor
 function pintaHs(){
  // pestanya Xat (n2528): el podi és el d'Estrelles (TB), però no desa cap moviment (ni bn_hs_prev_xat ni trepitja bn_hs_prev_punts)
  const XV=HSTAB==="xat",TB=XV?"punts":HSTAB;
- const c=HSCFG[TB],rows=HSD.filter(r=>r[c.k]>0).sort((a,b)=>b[c.k]-a[c.k]);
+ const c=HSCFG[TB],rows=HSD.filter(r=>(r[c.k]||0)>0).sort((a,b)=>(b[c.k]||0)-(a[c.k]||0)||(b.punts||0)-(a.punts||0));
  const meu=DEMO?"laia":((document.querySelector("#hola em")||{}).textContent||"").trim().toLowerCase();
  const k=r=>r.nom.trim().toLowerCase(),esJo=r=>meu&&k(r)===meu;
  // moviment respecte a l'última vegada que es va mirar el rànquing en aquest aparell (per pestanya)
  let prev={};try{prev=DEMO?(TB==="punts"?DEMO_PREV:{}):JSON.parse(localStorage.getItem("bn_hs_prev_"+TB)||"{}")||{}}catch(e){}
  const hiHavia=Object.keys(prev).length>0,mov=(r,pos)=>!hiHavia?null:prev[k(r)]==null?"nou":prev[k(r)]-pos;
  if(!DEMO&&!XV)try{const nou={};rows.forEach((r,i)=>nou[k(r)]=i+1);localStorage.setItem("bn_hs_prev_"+TB,JSON.stringify(nou))}catch(e){}
- const unit=TB==="temps"?"":" "+(TB==="remuntada"?BR():ST()),fmt=v=>TB==="temps"?fTc(v):v;
+ const unit=TB==="dies"?" d'estudi":" "+(TB==="remuntada"?BR():ST()),fmt=v=>TB==="dies"?`${v} ${v===1?"dia":"dies"}`:v;
  // ---- 1) podi: només avatar, nom, valor i moviment ----
- const vPodi=r=>TB==="punts"?`<span class="cnt" data-n="${r.punts}">${r.punts}</span> ${ST()}`:TB==="setmana"?`+<span class="cnt" data-n="${r.setmana}">${r.setmana}</span> ${ST()}`:TB==="remuntada"?`<span class="cnt" data-n="${r.apr}">${r.apr}</span> ${BR()}<small>errors apresos</small>`:TB==="temps"?fTc(r.temps_s):(()=>{const n=niv(r.punts_max);return `${nivIc(n)} ${n+1}<small>${NIV[n][1]}</small>`})();
+ const vPodi=r=>TB==="punts"?`<span class="cnt" data-n="${r.punts}">${r.punts}</span> ${ST()}`:TB==="setmana"?`+<span class="cnt" data-n="${r.setmana}">${r.setmana}</span> ${ST()}`:TB==="remuntada"?`<span class="cnt" data-n="${r.apr}">${r.apr}</span> ${BR()}<small>errors apresos</small>`:TB==="dies"?`<span class="cnt" data-n="${r.dies}">${r.dies}</span><small>${r.dies===1?"dia d'estudi":"dies d'estudi"}</small>`:(()=>{const n=niv(r.punts_max);return `${nivIc(n)} ${n+1}<small>${NIV[n][1]}</small>`})();
  const pd=(r,pos)=>{if(!r)return `<div class="pd p${pos} lliure"><span class="pd-av" style="--av:#1e1b4b"><span class="av-cl">${spr("ghost")}</span></span><span class="pd-nom">Lliure</span><span class="pd-val"><small>Pot ser teu!</small></span><div class="pd-bloc">${pos}</div></div>`;
   return `<div class="pd p${pos} ${esJo(r)?"jo":""}">${avHtml(r.nom,"pd-av",pos===1?`<span class="corona">${spr("crown")}</span>`:"")}<span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="pd-val">${vPodi(r)}</span><span class="pd-mv">${movHtml(mov(r,pos))}</span><div class="pd-bloc">${pos}</div></div>`};
  // ---- 2) taula de classificació: columnes alineades, la de la pestanya activa ressaltada ----
@@ -1186,14 +1186,14 @@ function pintaHs(){
  const fsMat=g=>{const w=mcv.measureText(g.curt).width,lloc=g.n*42+(g.n-1)*6+6;return w<=lloc?"":`;font-size:${Math.max(6,8*lloc/w).toFixed(2)}px`};
  const mats=`<div class="ht-fila ht-mat" aria-hidden="true"><span class="ht-fix"></span>${MONS_GR.map(g=>`<span class="ht-matg" style="grid-column:span ${g.n};--mc:${g.color};--mt:${g.tint}" title="${esc(g.mat)}"><b style="${fsMat(g).slice(1)}">${esc(g.curt)}</b></span>`).join("")}<span class="ht-mat1"></span></div>`;
  const tt=x=>` title="${x}" aria-label="${x}"`;
- const cap=`<div class="ht-fila ht-cap" role="row"><span class="ht-fix"><span class="pos">#</span><span class="mv"></span><span class="nom">Nom</span></span>${MONS_IC.map(([id,ic])=>`<span class="w">${ic}</span>`).join("")}<span class="num c-punts"${tt("Estrelles de tots els mons")}>${spr("star")} Total</span>${TB==="temps"?`<span class="num c-x"${tt("Temps estudiant")}>${spr("stopwatch")} Temps</span>`:TB==="remuntada"?`<span class="num c-x"${tt("Errors apresos al repàs els últims 7 dies")}>${spr("brain")} Apresos</span>`:`<span class="num c-x"${tt("Estrelles dels últims 7 dies")}>${spr("fire")} 7 dies</span>`}</div>`;
+ const cap=`<div class="ht-fila ht-cap" role="row"><span class="ht-fix"><span class="pos">#</span><span class="mv"></span><span class="nom">Nom</span></span>${MONS_IC.map(([id,ic])=>`<span class="w">${ic}</span>`).join("")}<span class="num c-punts"${tt("Estrelles de tots els mons")}>${spr("star")} Total</span>${TB==="dies"?`<span class="num c-x"${tt("Dies d'estudi (últims 120 dies)")}>${spr("hourglass")} Dies</span>`:TB==="remuntada"?`<span class="num c-x"${tt("Errors apresos al repàs els últims 7 dies")}>${spr("brain")} Apresos</span>`:`<span class="num c-x"${tt("Estrelles dels últims 7 dies")}>${spr("fire")} 7 dies</span>`}</div>`;
  const fila=(r,pos,i,extra)=>{const m=r.mons||{},n=niv(r.punts_max||0),sup=Math.floor((r.punts||0)/SUPER);
   return `<div class="ht-fila ${pos<=3?"top":""} ${esJo(r)?"jo":""} ${extra||""}" role="row" style="animation-delay:${(.8+i*.06).toFixed(2)}s">
   <span class="ht-fix"><span class="pos"${pos<=3?tt(`${ordinal(pos)} lloc`):""}>${pos<=3?MED[pos-1]:pos}</span><span class="mv">${movHtml(mov(r,pos))}</span>
   <span class="nom">${avHtml(r.nom,"av")}<span class="nm">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="tags"><i class="nv"${tt(`Nivell ${n+1}: ${NIV[n][1]}`)}>${nivIc(n)} ${n+1}</i>${sup?`<i class="su"${tt(`Superestrelles (1 cada ${SUPER} ⭐)`)}>${spr("superstar")} ${sup}</i>`:""}</span>
    <span class="mw">${MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<i>${ic} ${m[id]}</i>`).join("")}</span></span></span>
   ${MONS_IC.map(([id])=>`<span class="w${m[id]>0?"":" buit"}">${m[id]>0?m[id]:"·"}</span>`).join("")}
-  <span class="num c-punts">${r.punts||0}</span><span class="num c-x">${TB==="temps"?fTc(r.temps_s):TB==="remuntada"?(r.apr>0?r.apr:"·"):(r.setmana>0?"+"+r.setmana:"·")}</span></div>`};
+  <span class="num c-punts">${r.punts||0}</span><span class="num c-x">${TB==="dies"?(r.dies>0?r.dies:"·"):TB==="remuntada"?(r.apr>0?r.apr:"·"):(r.setmana>0?"+"+r.setmana:"·")}</span></div>`};
  let podi="",taula="";
  if(!rows.length)podi=TB==="remuntada"?`<div class="hs-buit">AQUESTA SETMANA ENCARA NINGÚ<br>HA APRÈS UN ERROR DEL TOT.<br>REPASSA ELS TEUS ERRORS I SURT AQUÍ! ${spr("brain")}</div>`:`<div class="hs-buit">ENCARA NO HI HA NINGÚ AL PODI<br>JUGA I SERÀS EL PRIMER! ${spr("rocket")}</div>`;
  else{
@@ -1205,15 +1205,15 @@ function pintaHs(){
  let tu="";const ij=rows.findIndex(esJo);XAT.davant=meu&&ij>0?rows[ij-1]:null; // qui tens just al davant («Digues-li…»; xatEncaixa)
  if(meu){if(ij<0)tu=`<div class="hs-tu"><div class="t">ENCARA NO HI ETS!</div><p>Fes un test o un joc i entraràs al rànquing. ${spr("rocket")}</p></div>`;
   else{const r=rows[ij],ant=rows[ij-1],seg=rows[ij+1];
-   if(ij===0)tu=`<div class="hs-tu"><div class="t">${spr("crown")} ETS EL 1r!</div><p>Tens <b>${fmt(r[c.k]-(seg?seg[c.k]:0))}${unit}</b> d'avantatge${seg?` sobre <b>${esc(seg.nom)}</b> ${avHtml(seg.nom,"av-mini")}`:""}. Que no t'atrapin!</p></div>`;
-   else{const falta=ant[c.k]-r[c.k]+(TB==="temps"?60:1),pc=Math.round(r[c.k]*100/Math.max(1,ant[c.k]));
-    tu=`<div class="hs-tu"><div class="t">ETS EL ${ordinal(ij+1).toUpperCase()}!</div><p>Et falten <b>${fmt(falta)}${unit}</b> per atrapar <b>${esc(ant.nom)}</b> ${avHtml(ant.nom,"av-mini")} i pujar al ${ordinal(ij)} lloc.</p><div class="falta"><i style="width:${pc}%"></i></div>${xatDiguesHtml(ant)}</div>`}}}
+   if(ij===0){const av=r[c.k]-(seg?seg[c.k]:0);tu=`<div class="hs-tu"><div class="t">${spr("crown")} ETS EL 1r!</div><p>${av>0?`Tens <b>${fmt(av)}${unit}</b> d'avantatge${seg?` sobre <b>${esc(seg.nom)}</b> ${avHtml(seg.nom,"av-mini")}`:""}.`:`Empatat${seg?` amb <b>${esc(seg.nom)}</b> ${avHtml(seg.nom,"av-mini")}`:""} i davant per estrelles!`} Que no t'atrapin!</p></div>`}
+   else{const falta=Math.max(1,ant[c.k]-r[c.k]+1),pc=Math.min(100,Math.round(r[c.k]*100/Math.max(1,ant[c.k])));
+    tu=`<div class="hs-tu"><div class="t">ETS EL ${ordinal(ij+1).toUpperCase()}!</div><p>${falta===1&&TB==="dies"?"Et falta":"Et falten"} <b>${fmt(falta)}${unit}</b> per atrapar <b>${esc(ant.nom)}</b> ${avHtml(ant.nom,"av-mini")} i pujar al ${ordinal(ij)} lloc.</p><div class="falta"><i style="width:${pc}%"></i></div>${xatDiguesHtml(ant)}</div>`}}}
  // ---- 4) premis de la colla ----
  const tots=HSD.filter(r=>r.punts>0||r.temps_s>0),millor=(f,ok)=>{let m=null;tots.forEach(r=>{const v=f(r);if(ok(v)&&(!m||v>m.v||(v===m.v&&r.punts>m.r.punts)))m={r,v}});return m};
  const P=[["fire","Màquina de la setmana","#ea580c",millor(r=>r.setmana||0,v=>v>0),v=>`+${v} ${ST()} en 7 dies`],
   ["rocket","Cohet","#db2777",millor(r=>r.temps_s>=600?Math.round(r.punts*600/r.temps_s):0,v=>v>0),v=>`${v} ${ST()} cada 10 min`],
   ["globe","Explorador de mons","#0891b2",millor(nMons,v=>v>1),v=>`${v} mons amb ${ST()}`],
-  ["hourglass","Més constant","#7c3aed",millor(r=>r.temps_s||0,v=>v>0),v=>fTc(v)+" estudiant"],
+  ["hourglass","Més constant","#7c3aed",millor(r=>r.dies||0,v=>v>0),v=>`${v} ${v===1?"dia":"dies"} d'estudi`],
   ["brain","Remuntada de la setmana","#16a34a",millor(r=>r.apr||0,v=>v>0),v=>`${v} error${v===1?"":"s"} après${v===1?"":"os"} en 7 dies`]].filter(x=>x[3]);
  const premis=P.length?`<div class="hs-caixeta"><h3 class="hs-sec"><span>${spr("trophy")} PREMIS DE LA COLLA</span></h3><div class="g">${P.map(([ic,nm,col,m,tx],i)=>`<div class="premi" style="--pc:${col};animation-delay:${(1.1+i*.15).toFixed(2)}s"><span class="ic">${spr(ic)}</span><span class="nm2">${nm}</span><span class="qui">${avHtml(m.r.nom,"av-pr")}<span>${esc(m.r.nom)}</span></span><small>${tx(m.v)}</small></div>`).join("")}</div></div>`:"";
   // composició: ordinador → a dalt podi | (meta + la teva posició), a sota els premis i la classificació a tota l'amplada; mòbil → podi, meta, tu, premis, classificació
@@ -1230,7 +1230,7 @@ function pintaHs(){
  const sc=document.querySelector("#hs .ht-scroll");if(sc)sc.addEventListener("scroll",()=>sc.classList.toggle("desp",sc.scrollLeft>0),{passive:true});
  // ---- rètol de notícies que passa ----
  const nt=[];const r0=rows[0];
- if(r0&&rows[1])nt.push(`${spr("crown")} <b>${esc(r0.nom)}</b> lidera amb ${fmt(r0[c.k]-rows[1][c.k])}${unit} d'avantatge`);
+ if(r0&&rows[1]&&r0[c.k]>rows[1][c.k])nt.push(`${spr("crown")} <b>${esc(r0.nom)}</b> lidera amb ${fmt(r0[c.k]-rows[1][c.k])}${unit} d'avantatge`);
  P.forEach(([ic,nm,,m,tx])=>nt.push(`${spr(ic)} <b>${esc(m.r.nom)}</b>: ${tx(m.v)}`));
  tots.filter(r=>r.punts>=SUPER).sort((a,b)=>b.punts-a.punts).slice(0,4).forEach(r=>nt.push(`${spr("superstar")} <b>${esc(r.nom)}</b> té ${Math.floor(r.punts/SUPER)} superestrell${Math.floor(r.punts/SUPER)===1?"a":"es"}`));
  if(hiHavia)rows.slice(0,HS_TOP).forEach((r,i)=>{const m=mov(r,i+1);if(m==="nou")nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> entra al rànquing!`);else if(m>=2)nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> puja ${m} llocs!`)});
@@ -1282,7 +1282,7 @@ bnSo.sessio(soOk()); // a l'iPhone, que soni encara que el mòbil estigui en sil
 function notaH(f,t0,d,tipus="square",vol=.09){const o=ACH.createOscillator(),g=ACH.createGain(),t=ACH.currentTime+t0;o.type=tipus;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(ACH.destination);o.start(t);o.stop(t+d+.02)}
 const MELO={ // una musiqueta curta diferent per a cada pestanya
  punts:[[784,0,.1],[988,.09,.1],[1175,.18,.1],[1568,.27,.28],[1319,.27,.28,"triangle"]],        // estrelles: arpegi brillant
- temps:[[880,0,.06],[660,.1,.06],[880,.2,.06],[660,.3,.06],[1047,.42,.12],[1319,.54,.26]],      // temps: tic-tac i ding
+ dies:[[880,0,.06],[660,.1,.06],[880,.2,.06],[660,.3,.06],[1047,.42,.12],[1319,.54,.26]],       // dies d'estudi: tic-tac i ding
  setmana:[[523,0,.08],[659,.08,.08],[784,.16,.08],[1047,.24,.08],[1319,.32,.08],[1568,.4,.3],[784,.4,.3,"triangle"]], // setmana: escala que puja
  nivell:[[392,0,.12],[523,.12,.12],[659,.24,.12],[784,.36,.12],[1047,.5,.34],[523,.5,.34,"triangle"],[659,.5,.34,"triangle"]], // nivell: fanfàrria
  remuntada:[[392,0,.08],[440,.08,.08],[523,.16,.08],[659,.26,.1],[784,.38,.1],[1047,.5,.32],[659,.5,.32,"triangle"]], // remuntada: de baix a dalt
@@ -1299,7 +1299,7 @@ const EST={or:["linear-gradient(135deg,#fff7c2,#facc15 45%,#b45309)","#facc15"],
  rosa:["linear-gradient(135deg,#fce7f3,#f472b6 50%,#9d174d)","#f472b6"],cian:["linear-gradient(135deg,#cffafe,#22d3ee 50%,#0e7490)","#22d3ee"],
  lila:["linear-gradient(135deg,#ede9fe,#a78bfa 50%,#5b21b6)","#a78bfa"],verd:["linear-gradient(135deg,#dcfce7,#4ade80 50%,#15803d)","#4ade80"],tar:["linear-gradient(135deg,#ffedd5,#fb923c 50%,#c2410c)","#fb923c"]};
 const FXT={punts:{mix:["or","or","or","plata","tar"],r:"ESTRELLES!",tx:"linear-gradient(#fff7c2,#facc15 55%,#d97706)",gl:"#facc15"},
- temps:{mix:["plata","plata","cian","cian","or"],r:"TEMPS!",tx:"linear-gradient(#ffffff,#cbd5e1 50%,#22d3ee)",gl:"#67e8f9"},
+ dies:{mix:["plata","plata","cian","cian","or"],r:"DIES D'ESTUDI!",tx:"linear-gradient(#ffffff,#cbd5e1 50%,#22d3ee)",gl:"#67e8f9"},
  setmana:{mix:["verd","verd","or","cian","plata"],r:"QUI PUJA MÉS!",tx:"linear-gradient(#dcfce7,#4ade80 55%,#15803d)",gl:"#4ade80"},
  nivell:{mix:["or","plata","rosa","cian","lila","verd","tar"],r:"NIVELL!",tx:"linear-gradient(90deg,#f472b6,#facc15,#4ade80,#22d3ee,#a78bfa)",gl:"#c4b5fd"},
  remuntada:{mix:["rosa","lila","verd","verd","or"],r:"REMUNTADA!",tx:"linear-gradient(#fce7f3,#f472b6 50%,#9d174d)",gl:"#f472b6"},
