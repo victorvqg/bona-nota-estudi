@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="267a74956a",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="ffe9ef602c",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -587,7 +587,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.23.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.24.0</small></div>
 
 <script src="../../sprites.js?v=0be9e885"></script>
 <script>
@@ -2558,7 +2558,7 @@ function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">$
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
  JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
  return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
-function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,frases:jocFrases,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
  if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}
@@ -2578,7 +2578,7 @@ function pintaTema(){
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
  const txtF=`${t.titol}. Idea clau: ${t.idea}. ${t.pts.join(". ")}. Truc: ${t.truc}. Compte: ${t.compte}`;
- document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+ document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
  const cpt=document.querySelector("#zona .compte");if(cpt&&"IntersectionObserver" in window){const a=ACTV,ob=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){if(a)a.fi=1;ob.disconnect()}});ob.observe(cpt)}
 }
 function targetes(n){calla();
@@ -2669,19 +2669,19 @@ function examen(){
 // Fa servir la veu del mateix dispositiu. Català per defecte; castellà si l'assignatura és de castellà (ASSIG.veu).
 const VEU_LANG=ASSIG.veu||(/castell|spanish|espa/i.test(ASSIG.id+ASSIG.nom)?"es-ES":"ca-ES");
 let VEUS=[],PARLANT=null;
-function triaVeu(){if(!("speechSynthesis" in window))return null;VEUS=speechSynthesis.getVoices();const l=VEU_LANG.slice(0,2);
- return VEUS.find(v=>v.lang.replace("_","-").toLowerCase()===VEU_LANG.toLowerCase())||VEUS.find(v=>v.lang.toLowerCase().startsWith(l))||(l==="ca"?VEUS.find(v=>v.lang.toLowerCase().startsWith("es")):null)||null}
+function triaVeu(lang){if(!("speechSynthesis" in window))return null;VEUS=speechSynthesis.getVoices();const L=lang||VEU_LANG,l=L.slice(0,2);
+ return VEUS.find(v=>v.lang.replace("_","-").toLowerCase()===L.toLowerCase())||VEUS.find(v=>v.lang.toLowerCase().startsWith(l))||(l==="ca"?VEUS.find(v=>v.lang.toLowerCase().startsWith("es")):null)||null}
 if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=()=>{VEUS=speechSynthesis.getVoices()};
 const potEscoltar=()=>"speechSynthesis" in window;
 function netText(h){const d=document.createElement("div");d.innerHTML=String(h).replace(/<br\s*\/?>/gi,". ").replace(/<\/li>/gi,". ");return d.textContent.replace(/[★⚠✅💡🔁🧠]/g,"").replace(/\s+/g," ").trim()}
 function calla(){if(potEscoltar())speechSynthesis.cancel();if(AC)abaixaMus(false);document.querySelectorAll(".escolta.parla").forEach(b=>{b.classList.remove("parla");b.firstChild.textContent="🔊"});PARLANT=null}
-function escolta(btn,text){if(!potEscoltar())return;if(PARLANT===btn){calla();return}calla();
- const u=new SpeechSynthesisUtterance(netText(text)),v=triaVeu();if(v)u.voice=v;u.lang=v?v.lang:VEU_LANG;u.rate=.92;u.pitch=1.05;
+function escolta(btn,text,lang){if(!potEscoltar())return;if(PARLANT===btn){calla();return}calla();
+ const u=new SpeechSynthesisUtterance(netText(text)),v=triaVeu(lang);if(v)u.voice=v;u.lang=v?v.lang:(lang||VEU_LANG);u.rate=.92;u.pitch=1.05;
  u.onend=u.onerror=()=>{if(PARLANT===btn)calla()};PARLANT=btn;btn.classList.add("parla");btn.firstChild.textContent="⏹";if(AC)abaixaMus(true);speechSynthesis.speak(u);registraEscolta()}
 let ESC_N=0;function registraEscolta(){ESC_N++}
 // botó: <button class="escolta" data-t="clau">; el text es guarda a ESCT[clau]
 const ESCT={};let ESCI=0;
-function btEscolta(text,etq){if(!potEscoltar())return "";const k="e"+(++ESCI);ESCT[k]=text;return `<button class="escolta" type="button" onclick="event.stopPropagation();escolta(this,ESCT['${k}'])" aria-label="Escolta-ho en veu alta"><span>🔊</span>${etq===""?"":`<span>${etq||"Escolta"}</span>`}</button>`}
+function btEscolta(text,etq,lang){if(!potEscoltar())return "";const k="e"+(++ESCI);ESCT[k]=text;return `<button class="escolta" type="button" onclick="event.stopPropagation();escolta(this,ESCT['${k}']${lang?`,'${lang}'`:""})" aria-label="Escolta-ho en veu alta"><span>🔊</span>${etq===""?"":`<span>${etq||"Escolta"}</span>`}</button>`}
 
 // ====================== ESTRELLES JUSTES ======================
 // Una pregunta encertada dona ⭐ només la primera vegada de cada dia; cada joc, només la primera partida del dia.
@@ -3335,7 +3335,7 @@ function cartaRepas(){const p=repPendents(),n=p.length,tot=repTots().length;if(!
  return `<div class="continua" role="button" tabindex="0" style="background:#ecfdf5;border-color:#6ee7b7" onclick="repas()"><span style="font-size:28px">🔁</span><b>${n?`Tens <span style="color:#047857">${n} ${nomes?`pregunta${n>1?"s":""}`:`error${n>1?"s":""}`}</span> per repassar avui`:`Errors al dia! Proper repàs: ${new Date(repProper()).toLocaleDateString("ca-ES",{day:"numeric",month:"short"})}`}</b><span class="btn ${n?"verd":"sec"}">${n?"Repassa →":"Mira"}</span></div>`}
 
 // ====================== JOCS GENÈRICS ======================
-// tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
+// tipus: ordena · parelles · classifica · figura · error · frases (frases amb buits) · custom (funció pròpia definida a les dades)
 function fiJoc(j,n,errors,extra){missio("jocs",j.id);ULT=Object.assign({enc:n,err:errors},extra||{});diaEst().j[j.id]=1;const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
  document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila">${(()=>{const s=j.seg&&ASSIG.jocs.find(x=>x.id===j.seg);return s?`<button class="btn" onclick="joc('${s.id}')">${s.ic} Ara tu: ${s.titol} ▶</button>`:""})()}<button class="btn${j.seg?" sec":""}" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
 function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
@@ -3464,6 +3464,139 @@ function jgErrRepas(items,fi){jgErrCss();
  valid:r=>!!jgErrTroba(r),
  nom:r=>{const f=jgErrTroba(r);return f?`🔍 ${f.j.titol} · ${String(f.ex.enun).replace(/<[^>]+>/g,"").slice(0,45)}…`:"🔍 Troba l'error"},
  juga:jgErrRepas};
+
+// ---------- ✍️ FRASES AMB BUITS (tipus:"frases") ----------
+// Frases fetes on falta un tros: el nen l'ha de triar, escriure o ordenar. Cada frase és d'una de tres menes, segons els camps que porta:
+//   tria   → {f:"Her hair ___ red.", ok:"is", no:["are","have"]}            f pot tenir més d'un ___ i ok ser una llista (banc de paraules, s'omple en ordre)
+//   escriu → {f:"She ___ at the party now.", v:"dance", r:["is dancing","'s dancing"]}   v = paraula del parèntesi (opcional); r = respostes que valen (la primera és la model)
+//   ordena → {mots:"I really like comics", no:["likes"]}                      les paraules surten desordenades; no = paraules que sobren (opcional)
+// Opcionals a totes: ca (traducció), ex (el perquè, es veu després de respondre), pista (ajuda després del primer error), id.
+// j.n = frases per partida (8 per defecte, triades a l'atzar i en l'ordre de les dades). Veu del botó Escolta: j.veu o ASSIG.veuFrases (p. ex. "en-GB").
+// Estrelles: 1 per frase bé a la primera (i el joc, un cop al dia, com els altres). Cada frase fallada entra al repàs espaiat (BN_REP_TIPUS.frase).
+// Un tema pot enllaçar el seu joc amb T[i].frases="id-del-joc": surt el botó «Practica-ho amb frases» a la fitxa.
+let FR=null;
+const FR_BUIT=/_{3,}/g;
+function frCss(){if(document.getElementById("frCss"))return;const s=document.createElement("style");s.id="frCss";s.textContent=`
+.fr-ins{margin:4px 0 8px;color:#475569;font-weight:700}
+.fr-ca{margin:0 0 8px;padding:8px 12px;border-radius:12px;background:#fefce8;border:2px solid #fde68a;font-weight:700}
+.fr-frase{font-size:20px;font-weight:800;line-height:2.1;padding:12px 14px;border-radius:14px;background:#f8fafc;border:2px solid var(--vora);margin:6px 0;min-height:66px}
+.fr-buit{display:inline-block;min-width:58px;text-align:center;padding:0 10px;margin:0 2px;border-bottom:3px dashed #94a3b8;border-radius:8px 8px 0 0;color:#94a3b8;line-height:1.5}
+.fr-buit.act{border-bottom-color:var(--blau);background:#dbeafe;color:var(--blau2)}
+.fr-buit.ple{border-bottom:3px solid var(--verd);background:#dcfce7;color:#14532d}
+.fr-buit.ple.rev{border-bottom-color:#f59e0b;background:#fef3c7;color:#92400e}
+.fr-mot{display:inline-block;padding:0 9px;margin:2px;border-radius:9px;background:#dcfce7;color:#14532d;line-height:1.6}
+.fr-v{font-size:15px;font-weight:800;color:#7c3aed}
+.fr-nw{display:inline-block}
+.fr-banc{margin-top:8px;text-align:center}
+.fr-banc .chip{font:inherit;font-weight:800;font-size:17px;color:var(--fosc);min-height:44px}
+.fr-banc .chip.ok{color:#fff;opacity:.55}
+.fr-banc .chip.no{opacity:.4;text-decoration:line-through;cursor:default}
+.fr-esc{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.fr-esc input{flex:1;min-width:150px;font:inherit;font-size:19px;font-weight:800;padding:10px 12px;border-radius:12px;border:2px solid var(--blau);background:#fff;color:var(--fosc)}
+.fr-esc input.ko{animation:tremola .35s;border-color:#ef4444}
+.fb.fr-ko{background:#fef2f2;border-color:#fecaca}
+.fr-sol{margin-top:10px;padding:12px 14px;border-radius:14px;background:#fffef5;border:2px solid #fde68a;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.fr-tr{font-weight:700;color:#334155}
+.fr-ex{color:#1e293b}
+.fr-alta{font-size:14px;font-weight:800;color:#7c3aed}
+body.suau .fr-esc input.ko{animation:none!important}`;document.head.appendChild(s)}
+function frNorm(s){return String(s).replace(/<[^>]+>/g,"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g," ").replace(/\s*'\s*/g,"'").replace(/[.!?]+$/,"").trim()}
+function frId(E){if(E.id)return E.id;const s=E.f||E.mots;let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return "f"+h.toString(36)}
+function frPrep(raw){const E=Object.assign({},raw);E.id=frId(raw);E.mena=E.mots?"ordena":E.r?"escriu":"tria";E.sol=E.mots?E.mots.split(" "):E.r?[E.r[0]]:[].concat(E.ok);
+ E.cue=!!(E.ca&&(E.mena==="ordena"||(E.mena==="escriu"&&!E.v)));
+ if(E.mena!=="escriu"){const base=E.sol.concat(E.no||[]);let b,k=0;do{b=barreja(base)}while(E.mena==="ordena"&&E.sol.length>1&&b.join(" ")===base.join(" ")&&k++<9);E.banc=b}
+ return E}
+function frFrase(E,fills,act,fi){
+ if(E.mena==="ordena")return fills.map(w=>`<span class="fr-mot">${w}</span>`).join(" ")+(fi?"":` <span class="fr-buit act">…</span>`);
+ let g=-1;return E.f.replace(FR_BUIT,()=>{g++;const w=fills[g];const b=`<span class="fr-buit${w!==undefined?" ple":""}${g===act&&!fi?" act":""}${E.rev&&E.rev[g]?" rev":""}">${w!==undefined?w:"&nbsp;?&nbsp;"}</span>`;return E.v&&g===0?`<span class="fr-nw">${b} <small class="fr-v">(${E.v})</small></span>`:b})}
+function jocFrases(j){frCss();jgErrCss();const it=j.items||[],n=Math.min(j.n||8,it.length);
+ const tria=barreja(it.map((x,i)=>i)).slice(0,n).sort((a,b)=>a-b);
+ FR={j,llista:tria.map(i=>frPrep(it[i])),e:0,bones:0,errs:0,errE:[],fi:false,veu:j.veu||ASSIG.veuFrases||null};frPinta()}
+function frPinta(){const {j,llista,e}=FR,E=llista[e];FR.int=0;FR.gap=0;FR.fills=[];FR.net=true;FR.fase="joc";FR.teva=null;E.rev=[];
+ const mena={tria:"👆 Tria",escriu:"⌨️ Escriu",ordena:"🔀 Ordena"}[E.mena];
+ const ins=E.mena==="ordena"?"Toca les paraules en ordre per fer la frase.":E.mena==="escriu"?(E.v?"Escriu el verb del parèntesi en la forma correcta.":"Escriu la paraula que falta."):(E.sol.length>1?"Omple els buits d'un en un, en ordre, tocant les paraules del banc.":"Toca la paraula que falta.");
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><div class="jg-cap"><span class="jg-ap">Frase ${e+1} de ${llista.length}</span><span class="prog">${mena}</span></div>
+ <p class="fr-ins">${ins}</p>${E.cue?`<p class="fr-ca">En català: «${E.ca}»</p>`:""}
+ <div class="fr-frase" id="frFrase" aria-live="polite">${frFrase(E,[],0)}</div>
+ ${E.mena==="escriu"?`<div class="fr-esc"><input id="frIn" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="40" placeholder="Escriu aquí" aria-label="Escriu la resposta"><button class="btn" onclick="frComprova()">Comprova ✔</button></div>`
+  :`<div class="fr-banc" id="frBanc">${E.banc.map((w,k)=>`<button type="button" class="chip" data-k="${k}" onclick="frToca(${k})">${w}</button>`).join("")}</div>`}
+ <div id="frFb"></div><div id="zona"></div></div>`;
+ const i=document.getElementById("frIn");if(i){i.onkeydown=ev=>{if(ev.key==="Enter"){ev.preventDefault();frComprova()}};if(!FR.prova)i.focus()}}
+// un error en una frase: compta un sol cop per frase i l'apunta al repàs espaiat
+function frErr(E){FR.int++;if(!FR.net)return;FR.net=false;FR.errs++;FR.errE[FR.e]=1;
+ if(!FR.rep&&typeof repAnotaExt==="function")repAnotaExt("frase",`${FR.j.id}|${E.id}`,{jid:FR.j.id,eid:E.id},false)}
+function frToca(k){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],b=document.querySelector(`#frBanc .chip[data-k="${k}"]`);if(!b||b.disabled)return;
+ const vol=E.sol[FR.gap],fb=document.getElementById("frFb");
+ if(frNorm(E.banc[k])===frNorm(vol)){so("ok");fb.innerHTML="";frPosa(E,vol,b);return}
+ frErr(E);sacseja(b);
+ if(FR.int>=2){const c=[...document.querySelectorAll("#frBanc .chip")].find(x=>!x.disabled&&frNorm(E.banc[+x.dataset.k])===frNorm(vol));E.rev[FR.gap]=1;
+  fb.innerHTML=`<div class="fb fr-ko">👉 Aquí hi va <b>${vol}</b>.${E.sol.length-FR.gap>1?" Continua amb el següent.":""}</div>`;frPosa(E,vol,c);return}
+ if(E.mena==="tria"&&E.sol.length===1){b.disabled=true;b.classList.add("no")}
+ fb.innerHTML=`<div class="fb fr-ko">❌ No és aquesta. ${E.pista?"💡 "+E.pista:"Torna-ho a provar."}</div>`}
+function frPosa(E,vol,b){FR.fills[FR.gap]=vol;FR.gap++;FR.int=0;if(b){b.disabled=true;b.classList.remove("ko");b.classList.add("ok")}
+ if(FR.gap>=E.sol.length)return frFet();
+ document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,FR.gap)}
+function frPistaAuto(E){const r=E.r[0],n=r.split(" ").length;return `Comença per «${r.slice(0,r.length>3?2:1)}…» i ${n>1?`són ${n} paraules`:"és una sola paraula"}.`}
+function frComprova(){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],i=document.getElementById("frIn"),fb=document.getElementById("frFb");if(!i)return;const v=frNorm(i.value);
+ if(!v){fb.innerHTML=`<div class="fb">✏️ Primer escriu la resposta.</div>`;return}
+ const bona=E.r.find(x=>frNorm(x)===v);
+ if(bona!==undefined){so("ok");FR.fills[0]=bona;FR.gap=1;return frFet()}
+ frErr(E);sacseja(i);
+ if(FR.int>=2){E.rev[0]=1;FR.fills[0]=E.r[0];FR.gap=1;FR.teva=i.value.trim().slice(0,40);return frFet()}
+ fb.innerHTML=`<div class="fb fr-ko">❌ Encara no. 💡 ${E.pista||frPistaAuto(E)}</div>`;if(!FR.prova)i.select()}
+function frFet(){const E=FR.llista[FR.e],bo=FR.net,ult=FR.e+1>=FR.llista.length;FR.fase="fet";
+ if(bo){FR.bones++;if(typeof JOCSTAR!=="undefined"&&JOCSTAR)suma(JOCSTAR)}
+ let g=0;const txt=E.mena==="ordena"?E.mots:E.f.replace(FR_BUIT,()=>FR.fills[g++]);
+ document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,-1,true);
+ const treu=document.getElementById("frBanc")||document.querySelector(".fr-esc");if(treu)treu.remove();
+ const teva=FR.teva?` Tu has escrit «${FR.teva.replace(/[<>&]/g,"")}».`:"";
+ document.getElementById("frFb").innerHTML=`<div class="fb ${bo?"ok":"fr-ko"}">${bo?"✅ Molt bé! Bé a la primera.":"👉 Fixa-t'hi bé: així queda la frase."+teva}</div>
+ <div class="fr-sol">${btEscolta(txt,"Escolta-la",FR.veu)}${E.ca&&!E.cue?`<div class="fr-tr">🗣️ ${E.ca}</div>`:""}${E.ex?`<div class="fr-ex">💡 ${E.ex}</div>`:""}<div class="fr-alta">🎤 Ara digues-la tu en veu alta, un cop.</div></div>
+ <div class="fila"><button class="btn" id="frSeg" onclick="${ult?"frFi()":"frSeg()"}">${ult?(FR.onFi?"Veure el resultat 🏁":"Acaba 🏁"):"Següent frase ▶"}</button></div>`;
+ const s=document.getElementById("frSeg");if(s&&!FR.prova)s.focus({preventScroll:true})}
+function frSeg(){if(typeof calla==="function")calla();FR.e++;frPinta();window.scrollTo(0,0)}
+function frFi(){if(typeof calla==="function")calla();if(FR.onFi)return FR.onFi();const {j,bones,llista}=FR,mal=llista.length-bones;FR.fi=true;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><p>Has completat <b>${llista.length} frases</b>: <b>${bones}</b> bé a la primera${mal?` i <b>${mal}</b> amb algun error. Les fallades tornaran a «🔁 Repassa els teus errors»`:""}.</p><div id="zona"></div></div>`;
+ fiJoc(j,bones,mal)}
+// comprova que les dades d'un joc de frases estan ben fetes (ho fa servir la prova automàtica)
+function frValida(j){const p=[],it=j.items||[];it.forEach((E,i)=>{const on=`frase ${i+1}`,nb=E.f?(E.f.match(FR_BUIT)||[]).length:0;
+  if(E.mots){if(E.mots.split(" ").length<3)p.push(on+": massa curta per ordenar")}
+  else if(!E.f||!nb)p.push(on+": no té cap buit (___)");
+  else if(E.r){if(nb!==1)p.push(on+": les d'escriure només poden tenir un buit");if(!E.r.length)p.push(on+": sense resposta")}
+  else{const ok=[].concat(E.ok||[]),no=E.no||[];if(ok.length!==nb)p.push(on+`: ${nb} buits i ${ok.length} respostes`);
+   if(no.some(x=>ok.some(o=>frNorm(o)===frNorm(x))))p.push(on+": un distractor és igual que una resposta");if(ok.length===1&&no.length<2)p.push(on+": calen 2 distractors")}
+  if(!E.ex)p.push(on+": sense explicació (ex)")});
+ const ids=it.map(frId);if(new Set(ids).size!==ids.length)p.push("hi ha frases repetides");if(it.length<(j.n||8))p.push(`té ${it.length} frases i una partida en demana ${j.n||8}`);return p}
+// juga la frase actual bé (o, amb mal=true, primer amb un error)
+function frProvaPas(mal){const E=FR.llista[FR.e];
+ if(E.mena==="escriu"){const i=document.getElementById("frIn");if(mal){i.value="zzz";frComprova()}i.value=E.r[E.r.length-1].toUpperCase()+".";frComprova();return true}
+ const vol=E.sol[FR.gap],cs=()=>[...document.querySelectorAll("#frBanc .chip")].filter(x=>!x.disabled);
+ if(mal){const m=cs().find(x=>frNorm(x.textContent)!==frNorm(vol));if(m)m.click()}
+ const c=cs().find(x=>frNorm(x.textContent)===frNorm(vol));if(!c)return `falta «${vol}» al banc`;c.click();return true}
+function jocFrasesProva(j){const p=frValida(j);if(p.length)return "jocFrases: "+p.join(" · ");
+ jocFrases(Object.assign({},j,{n:j.items.length}));FR.prova=true;let s=0;
+ while(FR&&!FR.fi&&s++<900){const b=document.getElementById("frSeg");if(b){b.click();continue}const r=frProvaPas(false);if(r!==true)return "jocFrases: "+r}
+ if(!FR||!FR.fi)return "jocFrases: no ha acabat";if(FR.errs||FR.bones!==j.items.length)return `jocFrases: ${FR.bones} bones i ${FR.errs} errors de ${j.items.length}`;return true}
+function frTroba(r){if(!r||!r.jid||typeof ASSIG==="undefined")return null;const j=(ASSIG.jocs||[]).find(x=>x.id===r.jid&&x.tipus==="frases");if(!j)return null;
+ const ex=(j.items||[]).find(e=>frId(e)===r.eid);return ex?{j,ex}:null}
+function frRepas(items,fi){frCss();jgErrCss();const fs=items.map(frTroba),jst=typeof JOCSTAR!=="undefined"?JOCSTAR:0;JOCSTAR=0;
+ FR={j:{id:"rp-frases",titol:"✍️ Frases que et van enganyar"},llista:fs.map(f=>frPrep(f.ex)),e:0,bones:0,errs:0,errE:[],fi:false,rep:true,veu:fs[0].j.veu||ASSIG.veuFrases||null};
+ FR.onFi=()=>{FR.fi=true;JOCSTAR=jst;fi(FR.llista.map((_,i)=>!FR.errE[i]))};frPinta();window.scrollTo(0,0)}
+(window.BN_REP_TIPUS=window.BN_REP_TIPUS||{}).frase={ic:"✍️",max:5,titol:"Ara, frases que et van enganyar",
+ peu:"Torna a completar-les: si avui et surten bé a la primera, tornaran d'aquí a uns dies.",
+ valid:r=>!!frTroba(r),
+ nom:r=>{const f=frTroba(r);if(!f)return "✍️ Frase amb buits";const x=f.ex;return "✍️ "+(x.mots?`Ordena: «${x.ca||"la frase"}»`:String(x.f).replace(/<[^>]+>/g," ").replace(FR_BUIT,"……").slice(0,70))},
+ juga:frRepas};
+// prova pròpia: un error entra al repàs, la frase es torna a jugar bé i surt de pendents
+function frRepProva(){const j=(ASSIG.jocs||[]).find(x=>x.tipus==="frases");if(!j)return true;const abans=JSON.stringify(S.rep||{}),jocs=JSON.stringify(S.jocs),p0=S.punts,js=JOCSTAR;JOCSTAR=0;
+ const net=()=>{S.rep=JSON.parse(abans);S.jocs=JSON.parse(jocs);S.punts=p0;JOCSTAR=js;REPAS=false;FR=null;desa();vista("inici")};
+ try{jocFrases(Object.assign({},j,{n:3}));FR.prova=true;const E0=FR.llista[0];let s=0,pas=0;
+  while(FR&&!FR.fi&&s++<200){const b=document.getElementById("frSeg");if(b){b.click();continue}const r=frProvaPas(pas++===0);if(r!==true){net();return r}}
+  const k=`frase|${j.id}|${E0.id}`,r=(S.rep||{})[k];if(!r||!REP_TIPUS.frase.valid(r)){net();return "l'error no ha entrat al repàs"}
+  if(FR.bones!==2||FR.errs!==1){net();return `esperava 2 bones i 1 error: ${FR.bones}/${FR.errs}`}
+  let oks=null;frRepas([r],o=>{oks=o});FR.prova=true;s=0;while(FR&&!FR.fi&&s++<50){const b=document.getElementById("frSeg");if(b){b.click();continue}frProvaPas(false)}
+  net();return oks&&oks.length===1&&oks[0]===true?true:"el repàs no ha tornat la frase com a encertada"}catch(e){net();return "peta: "+e.message}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("frRepProva");
 
 // ====================== PREGUNTES OBERTES ======================
 function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}

@@ -5,6 +5,18 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.24.0 · 2026-11-11
+
+### Afegit
+- Tipus de joc nou **«✍️ Frases amb buits»** (`tipus:"frases"`, `jocFrases` a la plantilla), per practicar amb frases fetes on falta un tros (n2564):
+  - Tres menes de frase: **tria** (toca la paraula que falta; amb més d'un buit fa de banc de paraules), **escriu** (el nen escriu el verb del parèntesi o la paraula; valen les formes contretes i no compten majúscules ni el punt final) i **ordena** (paraules desordenades, amb paraules que sobren si es vol).
+  - Després de cada frase es veu la frase sencera, la traducció, el perquè i el botó 🔊 que la llegeix **en anglès** (`ASSIG.veuFrases`), i es demana dir-la en veu alta.
+  - Primer error: pista. Segon error: s'ensenya la resposta. 1 ⭐ per frase bé a la primera (el joc paga un cop al dia, com els altres) i cada frase fallada entra a «🔁 Repassa els teus errors» (`BN_REP_TIPUS.frase`).
+  - Cada partida tria 8 frases de les 12 del joc, així no surt sempre igual.
+  - Botó «✍️ Practica-ho amb frases» a la fitxa dels temes que tenen joc de frases (`T[i].frases`).
+- Món 7 (`angles/t2`): **7 jocs de frases amb 84 frases** fetes amb el vocabulari i la gramàtica del mòdul: *Describe a person*, *What's happening now?*, *Simple or Continuous?*, *I really like…*, *Words from the texts*, *What are they like?* i *Let's watch a film!*
+- Proves: `motor/prova.js` juga tots els jocs de frases i en revisa les dades (`frValida`), i la prova pròpia `frRepProva` comprova que un error entra al repàs i en surt.
+
 ## 2.23.0 · 2026-11-11
 
 ### Afegit

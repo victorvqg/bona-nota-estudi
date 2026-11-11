@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="267a74956a",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="ffe9ef602c",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -587,7 +587,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.23.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.24.0</small></div>
 
 <script src="../../sprites.js?v=0be9e885"></script>
 <script>
@@ -596,8 +596,128 @@ const ASSIG={
  nom:"Anglès", tema:"Tema 2: That's Entertainment", curs:"1r ESO", ic:"🎬",
  color:["#831843","#db2777","#fbbf24"],
  peu:"Bona Nota · Anglès 1r ESO · Tema 2: That's Entertainment (Module 2 del llibre, pàg. 31-38, 40 i 41; la pàgina 39 no hi és)",
+ veuFrases:"en-GB",   // el botó Escolta de les frases amb buits llegeix en anglès
  blocs:[{titol:"🎭 A · Costumes and Disguises",n:3},{titol:"📚 B · A Great Story",n:3},{titol:"🍿 C · Activate Your English",n:2}],
  jocs:[
+  {id:"fr-descriu",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🧑",titol:"Describe a person",sub:"Cabells, ulls i alçada",col:"#fce7f3",
+   enunciat:"🧑 Completa les frases per descriure algú",
+   items:[
+    {f:"She's got long ___ hair.",ok:"curly",no:["tall","narrow"],ca:"Té els cabells llargs i arrissats.",ex:"Els cabells poden ser <b>curly</b> o <b>straight</b>. Tall és per a l'alçada i narrow vol dir estret."},
+    {f:"Her hair ___ red.",ok:"is",no:["are","have"],ca:"Té els cabells vermells.",ex:"<b>Hair</b> va en singular: Her hair <b>is</b>…, mai «are»."},
+    {f:"His eyes ___ dark.",ok:"are",no:["is","has"],ca:"Té els ulls foscos.",ex:"<b>Eyes</b> és plural: His eyes <b>are</b>…"},
+    {f:"She's ___ big eyes.",ok:"got",no:["is","are"],ca:"Té els ulls grossos.",ex:"She's got = ella té. He's / She's <b>got</b> + adjectiu + nom."},
+    {f:"My grandad isn't young. He's ___. And he isn't tall: he's ___.",ok:["old","short"],no:["thin","long"],ca:"El meu avi no és jove. És gran. I no és alt: és baix.",ex:"Young ↔ <b>old</b> i tall ↔ <b>short</b>. Estudia'ls de dos en dos."},
+    {mots:"She's got big eyes",no:["bigs"],ca:"Té els ulls grossos.",ex:"L'adjectiu va <b>davant del nom</b> i no té plural: big eyes, mai «eyes bigs»."},
+    {mots:"She's got long curly hair",no:["hairs"],ca:"Té els cabells llargs i arrissats.",ex:"Els adjectius van davant del nom (long curly hair) i <b>hair</b> no porta -s."},
+    {f:"He isn't tall or short. He's medium ___.",r:["height"],ca:"No és ni alt ni baix. És d'alçada mitjana.",pista:"Vol dir «alçada». Comença per «he…».",ex:"<b>Medium height</b> = d'alçada mitjana."},
+    {f:"Her eyes aren't light. They're ___.",r:["dark"],ca:"No té els ulls clars. Els té foscos.",ex:"Light (clar) ↔ <b>dark</b> (fosc). Serveix per als ulls i els cabells."},
+    {f:"The opposite of wide is ___.",ok:"narrow",no:["thin","short"],ca:"El contrari d'ample és estret.",ex:"Wide (ample) ↔ <b>narrow</b> (estret)."},
+    {f:"Her hair isn't curly. It's ___.",ok:"straight",no:["short","light"],ca:"No té els cabells arrissats. Els té llisos.",ex:"Curly (arrissat) ↔ <b>straight</b> (llis)."},
+    {f:"His hair isn't long. It's ___.",r:["short"],ca:"No té els cabells llargs. Els té curts.",ex:"<b>Short</b> vol dir dues coses: curt (↔ long) i baix (↔ tall)."}
+   ],
+   final:"Dues maneres de dir-ho: She's got curly hair. · Her hair is curly."},
+  {id:"fr-continuous",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🔴",titol:"What's happening now?",sub:"am / is / are + verb en -ing",col:"#ffe4e6",
+   enunciat:"🔴 Completa les frases en Present Continuous",
+   items:[
+    {f:"Look! The children ___ wearing costumes.",ok:"are",no:["is","am"],ca:"Mira! Els nens porten disfresses.",ex:"The children és plural (they) → <b>are</b> wearing."},
+    {f:"I ___ not wearing a mask.",ok:"am",no:["is","are"],ca:"No porto cap màscara.",ex:"Amb I sempre <b>am</b>: I am not wearing = I'm not wearing."},
+    {f:"She ___ at the party now.",v:"dance",r:["is dancing","'s dancing"],ca:"Ara està ballant a la festa.",ex:"She → <b>is</b>. I dance perd la e: <b>dancing</b>."},
+    {f:"They ___ on the sofa at the moment.",v:"sit",r:["are sitting","'re sitting"],ca:"En aquest moment seuen al sofà.",ex:"They → <b>are</b>. Sit és curt (consonant + vocal + consonant): dobla la t → <b>sitting</b>."},
+    {f:"He ___ a story right now.",v:"write",r:["is writing","'s writing"],ca:"Ara mateix està escrivint un conte.",ex:"He → <b>is</b>. Write perd la e: <b>writing</b>."},
+    {f:"My mum ___ TV at the moment.",v:"not watch",r:["isn't watching","is not watching","'s not watching"],ca:"La meva mare no està mirant la tele en aquest moment.",ex:"Negativa: <b>isn't</b> + verb en -ing."},
+    {f:"We ___ at the museum now.",v:"stop",r:["are stopping","'re stopping"],ca:"Ara ens parem al museu.",ex:"We → <b>are</b>. Stop dobla la p: <b>stopping</b>."},
+    {f:"The cat ___ on my bed.",v:"lie",r:["is lying","'s lying"],ca:"El gat està estirat al meu llit.",ex:"Els verbs acabats en -ie canvien a y: lie → <b>lying</b>."},
+    {mots:"What are you doing?",ca:"Què estàs fent?",ex:"A les preguntes, <b>are</b> passa davant de you. I la paraula interrogativa, al davant de tot."},
+    {f:"___ they dancing? — Yes, they ___.",ok:["Are","are"],no:["Do","do"],ca:"Estan ballant? — Sí.",ex:"La pregunta es fa amb el be (<b>Are</b> they…?) i la resposta curta el repeteix: Yes, they <b>are</b>."},
+    {f:"Where ___ they standing?",ok:"are",no:["is","do"],ca:"On s'estan, drets?",ex:"Paraula interrogativa + <b>are</b> + they + verb en -ing."},
+    {mots:"He isn't wearing a mask",no:["doesn't"],ca:"Ell no porta cap màscara.",ex:"El Continuous es nega amb el be: <b>isn't</b> wearing. Doesn't és del Present Simple."}
+   ],
+   final:"BE + ING van sempre de la mà. Si veus un -ing sense am / is / are al davant, falta una peça."},
+  {id:"fr-dospresents",grup:"✍️ Frases amb buits",tipus:"frases",ic:"⏱️",titol:"Simple or Continuous?",sub:"Tu tries el temps i escrius el verb",col:"#e0f2fe",
+   enunciat:"⏱️ Present Simple o Present Continuous? Escriu el verb",
+   items:[
+    {f:"My dad often ___ documentaries.",v:"watch",r:["watches"],ca:"El meu pare sovint mira documentals.",ex:"<b>Often</b> = hàbit → Present Simple. Amb he porta -es: <b>watches</b>."},
+    {f:"Listen! The band ___ my favourite song.",v:"play",r:["is playing","'s playing"],ca:"Escolta! El grup toca la meva cançó preferida.",ex:"<b>Listen!</b> vol dir que passa ara → Present Continuous."},
+    {f:"He ___ comics every day.",v:"read",r:["reads"],ca:"Llegeix còmics cada dia.",ex:"<b>Every day</b> = hàbit → Present Simple, i amb he porta -s."},
+    {f:"They ___ a film at the moment.",v:"watch",r:["are watching","'re watching"],ca:"En aquest moment miren una pel·li.",ex:"<b>At the moment</b> → Present Continuous: are watching."},
+    {f:"I ___ an ice cream now.",v:"want",r:["want"],ca:"Ara vull un gelat.",pista:"Mira el verb abans que el now: want és un verb del CAP i del COR.",ex:"Hi ha un now, però <b>want</b> és stative verb: va sempre en Present Simple."},
+    {f:"She ___ this story.",v:"love",r:["loves"],ca:"Li encanta aquest conte.",pista:"Love és un verb del COR: no fa -ing. I amb she…",ex:"<b>Love</b> és stative verb → Simple. Amb she porta -s: loves."},
+    {f:"We ___ to the cinema every week.",v:"not go",r:["don't go","do not go"],ca:"No anem al cinema cada setmana.",ex:"<b>Every week</b> = hàbit → Simple. Amb we es nega amb <b>don't</b>."},
+    {f:"My brother ___ horror films.",v:"not like",r:["doesn't like","does not like"],ca:"Al meu germà no li agraden les pel·lis de terror.",ex:"<b>Like</b> és stative → Simple. Amb he es nega amb <b>doesn't</b> i el verb queda sense -s."},
+    {f:"___ your sister ___ horror films?",ok:["Does","like"],no:["Do","likes","Is"],ca:"A la teva germana li agraden les pel·lis de terror?",ex:"Amb she la pregunta es fa amb <b>Does</b>, i el verb torna a quedar sense -s: like."},
+    {f:"I usually ___ a pirate costume, but this year I ___ an astronaut costume.",ok:["wear","am wearing"],no:["wears","wearing"],ca:"Normalment porto una disfressa de pirata, però aquest any en porto una d'astronauta.",ex:"<b>Usually</b> → Simple (wear). <b>This year</b>, el que passa ara → Continuous (am wearing)."},
+    {f:"I ___ the book now.",v:"understand",r:["understand"],ca:"Ara entenc el llibre.",pista:"Understand passa per dins del cap: no es veu des de fora.",ex:"<b>Understand</b> és stative verb: Present Simple encara que hi hagi now."},
+    {f:"She ___ reading a story at the moment.",ok:"is",no:["does","are"],ca:"En aquest moment llegeix un conte.",ex:"At the moment → Continuous: <b>is</b> + reading."}
+   ],
+   final:"Primer mira el verb: si és del CAP o del COR (love, like, hate, prefer, want, understand), Present Simple. Després busca la key word."},
+  {id:"fr-opinio",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🎞️",titol:"I really like…",sub:"Gèneres i opinions",col:"#ede9fe",
+   enunciat:"🎞️ Completa les frases sobre pel·lis i llibres",
+   items:[
+    {mots:"I really like fantasy films",ca:"M'agraden molt les pel·lis de fantasia.",ex:"L'entrepà: I + <b>really</b> + like. L'adverbi va entre la persona i el verb."},
+    {mots:"I absolutely hate romances",ca:"Odio totalment les romàntiques.",ex:"<b>Absolutely</b> va davant del verb: I absolutely hate…"},
+    {mots:"She quite enjoys adventures",no:["enjoy"],ca:"Li agraden força les aventures.",ex:"<b>Quite</b> = força, i va davant del verb. Amb she: enjoys."},
+    {mots:"I don't mind documentaries",ca:"Els documentals tant me fan.",ex:"<b>Don't mind</b> = tant me fa: ni m'agrada ni em desagrada."},
+    {mots:"Do you like science-fiction films?",ca:"T'agraden les pel·lis de ciència-ficció?",ex:"Pregunta en Present Simple: <b>Do</b> you like…?"},
+    {f:"There are cowboys in it. It's a ___.",ok:"western",no:["musical","biography"],ca:"Hi surten cowboys. És un western.",ex:"<b>Western</b> = de l'oest, amb cowboys."},
+    {f:"People sing in it. It's a ___.",ok:"musical",no:["documentary","mystery"],ca:"La gent hi canta. És un musical.",ex:"Al <b>musical</b>, la gent hi canta."},
+    {f:"It's the story of a real person's life. It's a ___.",ok:"biography",no:["documentary","fantasy"],ca:"És la història de la vida d'una persona real. És una biografia.",ex:"La <b>biography</b> és sempre la vida d'una persona. El documentary parla de temes reals."},
+    {f:"A film with dragons and magic is a ___ film.",ok:"fantasy",no:["crime","western"],ca:"Una pel·li amb dracs i màgia és una pel·li de fantasia.",ex:"<b>Fantasy</b> = dracs i màgia."},
+    {f:"I ___ horror films: I don't love them and I don't hate them.",ok:"don't mind",no:["absolutely love","dislike"],ca:"Les pel·lis de terror tant me fan: ni m'encanten ni les odio.",ex:"De més a menys: love → like / enjoy → <b>don't mind</b> → dislike → hate."},
+    {f:"I love comics, but I ___ poetry.",ok:"hate",no:["enjoy","like"],ca:"M'encanten els còmics, però odio la poesia.",ex:"<b>But</b> (però) avisa que ve el contrari: love ↔ hate."},
+    {f:"I ___ like animated films.",r:["really"],ca:"M'agraden molt les pel·lis de dibuixos.",pista:"És l'adverbi que vol dir «molt, de debò». Comença per «re…».",ex:"<b>Really</b> = molt, de debò. Va al mig: I really like…"}
+   ],
+   final:"En català el «molt» va al final; en anglès, al mig: I really like comics."},
+  {id:"fr-paraules",grup:"✍️ Frases amb buits",tipus:"frases",ic:"📖",titol:"Words from the texts",sub:"El museu i el tresor de Fenn",col:"#fef9c3",
+   enunciat:"📖 Completa les frases dels dos textos",
+   items:[
+    {f:"At Halloween, I wear a witch ___.",ok:"costume",no:["custom","history"],ca:"Per Halloween porto una disfressa de bruixa.",ex:"<b>Costume</b> = disfressa. Custom = costum, tradició."},
+    {f:"___ experts, these disguises work very well.",ok:"According to",no:["Eventually","How about"],ca:"Segons els experts, aquestes disfresses funcionen molt bé.",ex:"<b>According to</b> = segons. No vol dir «d'acord»."},
+    {f:"One person, two ___. One man, two ___. One woman, two ___.",ok:["people","men","women"],no:["persons","mans","womans"],ca:"Una persona, dues persones. Un home, dos homes. Una dona, dues dones.",ex:"Plurals irregulars, sense -s: <b>people · men · women</b>."},
+    {f:"People ___ dancing at the festival.",ok:"are",no:["is","am"],ca:"La gent balla al festival.",ex:"<b>People</b> ja és plural: people <b>are</b>."},
+    {f:"The masks scare bad ___.",ok:"spirits",no:["clues","exhibits"],ca:"Les màscares espanten els mals esperits.",ex:"<b>Bad spirits</b> = mals esperits (Exhibit 1)."},
+    {f:"We ___ fun at the party.",ok:"have",no:["make","do"],ca:"Ens ho passem bé a la festa.",ex:"<b>Have fun</b> = passar-s'ho bé. Make fun of = riure's d'algú."},
+    {f:"The treasure is about two ___ dollars.",ok:"million",no:["millions","millions of"],ca:"El tresor és d'uns dos milions de dòlars.",ex:"Amb una xifra exacta (two), <b>million</b> va en singular."},
+    {f:"___ of people read the poem.",ok:"Thousands",no:["Thousand","Two thousands"],ca:"Milers de persones llegeixen el poema.",ex:"Sense xifra exacta: plural + of → <b>thousands of</b> people."},
+    {f:"___, Jack Stuef finds the treasure.",ok:"Eventually",no:["According to","Thousands"],ca:"Finalment, Jack Stuef troba el tresor.",ex:"<b>Eventually</b> = finalment (no «eventualment»). És l'última vinyeta."},
+    {f:"Fenn hides the treasure. The ___ are in a poem.",ok:"clues",no:["masks","spirits"],ca:"Fenn amaga el tresor. Les pistes són en un poema.",ex:"<b>Clues</b> = pistes."},
+    {f:"It's a true ___ about a real treasure.",ok:"story",no:["history","custom"],ca:"És un relat verídic sobre un tresor de debò.",ex:"<b>Story</b> = conte, relat. History = la Història (l'assignatura)."},
+    {f:"Be ___! The treasure isn't in a dangerous place.",r:["careful"],ca:"Aneu amb compte! El tresor no és en un lloc perillós.",pista:"Comença per «ca…» i acaba en «…ful».",ex:"<b>Be careful</b> = aneu amb compte."}
+   ],
+   final:"Tres false friends del mòdul: according to (segons), eventually (finalment) i costume (disfressa)."},
+  {id:"fr-personalitat",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🦸",titol:"What are they like?",sub:"L'adjectiu que hi falta",col:"#dcfce7",
+   enunciat:"🦸 Llegeix la pista i posa-hi l'adjectiu",
+   items:[
+    {f:"She always studies and does her homework. She's ___.",ok:"hard-working",no:["lazy","shy"],ca:"Sempre estudia i fa els deures. És treballadora.",ex:"<b>Hard-working</b> = treballador. El contrari és lazy."},
+    {f:"He never helps at home. He's always on the sofa. He's ___.",ok:"lazy",no:["brave","generous"],ca:"Mai ajuda a casa. Sempre és al sofà. És mandrós.",ex:"<b>Lazy</b> = mandrós."},
+    {f:"He doesn't like talking to new people. He's ___.",ok:"shy",no:["outgoing","confident"],ca:"No li agrada parlar amb gent nova. És tímid.",ex:"<b>Shy</b> = tímid. El contrari és outgoing."},
+    {f:"They aren't afraid of danger. They're ___.",ok:"brave",no:["weak","shy"],ca:"No tenen por del perill. Són valents.",ex:"<b>Brave</b> = valent."},
+    {f:"She tells jokes and we laugh a lot. She's ___.",ok:"funny",no:["honest","lazy"],ca:"Explica acudits i riem molt. És graciosa.",ex:"<b>Funny</b> = graciós, que fa riure. Fun-loving és a qui li agrada la gresca."},
+    {f:"He gives presents to everybody. He's ___.",ok:"generous",no:["athletic","shy"],ca:"Fa regals a tothom. És generós.",ex:"<b>Generous</b> = generós."},
+    {f:"The opposite of strong is ___ and the opposite of hard-working is ___.",ok:["weak","lazy"],no:["shy","kind"],ca:"El contrari de fort és feble i el contrari de treballador és mandrós.",ex:"Strong ↔ <b>weak</b> · hard-working ↔ <b>lazy</b>. Són els dos adjectius clarament negatius."},
+    {f:"She isn't shy. She's ___.",ok:"outgoing",no:["lazy","weak"],ca:"No és tímida. És oberta.",ex:"Shy (tímid) ↔ <b>outgoing</b> (obert, extravertit)."},
+    {f:"My brother is ___ but very funny.",r:["shy"],ca:"El meu germà és tímid però molt graciós.",pista:"Tímid: tres lletres, comença per «sh…».",ex:"<b>Shy</b> = tímid."},
+    {f:"Firefighters are very ___.",r:["brave"],ca:"Els bombers són molt valents.",pista:"Valent: comença per «br…».",ex:"<b>Brave</b> = valent."},
+    {f:"You like being with people. You're ___.",ok:"friendly",no:["lazy","weak"],ca:"T'agrada estar amb gent. Ets simpàtic.",ex:"De l'anunci del llibre: t'agrada estar amb gent → <b>friendly</b>."},
+    {f:"You want to try new things. You're ___.",ok:"adventurous",no:["shy","lazy"],ca:"Vols provar coses noves. Ets aventurer.",ex:"De l'anunci del llibre: vols provar coses noves → <b>adventurous</b>."}
+   ],
+   final:"Pensa en una persona concreta per a cada adjectiu: així es queden."},
+  {id:"fr-pla",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🍿",titol:"Let's watch a film!",sub:"How about, What about, Let's…",col:"#ffedd5",
+   enunciat:"🍿 Completa les frases per proposar un pla",
+   items:[
+    {f:"How about ___ a film tonight?",ok:"watching",no:["watch","to watch"],ca:"Què et sembla si mirem una pel·li aquesta nit?",ex:"<b>How about</b> + verb en <b>-ing</b>."},
+    {f:"Let's ___ to the cinema.",ok:"go",no:["going","to go"],ca:"Anem al cinema.",ex:"<b>Let's</b> + verb sense res: Let's go."},
+    {f:"Do you want ___ a comedy?",ok:"to watch",no:["watching","watch"],ca:"Vols mirar una comèdia?",ex:"<b>Want to</b> + verb: Do you want to watch…?"},
+    {f:"What about ___?",ok:"a fantasy film",no:["watch a film","to watch"],ca:"I una pel·li de fantasia?",ex:"<b>What about</b> + un nom: What about a fantasy film?"},
+    {f:"How about ___ a comedy?",v:"watch",r:["watching"],ca:"Què et sembla si mirem una comèdia?",ex:"Després de How about, el verb va en -ing: <b>watching</b>."},
+    {f:"Let's ___ something else.",v:"watch",r:["watch"],ca:"Mirem una altra cosa.",pista:"Després de Let's, el verb va PELAT: ni -ing ni to.",ex:"<b>Let's</b> + verb sense res: «Let's watching» no existeix."},
+    {f:"A: ___ a film tonight?<br>B: Sounds good. ___ comedy?<br>A: No, not really. ___ an adventure film.<br>B: ___ about?",ok:["How about watching","What about a","Let's watch","What's it"],no:[],ca:"— Què et sembla si mirem una pel·li aquesta nit? — Sona bé. I una comèdia? — No gaire. Mirem-ne una d'aventures. — De què va?",ex:"El flux: Proposa → Suggereix → Decidiu → Demana info. How about + -ing · What about + nom · Let's + verb."},
+    {f:"What's it about? — ___ a clever detective in London.",ok:"It's about",no:["Sounds good","Let's watch"],ca:"De què va? — Va d'un detectiu llest de Londres.",ex:"A «What's it about?» es respon amb <b>It's about…</b> (Va de…)."},
+    {mots:"What do you recommend?",ca:"Què recomanes?",ex:"<b>What do you recommend?</b> = Què recomanes?"},
+    {mots:"Do you want to watch a film tonight?",no:["watching"],ca:"Vols mirar una pel·li aquesta nit?",ex:"Do you <b>want to</b> + verb sense -ing."},
+    {f:"Do you like horror films? — No, not ___.",ok:"really",no:["quite","absolutely"],ca:"T'agraden les pel·lis de terror? — No gaire.",ex:"<b>No, not really</b> = no gaire. Serveix per dir que no amb educació."},
+    {f:"That ___ interesting. Let's watch it!",r:["sounds"],ca:"Això sona interessant. Mirem-la!",pista:"«Sona»: comença per «so…» i, amb that, porta -s.",ex:"<b>That sounds interesting.</b> També: Sounds good."}
+   ],
+   final:"«How about + -ING · What about + COSA · Let's + verb PELAT»."},
   {id:"contraris",grup:"🎭 Descriure algú",tipus:"parelles",ic:"↔️",titol:"Opposites",sub:"Cada adjectiu amb el seu contrari",col:"#fce7f3",
    enunciat:"↔️ Uneix cada adjectiu amb el seu contrari",instr:"Toca un adjectiu a l'esquerra i després el seu contrari a la dreta.",
    pars:[["tall","short"],["young","old"],["thin","fat"],["light","dark"],["wide","narrow"],["curly","straight"],["strong","weak"]],
@@ -634,7 +754,7 @@ const ASSIG={
  ]
 };
 const T=[
- {id:"adj1",ic:"🧑",col:"#db2777",titol:"A1 · Adjectives of description 1",font:"Llibre · A1 Vocabulary · pàg. 32",
+ {id:"adj1",frases:"fr-descriu",ic:"🧑",col:"#db2777",titol:"A1 · Adjectives of description 1",font:"Llibre · A1 Vocabulary · pàg. 32",
   idea:"Aquests adjectius descriuen com és algú per fora, i gairebé tots van en parelles de contraris.",
   pts:["<b>L'alçada i l'edat</b>: <b>tall</b> (alt) ↔ <b>short</b> (baix) · <b>medium height</b> (d'alçada mitjana) · <b>young</b> (jove) ↔ <b>old</b> (vell, gran).",
    "<b>El cos i l'aspecte</b>: <b>thin</b> (prim) ↔ <b>fat</b> (gras) · <b>good-looking / beautiful</b> (guapo / preciós) ↔ <b>ugly</b> (lleig).",
@@ -656,7 +776,7 @@ const T=[
    ["My grandad is 85. He's…",["young","old","tall"],1,"Amb 85 anys és old (vell, gran). Young és jove."],
    ["Què vol dir <b>medium height</b>?",["de pes mitjà","d'alçada mitjana","de mitjana edat"],1,"Medium height = d'alçada mitjana: ni alt ni baix."],
    ["Com es diu en anglès «Ella té els cabells llargs i arrissats»?",["She's got hair long and curly.","She's got long curly hairs.","She's got long curly hair."],2,"Els adjectius van davant del nom (long curly hair) i hair no porta -s."]]},
- {id:"museu",ic:"🎃",col:"#be185d",titol:"A2 · Reading: Museum exhibits",font:"Llibre · A2 Reading · pàg. 33",
+ {id:"museu",frases:"fr-paraules",ic:"🎃",col:"#be185d",titol:"A2 · Reading: Museum exhibits",font:"Llibre · A2 Reading · pàg. 33",
   idea:"La gent canvia d'aspecte per tres motius: per espantar els mals esperits, per amagar qui és o per fer teatre.",
   pts:["El text és una exposició de museu, <b>«Costumes &amp; Disguises»</b>, amb tres vitrines (<b>exhibits</b>).",
    "<b>Exhibit 1</b>: disfressar-se per Halloween és divertit, però ve d'una <b>cerimònia antiga</b>. La gent de la foto porta <b>màscares</b> (masks) per <b>espantar els mals esperits</b> (bad spirits) i perquè no sàpiguen qui són.",
@@ -678,7 +798,7 @@ const T=[
    ["At Halloween, I wear a witch…",["custom","costume","customs"],1,"Costume = disfressa. Custom = costum, tradició."],
    ["Què vol dir <b>have fun</b>?",["riure's d'algú","passar-s'ho bé","fer gràcia"],1,"Have fun = passar-s'ho bé. Riure's d'algú és make fun of."],
    ["Quina frase amb people és correcta?",["People is dancing.","Peoples are dancing.","People are dancing."],2,"People ja és plural: people are."]]},
- {id:"continuous",ic:"🔴",col:"#e11d48",titol:"A3 · Present Continuous",font:"Llibre · A3 Grammar · pàg. 34-35",
+ {id:"continuous",frases:"fr-continuous",ic:"🔴",col:"#e11d48",titol:"A3 · Present Continuous",font:"Llibre · A3 Grammar · pàg. 34-35",
   idea:"El Present Continuous explica què està passant ARA, i sempre es fa amb dues peces: am / is / are + verb acabat en -ing.",
   pts:["<b>Afirmativa</b>: I <b>am wearing</b> a costume. · She <b>is wearing</b> a costume. · They <b>are wearing</b> costumes.",
    "<b>Negativa</b>: I<b>'m not</b> wearing a mask. · He <b>isn't</b> wearing a mask. · We <b>aren't</b> wearing masks.",
@@ -701,7 +821,7 @@ const T=[
    ["Are they dancing at the festival? Quina és la resposta curta correcta?",["Yes, they do.","Yes, they dancing.","Yes, they are."],2,"La short answer repeteix el be: Yes, they are. / No, they aren't."],
    ["Quina d'aquestes és una key word del Present Continuous?",["usually","at the moment","every day"],1,"Now, right now i at the moment són les pistes del Continuous. Usually i every day són del Simple."],
    ["My mum ___ TV at the moment.",["doesn't watch","not watching","isn't watching"],2,"At the moment → Present Continuous negatiu: isn't watching."]]},
- {id:"generes",ic:"🎞️",col:"#7c3aed",titol:"B1 · Film and book genres",font:"Llibre · B1 Vocabulary · pàg. 36",
+ {id:"generes",frases:"fr-opinio",ic:"🎞️",col:"#7c3aed",titol:"B1 · Film and book genres",font:"Llibre · B1 Vocabulary · pàg. 36",
   idea:"Per parlar d'una pel·li o d'un llibre necessites dues coses: el nom del gènere i un verb per dir si t'agrada o no.",
   pts:["<b>Gèneres</b>: <b>romance</b> (romàntica) · <b>science-fiction</b> (robots, planetes) · <b>fantasy</b> (dracs, màgia) · <b>horror</b> (terror, monstres) · <b>crime</b> (policíaca) · <b>mystery</b> (un enigma) · <b>adventure</b> (aventures) · <b>western</b> (cowboys) · <b>action</b> (acció).",
    "<b>I més</b>: <b>animated film</b> (dibuixos) · <b>comic</b> (vinyetes) · <b>comedy</b> (comèdia) · <b>musical</b> (la gent hi canta) · <b>drama</b> (història seriosa) · <b>poetry</b> (poesia) · <b>biography</b> (la vida d'una persona real) · <b>documentary</b> (temes reals).",
@@ -724,7 +844,7 @@ const T=[
    ["Com es diu en anglès una pel·li de dibuixos?",["comic film","drama","animated film"],2,"Animated film = pel·lícula d'animació. Un comic són vinyetes."],
    ["Ordena les paraules: hate / absolutely / romances / I",["I hate absolutely romances.","I absolutely hate romances.","Absolutely I hate romances."],1,"L'adverbi va entre la persona i el verb: I absolutely hate romances."],
    ["Què vol dir <b>quite</b> a «I quite enjoy adventures»?",["força","gens","totalment"],0,"Quite = força. Totalment és absolutely."]]},
- {id:"fenn",ic:"💰",col:"#d97706",titol:"B2 · Reading: Fenn's Treasure",font:"Llibre · B2 Reading · pàg. 37",
+ {id:"fenn",frases:"fr-paraules",ic:"💰",col:"#d97706",titol:"B2 · Reading: Fenn's Treasure",font:"Llibre · B2 Reading · pàg. 37",
   idea:"Forrest Fenn va amagar un tresor de debò i va posar les pistes dins d'un poema; deu anys després, algú el va trobar.",
   pts:["És un còmic de cinc vinyetes (<b>frames</b>) i tot el que explica va passar de veritat. Està escrit en <b>present</b> encara que sigui una història del passat.",
    "<b>Frame 1</b>: <b>Forrest Fenn</b> és un ric col·leccionista d'art i escriptor americà. El metge li diu que està molt malalt (<b>ill</b>), però ell lluita i es cura.",
@@ -747,7 +867,7 @@ const T=[
    ["Quina diferència hi ha entre <b>story</b> i <b>history</b>?",["story és la Història; history és un conte","volen dir el mateix","story és un conte o relat; history és la Història"],2,"Story = història que s'explica, conte. History = la Història (l'assignatura, el passat)."],
    ["Per què crea Fenn la cerca del tresor?",["Creu que la gent necessita passar temps a la natura","Perquè el metge li ho recomana","Perquè vol guanyar dos milions de dòlars"],0,"El 2010 molta gent té problemes de diners i Fenn creu que necessita passar temps a la natura."],
    ["Què vol dir <b>a heart of gold</b>?",["una medalla d'or","un cor d'or","banyat en or"],1,"A heart of gold = un cor d'or. Medalla d'or és gold medal i banyat en or és gold-plated."]]},
- {id:"dospresents",ic:"⏱️",col:"#0284c7",titol:"B3 · Present Simple / Present Continuous",font:"Llibre · B3 Grammar · pàg. 38",
+ {id:"dospresents",frases:"fr-dospresents",ic:"⏱️",col:"#0284c7",titol:"B3 · Present Simple / Present Continuous",font:"Llibre · B3 Grammar · pàg. 38",
   idea:"Present Simple per al que fas normalment; Present Continuous per al que estàs fent ara. I els verbs de sentir i pensar van sempre en Simple.",
   pts:["<b>Present Simple</b> = hàbits i rutines: <i>They often read biographies.</i> Key words: <b>often, usually, always, sometimes, every day</b>.",
    "<b>Present Continuous</b> = el que passa en aquest moment: <i>She is reading a story at the moment.</i> Key words: <b>now, right now, at the moment</b>.",
@@ -769,7 +889,7 @@ const T=[
    ["I ___ an ice cream now.",["am wanting","want","wanting"],1,"Want és stative verb: va en Simple encara que hi hagi now."],
    ["Listen! The band ___ my favourite song right now.",["is playing","plays","playing"],0,"Listen! i right now → Present Continuous: is playing."],
    ["«I usually wear a pirate costume, but this year I'm wearing an astronaut costume.» Quina disfressa porta NORMALMENT?",["La d'astronauta","La de bruixa","La de pirata"],2,"Usually + Present Simple = el que fa normalment: la de pirata. La d'astronauta és la d'aquest any."]]},
- {id:"adj2",ic:"🦸",col:"#059669",titol:"C1 · Adjectives of description 2",font:"Llibre · C1 Vocabulary · pàg. 40",
+ {id:"adj2",frases:"fr-personalitat",ic:"🦸",col:"#059669",titol:"C1 · Adjectives of description 2",font:"Llibre · C1 Vocabulary · pàg. 40",
   idea:"Aquests adjectius ja no descriuen com és algú per fora, sinó la seva manera de ser.",
   pts:["<b>adventurous</b> (aventurer) · <b>athletic</b> (esportista) · <b>brave</b> (valent) · <b>clever</b> (llest) · <b>confident</b> (segur de si mateix) · <b>creative</b> (creatiu).",
    "<b>easy-going</b> (tranquil, de bon tracte) · <b>friendly</b> (simpàtic) · <b>fun-loving</b> (a qui li agrada passar-s'ho bé) · <b>funny</b> (graciós, que fa riure) · <b>generous</b> (generós).",
@@ -791,7 +911,7 @@ const T=[
    ["My grandad gives presents to everybody. He's…",["confident","athletic","generous"],2,"Fa regals a tothom: és generous (generós)."],
    ["Què vol dir <b>confident</b>?",["de confiança","segur de si mateix","confós"],1,"Confident = segur de si mateix: confies en el que saps fer."],
    ["Quin és el contrari de <b>outgoing</b>?",["shy","lazy","weak"],0,"Outgoing (obert) ↔ shy (tímid)."]]},
- {id:"suggeriments",ic:"🍿",col:"#ea580c",titol:"C2 · Make suggestions",font:"Llibre · C2 · pàg. 41",
+ {id:"suggeriments",frases:"fr-pla",ic:"🍿",col:"#ea580c",titol:"C2 · Make suggestions",font:"Llibre · C2 · pàg. 41",
   idea:"Per proposar un pla hi ha quatre fórmules, i cada una va seguida d'una cosa diferent.",
   pts:["<b>How about</b> + verb en <b>-ing</b>: <i>How about watching a film tonight?</i> (Què et sembla si mirem…?)",
    "<b>What about</b> + un <b>nom</b>: <i>What about a fantasy film?</i> (I una de fantasia?)",
@@ -1372,7 +1492,7 @@ function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">$
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
  JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
  return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
-function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,frases:jocFrases,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
  if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}
@@ -1392,7 +1512,7 @@ function pintaTema(){
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
  const txtF=`${t.titol}. Idea clau: ${t.idea}. ${t.pts.join(". ")}. Truc: ${t.truc}. Compte: ${t.compte}`;
- document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button></div>`;
+ document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
  const cpt=document.querySelector("#zona .compte");if(cpt&&"IntersectionObserver" in window){const a=ACTV,ob=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){if(a)a.fi=1;ob.disconnect()}});ob.observe(cpt)}
 }
 function targetes(n){calla();
@@ -1483,19 +1603,19 @@ function examen(){
 // Fa servir la veu del mateix dispositiu. Català per defecte; castellà si l'assignatura és de castellà (ASSIG.veu).
 const VEU_LANG=ASSIG.veu||(/castell|spanish|espa/i.test(ASSIG.id+ASSIG.nom)?"es-ES":"ca-ES");
 let VEUS=[],PARLANT=null;
-function triaVeu(){if(!("speechSynthesis" in window))return null;VEUS=speechSynthesis.getVoices();const l=VEU_LANG.slice(0,2);
- return VEUS.find(v=>v.lang.replace("_","-").toLowerCase()===VEU_LANG.toLowerCase())||VEUS.find(v=>v.lang.toLowerCase().startsWith(l))||(l==="ca"?VEUS.find(v=>v.lang.toLowerCase().startsWith("es")):null)||null}
+function triaVeu(lang){if(!("speechSynthesis" in window))return null;VEUS=speechSynthesis.getVoices();const L=lang||VEU_LANG,l=L.slice(0,2);
+ return VEUS.find(v=>v.lang.replace("_","-").toLowerCase()===L.toLowerCase())||VEUS.find(v=>v.lang.toLowerCase().startsWith(l))||(l==="ca"?VEUS.find(v=>v.lang.toLowerCase().startsWith("es")):null)||null}
 if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=()=>{VEUS=speechSynthesis.getVoices()};
 const potEscoltar=()=>"speechSynthesis" in window;
 function netText(h){const d=document.createElement("div");d.innerHTML=String(h).replace(/<br\s*\/?>/gi,". ").replace(/<\/li>/gi,". ");return d.textContent.replace(/[★⚠✅💡🔁🧠]/g,"").replace(/\s+/g," ").trim()}
 function calla(){if(potEscoltar())speechSynthesis.cancel();if(AC)abaixaMus(false);document.querySelectorAll(".escolta.parla").forEach(b=>{b.classList.remove("parla");b.firstChild.textContent="🔊"});PARLANT=null}
-function escolta(btn,text){if(!potEscoltar())return;if(PARLANT===btn){calla();return}calla();
- const u=new SpeechSynthesisUtterance(netText(text)),v=triaVeu();if(v)u.voice=v;u.lang=v?v.lang:VEU_LANG;u.rate=.92;u.pitch=1.05;
+function escolta(btn,text,lang){if(!potEscoltar())return;if(PARLANT===btn){calla();return}calla();
+ const u=new SpeechSynthesisUtterance(netText(text)),v=triaVeu(lang);if(v)u.voice=v;u.lang=v?v.lang:(lang||VEU_LANG);u.rate=.92;u.pitch=1.05;
  u.onend=u.onerror=()=>{if(PARLANT===btn)calla()};PARLANT=btn;btn.classList.add("parla");btn.firstChild.textContent="⏹";if(AC)abaixaMus(true);speechSynthesis.speak(u);registraEscolta()}
 let ESC_N=0;function registraEscolta(){ESC_N++}
 // botó: <button class="escolta" data-t="clau">; el text es guarda a ESCT[clau]
 const ESCT={};let ESCI=0;
-function btEscolta(text,etq){if(!potEscoltar())return "";const k="e"+(++ESCI);ESCT[k]=text;return `<button class="escolta" type="button" onclick="event.stopPropagation();escolta(this,ESCT['${k}'])" aria-label="Escolta-ho en veu alta"><span>🔊</span>${etq===""?"":`<span>${etq||"Escolta"}</span>`}</button>`}
+function btEscolta(text,etq,lang){if(!potEscoltar())return "";const k="e"+(++ESCI);ESCT[k]=text;return `<button class="escolta" type="button" onclick="event.stopPropagation();escolta(this,ESCT['${k}']${lang?`,'${lang}'`:""})" aria-label="Escolta-ho en veu alta"><span>🔊</span>${etq===""?"":`<span>${etq||"Escolta"}</span>`}</button>`}
 
 // ====================== ESTRELLES JUSTES ======================
 // Una pregunta encertada dona ⭐ només la primera vegada de cada dia; cada joc, només la primera partida del dia.
@@ -2149,7 +2269,7 @@ function cartaRepas(){const p=repPendents(),n=p.length,tot=repTots().length;if(!
  return `<div class="continua" role="button" tabindex="0" style="background:#ecfdf5;border-color:#6ee7b7" onclick="repas()"><span style="font-size:28px">🔁</span><b>${n?`Tens <span style="color:#047857">${n} ${nomes?`pregunta${n>1?"s":""}`:`error${n>1?"s":""}`}</span> per repassar avui`:`Errors al dia! Proper repàs: ${new Date(repProper()).toLocaleDateString("ca-ES",{day:"numeric",month:"short"})}`}</b><span class="btn ${n?"verd":"sec"}">${n?"Repassa →":"Mira"}</span></div>`}
 
 // ====================== JOCS GENÈRICS ======================
-// tipus: ordena · parelles · classifica · figura · custom (funció pròpia definida a les dades)
+// tipus: ordena · parelles · classifica · figura · error · frases (frases amb buits) · custom (funció pròpia definida a les dades)
 function fiJoc(j,n,errors,extra){missio("jocs",j.id);ULT=Object.assign({enc:n,err:errors},extra||{});diaEst().j[j.id]=1;const pc=Math.max(0,Math.round(100*n/(n+errors)));const r=S.jocs[j.id]||[],ant=r.length?Math.max(...r):null;desaJoc(j.id,pc);arcade(pc,n,n+errors,ant!==null&&pc>ant);
  document.getElementById("zona").innerHTML=`<div class="fb ok">🎉 Fet${errors?` (amb ${errors} error${errors>1?"s":""})`:" sense cap error"}! ${j.final||""}</div><div class="fila">${(()=>{const s=j.seg&&ASSIG.jocs.find(x=>x.id===j.seg);return s?`<button class="btn" onclick="joc('${s.id}')">${s.ic} Ara tu: ${s.titol} ▶</button>`:""})()}<button class="btn${j.seg?" sec":""}" onclick="joc('${j.id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div>`}
 function sacseja(el){so("ko");el.classList.remove("ko");void el.offsetWidth;el.classList.add("ko")}
@@ -2278,6 +2398,139 @@ function jgErrRepas(items,fi){jgErrCss();
  valid:r=>!!jgErrTroba(r),
  nom:r=>{const f=jgErrTroba(r);return f?`🔍 ${f.j.titol} · ${String(f.ex.enun).replace(/<[^>]+>/g,"").slice(0,45)}…`:"🔍 Troba l'error"},
  juga:jgErrRepas};
+
+// ---------- ✍️ FRASES AMB BUITS (tipus:"frases") ----------
+// Frases fetes on falta un tros: el nen l'ha de triar, escriure o ordenar. Cada frase és d'una de tres menes, segons els camps que porta:
+//   tria   → {f:"Her hair ___ red.", ok:"is", no:["are","have"]}            f pot tenir més d'un ___ i ok ser una llista (banc de paraules, s'omple en ordre)
+//   escriu → {f:"She ___ at the party now.", v:"dance", r:["is dancing","'s dancing"]}   v = paraula del parèntesi (opcional); r = respostes que valen (la primera és la model)
+//   ordena → {mots:"I really like comics", no:["likes"]}                      les paraules surten desordenades; no = paraules que sobren (opcional)
+// Opcionals a totes: ca (traducció), ex (el perquè, es veu després de respondre), pista (ajuda després del primer error), id.
+// j.n = frases per partida (8 per defecte, triades a l'atzar i en l'ordre de les dades). Veu del botó Escolta: j.veu o ASSIG.veuFrases (p. ex. "en-GB").
+// Estrelles: 1 per frase bé a la primera (i el joc, un cop al dia, com els altres). Cada frase fallada entra al repàs espaiat (BN_REP_TIPUS.frase).
+// Un tema pot enllaçar el seu joc amb T[i].frases="id-del-joc": surt el botó «Practica-ho amb frases» a la fitxa.
+let FR=null;
+const FR_BUIT=/_{3,}/g;
+function frCss(){if(document.getElementById("frCss"))return;const s=document.createElement("style");s.id="frCss";s.textContent=`
+.fr-ins{margin:4px 0 8px;color:#475569;font-weight:700}
+.fr-ca{margin:0 0 8px;padding:8px 12px;border-radius:12px;background:#fefce8;border:2px solid #fde68a;font-weight:700}
+.fr-frase{font-size:20px;font-weight:800;line-height:2.1;padding:12px 14px;border-radius:14px;background:#f8fafc;border:2px solid var(--vora);margin:6px 0;min-height:66px}
+.fr-buit{display:inline-block;min-width:58px;text-align:center;padding:0 10px;margin:0 2px;border-bottom:3px dashed #94a3b8;border-radius:8px 8px 0 0;color:#94a3b8;line-height:1.5}
+.fr-buit.act{border-bottom-color:var(--blau);background:#dbeafe;color:var(--blau2)}
+.fr-buit.ple{border-bottom:3px solid var(--verd);background:#dcfce7;color:#14532d}
+.fr-buit.ple.rev{border-bottom-color:#f59e0b;background:#fef3c7;color:#92400e}
+.fr-mot{display:inline-block;padding:0 9px;margin:2px;border-radius:9px;background:#dcfce7;color:#14532d;line-height:1.6}
+.fr-v{font-size:15px;font-weight:800;color:#7c3aed}
+.fr-nw{display:inline-block}
+.fr-banc{margin-top:8px;text-align:center}
+.fr-banc .chip{font:inherit;font-weight:800;font-size:17px;color:var(--fosc);min-height:44px}
+.fr-banc .chip.ok{color:#fff;opacity:.55}
+.fr-banc .chip.no{opacity:.4;text-decoration:line-through;cursor:default}
+.fr-esc{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.fr-esc input{flex:1;min-width:150px;font:inherit;font-size:19px;font-weight:800;padding:10px 12px;border-radius:12px;border:2px solid var(--blau);background:#fff;color:var(--fosc)}
+.fr-esc input.ko{animation:tremola .35s;border-color:#ef4444}
+.fb.fr-ko{background:#fef2f2;border-color:#fecaca}
+.fr-sol{margin-top:10px;padding:12px 14px;border-radius:14px;background:#fffef5;border:2px solid #fde68a;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.fr-tr{font-weight:700;color:#334155}
+.fr-ex{color:#1e293b}
+.fr-alta{font-size:14px;font-weight:800;color:#7c3aed}
+body.suau .fr-esc input.ko{animation:none!important}`;document.head.appendChild(s)}
+function frNorm(s){return String(s).replace(/<[^>]+>/g,"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g," ").replace(/\s*'\s*/g,"'").replace(/[.!?]+$/,"").trim()}
+function frId(E){if(E.id)return E.id;const s=E.f||E.mots;let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return "f"+h.toString(36)}
+function frPrep(raw){const E=Object.assign({},raw);E.id=frId(raw);E.mena=E.mots?"ordena":E.r?"escriu":"tria";E.sol=E.mots?E.mots.split(" "):E.r?[E.r[0]]:[].concat(E.ok);
+ E.cue=!!(E.ca&&(E.mena==="ordena"||(E.mena==="escriu"&&!E.v)));
+ if(E.mena!=="escriu"){const base=E.sol.concat(E.no||[]);let b,k=0;do{b=barreja(base)}while(E.mena==="ordena"&&E.sol.length>1&&b.join(" ")===base.join(" ")&&k++<9);E.banc=b}
+ return E}
+function frFrase(E,fills,act,fi){
+ if(E.mena==="ordena")return fills.map(w=>`<span class="fr-mot">${w}</span>`).join(" ")+(fi?"":` <span class="fr-buit act">…</span>`);
+ let g=-1;return E.f.replace(FR_BUIT,()=>{g++;const w=fills[g];const b=`<span class="fr-buit${w!==undefined?" ple":""}${g===act&&!fi?" act":""}${E.rev&&E.rev[g]?" rev":""}">${w!==undefined?w:"&nbsp;?&nbsp;"}</span>`;return E.v&&g===0?`<span class="fr-nw">${b} <small class="fr-v">(${E.v})</small></span>`:b})}
+function jocFrases(j){frCss();jgErrCss();const it=j.items||[],n=Math.min(j.n||8,it.length);
+ const tria=barreja(it.map((x,i)=>i)).slice(0,n).sort((a,b)=>a-b);
+ FR={j,llista:tria.map(i=>frPrep(it[i])),e:0,bones:0,errs:0,errE:[],fi:false,veu:j.veu||ASSIG.veuFrases||null};frPinta()}
+function frPinta(){const {j,llista,e}=FR,E=llista[e];FR.int=0;FR.gap=0;FR.fills=[];FR.net=true;FR.fase="joc";FR.teva=null;E.rev=[];
+ const mena={tria:"👆 Tria",escriu:"⌨️ Escriu",ordena:"🔀 Ordena"}[E.mena];
+ const ins=E.mena==="ordena"?"Toca les paraules en ordre per fer la frase.":E.mena==="escriu"?(E.v?"Escriu el verb del parèntesi en la forma correcta.":"Escriu la paraula que falta."):(E.sol.length>1?"Omple els buits d'un en un, en ordre, tocant les paraules del banc.":"Toca la paraula que falta.");
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><div class="jg-cap"><span class="jg-ap">Frase ${e+1} de ${llista.length}</span><span class="prog">${mena}</span></div>
+ <p class="fr-ins">${ins}</p>${E.cue?`<p class="fr-ca">En català: «${E.ca}»</p>`:""}
+ <div class="fr-frase" id="frFrase" aria-live="polite">${frFrase(E,[],0)}</div>
+ ${E.mena==="escriu"?`<div class="fr-esc"><input id="frIn" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="40" placeholder="Escriu aquí" aria-label="Escriu la resposta"><button class="btn" onclick="frComprova()">Comprova ✔</button></div>`
+  :`<div class="fr-banc" id="frBanc">${E.banc.map((w,k)=>`<button type="button" class="chip" data-k="${k}" onclick="frToca(${k})">${w}</button>`).join("")}</div>`}
+ <div id="frFb"></div><div id="zona"></div></div>`;
+ const i=document.getElementById("frIn");if(i){i.onkeydown=ev=>{if(ev.key==="Enter"){ev.preventDefault();frComprova()}};if(!FR.prova)i.focus()}}
+// un error en una frase: compta un sol cop per frase i l'apunta al repàs espaiat
+function frErr(E){FR.int++;if(!FR.net)return;FR.net=false;FR.errs++;FR.errE[FR.e]=1;
+ if(!FR.rep&&typeof repAnotaExt==="function")repAnotaExt("frase",`${FR.j.id}|${E.id}`,{jid:FR.j.id,eid:E.id},false)}
+function frToca(k){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],b=document.querySelector(`#frBanc .chip[data-k="${k}"]`);if(!b||b.disabled)return;
+ const vol=E.sol[FR.gap],fb=document.getElementById("frFb");
+ if(frNorm(E.banc[k])===frNorm(vol)){so("ok");fb.innerHTML="";frPosa(E,vol,b);return}
+ frErr(E);sacseja(b);
+ if(FR.int>=2){const c=[...document.querySelectorAll("#frBanc .chip")].find(x=>!x.disabled&&frNorm(E.banc[+x.dataset.k])===frNorm(vol));E.rev[FR.gap]=1;
+  fb.innerHTML=`<div class="fb fr-ko">👉 Aquí hi va <b>${vol}</b>.${E.sol.length-FR.gap>1?" Continua amb el següent.":""}</div>`;frPosa(E,vol,c);return}
+ if(E.mena==="tria"&&E.sol.length===1){b.disabled=true;b.classList.add("no")}
+ fb.innerHTML=`<div class="fb fr-ko">❌ No és aquesta. ${E.pista?"💡 "+E.pista:"Torna-ho a provar."}</div>`}
+function frPosa(E,vol,b){FR.fills[FR.gap]=vol;FR.gap++;FR.int=0;if(b){b.disabled=true;b.classList.remove("ko");b.classList.add("ok")}
+ if(FR.gap>=E.sol.length)return frFet();
+ document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,FR.gap)}
+function frPistaAuto(E){const r=E.r[0],n=r.split(" ").length;return `Comença per «${r.slice(0,r.length>3?2:1)}…» i ${n>1?`són ${n} paraules`:"és una sola paraula"}.`}
+function frComprova(){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],i=document.getElementById("frIn"),fb=document.getElementById("frFb");if(!i)return;const v=frNorm(i.value);
+ if(!v){fb.innerHTML=`<div class="fb">✏️ Primer escriu la resposta.</div>`;return}
+ const bona=E.r.find(x=>frNorm(x)===v);
+ if(bona!==undefined){so("ok");FR.fills[0]=bona;FR.gap=1;return frFet()}
+ frErr(E);sacseja(i);
+ if(FR.int>=2){E.rev[0]=1;FR.fills[0]=E.r[0];FR.gap=1;FR.teva=i.value.trim().slice(0,40);return frFet()}
+ fb.innerHTML=`<div class="fb fr-ko">❌ Encara no. 💡 ${E.pista||frPistaAuto(E)}</div>`;if(!FR.prova)i.select()}
+function frFet(){const E=FR.llista[FR.e],bo=FR.net,ult=FR.e+1>=FR.llista.length;FR.fase="fet";
+ if(bo){FR.bones++;if(typeof JOCSTAR!=="undefined"&&JOCSTAR)suma(JOCSTAR)}
+ let g=0;const txt=E.mena==="ordena"?E.mots:E.f.replace(FR_BUIT,()=>FR.fills[g++]);
+ document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,-1,true);
+ const treu=document.getElementById("frBanc")||document.querySelector(".fr-esc");if(treu)treu.remove();
+ const teva=FR.teva?` Tu has escrit «${FR.teva.replace(/[<>&]/g,"")}».`:"";
+ document.getElementById("frFb").innerHTML=`<div class="fb ${bo?"ok":"fr-ko"}">${bo?"✅ Molt bé! Bé a la primera.":"👉 Fixa-t'hi bé: així queda la frase."+teva}</div>
+ <div class="fr-sol">${btEscolta(txt,"Escolta-la",FR.veu)}${E.ca&&!E.cue?`<div class="fr-tr">🗣️ ${E.ca}</div>`:""}${E.ex?`<div class="fr-ex">💡 ${E.ex}</div>`:""}<div class="fr-alta">🎤 Ara digues-la tu en veu alta, un cop.</div></div>
+ <div class="fila"><button class="btn" id="frSeg" onclick="${ult?"frFi()":"frSeg()"}">${ult?(FR.onFi?"Veure el resultat 🏁":"Acaba 🏁"):"Següent frase ▶"}</button></div>`;
+ const s=document.getElementById("frSeg");if(s&&!FR.prova)s.focus({preventScroll:true})}
+function frSeg(){if(typeof calla==="function")calla();FR.e++;frPinta();window.scrollTo(0,0)}
+function frFi(){if(typeof calla==="function")calla();if(FR.onFi)return FR.onFi();const {j,bones,llista}=FR,mal=llista.length-bones;FR.fi=true;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><p>Has completat <b>${llista.length} frases</b>: <b>${bones}</b> bé a la primera${mal?` i <b>${mal}</b> amb algun error. Les fallades tornaran a «🔁 Repassa els teus errors»`:""}.</p><div id="zona"></div></div>`;
+ fiJoc(j,bones,mal)}
+// comprova que les dades d'un joc de frases estan ben fetes (ho fa servir la prova automàtica)
+function frValida(j){const p=[],it=j.items||[];it.forEach((E,i)=>{const on=`frase ${i+1}`,nb=E.f?(E.f.match(FR_BUIT)||[]).length:0;
+  if(E.mots){if(E.mots.split(" ").length<3)p.push(on+": massa curta per ordenar")}
+  else if(!E.f||!nb)p.push(on+": no té cap buit (___)");
+  else if(E.r){if(nb!==1)p.push(on+": les d'escriure només poden tenir un buit");if(!E.r.length)p.push(on+": sense resposta")}
+  else{const ok=[].concat(E.ok||[]),no=E.no||[];if(ok.length!==nb)p.push(on+`: ${nb} buits i ${ok.length} respostes`);
+   if(no.some(x=>ok.some(o=>frNorm(o)===frNorm(x))))p.push(on+": un distractor és igual que una resposta");if(ok.length===1&&no.length<2)p.push(on+": calen 2 distractors")}
+  if(!E.ex)p.push(on+": sense explicació (ex)")});
+ const ids=it.map(frId);if(new Set(ids).size!==ids.length)p.push("hi ha frases repetides");if(it.length<(j.n||8))p.push(`té ${it.length} frases i una partida en demana ${j.n||8}`);return p}
+// juga la frase actual bé (o, amb mal=true, primer amb un error)
+function frProvaPas(mal){const E=FR.llista[FR.e];
+ if(E.mena==="escriu"){const i=document.getElementById("frIn");if(mal){i.value="zzz";frComprova()}i.value=E.r[E.r.length-1].toUpperCase()+".";frComprova();return true}
+ const vol=E.sol[FR.gap],cs=()=>[...document.querySelectorAll("#frBanc .chip")].filter(x=>!x.disabled);
+ if(mal){const m=cs().find(x=>frNorm(x.textContent)!==frNorm(vol));if(m)m.click()}
+ const c=cs().find(x=>frNorm(x.textContent)===frNorm(vol));if(!c)return `falta «${vol}» al banc`;c.click();return true}
+function jocFrasesProva(j){const p=frValida(j);if(p.length)return "jocFrases: "+p.join(" · ");
+ jocFrases(Object.assign({},j,{n:j.items.length}));FR.prova=true;let s=0;
+ while(FR&&!FR.fi&&s++<900){const b=document.getElementById("frSeg");if(b){b.click();continue}const r=frProvaPas(false);if(r!==true)return "jocFrases: "+r}
+ if(!FR||!FR.fi)return "jocFrases: no ha acabat";if(FR.errs||FR.bones!==j.items.length)return `jocFrases: ${FR.bones} bones i ${FR.errs} errors de ${j.items.length}`;return true}
+function frTroba(r){if(!r||!r.jid||typeof ASSIG==="undefined")return null;const j=(ASSIG.jocs||[]).find(x=>x.id===r.jid&&x.tipus==="frases");if(!j)return null;
+ const ex=(j.items||[]).find(e=>frId(e)===r.eid);return ex?{j,ex}:null}
+function frRepas(items,fi){frCss();jgErrCss();const fs=items.map(frTroba),jst=typeof JOCSTAR!=="undefined"?JOCSTAR:0;JOCSTAR=0;
+ FR={j:{id:"rp-frases",titol:"✍️ Frases que et van enganyar"},llista:fs.map(f=>frPrep(f.ex)),e:0,bones:0,errs:0,errE:[],fi:false,rep:true,veu:fs[0].j.veu||ASSIG.veuFrases||null};
+ FR.onFi=()=>{FR.fi=true;JOCSTAR=jst;fi(FR.llista.map((_,i)=>!FR.errE[i]))};frPinta();window.scrollTo(0,0)}
+(window.BN_REP_TIPUS=window.BN_REP_TIPUS||{}).frase={ic:"✍️",max:5,titol:"Ara, frases que et van enganyar",
+ peu:"Torna a completar-les: si avui et surten bé a la primera, tornaran d'aquí a uns dies.",
+ valid:r=>!!frTroba(r),
+ nom:r=>{const f=frTroba(r);if(!f)return "✍️ Frase amb buits";const x=f.ex;return "✍️ "+(x.mots?`Ordena: «${x.ca||"la frase"}»`:String(x.f).replace(/<[^>]+>/g," ").replace(FR_BUIT,"……").slice(0,70))},
+ juga:frRepas};
+// prova pròpia: un error entra al repàs, la frase es torna a jugar bé i surt de pendents
+function frRepProva(){const j=(ASSIG.jocs||[]).find(x=>x.tipus==="frases");if(!j)return true;const abans=JSON.stringify(S.rep||{}),jocs=JSON.stringify(S.jocs),p0=S.punts,js=JOCSTAR;JOCSTAR=0;
+ const net=()=>{S.rep=JSON.parse(abans);S.jocs=JSON.parse(jocs);S.punts=p0;JOCSTAR=js;REPAS=false;FR=null;desa();vista("inici")};
+ try{jocFrases(Object.assign({},j,{n:3}));FR.prova=true;const E0=FR.llista[0];let s=0,pas=0;
+  while(FR&&!FR.fi&&s++<200){const b=document.getElementById("frSeg");if(b){b.click();continue}const r=frProvaPas(pas++===0);if(r!==true){net();return r}}
+  const k=`frase|${j.id}|${E0.id}`,r=(S.rep||{})[k];if(!r||!REP_TIPUS.frase.valid(r)){net();return "l'error no ha entrat al repàs"}
+  if(FR.bones!==2||FR.errs!==1){net();return `esperava 2 bones i 1 error: ${FR.bones}/${FR.errs}`}
+  let oks=null;frRepas([r],o=>{oks=o});FR.prova=true;s=0;while(FR&&!FR.fi&&s++<50){const b=document.getElementById("frSeg");if(b){b.click();continue}frProvaPas(false)}
+  net();return oks&&oks.length===1&&oks[0]===true?true:"el repàs no ha tornat la frase com a encertada"}catch(e){net();return "peta: "+e.message}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("frRepProva");
 
 // ====================== PREGUNTES OBERTES ======================
 function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}

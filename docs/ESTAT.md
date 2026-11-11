@@ -45,6 +45,10 @@ Data: 2026-11-11
   - Pàgina pública `https://bonanota.net/pares/` (`pares/index.html`, especificada a `docs/superpowers/specs/2026-11-11-pagina-pares-design.md`), enllaçada des de la portada i verificada amb `motor/prova-pares.js`.
   - Aplicat `supabase/bn_fotos.sql` i desplegada l'Edge Function `bn-corregeix` (`--no-verify-jwt`) a Supabase `agippwtqvhpxdockuigl` amb CORS actiu per a `https://bonanota.net` i prova `motor/prova-fotos-sql.js` (només falta definir el secret `ANTHROPIC_API_KEY` a Supabase quan es vulgui activar la lectura d'imatges amb Claude).
   - Esborrat `motor/jocs_generics.js` (còpia antiga que no carregava cap pàgina).
+- **`n2564` — Frases amb buits (`2.24.0`)**:
+  - Tipus de joc nou `frases` a la plantilla (`jocFrases`): frases per triar, escriure o ordenar, amb pista, frase sencera, traducció, perquè i veu en anglès; els errors entren al repàs espaiat (`BN_REP_TIPUS.frase`).
+  - Món d'Anglès: 7 jocs de frases (84 frases, 8 per partida) i botó «Practica-ho amb frases» a la fitxa de cada tema.
+  - Qualsevol altre món en pot tenir afegint jocs `tipus:"frases"` a les seves dades.
 
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i primera passada de 111 difícils a `motor/dificultat.json`); #16 dificultat calculada quan hi hagi dades. Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.
