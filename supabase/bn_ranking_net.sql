@@ -19,6 +19,7 @@ $$;
 
 create or replace function bn_priv.nom_prohibit(t text) returns boolean language sql immutable set search_path = '' as $$
   select bn_priv.norm(t) !~ '^[a-z0-9 ._''-]+$'
+      or bn_priv.norm(t) ~ '^_|^(tast|convidat|anonim|visitant|guest|demo_tast)$'
       or bn_priv.norm(t) ~ ('(^|[^a-z])(puta|puto|putes|putos|merda|mierda|cabron|cabro|polla|cony|cono|collons|cojones|gilipolles|gilipollas|imbecil|idiota|subnormal|maricon|marica|mongol|mongolo|joputa|zorra|guarra|pene|penis|culo|cul|caca|pipi|pedo|pet|tonto|tonta|burro|fuck|shit|bitch|dick|ass|nazi|hitler|porno|porn|sexo|sex|teta|tetes|tetas|xixa|chocho|verga|follar|folla)([^a-z]|$)')
       or bn_priv.norm(t) ~ '(fill ?de ?puta|hijo ?de ?puta|me cago|em cago)'
 $$;

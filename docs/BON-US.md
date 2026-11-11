@@ -10,7 +10,7 @@ Aquest document explica quan Bona Nota ajuda el nen a aprendre i quan comença a
 | [`XAT.md`](XAT.md) | Com es parlen els nens? |
 | [`BENESTAR.md`](BENESTAR.md) | Com ho porta cada nen? (el que veu el pare al tauler) |
 
-> **Estat (11 de novembre de 2026 · v2.24.0).** Tots els principis ([ADR-0007](DECISIONS.md)) i els llindars confirmats ([ADR-0008](DECISIONS.md)) estan **actius a producció**: fases del món i pla de 10 dies, descans de 25 minuts registrat i amb límit de salts, avís amable als 60/120 minuts, franja de nit amb mode suau automàtic, botó «Demà tinc examen» (amb opció de desmarcar-lo si s'ha premut per error), textos amables de mentalitat de creixement, rànquing per «Dies d'estudi» i senyals complets al tauler de Benestar.
+> **Estat (11 de novembre de 2026 · v2.26.0).** Tots els principis ([ADR-0007](DECISIONS.md)) i els llindars confirmats ([ADR-0008](DECISIONS.md)) estan **actius a producció**: fases del món i pla de 10 dies, descans de 25 minuts registrat i amb límit de salts, avís amable als 60/120 minuts, franja de nit amb mode suau automàtic, botó «Demà tinc examen» (amb opció de desmarcar-lo si s'ha premut per error), textos amables de mentalitat de creixement, rànquing per «Dies d'estudi», **mode tast anònim** per explorar el primer tema i el primer joc sense compte ni rànquing (`/?tast=1`) i senyals complets al tauler de Benestar.
 
 ## 1. Principis
 
@@ -158,6 +158,7 @@ Els canvis al motor obliguen a regenerar els 7 mons (`python3 motor/tot.py`), pu
 | Dates d'examen | taula `bn_priv.examens(assig, data)`, des del tauler (`supabase/bn_admin_benestar.sql`) |
 | Botó del nen i descans al registre | events `examen_dema` i `descans` (`accio: 'fet' \| 'salta'`) a `bn_log` |
 | Dies d'estudi al rànquing | columna `dies` a `supabase/bn_ranking_mons.sql` i pestanya `data-t="dies"` a `index.html` |
+| Mode tast anònim (`?tast=1`) | `MODE_TAST`, `activaTast()`, `convidaPin()` a `motor/plantilla-estudi-interactiu.html`; `TAST_ACTIU`, `activaTastPortada()` a `index.html`; `bn_priv.nom_prohibit` a `supabase/bn_ranking_net.sql` |
 
 ## 9. D'on ve
 

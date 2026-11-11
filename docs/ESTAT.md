@@ -3,7 +3,7 @@
 Data: 2026-11-11
 
 ## Què funciona
-- **Versió actual: 2.25.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.26.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`), tots 7 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 130 en total) i 3 peces del xat per món.
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -55,6 +55,10 @@ Data: 2026-11-11
   - CI «Revisa Bona Nota» paral·lelitzada en 4 blocs (`base`, `sql`, `interficie` i 7 `mons` en matriu amb memòria cau de Chromium), baixant el temps de revisió de ~18 min a ~3,5 min (`g8`).
   - Desmarcat en un toc de «Demà tinc examen» prement «Has marcat examen demà · desmarca ✕» (`#btExDemaTreu`), sincronitzat al núvol (`S.vigilia_mod`) i al Benestar (`accio: 'treu'`) (`g9`).
   - Funció `public.bn_admin_dificultat` (`supabase/bn_admin_dificultat.sql`, desplegada a Supabase i provada amb `motor/prova-dificultat-sql.js`) i `motor/dificultat.py --proposa` llestos per a l'issue `#16`.
+
+- **Bloc `g10` (`2.26.0`, Mode tast anònim, publicat i actiu)**:
+  - Tres portes d'entrada sense compte ni PIN (`/?tast=1`, `/<mon>/?tast=1` i `#btParesTast` a `/pares/`), mostra del Tema 1 (`fitxa` + `targetes` + 5 preguntes explicades), del primer joc (`ASSIG.jocs[0]`) i de l'enunciat `OB[0]` en mode lectura; la resta obre `convidaPin()`.
+  - 100 % anònim: zero crides d'escriptura a `bn_log` ni RPC d'usuari, zero estrelles ni rànquing, xat en mode lectura, memòria efímera a `sessionStorage` que no toca `localStorage` dels germans, noms reservats (`nomProhibit` + `bn_priv.nom_prohibit` aplicat a Supabase) i prova E2E `motor/prova-tast.js`.
 
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i 130 difícils a `motor/dificultat.json`); #16 dificultat calculada: el SQL (`bn_admin_dificultat`) i `dificultat.py --proposa` ja són actius, pendent d'acumular prou respostes (l'11/11/2026: 362 preguntes vistes, 95 amb ≥ 5 respostes i 40 amb ≥ 8, de 625 totals). Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.

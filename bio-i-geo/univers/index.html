@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e4f1f5b0a4",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="474e801ad4",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -570,6 +570,15 @@ svg .fgP{animation:vEntra .3s ease-out both}
 @media(prefers-reduced-motion:reduce){#app>*,#zona>*,.grid>.tile,.kpi,.fb,.masc *,.masc-benv,.arc .masc-arc,.continua>span:first-child,.nivell .nic,.hero .av,.cap-tema .ic,.opt.ok,.opt.ok .ll,.chip.ok,nav button.on i,.mus-btn.on .ico,svg .fgB,svg .fgP{animation:none!important}svg .fgL{animation:none!important;stroke-dashoffset:0}}
 body.suau #app>*,body.suau #zona>*,body.suau .grid>.tile,body.suau .kpi,body.suau .masc *,body.suau .masc-benv,body.suau .arc .masc-arc,body.suau .continua>span:first-child,body.suau .nivell .nic,body.suau .hero .av,body.suau .opt.ok,body.suau .opt.ok .ll,body.suau .mus-btn.on .ico,body.suau svg .fgB{animation:none!important}
 body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
+/* mode tast anònim */
+.bt-tast{margin-top:10px;width:100%;padding:11px 14px;font-size:15.5px;background:#f8fafc;border-color:#cbd5e1;color:#334155}
+.tast-bar{background:#eff6ff;border:2px solid #93c5fd;border-radius:16px;padding:12px 14px;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tast-bar .tast-txt{font-size:14.5px;color:#1e3a8a;line-height:1.4;flex:1;min-width:210px}
+.tast-bar .tast-acc{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tile.tast-bloc{opacity:.78;border-style:dashed;background:#f8fafc}
+.etq.etq-mostra,.num.etq-mostra{background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:99px;font-weight:800}
+#popTastWrap{position:fixed;inset:0;z-index:90;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+#popTast{background:#fff;border-radius:20px;border:2px solid var(--vora);max-width:420px;width:100%;padding:20px;box-shadow:0 20px 50px rgba(15,23,42,.28);text-align:center}
 </style>
 </head>
 <body>
@@ -589,7 +598,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.25.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.26.0</small></div>
 
 <script src="../../sprites.js?v=0be9e885"></script>
 <script>
@@ -874,16 +883,29 @@ document.getElementById("logoic").textContent=ASSIG.ic;
 
 // ====================== ESTAT ======================
 const BUIT=()=>({nom:"",punts:0,temes:{},jocs:{},ob:{},examens:[],temps:0,dies:[],ultim:null,fonts:{},ftema:{},fjoc:{}});
-let S=BUIT(),PER={},ACT="";
+let S=BUIT(),PER={},ACT="",MODE_TAST=false;
+const NTEST_TAST=5,jocObertTast=id=>!!(ASSIG.jocs&&ASSIG.jocs[0]&&ASSIG.jocs[0].id===id);
 try{PER=JSON.parse(localStorage.getItem(CL+"perfils")||"{}")||{};ACT=localStorage.getItem(CL+"actiu")||""}catch(e){}
 try{const v=localStorage.getItem(CL+"v3");if(v&&!Object.keys(PER).length){const o=Object.assign(BUIT(),JSON.parse(v));if(o.nom){PER[o.nom]=o;ACT=o.nom}}}catch(e){}
 if(ACT&&PER[ACT])S=Object.assign(BUIT(),PER[ACT]);
-function guarda(){if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
-function desa(){S.mod=Date.now();guarda();pintaCap();nuvolProg()}
+function guarda(){if(MODE_TAST){S.punts=0;try{sessionStorage.setItem("bn_tast_"+CL,JSON.stringify(S))}catch(e){}return}if(!S.nom)return;PER[S.nom]=S;try{localStorage.setItem(CL+"perfils",JSON.stringify(PER));localStorage.setItem(CL+"actiu",S.nom)}catch(e){}}
+function desa(){if(MODE_TAST){S.punts=0;guarda();pintaCap();return}S.mod=Date.now();guarda();pintaCap();nuvolProg()}
+function tancaConvidaPin(){const d=document.getElementById("popTastWrap");if(d)d.remove()}
+function convidaPin(motiu){tancaConvidaPin();
+ const w=document.createElement("div");w.id="popTastWrap";
+ w.innerHTML=`<div id="popTast" role="dialog" aria-modal="true" aria-label="Contingut complet amb nom i PIN"><div style="font-size:44px;line-height:1">🔐</div><h3 style="margin:8px 0 6px;font-size:20px">Aquesta part és amb nom i PIN</h3><p class="prog" style="margin:0 0 10px">${motiu||"Al mode tast pots provar el Tema 1, el primer joc i la primera pregunta oberta."}</p><p class="prog" style="margin:0 0 14px">Entrar és gratuït i sense correu electrònic: només un <b>nom</b> (o àlies) i un <b>PIN de 4 números i 1 lletra</b> per guardar el progrés.</p><div class="fila" style="justify-content:center;margin:0"><button class="btn verd" type="button" id="btTastEntra">🔐 Entra amb nom i PIN</button><button class="btn sec" type="button" id="btTastSegueix">Continua el tast</button></div></div>`;
+ w.onclick=e=>{if(e.target===w)tancaConvidaPin()};
+ document.body.appendChild(w);
+ document.getElementById("btTastEntra").onclick=()=>surtTast(false);
+ document.getElementById("btTastSegueix").onclick=tancaConvidaPin;
+ document.getElementById("btTastEntra").focus()}
+function netejaUrlTast(){try{const u=new URL(location.href);if(u.searchParams.has("tast")){u.searchParams.delete("tast");history.replaceState(history.state,"",u.pathname+u.search+u.hash)}}catch(e){}}
+function activaTast(noVista){MODE_TAST=true;tancaEstrelles();tancaConvidaPin();try{sessionStorage.setItem("bn_tast","1")}catch(e){}let d=null;try{d=JSON.parse(sessionStorage.getItem("bn_tast_"+CL)||"null")}catch(e){}S=Object.assign(BUIT(),d||{},{nom:"Visitant",punts:0,id:null});const a=document.querySelector("#nav a.surt");if(a)a.href="../../?tast=1#mons";pintaCap();if(!noVista)vista("inici")}
+function surtTast(capAPortada){tancaConvidaPin();tancaEstrelles();aturaSeg();calla();MODE_TAST=false;netejaUrlTast();try{sessionStorage.removeItem("bn_tast");sessionStorage.removeItem("bn_tast_"+CL)}catch(e){}S=BUIT();const a=document.querySelector("#nav a.surt");if(a)a.href="../../";if(capAPortada){location.href="../../";return}pintaCap();benvinguda()}
 // ---- registre d'activitat per al panell admin (Supabase: només escriptura; llegir-ho només pot l'admin) ----
 const BN_LOG={url:"https://agippwtqvhpxdockuigl.supabase.co/rest/v1/bn_log",key:"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p"};
 const SESSIO=Math.random().toString(36).slice(2,12);let APARELL="",TPEND=0;
-try{APARELL=localStorage.getItem("bn_aparell")||"";if(!APARELL){APARELL=Math.random().toString(36).slice(2,12);localStorage.setItem("bn_aparell",APARELL)}}catch(e){APARELL="?"}
+try{APARELL=localStorage.getItem("bn_aparell")||"";if(!APARELL){APARELL=Math.random().toString(36).slice(2,12);if(!/[?&]tast=1\b/.test(location.search)&&sessionStorage.getItem("bn_tast")!=="1")localStorage.setItem("bn_aparell",APARELL)}}catch(e){APARELL="?"}
 // ---- id estable de cada pregunta («tema/núm.»; l'assignatura ja va a la columna assig). Ve de motor/qids.json via build.py ----
 (function(){if(typeof QIDS==="undefined")return;const posa=(qs,tid)=>{const ns=QIDS[tid];if(ns&&qs)qs.forEach((q,i)=>{if(ns[i])q.id=tid+"/"+ns[i]})};
  T.forEach(t=>posa(t.q,t.id));(ASSIG.jocs||[]).forEach(j=>{if(Array.isArray(j.q))posa(j.q,"j-"+j.id)})})();
@@ -912,7 +934,7 @@ function iniciActivitat(){PACT=S.punts||0}
 // «temps» (que s'envia en tancar o amagar la pàgina) es perdrien les estrelles d'un joc si el navegador es tanca de cop (n2522)
 function detallLog(event,detall){if(!EVENTS_EST.includes(event))return detall;if(detall.est===undefined){detall.est=Math.max(0,(S.punts||0)-PACT);PACT=S.punts||0}
  if(detall.punts===undefined)detall.punts=S.punts||0;if(detall.fonts===undefined)detall.fonts=S.fonts||{};return detall}
-function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO)return;detall=retalla(detallLog(event,detall||{}));if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
+function registra(event,detall){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO||MODE_TAST)return;detall=retalla(detallLog(event,detall||{}));if(S.reinici)detall.ri=S.reinici; // ri: últim reinici que coneix aquest dispositiu (bn_admin_reinicia.sql)
  try{fetch(BN_LOG.url,{method:"POST",keepalive:true,headers:{"apikey":BN_LOG.key,"Content-Type":"application/json","Prefer":"return=minimal"},
   body:JSON.stringify({assig:ASSIG.id,nom:S.nom.slice(0,40),sessio:SESSIO,aparell:APARELL,event,detall:detall||{}})}).catch(()=>{})}catch(e){}}
 function buidaTemps(){tancaActivitat();if(TPEND>0){registra("temps",{s:TPEND,punts:S.punts,fonts:S.fonts||{}});TPEND=0}}
@@ -927,8 +949,8 @@ function avisMassaNoms(){const m=Object.values(nomsAparell());return `<div class
 function existeix(n){return Object.keys(PER).some(x=>x.toLowerCase()===n.toLowerCase())}
 function suggeriments(n){n=Object.keys(PER).find(x=>x.toLowerCase()===n.toLowerCase())||n;const r=[];for(let k=2;r.length<2&&k<99;k++)if(!existeix(n+k))r.push(n+k);
  ["Pro","Crack","Star","Max","Top"].forEach(a=>{if(r.length<5&&!existeix(n+a))r.push(n+a)});return r}
-function apuntaNom(n){try{const l=JSON.parse(localStorage.getItem("bn_noms_aparell")||"[]")||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem("bn_noms_aparell",JSON.stringify(l))}}catch(e){}}
-function entra(nom){NUV_LLEST=false;const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{h:new Date().getHours(),dw:new Date().getDay()||7,nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=APROVA).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
+function apuntaNom(n){if(MODE_TAST)return;try{const l=JSON.parse(localStorage.getItem("bn_noms_aparell")||"[]")||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem("bn_noms_aparell",JSON.stringify(l))}}catch(e){}}
+function entra(nom){MODE_TAST=false;netejaUrlTast();try{sessionStorage.removeItem("bn_tast");sessionStorage.removeItem("bn_tast_"+CL)}catch(e){}const as=document.querySelector("#nav a.surt");if(as)as.href="../../";NUV_LLEST=false;const k=Object.keys(PER).find(x=>x.toLowerCase()===nom.toLowerCase());const modAbans=k&&PER[k].mod||0;if(k)S=Object.assign(BUIT(),PER[k]);else{S=BUIT();S.nom=nom.charAt(0).toUpperCase()+nom.slice(1)}apuntaNom(S.nom);try{localStorage.setItem("bn_jugador",S.nom)}catch(e){}marcaDia();desa();registra("entra",{h:new Date().getHours(),dw:new Date().getDay()||7,nou:!k,punts:S.punts,fonts:S.fonts||{},aprovats:T.filter(t=>(millor(t.id)||0)>=APROVA).length,temes:T.length});vista("inici");sincronitzaEntrada(modAbans);PSRV=null;carregaPuntsMons()}
 function avui(){return new Date().toISOString().slice(0,10)}
 function marcaDia(){const d=avui();if(!S.dies.includes(d)){S.dies.push(d);desa()}}
 function ET(id){return S.temes[id]||(S.temes[id]={fitxa:false,fc:0,intents:[],fallades:{},valoracio:null})}
@@ -937,7 +959,7 @@ const NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador"
 function nivell(p){let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];
  return {n:i+1,nom,ic,min,seg,falten:seg?seg[0]-p:0,pc:seg?Math.round((p-min)*100/(seg[0]-min)):100}}
 let NIVPEND=null;
-function suma(n){const a=nivell(S.punts).n,t0=puntsTots();S.punts+=n;if(nivell(S.punts).n>a)NIVPEND=nivell(S.punts);
+function suma(n){if(MODE_TAST)return;const a=nivell(S.punts).n,t0=puntsTots();S.punts+=n;if(nivell(S.punts).n>a)NIVPEND=nivell(S.punts);
  {const sp=Math.floor(puntsTots()/SUPER);if(sp>Math.floor(t0/SUPER)&&sp>superFetes())SUPPEND=sp}
  // d'on surt cada estrella: temes (i quin), jocs (i quin), examen, obertes, combo
  S.fonts=S.fonts||{};S.ftema=S.ftema||{};S.fjoc=S.fjoc||{};const [f,id]=FONT;S.fonts[f]=(S.fonts[f]||0)+n;
@@ -956,7 +978,7 @@ function volaEstrella(n){try{
 }catch(e){}}
 // ratxa d'encerts seguits als tests: COMBO ×3, ×5 (+1 ⭐ de regal), ×10 (+2 ⭐)…
 function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO<3)return;
- const premi=COMBO%10===0?2:COMBO%5===0?1:0;
+ const premi=MODE_TAST?0:(COMBO%10===0?2:COMBO%5===0?1:0);
  const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
  document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
 // com es guanyen les estrelles (una sola llista per a les dues targetes; issue #13)
@@ -966,7 +988,7 @@ const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["�
 // posa a 0. La ratxa és del dia (diaEst().sd), com la del triple combo: canviar de tema no la trenca. 3 seguides +3 ⭐, 5 seguides +5 ⭐
 // (i torna a 0), fins a SUPER_MAX al dia per món (diaEst().sp). «SUPER» ja és la superestrella.
 const SUPER_PREMIS={3:3,5:5},SUPER_MAX=10;
-function ratxaDif(ok,q,paga){const e=diaEst();if(!ok){if(e.sd){e.sd=0;desa()}return 0}if(!paga||difDe(q)!==3)return 0;
+function ratxaDif(ok,q,paga){if(MODE_TAST)return 0;const e=diaEst();if(!ok){if(e.sd){e.sd=0;desa()}return 0}if(!paga||difDe(q)!==3)return 0;
  const sd=(e.sd||0)+1,pr=SUPER_PREMIS[sd]||0,pag=Math.max(0,Math.min(pr,SUPER_MAX-(e.sp||0)));
  if(pag){e.sp=(e.sp||0)+pag;const f=FONT;FONT=["super"];suma(pag);FONT=f}
  if(pr)retolMissio(sd>=5?"⚡⚡ HIPER COMBO":"⚡ SUPER COMBO",pag?`+${pag} ⭐`:"avui ja no dona ⭐",300);
@@ -979,7 +1001,7 @@ const FONTS=[["temes","📖","Tests dels temes"],["jocs","🎮","Jocs"],["examen
 // ---- «Com vas»: ràpid i bé? + comparativa anònima amb els altres nens (cap nom) ----
 let COMP=null,COMPT=0;
 function elMeu(){const g=resumGlobal(),min=S.temps/60;return {punts:S.punts,encert:g.encert,ritme:min>=2?Math.round(S.punts*10/min):null}}
-function carregaComp(cb){if(/^file:/.test(location.protocol)){cb&&cb();return}if(COMP&&Date.now()-COMPT<120000){cb&&cb();return}
+function carregaComp(cb){if(MODE_TAST||/^file:/.test(location.protocol)){cb&&cb();return}if(COMP&&Date.now()-COMPT<120000){cb&&cb();return}
  fetch(BN_LOG.url.replace("/bn_log","/rpc/bn_comparativa"),{method:"POST",headers:{"apikey":BN_LOG.key,"Content-Type":"application/json"},body:JSON.stringify({p_assig:ASSIG.id})})
   .then(r=>r.ok?r.json():null).then(d=>{COMP=Array.isArray(d)?d:null;COMPT=Date.now();cb&&cb()}).catch(()=>{cb&&cb()})}
 function veredicte(){const m=elMeu();if(m.encert===null)return {ic:"🚀",t:"Encara no has fet cap test",s:"Fes-ne un i et diré si vas ràpid i bé."};
@@ -1009,7 +1031,7 @@ function cartaComVas(){const v=veredicte(),m=elMeu();
  else if(!/^file:/.test(location.protocol))h+=`<p class="prog" style="margin:8px 0 0">${COMP===null?"La comparativa amb els altres nens encara no està activada.":"Encara no hi ha prou nens per comparar-te. Aviat!"}</p>`;
  return h+`</div>`}
 function tancaEstrelles(){const d=document.getElementById("popEst"),bt=document.getElementById("punts");if(d)d.remove();if(bt)bt.setAttribute("aria-expanded","false")}
-function obreEstrelles(e){if(e)e.stopPropagation();const bt=document.getElementById("punts");let d=document.getElementById("popEst");if(d){tancaEstrelles();return}
+function obreEstrelles(e){if(e)e.stopPropagation();if(MODE_TAST){convidaPin("En el mode tast anònim no es compten estrelles ni rànquing.");return}const bt=document.getElementById("punts");let d=document.getElementById("popEst");if(d){tancaEstrelles();return}
  d=document.createElement("div");d.id="popEst";d.setAttribute("role","dialog");d.setAttribute("aria-label","Resum d'estrelles");if(bt)bt.setAttribute("aria-expanded","true");
  const pinta=()=>{d.innerHTML=`<div class="pop-cap"><span>⭐ El teu resum d'estrelles</span><button class="pop-tanca" type="button" id="popTanca" aria-label="Tanca">✕</button></div>`+cartaMons()+cartaEstrelles(false)+cartaComVas()+`<div class="pop-peu"><button class="btn" type="button" id="popDetall" style="width:100%">📊 Veure tot el detall a «Com vaig» →</button></div>`;
   const btT=d.querySelector("#popTanca"),btD=d.querySelector("#popDetall");
@@ -1045,14 +1067,14 @@ function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" role=
 // perquè un nen pot haver fet cada món en un aparell diferent. (rpc() ja torna el JSON llegit, no la resposta.) El nivell continua sent el d'aquest món, com al rànquing.
 // Si l'admin ha esborrat el progrés d'un món (bn_reinicis), les estrelles d'aquell món desades aquí abans del reinici no compten.
 let PSRV=null,PRI={};
-function carregaPuntsMons(){if(!S.nom||/^file:/.test(location.protocol))return;const n=S.nom;
+function carregaPuntsMons(){if(MODE_TAST||!S.nom||/^file:/.test(location.protocol))return;const n=S.nom;
  Promise.all([rpc("bn_punts_mons",{p_nom:n}),rpc("bn_reinicis",{p_nom:n}).catch(()=>null)]).then(([d,ri])=>{if(!Array.isArray(d)||S.nom!==n)return;PSRV={};d.forEach(x=>{PSRV[x.assig]=+x.punts||0});PRI=ri&&typeof ri==="object"?ri:{};pintaCap();document.querySelectorAll(".mons-est").forEach(e=>{e.outerHTML=cartaMons()})}).catch(()=>{})}
 const reiniciDe=id=>Math.max(+(PRI&&PRI[id])||0,+(PRI&&PRI["*"])||0);
 function puntsMons(){const k=(S.nom||"").trim().toLowerCase();
  return MONS.map(m=>{if(m.id===ASSIG.id)return Object.assign({},m,{punts:S.punts||0,ara:true});let loc=0;
   if(k)try{const per=JSON.parse(localStorage.getItem(m.clau+"_perfils")||"{}")||{},n=Object.keys(per).find(x=>x.trim().toLowerCase()===k);if(n&&(+(per[n]&&per[n].reinici)||0)>=reiniciDe(m.id))loc=+(per[n]&&per[n].punts)||0}catch(e){}
   return Object.assign({},m,{punts:Math.max(loc,(PSRV&&PSRV[m.id])||0),ara:false})})}
-function puntsTots(){if(!S.nom)return S.punts||0;return puntsMons().reduce((a,m)=>a+m.punts,0)}
+function puntsTots(){if(MODE_TAST||!S.nom)return S.punts||0;return puntsMons().reduce((a,m)=>a+m.punts,0)}
 // targeta «estrelles de tots els mons»: total, superestrelles i una fila per món (toca un món per anar-hi)
 function cartaMons(){const ms=puntsMons(),tot=ms.reduce((a,m)=>a+m.punts,0),sup=Math.floor(tot/SUPER),mx=Math.max(1,...ms.map(m=>m.punts)),falten=(sup+1)*SUPER-tot;
  return `<div class="estrelles mons-est"><h4>⭐ ${tot} entre tots els mons <small>🌠 ${sup} superestrell${sup===1?"a":"es"}</small></h4>
@@ -1060,8 +1082,8 @@ function cartaMons(){const ms=puntsMons(),tot=ms.reduce((a,m)=>a+m.punts,0),sup=
  <p class="me-peu">Et falten <b>${falten} ⭐</b> per a la propera 🌠 (a ${(sup+1)*SUPER} ⭐)</p></div>`}
 // ---- superestrelles: cada SUPER ⭐ (sumant tots els mons) en guanyes una, amb animació i música pròpies ----
 const SUPER=50;let SUPPEND=0;
-function superFetes(){try{return +localStorage.getItem("bn_super_"+(S.nom||"").trim().toLowerCase())||0}catch(e){return 0}}
-function apuntaSuper(n){try{localStorage.setItem("bn_super_"+(S.nom||"").trim().toLowerCase(),String(n))}catch(e){}}
+function superFetes(){if(MODE_TAST)return 0;try{return +localStorage.getItem("bn_super_"+(S.nom||"").trim().toLowerCase())||0}catch(e){return 0}}
+function apuntaSuper(n){if(MODE_TAST)return;try{localStorage.setItem("bn_super_"+(S.nom||"").trim().toLowerCase(),String(n))}catch(e){}}
 function mostraSuper(){if(!SUPPEND)return mostraNivell();if(document.querySelector(".arc")){setTimeout(mostraSuper,400);return}
  const n=SUPPEND;SUPPEND=0;apuntaSuper(Math.max(n,superFetes()));so("superestrella");abaixaMusUnMoment(5.5);window.SUPERS_MOSTRADES=(window.SUPERS_MOSTRADES||0)+1;
  const d=document.createElement("div");d.className="arc sup";let orb="";for(let i=0;i<12;i++)orb+=`<i style="--a:${i*30}deg;--r:${i%2?46:38}vmin;animation-delay:${(i*.07).toFixed(2)}s"></i>`;
@@ -1070,15 +1092,15 @@ function mostraSuper(){if(!SUPPEND)return mostraNivell();if(document.querySelect
 // aspecte del nen (animal, perfil arcade i estil triats a /perfil/): el llegeix del mapa bn_aspectes de l'aparell, que omple la portada.
 // Si sprites.js no ha carregat (p. ex. obrint el fitxer en local), es queda l'emoji de sempre.
 function aspecteNen(){try{const m=JSON.parse(localStorage.getItem("bn_aspectes")||"{}")||{},a=m[S.nom.trim().toLowerCase()];return a&&typeof a==="object"?a:{}}catch(e){return {}}}
-function heroAv(){if(typeof bnSpr!=="function"||!S.nom)return `<div class="av">🧒</div>`;const a=aspecteNen();
+function heroAv(){if(MODE_TAST)return `<div class="av" aria-hidden="true">👀</div>`;if(typeof bnSpr!=="function"||!S.nom)return `<div class="av">🧒</div>`;const a=aspecteNen();
  let h=7;for(const c of S.nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;const an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length];
  const sk=typeof bnSkillSpr==="function"&&BN_SKILLS[a.sk]?`<span class="av-sk">${bnSkillSpr(a.sk,a.v)}</span>`:"";
  return `<a class="av" href="../../perfil/" title="Canvia el teu perfil" aria-label="El teu perfil: canvia l'animal i la insígnia" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${sk}</a>`}
-function heroAsp(){if(typeof bnSkillSpr!=="function")return "";const a=aspecteNen();if(!BN_SKILLS[a.sk])return `<p class="asp"><a href="../../perfil/">👾 Tria el teu perfil arcade</a></p>`;
+function heroAsp(){if(MODE_TAST)return `<p class="asp">Mode tast anònim · cap dada ni estrella es guarda</p>`;if(typeof bnSkillSpr!=="function")return "";const a=aspecteNen();if(!BN_SKILLS[a.sk])return `<p class="asp"><a href="../../perfil/">👾 Tria el teu perfil arcade</a></p>`;
  return `<p class="asp">${BN_SKILL_INFO[a.sk].n} · ${BN_SKILL_ESTILS[BN_SKILL_VAR_PAL[a.v]?a.v:""]}</p>`}
-function pintaCap(){const nv=nivell(S.punts),tot=puntsTots(),sup=Math.floor(tot/SUPER);document.getElementById("punts").textContent=`⭐ ${tot}${sup?` · 🌠 ${sup}`:""} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · 🌠 ${sup} superestrelles (1 cada ${SUPER} ⭐) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom}${S.id?" · #"+S.id:""} · ${ASSIG.curs}`:ASSIG.curs}
+function pintaCap(){if(MODE_TAST){document.getElementById("punts").textContent="👀 Tast anònim";document.getElementById("punts").title="Mode tast anònim: cap estrella ni nom es guarda ni surt al rànquing. Toca per saber-ne més.";document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=`👀 Sense compte · sense rànquing · ${ASSIG.curs}`;return}const nv=nivell(S.punts),tot=puntsTots(),sup=Math.floor(tot/SUPER);document.getElementById("punts").textContent=`⭐ ${tot}${sup?` · 🌠 ${sup}`:""} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · 🌠 ${sup} superestrelles (1 cada ${SUPER} ⭐) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom}${S.id?" · #"+S.id:""} · ${ASSIG.curs}`:ASSIG.curs}
 // temps d'estudi: cada 15 s amb la pestanya visible
-setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;TPEND+=15;const e=diaEst();e.ts=(e.ts||0)+15;guarda();comprovaBonUsTick();if(TPEND>=300)buidaTemps()}},15000);
+setInterval(()=>{if(document.visibilityState==="visible"&&S.nom&&!MODE_TAST){S.temps+=15;TPEND+=15;const e=diaEst();e.ts=(e.ts||0)+15;guarda();comprovaBonUsTick();if(TPEND>=300)buidaTemps()}},15000);
 const app=document.getElementById("app");
 const barreja=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.intents.map(i=>i.pc)):null};
@@ -1090,8 +1112,8 @@ function pantallaMonTancat(){tancaActivitat();calla();aturaSeg();if(EXR&&EXR.t)c
  document.querySelectorAll("#nav button").forEach(b=>{b.disabled=true;b.classList.remove("on")});
  app.innerHTML=`<div class="box benv" id="monTancatBox"><div style="font-size:56px;line-height:1">🔒</div><h2 style="margin:8px 0 4px">Aquest món està tancat ara mateix</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p><p class="prog">Les teves estrelles continuen guardades al rànquing! Tria un altre món a la portada.</p><a class="btn verd" href="../../" style="display:inline-block;text-decoration:none;width:100%;max-width:320px;padding:14px;font-size:18px;margin-top:8px">🚪 Tots els mons</a></div>`}
 function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>{const on=b.dataset.v===v;b.classList.toggle("on",on);if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")})}
-function vista(v){if(MON_TANCAT){pantallaMonTancat();return}tancaActivitat();REPAS=false;if(S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
- if(S.nom&&!SENSE_NUVOL()&&pinVell(S.nom)&&!PIN_AJORNA&&v!=="benvinguda"){pantallaNouPin();return}calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
+function vista(v){if(MON_TANCAT){pantallaMonTancat();return}tancaConvidaPin();tancaActivitat();REPAS=false;if(!MODE_TAST&&S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
+ if(!MODE_TAST&&S.nom&&!SENSE_NUVOL()&&pinVell(S.nom)&&!PIN_AJORNA&&v!=="benvinguda"){pantallaNouPin();return}calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]()}
 
 
 // ====================== ICONES I MASCOTA (SVG propis, mateix traç a tot arreu) ======================
@@ -1283,7 +1305,7 @@ function fracas(pc,bones,n){
  so("trist");abaixaMusUnMoment(4.5);document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
  const d=document.createElement("div");d.className="arc ko";
  let pl="";for(let i=0;i<40;i++)pl+=`<i class="pluja" style="left:${Math.random()*100}%;animation-duration:${.6+Math.random()*.7}s;animation-delay:${Math.random()*1.2}s"></i>`;
- d.innerHTML=`${pl}<div class="masc-arc">${mascota("trist",92)}</div><div class="t1">${pc<25?"CAP<br>PROBLEMA!":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">🌱</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ELS ERRORS VAN AL REPÀS:<br>AIXÍ S'APRÈN!</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ d.innerHTML=`${pl}<div class="masc-arc">${mascota("trist",92)}</div><div class="t1">${pc<25?"CAP<br>PROBLEMA!":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">🌱</div>${MODE_TAST?`<div class="t2">MIRA LA FITXA AMB CALMA:<br>AIXÍ S'APRÈN!</div>`:`<div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ELS ERRORS VAN AL REPÀS:<br>AIXÍ S'APRÈN!</div>`}<div class="t4">TOCA PER CONTINUAR</div>`;
  document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
 }
 function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremola");
@@ -1291,7 +1313,7 @@ function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremo
  const sup=pc>=90,nE=pc>=90?3:pc>=70?2:1;
  so(sup?"super":"win");abaixaMusUnMoment(4.5);document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
  const d=document.createElement("div");d.className="arc";
- d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="masc-arc">${mascota("feli",92)}</div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record?`<div class="rec">★ NOU RÈCORD ★</div>`:""}<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="masc-arc">${mascota("feli",92)}</div><div class="t1">${sup?"PERFECTE!":pc>=70?"NIVELL<br>SUPERAT!":"APROVAT!"}</div><div class="t3">${bones}/${n}</div><div class="estr">${[0,1,2].map(i=>`<span style="animation-delay:${.5+i*.25}s;${i<nE?"":"filter:grayscale(1);opacity:.25"}">⭐</span>`).join("")}</div>${record&&!MODE_TAST?`<div class="rec">★ NOU RÈCORD ★</div>`:""}${MODE_TAST?`<div class="t2">MOSTRA COMPLETADA!</div>`:`<div class="t2">${S.nom?S.nom.toUpperCase()+" ":""}+${bones} ESTRELLES</div>`}<div class="t4">TOCA PER CONTINUAR</div>`;
  document.body.appendChild(d);[0,1,2].slice(0,nE).forEach(i=>setTimeout(()=>so("coin"),500+i*250+700));
  const para=focs(d.querySelector("canvas"));
  const tanca=()=>{para();d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
@@ -1303,8 +1325,9 @@ function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremo
 // La sessió es manté oberta en aquest dispositiu. Per canviar de nen: «No ets tu?», a la portada.
 const SENSE_NUVOL=()=>/^file:/.test(location.protocol)||window.BN_NO_LOG||MODE_DEMO;
 function benvinguda(nomPre){
- marcaNav("usuari");calla();
- if(S.nom){S=BUIT();try{localStorage.removeItem(CL+"actiu");localStorage.removeItem("bn_jugador")}catch(e){}pintaCap()}
+ tancaConvidaPin();marcaNav("usuari");calla();
+ if(MODE_TAST){MODE_TAST=false;try{sessionStorage.removeItem("bn_tast");sessionStorage.removeItem("bn_tast_"+CL)}catch(e){}S=BUIT();const as=document.querySelector("#nav a.surt");if(as)as.href="../../";pintaCap()}
+ else if(S.nom){S=BUIT();try{localStorage.removeItem(CL+"actiu");localStorage.removeItem("bn_jugador")}catch(e){}pintaCap()}
  const noms=Object.keys(PER),altres=Object.values(nomsAparell()).filter(n=>!noms.some(x=>x.toLowerCase()===n.toLowerCase()));
  const aprovats=p=>T.filter(t=>{const e=p.temes&&p.temes[t.id];return e&&e.intents.length&&Math.max(...e.intents.map(i=>i.pc))>=APROVA}).length;
  const pot=potNouNom("\u0000");
@@ -1313,6 +1336,7 @@ function benvinguda(nomPre){
  <form id="fn" autocomplete="off"><input id="nom" maxlength="20" placeholder="El teu nom" ${pot?"":"readonly"}>
  ${SENSE_NUVOL()?"":`<input id="pinL" ${ATR_PIN} placeholder="PIN (4 números + 1 lletra)">`}
  <div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Entra ▶</button></form>
+ <button class="btn sec bt-tast" type="button" id="btTastMon" onclick="activaTast()">👀 Tasta aquest món sense compte (anònim)</button>
  ${pot?"":`<p class="prog" style="margin-top:10px">📵 En aquest dispositiu ja hi ha ${MAX_NOMS} noms: només pots entrar amb un d'aquests.</p>`}
  <a class="surt-gran" href="../../">🚪 Tornar al menú de tots els mons</a></div>`;
  const i=document.getElementById("nom"),pi=document.getElementById("pinL"),av=document.getElementById("nomAvis");
@@ -1349,7 +1373,9 @@ function benvinguda(nomPre){
 
 // ====================== INICI ======================
 function tileTema(t,i){
+ if(MODE_TAST&&i>0)return `<div class="tile tast-bloc" role="button" tabindex="0" onclick="obre(${i})"><div class="ic" style="background:${t.col}1f">${t.ic}</div><span class="num">🔒 PIN</span><b>${t.titol}</b><small>${t.font}</small><div class="peu"><span class="etq">Amb nom i PIN</span></div></div>`;
  const m=millor(t.id),f=m??0,ap=m!==null&&m>=APROVA;
+ if(MODE_TAST)return `<div class="tile" role="button" tabindex="0" onclick="obre(0)"><div class="ic" style="background:${t.col}1f">${t.ic}</div>${ap?`<span class="segell">${m>=90?"🏆":"✅"}</span>`:`<span class="num etq-mostra">👀 Mostra</span>`}<b>${t.titol}</b><small>${t.font}</small><div class="peu"><div class="barra"><i style="width:${f}%"></i></div><span class="pc">${m===null?"—":f+"%"}</span></div></div>`;
  return `<div class="tile" role="button" tabindex="0" onclick="obre(${i})"><div class="ic" style="background:${t.col}1f">${t.ic}</div>${ap?`<span class="segell">${m>=90?"🏆":"✅"}</span>`:`<span class="num">${i+1}/${T.length}</span>`}<b>${t.titol}</b><small>${t.font}</small><div class="peu"><div class="barra"><i style="width:${f}%"></i></div><span class="pc">${m===null?"—":f+"%"}</span></div></div>`;
 }
 function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<APROVA})}
@@ -1358,30 +1384,32 @@ function inici(){
  marcaDia();aplicaSuau();
  const aprov=T.filter(t=>(millor(t.id)??0)>=APROVA).length, sp=seguentPendent();
  const res=resumGlobal();
- let h=`<div id="avisNitWrap">${bannerNitHtml()}</div>${bannerTempsHtml()}<div class="hero">${heroAv()}<div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}</h1>${heroAsp()}<p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
- <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
+ const tastBar=MODE_TAST?`<div class="tast-bar" id="tastBanner"><div class="tast-txt"><b>👀 Estàs en mode tast anònim</b> · Cap estrella ni nom es guarda ni surt al rànquing. Tens obert el <b>Tema 1</b>, el <b>primer joc</b> i la <b>1a pregunta oberta</b>.</div><div class="tast-acc"><button class="btn verd btn-petit" type="button" id="btTastLogin" onclick="surtTast(false)">🔐 Entra amb nom i PIN</button><a class="btn sec btn-petit" href="../../?tast=1#mons" style="text-decoration:none">🚪 Altres mons</a></div></div>`:"";
+ let h=`<div id="avisNitWrap">${bannerNitHtml()}</div>${bannerTempsHtml()}${tastBar}<div class="hero">${heroAv()}<div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>${MODE_TAST?"Mode tast!":`Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}`}</h1>${heroAsp()}<p>${MODE_TAST?`Prova com funciona per dins: fitxa, targetes, ${NTEST_TAST} preguntes de test i el primer joc.`:aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ ${MODE_TAST?"":`<div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div>`}</div>${MODE_TAST?"":cartaNivell()}`;
  h+=cartaPin()+cartaPlaDia()+cartaRepas();
  // joc destacat (opcional): ASSIG.destacat = id del joc → botó gran a l'inici
- {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd)h+=`<div class="continua" role="button" tabindex="0" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
- if(sp>=0)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
+ {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd&&(!MODE_TAST||jocObertTast(jd.id)))h+=`<div class="continua" role="button" tabindex="0" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
+ if(MODE_TAST&&T.length)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(0)"><span style="font-size:28px">${T[0].ic}</span><b>Comença la mostra: ${T[0].titol}</b><span class="btn">Tasta →</span></div>`;
+ else if(sp>=0)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
  h+=bossCarta(true)+cartaMissions();
  h+=`${blocsTemes()}
  <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
  ${seccionsJocs()}
- <div class="fila">${btSuau()}${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button><a class="btn sec" href="../../" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
+ <div class="fila">${btSuau()}${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}${MODE_TAST?`<button class="btn verd" onclick="surtTast(false)">🔐 Entra amb nom i PIN</button>`:`<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button>`}<a class="btn sec" href="${MODE_TAST?"../../?tast=1#mons":"../../"}" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
  app.innerHTML=h;
 }
 function pintaTemes(){app.innerHTML=blocsTemes()}
-function tileObertes(){const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" role="button" tabindex="0" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
+function tileObertes(){if(MODE_TAST)return `<div class="tile" role="button" tabindex="0" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>👀 Mostra de la 1a pregunta (de ${OB.length}) · escriure i corregir és amb nom i PIN</small><div class="peu"><span class="etq etq-mostra">👀 Mostra</span></div></div>`;const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" role="button" tabindex="0" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
 const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"],["examreal","📝","Examen de veritat","10 preguntes · nota sobre 10","#e0e7ff"]];
-function tilesJocs(llista){return (llista||JOCS).map(([id,ic,t,s,c])=>{const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;return `<div class="tile" role="button" tabindex="0" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
+function tilesJocs(llista){return (llista||JOCS).map(([id,ic,t,s,c])=>{if(MODE_TAST&&!jocObertTast(id))return `<div class="tile tast-bloc" role="button" tabindex="0" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq">🔒 Amb nom i PIN</span></div></div>`;const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;if(MODE_TAST)return `<div class="tile" role="button" tabindex="0" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':'etq-mostra'}">${ul===null?"👀 Mostra":`Provat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`;return `<div class="tile" role="button" tabindex="0" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
 function pintaJocs(){app.innerHTML=bossCarta()+seccionsJocs()}
 // si algun joc porta «grup», els jocs surten per seccions (en l'ordre en què apareixen); els exàmens del motor van al grup de l'examen
 function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">${ICO.jocs} Jocs</h2><div class="grid">${tilesJocs()}</div>`;
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
  JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
  return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
-function joc(id){tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,frases:jocFrases,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){if(MODE_TAST&&!jocObertTast(id)){const jj=JOCS.find(x=>x[0]===id);convidaPin(`«${jj?jj[2]:"Aquest joc"}» s'obre entrant amb nom i PIN. Al mode tast pots jugar a «${ASSIG.jocs[0].titol}».`);return}tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,frases:jocFrases,custom:j=>window[j.fn](j)})[j.tipus](j)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
  if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}
@@ -1389,14 +1417,14 @@ function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS
 
 // ====================== TEMA ======================
 let tema,pest="fitxa";
-function obre(i){tancaActivitat();calla();aturaSeg();COMBO=0;FONT=["temes",T[i].id];tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
+function obre(i){if(MODE_TAST&&i>0){convidaPin(`El tema «${T[i].titol}» i els altres ${T.length-1} temes s'obren entrant amb nom i PIN.`);return}tancaActivitat();calla();aturaSeg();COMBO=0;FONT=["temes",T[i].id];tema=T[i];S.ultim=i;pest="fitxa";marcaNav("temes");desa();pintaTema()}
 function pintaTema(){
  tancaActivitat();window.scrollTo(0,0);
  const t=tema,e=ET(t.id),idx=T.indexOf(t);
  app.innerHTML=`<div class="tema-nav"><button class="tn-btn" type="button" onclick="vista('temes')">← Temes</button><div style="display:flex;gap:6px"><button class="tn-btn" type="button" ${idx===0?"disabled":""} onclick="obre(${idx-1})" aria-label="Tema anterior">‹ Anterior</button><button class="tn-btn" type="button" ${idx>=T.length-1?"disabled":""} onclick="obre(${idx+1})" aria-label="Tema següent">Següent ›</button></div></div>
  <div class="cap-tema"><div class="ic" style="background:${t.col}22">${t.ic}</div><div><div class="prog">Tema ${idx+1} de ${T.length} · ${t.font}</div><h2>${t.titol}</h2></div></div>
  <div class="passos" role="tablist" aria-label="Passos del tema">${[["fitxa",ICO.fitxa+" Fitxa",e.fitxa],["targetes",ICO.targetes+" Targetes",e.fc>=t.fc.length],["test",ICO.test+" Test",e.intents.length>0]].map(([k,n,f])=>`<button role="tab" aria-selected="${pest==k?'true':'false'}" class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
- if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,NTEST),0,0,t.id)}
+ if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,MODE_TAST?Math.min(NTEST_TAST,t.q.length):NTEST),0,0,t.id)}
 }
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
@@ -1430,6 +1458,12 @@ function test(ordre,k,bones,clau,pool,cb){
   registra("test",Object.assign({tema:tema.id,titol:tema.titol,pc},ULT));ULT=null; // després del rècord: les seves ⭐ compten en aquest test
   if(aprova)arcade(pc,bones,ordre.length,rec);else fracas(pc,bones,ordre.length);
   const msg=pc>=90?"Excel·lent!":pc>=APROVA?"Tema superat!":pc>=50?`Gairebé! Per passar de tema cal un ${APROVA} %`:"Encara no surt, però vas aprenent!";
+  if(MODE_TAST){
+   z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
+   <p class="prog" style="margin-top:12px">👀 Has completat la mostra del <b>Tema 1</b> (${ordre.length} preguntes). Amb <b>nom i PIN</b> tindràs els ${T.length} temes sencers, el repàs automàtic d'errors i les estrelles.</p>
+   <div class="fila"><button class="btn verd" onclick="surtTast(false)">🔐 Entra amb nom i PIN</button><button class="btn sec" onclick="aturaSeg();pest='test';pintaTema()">Torna-hi</button><button class="btn sec" onclick="aturaSeg();pest='fitxa';pintaTema()">Repassa la fitxa</button></div></div>`;
+   return;
+  }
   z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
   <p class="prog" style="margin-top:14px">Com t'ha anat aquest tema?</p>
   <div class="valor">${[["😕","Costa"],["🙂","Bé"],["😃","Fàcil"]].map(([em,tx],i)=>`<button class="${e.valoracio===i?'on':''}" onclick="valora(${i},this)">${em}<small>${tx}</small></button>`).join("")}</div>
@@ -1459,8 +1493,8 @@ function test(ordre,k,bones,clau,pool,cb){
   const tidR=q.tid||(esTema?tema.id:null);let rp=0;if(tidR&&!(ok&&pista))rp=repAnota(tidR,q[0],ok)||0;
   if(ok&&pista&&REPAS&&tidR){const r=S.rep&&S.rep[tidR+"|"+q[0]];if(r){r.prox=diaMes(1);desa()}}
   const comboAbans=COMBO;
-  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":REPAS&&rp?`+${rp} ⭐ error corregit`:"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}ratxaDif(true,q,nova>0&&!pista)}else{ratxa(false);ratxaDif(false,q,false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
-  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}${!ok&&comboAbans>=2?`<div style="margin-top:6px;font-size:14px;color:#9a3412;font-weight:700">💛 Tranquil, l'error va al repàs: així és com s'aprèn!</div>`:""}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=MODE_TAST?"":pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":REPAS&&rp?`+${rp} ⭐ error corregit`:"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}ratxaDif(true,q,nova>0&&!pista)}else{ratxa(false);ratxaDif(false,q,false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}${!ok&&comboAbans>=2?`<div style="margin-top:6px;font-size:14px;color:#9a3412;font-weight:700">💛 Tranquil, ${MODE_TAST?"llegint l'explicació":"l'error va al repàs: així"} és com s'aprèn!</div>`:""}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
  });
@@ -1482,6 +1516,7 @@ function pausaCompte(){aturaSeg();const c=document.getElementById("compte");if(c
 function valora(i,b){pausaCompte();ET(tema.id).valoracio=i;desa();registra("valora",{tema:tema.id,titol:tema.titol,v:["Costa","Bé","Fàcil"][i]});b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}
 function resultatJoc(id,titol){return (pc,b,n)=>{if(id!=="examen")missio("jocs",id);const r=S.jocs[id]||[],ant=r.length?Math.max(...r):null;desaJoc(id,pc);arcade(pc,b,n,ant!==null&&pc>ant);document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=70?"🏆":"📚"}</div><h2>${b} de ${n}</h2><p>${pc>=90?"Excel·lent!":pc>=70?"Molt bé!":pc>=50?"Aprovat!":"Repassa i torna-hi!"}</p><div class="fila"><button class="btn" onclick="joc('${id}')">Torna-hi</button><button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`}}
 function examen(){
+ if(MODE_TAST){convidaPin("«Examen sorpresa» s'obre entrant amb nom i PIN.");return}
  const pool=[];T.forEach(t=>t.q.forEach(q=>{const c=cpQ(q);c.tema=t.titol;c.tid=t.id;pool.push(c)}));
  const ordre=barreja(pool.map((x,i)=>i)).slice(0,15);
  app.innerHTML=`<h2 class="sec">🏆 Examen sorpresa</h2><div id="zona"></div>`;
@@ -1514,7 +1549,7 @@ function estPregunta(k){const e=diaEst();if(e.q[k])return 0;e.q[k]=1;return 1}
 let JOCSTAR=1;
 const NOM_MAL=/(^|[^a-z])(puta|puto|putes|putos|merda|mierda|cabron|cabro|polla|cony|cono|collons|cojones|gilipolles|gilipollas|imbecil|idiota|subnormal|maricon|marica|mongol|mongolo|joputa|zorra|guarra|pene|penis|culo|cul|caca|pipi|pedo|pet|tonto|tonta|burro|fuck|shit|bitch|dick|ass|nazi|hitler|porno|porn|sexo|sex|teta|tetes|tetas|xixa|chocho|verga|follar|folla)([^a-z]|$)|fill ?de ?puta|hijo ?de ?puta|me cago|em cago/;
 const normT=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/·/g,".");
-function nomProhibit(n){const x=normT(n.trim());return !/^[a-z0-9 ._'-]+$/.test(x)||NOM_MAL.test(x)}
+function nomProhibit(n){const x=normT(n.trim());return !/^[a-z0-9 ._'-]+$/.test(x)||/^_|^(tast|convidat|anonim|visitant|guest|demo_tast)$/.test(x)||NOM_MAL.test(x)}
 // ---- validació de les preguntes obertes ----
 // La nota surt del que hi ha escrit de veritat. S'accepta el text només si és una resposta (prou llarga, amb paraules reals i sense copiar l'enunciat ni la resposta model).
 // Una idea compta si el text porta prou paraules importants (5+ lletres, comparant els 5 primers caràcters) que NO siguin ja a l'enunciat.
@@ -1584,8 +1619,8 @@ function desaPin(n,p){const x=pins();x[n.trim().toLowerCase()]=p;try{localStorag
 // NUV_LLEST: ja s'ha baixat i fusionat el núvol en aquesta sessió. Fins llavors no es puja res: un aparell amb el progrés vell
 // (p. ex. 71 ⭐ quan el núvol en té 366) el desaria per sobre amb l'hora d'ara (n2522, docs/TRAMPES.md)
 let NUV_T=null,NUV_OK=null,NUV_LLEST=false;
-function nuvolProg(){if(!S.nom||!pinDe(S.nom)||/^file:/.test(location.protocol))return;clearTimeout(NUV_T);NUV_T=setTimeout(()=>nuvolPuja(),8000)}
-function nuvolPuja(keep,reintent){const p=pinDe(S.nom);if(!S.nom||!p||/^file:/.test(location.protocol))return Promise.resolve();clearTimeout(NUV_T);
+function nuvolProg(){if(MODE_TAST||!S.nom||!pinDe(S.nom)||/^file:/.test(location.protocol))return;clearTimeout(NUV_T);NUV_T=setTimeout(()=>nuvolPuja(),8000)}
+function nuvolPuja(keep,reintent){if(MODE_TAST)return Promise.resolve();const p=pinDe(S.nom);if(!S.nom||!p||/^file:/.test(location.protocol))return Promise.resolve();clearTimeout(NUV_T);
  // encara no s'ha baixat el núvol: primer es baixa i es fusiona (si falla, no es puja res). En tancar la pàgina no hi ha temps: no es puja
  if(!NUV_LLEST){if(keep)return Promise.resolve();const n=S.nom;return nuvolBaixa(n,p).then(()=>{if(S.nom!==n)return;NUV_LLEST=true;return nuvolPuja()}).catch(()=>{})}
  return rpc("bn_progres_desa",{p_nom:S.nom,p_pin:p,p_assig:ASSIG.id,p_estat:S,p_mod:S.mod||Date.now()},keep).then(x=>{
@@ -1620,7 +1655,7 @@ function fusionaNuvol(r){const n=S.nom,reini=aplicaReinici(r);
  if(r&&r.log)S=fusiona(S,Object.assign({},r.log,{mod:0})); // el registre reconstrueix estrelles, temps, temes i jocs encara que es perdi el dispositiu
  S.nom=n;return reini}
 // baixa el progrés del núvol i el fusiona amb el d'aquest dispositiu
-function nuvolBaixa(nom,pin){return rpc("bn_progres_llegeix",{p_nom:nom,p_pin:pin,p_assig:ASSIG.id}).then(r=>{
+function nuvolBaixa(nom,pin){if(MODE_TAST)return Promise.resolve(false);return rpc("bn_progres_llegeix",{p_nom:nom,p_pin:pin,p_assig:ASSIG.id}).then(r=>{
  if(!r)return false;const abans=JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps]);
  const reini=fusionaNuvol(r);if(!reini&&!r.estat&&!r.log)return false;
  S.mod=Date.now();guarda();pintaCap();
@@ -1681,8 +1716,8 @@ function nouNom(n){if(!potNouNom(n)){const a=app.querySelector("#nomAvis");if(a)
   if(ex)pantallaPin(n,"entra",(ok,r)=>entra(n));
   else pantallaPin(n,"crea",()=>entra(n))}).catch(()=>entra(n))}
 // perfil d'aquest dispositiu: si té PIN, sincronitza; si no, carta per posar-n'hi
-function sincronitzaEntrada(modAbans){const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;rpc("bn_perfil_id",{p_nom:S.nom}).then(id=>{if(id&&S.id!==id){S.id=id;guarda();pintaCap();const h=document.querySelector(".hero h1");if(h&&!h.querySelector(".nid"))h.insertAdjacentHTML("beforeend",` <small class="nid" style="font-size:15px;color:var(--suau)">#${id}</small>`)}}).catch(()=>{});const nm=S.nom;nuvolBaixa(S.nom,p).then(nou=>{if(S.nom===nm)NUV_LLEST=true;return nou}).catch(m=>{if(m==="pin")throw m;return false}).then(nou=>rpc("bn_punts_maxim",{p_nom:S.nom,p_assig:ASSIG.id}).then(mx=>{if(mx>S.punts){S.punts=mx;S.mod=Date.now();guarda();pintaCap();return true}return nou}).catch(()=>nou)).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");nuvolPuja()}).catch(m=>{if(m==="pin"){const x=pins();delete x[S.nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}})}
-function cartaPin(){if(!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return "";
+function sincronitzaEntrada(modAbans){if(MODE_TAST)return;const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;rpc("bn_perfil_id",{p_nom:S.nom}).then(id=>{if(id&&S.id!==id){S.id=id;guarda();pintaCap();const h=document.querySelector(".hero h1");if(h&&!h.querySelector(".nid"))h.insertAdjacentHTML("beforeend",` <small class="nid" style="font-size:15px;color:var(--suau)">#${id}</small>`)}}).catch(()=>{});const nm=S.nom;nuvolBaixa(S.nom,p).then(nou=>{if(S.nom===nm)NUV_LLEST=true;return nou}).catch(m=>{if(m==="pin")throw m;return false}).then(nou=>rpc("bn_punts_maxim",{p_nom:S.nom,p_assig:ASSIG.id}).then(mx=>{if(mx>S.punts){S.punts=mx;S.mod=Date.now();guarda();pintaCap();return true}return nou}).catch(()=>nou)).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");nuvolPuja()}).catch(m=>{if(m==="pin"){const x=pins();delete x[S.nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}})}
+function cartaPin(){if(MODE_TAST||!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return "";
  if(!pinDe(S.nom))return "";
  if(pinDe(S.nom))return `<p class="prog" style="text-align:center;margin:10px 0 0">☁️ Progrés guardat al núvol amb PIN${NUV_OK?" · desat fa un moment":""}</p>`;
  return `<div class="continua" role="button" tabindex="0" style="background:#eef2ff;border-color:#a5b4fc" onclick="posaPin()"><span style="font-size:28px">🔐</span><b>Posa't un PIN i no perdràs mai el progrés (també en un altre dispositiu)</b><span class="btn">Posa'l →</span></div>`}
@@ -1720,11 +1755,11 @@ function carregaVigilia(){if(SENSE_NUVOL())return;
   const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia();
   const an=document.getElementById("avisNitWrap");if(an)an.innerHTML=bannerNitHtml()}).catch(()=>{})}
 function bannerNitHtml(forca){if(!S.nom||AVIS_NIT_TANCAT||(!forca&&SENSE_NUVOL())||!esHoraNit())return "";
- return `<div class="avis-bon-us nit" id="avisNit"><span style="font-size:24px">🌙</span><div class="av-txt"><b>Ja ho tens per avui, ${S.nom}.</b> Ara a dormir: mentre dorms el cervell guarda el que has estudiat i demà ho recordaràs millor. <small style="opacity:.85">(Mode suau activat)</small></div><button class="btn sec btn-petit" type="button" onclick="tancaAvisNit()">Entesos</button></div>`}
+ return `<div class="avis-bon-us nit" id="avisNit"><span style="font-size:24px">🌙</span><div class="av-txt"><b>Ja ho tens per avui${MODE_TAST?"":", "+S.nom}.</b> Ara a dormir: mentre dorms el cervell guarda el que has estudiat i demà ho recordaràs millor. <small style="opacity:.85">(Mode suau activat)</small></div><button class="btn sec btn-petit" type="button" onclick="tancaAvisNit()">Entesos</button></div>`}
 function tancaAvisNit(){AVIS_NIT_TANCAT=true;const el=document.getElementById("avisNit");if(el)el.remove()}
 function bannerTempsHtml(){return AVIS_TEMPS_MSG?`<div class="avis-bon-us temps" id="avisTemps"><span style="font-size:24px">⏳</span><div class="av-txt">${AVIS_TEMPS_MSG}</div><button class="btn sec btn-petit" type="button" onclick="tancaAvisTemps()">Entesos ✓</button></div>`:""}
 function tancaAvisTemps(){AVIS_TEMPS_MSG="";const el=document.getElementById("avisTemps");if(el)el.remove()}
-function comprovaAvisTemps(forca){if(!S.nom||(!forca&&MODE_DEMO))return false;
+function comprovaAvisTemps(forca){if(MODE_TAST||!S.nom||(!forca&&MODE_DEMO))return false;
  const vig=esVigilia(),limMin=vig?120:60,clau=vig?"av120":"av60",e=diaEst();
  if((e.ts||0)<limMin*60||e[clau])return false;
  e[clau]=1;guarda();
@@ -1744,7 +1779,7 @@ function desmarcaExamenDema(){const dia=araMadrid().dia,vd=vigiliaDiesNen();if(!
  S.vigilia_dies=vd.filter(d=>d!==dia);EX_DEMA_OBERT=false;desa();aplicaSuau();
  registra("examen_dema",{dia,n:S.vigilia_dies.length,accio:"treu"});
  if(document.querySelector(".hero"))vista("inici");else{const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia()}}
-function cartaPlaDia(){if(!S.nom)return "";
+function cartaPlaDia(){if(MODE_TAST||!S.nom)return "";
  const fase=faseActual(),dia=araMadrid().dia,d0=(VIG_SRV&&VIG_SRV.dia0)||MON_NEIX,edat=d0?Math.max(1,diesMon(dia,d0)+1):null;
  const pend=repPendents().length,sp=seguentPendent(),falten=T.filter(t=>(millor(t.id)??0)<APROVA).length;
  const vd=vigiliaDiesNen(),quedenEx=Math.max(0,2-vd.length),potBotoEx=fase==="aprendre"&&!(VIG_SRV&&VIG_SRV.examen)&&quedenEx>0&&!vd.includes(dia);
@@ -1766,7 +1801,7 @@ let SEST=0,AMAGAT=0;const DESCANS_S=1500;
 function saltsDescans(){const e=diaEst();return Math.max(0,(e.ds_salts||0)-(e.ds_base||0))}
 const maxSaltsDescans=()=>esVigilia()?3:2;
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")AMAGAT=Date.now();else if(AMAGAT&&Date.now()-AMAGAT>5*60000)SEST=0});
-setInterval(()=>{if(document.visibilityState!=="visible"||!S.nom||document.querySelector(".descans"))return;SEST+=15;if(SEST>=DESCANS_S)descans()},15000);
+setInterval(()=>{if(MODE_TAST||document.visibilityState!=="visible"||!S.nom||document.querySelector(".descans"))return;SEST+=15;if(SEST>=DESCANS_S)descans()},15000);
 function descans(durada){aturaSeg();calla();const d=document.createElement("div");d.className="descans";let s=durada||300,jaFet=false;
  const salts=saltsDescans(),maxS=maxSaltsDescans(),potSaltar=salts<maxS;
  d.innerHTML=`<div style="font-size:64px">🧠</div><h2>Ja portes 25 minuts, ${S.nom}! Toca descans</h2><p>El cervell guarda millor el que has après si fas una pausa curta. Aixeca't i mou-te una mica:</p><ul><li>🚰 Beu un got d'aigua</li><li>🤸 Estira braços i esquena</li><li>👀 Mira lluny per la finestra</li></ul><div class="rel" id="dRel">${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}</div><div class="fila"><button class="btn verd" id="dTorna" disabled>Torno a estudiar ▶</button>${potSaltar?`<button class="btn sec" id="dSalta">Ara no, continuo</button>`:""}</div>${potSaltar?"":`<p class="desc-oblig" id="dOblig">🧘 Ja has ajornat el descans ${salts} vegades: ara toca fer els 5 minuts de pausa perquè el cervell guardi el que has estudiat.</p>`}`;
@@ -1778,7 +1813,7 @@ function descans(durada){aturaSeg();calla();const d=document.createElement("div"
 // ====================== EXAMEN DE VERITAT ======================
 // 10 preguntes de tots els temes, sense correcció fins al final; nota sobre 10; temps opcional (10 min).
 let EXR=null;
-function examenReal(){aturaSeg();calla();window.scrollTo(0,0);marcaNav("jocs");
+function examenReal(){if(MODE_TAST){convidaPin("«Examen de veritat» s'obre entrant amb nom i PIN.");return}aturaSeg();calla();window.scrollTo(0,0);marcaNav("jocs");
  app.innerHTML=`<h2 class="sec">📝 Examen de veritat</h2><div class="box"><p><b>Com un examen de classe:</b> 10 preguntes de tots els temes. No sabràs si l'encertes fins al final. Pots tornar enrere i canviar respostes.</p><p class="prog">Les que fallis aniran al teu «🔁 Repassa els teus errors».</p>
  <div class="ex-opts"><label class="ex-opt on"><input type="radio" name="exT" value="0" checked hidden>⏳ Sense temps</label><label class="ex-opt"><input type="radio" name="exT" value="600" hidden>⏱ Amb temps: 10 minuts</label></div>
  <div class="fila"><button class="btn verd" id="exGo">Comença l'examen ▶</button></div></div>`;
@@ -1906,7 +1941,7 @@ function bossNom(){return (ASSIG.boss&&ASSIG.boss.nom)||"El Boss del món"}
 function bossEstat(){const n=T.length,ap=T.filter(t=>{const m=millor(t.id);return m!==null&&m>=APROVA}).length,cal=Math.max(1,Math.ceil(n*BOSS_DESBLOQ)),
   exam=(S.examens||[]).some(x=>x&&x.pc>=APROVA);
  return {ap,n,cal,exam,obert:ap>=cal||exam,guanyat:!!(S.boss&&S.boss.v),avui:!!diaEst().boss}}
-function bossCarta(enInici){if(!S.nom||!T.length)return "";const e=bossEstat();if(enInici&&(!e.obert||e.avui))return "";
+function bossCarta(enInici){if(!S.nom||!T.length)return "";if(MODE_TAST){if(enInici)return "";return `<div class="boss-carta tancat" onclick="boss()" role="button" tabindex="0">${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}</b><small>🔒 El repte final del món s'obre entrant amb nom i PIN i aprovant els temes</small></div></div>`}const e=bossEstat();if(enInici&&(!e.obert||e.avui))return "";
  return `<div class="boss-carta${e.obert?"":" tancat"}" ${e.obert?`onclick="boss()" role="button" tabindex="0"`:""}>${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}</b><small>${e.obert?(e.avui?"L'has vençut avui! Pots tornar-hi per practicar.":`El repte final del món. Guanya'l: +${BOSS_ESTRELLES} ⭐${e.guanyat?" · ja l'has vençut "+S.boss.v+(S.boss.v>1?" vegades":" vegada"):""}`):`🔒 Per obrir-lo: aprova ${e.cal} dels ${e.n} temes (ara: ${e.ap}) o treu un ${APROVA} % en un examen`}</small>${e.obert?"":`<i class="bc-b"><i style="width:${Math.round(e.ap*100/e.cal)}%"></i></i>`}</div>${e.obert?`<span class="btn verd">Lluita ⚔️</span>`:""}</div>`}
 // rondes: ~10, amb les especials repartides; si el món no té un tipus de joc, s'hi posa una pregunta de test
 function bossRondes(){const temes=barreja(T.slice()),tests=[];
@@ -1919,7 +1954,7 @@ function bossRondes(){const temes=barreja(T.slice()),tests=[];
  const ord=(()=>{const j=de("ordena");if(!j||!j.items||j.items.length<3)return null;const n=Math.min(5,j.items.length),i0=Math.floor(Math.random()*(j.items.length-n+1));return {tipus:"ordena",j,items:j.items.slice(i0,i0+n),dmg:24}})();
  const ob=OB.length?{tipus:"oberta",o:barreja(OB.slice())[0],dmg:24}:null;
  [test(),test(),ord||test(),test(),fig||test(),ob||test(),test(),par||test(),test(),test()].forEach(x=>{if(x)R.push(x)});return R}
-function boss(){aturaSeg();tancaActivitat();iniciActivitat();REPAS=false;COMBO=0;FONT=["boss"];marcaNav("jocs");window.scrollTo(0,0);const e=bossEstat();
+function boss(){if(MODE_TAST){convidaPin(`«${bossNom()}» és el repte final del món i s'obre entrant amb nom i PIN.`);return}aturaSeg();tancaActivitat();iniciActivitat();REPAS=false;COMBO=0;FONT=["boss"];marcaNav("jocs");window.scrollTo(0,0);const e=bossEstat();
  if(!e.obert){app.innerHTML=`<h2 class="sec">👾 ${bossNom()}</h2>${bossCarta()}<div class="fila"><button class="btn sec" onclick="vista('jocs')">Torna als jocs</button></div>`;return}
  const rondes=bossRondes(),max=rondes.reduce((a,r)=>a+r.dmg,0),hp=Math.round(max*.8);
  BOSS={rondes,k:0,hp,hp0:hp,cors:3,enc:0,err:0,t0:Date.now(),fet:false};TQ=[];
@@ -2086,7 +2121,7 @@ function missionsAvui(){const e=diaEst();
   e.mis=ord.slice(0,3).map(m=>({id:m.id,n:m.n()}))}
  return e.mis.map(x=>{const m=MISSIONS.find(y=>y.id===x.id);return m?Object.assign({},m,{n:x.n}):null}).filter(Boolean)}
 function misValor(id){const c=diaEst().mc||{};return id==="jocs"?(c.jocs||[]).length:(c[id]||0)}
-function missio(k,v){if(!S||!S.nom)return;const e=diaEst();e.mc=e.mc||{};
+function missio(k,v){if(MODE_TAST||!S||!S.nom)return;const e=diaEst();e.mc=e.mc||{};
  if(k==="jocs"){const l=e.mc.jocs||(e.mc.jocs=[]);if(!l.includes(v))l.push(v)}else if(k==="combo")e.mc.combo=Math.max(e.mc.combo||0,v||0);else e.mc[k]=(e.mc[k]||0)+(v||1);
  revisaMissions()}
 // els rètols van en cua (issue #14): cadascun dura 1,6 s al mateix lloc, així que el següent espera que el d'abans acabi
@@ -2096,7 +2131,7 @@ function revisaMissions(){const e=diaEst(),ms=missionsAvui();e.mf=e.mf||[];let n
  ms.forEach(m=>{if(e.mf.includes(m.id)||misValor(m.id)<m.n)return;e.mf.push(m.id);nou++;const f=FONT;FONT=["missio"];suma(MIS_PREMI);FONT=f;retolMissio("🎯 MISSIÓ FETA!",`+${MIS_PREMI} ⭐`,900+nou*1700)});
  if(ms.length&&ms.every(m=>e.mf.includes(m.id))&&!e.mt){e.mt=1;nou++;const f=FONT;FONT=["missio"];suma(MIS_TOTES);FONT=f;retolMissio("🎉 LES 3 MISSIONS!",`+${MIS_TOTES} ⭐ DE REGAL`,900+nou*1700)}
  desa();const c=document.getElementById("missions");if(c)c.outerHTML=cartaMissions()}
-function cartaMissions(){if(!S.nom)return "";const ms=missionsAvui();if(!ms.length)return "";const mf=diaEst().mf||[],fetes=ms.filter(m=>mf.includes(m.id)).length;
+function cartaMissions(){if(MODE_TAST||!S.nom)return "";const ms=missionsAvui();if(!ms.length)return "";const mf=diaEst().mf||[],fetes=ms.filter(m=>mf.includes(m.id)).length;
  return `<div class="missions" id="missions"><div class="mi-cap"><b>🎯 Missions d'avui</b><small>${fetes===ms.length?`🎉 Totes fetes! +${MIS_PREMI*ms.length+MIS_TOTES} ⭐`:`${fetes} de ${ms.length} · +${MIS_PREMI} ⭐ cada una · les ${ms.length}: +${MIS_TOTES} ⭐ més`}</small></div>${ms.map(m=>{const fet=mf.includes(m.id),v=Math.min(misValor(m.id),m.n);
   return `<button class="mi${fet?" fet":""}" type="button" onclick="misAnar('${m.anar}')"><span class="mi-ic">${m.ic}</span><span class="mi-t">${m.t(m.n)}</span><span class="mi-p">${fet?"✔ FETA":`${v}/${m.n}`}</span><i class="mi-b" style="width:${Math.round(v*100/Math.max(1,m.n))}%"></i></button>`}).join("")}</div>`}
 function misAnar(a){if(a==="repas")return repas();if(a==="jocs")return vista("jocs");if(a==="obertes")return vista("obertes");if(a==="examen")return joc("examen");const sp=seguentPendent();obre(sp>=0?sp:(S.ultim||0))}
@@ -2134,7 +2169,7 @@ const REP_PREMI=1,REP_MAX=10;
 function premiRepas(k){const e=diaEst();e.r=e.r||{};if(e.r[k]||(e.rn||0)>=REP_MAX)return 0;e.r[k]=1;e.rn=(e.rn||0)+1;
  const f=FONT;FONT=["repas"];suma(REP_PREMI);FONT=f;return REP_PREMI}
 // torna les ⭐ que ha pagat el repàs per aquesta resposta (0 o REP_PREMI)
-function repMou(k,nou,ok){S.rep=S.rep||{};const r=S.rep[k];
+function repMou(k,nou,ok){if(MODE_TAST)return 0;S.rep=S.rep||{};const r=S.rep[k];
  if(!ok){if(!r&&!nou.tid&&!nou.tipus)return 0;S.rep[k]=Object.assign({},r||{},nou,{c:0,prox:REPAS?diaMes(1):avui()});desa();return 0}
  if(!REPAS||!r)return 0;
  const pag=premiRepas(k);
@@ -2147,7 +2182,7 @@ function repValid(r){if(r.tipus){const x=REP_TIPUS[r.tipus];try{return !!(x&&x.v
 function repTots(){return Object.values(S.rep||{}).filter(repValid)}
 function repPendents(){const d=avui();return repTots().filter(r=>r.prox<=d)}
 function repProper(){const f=repTots().map(r=>r.prox).sort();return f[0]||null}
-function repas(){iniciActivitat();
+function repas(){if(MODE_TAST){convidaPin("El repàs automàtic d'errors guarda les preguntes que falles per tornar-les a practicar uns dies després, i funciona amb nom i PIN.");return}iniciActivitat();
  const pend=repPendents();aturaSeg();COMBO=0;FONT=["repas"];window.scrollTo(0,0);marcaNav("inici");
  const cap=`<h2 class="sec">🔁 Repassa els teus errors</h2>`;
  if(!pend.length){const pr=repProper();app.innerHTML=`${cap}<div class="box" style="text-align:center"><div class="gran">🧠</div><h3>Avui no tens cap error per repassar!</h3><p class="prog">${pr?`El proper repàs és el <b>${new Date(pr).toLocaleDateString("ca-ES",{weekday:"long",day:"numeric",month:"long"})}</b>.`:"Quan fallis una pregunta, la trobaràs aquí per tornar-la a practicar."}</p><div class="fila">${repasExtra()}<button class="btn" onclick="vista('inici')">Torna a l'inici</button></div></div>`;return}
@@ -2170,7 +2205,7 @@ function repFi(R){REPAS=false;const pc=R.n?Math.round(R.b*100/R.n):0,b=R.b,n=R.n
  document.getElementById("zona").innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=APROVA?"🧠":"💪"}</div><h2>${b} de ${n} recordats</h2><p>${b?`Molt bé! Els que has encertat tornaran d'aquí a uns dies per assegurar-nos que no se t'obliden.`:""} ${n-b?`Els que has fallat tornaran <b>demà</b>.`:""}</p>${REPAPR?`<p class="rep-apr">🧠 Avui n'has après <b>${REPAPR}</b> per sempre · +${2*REPAPR} ⭐</p>`:""}${S.apresos?`<p class="prog">Errors apresos per sempre: <b>${S.apresos}</b> 🏅</p>`:""}<div class="fila">${queden?`<button class="btn" onclick="repas()">Repassa'n ${queden} més</button>`:""}${repasExtra()}<button class="btn sec" onclick="vista('inici')">Torna a l'inici</button></div></div>`}
 // botó opcional per continuar el repàs amb un altre joc (ASSIG.repasExtra = id del joc, p. ex. el repàs barrejat de mates)
 function repasExtra(){const j=ASSIG.repasExtra&&ASSIG.jocs.find(x=>x.id===ASSIG.repasExtra);return j?`<button class="btn verd" onclick="joc('${j.id}')">${j.ic} ${j.titol}</button>`:""}
-function cartaRepas(){const p=repPendents(),n=p.length,tot=repTots().length;if(!tot)return "";const nomes=p.every(r=>!r.tipus);
+function cartaRepas(){if(MODE_TAST)return "";const p=repPendents(),n=p.length,tot=repTots().length;if(!tot)return "";const nomes=p.every(r=>!r.tipus);
  return `<div class="continua" role="button" tabindex="0" style="background:#ecfdf5;border-color:#6ee7b7" onclick="repas()"><span style="font-size:28px">🔁</span><b>${n?`Tens <span style="color:#047857">${n} ${nomes?`pregunta${n>1?"s":""}`:`error${n>1?"s":""}`}</span> per repassar avui`:`Errors al dia! Proper repàs: ${new Date(repProper()).toLocaleDateString("ca-ES",{day:"numeric",month:"short"})}`}</b><span class="btn ${n?"verd":"sec"}">${n?"Repassa →":"Mira"}</span></div>`}
 
 // ====================== JOCS GENÈRICS ======================
@@ -2440,9 +2475,19 @@ function frRepProva(){const j=(ASSIG.jocs||[]).find(x=>x.tipus==="frases");if(!j
 // ====================== PREGUNTES OBERTES ======================
 function primeraOberta(){const i=OB.findIndex((o,n)=>!(n in S.ob));return i<0?0:i}
 let OB0=0;
-function obertes(n){OB0=Date.now();iniciActivitat();
+function obertes(n){if(MODE_TAST&&n>0){convidaPin(`Les preguntes obertes 2 a ${OB.length} i la correcció automàtica són amb nom i PIN.`);return}
+ OB0=Date.now();iniciActivitat();
  FONT=["obertes"];window.scrollTo(0,0);marcaNav("obertes");
- const o=OB[n],fet=S.ob[n],bloc=obBloc(n);let rebutjat=0;
+ const o=OB[n];
+ if(MODE_TAST){
+  app.innerHTML=`<h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="prog">👀 Mostra · Pregunta 1 de ${OB.length} · ${o.t}</div><div class="barra-test"><i style="width:0%"></i></div>
+  <div class="box" style="margin-top:10px">${potEscoltar()?`<div class="escolta-fila">${btEscolta(o.q,"Escolta")}</div>`:""}<div class="pregunta">${o.q}</div>
+  <div class="fb" style="text-align:left;margin-top:12px"><b>👀 Així són les preguntes obertes de debò</b><p style="margin:6px 0 0">Quan hi entres amb el teu <b>nom i PIN</b>, escrius la resposta amb les teves paraules (sense copiar i enganxar) i el programa comprova quantes de les <b>${o.p.length} idees clau</b> hi has explicat${ASSIG.foto?" — o en fas l'exercici al quadern de paper":""}.</p></div>
+  <div class="fila" style="justify-content:flex-start"><button class="btn verd" type="button" id="btObTastEntra" onclick="surtTast(false)">🔐 Entra amb nom i PIN per respondre</button></div></div>
+  <div class="fila"><button class="btn sec" disabled>← Anterior</button>${OB.length>1?`<button class="btn sec" onclick="obertes(1)">Següent → 🔒</button>`:""}</div>`;
+  return;
+ }
+ const fet=S.ob[n],bloc=obBloc(n);let rebutjat=0;
  app.innerHTML=`<h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="prog">Pregunta ${n+1} de ${OB.length} · ${o.t}${fet!==undefined?` · última vegada: ${fet}%`:""}</div><div class="barra-test"><i style="width:${Object.keys(S.ob).length*100/OB.length}%"></i></div>
  <div class="box" style="margin-top:10px">${potEscoltar()?`<div class="escolta-fila">${btEscolta(o.q,"Escolta")}</div>`:""}<div class="pregunta">${o.q}</div>
  ${bloc?`<p class="prog" id="obBloc">🔒 Ja has vist la resposta d'aquesta pregunta. Pots practicar, però fins al ${bloc.slice(8)}/${bloc.slice(5,7)} no puntua.</p>`:""}
@@ -2549,7 +2594,8 @@ function resumGlobal(){
  return {intents:int,encert:int?Math.round(suma_/int):null};
 }
 function color(pc){return pc===null?"#cbd5e1":pc>=80?"#22c55e":pc>=50?"#f59e0b":"#ef4444"}
-function analitica(){setTimeout(()=>carregaComp(()=>{const c=document.getElementById("cvA");if(c)c.innerHTML=cartaComVas()}),0);
+function analitica(){if(MODE_TAST){app.innerHTML=`<h2 class="sec">${ICO.analitica} Com vaig</h2><div class="box" style="text-align:center;padding:24px 18px"><div style="font-size:48px;line-height:1">👀</div><h3 style="margin:10px 0 6px">Estàs en mode tast anònim</h3><p class="prog" style="max-width:520px;margin:0 auto 14px">En el mode tast no es desa cap nom, ni cap estrella, ni cap historial a cap servidor ni al rànquing. Quan entris amb el teu <b>nom i PIN</b>, aquí veuràs els temes aprovats, els errors apresos i què et convé repassar.</p><div class="fila" style="justify-content:center"><button class="btn verd" type="button" onclick="surtTast(false)">🔐 Entra amb nom i PIN</button><button class="btn sec" type="button" onclick="vista('inici')">← Torna a la mostra</button></div></div>`;return}
+ setTimeout(()=>carregaComp(()=>{const c=document.getElementById("cvA");if(c)c.innerHTML=cartaComVas()}),0);
  const g=resumGlobal(),aprov=T.filter(t=>(millor(t.id)??0)>=APROVA);
  const fetsT=T.filter(t=>millor(t.id)!==null);
  const forts=T.filter(t=>(millor(t.id)??0)>=80),febles=fetsT.filter(t=>millor(t.id)<60),pend=T.filter(t=>millor(t.id)===null);
@@ -2610,6 +2656,7 @@ document.addEventListener("keydown",e=>{
  }
  // 2) Tancar popups / pantalles superposades amb Escape o Enter/Espai a .arc
  if(e.key==="Escape"){
+  const pt=document.getElementById("popTastWrap");if(pt){e.preventDefault();tancaConvidaPin();return}
   const pop=document.getElementById("popEst");if(pop){e.preventDefault();tancaEstrelles();const bt=document.getElementById("punts");if(bt)bt.focus();return}
   const arc=document.querySelector(".arc");if(arc){e.preventDefault();arc.click();return}
   const desc=document.getElementById("dSalta");if(desc){e.preventDefault();desc.click();return}
@@ -2649,25 +2696,50 @@ document.addEventListener("keydown",e=>{
  }
 });
 
+// prova (g10): mode tast anònim (zero localStorage, 5 preguntes, portes tancades i sense estrelles)
+function bnProvaModeTast(){const s0=JSON.stringify(S),per0=JSON.stringify(PER),ls0={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);ls0[k]=localStorage.getItem(k)}
+ try{for(const r of ["_tast","Tast","Convidat","Anònim","Visitant","guest","demo_tast"])if(!nomProhibit(r))return `nom reservat acceptat: ${r}`;
+  activaTast();
+  if(!MODE_TAST||S.punts!==0||!document.getElementById("tastBanner"))return "activaTast no entra en mode tast";
+  if(document.getElementById("punts").textContent.indexOf("Tast anònim")<0)return "la capçalera no indica Tast anònim";
+  suma(5);if(S.punts!==0)return "suma() ha donat estrelles en mode tast";
+  obre(0);pest="test";pintaTema();
+  const nOpts=document.querySelectorAll(".opt").length;if(!nOpts)return "el Tema 1 no obre el test de mostra";
+  if(!document.querySelector("#zona .prog").textContent.includes(`de ${Math.min(T[0].q.length,NTEST_TAST)}`))return "el test de mostra no limita a 5 preguntes";
+  tancaConvidaPin();if(T.length>1){obre(1);if(!document.getElementById("popTastWrap"))return "el Tema 2 no demana nom i PIN";tancaConvidaPin()}
+  if(ASSIG.jocs.length>1){joc(ASSIG.jocs[1].id);if(!document.getElementById("popTastWrap"))return "el 2n joc no demana nom i PIN";tancaConvidaPin()}
+  joc("examen");if(!document.getElementById("popTastWrap"))return "l'examen sorpresa no demana nom i PIN";tancaConvidaPin();
+  joc("examreal");if(!document.getElementById("popTastWrap"))return "l'examen de veritat no demana nom i PIN";tancaConvidaPin();
+  boss();if(!document.getElementById("popTastWrap"))return "el boss no demana nom i PIN";tancaConvidaPin();
+  obertes(0);if(document.getElementById("resp"))return "obertes(0) mostra textarea en mode tast";
+  if(OB.length>1){obertes(1);if(!document.getElementById("popTastWrap"))return "obertes(1) no demana nom i PIN";tancaConvidaPin()}
+  vista("analitica");if(!app.textContent.includes("mode tast anònim"))return "analitica() no mostra la vista de tast";
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(ls0[k]!==localStorage.getItem(k))return `el mode tast ha modificat localStorage.${k}`}
+  if(Object.keys(ls0).some(k=>localStorage.getItem(k)!==ls0[k]))return "el mode tast ha esborrat claus de localStorage";
+  surtTast(false);if(MODE_TAST||!document.getElementById("fn"))return "surtTast(false) no torna a la benvinguda";
+  return true}finally{tancaConvidaPin();aturaSeg();MODE_TAST=false;try{sessionStorage.removeItem("bn_tast");sessionStorage.removeItem("bn_tast_"+CL)}catch(e){}
+  S=JSON.parse(s0);PER=JSON.parse(per0);const a=document.querySelector("#nav a.surt");if(a)a.href="../../";pintaCap();vista("inici")}}
+(window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaModeTast");
 aplicaSuau();
 // service worker (app sense connexió): a la web publicada (https) sí. A localhost no, perquè sempre es vegi l'última versió
 // (excepte si la URL porta ?sw); a localhost, a més, es desregistra el que hi hagués d'abans i se n'esborra la còpia guardada.
 (function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc?/[?&]sw\b/.test(location.search):location.protocol==="https:"){navigator.serviceWorker.register("../../sw.js").catch(()=>{});return}if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 pintaCap();pintaSo();
-(function(){const usp=new URLSearchParams(location.search),jP=usp.get("joc"),tP=usp.get("tema"),vP=usp.get("vista"),directe=MODE_DEMO||jP||tP!==null||vP;
+(function(){const usp=new URLSearchParams(location.search),jP=usp.get("joc"),tP=usp.get("tema"),vP=usp.get("vista"),tastP=usp.get("tast")==="1",directe=MODE_DEMO||jP||tP!==null||vP;
  if(!SENSE_NUVOL()){
   try{const mem=JSON.parse(localStorage.getItem("bn_mons_tancats")||"[]");if(Array.isArray(mem)&&mem.includes(ASSIG.id))MON_TANCAT=true}catch(e){}
   rpc("bn_estat_web",{}).then(r=>{
    if(!r||!Array.isArray(r.mons_tancats))return;
-   try{localStorage.setItem("bn_mons_tancats",JSON.stringify(r.mons_tancats))}catch(e){}
+   if(!MODE_TAST&&!tastP)try{localStorage.setItem("bn_mons_tancats",JSON.stringify(r.mons_tancats))}catch(e){}
    const tancat=r.mons_tancats.includes(ASSIG.id);
    if(tancat&&!MON_TANCAT){MON_TANCAT=true;pantallaMonTancat()}
-   else if(!tancat&&MON_TANCAT){MON_TANCAT=false;document.querySelectorAll("#nav button").forEach(b=>b.disabled=false);vista("inici")}
+   else if(!tancat&&MON_TANCAT){MON_TANCAT=false;document.querySelectorAll("#nav button").forEach(b=>b.disabled=false);if(tastP)activaTast(true);vista("inici")}
   }).catch(()=>{});
   carregaVigilia();
   if(MON_TANCAT){pantallaMonTancat();return}
  }
- let G="";try{G=localStorage.getItem("bn_jugador")||""}catch(e){}
+ let G="",tastMem=false;try{G=localStorage.getItem("bn_jugador")||""}catch(e){}try{tastMem=sessionStorage.getItem("bn_tast")==="1"}catch(e){}
+ if(!directe&&(tastP||(!G&&!S.nom&&tastMem))){activaTast(true);vista("inici");return}
  if(directe&&!S.nom){S=BUIT();S.nom=G||"Demo";pintaCap()}
  if(!directe&&G&&(pinDe(G)||SENSE_NUVOL())&&(!S.nom||S.nom.toLowerCase()!==G.toLowerCase())&&potNouNom(G)){entra(G);return}
  // el nen ja era l'actiu d'aquest món: baixa i fusiona el núvol igualment (un altre aparell pot haver avançat) (n2522)

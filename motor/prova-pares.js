@@ -44,6 +44,7 @@ function servidor() {
  const trobats = prohibits.filter(w => txt.includes(w));
  ok(trobats.length === 0, "cap tecnicisme informàtic al text visible" + (trobats.length ? ": " + trobats.join(", ") : ""));
  ok(txt.includes("25 minuts") && txt.includes("21:30") && txt.includes("4 números i 1 lletra"), "explica el descans de 25 min, la nit (21:30) i el PIN");
+ ok(txt.includes("mode tast anònim") && (await p.locator('#btParesTast[href="../?tast=1#mons"]').count()) === 1, "explica el mode tast anònim i porta el botó directe per tastar un món");
  ok((await p.locator("footer .bn-versio").textContent()).trim().startsWith("versió "), "porta el número de versió al peu");
 
  console.log("2) acordió de preguntes freqüents i retorn a la portada");

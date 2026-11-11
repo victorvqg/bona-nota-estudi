@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.25.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.26.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -122,6 +122,7 @@ Per provar una pantalla sense passar pel PIN, afegeix-ho a l'adreça d'un món. 
 
 | A l'adreça | Què obre |
 |---|---|
+| `?tast=1` | Mode tast anònim (a la portada `/?tast=1` o a un món `/<mon>/?tast=1`): sense compte, sense rànquing i sense escriure res a `localStorage` |
 | `?demo` | L'inici del món amb un usuari de prova |
 | `?joc=<id>` | Un joc (a mates, `?joc=err` és Troba l'error) |
 | `?tema=<número>` | Un tema, comptant des de 0 |
@@ -519,6 +520,16 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
   (`id: {ic: "un dibuix de BN_SPR", mat: "Assignatura"}`). Si l'assignatura és nova, afegeix-la també a `BN_MAT` (`curt`, `color`, `tint`).
   Sense aquestes entrades no es trenca res: surt amb el seu emoji en una rajola grisa i l'assignatura nova agafa un color de reserva.
 
+### 👀 Mode tast anònim (`?tast=1`)
+
+Permet que pares, mestres o un company tafaner vegin com és Bona Nota per dins **sense posar cap nom ni PIN, sense sumar estrelles ni sortir al rànquing, i sense embrutar l'aparell familiar** (`docs/superpowers/specs/2026-11-11-mode-tast-anonim-design.md`).
+
+- **Tres portes d'entrada:** botó `#btTastPortada` a la portada (`/?tast=1`), `#btTastMon` a la pantalla de benvinguda de qualsevol món (`/<mon>/?tast=1`) i `#btParesTast` a `pares/index.html` (`../?tast=1#mons`). Els mons tancats per l'admin (`bn_mons_tancats`) continuen tancats.
+- **Què obre dins d'un món (`MODE_TAST = true`):** el **Tema 1** sencer (`i === 0`: fitxa, targetes i un test de mostra de `NTEST_TAST = 5` preguntes explicades sense rellotge d'avanç), el **primer joc** de `ASSIG.jocs[0]` i l'enunciat de mostra de la **primera pregunta oberta** (`OB[0]`, sense camp de resposta, ni resposta model, ni foto del quadern). Els temes `2…N`, la resta de jocs, els exàmens (`examen`, `examreal`) i el `boss` obren el diàleg amable `convidaPin()`.
+- **100 % anònim i aïllat:** no envia cap petició d'escriptura a `bn_log`, `bn-corregeix` ni cap RPC d'usuari (`bn_perfil_*`, `bn_progres_*`, `bn_punts_*`, `bn_comparativa`, `bn_xat_estat`, `bn_xat_envia`, `bn_xat_vota`, `bn_aspecte_desa`); `suma()` no acumula estrelles (`S.punts` es manté a `0`), el xat de la portada queda en mode lectura i tota la sessió efímera viu únicament a `sessionStorage` (`bn_tast` i `bn_tast_<CL>`), de manera que no toca `localStorage` ni ocupa cap plaça de `MAX_NOMS = 2` a l'aparell.
+- **Noms reservats:** tant el client (`nomProhibit`) com PostgreSQL (`bn_priv.nom_prohibit` a `supabase/bn_ranking_net.sql`) rebutgen i exclouen del rànquing qualsevol nom que comenci per `_` o coincideixi amb `tast`, `convidat`, `anònim`, `visitant`, `guest` o `demo_tast`.
+- **Prova:** `node motor/prova-tast.js` (Playwright, comprova les tres portes, els límits del món, zero peticions d'escriptura al núvol i que la sessió desada d'un germà a `localStorage` queda intacta).
+
 ### 💬 Xat de la colla (pestanya «Xat» del rànquing)
 
 > Explicat en paraules planeres (crèdits, regla d'or, desbloquejos, admin i on és cada cosa al codi): [`docs/XAT.md`](docs/XAT.md).
@@ -708,7 +719,7 @@ El resultat surt a la pestanya **Actions** del repo.
 | 9 | `motor/prova-admin-benestar-sql.js`, `prova-bon-us-sql.js`, `prova-admin-benestar.js` | El benestar, les fases del món (`bn_vigilia`) i l'apartat del tauler |
 | 10 | `motor/prova-admin-fonts-rep-sql.js`, `prova-admin-fonts-rep.js` | «Combos i repàs» i «Errors pendents de la colla»: el SQL i el tauler |
 | 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
-| 12 | `motor/prova-pin-intents-sql.js`, `prova-fotos-sql.js`, `prova-pares.js` | El bloqueig de 15 minuts al 5è intent de PIN (#33), el permís de fotos del quadern i la guia per a les famílies (`pares/`) |
+| 12 | `motor/prova-pin-intents-sql.js`, `prova-fotos-sql.js`, `prova-pares.js`, `prova-tast.js` | El bloqueig de 15 minuts al 5è intent de PIN (#33), el permís de fotos del quadern, la guia per a les famílies (`pares/`) i el mode tast anònim (`?tast=1`) |
 | 13 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |
 
 Les proves `…-sql.js` executen el SQL de `supabase/` dins de **PGlite**, un Postgres de prova sense xarxa. Les altres obren la pàgina amb **Playwright** i un Supabase simulat: cap prova toca la base de dades real.

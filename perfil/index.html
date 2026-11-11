@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e4f1f5b0a4",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="474e801ad4",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -290,7 +290,7 @@ body.suau *,body.suau *::before,body.suau *::after{animation:none!important;tran
  <a class="en-bt" href="../">ANAR A LA PORTADA ▶</a>
 </div>
 
-<footer>Bona Nota · el teu perfil es guarda amb el teu nom i PIN <small class="bn-versio">versió 2.25.0</small></footer>
+<footer>Bona Nota · el teu perfil es guarda amb el teu nom i PIN <small class="bn-versio">versió 2.26.0</small></footer>
 
 <script src="../sprites.js?v=0be9e885"></script>
 <script>
@@ -346,11 +346,12 @@ const bnSo=(()=>{let ctx=null,armat=false,tocat=false,volOn=true,mut=null;const 
  h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
 
 // ====================== QUI SOC I QUÈ TINC GUARDAT ======================
-// El nen és el mateix que a la portada (localStorage.bn_jugador). Amb «?demo» la pàgina es pot veure sense entrar: nen «Biel», sense núvol.
+// El nen és el mateix que a la portada (localStorage.bn_jugador). Amb «?demo» la pàgina es pot veure sense entrar: nen «Biel», sense núvol. Amb «?tast=1» o sessió de tast oberta, no s'agafa cap nom guardat de l'aparell.
 const DEMO=/[?&]demo\b/.test(location.search);
 const ls=(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}};
 const lsJ=(k,d)=>{try{return JSON.parse(ls(k,""))||d}catch(e){return d}};
-const NOM=DEMO?"Biel":(ls("bn_jugador","")||"").trim();
+const TAST=(()=>{try{return new URLSearchParams(location.search).get("tast")==="1"||(!ls("bn_jugador","")&&sessionStorage.getItem("bn_tast")==="1")}catch(e){return false}})();
+const NOM=DEMO?"Biel":TAST?"":(ls("bn_jugador","")||"").trim();
 const NOMK=NOM.toLowerCase();
 const SUAU=ls("bn_suau","")==="1"||matchMedia("(prefers-reduced-motion:reduce)").matches;
 if(ls("bn_suau","")==="1")document.body.classList.add("suau");
