@@ -40,6 +40,8 @@ jobs:
         run: node motor/prova-nuvol.js
       - name: Prova de la pàgina de perfil (perfil/, amb Supabase simulat)
         run: node motor/prova-perfil.js
+      - name: Prova de la guia per a les famílies (pares/)
+        run: node motor/prova-pares.js
       - name: Prova dels orígens d'estrelles del tauler (admin/, funcions pures)
         run: node motor/prova-admin-fonts.js
       - name: Prova del xat a la base de dades (supabase/bn_xat.sql dins de PGlite)
@@ -66,6 +68,8 @@ jobs:
         run: node motor/prova-control-sql.js
       - name: Prova del comptador d'intents de PIN a la base de dades (issue #33 dins de PGlite)
         run: node motor/prova-pin-intents-sql.js
+      - name: Prova del permís i límit de fotos del quadern a la base de dades (supabase/bn_fotos.sql dins de PGlite)
+        run: node motor/prova-fotos-sql.js
       - name: Prova dels nivells al tauler i del control de xat, horari i mons (amb Supabase simulat)
         run: node motor/prova-admin-alta.js
       - name: Prova automàtica de cada món

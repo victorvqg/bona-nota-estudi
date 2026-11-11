@@ -3,7 +3,7 @@
 Data: 2026-11-11
 
 ## Què funciona
-- **Versió actual: 2.21.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.22.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`).
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -41,12 +41,16 @@ Data: 2026-11-11
 - **Bloc `g5` (`docs/BON-US.md` PRs C–G · 2.20.0 i 2.21.0, publicat i actiu)**:
   - Fases del món (`aprendre`, `vigilia`, `despres`, `supabase/bn_bon_us.sql`), pla de 10 dies (`#plaDia`), botó «Demà tinc examen» (màx. 2 dies/món), descans de 25 min registrat (`fet`/`salta`) amb límit de 2 salts (3 a la vigília), avís amable als 60/120 min, franja de nit (`21:30`/`22:00`) amb mode suau automàtic, textos amables de mentalitat de creixement, pestanya «Dies» («Dies d'estudi») al rànquing (`bn_ranking_mons`) i senyals nous `fa_descans`, `salta_descans` i `examen_dema` al Benestar.
 
+- **Bloc `g6` (`2.22.0`, guia per a les famílies, `bn-corregeix` i neteja)**:
+  - Pàgina pública `https://bonanota.net/pares/` (`pares/index.html`, especificada a `docs/superpowers/specs/2026-11-11-pagina-pares-design.md`), enllaçada des de la portada i verificada amb `motor/prova-pares.js`.
+  - Aplicat `supabase/bn_fotos.sql` i desplegada l'Edge Function `bn-corregeix` (`--no-verify-jwt`) a Supabase `agippwtqvhpxdockuigl` amb CORS actiu per a `https://bonanota.net` i prova `motor/prova-fotos-sql.js` (només falta definir el secret `ANTHROPIC_API_KEY` a Supabase quan es vulgui activar la lectura d'imatges amb Claude).
+  - Esborrat `motor/jocs_generics.js` (còpia antiga que no carregava cap pàgina).
+
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i primera passada de 111 difícils a `motor/dificultat.json`); #16 dificultat calculada quan hi hagi dades. Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.
 - Preguntes obertes: la fase 2, correcció amb IA, queda per decidir quan hi hagi dades del tauler.
 
 ## Pendent
-- Xat de la colla: els noms que es poden triar com a company són els del rànquing, que surt d'un registre on es pot escriure sense PIN. Un nom inventat que passi el filtre de paraules surt al rànquing (ja passava abans) i al xat. L'admin el pot amagar i desapareix de tots dos.
+- Xat de la colla: per disseny («Treu el PIN» no amaga res, `prova-xat-sql.js` §11), el rànquing i la llista de companys inclouen qui té activitat a `bn_log`; si algú entra amb un nom inventat, l'admin el pot amagar o esborrar des d'`/admin/` i desapareix tant del rànquing com del xat.
 - Xat de la colla: el premi del missatge del dia es decidirà més endavant (ara no en té, i no s'han d'apuntar estrelles al registre perquè sortiria un món «xat» al rànquing).
-- `motor/jocs_generics.js` no el carrega ningú i ja no coincideix amb la plantilla, que és on viuen els jocs genèrics. Cal decidir si s'esborra.
-- La 📷 correcció de la foto del quadern: el codi de `bn-corregeix` ja accepta `https://bonanota.net` (a `main`), però cal comprovar que la funció s'ha tornat a desplegar.
+- Foto del quadern (`bn-corregeix`): el SQL i la funció ja són desplegats a Supabase; per activar l'enviament a Claude només cal desar `ANTHROPIC_API_KEY` als Secrets d'Edge Functions.

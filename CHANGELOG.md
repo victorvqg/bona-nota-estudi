@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.22.0 · 2026-11-11
+
+### Afegit
+- Guia per a les famílies (`pares/index.html` a `https://bonanota.net/pares/`, enllaçada des de la portada i integrada a `motor/tot.py` i `sw.js`): explica sense cap tecnicisme què fa el fill o filla a Bona Nota, els 6 passos d'aprenentatge, per què les estrelles i el rànquing no enganxen, les mesures de bon ús, descans i son, la seguretat del xat sense teclat lliure, la privadesa i les preguntes freqüents (`docs/superpowers/specs/2026-11-11-pagina-pares-design.md`, `motor/prova-pares.js` · g6).
+- Prova automàtica `motor/prova-fotos-sql.js` a l'Action per a `supabase/bn_fotos.sql`, i desplegament en viu de `bn_fotos.sql` i l'Edge Function `bn-corregeix` a Supabase amb CORS actiu per a `https://bonanota.net` (g6).
+
+### Esborrat
+- `motor/jocs_generics.js`: còpia antiga dels jocs genèrics que ja no carregava cap pàgina (els jocs viuen a `motor/plantilla-estudi-interactiu.html`) (g6).
+
 ## 2.21.0 · 2026-11-11
 
 ### Canviat

@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a12e38af7d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="268097aedc",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -70,7 +70,7 @@ body{font-family:Nunito,system-ui,Arial,sans-serif;color:var(--txt);background:r
 body.modal-obert{overflow:hidden}
 .salta{position:fixed;top:-60px;left:14px;z-index:200;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:15px;padding:10px 18px;border-radius:12px;text-decoration:none;box-shadow:0 4px 0 #b91c1c;transition:top .15s}
 .salta:focus{top:14px;outline:3px solid #22d3ee;outline-offset:2px}
-.bt:focus-visible,.en-noms button:focus-visible,.en-bt:focus-visible,.hola .canvia:focus-visible,.hola .hola-est:focus-visible,.hs-tanca:focus-visible,.np-ara:focus-visible,.admin:focus-visible{outline:3px solid #22d3ee;outline-offset:3px}
+.bt:focus-visible,.en-noms button:focus-visible,.en-bt:focus-visible,.hola .canvia:focus-visible,.hola .hola-est:focus-visible,.hs-tanca:focus-visible,.np-ara:focus-visible,.pares-lk:focus-visible,.admin:focus-visible{outline:3px solid #22d3ee;outline-offset:3px}
 .hola .hola-est{display:inline-flex;align-items:center;gap:4px;font:inherit;font-weight:900;font-size:14px;color:#1e1b4b;background:var(--groc);border:0;border-radius:999px;padding:3px 11px;margin-left:8px;cursor:pointer;vertical-align:middle;box-shadow:0 2px 0 #b45309;transition:transform .12s}
 .hola .hola-est:hover{transform:translateY(-1px)}
 
@@ -644,6 +644,8 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px
 footer{position:relative;z-index:1;text-align:center;color:#a5b4fc;font-size:14px;font-weight:700;padding:10px 18px 36px}
 footer b{color:var(--groc)}
 footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
+.pares-lk{display:inline-block;margin:14px 8px 0 0;font-family:'Press Start 2P',monospace;font-size:9px;color:#fde68a;text-decoration:none;border:1px solid #facc1555;background:#facc1514;border-radius:999px;padding:8px 14px;transition:border-color .2s,background .2s}
+.pares-lk:hover{border-color:var(--groc);background:#facc1526;color:#fff}
 .admin{display:inline-block;margin-top:14px;font-family:'Press Start 2P',monospace;font-size:9px;color:#a5b4fc;text-decoration:none;border:1px solid #ffffff26;border-radius:999px;padding:8px 14px;opacity:.7;transition:opacity .2s,border-color .2s}
 .admin:hover{opacity:1;border-color:var(--groc);color:var(--groc)}
 /* ---- 🎉 FESTA: ou de Pasqua del rànquing (5 tocs seguits i ràpids dins del rànquing) ---- */
@@ -694,7 +696,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <li><b>📊 Com vaig</b>: mira on encertes més, on et costa i què et toca repassar.</li>
    <li><b>🏆 Rànquing</b>: mira com vas amb la colla.</li>
   </ul>
-  <p class="peu-intro">Escriu el teu nom i el teu PIN per començar. Amb el PIN pots continuar des de qualsevol mòbil, tauleta o ordinador.</p>
+  <p class="peu-intro">Escriu el teu nom i el teu PIN per començar. Amb el PIN pots continuar des de qualsevol mòbil, tauleta o ordinador. <a href="pares/" style="color:var(--groc);font-weight:900">👨‍👩‍👧 Guia per a les famílies →</a></p>
  </div>
  <div class="hola" id="hola"></div>
  <form class="entrada" id="entrada" autocomplete="off" hidden>
@@ -816,7 +818,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.21.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.22.0</small></footer>
 
 <script src="sprites.js?v=fd512289"></script>
 <script>
