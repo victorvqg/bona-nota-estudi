@@ -30,7 +30,7 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
 const K_TOP = ["periode", "mons", "nens"], K_MON = ["assig", "dia0", "examen", "vigilies", "normal"];
 const K_NEN = ["k", "nom", "semafor", "senyals"], K_SEN = ["codi", "nivell", "dia", "assig", "valor", "llindar"];
 const CODIS = ["marato_bloc", "marato_dia", "nit", "pressa", "repetir", "frustracio_suspesos", "frustracio_costa", "enganxa", "xat",
-               "inactiu", "poc_sovint", "apren_errors", "dos_aparells"];
+               "inactiu", "poc_sovint", "apren_errors", "fa_descans", "salta_descans", "examen_dema", "dos_aparells"];
 const NIVELLS = ["vermell", "groc", "blau", "context", "bo"], SEMAFORS = ["vermell", "groc", "verd"];
 const EXTRA = { pressa: ["encert"], xat: ["minuts"] };   // claus de més d'alguns senyals
 const clausSenyal = s => mateixesClaus(s, [...K_SEN, ...(EXTRA[s.codi] || [])]);
@@ -407,6 +407,33 @@ async function base() {
   const e = await executa(SQL); ok(e === null, "tercera execució sense errors" + (e ? ": " + e : ""));
   ok(igual(await q("select assig, data::text from bn_priv.examens"), [{ assig: "comarques", data: "2026-11-20" }]), "la data desada hi continua");
   await examen("comarques", null) }
+
+ console.log("21b) descans (fa_descans i salta_descans) i botó «demà tinc examen» (examen_dema)");
+ { ev("DescBo", "biogeo", "descans", "2026-11-15 17:00", { accio: "fet" });
+  ev("DescBo", "biogeo", "descans", "2026-11-16 17:00", { accio: "salta" });
+  ev("DescBo", "biogeo", "descans", "2026-11-16 17:10", { accio: "fet" }); // 2 fets de 3 (66,7%) → fa_descans
+  ev("DescPoc", "biogeo", "descans", "2026-11-16 17:00", { accio: "fet" }); // només 1 fet → no arriba al mínim de 2
+  ev("Salta2", "biogeo", "descans", "2026-11-16 18:00", { accio: "salta" });
+  ev("Salta2", "biogeo", "descans", "2026-11-16 18:10", { accio: "salta" }); // 2 salts seguits dia normal → groc
+  // nen que prem «demà tinc examen» el dia 16 en un món recent (comarques, dia0 = 9-11 → dia 7): vigília individual (marató en blau i llindar 3 salts)
+  ev("ExNen", "comarques", "examen_dema", "2026-11-16 16:00", { dia: "2026-11-16" });
+  bloc("ExNen", "comarques", "2026-11-16 16:05", [45, 45]); // 90 min seguits: sense vigília seria vermell (>60), amb examen_dema és dins de 120 → no salta marató
+  ev("ExNen", "comarques", "entra", "2026-11-16 21:45"); // 21:45 a la vigília individual (<22:00) → no és nit
+  ev("ExNen", "comarques", "descans", "2026-11-16 17:00", { accio: "salta" });
+  ev("ExNen", "comarques", "descans", "2026-11-16 17:10", { accio: "salta" }); // 2 salts a la vigília (<3) → no salta_descans
+  // màxim 2 dies per món: el 3r dia que un nen prem examen_dema en el mateix món s'ignora
+  ev("ExTres", "comarques", "examen_dema", "2026-11-14 10:00", {});
+  ev("ExTres", "comarques", "examen_dema", "2026-11-15 10:00", {});
+  ev("ExTres", "comarques", "examen_dema", "2026-11-16 10:00", {});
+  await desa();
+  const x = await benestar("7d");
+  ok(igual(sen(x, "descbo", "fa_descans"), [S("fa_descans", "bo", "2026-11-16", null, 2, 3)]), "fa_descans: 2 de 3 descansos fets → bo");
+  ok(sen(x, "descpoc", "fa_descans").length === 0, "1 sol descans fet no dispara fa_descans");
+  ok(igual(sen(x, "salta2", "salta_descans"), [S("salta_descans", "groc", "2026-11-16", "biogeo", 2, 2)]), "salta_descans: 2 salts seguits un dia normal → groc");
+  ok(igual(sen(x, "exnen", "examen_dema"), [S("examen_dema", "context", "2026-11-16", "comarques", 1, 2)]), "examen_dema registrat com a senyal de context (1 de 2)");
+  ok(sen(x, "exnen", "marato_bloc").length === 0 && sen(x, "exnen", "nit").length === 0 && sen(x, "exnen", "salta_descans").length === 0,
+   "examen_dema activa els llindars de vigília (120 min, 22:00 i 3 salts) per a aquell nen i món");
+  ok(sen(x, "extres", "examen_dema").length === 2, "màxim 2 avisos examen_dema per nen i món"); }
 
  console.log("22) permisos");
  { const fn = ["public.bn_admin_benestar(text,text,text,text)", "public.bn_admin_examen_desa(text,text,text,date)"];

@@ -21,8 +21,11 @@ for m in json.loads((d / "mons.json").read_text()):
     src = (d / "dades" / f"{m['dades']}.js").read_text().split("const T=")[0]
     mid = re.search(r'\bid:"([^"]+)"', src).group(1)
     mc = re.search(r'\bclau:"([^"]+)"', src)
-    mons.append({"id": mid, "clau": mc.group(1) if mc else "bn_" + mid, "ic": m["ic"], "materia": m["materia"],
-                 "titol": m["titol"], "url": "../../" + m["carpeta"] + "/"})
+    item = {"id": mid, "clau": mc.group(1) if mc else "bn_" + mid, "ic": m["ic"], "materia": m["materia"],
+            "titol": m["titol"], "url": "../../" + m["carpeta"] + "/"}
+    if m.get("neix"):
+        item["neix"] = m["neix"]
+    mons.append(item)
 mons_js = "const MONS=" + json.dumps(mons, ensure_ascii=False) + ";"
 # identificadors estables de les preguntes (motor/qids.json) → const QIDS={tema:[números]}
 from qids import ids_mon

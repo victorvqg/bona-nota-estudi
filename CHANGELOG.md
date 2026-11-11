@@ -5,6 +5,18 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.20.0 · 2026-11-11
+
+### Afegit
+- Motor i mons (`motor/plantilla-estudi-interactiu.html`, `motor/mons.json`, `motor/build.py`): hàbits saludables segons la fase del món (`docs/BON-US.md`, PR C, D, E i G · g5):
+  - **Fases del món (`aprendre`, `vigilia`, `despres`) i pla de 10 dies**: cada món sap quan va néixer (`neix` a `mons.json`) i consulta `bn_vigilia` per adaptar la targeta `#plaDia` a l'inici (un tema nou + repàs dels errors a `aprendre`, repàs d'errors + Examen de veritat a `vigilia`, i repàs lliure sense pressa a `despres`).
+  - **Botó «📅 Demà tinc examen»**: confirmació en dos tocs dins del món, màxim 2 dies per món (`S.vigilia_dies`), sincronitzat al núvol i registrat amb `event = 'examen_dema'`.
+  - **Descans cada 25 minuts amb límit de salts**: es registra a `bn_log` (`event = 'descans'`, `accio: 'fet' | 'salta'`) i es pot saltar com a màxim 2 vegades seguides els dies normals (3 a la vigília); després cal completar els 5 minuts de pausa.
+  - **Avís amable de temps diari**: bàner informatiu sense bloqueig als 60 minuts d'estudi del dia (120 minuts a la vigília).
+  - **Franja de nit (`21:30` / `22:00` hora de Catalunya)**: activa automàticament el mode suau sense alterar `localStorage.bn_suau` i mostra un missatge amable convidant a anar a dormir mentre les estrelles continuen funcionant.
+  - **Textos amables de mentalitat de creixement**: missatge de consol quan es trenca un combo als tests i missatges encoratjadors en suspendre un test o examen.
+- Base de dades (`supabase/bn_bon_us.sql`, `supabase/bn_admin_benestar.sql`) i proves (`motor/prova-bon-us-sql.js`, `motor/prova-admin-benestar-sql.js`): funció pública `bn_vigilia(assig, neix)` sense noms de nens, clau `'bon_us'` a `bn_priv.config`, events `'descans'` i `'examen_dema'` a `bn_log`, i senyals nous `fa_descans`, `salta_descans` i `examen_dema` al Benestar (g5).
+
 ## 2.19.0 · 2026-11-11
 
 ### Afegit
