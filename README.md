@@ -688,7 +688,7 @@ Dins dels mons ja no hi ha cap botó per esborrar el progrés: només es pot fer
 
 ## 10. Proves i revisió automàtica
 
-A cada push i a cada PR, GitHub Actions executa «Revisa Bona Nota» (`.github/workflows/revisa.yml`). Si un sol pas falla, el PR no es fusiona.
+A cada PR i a cada pujada a `main`, GitHub Actions executa «Revisa Bona Nota» (`.github/workflows/revisa.yml`) en paral·lel (`base`, `sql`, `interficie` i un job simultani per a cadascun dels mons de `motor/mons.json`, amb Chromium en memòria cau). Si un sol pas falla, el PR no es fusiona.
 El resultat surt a la pestanya **Actions** del repo.
 
 | Pas | Fitxer | Què comprova |

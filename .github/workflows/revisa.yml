@@ -1,28 +1,32 @@
-# Bona Nota · revisió automàtica a cada canvi
-# 1) Torna a generar tots els mons i la portada (motor/tot.py) i comprova que el que hi ha pujat coincideix:
-#    si algú ha editat una pàgina generada a mà, o s'ha oblidat de regenerar, falla i diu quins fitxers.
-# 2) Passa la prova automàtica de cada món (tests, jocs, examen, repàs, obertes) en mode estricte, i la de la pàgina de perfil:
-#    mínim 8 preguntes per tema i la resposta correcta no pot ser massa sovint la més llarga (ni massa poc).
-# 3) Passa les proves del xat de la colla: el SQL (supabase/bn_xat.sql dins d'un Postgres de prova, PGlite), la portada i l'admin.
+# Bona Nota · revisió automàtica a cada PR i a main (en paral·lel: base + SQL + interfície + 1 job per món)
+# 1) base: regenera tots els mons i la portada (motor/tot.py), comprova git diff --quiet i passa les proves pures sense navegador.
+# 2) sql: passa totes les proves de Supabase (supabase/*.sql) dins d'un Postgres de prova (PGlite, sense descarregar Chromium).
+# 3) interficie: passa les proves amb navegador (Playwright Chromium en memòria cau) de núvol, perfil/, pares/, xat i admin/.
+# 4) mons: passa en paral·lel la prova estricta (ESTRICTE=1 motor/prova.js) de cadascun dels mons de motor/mons.json.
 name: Revisa Bona Nota
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: revisa-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
-  revisa:
+  base:
+    name: Motor, generat i regles
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
+    outputs:
+      mons: ${{ steps.llista.outputs.mons }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
-      - name: Instal·la Playwright (Chromium) i PGlite (Postgres de prova per al SQL del xat)
-        run: |
-          npm install --no-save playwright@1 @electric-sql/pglite@0.5
-          npx playwright install --with-deps chromium
       - name: Regenera mons i portada
         run: cd motor && python3 tot.py
       - name: Les pàgines pujades coincideixen amb el motor
@@ -36,47 +40,116 @@ jobs:
         run: cd motor && node prova-generadors.js
       - name: Prova que les regles copiades coincideixen amb la plantilla
         run: node motor/prova-regles.js
-      - name: Prova del núvol d'un món (aparell vell, sense connexió, -2; amb Supabase simulat)
+      - name: Prova dels orígens d'estrelles del tauler (admin/, funcions pures)
+        run: node motor/prova-admin-fonts.js
+      - name: Llista dinàmica de mons (motor/mons.json)
+        id: llista
+        run: |
+          mons=$(python3 -c "import json; print(json.dumps([m['carpeta'] for m in json.load(open('motor/mons.json'))]))")
+          echo "mons=$mons" >> "$GITHUB_OUTPUT"
+
+  sql:
+    name: SQL a PGlite (Supabase)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Instal·la PGlite (Postgres de prova)
+        run: npm install --no-save @electric-sql/pglite@0.5
+      - name: Prova del xat a la base de dades (supabase/bn_xat.sql)
+        run: node motor/prova-xat-sql.js
+      - name: Prova de la fitxa al núvol i les altes (supabase/bn_admin_fitxa.sql)
+        run: node motor/prova-admin-fitxa-sql.js
+      - name: Prova del benestar a la base de dades (supabase/bn_admin_benestar.sql)
+        run: node motor/prova-admin-benestar-sql.js
+      - name: Prova del bon ús i vigília (supabase/bn_bon_us.sql)
+        run: node motor/prova-bon-us-sql.js
+      - name: Prova dels combos, el repàs i els errors pendents (supabase/bn_admin_fonts_rep.sql)
+        run: node motor/prova-admin-fonts-rep-sql.js
+      - name: Prova del control de xat, horari i mons (supabase/bn_control.sql)
+        run: node motor/prova-control-sql.js
+      - name: Prova del comptador d'intents de PIN (issue #33)
+        run: node motor/prova-pin-intents-sql.js
+      - name: Prova del permís i límit de fotos del quadern (supabase/bn_fotos.sql)
+        run: node motor/prova-fotos-sql.js
+
+  interficie:
+    name: Portada, perfil, pares i admin
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Instal·la Playwright
+        id: pw
+        run: |
+          npm install --no-save playwright@1
+          echo "hash=$(sha256sum node_modules/playwright-core/browsers.json | cut -c1-16)" >> "$GITHUB_OUTPUT"
+      - name: Memòria cau del navegador Chromium
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ steps.pw.outputs.hash }}
+      - name: Prepara Chromium i dependències del sistema
+        run: |
+          if [ "${{ steps.pw-cache.outputs.cache-hit }}" != "true" ]; then
+            npx playwright install --with-deps chromium
+          else
+            npx playwright install-deps chromium
+          fi
+      - name: Prova del núvol d'un món (amb Supabase simulat)
         run: node motor/prova-nuvol.js
-      - name: Prova de la pàgina de perfil (perfil/, amb Supabase simulat)
+      - name: Prova de la pàgina de perfil (perfil/)
         run: node motor/prova-perfil.js
       - name: Prova de la guia per a les famílies (pares/)
         run: node motor/prova-pares.js
-      - name: Prova dels orígens d'estrelles del tauler (admin/, funcions pures)
-        run: node motor/prova-admin-fonts.js
-      - name: Prova del xat a la base de dades (supabase/bn_xat.sql dins de PGlite)
-        run: node motor/prova-xat-sql.js
-      - name: Prova del xat de la colla a la portada (amb Supabase simulat)
+      - name: Prova del xat de la colla a la portada
         run: node motor/prova-xat.js
-      - name: Prova de la pestanya Xat de l'admin (amb Supabase simulat)
+      - name: Prova de la pestanya Xat de l'admin
         run: node motor/prova-admin-xat.js
-      - name: Prova de la fitxa al núvol i les altes a la base de dades (supabase/bn_admin_fitxa.sql dins de PGlite)
-        run: node motor/prova-admin-fitxa-sql.js
-      - name: Prova de la fitxa al núvol i les altes a l'admin (amb Supabase simulat)
+      - name: Prova de la fitxa al núvol i les altes a l'admin
         run: node motor/prova-admin-fitxa.js
-      - name: Prova del benestar a la base de dades (supabase/bn_admin_benestar.sql dins de PGlite)
-        run: node motor/prova-admin-benestar-sql.js
-      - name: Prova del bon ús i vigília a la base de dades (supabase/bn_bon_us.sql dins de PGlite)
-        run: node motor/prova-bon-us-sql.js
-      - name: Prova de l'apartat Benestar del tauler (amb Supabase simulat)
+      - name: Prova de l'apartat Benestar del tauler
         run: node motor/prova-admin-benestar.js
-      - name: Prova dels combos, el repàs i els errors pendents a la base de dades (supabase/bn_admin_fonts_rep.sql dins de PGlite)
-        run: node motor/prova-admin-fonts-rep-sql.js
-      - name: Prova de «Combos i repàs» i «Errors pendents de la colla» al tauler (amb Supabase simulat)
+      - name: Prova de «Combos i repàs» i «Errors pendents de la colla» al tauler
         run: node motor/prova-admin-fonts-rep.js
-      - name: Prova del control de xat, horari i mons a la base de dades (supabase/bn_control.sql dins de PGlite)
-        run: node motor/prova-control-sql.js
-      - name: Prova del comptador d'intents de PIN a la base de dades (issue #33 dins de PGlite)
-        run: node motor/prova-pin-intents-sql.js
-      - name: Prova del permís i límit de fotos del quadern a la base de dades (supabase/bn_fotos.sql dins de PGlite)
-        run: node motor/prova-fotos-sql.js
-      - name: Prova dels nivells al tauler i del control de xat, horari i mons (amb Supabase simulat)
+      - name: Prova dels nivells al tauler i del control de xat, horari i mons
         run: node motor/prova-admin-alta.js
-      - name: Prova automàtica de cada món
+
+  mons:
+    name: Món (${{ matrix.mon }})
+    needs: base
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        mon: ${{ fromJson(needs.base.outputs.mons) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Instal·la Playwright
+        id: pw
         run: |
-          cd motor
-          for c in $(python3 -c "import json;print(' '.join(m['carpeta'] for m in json.load(open('mons.json'))))"); do
-            echo "::group::$c"
-            ESTRICTE=1 node prova.js "$PWD/../$c/index.html"
-            echo "::endgroup::"
-          done
+          npm install --no-save playwright@1
+          echo "hash=$(sha256sum node_modules/playwright-core/browsers.json | cut -c1-16)" >> "$GITHUB_OUTPUT"
+      - name: Memòria cau del navegador Chromium
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ steps.pw.outputs.hash }}
+      - name: Prepara Chromium i dependències del sistema
+        run: |
+          if [ "${{ steps.pw-cache.outputs.cache-hit }}" != "true" ]; then
+            npx playwright install --with-deps chromium
+          else
+            npx playwright install-deps chromium
+          fi
+      - name: Prova estricta de ${{ matrix.mon }}
+        run: cd motor && ESTRICTE=1 node prova.js "$PWD/../${{ matrix.mon }}/index.html"
