@@ -1,4 +1,25 @@
 {
+ "angles": {
+  "adj1/6": "Hair és no comptable en anglès: va en singular (is), sense -s",
+  "adj1/10": "Ordre d'adjectius davant del nom i hair sense plural",
+  "adj2/6": "Compound adjectives amb guionet, fàcils de barrejar amb altres adjectius",
+  "adj2/10": "Fals amic clàssic: confident vol dir segur de si mateix, no de confiança",
+  "continuous/4": "Excepció ortogràfica: els verbs en -ie canvien a -ying (lie → lying)",
+  "continuous/6": "Plural irregular children (are, no is) amb pista d'acció actual (Look!)",
+  "dospresents/2": "Parany amb «now»: understand és un stative verb i va en Present Simple",
+  "dospresents/5": "Stative verb (like) en pregunta de 3a persona (Does + verb base)",
+  "dospresents/9": "Parany amb «now»: want és un stative verb i no admet forma en -ing",
+  "fenn/6": "Fals amic clàssic: eventually vol dir finalment, no eventualment",
+  "fenn/7": "Million va en singular quan porta una xifra exacta al davant (two million)",
+  "fenn/8": "Thousands porta -s quan va seguit d'«of» i sense número davant",
+  "generes/6": "«Don't mind» sembla negatiu però vol dir «tant me fa»",
+  "generes/10": "Posició de l'adverbi absolutely davant del verb principal (hate)",
+  "museu/7": "Fals amic: according to vol dir «segons», no «d'acord»",
+  "museu/8": "Costume (disfressa) i custom (costum) es confonen molt sovint",
+  "museu/10": "Plural irregular sense -s: people concorda amb are, no amb is",
+  "suggeriments/1": "How about va seguit de verb en -ing, a diferència de Let's o Why don't we",
+  "suggeriments/10": "Verb de percepció (sound) seguit d'adjectiu (good), no d'adverbi (well)"
+ },
  "biogeo": {
   "animalveg/2": "Cèl·lula animal/vegetal; el centrosoma és el menys conegut",
   "animalveg/7": "Parany: l'animal sí que té vàcuols, però petits",

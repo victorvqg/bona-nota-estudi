@@ -52,11 +52,19 @@ function servidor() {
  await primerDet.locator("summary").click();
  ok(await primerDet.evaluate(el => el.open), "en clicar s'obre la resposta");
 
- console.log("3) sense desbordament horitzontal al mòbil (360, 390, 430 px) ni a l'ordinador (1280 px)");
- for (const w of [360, 390, 430, 1280]) {
+ console.log("3) sense desbordament ni pestanyes tallades al menú superior (360, 390, 430, 960 i 1280 px)");
+ for (const w of [360, 390, 430, 960, 1280]) {
   await p.setViewportSize({ width: w, height: 844 });
-  const desborda = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
-  ok(!desborda, `amplada ${w} px sense scroll horitzontal`);
+  const est = await p.evaluate(() => {
+   const desborda = document.documentElement.scrollWidth > window.innerWidth;
+   const navBox = document.querySelector(".salt-llista").getBoundingClientRect();
+   const tallades = [...document.querySelectorAll(".salt-llista a")].filter(a => {
+    const r = a.getBoundingClientRect();
+    return r.left < 0 || r.right > window.innerWidth || r.left < navBox.left - 1 || r.right > navBox.right + 1 || a.scrollWidth > a.clientWidth + 1;
+   }).map(a => a.textContent.trim());
+   return { desborda, tallades };
+  });
+  ok(!est.desborda && est.tallades.length === 0, `amplada ${w} px: sense scroll horitzontal i les 7 pestanyes senceres` + (est.tallades.length ? ` (tallades: ${est.tallades.join(", ")})` : ""));
  }
 
  await p.click("a.torna");

@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="268097aedc",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="267a74956a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -75,7 +75,7 @@ body{
  font-family:Nunito,system-ui,-apple-system,Arial,sans-serif;
  font-size:17px;line-height:1.62;color:var(--txt);
  background:radial-gradient(1100px 620px at 50% -8%,#35267e 0%,#181654 38%,var(--fons) 72%) fixed,var(--fons);
- overflow-x:hidden
+ overflow-x:clip
 }
 .salta{position:fixed;top:-64px;left:14px;z-index:300;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:15px;padding:11px 18px;border-radius:12px;text-decoration:none;box-shadow:0 4px 0 var(--vermell);transition:top .15s}
 .salta:focus{top:14px;outline:3px solid var(--cian);outline-offset:2px}
@@ -109,16 +109,15 @@ header.hero{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:24
 .pilar b{display:block;font-size:15.5px;font-weight:900;color:#fff;line-height:1.28;margin-bottom:3px}
 .pilar span{display:block;font-size:14px;color:var(--txt2);line-height:1.4}
 
-/* índex ràpid d'apartats */
-nav.salt-nav{position:sticky;top:0;z-index:20;background:#0b1033f2;border-top:1px solid #ffffff1a;border-bottom:1.5px solid #ffffff26;padding:8px 0}
-.salt-llista{max-width:940px;margin:0 auto;padding:0 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
-.salt-llista::-webkit-scrollbar{display:none}
-.salt-llista a{flex:none;display:inline-flex;align-items:center;gap:5px;min-height:40px;padding:7px 13px;border-radius:999px;background:#ffffff12;border:1px solid #ffffff28;color:#e2e8f0;font-weight:800;font-size:14px;text-decoration:none;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
-.salt-llista a:hover{border-color:var(--groc);color:#fff;background:#ffffff20}
+/* índex ràpid d'apartats (sencer a totes les amplades, sense retallar cap pestanya) */
+nav.salt-nav{position:sticky;top:0;z-index:20;background:var(--fons);border-top:1px solid #ffffff1f;border-bottom:1.5px solid #ffffff2e;box-shadow:0 6px 18px #0008;padding:9px 0}
+.salt-llista{max-width:1160px;margin:0 auto;padding:0 14px;display:flex;flex-wrap:wrap;justify-content:center;gap:7px}
+.salt-llista a{flex:none;display:inline-flex;align-items:center;gap:5px;min-height:38px;padding:6px 12px;border-radius:999px;background:var(--caixa);border:1px solid #ffffff30;color:#e2e8f0;font-weight:800;font-size:13.5px;text-decoration:none;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+.salt-llista a:hover{border-color:var(--groc);color:#fff;background:var(--caixa2)}
 
 /* cos principal */
 main{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:22px 16px 36px;display:flex;flex-direction:column;gap:26px}
-section.bloc{scroll-margin-top:68px;background:var(--caixa);border:1.5px solid var(--vora);border-radius:22px;padding:24px 22px;box-shadow:0 10px 28px #0006}
+section.bloc{scroll-margin-top:96px;background:var(--caixa);border:1.5px solid var(--vora);border-radius:22px;padding:24px 22px;box-shadow:0 10px 28px #0006}
 .sec-cap{display:flex;align-items:center;gap:12px;margin-bottom:8px}
 .sec-ic{flex:none;width:44px;height:44px;border-radius:13px;background:var(--caixa2);border:2px solid #facc1566;display:grid;place-items:center;font-size:22px}
 section.bloc h2{margin:0;font-size:clamp(20px,3.4vw,25px);font-weight:900;line-height:1.25;color:#fff}
@@ -198,9 +197,10 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
 /* adaptació mòbil (360, 390, 430 px) */
 @media(max-width:760px){
+ nav.salt-nav{position:relative;box-shadow:none}
+ section.bloc{scroll-margin-top:20px;padding:18px 15px;border-radius:18px}
  .pilars{grid-template-columns:repeat(2,1fr)}
  .passos,.dues-col,.escuts,.mostra-xat,.graella-4{grid-template-columns:1fr}
- section.bloc{padding:18px 15px;border-radius:18px}
  .barra-sup{padding:12px 12px 0}
  header.hero{padding:18px 12px 14px}
  main{padding:16px 12px 28px;gap:18px}
@@ -227,7 +227,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
 <header class="hero">
  <h1>COM FUNCIONA BONA NOTA</h1>
- <p class="resum">Bona Nota converteix <b>els apunts i temes reals de classe</b> en sessions d'estudi curtes, pràctiques i autònomes. Està pensada perquè el teu fill o filla <b>entengui la matèria, aprengui dels seus errors i sàpiga parar a temps</b>, sense enganxar-se a la pantalla.</p>
+ <p class="resum">Bona Nota converteix <b>els apunts i els temes que el teu fill o filla fa a classe</b> en sessions de repàs curtes, que pot fer pel seu compte. Hi repassa el que ja ha treballat a l'escola i a casa fins que <b>ho entén de debò, veu on s'equivoca i per què, i quan acaba la sessió, plega</b>. Sense enganxar-se a la pantalla.</p>
  <div class="pilars" aria-label="Quatre idees clau">
   <div class="pilar"><span class="ic" aria-hidden="true">📖</span><b>Temari real de classe</b><span>Res de jocs buits: practica exactament el que li entra a l'examen.</span></div>
   <div class="pilar"><span class="ic" aria-hidden="true">🔁</span><b>Aprendre dels errors</b><span>El que falla torna a sortir en dies diferents fins que queda après.</span></div>
@@ -364,7 +364,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
    <div class="baf"><small>Humor de classe</small><q>Quin dia: la calculadora sense piles</q><span>Per riure una mica, sempre sobre coses quotidianes o d'un mateix.</span></div>
   </div>
   <ul class="llista-neta">
-   <li><b>Catàleg 100 % tancat:</b> només es poden combinar 26 frases fixes amb 63 peces predefinides. Ni lletres lliures, ni emojis lliures, ni fotos, ni missatges privats.</li>
+   <li><b>Catàleg 100 % tancat:</b> només es poden combinar 26 frases fixes amb 66 peces predefinides. Ni lletres lliures, ni emojis lliures, ni fotos, ni missatges privats.</li>
    <li><b>La regla d'or contra les burles:</b> les frases estan construïdes de manera que el nom d'un altre alumne només es pot posar en missatges de felicitació, d'ànim o de repte sa. És impossible insultar o ridiculitzar ningú.</li>
    <li><b>Parlar es guanya estudiant:</b> cada <b>10 ⭐ fetes avui</b> donen dret a dir 1 frase, amb un màxim de <b>5 frases al dia</b> (sense gastar mai les estrelles guanyades), i a la nit es tanca automàticament.</li>
   </ul>
@@ -456,6 +456,6 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
 </main>
 
-<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.22.0</small></footer>
+<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.23.0</small></footer>
 </body>
 </html>

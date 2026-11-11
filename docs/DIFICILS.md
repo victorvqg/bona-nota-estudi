@@ -142,3 +142,27 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `punts/7` | El punt, l'interrogant, l'admiració i els punts suspensius | Quina d'aquestes enumeracions està ben escrita? | Porto llapis, gomes, retoladors, etc. | Opcions difereixen en un sol signe (etc.) |
 | `teatre/2` | El teatre, l'assaig i com reconèixer els gèneres | Com acaba un drama? | Amb un desenllaç incert | Drama i tragèdia: desenllaç incert o fatal |
 | `teatre/7` | El teatre, l'assaig i com reconèixer els gèneres | Verdaguer explica en vers les aventures del comte de Mataplana i els dos cavalls. Quin gènere és? | Poesia èpica | Dos passos: és vers i a més narra herois |
+
+## 🎬 Tema 2: That's Entertainment (`angles`) · 19 de 85
+
+| Id | Tema | Pregunta | Resposta correcta | Per què |
+|---|---|---|---|---|
+| `adj1/6` | A1 · Adjectives of description 1 | Quina frase sobre els cabells és correcta? | Her hair is red. | Hair és no comptable en anglès: va en singular (is), sense -s |
+| `adj1/10` | A1 · Adjectives of description 1 | Com es diu en anglès «Ella té els cabells llargs i arrissats»? | She's got long curly hair. | Ordre d'adjectius davant del nom i hair sense plural |
+| `adj2/6` | C1 · Adjectives of description 2 | Quins són els tres compound adjectives de la secció? | fun-loving, easy-going, hard-working | Compound adjectives amb guionet, fàcils de barrejar amb altres adjectius |
+| `adj2/10` | C1 · Adjectives of description 2 | Què vol dir confident? | segur de si mateix | Fals amic clàssic: confident vol dir segur de si mateix, no de confiança |
+| `continuous/4` | A3 · Present Continuous | Quina és la forma -ing de lie? | lying | Excepció ortogràfica: els verbs en -ie canvien a -ying (lie → lying) |
+| `continuous/6` | A3 · Present Continuous | Look! The children ___ Halloween costumes. | are wearing | Plural irregular children (are, no is) amb pista d'acció actual (Look!) |
+| `dospresents/2` | B3 · Present Simple / Present Continuous | I ___ the story now. | understand | Parany amb «now»: understand és un stative verb i va en Present Simple |
+| `dospresents/5` | B3 · Present Simple / Present Continuous | ___ your sister ___ horror films? | Does / like | Stative verb (like) en pregunta de 3a persona (Does + verb base) |
+| `dospresents/9` | B3 · Present Simple / Present Continuous | I ___ an ice cream now. | want | Parany amb «now»: want és un stative verb i no admet forma en -ing |
+| `fenn/6` | B2 · Reading: Fenn's Treasure | «Eventually, Jack Stuef finds the treasure.» Què vol dir eventually? | finalment | Fals amic clàssic: eventually vol dir finalment, no eventualment |
+| `fenn/7` | B2 · Reading: Fenn's Treasure | The treasure is about two ___ dollars. | million | Million va en singular quan porta una xifra exacta al davant (two million) |
+| `fenn/8` | B2 · Reading: Fenn's Treasure | ___ of people read the poem. | Thousands | Thousands porta -s quan va seguit d'«of» i sense número davant |
+| `generes/6` | B1 · Film and book genres | Què vol dir I don't mind horror films? | Les pel·lis de terror tant me fan | «Don't mind» sembla negatiu però vol dir «tant me fa» |
+| `generes/10` | B1 · Film and book genres | Ordena les paraules: hate / absolutely / romances / I | I absolutely hate romances. | Posició de l'adverbi absolutely davant del verb principal (hate) |
+| `museu/7` | A2 · Reading: Museum exhibits | Què vol dir according to? | segons | Fals amic: according to vol dir «segons», no «d'acord» |
+| `museu/8` | A2 · Reading: Museum exhibits | At Halloween, I wear a witch… | costume | Costume (disfressa) i custom (costum) es confonen molt sovint |
+| `museu/10` | A2 · Reading: Museum exhibits | Quina frase amb people és correcta? | People are dancing. | Plural irregular sense -s: people concorda amb are, no amb is |
+| `suggeriments/1` | C2 · Make suggestions | How about ___ a film? | watching | How about va seguit de verb en -ing, a diferència de Let's o Why don't we |
+| `suggeriments/10` | C2 · Make suggestions | Com es diu «Sona bé» en anglès? | Sounds good. | Verb de percepció (sound) seguit d'adjectiu (good), no d'adverbi (well) |
