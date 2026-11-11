@@ -10,7 +10,7 @@ Aquest document explica quan Bona Nota ajuda el nen a aprendre i quan comença a
 | [`XAT.md`](XAT.md) | Com es parlen els nens? |
 | [`BENESTAR.md`](BENESTAR.md) | Com ho porta cada nen? (el que veu el pare al tauler) |
 
-> **Estat (11 de novembre de 2026 · v2.21.0).** Tots els principis ([ADR-0007](DECISIONS.md)) i els llindars confirmats ([ADR-0008](DECISIONS.md)) estan **actius a producció**: fases del món i pla de 10 dies, descans de 25 minuts registrat i amb límit de salts, avís amable als 60/120 minuts, franja de nit amb mode suau automàtic, botó «Demà tinc examen», textos amables de mentalitat de creixement, rànquing per «Dies d'estudi» i senyals complets al tauler de Benestar.
+> **Estat (11 de novembre de 2026 · v2.24.0).** Tots els principis ([ADR-0007](DECISIONS.md)) i els llindars confirmats ([ADR-0008](DECISIONS.md)) estan **actius a producció**: fases del món i pla de 10 dies, descans de 25 minuts registrat i amb límit de salts, avís amable als 60/120 minuts, franja de nit amb mode suau automàtic, botó «Demà tinc examen» (amb opció de desmarcar-lo si s'ha premut per error), textos amables de mentalitat de creixement, rànquing per «Dies d'estudi» i senyals complets al tauler de Benestar.
 
 ## 1. Principis
 
@@ -126,7 +126,7 @@ Decisions confirmades el **11 de novembre de 2026** ([ADR-0008](DECISIONS.md)):
 1. **Avís de temps:** avís amable **sense bloqueig** als **60 minuts** els dies normals i als **120 minuts** la vigília.
 2. **Franja de nit:** a partir de les **21:30** i, la vigília, de les **22:00** (hora de Catalunya): avís d'anar a dormir + **mode suau automàtic** dins dels mons (sense bloquejar les estrelles ni tocar `localStorage.bn_suau`) + xat tancat per horari (`bn_control.sql`).
 3. **Descans:** es registra (`descans`: `fet` o `salta`) i es pot dir «Ara no, continuo» com a màxim **2 vegades** seguides els dies normals i **3** la vigília; després els 5 minuts són obligatoris.
-4. **Botó «Demà tinc examen»:** actiu dins del món (confirmació en dos tocs), amb un màxim de **2 dies per món**, registrat amb `examen_dema`.
+4. **Botó «Demà tinc examen»:** actiu dins del món (confirmació en dos tocs, i prement sobre «Has marcat examen demà · desmarca ✕» es desfa si s'ha tocat sense voler), amb un màxim de **2 dies per món**, registrat amb `examen_dema` (`accio: 'posa' | 'treu'`).
 5. **Dates d'examen:** l'administrador les pot posar al tauler quan les sap (manen per damunt de tot); quan no n'hi ha, s'apliquen el botó del nen (vigília individual) i el pic del grup.
 6. **Pestanya Temps del rànquing:** substituïda per **«Dies» («Dies d'estudi»)** (i el premi «Més constant» també compta dies diferents d'estudi).
 7. **Qui veu el Benestar:** **només l'administrador** a `/admin/`.

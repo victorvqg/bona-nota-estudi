@@ -74,6 +74,8 @@ jobs:
         run: node motor/prova-pin-intents-sql.js
       - name: Prova del permís i límit de fotos del quadern (supabase/bn_fotos.sql)
         run: node motor/prova-fotos-sql.js
+      - name: Prova de la dificultat calculada amb dades (supabase/bn_admin_dificultat.sql, issue #16)
+        run: node motor/prova-dificultat-sql.js
 
   interficie:
     name: Portada, perfil, pares i admin

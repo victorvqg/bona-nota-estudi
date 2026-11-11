@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="267a74956a",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="b4c263e5eb",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -476,6 +476,8 @@ body.suau .combo{animation:none!important}
 .pla-dia.despres{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border-color:#86efac}
 .pla-dia .pla-cap{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .pla-dia .pla-cap b{font-size:16px}.pla-dia .pla-cap small{color:var(--suau);font-weight:800;font-size:12.5px}
+.pla-dia .pla-desmarca{appearance:none;border:1.5px solid #60a5fa;background:#ffffffcc;color:#1d4ed8;font:inherit;font-weight:800;font-size:12.5px;padding:4px 10px;border-radius:999px;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
+.pla-dia .pla-desmarca:hover{background:#fff;border-color:#2563eb}.pla-dia .pla-desmarca:active{transform:scale(.96)}
 .pla-dia p{margin:6px 0 0;font-size:15px;color:var(--txt)}
 .pla-dia .pla-acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
 .pla-dia .btn-petit,.avis-bon-us .btn-petit{padding:7px 12px;font-size:13.5px}
@@ -587,7 +589,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.23.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.24.0</small></div>
 
 <script src="../../sprites.js?v=0be9e885"></script>
 <script>
@@ -1665,13 +1667,15 @@ function fusiona(a,b){const nouA=(a&&a.mod||0)>=(b&&b.mod||0);
  const f=(x,y,k)=>{if(x===undefined||x===null)return y;if(y===undefined||y===null)return x;
   if(k==="est"&&typeof x==="object"&&typeof y==="object"&&x.d!==y.d)return String(x.d||"")>String(y.d||"")?x:y; // comptadors d'un altre dia: es queda el del dia més nou
   if(k==="dies"&&Array.isArray(x)&&Array.isArray(y))return [...new Set([...x,...y])].sort();
-  if(k==="vigilia_dies"&&Array.isArray(x)&&Array.isArray(y))return [...new Set([...x,...y].filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)))].sort().slice(0,2);
+  if(k==="vigilia_dies"&&Array.isArray(x)&&Array.isArray(y))return [...new Set([...x,...y].filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)))].sort();
+  if(k==="vigilia_mod"&&typeof x==="object"&&typeof y==="object"){const o={};new Set([...Object.keys(x),...Object.keys(y)]).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)).forEach(d=>{const ax=x[d],by=y[d];o[d]=!ax?by:!by?ax:(+ax.ts||0)>=(+by.ts||0)?ax:by});return o}
   if(Array.isArray(x)||Array.isArray(y))return (Array.isArray(x)?x:[]).length>=(Array.isArray(y)?y:[]).length?x:y;
   if(typeof x==="number"&&typeof y==="number")return Math.max(x,y);
   if(typeof x==="boolean"||typeof y==="boolean")return !!(x||y);
   if(typeof x==="object"&&typeof y==="object"){const o={};new Set([...Object.keys(x),...Object.keys(y)]).forEach(kk=>o[kk]=f(x[kk],y[kk],kk));return o}
   return nouA?x:y};
- const r=f(a||{},b||{},"");r.nom=(a&&a.nom)||(b&&b.nom)||"";r.mod=Math.max(a&&a.mod||0,b&&b.mod||0);return Object.assign(BUIT(),r)}
+ const r=f(a||{},b||{},"");if(Array.isArray(r.vigilia_dies)){const vm=r.vigilia_mod&&typeof r.vigilia_mod==="object"?r.vigilia_mod:{};r.vigilia_dies=[...new Set(r.vigilia_dies.filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&!(vm[d]&&vm[d].on===0)))].sort().slice(0,2)}
+ r.nom=(a&&a.nom)||(b&&b.nom)||"";r.mod=Math.max(a&&a.mod||0,b&&b.mod||0);return Object.assign(BUIT(),r)}
 // REINICI des de l'admin (supabase/bn_admin_reinicia.sql): el núvol torna «reinici» (ms de l'últim esborrat d'aquest món o de tots).
 // Si és més nou que el que coneix aquest dispositiu (S.reinici), PRIMER es buida aquí el progrés d'aquest món (es queden el nom i l'id)
 // i només després es fusiona amb el núvol. Si no, fusiona() (que agafa sempre el més alt) faria tornar el progrés esborrat.
@@ -1761,7 +1765,8 @@ function araMadrid(){if(HORA_PROVA)return HORA_PROVA;try{
  const h=(+p.hour||0)%24,m=+p.minute||0;return {dia:`${p.year}-${p.month}-${p.day}`,hm:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`,min:h*60+m}}
  catch(e){const d=new Date(),h=d.getHours(),m=d.getMinutes();return {dia:avui(),hm:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`,min:h*60+m}}}
 const diesMon=(dA,dB)=>Math.round((Date.parse(dA+"T00:00:00Z")-Date.parse(dB+"T00:00:00Z"))/864e5);
-function vigiliaDiesNen(){return Array.isArray(S.vigilia_dies)?[...new Set(S.vigilia_dies.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)))].sort().slice(0,2):[]}
+function vigiliaDiesNen(){const vm=S.vigilia_mod&&typeof S.vigilia_mod==="object"?S.vigilia_mod:{};
+ return Array.isArray(S.vigilia_dies)?[...new Set(S.vigilia_dies.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)&&!(vm[x]&&vm[x].on===0)))].sort().slice(0,2):[]}
 function faseActual(){
  const dia=araMadrid().dia,d0=(VIG_SRV&&VIG_SRV.dia0)||MON_NEIX,ex=VIG_SRV&&VIG_SRV.examen||null,edat=d0?diesMon(dia,d0):null;
  if(ex)return diesMon(ex,dia)===1?"vigilia":dia>=ex?"despres":"aprendre";
@@ -1797,14 +1802,20 @@ function comprovaBonUsTick(){aplicaSuau();comprovaAvisTemps();const an=document.
 function obreExamenDema(){EX_DEMA_OBERT=true;const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia()}
 function tancaExamenDema(){EX_DEMA_OBERT=false;const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia()}
 function confirmaExamenDema(){const dia=araMadrid().dia,vd=vigiliaDiesNen();if(vd.length>=2||vd.includes(dia))return;
+ S.vigilia_mod=Object.assign({},S.vigilia_mod,{[dia]:{on:1,ts:Date.now()}});
  S.vigilia_dies=[...vd,dia].sort().slice(0,2);EX_DEMA_OBERT=false;desa();aplicaSuau();
- registra("examen_dema",{dia,n:S.vigilia_dies.length});
+ registra("examen_dema",{dia,n:S.vigilia_dies.length,accio:"posa"});
+ if(document.querySelector(".hero"))vista("inici");else{const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia()}}
+function desmarcaExamenDema(){const dia=araMadrid().dia,vd=vigiliaDiesNen();if(!vd.includes(dia))return;
+ S.vigilia_mod=Object.assign({},S.vigilia_mod,{[dia]:{on:0,ts:Date.now()}});
+ S.vigilia_dies=vd.filter(d=>d!==dia);EX_DEMA_OBERT=false;desa();aplicaSuau();
+ registra("examen_dema",{dia,n:S.vigilia_dies.length,accio:"treu"});
  if(document.querySelector(".hero"))vista("inici");else{const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia()}}
 function cartaPlaDia(){if(!S.nom)return "";
  const fase=faseActual(),dia=araMadrid().dia,d0=(VIG_SRV&&VIG_SRV.dia0)||MON_NEIX,edat=d0?Math.max(1,diesMon(dia,d0)+1):null;
  const pend=repPendents().length,sp=seguentPendent(),falten=T.filter(t=>(millor(t.id)??0)<APROVA).length;
  const vd=vigiliaDiesNen(),quedenEx=Math.max(0,2-vd.length),potBotoEx=fase==="aprendre"&&!(VIG_SRV&&VIG_SRV.examen)&&quedenEx>0&&!vd.includes(dia);
- if(fase==="vigilia")return `<div class="pla-dia vigilia" id="plaDia"><div class="pla-cap"><b>🎯 Avui és vigília d'examen</b><small>${vd.includes(dia)?"Has marcat examen demà":"Repàs tranquil"}</small></div><p>Res d'atabalar-se amb temes nous amb pressa: repassa els errors pendents i fes un Examen de veritat per anar-hi ben segur.</p><div class="pla-acc">${pend?`<button class="btn verd btn-petit" type="button" onclick="repas()">🔁 Repassa ${pend} error${pend>1?"s":""}</button>`:""}<button class="btn btn-petit" type="button" onclick="joc('examreal')">📝 Examen de veritat</button></div></div>`;
+ if(fase==="vigilia")return `<div class="pla-dia vigilia" id="plaDia"><div class="pla-cap"><b>🎯 Avui és vigília d'examen</b>${vd.includes(dia)?`<button type="button" class="pla-desmarca" id="btExDemaTreu" onclick="desmarcaExamenDema()" title="Desmarca l'avís d'examen demà">Has marcat examen demà · desmarca ✕</button>`:`<small>Repàs tranquil</small>`}</div><p>Res d'atabalar-se amb temes nous amb pressa: repassa els errors pendents i fes un Examen de veritat per anar-hi ben segur.</p><div class="pla-acc">${pend?`<button class="btn verd btn-petit" type="button" onclick="repas()">🔁 Repassa ${pend} error${pend>1?"s":""}</button>`:""}<button class="btn btn-petit" type="button" onclick="joc('examreal')">📝 Examen de veritat</button></div></div>`;
  if(fase==="despres")return `<div class="pla-dia despres" id="plaDia"><div class="pla-cap"><b>🌿 Repàs lliure, sense pressa</b></div><p>Entra quan et vingui de gust per mantenir fresc el que ja saps, al teu ritme.</p></div>`;
  const txt=falten>0&&sp>=0?`Et ${falten===1?"queda <b>1 tema</b>":"queden <b>"+falten+" temes</b>"} per aprovar. Pla d'avui: fes <b>${T[sp].ic} ${T[sp].titol}</b>${pend?` i repassa <b>${pend} error${pend>1?"s":""}</b>`:""}.`
   :`Ja has aprovat tots els temes! Avui pots ${pend?`repassar <b>${pend} error${pend>1?"s":""}</b> o `:""}practicar una pregunta oberta sense pressa.`;
@@ -2055,26 +2066,32 @@ function bnProvaBossExamen(){const t0=S.temes,x0=S.examens;
 window.BN_PROVES.push("bnProvaBossExamen");
 // prova (g5 · docs/BON-US.md): fases del món, «demà tinc examen» (màx 2), descans amb límit de salts, avís 60/120 min i nit 21:30/22:00
 async function bnProvaBonUs(){
- const est0=JSON.stringify(S.est||null),vd0=JSON.stringify(S.vigilia_dies||null),vig0=VIG_SRV,hp0=HORA_PROVA,suau0=SUAU,sm0=SUAU_MANUAL,ls0=localStorage.getItem("bn_suau");
+ const est0=JSON.stringify(S.est||null),vd0=JSON.stringify(S.vigilia_dies||null),vm0=JSON.stringify(S.vigilia_mod||null),vig0=VIG_SRV,hp0=HORA_PROVA,suau0=SUAU,sm0=SUAU_MANUAL,ls0=localStorage.getItem("bn_suau");
  try{
   // 1) Fases i pla del dia
-  delete S.vigilia_dies;VIG_SRV={dia0:"2026-11-10",examen:null,fase:"aprendre",nit_h:"21:30",nit_vigilia_h:"22:00",obre_h:"06:00"};
+  delete S.vigilia_dies;delete S.vigilia_mod;VIG_SRV={dia0:"2026-11-10",examen:null,fase:"aprendre",nit_h:"21:30",nit_vigilia_h:"22:00",obre_h:"06:00"};
   HORA_PROVA={dia:"2026-11-13",hm:"17:00",min:1020};
   if(faseActual()!=="aprendre")return `dia 4 sense examen hauria de ser 'aprendre' i és '${faseActual()}'`;
   vista("inici");if(!document.getElementById("plaDia")||!document.getElementById("btExDema"))return "a 'aprendre' han de sortir #plaDia i #btExDema";
-  // 2) Botó «Demà tinc examen» en dos tocs (màxim 2 dies per món)
+  // 2) Botó «Demà tinc examen» en dos tocs, desmarcat directe i màxim 2 dies per món
   document.getElementById("btExDema").click();const bSi=document.getElementById("btExDemaSi");if(!bSi)return "no surt la confirmació #btExDemaSi";
   bSi.click();if(!esVigilia()||vigiliaDiesNen().join()!=="2026-11-13")return "després de confirmar hauria de ser vigília d'avui";
   if(!document.querySelector("#plaDia.vigilia"))return "la targeta del pla no passa a estil vigília";
+  const bTreu=document.getElementById("btExDemaTreu");if(!bTreu||!/Has marcat examen demà/.test(bTreu.textContent))return "a la vigília marcada pel nen ha de sortir #btExDemaTreu";
+  bTreu.click();if(esVigilia()||vigiliaDiesNen().length!==0||!document.getElementById("btExDema"))return "en prémer #btExDemaTreu s'ha de desmarcar la vigília i tornar #btExDema";
+  if((fusiona(S,{vigilia_dies:["2026-11-13"]}).vigilia_dies||[]).length!==0)return "fusiona() no ha de tornar a marcar un dia que s'ha desmarcat";
+  await new Promise(r=>setTimeout(r,5));
+  document.getElementById("btExDema").click();document.getElementById("btExDemaSi").click();
+  if(!esVigilia()||vigiliaDiesNen().join()!=="2026-11-13")return "després de desmarcar s'ha de poder tornar a marcar";
   // l'endemà d'una vigília sense data d'admin passa a 'despres'
   HORA_PROVA={dia:"2026-11-14",hm:"17:00",min:1020};
   if(faseActual()!=="despres")return `l'endemà de la vigília hauria de ser 'despres' i és '${faseActual()}'`;
   // fusió de vigilia_dies amb topall de 2 dies
   const fu=fusiona({vigilia_dies:["2026-11-11","2026-11-15"]},{vigilia_dies:["2026-11-12"]});
   if((fu.vigilia_dies||[]).join()!=="2026-11-11,2026-11-12")return "fusiona() ha de quedar-se els 2 primers dies ordenats de vigilia_dies";
-  S.vigilia_dies=["2026-11-11","2026-11-12"];HORA_PROVA={dia:"2026-11-10",hm:"17:00",min:1020};vista("inici");
+  delete S.vigilia_mod;S.vigilia_dies=["2026-11-11","2026-11-12"];HORA_PROVA={dia:"2026-11-10",hm:"17:00",min:1020};vista("inici");
   if(document.getElementById("btExDema"))return "amb 2 avisos gastats ja no ha de sortir #btExDema";
-  delete S.vigilia_dies;
+  delete S.vigilia_dies;delete S.vigilia_mod;
   // 3) Descans: màxim 2 salts un dia normal, 3 a la vigília, i en acabar els segons es reseteja la ratxa de salts
   HORA_PROVA={dia:"2026-11-13",hm:"17:00",min:1020};delete S.est;
   descans();if(!document.getElementById("dSalta"))return "1r descans normal: falta #dSalta";document.getElementById("dSalta").click();
@@ -2110,6 +2127,7 @@ async function bnProvaBonUs(){
   document.querySelectorAll(".descans,#avisTemps,#avisNit").forEach(e=>e.remove());
   const e0=JSON.parse(est0);if(e0)S.est=e0;else delete S.est;
   const v0=JSON.parse(vd0);if(v0)S.vigilia_dies=v0;else delete S.vigilia_dies;
+  const m0=JSON.parse(vm0);if(m0)S.vigilia_mod=m0;else delete S.vigilia_mod;
   VIG_SRV=vig0;HORA_PROVA=hp0;EX_DEMA_OBERT=false;AVIS_NIT_TANCAT=false;AVIS_TEMPS_MSG="";
   SUAU=suau0;SUAU_MANUAL=sm0;if(ls0===null)localStorage.removeItem("bn_suau");else localStorage.setItem("bn_suau",ls0);
   aplicaSuau();SEST=0;desa();vista("inici")

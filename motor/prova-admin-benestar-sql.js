@@ -425,6 +425,10 @@ async function base() {
   ev("ExTres", "comarques", "examen_dema", "2026-11-14 10:00", {});
   ev("ExTres", "comarques", "examen_dema", "2026-11-15 10:00", {});
   ev("ExTres", "comarques", "examen_dema", "2026-11-16 10:00", {});
+  // si un nen marca examen_dema i el mateix dia el desmarca (accio='treu'), no compta ni com a senyal ni com a vigília ni gasta avís
+  ev("ExTreu", "comarques", "examen_dema", "2026-11-16 16:00", { dia: "2026-11-16", accio: "posa" });
+  ev("ExTreu", "comarques", "examen_dema", "2026-11-16 16:02", { dia: "2026-11-16", accio: "treu" });
+  bloc("ExTreu", "comarques", "2026-11-16 16:05", [45, 45]); // 90 min un dia desmarcat (>60 normal) → torna a saltar marato_bloc vermell
   await desa();
   const x = await benestar("7d");
   ok(igual(sen(x, "descbo", "fa_descans"), [S("fa_descans", "bo", "2026-11-16", null, 2, 3)]), "fa_descans: 2 de 3 descansos fets → bo");
@@ -433,7 +437,9 @@ async function base() {
   ok(igual(sen(x, "exnen", "examen_dema"), [S("examen_dema", "context", "2026-11-16", "comarques", 1, 2)]), "examen_dema registrat com a senyal de context (1 de 2)");
   ok(sen(x, "exnen", "marato_bloc").length === 0 && sen(x, "exnen", "nit").length === 0 && sen(x, "exnen", "salta_descans").length === 0,
    "examen_dema activa els llindars de vigília (120 min, 22:00 i 3 salts) per a aquell nen i món");
-  ok(sen(x, "extres", "examen_dema").length === 2, "màxim 2 avisos examen_dema per nen i món"); }
+  ok(sen(x, "extres", "examen_dema").length === 2, "màxim 2 avisos examen_dema per nen i món");
+  ok(sen(x, "extreu", "examen_dema").length === 0 && igual(sen(x, "extreu", "marato_bloc"), [S("marato_bloc", "vermell", "2026-11-16", "comarques", 90, 60)]),
+   "examen_dema desmarcat amb accio='treu' no compta ni com a senyal ni com a vigília"); }
 
  console.log("22) permisos");
  { const fn = ["public.bn_admin_benestar(text,text,text,text)", "public.bn_admin_examen_desa(text,text,text,date)"];
