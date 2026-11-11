@@ -74,6 +74,8 @@ jobs:
         run: node motor/prova-pin-intents-sql.js
       - name: Prova del permís i límit de fotos del quadern (supabase/bn_fotos.sql)
         run: node motor/prova-fotos-sql.js
+      - name: Prova de la dificultat calculada amb dades (supabase/bn_admin_dificultat.sql, issue #16)
+        run: node motor/prova-dificultat-sql.js
 
   interficie:
     name: Portada, perfil, pares i admin
@@ -94,13 +96,9 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: pw-${{ runner.os }}-${{ steps.pw.outputs.hash }}
-      - name: Prepara Chromium i dependències del sistema
-        run: |
-          if [ "${{ steps.pw-cache.outputs.cache-hit }}" != "true" ]; then
-            npx playwright install --with-deps chromium
-          else
-            npx playwright install-deps chromium
-          fi
+      - name: Prepara Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium
       - name: Prova del núvol d'un món (amb Supabase simulat)
         run: node motor/prova-nuvol.js
       - name: Prova de la pàgina de perfil (perfil/)
@@ -144,12 +142,8 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: pw-${{ runner.os }}-${{ steps.pw.outputs.hash }}
-      - name: Prepara Chromium i dependències del sistema
-        run: |
-          if [ "${{ steps.pw-cache.outputs.cache-hit }}" != "true" ]; then
-            npx playwright install --with-deps chromium
-          else
-            npx playwright install-deps chromium
-          fi
+      - name: Prepara Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium
       - name: Prova estricta de ${{ matrix.mon }}
         run: cd motor && ESTRICTE=1 node prova.js "$PWD/../${{ matrix.mon }}/index.html"

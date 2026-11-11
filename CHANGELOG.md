@@ -5,7 +5,7 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
-## 2.24.0 · 2026-11-11
+## 2.25.0 · 2026-11-11
 
 ### Afegit
 - Tipus de joc nou **«✍️ Frases amb buits»** (`tipus:"frases"`, `jocFrases` a la plantilla), per practicar amb frases fetes on falta un tros (n2564):
@@ -16,6 +16,16 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
   - Botó «✍️ Practica-ho amb frases» a la fitxa dels temes que tenen joc de frases (`T[i].frases`).
 - Món 7 (`angles/t2`): **7 jocs de frases amb 84 frases** fetes amb el vocabulari i la gramàtica del mòdul: *Describe a person*, *What's happening now?*, *Simple or Continuous?*, *I really like…*, *Words from the texts*, *What are they like?* i *Let's watch a film!*
 - Proves: `motor/prova.js` juga tots els jocs de frases i en revisa les dades (`frValida`), i la prova pròpia `frRepProva` comprova que un error entra al repàs i en surt.
+
+## 2.24.0 · 2026-11-11
+
+### Afegit
+- Motor, mons i Benestar (`motor/plantilla-estudi-interactiu.html`, `supabase/bn_admin_benestar.sql`, `motor/prova-admin-benestar-sql.js`): un cop marcat «📅 Demà tinc examen», el rètol superior de `#plaDia` passa a ser clicable (**«Has marcat examen demà · desmarca ✕»**, `#btExDemaTreu`) per desfer l'avís d'avui en un toc, recuperar l'avís disponible, sincronitzar el desmarcat al núvol (`S.vigilia_mod` a `fusiona()`) i no comptar el dia desmarcat (`accio: 'treu'`) al tauler de Benestar (g9).
+- Dificultat calculada amb dades reals, base de l'issue `#16` (`supabase/bn_admin_dificultat.sql`, `motor/prova-dificultat-sql.js`, `motor/dificultat.py --proposa`): funció SQL `bn_admin_dificultat` que calcula l'encert i l'encert a la primera resposta de cada pregunta (`< 55 %` → difícil `3`, `> 90 %` → fàcil `1` a partir de `p_min = 8` respostes en tests i exàmens) i mode `--proposa` per generar l'informe de canvis sobre `motor/dificultat.json` (g9).
+
+### Canviat
+- Tauler d'administració en mode demostració (`admin/index.html` `?demo`): s'hi incorpora el món 7 (`angles`) als jocs, a les sessions simulades i als mons de Benestar (g9).
+- Action «Revisa Bona Nota» (`.github/workflows/revisa.yml`): executa en paral·lel 4 blocs (`base`, `sql` amb PGlite, `interficie` i matriu dinàmica de 7 `mons`) amb memòria cau de Chromium, baixant el temps de revisió de ~18 min a ~3,5 min (g8/g9).
 
 ## 2.23.0 · 2026-11-11
 
