@@ -54,6 +54,8 @@ jobs:
         run: node motor/prova-admin-fitxa.js
       - name: Prova del benestar a la base de dades (supabase/bn_admin_benestar.sql dins de PGlite)
         run: node motor/prova-admin-benestar-sql.js
+      - name: Prova del bon ús i vigília a la base de dades (supabase/bn_bon_us.sql dins de PGlite)
+        run: node motor/prova-bon-us-sql.js
       - name: Prova de l'apartat Benestar del tauler (amb Supabase simulat)
         run: node motor/prova-admin-benestar.js
       - name: Prova dels combos, el repàs i els errors pendents a la base de dades (supabase/bn_admin_fonts_rep.sql dins de PGlite)

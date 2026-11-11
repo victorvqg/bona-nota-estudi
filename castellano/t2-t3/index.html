@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f166e4bb83",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a9e5a6e6bc",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -469,6 +469,21 @@ body.suau .combo{animation:none!important}
 .descans h2{font-size:26px;margin:8px 0}.descans p{max-width:420px;font-size:17px;opacity:.95}
 .descans .rel{font-family:'Press Start 2P',monospace;font-size:34px;margin:14px 0}
 .descans ul{text-align:left;max-width:380px;font-size:16px;line-height:1.7}
+.descans .desc-oblig{max-width:420px;margin:10px 0 0;padding:10px 14px;border-radius:12px;background:#ffffff1f;font-size:15px;font-weight:700}
+/* ---- bon ús: pla del dia, vigília i avisos amables ---- */
+.pla-dia{margin-top:14px;background:linear-gradient(135deg,#f8fafc,#eef2ff);border:2px solid #c7d2fe;border-radius:16px;padding:12px 16px}
+.pla-dia.vigilia{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#60a5fa}
+.pla-dia.despres{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border-color:#86efac}
+.pla-dia .pla-cap{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pla-dia .pla-cap b{font-size:16px}.pla-dia .pla-cap small{color:var(--suau);font-weight:800;font-size:12.5px}
+.pla-dia p{margin:6px 0 0;font-size:15px;color:var(--txt)}
+.pla-dia .pla-acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.pla-dia .btn-petit,.avis-bon-us .btn-petit{padding:7px 12px;font-size:13.5px}
+.pla-conf{margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff;border:1.5px solid #93c5fd;font-size:14.5px}
+.avis-bon-us{margin:0 0 12px;padding:12px 15px;border-radius:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:15px;box-shadow:var(--om)}
+.avis-bon-us.nit{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#e0e7ff;border:2px solid #818cf8}
+.avis-bon-us.temps{background:linear-gradient(135deg,#fffbeb,#fef3c7);color:#78350f;border:2px solid #fcd34d}
+.avis-bon-us .av-txt{flex:1;min-width:200px}
 /* ====================== ICONES, MASCOTA I MOVIMENT (v2) ====================== */
 .ico{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
 nav i{display:inline-flex}nav i .ico{width:19px;height:19px}
@@ -572,7 +587,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versión 2.19.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versión 2.20.0</small></div>
 
 <script src="../../sprites.js?v=fd512289"></script>
 <script>
@@ -909,7 +924,7 @@ const OB=[
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
 ASSIG.boss={nom:"El Monstruo de las Faltas",spr:"monstre"};
 
-const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/"}, {"id": "angles", "clau": "bn_angles", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/"}];
+const MONS=[{"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "angles", "clau": "bn_angles", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}];
 const QIDS={"texto":[1,2,3,4,5,6,7,8],"tipos":[1,2,3,4,5,6,7,8],"sustantivo":[1,2,3,4,5,6,7,8],"genero":[1,2,3,4,5,6,7,8],"diccionario":[1,2,3,4,5,6,7,8],"puntuacion":[1,2,3,4,5,6,7,8],"noticia":[1,2,3,4,5,6,7,8],"fake":[1,2,3,4,5,6,7,8],"lirica":[1,2,3,4,5,6,7,8],"narrativa":[9,2,3,4,5,6,7,8],"articulos":[1,2,3,4,5,6,7,8],"demostrativos":[1,2,3,4,5,6,7,8],"cuantificadores":[1,2,3,4,5,6,9,8],"polisemia":[1,2,3,4,5,6,7,8],"letrab":[1,2,3,4,5,6,7,8]};
 const QDIF={"articulos/6":3,"articulos/8":3,"cuantificadores/4":3,"cuantificadores/6":3,"cuantificadores/9":3,"demostrativos/3":3,"demostrativos/4":3,"demostrativos/7":3,"diccionario/3":3,"diccionario/4":3,"genero/1":3,"genero/3":3,"letrab/3":3,"letrab/4":3,"lirica/6":3,"narrativa/6":3,"noticia/6":3,"polisemia/2":3,"puntuacion/3":3,"puntuacion/4":3,"puntuacion/5":3,"sustantivo/4":3,"sustantivo/8":3,"texto/8":3,"tipos/2":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
@@ -1122,7 +1137,7 @@ function heroAsp(){if(typeof bnSkillSpr!=="function")return "";const a=aspecteNe
  return `<p class="asp">${BN_SKILL_INFO[a.sk].n} · ${BN_SKILL_ESTILS[BN_SKILL_VAR_PAL[a.v]?a.v:""]}</p>`}
 function pintaCap(){const nv=nivell(S.punts),tot=puntsTots(),sup=Math.floor(tot/SUPER);document.getElementById("punts").textContent=`⭐ ${tot}${sup?` · 🌠 ${sup}`:""} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · 🌠 ${sup} superestrelles (1 cada ${SUPER} ⭐) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom}${S.id?" · #"+S.id:""} · ${ASSIG.curs}`:ASSIG.curs}
 // temps d'estudi: cada 15 s amb la pestanya visible
-setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;TPEND+=15;guarda();if(TPEND>=300)buidaTemps()}},15000);
+setInterval(()=>{if(document.visibilityState==="visible"&&S.nom){S.temps+=15;TPEND+=15;const e=diaEst();e.ts=(e.ts||0)+15;guarda();comprovaBonUsTick();if(TPEND>=300)buidaTemps()}},15000);
 const app=document.getElementById("app");
 const barreja=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const millor=id=>{const t=S.temes[id];return t&&t.intents.length?Math.max(...t.intents.map(i=>i.pc)):null};
@@ -1327,7 +1342,7 @@ function fracas(pc,bones,n){
  so("trist");abaixaMusUnMoment(4.5);document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
  const d=document.createElement("div");d.className="arc ko";
  let pl="";for(let i=0;i<40;i++)pl+=`<i class="pluja" style="left:${Math.random()*100}%;animation-duration:${.6+Math.random()*.7}s;animation-delay:${Math.random()*1.2}s"></i>`;
- d.innerHTML=`${pl}<div class="masc-arc">${mascota("trist",92)}</div><div class="t1">${pc<25?"GAME<br>OVER":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">💔</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}REPASSA I<br>TORNA-HI!</div><div class="t4">TOCA PER CONTINUAR</div>`;
+ d.innerHTML=`${pl}<div class="masc-arc">${mascota("trist",92)}</div><div class="t1">${pc<25?"CAP<br>PROBLEMA!":"OOOH…<br>GAIREBÉ!"}</div><div class="t3">${bones}/${n}</div><div class="cor">🌱</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ELS ERRORS VAN AL REPÀS:<br>AIXÍ S'APRÈN!</div><div class="t4">TOCA PER CONTINUAR</div>`;
  document.body.appendChild(d);const tanca=()=>{d.remove();setTimeout(mostraNivell,250)};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4200);
 }
 function arcade(pc,bones,n,record){if(SUAU)document.body.classList.remove("tremola");
@@ -1399,12 +1414,12 @@ function tileTema(t,i){
 function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<APROVA})}
 function blocsTemes(){let i=0;return ASSIG.blocs.map(b=>{const h=`<h2 class="sec">${b.titol}</h2><div class="grid">${T.slice(i,i+b.n).map((t,k)=>tileTema(t,i+k)).join("")}</div>`;i+=b.n;return h}).join("")}
 function inici(){
- marcaDia();
+ marcaDia();aplicaSuau();
  const aprov=T.filter(t=>(millor(t.id)??0)>=APROVA).length, sp=seguentPendent();
  const res=resumGlobal();
- let h=`<div class="hero">${heroAv()}<div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}</h1>${heroAsp()}<p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ let h=`<div id="avisNitWrap">${bannerNitHtml()}</div>${bannerTempsHtml()}<div class="hero">${heroAv()}<div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}</h1>${heroAsp()}<p>${aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
  <div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div></div>${cartaNivell()}`;
- h+=cartaPin()+cartaRepas();
+ h+=cartaPin()+cartaPlaDia()+cartaRepas();
  // joc destacat (opcional): ASSIG.destacat = id del joc → botó gran a l'inici
  {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd)h+=`<div class="continua" role="button" tabindex="0" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(sp>=0)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
@@ -1473,13 +1488,13 @@ function test(ordre,k,bones,clau,pool,cb){
   const rec=ant!==null&&pc>ant;if(rec){const f=FONT;FONT=["record"];suma(2);FONT=f}
   registra("test",Object.assign({tema:tema.id,titol:tema.titol,pc},ULT));ULT=null; // després del rècord: les seves ⭐ compten en aquest test
   if(aprova)arcade(pc,bones,ordre.length,rec);else fracas(pc,bones,ordre.length);
-  const msg=pc>=90?"Excel·lent!":pc>=APROVA?"Tema superat!":pc>=50?`Gairebé! Per passar de tema cal un ${APROVA} %`:"Cal repassar més, ànims!";
+  const msg=pc>=90?"Excel·lent!":pc>=APROVA?"Tema superat!":pc>=50?`Gairebé! Per passar de tema cal un ${APROVA} %`:"Encara no surt, però vas aprenent!";
   z.innerHTML=`<div class="box" style="text-align:center"><div class="gran">${pc>=90?"🏆":pc>=70?"🌟":pc>=50?"👍":"📚"}</div><h2 style="margin:8px 0 2px">${bones} de ${ordre.length} · ${msg}</h2>
   <p class="prog" style="margin-top:14px">Com t'ha anat aquest tema?</p>
   <div class="valor">${[["😕","Costa"],["🙂","Bé"],["😃","Fàcil"]].map(([em,tx],i)=>`<button class="${e.valoracio===i?'on':''}" onclick="valora(${i},this)">${em}<small>${tx}</small></button>`).join("")}</div>
   ${teSeg&&aprova?`<p id="compte" class="prog" style="margin-top:16px">Passem a <b>${T[idx+1].ic} ${T[idx+1].titol}</b> en <span id="seg-s">8</span> s… <button class="pausa-seg" type="button" id="pausaSeg" onclick="pausaCompte()">⏸ Pausa</button></p>`:""}
   ${!teSeg&&aprova?`<p>🎉 Has acabat tots els temes! Prova les preguntes obertes o l'examen sorpresa.</p>`:""}
-  ${!aprova?`<p>Repassa la fitxa i torna-hi: amb un ${APROVA} % o més passaràs al tema següent. Les preguntes canvien cada vegada!</p>${repPendents().length?`<p><button class="btn verd" onclick="aturaSeg();repas()">🔁 Repassa els errors ara</button></p>`:""}`:""}
+  ${!aprova?`<p>Equivocar-se forma part d'aprendre: els errors ja són al teu repàs. Mira la fitxa amb calma i amb un ${APROVA} % o més passaràs al tema següent!</p>${repPendents().length?`<p><button class="btn verd" onclick="aturaSeg();repas()">🔁 Repassa els errors ara</button></p>`:""}`:""}
   <div class="fila">${teSeg&&aprova?`<button class="btn verd" onclick="aturaSeg();obre(${idx+1})">Tema següent →</button>`:""}<button class="btn ${teSeg&&aprova?'sec':''}" onclick="aturaSeg();pest='test';pintaTema()">Torna-hi</button><button class="btn sec" onclick="aturaSeg();pest='fitxa';pintaTema()">Repassa la fitxa</button></div></div>`;
   if(teSeg&&aprova){let s=8;temp=setInterval(()=>{s--;const el=document.getElementById("seg-s");if(!el){aturaSeg();return}el.textContent=s;if(s<=0){aturaSeg();obre(idx+1)}},1000)}
   return;
@@ -1504,7 +1519,7 @@ function test(ordre,k,bones,clau,pool,cb){
   if(ok&&pista&&REPAS&&tidR){const r=S.rep&&S.rep[tidR+"|"+q[0]];if(r){r.prox=diaMes(1);desa()}}
   const comboAbans=COMBO;
   if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":REPAS&&rp?`+${rp} ⭐ error corregit`:"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}ratxaDif(true,q,nova>0&&!pista)}else{ratxa(false);ratxaDif(false,q,false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
-  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}${!ok&&comboAbans>=2?`<div style="margin-top:6px;font-size:14px;color:#9a3412;font-weight:700">💛 Tranquil, l'error va al repàs: així és com s'aprèn!</div>`:""}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
  });
@@ -1644,6 +1659,7 @@ function fusiona(a,b){const nouA=(a&&a.mod||0)>=(b&&b.mod||0);
  const f=(x,y,k)=>{if(x===undefined||x===null)return y;if(y===undefined||y===null)return x;
   if(k==="est"&&typeof x==="object"&&typeof y==="object"&&x.d!==y.d)return String(x.d||"")>String(y.d||"")?x:y; // comptadors d'un altre dia: es queda el del dia més nou
   if(k==="dies"&&Array.isArray(x)&&Array.isArray(y))return [...new Set([...x,...y])].sort();
+  if(k==="vigilia_dies"&&Array.isArray(x)&&Array.isArray(y))return [...new Set([...x,...y].filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)))].sort().slice(0,2);
   if(Array.isArray(x)||Array.isArray(y))return (Array.isArray(x)?x:[]).length>=(Array.isArray(y)?y:[]).length?x:y;
   if(typeof x==="number"&&typeof y==="number")return Math.max(x,y);
   if(typeof x==="boolean"||typeof y==="boolean")return !!(x||y);
@@ -1731,23 +1747,83 @@ function posaPin(){const n=S.nom;rpc("bn_perfil_existeix",{p_nom:n}).then(ex=>{
  if(ex)pantallaPin(n,"entra",(ok,r)=>{if(r&&(r.estat||r.log||r.reinici)){fusionaNuvol(r);S.nom=n;S.mod=Date.now();guarda()}nuvolPuja();vista("inici")});
  else pantallaPin(n,"posa",ok=>{if(ok)nuvolPuja();vista("inici")})}).catch(()=>{})}
 
+// ====================== BON ÚS: FASES DEL MÓN, VIGÍLIA, NIT, TEMPS I DESCANS ======================
+const MON_NEIX=((typeof MONS!=="undefined"&&MONS.find(m=>m.id===ASSIG.id))||{}).neix||ASSIG.neix||null;
+let VIG_SRV=null,HORA_PROVA=null,EX_DEMA_OBERT=false,AVIS_NIT_TANCAT=false,AVIS_TEMPS_MSG="";
+function araMadrid(){if(HORA_PROVA)return HORA_PROVA;try{
+ const p={};new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date()).forEach(x=>{p[x.type]=x.value});
+ const h=(+p.hour||0)%24,m=+p.minute||0;return {dia:`${p.year}-${p.month}-${p.day}`,hm:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`,min:h*60+m}}
+ catch(e){const d=new Date(),h=d.getHours(),m=d.getMinutes();return {dia:avui(),hm:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`,min:h*60+m}}}
+const diesMon=(dA,dB)=>Math.round((Date.parse(dA+"T00:00:00Z")-Date.parse(dB+"T00:00:00Z"))/864e5);
+function vigiliaDiesNen(){return Array.isArray(S.vigilia_dies)?[...new Set(S.vigilia_dies.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)))].sort().slice(0,2):[]}
+function faseActual(){
+ const dia=araMadrid().dia,d0=(VIG_SRV&&VIG_SRV.dia0)||MON_NEIX,ex=VIG_SRV&&VIG_SRV.examen||null,edat=d0?diesMon(dia,d0):null;
+ if(ex)return diesMon(ex,dia)===1?"vigilia":dia>=ex?"despres":"aprendre";
+ if(edat!==null&&edat>12)return "despres";
+ const vd=vigiliaDiesNen();
+ if(vd.includes(dia))return "vigilia";
+ if(VIG_SRV&&VIG_SRV.fase==="vigilia")return "vigilia";
+ if(VIG_SRV&&VIG_SRV.fase==="despres")return "despres";
+ if(vd.some(x=>x<dia))return "despres";
+ return "aprendre"}
+const esVigilia=()=>faseActual()==="vigilia";
+function esHoraNit(){
+ const tanca=esVigilia()?((VIG_SRV&&VIG_SRV.nit_vigilia_h)||"22:00"):((VIG_SRV&&VIG_SRV.nit_h)||"21:30");
+ const obre=(VIG_SRV&&VIG_SRV.obre_h)||"06:00",hm=araMadrid().hm;
+ return tanca<obre?(hm>=tanca&&hm<obre):(hm>=tanca||hm<obre)}
+function carregaVigilia(){if(SENSE_NUVOL())return;
+ rpc("bn_vigilia",{p_assig:ASSIG.id,p_neix:MON_NEIX}).then(r=>{if(!r||typeof r!=="object")return;VIG_SRV=r;aplicaSuau();
+  const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia();
+  const an=document.getElementById("avisNitWrap");if(an)an.innerHTML=bannerNitHtml()}).catch(()=>{})}
+function bannerNitHtml(forca){if(!S.nom||AVIS_NIT_TANCAT||(!forca&&SENSE_NUVOL())||!esHoraNit())return "";
+ return `<div class="avis-bon-us nit" id="avisNit"><span style="font-size:24px">🌙</span><div class="av-txt"><b>Ja ho tens per avui, ${S.nom}.</b> Ara a dormir: mentre dorms el cervell guarda el que has estudiat i demà ho recordaràs millor. <small style="opacity:.85">(Mode suau activat)</small></div><button class="btn sec btn-petit" type="button" onclick="tancaAvisNit()">Entesos</button></div>`}
+function tancaAvisNit(){AVIS_NIT_TANCAT=true;const el=document.getElementById("avisNit");if(el)el.remove()}
+function bannerTempsHtml(){return AVIS_TEMPS_MSG?`<div class="avis-bon-us temps" id="avisTemps"><span style="font-size:24px">⏳</span><div class="av-txt">${AVIS_TEMPS_MSG}</div><button class="btn sec btn-petit" type="button" onclick="tancaAvisTemps()">Entesos ✓</button></div>`:""}
+function tancaAvisTemps(){AVIS_TEMPS_MSG="";const el=document.getElementById("avisTemps");if(el)el.remove()}
+function comprovaAvisTemps(forca){if(!S.nom||(!forca&&MODE_DEMO))return false;
+ const vig=esVigilia(),limMin=vig?120:60,clau=vig?"av120":"av60",e=diaEst();
+ if((e.ts||0)<limMin*60||e[clau])return false;
+ e[clau]=1;guarda();
+ AVIS_TEMPS_MSG=`<b>Ja portes ${Math.round((e.ts||0)/60)} minuts avui, ${S.nom}!</b> Per avui ja està molt bé: si vols anar plegant, demà ho recordaràs encara millor.`;
+ if(app&&!document.getElementById("avisTemps"))app.insertAdjacentHTML("afterbegin",bannerTempsHtml());
+ return true}
+function comprovaBonUsTick(){aplicaSuau();comprovaAvisTemps();const an=document.getElementById("avisNitWrap");if(an&&!an.innerHTML&&esHoraNit())an.innerHTML=bannerNitHtml()}
+function obreExamenDema(){EX_DEMA_OBERT=true;const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia()}
+function tancaExamenDema(){EX_DEMA_OBERT=false;const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia()}
+function confirmaExamenDema(){const dia=araMadrid().dia,vd=vigiliaDiesNen();if(vd.length>=2||vd.includes(dia))return;
+ S.vigilia_dies=[...vd,dia].sort().slice(0,2);EX_DEMA_OBERT=false;desa();aplicaSuau();
+ registra("examen_dema",{dia,n:S.vigilia_dies.length});
+ if(document.querySelector(".hero"))vista("inici");else{const pl=document.getElementById("plaDia");if(pl)pl.outerHTML=cartaPlaDia()}}
+function cartaPlaDia(){if(!S.nom)return "";
+ const fase=faseActual(),dia=araMadrid().dia,d0=(VIG_SRV&&VIG_SRV.dia0)||MON_NEIX,edat=d0?Math.max(1,diesMon(dia,d0)+1):null;
+ const pend=repPendents().length,sp=seguentPendent(),falten=T.filter(t=>(millor(t.id)??0)<APROVA).length;
+ const vd=vigiliaDiesNen(),quedenEx=Math.max(0,2-vd.length),potBotoEx=fase==="aprendre"&&!(VIG_SRV&&VIG_SRV.examen)&&quedenEx>0&&!vd.includes(dia);
+ if(fase==="vigilia")return `<div class="pla-dia vigilia" id="plaDia"><div class="pla-cap"><b>🎯 Avui és vigília d'examen</b><small>${vd.includes(dia)?"Has marcat examen demà":"Repàs tranquil"}</small></div><p>Res d'atabalar-se amb temes nous amb pressa: repassa els errors pendents i fes un Examen de veritat per anar-hi ben segur.</p><div class="pla-acc">${pend?`<button class="btn verd btn-petit" type="button" onclick="repas()">🔁 Repassa ${pend} error${pend>1?"s":""}</button>`:""}<button class="btn btn-petit" type="button" onclick="joc('examreal')">📝 Examen de veritat</button></div></div>`;
+ if(fase==="despres")return `<div class="pla-dia despres" id="plaDia"><div class="pla-cap"><b>🌿 Repàs lliure, sense pressa</b></div><p>Entra quan et vingui de gust per mantenir fresc el que ja saps, al teu ritme.</p></div>`;
+ const txt=falten>0&&sp>=0?`Et ${falten===1?"queda <b>1 tema</b>":"queden <b>"+falten+" temes</b>"} per aprovar. Pla d'avui: fes <b>${T[sp].ic} ${T[sp].titol}</b>${pend?` i repassa <b>${pend} error${pend>1?"s":""}</b>`:""}.`
+  :`Ja has aprovat tots els temes! Avui pots ${pend?`repassar <b>${pend} error${pend>1?"s":""}</b> o `:""}practicar una pregunta oberta sense pressa.`;
+ return `<div class="pla-dia" id="plaDia"><div class="pla-cap"><b>📅 Pla d'estudi d'avui</b>${edat?`<small>Dia ${edat} del món</small>`:""}</div><p>${txt}</p>${potBotoEx?(EX_DEMA_OBERT?`<div class="pla-conf">Segur que demà tens l'examen d'aquest món? Això adapta el pla d'avui al repàs final (et ${quedenEx===2?"queden 2 avisos":"queda 1 avís"} en aquest món).<div class="pla-acc"><button class="btn verd btn-petit" type="button" id="btExDemaSi" onclick="confirmaExamenDema()">Sí, demà tinc examen</button><button class="btn sec btn-petit" type="button" onclick="tancaExamenDema()">Ara no</button></div></div>`:`<div class="pla-acc"><button class="btn sec btn-petit" type="button" id="btExDema" onclick="obreExamenDema()">📅 Demà tinc examen</button></div>`):""}</div>`}
+
 // ====================== EFECTES SUAUS ======================
-let SUAU=false;try{SUAU=localStorage.getItem("bn_suau")==="1"||(localStorage.getItem("bn_suau")===null&&matchMedia("(prefers-reduced-motion:reduce)").matches)}catch(e){}
-function aplicaSuau(){document.body.classList.toggle("suau",SUAU)}
-function canviaSuau(){SUAU=!SUAU;try{localStorage.setItem("bn_suau",SUAU?"1":"0")}catch(e){}aplicaSuau();document.querySelectorAll(".bt-suau").forEach(b=>b.textContent=txtSuau())}
-const txtSuau=()=>SUAU?"🌙 Efectes suaus: SÍ":"✨ Efectes suaus: NO";
+let SUAU=false,SUAU_MANUAL=false;try{SUAU=localStorage.getItem("bn_suau")==="1"||(localStorage.getItem("bn_suau")===null&&matchMedia("(prefers-reduced-motion:reduce)").matches)}catch(e){}
+function aplicaSuau(forca){const nit=(forca||!SENSE_NUVOL())&&!SUAU_MANUAL&&esHoraNit();document.body.classList.toggle("suau",SUAU||nit)}
+function canviaSuau(){SUAU_MANUAL=true;SUAU=!document.body.classList.contains("suau");try{localStorage.setItem("bn_suau",SUAU?"1":"0")}catch(e){}aplicaSuau();document.querySelectorAll(".bt-suau").forEach(b=>b.textContent=txtSuau())}
+const txtSuau=()=>document.body.classList.contains("suau")?"🌙 Efectes suaus: SÍ":"✨ Efectes suaus: NO";
 const btSuau=()=>`<button class="btn sec bt-suau" onclick="canviaSuau()">${txtSuau()}</button>`;
 
 // ====================== DESCANS CADA 25 MINUTS ======================
 let SEST=0,AMAGAT=0;const DESCANS_S=1500;
+function saltsDescans(){const e=diaEst();return Math.max(0,(e.ds_salts||0)-(e.ds_base||0))}
+const maxSaltsDescans=()=>esVigilia()?3:2;
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")AMAGAT=Date.now();else if(AMAGAT&&Date.now()-AMAGAT>5*60000)SEST=0});
 setInterval(()=>{if(document.visibilityState!=="visible"||!S.nom||document.querySelector(".descans"))return;SEST+=15;if(SEST>=DESCANS_S)descans()},15000);
-function descans(){aturaSeg();calla();const d=document.createElement("div");d.className="descans";let s=300;
- d.innerHTML=`<div style="font-size:64px">🧠</div><h2>Ja portes 25 minuts, ${S.nom}! Toca descans</h2><p>El cervell guarda millor el que has après si fas una pausa curta. Aixeca't i mou-te una mica:</p><ul><li>🚰 Beu un got d'aigua</li><li>🤸 Estira braços i esquena</li><li>👀 Mira lluny per la finestra</li></ul><div class="rel" id="dRel">5:00</div><div class="fila"><button class="btn verd" id="dTorna" disabled>Torno a estudiar ▶</button><button class="btn sec" id="dSalta">Ara no, continuo</button></div>`;
+function descans(durada){aturaSeg();calla();const d=document.createElement("div");d.className="descans";let s=durada||300,jaFet=false;
+ const salts=saltsDescans(),maxS=maxSaltsDescans(),potSaltar=salts<maxS;
+ d.innerHTML=`<div style="font-size:64px">🧠</div><h2>Ja portes 25 minuts, ${S.nom}! Toca descans</h2><p>El cervell guarda millor el que has après si fas una pausa curta. Aixeca't i mou-te una mica:</p><ul><li>🚰 Beu un got d'aigua</li><li>🤸 Estira braços i esquena</li><li>👀 Mira lluny per la finestra</li></ul><div class="rel" id="dRel">${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}</div><div class="fila"><button class="btn verd" id="dTorna" disabled>Torno a estudiar ▶</button>${potSaltar?`<button class="btn sec" id="dSalta">Ara no, continuo</button>`:""}</div>${potSaltar?"":`<p class="desc-oblig" id="dOblig">🧘 Ja has ajornat el descans ${salts} vegades: ara toca fer els 5 minuts de pausa perquè el cervell guardi el que has estudiat.</p>`}`;
  document.body.appendChild(d);so("coin");
- const t=setInterval(()=>{s--;const el=document.getElementById("dRel");if(!el){clearInterval(t);return}el.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;if(s<=0){clearInterval(t);el.textContent="✅ Fet!";so("win");const b=document.getElementById("dTorna");b.disabled=false;b.focus()}},1000);
+ const t=setInterval(()=>{s--;const el=document.getElementById("dRel");if(!el){clearInterval(t);return}el.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;if(s<=0){clearInterval(t);el.textContent="✅ Fet!";so("win");if(!jaFet){jaFet=true;const e=diaEst();e.ds_base=e.ds_salts||0;e.ds_fets=(e.ds_fets||0)+1;desa();registra("descans",{accio:"fet",salts,fase:faseActual()})}const b=document.getElementById("dTorna");b.disabled=false;b.focus()}},1000);
  const fi=()=>{clearInterval(t);d.remove();SEST=0};
- document.getElementById("dTorna").onclick=fi;document.getElementById("dSalta").onclick=()=>{fi();SEST=DESCANS_S-600}}
+ document.getElementById("dTorna").onclick=fi;const ds=document.getElementById("dSalta");if(ds)ds.onclick=()=>{const e=diaEst();e.ds_salts=(e.ds_salts||0)+1;const ns=saltsDescans();desa();registra("descans",{accio:"salta",salts:ns,fase:faseActual()});fi();SEST=DESCANS_S-600}}
 
 // ====================== EXAMEN DE VERITAT ======================
 // 10 preguntes de tots els temes, sense correcció fins al final; nota sobre 10; temps opcional (10 min).
@@ -1781,7 +1857,7 @@ function fiExamenReal(perTemps){const e=EXR;if(!e||e.acabat)return;e.acabat=1;mi
  const nota=Math.round(b*100/n)/10,pc=Math.round(b*100/n);
  ULT={mode:e.tl?"real-temps":"real",bones:b,n,s:segs(e.t0),q:e.qs.map((q,k)=>`${q.id||"?"}:${e.r[k]===q[2]?1:0}:-:${e.r[k]===undefined?"-":e.r[k]}`)};desaJoc("examreal",pc);S.examens.push({d:avui(),pc,real:1});desa();
  if(pc>=50)arcade(pc,b,n,false);else fracas(pc,b,n);
- app.innerHTML=`<h2 class="sec">📝 Resultat de l'examen</h2><div class="box" style="text-align:center">${perTemps?`<p class="prog">⏱ S'ha acabat el temps!</p>`:""}<div class="ex-nota" style="color:${nota>=5?"#16a34a":"#dc2626"}">${nota.toString().replace(".",",")}<small style="font-size:18px">/10</small></div><p><b>${b} de ${n} encertades</b> · ${nota>=9?"Excel·lent!":nota>=7?"Molt bé!":nota>=5?"Aprovat!":"Cal repassar més, ànims!"}</p>${nova?`<p class="prog">+${nova} ⭐ per preguntes noves d'avui</p>`:""}</div>
+ app.innerHTML=`<h2 class="sec">📝 Resultat de l'examen</h2><div class="box" style="text-align:center">${perTemps?`<p class="prog">⏱ S'ha acabat el temps!</p>`:""}<div class="ex-nota" style="color:${nota>=5?"#16a34a":"#dc2626"}">${nota.toString().replace(".",",")}<small style="font-size:18px">/10</small></div><p><b>${b} de ${n} encertades</b> · ${nota>=9?"Excel·lent!":nota>=7?"Molt bé!":nota>=5?"Aprovat!":"Encara et falta una mica: repassa els errors amb calma i torna-hi!"}</p>${nova?`<p class="prog">+${nova} ⭐ per preguntes noves d'avui</p>`:""}</div>
  <h2 class="sec">🔎 Revisa les respostes</h2><div class="box">${e.qs.map((q,k)=>{const ok=e.r[k]===q[2],tua=e.r[k]===undefined?"(sense resposta)":q[1][e.r[k]];return `<div class="ex-rev ${ok?"ok":"ko"}"><b>${k+1}. ${q[0]}</b><small>${ok?"✅":"❌"} La teva: ${tua}${ok?"":` · Correcta: <b>${q[1][q[2]]}</b>`}</small><small>💡 ${q[3]}</small></div>`}).join("")}
  <div class="fila"><button class="btn" onclick="examenReal()">Un altre examen</button>${repPendents().length?`<button class="btn verd" onclick="repas()">🔁 Repassa els errors</button>`:""}<button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`;
  EXR=null}
@@ -1971,6 +2047,68 @@ function bnProvaBossExamen(){const t0=S.temes,x0=S.examens;
   vista('jocs');c=app.querySelector('.boss-carta');if(!c||c.classList.contains('tancat'))return "després d'aprovar un examen la targeta del boss hauria d'estar oberta";
   return true}finally{S.temes=t0;S.examens=x0;vista('inici')}}
 window.BN_PROVES.push("bnProvaBossExamen");
+// prova (g5 · docs/BON-US.md): fases del món, «demà tinc examen» (màx 2), descans amb límit de salts, avís 60/120 min i nit 21:30/22:00
+async function bnProvaBonUs(){
+ const est0=JSON.stringify(S.est||null),vd0=JSON.stringify(S.vigilia_dies||null),vig0=VIG_SRV,hp0=HORA_PROVA,suau0=SUAU,sm0=SUAU_MANUAL,ls0=localStorage.getItem("bn_suau");
+ try{
+  // 1) Fases i pla del dia
+  delete S.vigilia_dies;VIG_SRV={dia0:"2026-11-10",examen:null,fase:"aprendre",nit_h:"21:30",nit_vigilia_h:"22:00",obre_h:"06:00"};
+  HORA_PROVA={dia:"2026-11-13",hm:"17:00",min:1020};
+  if(faseActual()!=="aprendre")return `dia 4 sense examen hauria de ser 'aprendre' i és '${faseActual()}'`;
+  vista("inici");if(!document.getElementById("plaDia")||!document.getElementById("btExDema"))return "a 'aprendre' han de sortir #plaDia i #btExDema";
+  // 2) Botó «Demà tinc examen» en dos tocs (màxim 2 dies per món)
+  document.getElementById("btExDema").click();const bSi=document.getElementById("btExDemaSi");if(!bSi)return "no surt la confirmació #btExDemaSi";
+  bSi.click();if(!esVigilia()||vigiliaDiesNen().join()!=="2026-11-13")return "després de confirmar hauria de ser vigília d'avui";
+  if(!document.querySelector("#plaDia.vigilia"))return "la targeta del pla no passa a estil vigília";
+  // l'endemà d'una vigília sense data d'admin passa a 'despres'
+  HORA_PROVA={dia:"2026-11-14",hm:"17:00",min:1020};
+  if(faseActual()!=="despres")return `l'endemà de la vigília hauria de ser 'despres' i és '${faseActual()}'`;
+  // fusió de vigilia_dies amb topall de 2 dies
+  const fu=fusiona({vigilia_dies:["2026-11-11","2026-11-15"]},{vigilia_dies:["2026-11-12"]});
+  if((fu.vigilia_dies||[]).join()!=="2026-11-11,2026-11-12")return "fusiona() ha de quedar-se els 2 primers dies ordenats de vigilia_dies";
+  S.vigilia_dies=["2026-11-11","2026-11-12"];HORA_PROVA={dia:"2026-11-10",hm:"17:00",min:1020};vista("inici");
+  if(document.getElementById("btExDema"))return "amb 2 avisos gastats ja no ha de sortir #btExDema";
+  delete S.vigilia_dies;
+  // 3) Descans: màxim 2 salts un dia normal, 3 a la vigília, i en acabar els segons es reseteja la ratxa de salts
+  HORA_PROVA={dia:"2026-11-13",hm:"17:00",min:1020};delete S.est;
+  descans();if(!document.getElementById("dSalta"))return "1r descans normal: falta #dSalta";document.getElementById("dSalta").click();
+  descans();if(!document.getElementById("dSalta"))return "2n descans normal: falta #dSalta";document.getElementById("dSalta").click();
+  descans(1);if(document.getElementById("dSalta")||!document.getElementById("dOblig"))return "3r descans normal (2 salts fets): no s'ha de poder saltar";
+  await new Promise(r=>setTimeout(r,1150));
+  if(document.getElementById("dTorna").disabled||saltsDescans()!==0)return "en acabar el descans, #dTorna s'ha d'activar i els salts tornar a 0";
+  document.getElementById("dTorna").click();
+  // a la vigília permet 3 salts i bloqueja al 4t
+  VIG_SRV.examen="2026-11-14";if(!esVigilia())return "amb data d'admin demà ha de ser vigília";
+  for(let i=0;i<3;i++){descans();if(!document.getElementById("dSalta"))return `vigília salt ${i+1}: falta #dSalta`;document.getElementById("dSalta").click()}
+  descans();const bloqVig=!document.getElementById("dSalta")&&!!document.getElementById("dOblig");document.querySelector(".descans")?.remove();
+  if(!bloqVig)return "a la vigília, després de 3 salts el descans ha de ser obligatori";
+  // 4) Avís de temps: 60 min normal, 120 min vigília (sense bloqueig)
+  VIG_SRV.examen=null;delete S.est;AVIS_TEMPS_MSG="";
+  diaEst().ts=3600;if(!comprovaAvisTemps(true)||!document.getElementById("avisTemps"))return "als 60 min d'un dia normal ha de sortir #avisTemps";
+  tancaAvisTemps();if(comprovaAvisTemps(true))return "l'avís de 60 min només ha de sortir un cop al dia";
+  VIG_SRV.examen="2026-11-14";delete S.est;diaEst().ts=3600;
+  if(comprovaAvisTemps(true))return "a la vigília, als 60 min encara no ha de sortir l'avís";
+  diaEst().ts=7200;if(!comprovaAvisTemps(true)||!/120 minuts/.test(AVIS_TEMPS_MSG))return "a la vigília, als 120 min ha de sortir l'avís";
+  tancaAvisTemps();
+  // 5) Franja de nit: 21:30 normal, 22:00 vigília, activa mode suau sense tocar localStorage.bn_suau
+  SUAU=false;SUAU_MANUAL=false;AVIS_NIT_TANCAT=false;VIG_SRV.examen=null;
+  HORA_PROVA={dia:"2026-11-13",hm:"21:35",min:1295};
+  if(!esHoraNit())return "21:35 d'un dia normal ha de ser nit";
+  aplicaSuau(true);if(!document.body.classList.contains("suau"))return "a la nit s'ha d'activar el mode suau automàticament";
+  if(localStorage.getItem("bn_suau")!==ls0)return "el mode suau nocturn no ha de sobreescriure localStorage.bn_suau";
+  if(!bannerNitHtml(true).includes("Ara a dormir"))return "falta el missatge amable de nit";
+  VIG_SRV.examen="2026-11-14";if(esHoraNit())return "21:35 a la vigília encara no és nit (comença a les 22:00)";
+  HORA_PROVA={dia:"2026-11-13",hm:"22:05",min:1325};if(!esHoraNit())return "22:05 a la vigília ja ha de ser nit";
+  return true
+ }finally{
+  document.querySelectorAll(".descans,#avisTemps,#avisNit").forEach(e=>e.remove());
+  const e0=JSON.parse(est0);if(e0)S.est=e0;else delete S.est;
+  const v0=JSON.parse(vd0);if(v0)S.vigilia_dies=v0;else delete S.vigilia_dies;
+  VIG_SRV=vig0;HORA_PROVA=hp0;EX_DEMA_OBERT=false;AVIS_NIT_TANCAT=false;AVIS_TEMPS_MSG="";
+  SUAU=suau0;SUAU_MANUAL=sm0;if(ls0===null)localStorage.removeItem("bn_suau");else localStorage.setItem("bn_suau",ls0);
+  aplicaSuau();SEST=0;desa();vista("inici")
+ }}
+window.BN_PROVES.push("bnProvaBonUs");
 
 // ====================== 🎯 MISSIONS DEL DIA (Bona Nota 2.0) ======================
 // Cada dia, 3 missions curtes per món: les mateixes tot el dia (es trien amb el dia i el món) i es poden fer en uns 10 minuts.
@@ -2436,6 +2574,7 @@ pintaCap();pintaSo();
    if(tancat&&!MON_TANCAT){MON_TANCAT=true;pantallaMonTancat()}
    else if(!tancat&&MON_TANCAT){MON_TANCAT=false;document.querySelectorAll("#nav button").forEach(b=>b.disabled=false);vista("inici")}
   }).catch(()=>{});
+  carregaVigilia();
   if(MON_TANCAT){pantallaMonTancat();return}
  }
  let G="";try{G=localStorage.getItem("bn_jugador")||""}catch(e){}

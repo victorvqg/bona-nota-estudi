@@ -66,8 +66,18 @@
 --                                               dia = l'últim / valor = dies / llindar = 3 / assig null
 --      apren_errors         bo                  errors apresos al repàs (joc 'repas', detall.apr) dels últims 7 dies > els dels 7 dies d'abans.
 --                                               dia = l'últim amb apr / valor = apresos aquesta setmana / llindar = els de la setmana d'abans
+--      fa_descans           bo                  descansos fets / proposats al període >= 2/3, amb almenys 2 descansos fets.
+--                                               dia = l'últim descans fet / valor = descansos fets / llindar = descansos proposats / assig null
+--      salta_descans        groc                2 «Ara no» seguits o més (3 a la vigília) en un món el mateix dia.
+--                                               dia / assig / valor = salts seguits / llindar = 2 (o 3 a la vigília)
+--      examen_dema          context             el nen ha premut «Demà tinc examen» (fins als 2 primers dies per món; sense data d'admin i fins al
+--                                               dia 12 també compta com a vigília d'aquell nen). dia / assig / valor = núm. d'avís (1-2) / llindar = 2
 --      dos_aparells         context             el mateix dia, dos events «temps» del nen d'aparells diferents que se solapen: els minuts poden
 --                                               sortir doblats. Un senyal per dia. valor = aparells / llindar = 2 / assig null
+
+alter table public.bn_log drop constraint if exists bn_log_event_check;
+alter table public.bn_log add constraint bn_log_event_check
+  check (event in ('entra','fitxa','targetes','test','joc','examen','oberta','valora','temps','alta','descans','examen_dema'));
 
 create index if not exists bn_log_assig_ts on public.bn_log(assig, ts);   -- dia 0 i minuts de cada món sense llegir tot el registre
 
@@ -121,8 +131,26 @@ declare
   v_mons jsonb;
   v_xat jsonb;           -- {k: {n, nom, ult}} dels últims 7 dies; null si no hi ha xat
   v_nens jsonb;
+  v_cfg_t text;
+  v_cfg jsonb;
+  v_nit_norm int := 1290;
+  v_nit_vig int := 1320;
 begin
   perform bn_priv.admin_ok(p_email, p_pass);
+  if to_regclass('bn_priv.config') is not null then
+    execute 'select c.valor from bn_priv.config c where c.clau = ''bon_us''' into v_cfg_t;
+    begin v_cfg := v_cfg_t::jsonb; exception when others then v_cfg := null; end;
+    if jsonb_typeof(v_cfg) = 'object' then
+      if (v_cfg ->> 'nit_h') ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then
+        v_nit_norm := split_part(v_cfg ->> 'nit_h', ':', 1)::int * 60 + split_part(v_cfg ->> 'nit_h', ':', 2)::int;
+        if v_nit_norm < 360 then v_nit_norm := v_nit_norm + 1440; end if;
+      end if;
+      if (v_cfg ->> 'nit_vigilia_h') ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then
+        v_nit_vig := split_part(v_cfg ->> 'nit_vigilia_h', ':', 1)::int * 60 + split_part(v_cfg ->> 'nit_vigilia_h', ':', 2)::int;
+        if v_nit_vig < 360 then v_nit_vig := v_nit_vig + 1440; end if;
+      end if;
+    end if;
+  end if;
   v_d0 := date_trunc('day', bn_priv.desde(v_per) at time zone 'Europe/Madrid') at time zone 'Europe/Madrid';
   v_dmin := least(v_d0, (v_avui - 13)::timestamp at time zone 'Europe/Madrid');
 
@@ -184,6 +212,22 @@ begin
     select m ->> 'assig' assig, (v #>> '{}')::date dia
     from jsonb_array_elements(v_mons) m, jsonb_array_elements(m -> 'vigilies') v
   ),
+  exd_tots as ( -- dies en què un nen ha premut «Demà tinc examen» (els 2 primers per nen i món en tot l'historial)
+    select z.k, z.assig, z.dia, row_number() over (partition by z.k, z.assig order by z.dia) ord
+    from (select lower(trim(x.nom)) k, x.assig, (x.ts at time zone 'Europe/Madrid')::date dia
+          from public.bn_log x
+          where x.event = 'examen_dema' and lower(trim(x.nom)) <> '_alta'
+            and (v_kk is null or lower(trim(x.nom)) = v_kk)
+          group by 1, 2, 3) z
+  ),
+  exd as (select * from exd_tots where ord <= 2),
+  exd_vig as ( -- compta com a vigília individual si l'admin no ha posat data i estem dins la finestra de 12 dies del món
+    select exd.k, exd.assig, exd.dia
+    from exd
+    where not exists (select 1 from bn_priv.examens e where e.assig = exd.assig)
+      and exd.dia - coalesce((select (min(x.ts) at time zone 'Europe/Madrid')::date
+                              from public.bn_log x where x.assig = exd.assig and x.event <> 'alta'), exd.dia) <= 12
+  ),
   l as (    -- registres que calen (primer pel temps: índex bn_log_ts), del nen triat si n'hi ha
     select x.ts, x.assig, x.nom, lower(trim(x.nom)) k, x.aparell, x.event, x.detall, x.ts at time zone 'Europe/Madrid' lt
     from public.bn_log x
@@ -214,12 +258,15 @@ begin
            (case when v.vg then 120 else 90 end) + w.extra ldia
     from td
     left join bm on bm.k = td.k and bm.dia = td.dia
-    cross join lateral (select exists (select 1 from vig where vig.assig = td.assig and vig.dia = td.dia) vg) v
+    cross join lateral (select exists (select 1 from vig where vig.assig = td.assig and vig.dia = td.dia)
+                            or exists (select 1 from exd_vig ev where ev.k = td.k and ev.assig = td.assig and ev.dia = td.dia) vg) v
     cross join lateral (select case when extract(isodow from td.dia) >= 6 then 30 else 0 end extra) w
   ),
   ne as (   -- entrades de nit (de 21:30, o 22:00 la vigília del món, fins a les 6:00); la nit és la del dia que comença
     select y.*
-    from (select z.*, case when exists (select 1 from vig where vig.assig = z.assig and vig.dia = z.nit) then 1320 else 1290 end llindar
+    from (select z.*, case when exists (select 1 from vig where vig.assig = z.assig and vig.dia = z.nit)
+                             or exists (select 1 from exd_vig ev where ev.k = z.k and ev.assig = z.assig and ev.dia = z.nit)
+                           then v_nit_vig else v_nit_norm end llindar
           from (select lp.k, lp.assig, (lp.lt - interval '6 hours')::date nit,
                        floor(extract(epoch from lp.lt - ((lp.lt - interval '6 hours')::date)::timestamp) / 60) mins
                 from lp where lp.event = 'entra') z) y
@@ -278,6 +325,30 @@ begin
           from l where l.event = 'joc' and l.detall ->> 'joc' = 'repas' and l.lt::date >= v_avui - 13) z
     where z.apr is not null
     group by z.k
+  ),
+  dsc as ( -- events de descans del període: 'fet' o 'salta'
+    select lp.k, lp.assig, lp.ts, lp.lt::date dia, (lp.detall ->> 'accio') = 'salta' es_salta
+    from lp
+    where lp.event = 'descans' and (lp.detall ->> 'accio') in ('fet', 'salta')
+  ),
+  dsc_g as ( -- illes de salts seguits dins d'un nen, dia i món
+    select dsc.*, row_number() over (partition by dsc.k, dsc.dia, dsc.assig order by dsc.ts)
+                - row_number() over (partition by dsc.k, dsc.dia, dsc.assig, dsc.es_salta order by dsc.ts) grp
+    from dsc
+  ),
+  dsc_s as (
+    select y.k, y.dia, y.assig, max(y.n) salts,
+           case when exists (select 1 from vig where vig.assig = y.assig and vig.dia = y.dia)
+                  or exists (select 1 from exd_vig ev where ev.k = y.k and ev.assig = y.assig and ev.dia = y.dia)
+                then 3 else 2 end llindar
+    from (select dsc_g.k, dsc_g.dia, dsc_g.assig, dsc_g.grp, count(*) n
+          from dsc_g where dsc_g.es_salta group by 1, 2, 3, 4) y
+    group by y.k, y.dia, y.assig
+  ),
+  dsc_b as (
+    select dsc.k, count(*) filter (where not dsc.es_salta) fets, count(*) tot,
+           max(dsc.dia) filter (where not dsc.es_salta) ult
+    from dsc group by dsc.k
   ),
   sen as (
     -- marató (un per nen i dia: el de bloc si passa, si no el del dia)
@@ -338,6 +409,19 @@ begin
     -- aprèn dels errors (aquesta setmana > la d'abans)
     select ap.k, 'apren_errors', 'bo', ap.ult, null::text, ap.ara, coalesce(ap.abans, 0), null::jsonb
     from ap where coalesce(ap.ara, 0) > coalesce(ap.abans, 0)
+    union all
+    -- fa el descans (almenys 2 fets al període i >= 2/3 del total proposat)
+    select dsc_b.k, 'fa_descans', 'bo', dsc_b.ult, null::text, dsc_b.fets::numeric, dsc_b.tot::numeric, null::jsonb
+    from dsc_b where dsc_b.fets >= 2 and dsc_b.fets * 3 >= dsc_b.tot * 2
+    union all
+    -- salta el descans (2 o més seguits un dia normal, 3 la vigília)
+    select dsc_s.k, 'salta_descans', 'groc', dsc_s.dia, dsc_s.assig, dsc_s.salts::numeric, dsc_s.llindar::numeric, null::jsonb
+    from dsc_s where dsc_s.salts >= dsc_s.llindar
+    union all
+    -- el nen ha marcat «demà tinc examen» (fins als 2 primers dies del món)
+    select exd.k, 'examen_dema', 'context', exd.dia, exd.assig, exd.ord::numeric, 2::numeric, null::jsonb
+    from exd
+    where exists (select 1 from lp where lp.k = exd.k and lp.assig = exd.assig and lp.event = 'examen_dema' and lp.lt::date = exd.dia)
     union all
     -- dos aparells que se solapen el mateix dia
     select a.k, 'dos_aparells', 'context', a.dia, null::text, count(distinct a.aparell)::numeric, 2::numeric, null::jsonb
