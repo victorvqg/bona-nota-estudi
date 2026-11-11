@@ -41,6 +41,7 @@
 --    Nens amagats i sense perfil inclosos (és per a l'admin), però sense cap nom: només comptes.
 
 create index if not exists bn_log_nom on public.bn_log((lower(trim(nom))));   -- la base de cada nen (ja hi és a producció)
+create index if not exists bn_log_nom_assig_ts on public.bn_log((lower(trim(nom))), assig, ts desc);
 
 -- ---------- M3 · estrelles de cada font per dia (diferències entre registres) ----------
 create or replace function public.bn_admin_fonts_dia(p_email text, p_pass text, p_periode text default '30d',

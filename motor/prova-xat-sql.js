@@ -400,7 +400,36 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   const am = await adm("bn_admin_xat_msgs", [7]), vis = id => (am.find(m => m.id === id) || {}).vis;
   ok(am.length > 10 && am.every(m => typeof m.vis === "boolean" && m.vis === ids.includes(m.id)), "msgs: «vis» és exactament el que surt a la portada (" + am.filter(m => m.vis).length + " de " + am.length + ")");
   ok(vis(bona) === true && vis(t1) === false && vis(t2) === false && vis(hugo) === false && am.some(m => m.esborrat && m.vis === false),
-   "vis: true si surt; false si l'autora o la companya s'han esborrat del tot, si l'autor està amagat o si està esborrat") }
+   "vis: true si surt; false si l'autora o la companya s'han esborrat del tot, si l'autor està amagat o si està esborrat");
+  // canvi de nom per l'admin (bn_admin_usuari 'canvia'): actualitza xat_msg (autor i company), xat_vots i xat_silenci
+  await db.exec(fitxer("supabase/bn_pin_nou.sql"));
+  await db.exec(fitxer("supabase/bn_ids_i_punts.sql"));
+  await adm("bn_admin_xat_silencia", ["Bet", 3, "prova canvi"]);
+  await vot(bona, "bet");
+  await adm("bn_admin_usuari", ["Bet", "canvia", "Berta"]);
+  ok((await val("select count(*)::int from bn_priv.xat_msg where k = 'berta' and nom = 'Berta'")) >= 1,
+   "bn_admin_usuari 'canvia' actualitza k i nom als missatges del xat");
+  ok((await val("select count(*)::int from bn_priv.xat_vots where k = 'berta' and msg = $1", [bona])) === 1,
+   "bn_admin_usuari 'canvia' actualitza k als vots del xat");
+  ok((await val("select count(*)::int from bn_priv.xat_silenci where k = 'berta'")) === 1,
+   "bn_admin_usuari 'canvia' conserva el silenci sota el nom nou");
+  // bn_copies.sql: la còpia i la restauració inclouen les taules bn_priv.xat_*
+  await db.exec("create role service_role; create table if not exists bn_priv.reinicis(k text not null, assig text not null, ts timestamptz not null default now(), primary key (k, assig));");
+  await db.exec(fitxer("supabase/bn_copies.sql").replace(/-- còpia automàtica[\s\S]*$/, ""));
+  const cid = Number(await adm("bn_admin_copia_fes"));
+  const dadesCopia = await val("select dades from bn_priv.copies where id = $1", [cid]);
+  ok(Array.isArray(dadesCopia.xat_msg) && dadesCopia.xat_msg.length > 0 && Array.isArray(dadesCopia.xat_silenci) && dadesCopia.xat_silenci.length > 0,
+   "bn_admin_copia_fes desa xat_msg, xat_vots, xat_silenci, xat_frases i xat_peces");
+  const nMsgAbans = await val("select count(*)::int from bn_priv.xat_msg");
+  await db.exec("delete from bn_priv.xat_vots; delete from bn_priv.xat_msg; delete from bn_priv.xat_silenci;");
+  await adm("bn_admin_copia_restaura", [cid]);
+  ok((await val("select count(*)::int from bn_priv.xat_msg")) === nMsgAbans && (await val("select count(*)::int from bn_priv.xat_silenci where k = 'berta'")) === 1,
+   "bn_admin_copia_restaura restaura xat_msg i xat_silenci");
+  // bn_ids_i_punts.sql: bn_admin_ids torna nens amb perfil i nens que només tenen registres a bn_log
+  await log("SensePin", "socials", 15);
+  const totsIds = await q("select * from public.bn_admin_ids($1, $2)", ADM);
+  ok(Array.isArray(totsIds) && totsIds.some(x => x.k === "berta" && x.id !== null) && totsIds.some(x => x.k === "sensepin" && x.id === null && x.nom === "SensePin"),
+   "bn_admin_ids torna tant els nens amb perfil com els que només tenen registres a bn_log") }
 
  await db.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : `\n✓ Tot correcte (${((Date.now() - t0) / 1000).toFixed(1)} s)`);

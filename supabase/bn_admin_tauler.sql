@@ -49,7 +49,7 @@ returns table(ts timestamptz, assig text, k text, nom text, qid text, ok boolean
 language sql stable set search_path = '' as $$
   select l.ts, l.assig, lower(trim(l.nom)), l.nom,
          split_part(x, ':', 1), split_part(x, ':', 2) = '1',
-         case when split_part(x, ':', 3) ~ '^\d+$' then split_part(x, ':', 3)::int end,
+         case when split_part(x, ':', 3) ~ '^[0-9]{1,7}$' then split_part(x, ':', 3)::int end,
          nullif(split_part(x, ':', 4), '-'), l.event, l.detall->>'mode'
   from bn_priv.logs(p_desde, p_fins, p_assig, p_nom) l,
        jsonb_array_elements_text(case when jsonb_typeof(l.detall->'q') = 'array' then l.detall->'q' else '[]'::jsonb end) x
@@ -67,9 +67,9 @@ language sql stable set search_path = '' as $$
     'dies',      (select count(distinct (lower(trim(nom)), (ts at time zone 'Europe/Madrid')::date)) from l),
     'minuts',    (select round(coalesce(sum((detall->>'s')::numeric), 0) / 60) from l where event = 'temps' and detall->>'s' ~ '^\d+(\.\d+)?$'),
     'tests',     (select count(*) from l where event = 'test'),
-    'nota',      (select round(avg((detall->>'pc')::numeric)) from l where event = 'test' and detall->>'pc' ~ '^\d+$'),
+    'nota',      (select round(avg((detall->>'pc')::numeric)) from l where event = 'test' and detall->>'pc' ~ '^[0-9]{1,7}$'),
     'aprovats',  (select round(100.0 * count(*) filter (where (detall->>'pc')::int >= 70) / nullif(count(*), 0))
-                    from l where event = 'test' and detall->>'pc' ~ '^\d+$'),
+                    from l where event = 'test' and detall->>'pc' ~ '^[0-9]{1,7}$'),
     'examens',   (select count(*) from l where event = 'examen'),
     'nota_exam', (select round(avg((detall->>'pc')::numeric)) from l where event = 'examen' and detall->>'pc' ~ '^\d+$'),
     'jocs',      (select count(*) from l where event = 'joc'),
@@ -138,11 +138,11 @@ begin
            max(l.ts) filter (where l.event = 'test') as ultim,
            max(l.ts) as vist,
            (array_agg(l.detall->>'v' order by l.ts desc) filter (where l.event = 'valora'))[1] as valoracio,
-           coalesce(sum((l.detall->>'s')::int) filter (where l.event in ('fitxa', 'targetes') and l.detall->>'s' ~ '^\d+$'), 0) as segons_estudi,
+           coalesce(sum((l.detall->>'s')::int) filter (where l.event in ('fitxa', 'targetes') and l.detall->>'s' ~ '^[0-9]{1,7}$'), 0) as segons_estudi,
            count(*) filter (where l.event = 'fitxa') as fitxes
     from bn_priv.logs(bn_priv.desde(p_periode), now() + interval '1 minute', p_assig, p_nom) l
     where l.event in ('test', 'fitxa', 'targetes', 'valora') and coalesce(l.detall->>'tema', '') <> ''
-      and (l.event <> 'test' or l.detall->>'pc' ~ '^\d+$')
+      and (l.event <> 'test' or l.detall->>'pc' ~ '^[0-9]{1,7}$')
     group by lower(trim(l.nom)), l.assig, l.detall->>'tema') x), '[]'::jsonb);
 end $$;
 
@@ -172,7 +172,7 @@ begin
     select l.ts, l.nom, l.assig, l.event, coalesce(l.detall->>'tema', l.detall->>'joc') as tema,
            (l.detall->>'pc')::int as pc, l.detall->>'mode' as mode
     from bn_priv.logs(bn_priv.desde(p_periode), now() + interval '1 minute', p_assig, p_nom) l
-    where l.event in ('test', 'examen') and l.detall->>'pc' ~ '^\d+$'
+    where l.event in ('test', 'examen') and l.detall->>'pc' ~ '^[0-9]{1,7}$'
     order by l.ts desc limit 3000) x), '[]'::jsonb);
 end $$;
 
@@ -195,14 +195,14 @@ begin
     select 'baixa', 2, z.nom, z.assig, format('Les notes de test baixen: %s → %s → %s %%', z.p[3], z.p[2], z.p[1])
     from (select max(l.nom) as nom, l.assig, (array_agg((l.detall->>'pc')::int order by l.ts desc))[1:3] as p
           from bn_priv.logs(d, now() + interval '1 minute', p_assig, p_nom) l
-          where l.event = 'test' and l.detall->>'pc' ~ '^\d+$' group by lower(trim(l.nom)), l.assig) z
+          where l.event = 'test' and l.detall->>'pc' ~ '^[0-9]{1,7}$' group by lower(trim(l.nom)), l.assig) z
     where cardinality(z.p) = 3 and z.p[1] < z.p[2] and z.p[2] < z.p[3] and z.p[1] < 70
     union all
     -- c) un tema suspès 3 vegades o més sense aprovar-lo mai
     select 'encallat', 3, max(l.nom), l.assig,
            format('Ha suspès «%s» %s vegades (millor nota %s %%)', max(l.detall->>'titol'), count(*), max((l.detall->>'pc')::int))
     from bn_priv.logs(d, now() + interval '1 minute', p_assig, p_nom) l
-    where l.event = 'test' and l.detall->>'pc' ~ '^\d+$' and coalesce(l.detall->>'mode', 'tema') = 'tema'
+    where l.event = 'test' and l.detall->>'pc' ~ '^[0-9]{1,7}$' and coalesce(l.detall->>'mode', 'tema') = 'tema'
     group by lower(trim(l.nom)), l.assig, l.detall->>'tema'
     having count(*) >= 3 and max((l.detall->>'pc')::int) < 70
     union all
