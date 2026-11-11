@@ -5,6 +5,18 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.23.0 · 2026-11-11
+
+### Afegit
+- Món 7 (`angles/t2` · *Tema 2: That's Entertainment*), integració completa amb la resta de mons (g7):
+  - **Preguntes difícils i Super Combo** (`motor/dificultat.json`, `motor/dificultat-motius.json`, `docs/DIFICILS.md`): 19 preguntes d'anglès marcades amb `⚡ difícil` (falsos amics, *stative verbs* amb *now*, plurals irregulars, *million/thousands* i *How about + -ing*), passant el total a 130 preguntes difícils.
+  - **Il·lustració animada de portada** (`motor/ilu/angles.svg`): claqueta de cinema amb feix de focus, crispetes i estrelles flotants (amb suport de `prefers-reduced-motion`).
+  - **Sprite i color d'assignatura** (`sprites.js`): icona pixel art 16×16 `cinema`, matèria `Anglès` (`#db2777`) a `BN_MAT` i entrada `angles` a `BN_MON` per al rànquing i el tauler d'admin.
+  - **Peces del xat** (`index.html`, `supabase/bn_xat.sql`, `motor/prova-xat-sql.js`): 3 peces noves desbloquejables amb 25 ⭐ a Anglès (`64` «el Present Continuous», `65` «els stative verbs» i `66` «el tresor de Fenn»; catàleg inicial de 66 peces).
+
+### Canviat
+- Guia per a les famílies (`pares/index.html`): redactat més planer del paràgraf inicial («Com funciona Bona Nota») i actualitzat el recompte de peces del xat a 66 (g7).
+
 ## 2.22.0 · 2026-11-11
 
 ### Afegit

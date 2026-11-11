@@ -171,7 +171,10 @@ insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
   (60, 'J', 'he fallat la pregunta més fàcil', 2, null),
   (61, 'J', 'm''he menjat l''esmorzar a primera hora', 3, null),
   (62, 'J', 'he anat a l''aula equivocada', 4, null),
-  (63, 'J', 'he dit «present» quan no em cridaven', 5, null)
+  (63, 'J', 'he dit «present» quan no em cridaven', 5, null),
+  (64, 'P', 'el Present Continuous', null, 'angles'),
+  (65, 'P', 'els stative verbs', null, 'angles'),
+  (66, 'P', 'el tresor de Fenn', null, 'angles')
 on conflict (id) do update set tipus = excluded.tipus, text = excluded.text, nivell = excluded.nivell, mon = excluded.mon;
 
 -- ---------- ajudes internes (bn_priv: el navegador no les pot cridar) ----------

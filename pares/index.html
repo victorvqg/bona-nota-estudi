@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="268097aedc",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="6b86d63180",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -227,7 +227,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
 <header class="hero">
  <h1>COM FUNCIONA BONA NOTA</h1>
- <p class="resum">Bona Nota converteix <b>els apunts i temes reals de classe</b> en sessions d'estudi curtes, pràctiques i autònomes. Està pensada perquè el teu fill o filla <b>entengui la matèria, aprengui dels seus errors i sàpiga parar a temps</b>, sense enganxar-se a la pantalla.</p>
+ <p class="resum">Bona Nota converteix <b>els apunts i els temes que el teu fill o filla fa a classe</b> en sessions de repàs curtes, que pot fer pel seu compte. Hi repassa el que ja ha treballat a l'escola i a casa fins que <b>ho entén de debò, veu on s'equivoca i per què, i quan acaba la sessió, plega</b>. Sense enganxar-se a la pantalla.</p>
  <div class="pilars" aria-label="Quatre idees clau">
   <div class="pilar"><span class="ic" aria-hidden="true">📖</span><b>Temari real de classe</b><span>Res de jocs buits: practica exactament el que li entra a l'examen.</span></div>
   <div class="pilar"><span class="ic" aria-hidden="true">🔁</span><b>Aprendre dels errors</b><span>El que falla torna a sortir en dies diferents fins que queda après.</span></div>
@@ -364,7 +364,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
    <div class="baf"><small>Humor de classe</small><q>Quin dia: la calculadora sense piles</q><span>Per riure una mica, sempre sobre coses quotidianes o d'un mateix.</span></div>
   </div>
   <ul class="llista-neta">
-   <li><b>Catàleg 100 % tancat:</b> només es poden combinar 26 frases fixes amb 63 peces predefinides. Ni lletres lliures, ni emojis lliures, ni fotos, ni missatges privats.</li>
+   <li><b>Catàleg 100 % tancat:</b> només es poden combinar 26 frases fixes amb 66 peces predefinides. Ni lletres lliures, ni emojis lliures, ni fotos, ni missatges privats.</li>
    <li><b>La regla d'or contra les burles:</b> les frases estan construïdes de manera que el nom d'un altre alumne només es pot posar en missatges de felicitació, d'ànim o de repte sa. És impossible insultar o ridiculitzar ningú.</li>
    <li><b>Parlar es guanya estudiant:</b> cada <b>10 ⭐ fetes avui</b> donen dret a dir 1 frase, amb un màxim de <b>5 frases al dia</b> (sense gastar mai les estrelles guanyades), i a la nit es tanca automàticament.</li>
   </ul>
@@ -456,6 +456,6 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
 </main>
 
-<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.22.0</small></footer>
+<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.23.0</small></footer>
 </body>
 </html>

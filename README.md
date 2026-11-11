@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.22.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.23.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -521,7 +521,7 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
 
 Els nens es parlen **amb peces**, sense escriure: una frase amb un forat (`___`) i el que l'omple (una paraula d'estudi, una cosa de classe, una cosa seva o el nom d'un company del rànquing). Regles i motius: `docs/DECISIONS.md` (ADR-0006) i l'encàrrec `docs/superpowers/specs/2026-11-10-xat-colla.md`.
 
-- **Catàleg:** el bloc `XAT-CATALEG` d'`index.html` (`XAT_FR`: 26 frases; `XAT_PC`: 63 peces) és el mateix que carrega `supabase/bn_xat.sql`. Si en canvies un, canvia l'altre: `motor/prova-xat-sql.js` comprova que coincideixen. Les peces noves que afegeix l'admin (id ≥ 1001) arriben del servidor amb el seu text.
+- **Catàleg:** el bloc `XAT-CATALEG` d'`index.html` (`XAT_FR`: 26 frases; `XAT_PC`: 66 peces) és el mateix que carrega `supabase/bn_xat.sql`. Si en canvies un, canvia l'altre: `motor/prova-xat-sql.js` comprova que coincideixen. Les peces noves que afegeix l'admin (id ≥ 1001) arriben del servidor amb el seu text.
 - **Regla d'or:** el nom d'un company només va en frases de forat `C` (felicitar, donar aura o reptar); per riure, coses de classe (`E`) o un mateix (`J`).
 - **Text:** `xatCompon()` el compon al navegador amb el catàleg: contraccions (a/de/per + el/els → al, als, del, dels, pel, pels) i majúscula si la frase comença pel forat. Del servidor només arriben números. L'admin fa servir les mateixes regles.
 - **Crèdits:** els calcula el servidor (`bn_xat_estat`): cada `est_credit` (10) ⭐ guanyades avui = 1 crèdit, fins a `max_dia` (5) al dia; tornen a zero a mitjanit (Europe/Madrid). Votar «Ben dit» demana el primer crèdit d'avui. Entre missatges, `espera_s` (10 s). Els valors es canvien des de l'admin.

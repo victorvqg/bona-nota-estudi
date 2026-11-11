@@ -64,7 +64,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
  console.log("1) bn_xat.sql dues vegades: idempotent i respecta el que ha canviat l'admin");
  { const sql = fitxer("supabase/bn_xat.sql");
   let e = await executa(sql); ok(e === null, "primera execució sense errors" + (e ? ": " + e : ""));
-  ok((await val("select count(*)::int from bn_priv.xat_frases")) === 26 && (await val("select count(*)::int from bn_priv.xat_peces")) === 63, "26 frases i 63 peces");
+  ok((await val("select count(*)::int from bn_priv.xat_frases")) === 26 && (await val("select count(*)::int from bn_priv.xat_peces")) === 66, "26 frases i 66 peces");
   ok(igual(await cfg(null), { est_credit: 10, max_dia: 5, espera_s: 10, actiu: true }), "configuració inicial 10 ⭐ · 5 al dia · 10 s · obert");
   ok((await adm("bn_admin_xat_actiu", ["frase", 13, false])) === 1 && (await adm("bn_admin_xat_actiu", ["peca", 44, false])) === 1, "l'admin desactiva la frase 13 i la peça 44");
   ok((await cfg({ est_credit: 12 })).est_credit === 12, "l'admin canvia les estrelles per crèdit a 12");
@@ -73,7 +73,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   e = await executa(sql); ok(e === null, "segona execució sense errors" + (e ? ": " + e : ""));
   ok((await val("select actiu from bn_priv.xat_frases where id = 13")) === false && (await val("select actiu from bn_priv.xat_peces where id = 44")) === false, "la frase i la peça desactivades continuen desactivades");
   ok((await cfg(null)).est_credit === 12 && JSON.parse(await val("select valor from bn_priv.config where clau = 'xat'")).est_credit === 12, "la configuració de l'admin sobreviu");
-  ok((await val("select text from bn_priv.xat_peces where id = 1001")) === "la paraula de la setmana" && (await val("select count(*)::int from bn_priv.xat_peces")) === 64, "la peça nova de l'admin sobreviu");
+  ok((await val("select text from bn_priv.xat_peces where id = 1001")) === "la paraula de la setmana" && (await val("select count(*)::int from bn_priv.xat_peces")) === 67, "la peça nova de l'admin sobreviu");
   ok((await val("select text from bn_priv.xat_frases where id = 1")) === "Vaig a per ___!", "el text del catàleg torna a ser el del fitxer");
   await cfg({ est_credit: 10 }) }
 
@@ -85,7 +85,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   const pc = (await q("select id, tipus, text, nivell, mon from bn_priv.xat_peces where id < 1001 order by id")).map(r => ({ id: r.id, s: r.tipus, t: r.text, n: r.nivell, m: r.mon }));
   const frJ = XAT_FR.map(f => ({ id: f.id, c: f.c, t: f.t, s: f.s, n: f.n })), pcJ = XAT_PC.map(p => ({ id: p.id, s: p.s, t: p.t, n: p.n ?? null, m: p.m ?? null }));
   ok(frJ.length === 26 && igual(fr, frJ), "les 26 frases són idèntiques (text, categoria, forat i nivell)" + (igual(fr, frJ) ? "" : ": " + JSON.stringify(fr.find((x, i) => !igual(x, frJ[i])))));
-  ok(pcJ.length === 63 && igual(pc, pcJ), "les 63 peces són idèntiques (text, tipus i nivell o món)" + (igual(pc, pcJ) ? "" : ": " + JSON.stringify(pc.find((x, i) => !igual(x, pcJ[i])))));
+  ok(pcJ.length === 66 && igual(pc, pcJ), "les 66 peces són idèntiques (text, tipus i nivell o món)" + (igual(pc, pcJ) ? "" : ": " + JSON.stringify(pc.find((x, i) => !igual(x, pcJ[i])))));
   ok(XAT_FR.every(f => f.s !== "C" || ["aura", "colla"].includes(f.c)) && XAT_FR.filter(f => f.s === "C").every(f => !/-\d/.test(f.t)), "regla d'or: el nom d'un company només va en frases d'aura o de colla, cap de negativa");
   const cols = (await q("select column_name c, data_type t from information_schema.columns where table_schema = 'bn_priv' and table_name = 'xat_msg' order by ordinal_position")).map(r => r.c + ":" + r.t);
   ok(igual(cols, ["id:bigint", "k:text", "nom:text", "frase:integer", "peca:integer", "company:text", "ts:timestamp with time zone", "esborrat:boolean"]), "xat_msg només té ids, el nom del nen, el company, l'hora i «esborrat»: " + cols.join(" "));
@@ -162,8 +162,12 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok(e.nivell === 4 && igual(e.acabats, ["biogeo", "divisibilitat"]), "Èric: nivell 4 (Savi) i mons acabats biogeo i divisibilitat: " + e.nivell + " " + JSON.stringify(e.acabats));
   ok(igual(e.mons, { biogeo: 57, divisibilitat: 25, socials: 24 }), "mons dels últims 120 dies (el de fa 130 dies no hi és)");
   ok(e.frases.includes(7) && !e.frases.includes(8) && !e.frases.includes(13), "frases: la 7 (Savi) sí, la 8 (Expert) no, la 13 (desactivada) no");
-  ok(e.peces.includes(11) && !e.peces.includes(13) && e.peces.includes(25) && e.peces.includes(31) && !e.peces.includes(28) && !e.peces.includes(34) && !e.peces.includes(44), "peces: nivell 4 sí i 5 no; divisibilitat i biogeo sí; socials (24 ⭐), comarques (fa 130 dies) i la desactivada no");
+  ok(e.peces.includes(11) && !e.peces.includes(13) && e.peces.includes(25) && e.peces.includes(31) && !e.peces.includes(28) && !e.peces.includes(34) && !e.peces.includes(44) && !e.peces.includes(64), "peces: nivell 4 sí i 5 no; divisibilitat i biogeo sí; socials (24 ⭐), comarques (fa 130 dies), angles i la desactivada no");
   ok(e.peces.includes(1001), "la peça nova de l'admin (nivell 1) també");
+  await log("Èric", "angles", 25, "now() - interval '2 days'");
+  const ea = await estat("Èric");
+  ok([64, 65, 66].every(id => ea.peces.includes(id)) && ea.acabats.includes("angles"), "angles amb 25 ⭐ desbloqueja les peces 64, 65 i 66");
+  await q("delete from public.bn_log where nom = 'Èric' and assig = 'angles'");
   const o = await estat("Ona");
   ok(o.nivell === 1 && igual(o.frases, [1, 2, 3, 4, 11, 12, 14, 17, 18, 22, 23]), "Ona (4 ⭐): només les frases de nivell 1 actives");
   const r = await envia("Èric", 7, 25);
@@ -317,7 +321,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok((await cfg(null)).max_dia === 3, "config: un valor dolent no desa res");
   await cfg({ max_dia: 5, espera_s: 10 });
   const ct = await adm("bn_admin_xat_cataleg");
-  ok(ct.frases.length === 26 && ct.peces.length === 64 && ct.frases.find(f => f.id === 13).actiu === false && igual(Object.keys(ct.peces[0]).sort(), ["actiu", "id", "mon", "nivell", "text", "tipus"]), "cataleg: tot, també el desactivat");
+  ok(ct.frases.length === 26 && ct.peces.length === 67 && ct.frases.find(f => f.id === 13).actiu === false && igual(Object.keys(ct.peces[0]).sort(), ["actiu", "id", "mon", "nivell", "text", "tipus"]), "cataleg: tot, també el desactivat");
   ok((await adm("bn_admin_xat_actiu", ["frase", 2, false])) === 1 && (await llegeix()).off.f.includes(2) && (await adm("bn_admin_xat_actiu", ["frase", 2, true])) === 1, "actiu: desactiva i torna a activar");
   ok((await adm("bn_admin_xat_actiu", ["peca", 9999, true])) === 0 && /taula no valida/.test(await falla("select public.bn_admin_xat_actiu($1, $2, 'msg', 1, true)", ADM) || ""), "actiu: id que no hi és → 0 · taula que no existeix → error");
   ok((await adm("bn_admin_xat_peca_nova", ["e", " el timbre nou ", null, "Socials"])) === 1002, "peca_nova: la següent és la 1002 (tipus i món en minúscules o majúscules)");

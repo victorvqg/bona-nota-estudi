@@ -87,7 +87,7 @@ Tot passa dins de la finestra del **rànquing**, a la portada:
 
 ## 6. Desbloquejos
 
-El catàleg inicial té **26 frases** i **63 peces** (en total, 89 elements). Es troba tant a la portada (`index.html`, bloc `XAT-CATALEG`) com a la base de dades (`supabase/bn_xat.sql`).
+El catàleg inicial té **26 frases** i **66 peces** (en total, 92 elements). Es troba tant a la portada (`index.html`, bloc `XAT-CATALEG`) com a la base de dades (`supabase/bn_xat.sql`).
 
 Cada frase i cada peça s'obre segons el **nivell del rànquing** del nen (de l'1 🐣 Aprenent al 10 🌟 Llegenda d'or, calculat amb les estrelles del seu millor món dels últims 120 dies) o bé en **acabar un món**, que al xat vol dir tenir **25 ⭐ o més** en aquell món (també dins dels últims 120 dies).
 
@@ -97,8 +97,8 @@ Cada frase i cada peça s'obre segons el **nivell del rànquing** del nen (de l'
 | | Aura (2 de company, 2 de paraula, 1 de classe, 1 teva) | 6 | Pel nivell del rànquing: 4 al nivell 1, 1 al nivell 2 i 1 al nivell 7 |
 | | Classe (4 de cosa de classe, 1 de cosa teva) | 5 | Pel nivell del rànquing: 2 al nivell 1, i la resta als nivells 2, 3 i 4 |
 | | Colla (totes 5 amb forat de company) | 5 | Pel nivell del rànquing: 2 al nivell 1, 1 al nivell 2, 1 al nivell 4 i 1 al nivell 7 |
-| **Peces (63)** | Paraula d'estudi (general) | 24 | Pel nivell del rànquing: 6 al nivell 1, i 2 a cada nivell del 2 al 10 |
-| | Paraula d'estudi (dels 6 mons) | 18 | 3 per cada món, en arribar a **25 ⭐** en aquell món (Mates, Clima, Bio-Geo, Comarques, Castellano i Català) |
+| **Peces (66)** | Paraula d'estudi (general) | 24 | Pel nivell del rànquing: 6 al nivell 1, i 2 a cada nivell del 2 al 10 |
+| | Paraula d'estudi (dels 7 mons) | 21 | 3 per cada món, en arribar a **25 ⭐** en aquell món (Mates, Clima, Bio-Geo, Comarques, Castellano, Català i Anglès) |
 | | Cosa de classe | 15 | Pel nivell del rànquing: 4 al nivell 1, 2 a cada nivell del 2 al 6, i 1 al nivell 7 |
 | | Cosa teva | 6 | Pel nivell del rànquing: 2 al nivell 1, i 1 a cada nivell del 2 al 5 |
 
@@ -163,7 +163,7 @@ Així passa el xat de la colla pel filtre de les 10 preguntes de [`BON-US.md`](B
 
 Si només vols afegir una **peça nova** (una paraula d'estudi, cosa de classe o cosa teva), ho pots fer directament des del tauler (`admin/` → **Xat** → **Peça nova**): el servidor li dona un identificador a partir del `1001` i `bn_xat_llegeix` ja n'envia el text al navegador.
 
-Si vols afegir una **frase nova** o canviar el **catàleg fix** del codi (ids `1–26` per a frases i `1–63` per a peces):
+Si vols afegir una **frase nova** o canviar el **catàleg fix** del codi (ids `1–26` per a frases i `1–66` per a peces):
 
 1. **Respecta la regla d'or:** si la frase té forat de company (`slot: 'C'`), ha de ser de les categories `'aura'` o `'colla'` i no pot portar cap número negatiu (com `-1000`) ni cap burla. Les frases per riure o queixar-se han de portar forat `'E'` (cosa de classe) o `'J'` (cosa teva). Cap peça no pot nomenar persones ni fets reals.
 2. **Canvia els dos llocs alhora:** edita el bloc `/* XAT-CATALEG:inici */ … /* XAT-CATALEG:fi */` d'`index.html` (`XAT_FR` i `XAT_PC`) i els `insert into bn_priv.xat_frases` / `bn_priv.xat_peces` de `supabase/bn_xat.sql` amb el mateix identificador, text, categoria/tipus, forat i nivell o món.

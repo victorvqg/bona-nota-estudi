@@ -511,7 +511,7 @@ td.xtx{min-width:190px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
-<script src="../sprites.js?v=fd512289"></script>
+<script src="../sprites.js?v=0be9e885"></script>
 </head>
 <body>
 <a class="salta" href="#contingut">Salta al contingut</a>
@@ -550,7 +550,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.22.0";
+const VERSIO_ADMIN="2.23.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -1729,7 +1729,7 @@ function pintaXat(c){
  <section class="targeta c-4" aria-labelledby="xsT"><h2 id="xsT">${ic("silenci")}Silenciats</h2><p class="sub">Un nom silenciat pot llegir el xat, però no escriure ni votar. El silenci s'acaba sol quan passen els dies.</p><div id="xSil"></div></section>
  <section class="targeta c-4" aria-labelledby="xcT"><h2 id="xcT">${ic("ajust")}Configuració</h2><p class="sub">Els crèdits es calculen al servidor amb aquests valors, des del moment que els deses.</p><div id="xCfg"></div></section>
  <section class="targeta c-4" aria-labelledby="xnT"><h2 id="xnT">${ic("mes")}Peça nova</h2><p class="sub">Per exemple, una «paraula de la setmana». Surt de seguida a la portada per a qui la tingui desbloquejada.</p><div id="xNova"></div></section>
- <section class="targeta c-12" aria-labelledby="xkT"><h2 id="xkT">${ic("cataleg")}Catàleg${DEMO?` <span class="pill warn">Mostra de demo</span>`:""}</h2><p class="sub">${DEMO?"Només una mostra: el catàleg de veritat té 26 frases i 63 peces. ":""}Una frase o peça desactivada ja no es pot triar a la portada, i als missatges vells una peça desactivada es veu com «…». Aquí es veu igualment, marcada.</p><div id="xCat"></div></section>
+ <section class="targeta c-12" aria-labelledby="xkT"><h2 id="xkT">${ic("cataleg")}Catàleg${DEMO?` <span class="pill warn">Mostra de demo</span>`:""}</h2><p class="sub">${DEMO?"Només una mostra: el catàleg de veritat té 26 frases i 66 peces. ":""}Una frase o peça desactivada ja no es pot triar a la portada, i als missatges vells una peça desactivada es veu com «…». Aquí es veu igualment, marcada.</p><div id="xCat"></div></section>
  </div>`;
  $("#xFil").onclick=e=>{const b=e.target.closest("button[data-f]");if(!b)return;XF=b.dataset.f;pintaXMsgs();xFocus(`#xFil [data-f="${XF}"]`)};
  $("#xMsgs").onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(b.dataset.xesb)xEsborra(b.dataset.xesb,true);else if(b.dataset.xrec)xEsborra(b.dataset.xrec,false);else if(b.dataset.xsil)xSilencia(b.dataset.xsil)};
