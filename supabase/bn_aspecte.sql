@@ -15,7 +15,8 @@ create or replace function public.bn_aspecte_desa(p_nom text, p_pin text, p_aspe
 as $function$
 declare a jsonb := '{}'::jsonb; t text;
 begin
-  if not bn_priv.pin_ok(p_nom, p_pin) then raise exception 'pin incorrecte' using errcode = '28000'; end if;
+  -- sense raise quan pin_ok torna false: així l'intent fallit es conserva a bn_priv.intents (issue #33)
+  if not bn_priv.pin_ok(p_nom, p_pin) then return 'pin'; end if;
   if jsonb_typeof(p_aspecte) = 'object' then
     t := p_aspecte->>'av'; if t ~ '^[a-z0-9_]{1,24}$' then a := a || jsonb_build_object('av', t); end if;
     t := p_aspecte->>'sk'; if t ~ '^[a-z0-9_]{1,24}$' then a := a || jsonb_build_object('sk', t); end if;

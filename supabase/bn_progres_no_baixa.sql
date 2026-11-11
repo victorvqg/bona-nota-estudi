@@ -16,7 +16,8 @@ returns bigint
 language plpgsql security definer set search_path = '' as $$
 declare ri_estat bigint; vell jsonb; p_nou numeric; p_vell numeric; ri_vell bigint;
 begin
-  if not bn_priv.pin_ok(p_nom, p_pin) then raise exception 'pin incorrecte' using errcode = '28000'; end if;
+  -- sense raise quan pin_ok torna false (-3 = PIN incorrecte): així l'intent fallit es conserva a bn_priv.intents (issue #33)
+  if not bn_priv.pin_ok(p_nom, p_pin) then return -3; end if;
   if pg_column_size(p_estat) > 300000 or char_length(p_assig) > 40 then raise exception 'massa gran' using errcode = '22023'; end if;
   ri_estat := case when (p_estat->>'reinici') ~ '^[0-9]{1,15}$' then (p_estat->>'reinici')::bigint else 0 end;
   if ri_estat < bn_priv.reinici_ms(lower(trim(p_nom)), p_assig) then

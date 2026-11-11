@@ -62,12 +62,13 @@ revoke all on function public.bn_admin_reinicia(text, text, text, text) from pub
 grant execute on function public.bn_admin_reinicia(text, text, text, text) to anon, authenticated;
 
 -- bn_progres_llegeix: la mateixa definició que hi havia (PIN + registre reconstruït + progrés desat) i ara també «reinici»
+-- sense raise quan pin_ok torna false: torna {"ok":false,"codi":"pin"} i conserva bn_priv.intents (issue #33)
 create or replace function public.bn_progres_llegeix(p_nom text, p_pin text, p_assig text)
 returns jsonb
 language plpgsql security definer set search_path = '' as $$
 declare r bn_priv.progres; lg jsonb; ri bigint;
 begin
-  if not bn_priv.pin_ok(p_nom, p_pin) then raise exception 'pin incorrecte' using errcode = '28000'; end if;
+  if not bn_priv.pin_ok(p_nom, p_pin) then return jsonb_build_object('ok', false, 'codi', 'pin'); end if;
   lg := bn_priv.reconstrueix(lower(trim(p_nom)), p_assig);
   ri := bn_priv.reinici_ms(lower(trim(p_nom)), p_assig);
   select * into r from bn_priv.progres g where g.k = lower(trim(p_nom)) and g.assig = p_assig;
@@ -75,17 +76,26 @@ begin
   return jsonb_build_object('mod', r.mod, 'estat', r.estat, 'log', lg, 'reinici', ri);
 end $$;
 
--- bn_progres_desa: la mateixa definició que hi havia + no desa un progrés d'abans d'un reinici (torna -1)
+-- bn_progres_desa: la mateixa definició que hi havia + no desa un progrés d'abans d'un reinici (-1), ni amb menys estrelles (-2), ni fa raise amb PIN incorrecte (-3)
 create or replace function public.bn_progres_desa(p_nom text, p_pin text, p_assig text, p_estat jsonb, p_mod bigint)
 returns bigint
 language plpgsql security definer set search_path = '' as $$
-declare ri_estat bigint;
+declare ri_estat bigint; vell jsonb; p_nou numeric; p_vell numeric; ri_vell bigint;
 begin
-  if not bn_priv.pin_ok(p_nom, p_pin) then raise exception 'pin incorrecte' using errcode = '28000'; end if;
+  if not bn_priv.pin_ok(p_nom, p_pin) then return -3; end if;
   if pg_column_size(p_estat) > 300000 or char_length(p_assig) > 40 then raise exception 'massa gran' using errcode = '22023'; end if;
   ri_estat := case when (p_estat->>'reinici') ~ '^[0-9]{1,15}$' then (p_estat->>'reinici')::bigint else 0 end;
   if ri_estat < bn_priv.reinici_ms(lower(trim(p_nom)), p_assig) then
     return -1;
+  end if;
+  select g.estat into vell from bn_priv.progres g where g.k = lower(trim(p_nom)) and g.assig = p_assig;
+  if vell is not null then
+    p_nou  := case when (p_estat->>'punts') ~ '^[0-9]{1,9}(\.[0-9]+)?$' then (p_estat->>'punts')::numeric else 0 end;
+    p_vell := case when (vell->>'punts')    ~ '^[0-9]{1,9}(\.[0-9]+)?$' then (vell->>'punts')::numeric    else 0 end;
+    ri_vell := case when (vell->>'reinici') ~ '^[0-9]{1,15}$' then (vell->>'reinici')::bigint else 0 end;
+    if p_vell > p_nou and ri_vell >= ri_estat then
+      return -2;
+    end if;
   end if;
   insert into bn_priv.progres(k,assig,estat,mod,ts) values (lower(trim(p_nom)), p_assig, p_estat, p_mod, now())
     on conflict (k,assig) do update set estat = excluded.estat, mod = excluded.mod, ts = now()

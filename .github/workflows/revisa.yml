@@ -62,6 +62,8 @@ jobs:
         run: node motor/prova-admin-fonts-rep.js
       - name: Prova del control de xat, horari i mons a la base de dades (supabase/bn_control.sql dins de PGlite)
         run: node motor/prova-control-sql.js
+      - name: Prova del comptador d'intents de PIN a la base de dades (issue #33 dins de PGlite)
+        run: node motor/prova-pin-intents-sql.js
       - name: Prova dels nivells al tauler i del control de xat, horari i mons (amb Supabase simulat)
         run: node motor/prova-admin-alta.js
       - name: Prova automàtica de cada món
