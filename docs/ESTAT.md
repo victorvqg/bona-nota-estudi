@@ -3,7 +3,7 @@
 Data: 2026-11-11
 
 ## Què funciona
-- **Versió actual: 2.24.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.25.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`), tots 7 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 130 en total) i 3 peces del xat per món.
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -45,6 +45,10 @@ Data: 2026-11-11
   - Pàgina pública `https://bonanota.net/pares/` (`pares/index.html`, especificada a `docs/superpowers/specs/2026-11-11-pagina-pares-design.md`), enllaçada des de la portada i verificada amb `motor/prova-pares.js`.
   - Aplicat `supabase/bn_fotos.sql` i desplegada l'Edge Function `bn-corregeix` (`--no-verify-jwt`) a Supabase `agippwtqvhpxdockuigl` amb CORS actiu per a `https://bonanota.net` i prova `motor/prova-fotos-sql.js` (només falta definir el secret `ANTHROPIC_API_KEY` a Supabase quan es vulgui activar la lectura d'imatges amb Claude).
   - Esborrat `motor/jocs_generics.js` (còpia antiga que no carregava cap pàgina).
+- **`n2564` — Frases amb buits (`2.25.0`)**:
+  - Tipus de joc nou `frases` a la plantilla (`jocFrases`): frases per triar, escriure o ordenar, amb pista, frase sencera, traducció, perquè i veu en anglès; els errors entren al repàs espaiat (`BN_REP_TIPUS.frase`).
+  - Món d'Anglès: 7 jocs de frases (84 frases, 8 per partida) i botó «Practica-ho amb frases» a la fitxa de cada tema.
+  - Qualsevol altre món en pot tenir afegint jocs `tipus:"frases"` a les seves dades.
 
 - **Blocs `g7`, `g8` i `g9` (`2.23.0` i `2.24.0`, publicats i actius)**:
   - Món 7 (`angles/t2`) completat al 100 % (`19` preguntes difícils a `dificultat.json`, `motor/ilu/angles.svg`, sprite `cinema` a `sprites.js`, peces `64`–`66` del xat i presència a `/admin/?demo`).

@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.24.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.25.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -457,6 +457,7 @@ El motor els desa a `S.rep`, els mou de capsa i dona el +2 ⭐ quan queden apres
 | `parelles` | `jocParelles` | `enunciat`, `instr`, `pars` |
 | `classifica` | `jocClassifica` | `enunciat`, `instr`, `caixes`, `items` |
 | `figura` | `jocFigura` | `enunciat`, `figura`, `q` |
+| `frases` | `jocFrases` | `items` (frases amb buits per triar, escriure o ordenar; format al comentari «FRASES AMB BUITS» de la plantilla), `n`, `veu` |
 | `error` | `jocError` | `exercicis` (el format és al comentari de la secció «TROBA L'ERROR GENÈRIC» de la plantilla) |
 | `custom` | `window[j.fn](j)` | `fn` i `prova`: la funció del joc i la que el prova |
 

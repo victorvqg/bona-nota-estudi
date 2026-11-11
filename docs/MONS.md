@@ -16,7 +16,7 @@ Després, aquí es comprova si se sap de veritat.
 | 4 | Ciències socials | Les comarques de Catalunya | 7 | 56 | 7 | 7 | El Drac de les Comarques | [obre'l](https://bonanota.net/sociales/comarques/) |
 | 5 | Matemàtiques | Tema 2: Divisibilitat | 8 | 71 | 15 | 20 | El Gegant Primer | [obre'l](https://bonanota.net/matematiques/divisibilitat/) |
 | 6 | Català | Tema 2: La literatura, el nom i la puntuació | 12 | 109 | 15 | 10 | El Monstre dels Signes | [obre'l](https://bonanota.net/catala/t2/) |
-| 7 | Anglès | Tema 2: That's Entertainment | 8 | 85 | 12 | 8 | El Fantasma del Cinema | [obre'l](https://bonanota.net/angles/t2/) |
+| 7 | Anglès | Tema 2: That's Entertainment | 8 | 85 | 12 | 15 | El Fantasma del Cinema | [obre'l](https://bonanota.net/angles/t2/) |
 
 ---
 
@@ -50,6 +50,10 @@ Després, aquí es comprova si se sap de veritat.
   (una que el test no ha tret). Si l'encertes, continues amb la meitat del combo.
 - **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de
   les comarques o el garbell dels primers).
+- **✍️ Frases amb buits:** frases fetes on falta un tros. Segons la frase, cal **triar** la paraula d'un banc, **escriure-la**
+  (per exemple, el verb del parèntesi en la forma correcta) o **ordenar** les paraules. Al primer error surt una pista i al segon,
+  la resposta. Després es veu la frase sencera amb la traducció i el perquè, i es pot escoltar. Les frases fallades tornen al repàs.
+  De moment n'hi ha al món d'Anglès.
 - **🔍 Troba l'error:** un exercici resolt per un company amb una trampa. Cal tocar la línia dolenta i dir per què. A mates, també
   s'ha de tornar a escriure bé, i al final surt la llibreta corregida. Els errors van al repàs. N'hi ha a mates i al món del clima (climograma).
 - **Exàmens:** l'examen sorpresa (15 preguntes barrejades) i l'examen de veritat, amb nota sobre 10.
@@ -199,8 +203,10 @@ El contingut és en anglès i les explicacions, en català.
 - **85 preguntes de test.** Les respostes falses són els errors típics que avisen els fulls
   (`danceing`, `She dancing`, `I am wanting`, `I like really`, `two millions dollars`, `Let's watching`, `womans`…).
 - **12 preguntes obertes**, tretes de l'examen, de la pràctica extra i dels «Comprova» del resum.
-- **8 jocs en 4 seccions:** 🎭 Descriure algú (Opposites · Com és per dins?) · ⏱️ Els dos presents (Verb + -ing · Simple o Continuous?) ·
+- **15 jocs en 5 seccions:** ✍️ Frases amb buits (Describe a person · What's happening now? · Simple or Continuous? · I really like… ·
+  Words from the texts · What are they like? · Let's watch a film!: 84 frases per triar, escriure o ordenar, 8 per partida) · 🎭 Descriure algú (Opposites · Com és per dins?) · ⏱️ Els dos presents (Verb + -ing · Simple o Continuous?) ·
   📚 Llibres i pel·lis (Quin gènere és? · Fenn's Treasure · Paraules trampa) · 🍿 Proposar un pla (Triem pel·li).
 - 👾 Boss: **El Fantasma del Cinema**.
 - Falta la pàgina 39 del llibre (exercicis 12 i 13 de gramàtica i un listening). Els listenings i els vídeos no hi surten.
-- El botó 🔊 Escolta llegeix amb la veu en català: serveix per a les explicacions, no per a la pronunciació de l'anglès.
+- El botó 🔊 Escolta de les fitxes llegeix amb la veu en català (serveix per a les explicacions). A les frases amb buits, el botó
+  «Escolta-la» llegeix la frase amb la veu en anglès de l'aparell.
