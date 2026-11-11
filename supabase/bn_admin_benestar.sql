@@ -212,13 +212,16 @@ begin
     select m ->> 'assig' assig, (v #>> '{}')::date dia
     from jsonb_array_elements(v_mons) m, jsonb_array_elements(m -> 'vigilies') v
   ),
-  exd_tots as ( -- dies en què un nen ha premut «Demà tinc examen» (els 2 primers per nen i món en tot l'historial)
+  exd_tots as ( -- dies en què un nen manté marcat «Demà tinc examen» (si ho desmarca amb accio='treu', no compta; els 2 primers per nen i món)
     select z.k, z.assig, z.dia, row_number() over (partition by z.k, z.assig order by z.dia) ord
-    from (select lower(trim(x.nom)) k, x.assig, (x.ts at time zone 'Europe/Madrid')::date dia
+    from (select distinct on (lower(trim(x.nom)), x.assig, (x.ts at time zone 'Europe/Madrid')::date)
+                 lower(trim(x.nom)) k, x.assig, (x.ts at time zone 'Europe/Madrid')::date dia,
+                 coalesce(x.detall ->> 'accio', 'posa') accio
           from public.bn_log x
           where x.event = 'examen_dema' and lower(trim(x.nom)) <> '_alta'
             and (v_kk is null or lower(trim(x.nom)) = v_kk)
-          group by 1, 2, 3) z
+          order by lower(trim(x.nom)), x.assig, (x.ts at time zone 'Europe/Madrid')::date, x.ts desc, x.id desc) z
+    where z.accio <> 'treu'
   ),
   exd as (select * from exd_tots where ord <= 2),
   exd_vig as ( -- compta com a vigília individual si l'admin no ha posat data i estem dins la finestra de 12 dies del món

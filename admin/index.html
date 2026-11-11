@@ -550,7 +550,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.23.0";
+const VERSIO_ADMIN="2.24.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -1875,11 +1875,11 @@ function demoInit(){if(DEMO_L)return;const R=rndD(20261105),tria=a=>a[Math.floor
  // temes i preguntes de veritat (preguntes.json), perquè el domini i les preguntes fallades semblin reals
  const temes={};Object.entries(PREG||{}).forEach(([k,v])=>{const p=k.split("/");if(p.length<3||p[1].startsWith("j-"))return;const T=temes[p[0]]=temes[p[0]]||{};(T[p[1]]=T[p[1]]||{t:p[1],titol:v.tema,q:[]}).q.push({id:p[1]+"/"+p[2],c:v.c||0,no:(v.o||[]).length||4})});
  Object.keys(ASSIGS).forEach(a=>{if(!temes[a]||!Object.keys(temes[a]).length)temes[a]={t1:{t:"t1",titol:"Tema 1",q:[...Array(12)].map((_,i)=>({id:"t1/"+(i+1),c:0,no:4}))}}});
- const JOCS={socials:["climo","capes","parelles"],biogeo:["planetes","celules","cossos"],castellano:["concretos","generos","byv"],comarques:["mapa43","capitals","ruta"],divisibilitat:["fx-mcm","fx-criteris","fx-divisio","er-troba"],catala:["subgeneres","oralescrit"]};
+ const JOCS={socials:["climo","capes","parelles"],biogeo:["planetes","celules","cossos"],castellano:["concretos","generos","byv"],comarques:["mapa43","capitals","ruta"],divisibilitat:["fx-mcm","fx-criteris","fx-divisio","er-troba"],catala:["subgeneres","oralescrit"],angles:["contraris","perdins","dospresents","fenn"]};
  const EP=[["mcmmcd","exp","mcm_exp_petit"],["mcmmcd","factors","confon_mcm_mcd"],["escala","quocient","quocient"],["divisio","baixar","baixar"],["criteri","suma","suma_xifres"],["primer","tria","u_primer"],["problema","dades","dada_sobrant"],["error","divisio","linia"],["mcmmcd","exp","mcm_exp_petit"]];
  const NENS=[{nom:"Àlex",hab:.84,vel:9,act:.8,mons:["socials","biogeo","divisibilitat"]},{nom:"Jana",hab:.9,vel:11,act:.85,mons:["socials","castellano","comarques","catala"]},
   {nom:"Pau",hab:.72,vel:8,act:.75,mons:["socials","biogeo","castellano","comarques","divisibilitat"]},{nom:"Laia",hab:.64,vel:10,act:.6,mons:["biogeo","divisibilitat"]},
-  {nom:"Nora",hab:.6,vel:2.2,act:.55,mons:["socials","castellano"]},{nom:"Hugo",hab:.45,vel:7,act:.5,mons:["comarques","divisibilitat"],para:9},{nom:"Ona",hab:.78,vel:12,act:.4,mons:["castellano","biogeo","catala"]}];
+  {nom:"Nora",hab:.6,vel:2.2,act:.55,mons:["socials","castellano"]},{nom:"Hugo",hab:.45,vel:7,act:.5,mons:["comarques","divisibilitat"],para:9},{nom:"Ona",hab:.78,vel:12,act:.4,mons:["castellano","biogeo","catala","angles"]}];
  const ara=Date.now(),L=[];let sid=0;
  NENS.forEach((n,ni)=>{const punts={},millor={};
   for(let d=29;d>=0;d--){if(n.para&&d<n.para)continue;if(R()>n.act)continue;
@@ -1965,7 +1965,7 @@ function demoBenestarRpc(f,x){if(f!=="bn_admin_benestar")throw "demo";const avui
   ["àlex","Àlex",[S("poc_sovint","bo",{dia:d(-2),valor:3,llindar:3})]]];
  const nens=N.map(([k,nom,ss])=>{ss=ss.filter(s=>!s.dia||s.dia>=des||/inactiu|xat|sovint|apren/.test(s.codi));return {k,nom,semafor:semDe(ss),senyals:ss}}).filter(n=>!k0||n.k===k0);
  const mons=[{assig:"comarques",dia0:d(-8),examen:null,vigilies:[d(-1)],normal:25},{assig:"divisibilitat",dia0:d(-6),examen:d(2),vigilies:[],normal:30},{assig:"catala",dia0:d(-5),examen:null,vigilies:[avui],normal:18},
-  {assig:"castellano",dia0:d(-1),examen:null,vigilies:[],normal:null},{assig:"biogeo",dia0:d(-10),examen:null,vigilies:[],normal:20},{assig:"socials",dia0:d(-21),examen:null,vigilies:[d(-14)],normal:22}];
+  {assig:"angles",dia0:d(-4),examen:null,vigilies:[],normal:16},{assig:"castellano",dia0:d(-1),examen:null,vigilies:[],normal:null},{assig:"biogeo",dia0:d(-10),examen:null,vigilies:[],normal:20},{assig:"socials",dia0:d(-21),examen:null,vigilies:[d(-14)],normal:22}];
  return {periode:p,mons,nens}}
 // demo de «Combos i repàs» i «Errors pendents de la colla»: surten del mateix registre inventat (DEMO_L), perquè quadrin amb la resta del panell.
 // Les estrelles de cada sessió es compten amb el que hi va passar: repàs = 2 per error après (els de «Repàs, boss i missions»), boss = 10 si el guanya,
