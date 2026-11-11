@@ -550,7 +550,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.18.1";
+const VERSIO_ADMIN="2.19.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -690,16 +690,23 @@ function login(msg){$("#shell").hidden=true;const w=$("#loginWrap");w.hidden=fal
   $("#err").textContent="";const b=$("#entra");b.disabled=true;b.textContent="Comprovant…";
   CRED={e:em,p:pw};if(await carrega()){try{sessionStorage.setItem("bn_admin",JSON.stringify(CRED))}catch(e){}}};
 }
-let IDS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN">sense PIN</span>`;
+let IDS={},NOMS_TOTS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN">sense PIN</span>`;
 function mostraApp(){$("#loginWrap").hidden=true;$("#loginWrap").innerHTML="";$("#shell").hidden=false;document.body.classList.toggle("demo",DEMO);$("#demoBar").hidden=!DEMO}
 async function carrega(){
  ESTATS={};NUV=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;
  if(!$("#shell").hidden&&VISTA!=="tauler")$("#contingut").innerHTML=esqTaula();
  await carregaRegles();
- if(DEMO){await preguntes();demoInit();LOGS=demoLogsDies(DIES);IDS=demoIds();mostraApp();ACT=new Date();pinta();return true}
- try{const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:DIES})});
+ if(DEMO){await preguntes();demoInit();LOGS=demoLogsDies(DIES);IDS=demoIds();NOMS_TOTS=demoNoms();mostraApp();ACT=new Date();pinta();return true}
+ try{const cosL=JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:DIES});
+  const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
   if(!r.ok){CRED=null;sessionStorage.removeItem("bn_admin");login(r.status===404?"El panell encara no està activat a la base de dades.":"Correu o contrasenya incorrectes.");return false}
-  LOGS=await r.json();await carregaAspectes();try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});IDS={};if(ri.ok)(await ri.json()).forEach(x=>IDS[x.k]=x.id)}catch(e){}
+  LOGS=await r.json();
+  // PostgREST retalla RETURNS SETOF bn_log a 1.000 files per crida: si n'hi ha 1.000, es demanen les pàgines següents (fins a 20.000)
+  while(Array.isArray(LOGS)&&LOGS.length>0&&LOGS.length%1000===0&&LOGS.length<20000){
+   try{const rp=await fetch(`${API}?limit=1000&offset=${LOGS.length}`,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
+    if(!rp.ok)break;const pag=await rp.json();if(!Array.isArray(pag)||!pag.length||pag[0].id===LOGS[0].id)break;LOGS.push(...pag);if(pag.length<1000)break}catch(e){break}}
+  await carregaAspectes();try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});IDS={};NOMS_TOTS={};
+   if(ri.ok)(await ri.json()).forEach(x=>{if(!x||!x.k)return;if(x.id!=null)IDS[x.k]=x.id;if(x.nom&&x.k!=="_alta")NOMS_TOTS[x.k]=String(x.nom).trim()})}catch(e){}
   mostraApp();ACT=new Date();pinta();return true;
  }catch(e){login("No hi ha connexió. Torna-ho a provar.");return false}
 }
@@ -730,9 +737,13 @@ function muntaShell(){
 }
 function tancaMenu(){document.body.classList.remove("menu-obert");const b=$("#obreMenu");if(b)b.setAttribute("aria-expanded","false")}
 function marcaMenu(){const v=VISTA==="fitxa"?"nens":VISTA;$$("#nav .nav-b").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")})}
+function nomsTots(){const m=new Map();
+ Object.entries(NOMS_TOTS).forEach(([k,n])=>{if(k&&k!=="_alta"&&n)m.set(k,n)});
+ LOGS.forEach(l=>{const k=clauNen(l);if(k&&k!=="_alta"&&l.nom)m.set(k,l.nom)});
+ return [...m.values()].sort((a,b)=>a.localeCompare(b,"ca"))}
 function pintaFiltres(){
  const as=[...new Set([...Object.keys(ASSIGS),...LOGS.map(l=>l.assig)])].filter(Boolean);
- const noms=[...new Map(LOGS.map(l=>[clauNen(l),l.nom])).values()].sort((a,b)=>a.localeCompare(b,"ca"));
+ const noms=nomsTots();
  $("#fAssig").innerHTML=`<option value="">Totes les assignatures</option>${as.map(a=>`<option value="${esc(a)}" ${TF.assig===a?"selected":""}>${esc(nomAssig(a))}</option>`).join("")}`;
  $("#fNen").innerHTML=`<option value="">Tots els nens</option>${noms.map(n=>`<option ${TF.nom.toLowerCase()===n.toLowerCase()?"selected":""}>${esc(n)}</option>`).join("")}`;
  $("#actualitzat").textContent=ACT?`Actualitzat a les ${hora(ACT)}`:""}
@@ -1692,8 +1703,9 @@ async function rpcX(f,extra){if(DEMO)return demoXatRpc(f);const r=await fetch(AP
 const errX=(e,que)=>e==="falta"?"Cal executar supabase/bn_xat.sql al SQL Editor de Supabase":e==="demo"?"No disponible en demo":`No s'ha pogut ${que} (${e})`;
 // noms: els dels missatges i els del registre (per triar a qui se silencia); el nom «bonic» d'una clau en minúscules
 function xNoms(){const m=new Map();(X?X.msgs:[]).forEach(x=>{const k=kNom(x.nom);if(k&&!m.has(k))m.set(k,String(x.nom).trim())});LOGS.forEach(l=>{const k=clauNen(l);if(k&&!m.has(k))m.set(k,l.nom.trim())});
+ Object.entries(NOMS_TOTS).forEach(([k,n])=>{if(k&&n&&!m.has(k))m.set(k,String(n).trim())});
  return [...m.values()].sort((a,b)=>a.localeCompare(b,"ca"))}
-function nomDe(k){const m=X&&X.msgs.find(x=>kNom(x.nom)===k);if(m)return String(m.nom).trim();const l=LOGS.find(x=>clauNen(x)===k);return l?l.nom.trim():k}
+function nomDe(k){const m=X&&X.msgs.find(x=>kNom(x.nom)===k);if(m)return String(m.nom).trim();const l=LOGS.find(x=>clauNen(x)===k);return l?l.nom.trim():NOMS_TOTS[k]||k}
 async function vistaXat(c){const tok=++XTOK;
  c.innerHTML=`<div class="esq esq-t" style="margin-top:0"></div>${esqKpis(5)}<div class="graella" style="margin-top:24px"><div class="esq esq-g c-12"></div></div>`;
  try{const [resum,msgs,sil,cfg,cat,mons]=await Promise.all([rpcX("bn_admin_xat_resum"),rpcX("bn_admin_xat_msgs",{p_dies:DIES}),rpcX("bn_admin_xat_silencis"),rpcX("bn_admin_xat_config"),rpcX("bn_admin_xat_cataleg"),monsLlista(),ctrlDe().catch(()=>null)]);
@@ -1886,7 +1898,8 @@ function demoInit(){if(DEMO_L)return;const R=rndD(20261105),tria=a=>a[Math.floor
     ev("temps",{s:segs+ent(30,200),punts:punts[as],fonts:{temes:Math.round(punts[as]*.5),jocs:Math.round(punts[as]*.25),combo:Math.round(punts[as]*.05),record:Math.round(punts[as]*.05),repas:Math.round(punts[as]*.05),missio:Math.round(punts[as]*.05),boss:Math.round(punts[as]*.05)}})}}});
  DEMO_L=L.sort((a,b)=>a.ts.localeCompare(b.ts))}
 const demoLogsDies=d=>{const des=Date.now()-d*864e5;return DEMO_L.filter(l=>Date.parse(l.ts)>=des).slice().reverse()};
-const demoIds=()=>({"àlex":1,"jana":2,"pau":3,"laia":4,"nora":5});
+const demoIds=()=>({"àlex":1,"jana":2,"pau":3,"laia":4,"nora":5,"gina":6});
+const demoNoms=()=>{const m={gina:"Gina"};DEMO_L.forEach(l=>{const k=clauNen(l);if(k&&k!=="_alta")m[k]=l.nom});return m};
 const demoEstat=nom=>({"àlex":6,"jana":6,"pau":2,"laia":6,"nora":6,"ona":1}[nom.trim().toLowerCase()]||0);
 // demo de «Al núvol» i «Nens nous»: surten del mateix registre inventat (DEMO_L), perquè quadrin amb la resta del panell.
 // Àlex: perfil d'abans i dos mons · Pau: PIN antic però res desat · Hugo i Ona: sense PIN · Laia i Nora: PIN fet fa pocs dies · Gina: perfil d'avui, encara no ha jugat

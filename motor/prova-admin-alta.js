@@ -61,7 +61,8 @@ function dadesAdmin() {
    const f = r.request().url().split("/rpc/")[1].split("?")[0], cos = r.request().postDataJSON() || {};
    crides.push({ f, cos });
    if (f === "bn_admin_logs") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.logs) });
-   if (f === "bn_admin_ids" || f === "bn_aspectes") return r.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+   if (f === "bn_admin_ids") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([{ k: "pau", nom: "Pau", id: 1 }, { k: "laia", nom: "Laia", id: 2 }, { k: "leyre", nom: "Leyre", id: 3 }, { k: "sebastià", nom: "Sebastià", id: null }]) });
+   if (f === "bn_aspectes") return r.fulfill({ status: 200, contentType: "application/json", body: "[]" });
    if (f === "bn_admin_usuari" && cos.p_accio === "estat") return r.fulfill({ status: 200, contentType: "application/json", body: "6" });
    if (f === "bn_admin_fitxa") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.fitxa[String(cos.p_nom || "").trim().toLowerCase()] || { k: "?", perfil: null, amagat: false, mons: [] }) });
    if (f === "bn_admin_altes") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.altes) });
@@ -146,7 +147,10 @@ function dadesAdmin() {
   ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes("6 de 7 oberts"),
    "clicar l'interruptor d'un món el tanca i actualitza el comptador a «6 de 7 oberts»");
 
-  // Comprovem els nivells a Nens
+  // Comprovem els nivells a Nens i que #fNen mostra tots els nens de bn_admin_ids (encara que no tinguin registres al període)
+  const fNenTxt = await txt("#fNen");
+  ok(fNenTxt.includes("Leyre") && fNenTxt.includes("Sebastià") && fNenTxt.includes("Pau") && fNenTxt.includes("Laia"),
+   "el filtre superior #fNen mostra tots els nens de bn_admin_ids encara que no tinguin registres en el període triat");
   await menu("nens");
   await p.waitForSelector("#tNens table");
   const filaPau = await txt('#tNens tr:has([data-obre-nen="pau"])');

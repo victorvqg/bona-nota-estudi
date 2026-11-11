@@ -34,22 +34,33 @@ create index if not exists copies_ts on bn_priv.copies (ts desc);
 create or replace function bn_priv.fes_copia(p_motiu text)
 returns bigint
 language plpgsql security definer set search_path = '' as $$
-declare d jsonb; nid bigint;
+declare d jsonb; f jsonb; nid bigint;
 begin
   d := jsonb_build_object(
-    'versio', 1,
+    'versio', 2,
     'bn_log',   (select coalesce(jsonb_agg(to_jsonb(x) order by x.id), '[]') from public.bn_log x),
     'perfils',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.k), '[]') from bn_priv.perfils x),
     'progres',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.k, x.assig), '[]') from bn_priv.progres x),
     'amagats',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.k), '[]') from bn_priv.amagats x),
     'config',   (select coalesce(jsonb_agg(to_jsonb(x) order by x.clau), '[]') from bn_priv.config x),
     'reinicis', (select coalesce(jsonb_agg(to_jsonb(x) order by x.k, x.assig), '[]') from bn_priv.reinicis x));
+  if to_regclass('bn_priv.xat_msg') is not null then
+    d := d || jsonb_build_object(
+      'xat_frases',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.id), '[]') from bn_priv.xat_frases x),
+      'xat_peces',   (select coalesce(jsonb_agg(to_jsonb(x) order by x.id), '[]') from bn_priv.xat_peces x),
+      'xat_msg',     (select coalesce(jsonb_agg(to_jsonb(x) order by x.id), '[]') from bn_priv.xat_msg x),
+      'xat_vots',    (select coalesce(jsonb_agg(to_jsonb(x) order by x.msg, x.k), '[]') from bn_priv.xat_vots x),
+      'xat_silenci', (select coalesce(jsonb_agg(to_jsonb(x) order by x.k), '[]') from bn_priv.xat_silenci x));
+  end if;
+  f := jsonb_build_object('bn_log', jsonb_array_length(d->'bn_log'), 'perfils', jsonb_array_length(d->'perfils'),
+                          'progres', jsonb_array_length(d->'progres'), 'amagats', jsonb_array_length(d->'amagats'),
+                          'config', jsonb_array_length(d->'config'), 'reinicis', jsonb_array_length(d->'reinicis'));
+  if d ? 'xat_msg' then
+    f := f || jsonb_build_object('xat_msg', jsonb_array_length(d->'xat_msg'), 'xat_vots', jsonb_array_length(d->'xat_vots'),
+                                 'xat_silenci', jsonb_array_length(d->'xat_silenci'));
+  end if;
   insert into bn_priv.copies(motiu, files, mida, dades)
-  values (left(coalesce(p_motiu, 'manual'), 80),
-          jsonb_build_object('bn_log', jsonb_array_length(d->'bn_log'), 'perfils', jsonb_array_length(d->'perfils'),
-                             'progres', jsonb_array_length(d->'progres'), 'amagats', jsonb_array_length(d->'amagats'),
-                             'config', jsonb_array_length(d->'config'), 'reinicis', jsonb_array_length(d->'reinicis')),
-          octet_length(d::text), d)
+  values (left(coalesce(p_motiu, 'manual'), 80), f, octet_length(d::text), d)
   returning id into nid;
   delete from bn_priv.copies c
    where (c.motiu = 'automàtica' and c.ts < now() - interval '30 days') or c.ts < now() - interval '90 days';
@@ -141,6 +152,25 @@ begin
   insert into bn_priv.config select * from jsonb_populate_recordset(null::bn_priv.config, d->'config');
   delete from bn_priv.reinicis;
   insert into bn_priv.reinicis select * from jsonb_populate_recordset(null::bn_priv.reinicis, d->'reinicis');
+  if to_regclass('bn_priv.xat_msg') is not null and jsonb_typeof(d->'xat_msg') = 'array' then
+    delete from bn_priv.xat_vots;
+    delete from bn_priv.xat_msg;
+    delete from bn_priv.xat_silenci;
+    if jsonb_typeof(d->'xat_frases') = 'array' and jsonb_array_length(d->'xat_frases') > 0 then
+      delete from bn_priv.xat_peces;
+      delete from bn_priv.xat_frases;
+      insert into bn_priv.xat_frases select * from jsonb_populate_recordset(null::bn_priv.xat_frases, d->'xat_frases');
+      insert into bn_priv.xat_peces select * from jsonb_populate_recordset(null::bn_priv.xat_peces, d->'xat_peces');
+    end if;
+    insert into bn_priv.xat_msg overriding system value select * from jsonb_populate_recordset(null::bn_priv.xat_msg, d->'xat_msg');
+    if jsonb_typeof(d->'xat_vots') = 'array' then
+      insert into bn_priv.xat_vots select * from jsonb_populate_recordset(null::bn_priv.xat_vots, d->'xat_vots');
+    end if;
+    if jsonb_typeof(d->'xat_silenci') = 'array' then
+      insert into bn_priv.xat_silenci select * from jsonb_populate_recordset(null::bn_priv.xat_silenci, d->'xat_silenci');
+    end if;
+    perform setval(pg_get_serial_sequence('bn_priv.xat_msg', 'id'), coalesce((select max(m.id) from bn_priv.xat_msg m), 0) + 1, false);
+  end if;
   perform setval(pg_get_serial_sequence('public.bn_log', 'id'), greatest(coalesce((select max(l.id) from public.bn_log l), 0), (select last_value from public.bn_log_id_seq)) + 1, false);
   perform setval(pg_get_serial_sequence('bn_priv.perfils', 'id'), coalesce((select max(p.id) from bn_priv.perfils p), 0) + 1, false);
   return jsonb_build_object('restaurada', p_id, 'copia_abans', abans,

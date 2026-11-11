@@ -5,6 +5,17 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.19.0 · 2026-11-11
+
+### Afegit
+- Admin, filtre superior de nens (`#fNen`): mostra tots els nens que existeixen a la base de dades (`bn_admin_ids`, que ara uneix `bn_priv.perfils` i `public.bn_log`), encara que no tinguin registres en el període triat o que tinguin 0 registres (n2537).
+- Admin, càrrega del registre (`bn_admin_logs`): pagina en blocs de 1.000 files (`?limit=1000&offset=…`) fins a carregar tot el període, de manera que el límit de 1.000 files per resposta de PostgREST ja no deixa fora els nens amb registres més antics (n2537).
+- Base de dades (`bn_copies.sql`, `bn_pin_nou.sql`, `bn_admin_usuari.sql`, `bn_admin_tauler.sql`, `bn_admin_fonts_rep.sql`):
+  - Les còpies de seguretat (`bn_priv.fes_copia` i `bn_admin_copia_restaura`) inclouen les taules del xat (`xat_frases`, `xat_peces`, `xat_msg`, `xat_vots` i `xat_silenci`).
+  - Quan l'admin canvia el nom d'un nen (`bn_admin_usuari` amb `'canvia'`), es conserven els seus missatges, vots i silencis del xat sota el nom nou.
+  - Els `::int` de `bn_admin_tauler.sql` validen abans amb regex d'1 a 7 dígits (`^[0-9]{1,7}$`) per evitar desbordaments.
+  - S'ha afegit l'índex `bn_log_nom_assig_ts` sobre `public.bn_log ((lower(trim(nom))), assig, ts desc)` per accelerar `bn_admin_fonts_dia`.
+
 ## 2.18.1 · 2026-11-11
 
 ### Arreglat
