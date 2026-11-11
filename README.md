@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.21.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.22.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -15,6 +15,7 @@ Aquest README explica **com està feta la web i com s'hi treballa**. El que no �
 | Quin ús és sa: temps, descans i vigília d'examen | [`docs/BON-US.md`](docs/BON-US.md) |
 | Com funciona el xat de la colla | [`docs/XAT.md`](docs/XAT.md) |
 | Com es llegeix el benestar al tauler | [`docs/BENESTAR.md`](docs/BENESTAR.md) |
+| Guia no tècnica per a pares i mares | [`pares/index.html`](pares/index.html) (`https://bonanota.net/pares/`) |
 | Què ha canviat a cada versió | [`CHANGELOG.md`](CHANGELOG.md) |
 
 > 🌐 La web té domini propi, **bonanota.net** (fitxer `CNAME`). L'adreça antiga de GitHub Pages i `www.bonanota.net` hi redirigeixen soles.
@@ -227,6 +228,7 @@ git push origin v2.4.0
 index.html                     Portada: targetes dels mons + rànquing
 sprites.js                     Pixel art (avatars, icones del rànquing, insígnies) dibuixat com a SVG
 perfil/index.html              Pàgina de perfil del nen: animal, perfil arcade i estil (PLAYER SELECT)
+pares/index.html               Guia oberta i sense tecnicismes per a les famílies (bonanota.net/pares)
 <assignatura>/<tema>/index.html  Pàgina de cada món (GENERADA: no s'edita a mà)
 motor/
   plantilla-estudi-interactiu.html   El motor (tot el que fa un món)
@@ -240,14 +242,13 @@ motor/
   eines/                             Codi compartit (vegeu «Eines» a l'apartat 5)
   regles.json                        Regles del joc extretes de la plantilla (les genera tot.py; còpia a admin/)
   dificultat.json, dificultat.py     Preguntes difícils (⚡) i l'script que en fa la llista docs/DIFICILS.md
-  jocs_generics.js                   Còpia antiga dels jocs: no la carrega ningú, no s'hi ha de tocar res
   prova.js                           Prova automàtica d'un món (Playwright)
   prova-generadors.js                Prova dels generadors del Taller de mates (sense navegador)
   prova-regles.js                    Prova que les regles copiades coincideixen amb la plantilla
-  prova-nuvol.js, prova-perfil.js    Proves de la sincronització amb el núvol i de la pàgina de perfil
+  prova-nuvol.js, prova-perfil.js, prova-pares.js   Proves del núvol, del perfil i de la guia per a famílies
   prova-xat*.js                      Proves del xat: el SQL (PGlite) i la portada
   prova-admin-*.js, prova-control-sql.js   Proves del tauler i del seu SQL (vegeu l'apartat 10)
-  prova-pin-intents-sql.js           Prova del bloqueig als 5 intents de PIN fallits (PGlite)
+  prova-pin-intents-sql.js, prova-fotos-sql.js   Proves del bloqueig de PIN i del permís de fotos (PGlite)
   local.py                           Servidor local que es posa al dia sol amb GitHub
 admin/                         Tauler d'administració
 supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol, aspecte del nen, xat de la colla
@@ -459,7 +460,7 @@ El motor els desa a `S.rep`, els mou de capsa i dona el +2 ⭐ quan queden apres
 | `error` | `jocError` | `exercicis` (el format és al comentari de la secció «TROBA L'ERROR GENÈRIC» de la plantilla) |
 | `custom` | `window[j.fn](j)` | `fn` i `prova`: la funció del joc i la que el prova |
 
-Aquests tipus viuen a la plantilla. `motor/jocs_generics.js` és una còpia antiga que no carrega ningú i ja no coincideix: no s'hi ha de fer cap canvi.
+Aquests tipus viuen a la plantilla (`motor/plantilla-estudi-interactiu.html`).
 
 ### Eines (`motor/eines/`)
 
@@ -703,7 +704,7 @@ El resultat surt a la pestanya **Actions** del repo.
 | 9 | `motor/prova-admin-benestar-sql.js`, `prova-bon-us-sql.js`, `prova-admin-benestar.js` | El benestar, les fases del món (`bn_vigilia`) i l'apartat del tauler |
 | 10 | `motor/prova-admin-fonts-rep-sql.js`, `prova-admin-fonts-rep.js` | «Combos i repàs» i «Errors pendents de la colla»: el SQL i el tauler |
 | 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
-| 12 | `motor/prova-pin-intents-sql.js` | El bloqueig de 15 minuts al 5è intent de PIN fallit a totes les funcions amb PIN (issue #33) |
+| 12 | `motor/prova-pin-intents-sql.js`, `prova-fotos-sql.js`, `prova-pares.js` | El bloqueig de 15 minuts al 5è intent de PIN (#33), el permís de fotos del quadern i la guia per a les famílies (`pares/`) |
 | 13 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |
 
 Les proves `…-sql.js` executen el SQL de `supabase/` dins de **PGlite**, un Postgres de prova sense xarxa. Les altres obren la pàgina amb **Playwright** i un Supabase simulat: cap prova toca la base de dades real.

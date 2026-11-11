@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia per a les famílies · Bona Nota</title>
+<meta name="description" content="Què és Bona Nota, com hi estudien els nois i noies de 1r d'ESO i quines mesures de bon ús, descans, son i seguretat els cuiden.">
+<meta name="theme-color" content="#0b1033">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icones/icona-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bona Nota">
+<script>
+window.BN_ACT={arrel:"../",tornaAuto:true};
+/* ACTUALITZA:inici (copiat de motor/eines/actualitza.js per motor/tot.py, no editar a mà) */
+// ===== ACTUALITZACIÓ AUTOMÀTICA (motor/eines/actualitza.js · el mateix codi a la portada i als mons; tot.py el copia a index.html) =====
+// Cada pàgina porta escrita la versió amb què es va generar (VER: la hi posa motor/tot.py). En obrir la pàgina es pregunta
+// al servidor quina versió hi ha publicada (versio.json, sense passar per cap memòria cau). Si no coincideixen, el que es veu
+// és una còpia vella (memòria cau del navegador o del service worker). Llavors: s'esborren les còpies guardades de l'app
+// (memòria cau «bn-…»), es demana al service worker que s'actualitzi i es torna a carregar la pàgina, UN sol cop per versió.
+// MAI s'esborra el progrés, el nom ni el PIN (són a localStorage i no es toquen). Sense connexió, o obrint el fitxer a
+// l'ordinador (file://), no fa res.
+// En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
+// estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
+(function(){
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="268097aedc",KR="bn_act_recarrega",DEU=6e5;
+ if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
+ let fet=0,amagat=0;
+ const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
+ // esborra la memòria cau de l'app i fa que el service worker es descarregui de nou (màxim 3 s)
+ const neteja=()=>Promise.race([Promise.all([
+   window.caches?caches.keys().then(ks=>Promise.all(ks.filter(k=>k.indexOf("bn-")===0).map(k=>caches.delete(k)))).catch(()=>{}):0,
+   navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.update().catch(()=>{})))).catch(()=>{}):0]),
+  new Promise(r=>setTimeout(r,3000))]);
+ function avis(txt,boto){quan(()=>{let a=document.getElementById("bnAct");
+  if(!a){a=document.createElement("div");a.id="bnAct";a.setAttribute("role","status");
+   a.style.cssText="position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:calc(100% - 24px);padding:10px 14px;border-radius:14px;background:#0b1033f2;border:2px solid #facc15;color:#fff;font:800 14px/1.3 Nunito,system-ui,sans-serif;box-shadow:0 8px 24px #0009";
+   document.body.appendChild(a)}
+  a.innerHTML="";const t=document.createElement("span");t.textContent=txt;a.appendChild(t);
+  if(boto){const b=document.createElement("button");b.type="button";b.textContent="Actualitza";
+   b.style.cssText="font:900 13px Nunito,system-ui,sans-serif;color:#1e1b4b;background:#facc15;border:0;border-radius:999px;padding:8px 12px;cursor:pointer";
+   b.onclick=()=>recarrega(boto,true);a.appendChild(b)}})}
+ // l'adreça sense el «v=…» (la resta de paràmetres, com ?demo, es queden tal qual)
+ const senseV=q=>q.replace(/([?&])v=[^&]*(&|$)/,(m,a,b)=>b?a:"").replace(/^\?$/,"");
+ function recarrega(v,aMa){
+  // una sola vegada per versió (si el servidor encara no serveix la nova, no entra en bucle); amb el botó, sempre
+  if(!aMa){if(new RegExp("[?&]v="+v+"(&|$)").test(location.search))return;try{if(sessionStorage.getItem(KR)===v)return;sessionStorage.setItem(KR,v)}catch(e){}}
+  avis("🔄 Versió nova de Bona Nota! Actualitzant…");
+  const q=senseV(location.search);neteja().then(()=>location.replace(location.pathname+q+(q?"&":"?")+"v="+v+location.hash))}
+ // un cop és la versió bona, treu el «?v=…» de l'adreça
+ function netejaAdreca(){try{const q=senseV(location.search);if(q!==location.search)history.replaceState(history.state,"",location.pathname+q+location.hash)}catch(e){}}
+ function comprova(auto){fet=Date.now();
+  fetch(ARREL+"versio.json?t="+fet,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(!d||!d.v)return;
+   if(d.v===VER){netejaAdreca();return}
+   if(auto)recarrega(d.v);else avis("✨ Hi ha una versió nova de Bona Nota.",d.v)}).catch(()=>{})}
+ comprova(true);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){amagat=Date.now();return}
+  if(amagat&&Date.now()-amagat>DEU&&Date.now()-fet>DEU)comprova(!!C.tornaAuto)});
+ window.bnActualitza=()=>comprova(true); // per provar-ho a mà des de la consola
+})();
+/* ACTUALITZA:fi */
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+ --groc:#facc15;--groc-suau:#fef08a;--vermell:#b91c1c;--fons:#0b1033;--fons2:#131b4d;
+ --caixa:#101742;--caixa2:#162058;--vora:#ffffff24;--txt:#f1f5f9;--txt2:#cbd5e1;
+ --cian:#22d3ee;--verd:#4ade80;--coral:#fb7185;--lila:#c084fc
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;min-height:100%}
+body{
+ font-family:Nunito,system-ui,-apple-system,Arial,sans-serif;
+ font-size:17px;line-height:1.62;color:var(--txt);
+ background:radial-gradient(1100px 620px at 50% -8%,#35267e 0%,#181654 38%,var(--fons) 72%) fixed,var(--fons);
+ overflow-x:hidden
+}
+.salta{position:fixed;top:-64px;left:14px;z-index:300;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:15px;padding:11px 18px;border-radius:12px;text-decoration:none;box-shadow:0 4px 0 var(--vermell);transition:top .15s}
+.salta:focus{top:14px;outline:3px solid var(--cian);outline-offset:2px}
+a,button,summary{-webkit-tap-highlight-color:transparent}
+:is(a,button,summary):focus-visible{outline:3px solid var(--cian);outline-offset:3px;border-radius:8px}
+
+/* cel discret d'estrelles fixes (sense pes al mòbil) */
+.cel{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.45;
+ background-image:
+  radial-gradient(2px 2px at 14% 18%,#fff,transparent),
+  radial-gradient(2px 2px at 78% 12%,#fde047,transparent),
+  radial-gradient(1.5px 1.5px at 36% 42%,#fff,transparent),
+  radial-gradient(2px 2px at 88% 54%,#bae6fd,transparent),
+  radial-gradient(1.5px 1.5px at 22% 76%,#fff,transparent),
+  radial-gradient(2px 2px at 64% 82%,#fde047,transparent)}
+
+/* barra superior */
+.barra-sup{position:relative;z-index:2;max-width:940px;margin:0 auto;padding:16px 16px 0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.torna{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 16px;border-radius:999px;background:#ffffff14;border:1.5px solid #ffffff33;color:#fff;font-weight:900;font-size:15px;text-decoration:none;transition:transform .12s,border-color .12s}
+.torna:hover{transform:translateY(-1px);border-color:var(--groc)}
+.etiqueta-sup{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:#facc151f;border:1.5px solid #facc1566;color:var(--groc-suau);font-weight:900;font-size:13.5px}
+
+/* capçalera hero */
+header.hero{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:24px 16px 18px;text-align:center}
+.hero h1{font-family:'Press Start 2P',monospace;font-size:clamp(18px,4.6vw,31px);line-height:1.42;margin:8px 0 16px;color:var(--groc);text-shadow:3px 3px 0 var(--vermell),0 6px 22px #0009}
+.hero .resum{max-width:720px;margin:0 auto;font-size:clamp(17px,2.4vw,19.5px);font-weight:700;color:#e2e8f0;line-height:1.58}
+.hero .resum b{color:#fff;font-weight:900}
+.pilars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px;text-align:left}
+.pilar{background:var(--caixa);border:1.5px solid var(--vora);border-radius:16px;padding:13px 14px;box-shadow:0 6px 18px #0005}
+.pilar .ic{font-size:24px;line-height:1;display:block;margin-bottom:6px}
+.pilar b{display:block;font-size:15.5px;font-weight:900;color:#fff;line-height:1.28;margin-bottom:3px}
+.pilar span{display:block;font-size:14px;color:var(--txt2);line-height:1.4}
+
+/* índex ràpid d'apartats */
+nav.salt-nav{position:sticky;top:0;z-index:20;background:#0b1033f2;border-top:1px solid #ffffff1a;border-bottom:1.5px solid #ffffff26;padding:8px 0}
+.salt-llista{max-width:940px;margin:0 auto;padding:0 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.salt-llista::-webkit-scrollbar{display:none}
+.salt-llista a{flex:none;display:inline-flex;align-items:center;gap:5px;min-height:40px;padding:7px 13px;border-radius:999px;background:#ffffff12;border:1px solid #ffffff28;color:#e2e8f0;font-weight:800;font-size:14px;text-decoration:none;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+.salt-llista a:hover{border-color:var(--groc);color:#fff;background:#ffffff20}
+
+/* cos principal */
+main{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:22px 16px 36px;display:flex;flex-direction:column;gap:26px}
+section.bloc{scroll-margin-top:68px;background:var(--caixa);border:1.5px solid var(--vora);border-radius:22px;padding:24px 22px;box-shadow:0 10px 28px #0006}
+.sec-cap{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.sec-ic{flex:none;width:44px;height:44px;border-radius:13px;background:var(--caixa2);border:2px solid #facc1566;display:grid;place-items:center;font-size:22px}
+section.bloc h2{margin:0;font-size:clamp(20px,3.4vw,25px);font-weight:900;line-height:1.25;color:#fff}
+.sec-intro{margin:6px 0 18px;color:var(--txt2);font-size:16.5px}
+
+/* pas a pas d'estudi (6 targetes) */
+.passos{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.pas{background:var(--caixa2);border:1.5px solid #ffffff1f;border-radius:18px;padding:16px 16px 15px;display:flex;flex-direction:column;gap:6px}
+.pas-cap{display:flex;align-items:center;gap:10px}
+.pas-num{flex:none;width:30px;height:30px;border-radius:9px;background:var(--groc);color:#1e1b4b;font-family:'Press Start 2P',monospace;font-size:12px;display:grid;place-items:center;box-shadow:0 3px 0 #b45309}
+.pas h3{margin:0;font-size:17.5px;font-weight:900;color:#fff;line-height:1.28}
+.pas p{margin:2px 0 0;font-size:15.5px;color:var(--txt2);line-height:1.52}
+.pas .exemple{margin-top:auto;padding-top:8px;font-size:13.8px;font-weight:800;color:var(--groc-suau)}
+
+/* comparativa què premia / què no premia */
+.dues-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.col-caixa{border-radius:18px;padding:16px 18px;border:1.5px solid}
+.col-si{background:#052e1f88;border-color:#4ade8066}
+.col-no{background:#3b0d1d77;border-color:#fb718566}
+.col-caixa h3{margin:0 0 10px;font-size:17.5px;font-weight:900;display:flex;align-items:center;gap:8px}
+.col-si h3{color:var(--verd)}
+.col-no h3{color:#fda4af}
+.llista-neta{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.llista-neta li{position:relative;padding-left:24px;font-size:15.5px;color:var(--txt);line-height:1.48}
+.llista-neta li::before{position:absolute;left:0;top:1px;font-weight:900}
+.col-si .llista-neta li::before{content:"✓";color:var(--verd)}
+.col-no .llista-neta li::before{content:"✕";color:#fb7185}
+
+/* les 5 mirades del rànquing */
+.mirades{background:var(--caixa2);border:1.5px solid #ffffff22;border-radius:18px;padding:16px 18px}
+.mirades h3{margin:0 0 8px;font-size:17.5px;font-weight:900;color:var(--groc-suau)}
+.mirades p{margin:0 0 12px;font-size:15.5px;color:var(--txt2)}
+.xips-ranquing{display:flex;flex-wrap:wrap;gap:8px}
+.xip-r{background:#ffffff12;border:1px solid #ffffff28;border-radius:12px;padding:8px 12px;font-size:14.5px;color:#fff}
+.xip-r b{color:var(--cian)}
+
+/* bon ús i prevenció */
+.destacat{background:#172554;border:2px solid var(--cian);border-radius:16px;padding:14px 16px;margin-bottom:16px;font-weight:800;font-size:16px;color:#ecfeff;line-height:1.5}
+.destacat b{color:var(--groc-suau)}
+.escuts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.escut{background:var(--caixa2);border:1.5px solid #ffffff1f;border-radius:18px;padding:16px}
+.escut h3{margin:0 0 6px;font-size:17px;font-weight:900;color:#fff;display:flex;align-items:center;gap:8px}
+.escut p{margin:0;font-size:15.5px;color:var(--txt2);line-height:1.52}
+.escut b{color:#fff}
+
+/* bafarades d'exemple del xat */
+.mostra-xat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 18px}
+.baf{background:#1e296b;border:1.5px solid #60a5fa55;border-radius:16px 16px 16px 4px;padding:12px 14px}
+.baf small{display:block;font-size:12.5px;font-weight:900;color:var(--cian);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.baf q{quotes:"«" "»";font-weight:900;font-size:15.5px;color:#fff;display:block}
+.baf span{display:block;margin-top:5px;font-size:13.5px;color:var(--txt2)}
+
+/* privadesa i consells a casa */
+.graella-4{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.item-p{background:var(--caixa2);border:1.5px solid #ffffff1f;border-radius:16px;padding:15px 16px}
+.item-p h3{margin:0 0 5px;font-size:16.8px;font-weight:900;color:#fff}
+.item-p p{margin:0;font-size:15.2px;color:var(--txt2);line-height:1.5}
+
+/* preguntes freqüents (details/summary accessible) */
+.faq-llista{display:flex;flex-direction:column;gap:10px}
+.faq-llista details{background:var(--caixa2);border:1.5px solid #ffffff24;border-radius:15px;overflow:hidden}
+.faq-llista details[open]{border-color:#facc1588}
+.faq-llista summary{list-style:none;cursor:pointer;min-height:50px;padding:13px 16px;font-weight:900;font-size:16.5px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.faq-llista summary::-webkit-details-marker{display:none}
+.faq-llista summary::after{content:"+";flex:none;width:28px;height:28px;border-radius:8px;background:#ffffff14;color:var(--groc);font-weight:900;font-size:19px;display:grid;place-items:center;transition:transform .15s}
+.faq-llista details[open] summary::after{content:"−";background:#facc1526}
+.faq-cos{padding:0 16px 15px;font-size:15.5px;color:var(--txt2);line-height:1.56;border-top:1px solid #ffffff14;padding-top:12px}
+.faq-cos b{color:#fff}
+
+/* tancament i peu */
+.tancament{text-align:center;padding:8px 8px 4px}
+.cta-portada{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:13px 24px;border-radius:16px;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:17px;text-decoration:none;box-shadow:0 5px 0 var(--vermell),0 10px 24px #0008;transition:transform .12s}
+.cta-portada:hover{transform:translateY(-2px)}
+footer{position:relative;z-index:1;text-align:center;padding:18px 16px 34px;color:#94a3b8;font-weight:800;font-size:13.5px}
+footer b{color:var(--groc)}
+footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:12.5px}
+
+/* adaptació mòbil (360, 390, 430 px) */
+@media(max-width:760px){
+ .pilars{grid-template-columns:repeat(2,1fr)}
+ .passos,.dues-col,.escuts,.mostra-xat,.graella-4{grid-template-columns:1fr}
+ section.bloc{padding:18px 15px;border-radius:18px}
+ .barra-sup{padding:12px 12px 0}
+ header.hero{padding:18px 12px 14px}
+ main{padding:16px 12px 28px;gap:18px}
+}
+@media(max-width:400px){
+ .pilars{grid-template-columns:1fr}
+ body{font-size:16px}
+ .hero h1{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .torna,.cta-portada,.faq-llista summary::after{transition:none}
+}
+</style>
+</head>
+<body>
+<a class="salta" href="#contingut">Salta al contingut</a>
+<div class="cel" aria-hidden="true"></div>
+
+<div class="barra-sup">
+ <a class="torna" href="../">← Torna a Bona Nota</a>
+ <span class="etiqueta-sup">👨‍👩‍👧 Guia per a les famílies · 1r d'ESO</span>
+</div>
+
+<header class="hero">
+ <h1>COM FUNCIONA BONA NOTA</h1>
+ <p class="resum">Bona Nota converteix <b>els apunts i temes reals de classe</b> en sessions d'estudi curtes, pràctiques i autònomes. Està pensada perquè el teu fill o filla <b>entengui la matèria, aprengui dels seus errors i sàpiga parar a temps</b>, sense enganxar-se a la pantalla.</p>
+ <div class="pilars" aria-label="Quatre idees clau">
+  <div class="pilar"><span class="ic" aria-hidden="true">📖</span><b>Temari real de classe</b><span>Res de jocs buits: practica exactament el que li entra a l'examen.</span></div>
+  <div class="pilar"><span class="ic" aria-hidden="true">🔁</span><b>Aprendre dels errors</b><span>El que falla torna a sortir en dies diferents fins que queda après.</span></div>
+  <div class="pilar"><span class="ic" aria-hidden="true">🌙</span><b>Cuida el descans i el son</b><span>Pauses cada 25 min, avís de temps i mode calm a partir de les 21:30 h.</span></div>
+  <div class="pilar"><span class="ic" aria-hidden="true">💬</span><b>Xat sense teclat lliure</b><span>Només frases positives d'ànim predefinides: zero insults i zero burles.</span></div>
+ </div>
+</header>
+
+<nav class="salt-nav" aria-label="Apartats de la guia">
+ <div class="salt-llista">
+  <a href="#que-fa">📖 Què hi fa</a>
+  <a href="#estrelles">⭐ Estrelles i rànquing</a>
+  <a href="#bon-us">🌿 Bon ús i prevenció</a>
+  <a href="#xat">💬 Xat segur</a>
+  <a href="#privadesa">🔒 Privadesa</a>
+  <a href="#a-casa">🏡 A casa</a>
+  <a href="#dubtes">❓ Preguntes freqüents</a>
+ </div>
+</nav>
+
+<main id="contingut">
+
+ <section class="bloc" id="que-fa" aria-labelledby="t-quefa">
+  <div class="sec-cap"><span class="sec-ic" aria-hidden="true">🧭</span><h2 id="t-quefa">Què fa el teu fill o filla quan hi entra?</h2></div>
+  <p class="sec-intro">Cada assignatura és un «món» dividit en temes curts. Dins de cada món, l'estudi segueix sempre sis passos pensats perquè primer entengui i després comprovi el que sap:</p>
+  <div class="passos">
+   <article class="pas">
+    <div class="pas-cap"><span class="pas-num">1</span><h3>Fitxes clares i targetes giratòries</h3></div>
+    <p>Llegeix el resum ordenat del tema i gira targetes de pregunta i resposta per comprovar si ho ha entès abans de començar a puntuar.</p>
+    <div class="exemple">💡 Ideal per als primers 5 minuts d'estudi.</div>
+   </article>
+   <article class="pas">
+    <div class="pas-cap"><span class="pas-num">2</span><h3>Tests amb un llistó exigent (cal un 70 %)</h3></div>
+    <p>Cada test tria 6 preguntes a l'atzar. Per aprovar el tema cal encertar-ne <b>5 de 6</b> (amb la meitat no n'hi ha prou). Si dubta, pot obrir una pista per aprendre-ho, però amb pista no es regala estrella.</p>
+    <div class="exemple">🎯 Aprovar vol dir dominar el tema, no encertar per sort.</div>
+   </article>
+   <article class="pas">
+    <div class="pas-cap"><span class="pas-num">3</span><h3>Mapes, jocs pràctics i «Troba l'error»</h3></div>
+    <p>Segons la matèria, situa les 43 comarques al mapa, construeix arbres de factors o revisa una llibreta de mostra amb una errada habitual perquè ell mateix detecti on falla i ho escrigui bé.</p>
+    <div class="exemple">🔍 Detectar l'error típic evita cometre'l a l'examen.</div>
+   </article>
+   <article class="pas">
+    <div class="pas-cap"><span class="pas-num">4</span><h3>Explicar-ho amb les seves paraules (i en paper)</h3></div>
+    <p>A les preguntes obertes ha d'escriure frases amb sentit: no es deixa copiar i enganxar ni posar llistes de paraules soltes. A matemàtiques, fins i tot pot fer l'exercici <b>a la llibreta de paper</b> i fer-ne una foto perquè l'app li digui quina és la primera línia equivocada, sense donar-li el resultat fet.</p>
+    <div class="exemple">✍️ Combina pantalla i escriptura real a la llibreta.</div>
+   </article>
+   <article class="pas">
+    <div class="pas-cap"><span class="pas-num">5</span><h3>Repàs espaiat en dies diferents</h3></div>
+    <p>Cada vegada que falla una pregunta, es guarda sola a «Repassa els teus errors». Li torna a sortir el mateix dia, al cap de 3 dies i al cap de 7 dies. Quan l'encerta <b>3 vegades en dies separats</b>, passa a <b>«Error après»</b>.</p>
+    <div class="exemple">🧠 La memòria a llarg termini es construeix deixant passar dies.</div>
+   </article>
+   <article class="pas">
+    <div class="pas-cap"><span class="pas-num">6</span><h3>Simulacre d'examen i repte final</h3></div>
+    <p>Quan ja té els temes per la mà, pot fer un examen de prova sobre 10 punts, sense pistes i amb totes les preguntes barrejades, exactament com el que es trobarà a l'aula.</p>
+    <div class="exemple">📝 Arriba al dia de l'examen sabent què li preguntaran.</div>
+   </article>
+  </div>
+ </section>
+
+ <section class="bloc" id="estrelles" aria-labelledby="t-estrelles">
+  <div class="sec-cap"><span class="sec-ic" aria-hidden="true">⭐</span><h2 id="t-estrelles">Objectius i per què les estrelles són justes</h2></div>
+  <p class="sec-intro">Les estrelles serveixen per donar informació de què s'ha treballat bé, mai per fer repetir mecànicament ni per premiar qui s'hi passa més hores.</p>
+  <div class="dues-col">
+   <div class="col-caixa col-si">
+    <h3>Què premia Bona Nota</h3>
+    <ul class="llista-neta">
+     <li>Encertar preguntes sense demanar pista (només la primera vegada del dia).</li>
+     <li>Tornar un altre dia a corregir els errors pendents fins a deixar-los apresos.</li>
+     <li>Redactar respostes obertes ben explicades amb frases completes.</li>
+     <li>Superar preguntes especialment difícils i millorar la pròpia nota d'un tema.</li>
+    </ul>
+   </div>
+   <div class="col-caixa col-no">
+    <h3>Què NO premia mai</h3>
+    <ul class="llista-neta">
+     <li>Repetir el mateix test deu vegades seguides per inflar el marcador (té límit diari).</li>
+     <li>Estar molta estona amb la pantalla oberta: els minuts no donen cap estrella.</li>
+     <li>Respondre de pressa i a l'atzar sense llegir els enunciats.</li>
+     <li>Copiar i enganxar textos a les preguntes obertes.</li>
+    </ul>
+   </div>
+  </div>
+  <div class="mirades">
+   <h3>Un rànquing pensat per motivar també qui va darrere</h3>
+   <p>En comptes d'una llista única on sempre surten els mateixos o on es mesura qui hi dedica més hores, les hores i els minuts <b>no es mostren mai en públic</b>. El rànquing té 5 pestanyes perquè tothom tingui un espai on veure reconegut el seu avenç:</p>
+   <div class="xips-ranquing">
+    <span class="xip-r"><b>Estrelles:</b> feina acumulada</span>
+    <span class="xip-r"><b>Dies:</b> constància en dies diferents</span>
+    <span class="xip-r"><b>Nivell:</b> millor assignatura treballada</span>
+    <span class="xip-r"><b>Setmana:</b> qui s'hi ha posat aquests 7 dies</span>
+    <span class="xip-r"><b>Remuntada:</b> qui ha corregit més errors propis</span>
+   </div>
+  </div>
+ </section>
+
+ <section class="bloc" id="bon-us" aria-labelledby="t-bonus">
+  <div class="sec-cap"><span class="sec-ic" aria-hidden="true">🌿</span><h2 id="t-bonus">Bon ús, descans, son i prevenció</h2></div>
+  <p class="sec-intro">Moltes aplicacions busquen retenir l'atenció tant com poden. Bona Nota està dissenyada just al revés: totes les mecàniques noves passen un filtre pedagògic per evitar l'enganxament i respectar la vida familiar.</p>
+  <div class="destacat">✨ <b>El criteri principal:</b> tres sessions tranquil·les de 20 minuts repartides durant la setmana valen molt més que una marató de 90 minuts amb nervis.</div>
+  <div class="escuts">
+   <article class="escut">
+    <h3>🛡️ Si un dia no entra, no perd res</h3>
+    <p><b>No hi ha ratxes diàries que es trenquin</b> ni missions amb compte enrere d'«ara o mai». Si té entrenament, aniversari o simplement vol descansar, l'endemà ho troba tot intacte.</p>
+   </article>
+   <article class="escut">
+    <h3>🎲 Zero atzar, zero compres, zero anuncis</h3>
+    <p>No hi ha ruletes, ni cofres sorpresa, ni recompenses aleatòries, ni publicitat. Cada estrella correspon a una pregunta entesa o a un error corregit.</p>
+   </article>
+   <article class="escut">
+    <h3>☕ Pausa activa cada 25 minuts</h3>
+    <p>Als 25 minuts d'estudi surt una pantalla de <b>5 minuts de descans</b> per beure aigua, estirar-se i mirar lluny. Només es pot ajornar 2 vegades seguides (3 la vigília d'examen); després, la pausa és obligatòria.</p>
+   </article>
+   <article class="escut">
+    <h3>⏱️ Avís amable de temps diari</h3>
+    <p>Quan porta <b>60 minuts</b> en un dia normal (o <b>120 minuts</b> si l'endemà té examen), l'aplicació el felicita per l'esforç i el convida amablement a plegar per avui.</p>
+   </article>
+   <article class="escut">
+    <h3>🌙 Protecció del son a partir de les 21:30 h</h3>
+    <p>Des de les <b>21:30 h</b> (les <b>22:00 h</b> abans d'examen), l'app recorda que dormir fixa el que s'ha après, <b>tanca el xat</b> i activa sola el <b>mode suau</b> sense coets, confeti ni estímuls excitants.</p>
+   </article>
+   <article class="escut">
+    <h3>📅 Pla de 10 dies i vigília d'examen</h3>
+    <p>Cada món reparteix els temes dia a dia per evitar deixar-ho tot per al final. Si l'alumne té examen l'endemà, pot marcar <b>«Demà tinc examen»</b> (màxim 2 dies per tema) per centrar-se en el repàs sense que pugi el topall d'estrelles.</p>
+   </article>
+  </div>
+ </section>
+
+ <section class="bloc" id="xat" aria-labelledby="t-xat">
+  <div class="sec-cap"><span class="sec-ic" aria-hidden="true">💬</span><h2 id="t-xat">El Xat de la Colla: compartir sense cap risc</h2></div>
+  <p class="sec-intro">Els nois i noies es poden animar entre companys dins del rànquing, però amb una diferència fonamental respecte de qualsevol xarxa o grup de missatgeria: <b>no hi ha teclat per escriure text lliure</b>.</p>
+  <div class="mostra-xat" aria-label="Exemples reals de frases del xat">
+   <div class="baf"><small>Ànim a un company</small><q>Bona, Jana!</q><span>El nom d'un company només entra en frases positives.</span></div>
+   <div class="baf"><small>Repte esportiu</small><q>Vaig a pel podi!</q><span>Combina una frase fixa amb una paraula d'estudi.</span></div>
+   <div class="baf"><small>Humor de classe</small><q>Quin dia: la calculadora sense piles</q><span>Per riure una mica, sempre sobre coses quotidianes o d'un mateix.</span></div>
+  </div>
+  <ul class="llista-neta">
+   <li><b>Catàleg 100 % tancat:</b> només es poden combinar 26 frases fixes amb 63 peces predefinides. Ni lletres lliures, ni emojis lliures, ni fotos, ni missatges privats.</li>
+   <li><b>La regla d'or contra les burles:</b> les frases estan construïdes de manera que el nom d'un altre alumne només es pot posar en missatges de felicitació, d'ànim o de repte sa. És impossible insultar o ridiculitzar ningú.</li>
+   <li><b>Parlar es guanya estudiant:</b> cada <b>10 ⭐ fetes avui</b> donen dret a dir 1 frase, amb un màxim de <b>5 frases al dia</b> (sense gastar mai les estrelles guanyades), i a la nit es tanca automàticament.</li>
+  </ul>
+ </section>
+
+ <section class="bloc" id="privadesa" aria-labelledby="t-priv">
+  <div class="sec-cap"><span class="sec-ic" aria-hidden="true">🔒</span><h2 id="t-priv">Privadesa i protecció dels menors</h2></div>
+  <p class="sec-intro">Bona Nota recull únicament el mínim imprescindible per desar el progrés d'estudi d'un dia per l'altre.</p>
+  <div class="graella-4">
+   <div class="item-p">
+    <h3>Sense correu ni telèfon</h3>
+    <p>No cal cap compte de correu electrònic, ni número de telèfon, ni cognoms, ni dades familiars per entrar a estudiar.</p>
+   </div>
+   <div class="item-p">
+    <h3>Avatar dibuixat i codi PIN</h3>
+    <p>No es pugen fotos de perfil: cadascú tria un animalet i una insígnia. El progrés es protegeix amb un codi PIN de <b>4 números i 1 lletra</b> (amb bloqueig temporal si algú intenta endevinar-lo).</p>
+   </div>
+   <div class="item-p">
+    <h3>Les fotos de la llibreta no es desen</h3>
+    <p>Quan es fa una foto d'un exercici de matemàtiques per revisar els passos, la imatge s'analitza al moment i <b>no queda desada enlloc</b>.</p>
+   </div>
+   <div class="item-p">
+    <h3>Sense anuncis ni tercers comercials</h3>
+    <p>Cap anunci, cap perfil comercial i cap venda ni cessió d'informació d'activitat a plataformes publicitàries.</p>
+   </div>
+  </div>
+ </section>
+
+ <section class="bloc" id="a-casa" aria-labelledby="t-casa">
+  <div class="sec-cap"><span class="sec-ic" aria-hidden="true">🏡</span><h2 id="t-casa">Com acompanyar-los des de casa</h2></div>
+  <p class="sec-intro">Quatre hàbits senzills que fan que l'eina rendeixi al màxim sense discussions a casa:</p>
+  <div class="graella-4">
+   <div class="item-p">
+    <h3>1. Sessions curtes en dies alterns</h3>
+    <p> Amb <b>15–25 minuts</b> tres o quatre cops per setmana n'hi ha prou perquè portin el temari al dia sense cansar-se.</p>
+   </div>
+   <div class="item-p">
+    <h3>2. Pregunta pels «errors apresos»</h3>
+    <p>En lloc de preguntar en quina posició va al rànquing, pregunta-li: <i>«Quina pregunta que abans et costava ja t'ha sortit bé avui?»</i></p>
+   </div>
+   <div class="item-p">
+    <h3>3. Llibreta de paper sempre al costat</h3>
+    <p>Sobretot a matemàtiques, tenir paper i llapis per fer les operacions abans de respondre consolida molt millor l'aprenentatge.</p>
+   </div>
+   <div class="item-p">
+    <h3>4. Activa el «mode suau» si li convé</h3>
+    <p>A la barra superior de cada assignatura hi ha el botó per apagar el so o activar els <b>efectes suaus</b> (sense animacions ni celebracions intenses).</p>
+   </div>
+  </div>
+ </section>
+
+ <section class="bloc" id="dubtes" aria-labelledby="t-dubtes">
+  <div class="sec-cap"><span class="sec-ic" aria-hidden="true">❓</span><h2 id="t-dubtes">Preguntes freqüents de les famílies</h2></div>
+  <div class="faq-llista">
+   <details>
+    <summary>Bona Nota substitueix el llibre, els apunts o els deures de classe?</summary>
+    <div class="faq-cos">No: <b>els complementa</b>. Està feta a partir dels mateixos continguts que treballen a l'aula perquè puguin comprovar si realment els han entès, practicar els punts que solen caure als exàmens i no estudiar només llegint passivament.</div>
+   </details>
+   <details>
+    <summary>Per què amb 4 respostes bones de 6 encara no aprova el tema?</summary>
+    <div class="faq-cos">Perquè en un test curt de 3 opcions és fàcil encertar alguna pregunta per descart. Demanar un <b>70 % (5 encerts de 6)</b> garanteix que quan un tema surt com a aprovat, l'alumne el domina de debò. Sempre el pot tornar a intentar amb preguntes noves i sense perdre res.</div>
+   </details>
+   <details>
+    <summary>Què passa si oblida el seu codi PIN?</summary>
+    <div class="faq-cos">No perd mai les seves estrelles ni el progrés guardat. L'administrador li pot reiniciar només el PIN perquè, el pròxim cop que entri amb el seu nom, en triï un de nou (us recomanem apuntar-lo junts en un lloc segur de casa).</div>
+   </details>
+   <details>
+    <summary>Pot començar a la tauleta i continuar després al mòbil o a l'ordinador?</summary>
+    <div class="faq-cos">Sí. Entrant amb el <b>mateix nom i el mateix PIN</b>, el progrés, els temes aprovats, els errors pendents de repassar i l'avatar es mantenen sincronitzats entre dispositius.</div>
+   </details>
+   <details>
+    <summary>Què passa si un dia o durant una setmana sencera no hi entra?</summary>
+    <div class="faq-cos"><b>Absolutament res.</b> No es resten estrelles, no es perden nivells i no hi ha cap penalització. Quan torni, reprendrà el tema o el repàs exactament on ho va deixar.</div>
+   </details>
+   <details>
+    <summary>Com podem reduir estímuls visuals o sons si es distreu fàcilment?</summary>
+    <div class="faq-cos">Dins de qualsevol món, a dalt a la dreta, pot silenciar el so amb un toc i activar <b>Efectes suaus</b>: desapareixen el confeti, els coets i els moviments d'adorn, i l'elecció queda desada a l'aparell. A més, a partir de les 21:30 h el mode suau s'activa sol.</div>
+   </details>
+   <details>
+    <summary>Té algun cost, subscripció o compra dins de l'aplicació?</summary>
+    <div class="faq-cos">No. És una eina d'estudi <b>totalment oberta i gratuïta</b> per als alumnes, sense cap pagament, sense anuncis i sense cap funció de pagament amagada.</div>
+   </details>
+  </div>
+ </section>
+
+ <div class="tancament">
+  <a class="cta-portada" href="../">Vés a la portada de Bona Nota ▶</a>
+ </div>
+
+</main>
+
+<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.22.0</small></footer>
+</body>
+</html>
