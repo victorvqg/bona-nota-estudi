@@ -38,12 +38,12 @@ function servidor() {
 
 // rànquing simulat: «Prova» és 3a a Estrelles (surt al podi i té la Jana just al davant). Nivell 4 (Savi): 60 ⭐ al millor món
 const RANK = [
- { nom: "Pau", punts: 263, temps_s: 9400, punts_max: 150, setmana: 71, mons: { socials: 150, biogeo: 36 } },
- { nom: "Jana", punts: 241, temps_s: 7100, punts_max: 190, setmana: 22, mons: { socials: 190, biogeo: 51 } },
- { nom: "Prova", punts: 200, temps_s: 5000, punts_max: 60, setmana: 30, mons: { socials: 60, biogeo: 30, divisibilitat: 10 } },
- { nom: "Nora", punts: 151, temps_s: 5200, punts_max: 120, setmana: 9, mons: { socials: 120, castellano: 31 } },
- { nom: "Hugo", punts: 112, temps_s: 3900, punts_max: 112, setmana: 40, mons: { castellano: 112 } },
- { nom: "Ona", punts: 97, temps_s: 4400, punts_max: 60, setmana: 0, mons: { biogeo: 60, comarques: 37 } }];
+ { nom: "Pau", punts: 263, temps_s: 9400, punts_max: 150, setmana: 71, dies: 14, mons: { socials: 150, biogeo: 36 } },
+ { nom: "Jana", punts: 241, temps_s: 7100, punts_max: 190, setmana: 22, dies: 11, mons: { socials: 190, biogeo: 51 } },
+ { nom: "Prova", punts: 200, temps_s: 5000, punts_max: 60, setmana: 30, dies: 9, mons: { socials: 60, biogeo: 30, divisibilitat: 10 } },
+ { nom: "Nora", punts: 151, temps_s: 5200, punts_max: 120, setmana: 9, dies: 12, mons: { socials: 120, castellano: 31 } },
+ { nom: "Hugo", punts: 112, temps_s: 3900, punts_max: 112, setmana: 40, dies: 6, mons: { castellano: 112 } },
+ { nom: "Ona", punts: 97, temps_s: 4400, punts_max: 60, setmana: 0, dies: 7, mons: { biogeo: 60, comarques: 37 } }];
 const ARA = Date.now(), MIN = 6e4;
 // missatges de partida (ids 1–5): la Nora (id 3) té 2 vots i és el missatge del dia
 const BASE = () => [
@@ -317,7 +317,8 @@ function servidorXat(o = {}) {
   const ll = e.crides.filter(c => c.f === "bn_xat_llegeix").slice(l0);
   ok(ll.length >= 1 && ll[0].cos.p_des_de === 5, "al cap de 10 s, bn_xat_llegeix amb p_des_de = l'últim (5)");
   ok((await txt(p, '#xFeed .x-msg[data-xid="50"] .x-mt')) === "Bona, Pau!", "el missatge nou surt al xat sense repintar el rànquing");
-  await p.click('.hs-tab[data-t="temps"]'); await p.waitForTimeout(200); ok(await p.evaluate(() => XAT.tL === null), "en canviar de pestanya s'atura");
+  await p.click('.hs-tab[data-t="dies"]'); await p.waitForTimeout(250); ok(await p.evaluate(() => XAT.tL === null), "en canviar de pestanya s'atura");
+  ok((await txt(p, "#hs .p1 .pd-nom")) === "Pau" && (await txt(p, "#hs .p2 .pd-nom")) === "Nora" && /dies d'estudi/.test(await txt(p, "#hs .p1 .pd-val")), "pestanya Dies: ordena per dies d'estudi (Pau 14, Nora 12)");
   await e.xat(); await p.keyboard.press("Escape"); await p.waitForTimeout(200);
   ok(await p.isHidden("#hsPop") && await p.evaluate(() => XAT.tL === null), "en tancar el rànquing (Escape) s'atura");
   sense(e); await e.ctx.close() }

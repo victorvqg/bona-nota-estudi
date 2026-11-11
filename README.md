@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.20.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.21.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -492,8 +492,8 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
 
 - **So:** tot es sintetitza amb WebAudio, sense fitxers. Les veus passen per un bus d'efectes o de música, un volum general i un compressor. La música de fons té la tonalitat i el tempo que surten de l'id del món.
 - **Escolta:** `speechSynthesis`, amb la veu del mateix dispositiu.
-- **Descans:** cada 25 minuts de pàgina visible (`DESCANS_S`) proposa una pausa. Com ha de ser l'ús sa (temps segons la fase del món, nit, vigília d'examen i el filtre per a mecàniques noves) és a [`docs/BON-US.md`](docs/BON-US.md).
-- **Mode suau:** la classe `suau` del `body` treu les animacions fortes.
+- **Descans i bon ús:** cada 25 minuts de pàgina visible (`DESCANS_S`) proposa una pausa de 5 minuts, la registra (`descans`: `fet` o `salta`) i deixa saltar-la com a màxim 2 vegades seguides els dies normals (3 a la vigília). A l'inici del món hi ha el pla de 10 dies (`#plaDia`), el botó «Demà tinc examen» (`examen_dema`, màx. 2 dies/món), l'avís amable als 60/120 minuts i la franja de nit (`21:30`/`22:00`, amb mode suau automàtic). Totes les regles i el filtre per a mecàniques noves són a [`docs/BON-US.md`](docs/BON-US.md).
+- **Mode suau:** la classe `suau` del `body` treu les animacions fortes (també s'activa sola a la franja de nit sense alterar la preferència manual `bn_suau`).
 - **Teclat:** un únic `keydown` reparteix les tecles segons la pantalla. No interfereix amb camps de text, la pissarra ni el teclat del Taller.
 
 ### Registre d'activitat
@@ -508,7 +508,7 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
 
 És una pàgina a part, que no surt de la plantilla. S'edita a mà, excepte els blocs marcats que escriu `tot.py`: `MONS`, `SO-MOBIL`, `ACTUALITZA`, l'adreça de `sprites.js` i la versió del peu.
 
-- **Rànquing:** combina les RPC `bn_ranking_mons` (amb `bn_ranking` de reserva) i `bn_ranking_remuntada`, i hi afegeix el xat de la colla (vegeu a sota). Sense la segona, la pestanya Remuntada surt buida. La classificació mostra els `HS_TOP` = 25 primers i, si el nen queda més avall, la seva fila a sota. `?demo` el mostra amb nens inventats.
+- **Rànquing:** combina les RPC `bn_ranking_mons` (total, estrelles per món i dies diferents d'estudi `dies`; amb `bn_ranking` de reserva) i `bn_ranking_remuntada`, amb les pestanyes `Estrelles`, `Dies` («Dies d'estudi»), `Nivell`, `Setmana`, `Remuntada` i `Xat`. Sense la segona RPC, la pestanya Remuntada surt buida. La classificació mostra els `HS_TOP` = 25 primers i, si el nen queda més avall, la seva fila a sota. `?demo` el mostra amb nens inventats.
 - **Icones:** `sprites.js` dibuixa el pixel art com a SVG a partir de graelles de 16×16, de manera que es veu igual a tots els aparells.
 - **Afegir un món al rànquing:** surt sol de la seva targeta (`data-id`, `.mat`, `h2`). Per donar-li dibuix i color, a `sprites.js` afegeix-lo a `BN_MON`
   (`id: {ic: "un dibuix de BN_SPR", mat: "Assignatura"}`). Si l'assignatura és nova, afegeix-la també a `BN_MAT` (`curt`, `color`, `tint`).
@@ -606,6 +606,8 @@ Cap dada nova del nen: només el nom de sempre. El camp `detall` de cada registr
 | `examen` | `joc` (examen · examreal), `pc`, `mode` (sorpresa · real · real-temps), `s`, `temes` i `q`. L'examen de mates porta `nota` sobre 10 en lloc de `pc`, i `nivell` i `ep` |
 | `joc` | `joc`, `pc`, `s`, `enc`, `err`; el MAPA també `mode` i `f` (comarques fallades). El boss (`joc: "boss"`) també porta `guanya`, `cors`, `hp` i `q`. El repàs (`joc: "repas"`) també porta `apr` (errors apresos en aquella sessió) i `ext` (p. ex. `mx:1/2,mapa:2/3`: errors del Taller i del MAPA recordats) |
 | `oberta` | número, tema, `pc`, `s`, `idees`/`de`, `det` (idees trobades al text), `falten` (idees no trobades) i, si n'hi ha, `mode: "practica"`, `rebutjat` i `enganxat`. Des de la versió 2.6.0 `pc` surt de les idees trobades; abans el marcava el nen |
+| `descans` | `accio` (`"fet"` quan es completen els 5 min de pausa · `"salta"` quan es prem «Ara no, continuo»), `n` (salts seguits) i `fase` |
+| `examen_dema` | `dia` (`AAAA-MM-DD`) i `n` (1 o 2, màxim 2 dies per món) quan el nen marca «Demà tinc examen» |
 
 Cada pregunta contestada va a `q` com un text curt **`tema/núm:encert:segons:opció`**, per exemple
 `lle/4:0:7:2` (tema «lle», pregunta 4, fallada, 7 segons, ha triat l'opció 2 del llibre de dades).
@@ -698,7 +700,7 @@ El resultat surt a la pestanya **Actions** del repo.
 | 6 | `motor/prova-admin-fonts.js` | Els orígens d'estrelles del tauler (funcions pures) |
 | 7 | `motor/prova-xat-sql.js`, `prova-xat.js`, `prova-admin-xat.js` | El xat de la colla: el SQL, la portada i la pestanya de l'admin (detall a sota) |
 | 8 | `motor/prova-admin-fitxa-sql.js`, `prova-admin-fitxa.js` | La fitxa «Al núvol» i les altes: el SQL i el tauler |
-| 9 | `motor/prova-admin-benestar-sql.js`, `prova-admin-benestar.js` | El benestar: el SQL i l'apartat del tauler |
+| 9 | `motor/prova-admin-benestar-sql.js`, `prova-bon-us-sql.js`, `prova-admin-benestar.js` | El benestar, les fases del món (`bn_vigilia`) i l'apartat del tauler |
 | 10 | `motor/prova-admin-fonts-rep-sql.js`, `prova-admin-fonts-rep.js` | «Combos i repàs» i «Errors pendents de la colla»: el SQL i el tauler |
 | 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
 | 12 | `motor/prova-pin-intents-sql.js` | El bloqueig de 15 minuts al 5è intent de PIN fallit a totes les funcions amb PIN (issue #33) |

@@ -10,7 +10,7 @@ Aquest document explica quan Bona Nota ajuda el nen a aprendre i quan comença a
 | [`XAT.md`](XAT.md) | Com es parlen els nens? |
 | [`BENESTAR.md`](BENESTAR.md) | Com ho porta cada nen? (el que veu el pare al tauler) |
 
-> **Estat (10 de novembre de 2026).** Els principis estan decidits ([ADR-0007](DECISIONS.md)). Els números (minuts, hores, quantes vegades es pot saltar el descans) són **valors inicials pendents de confirmar** (apartat 7). Avui l'app només aplica el descans de 25 minuts; la resta són canvis previstos.
+> **Estat (11 de novembre de 2026 · v2.21.0).** Tots els principis ([ADR-0007](DECISIONS.md)) i els llindars confirmats ([ADR-0008](DECISIONS.md)) estan **actius a producció**: fases del món i pla de 10 dies, descans de 25 minuts registrat i amb límit de salts, avís amable als 60/120 minuts, franja de nit amb mode suau automàtic, botó «Demà tinc examen», textos amables de mentalitat de creixement, rànquing per «Dies d'estudi» i senyals complets al tauler de Benestar.
 
 ## 1. Principis
 
@@ -52,12 +52,11 @@ Un límit fix de minuts seria injust: el dia abans de l'examen tothom estudia m�
 
 **Els 10 dies, ben aprofitats.** Com que l'examen arriba com a molt al cap de 10 dies, l'app pot repartir la feina («T'han quedat 2 temes per veure: avui, el tema 3»). Així la vigília és un repàs i no una marató.
 
-## 3. El descans, com funciona avui
+## 3. El descans, com funciona
 
 - Cada **25 minuts de pàgina visible** (`DESCANS_S` = 1.500 s) surt la pantalla «Toca descans», amb un compte enrere de 5 minuts i idees (beure aigua, estirar-se, mirar lluny).
 - Si la pàgina queda amagada més de 5 minuts, el comptador torna a zero.
-- **«Ara no, continuo»** tanca la pantalla i el descans torna a sortir al cap de 10 minuts. Avui es pot fer sempre, i no queda registrat si el nen descansa o salta el descans.
-- Previst (apartat 7): registrar-ho i que, passat el nombre de salts de la fase, el descans ja no es pugui saltar.
+- **«Ara no, continuo»** tanca la pantalla, el descans torna a sortir al cap de 10 minuts i queda registrat (`event = 'descans'`, `accio: 'salta'`). Els dies normals es pot saltar com a màxim **2 vegades seguides** (**3 vegades** a la vigília); al següent avís el botó d'ajornar ja no hi és i els 5 minuts són obligatoris. Quan s'acaba el compte enrere es registra `accio: 'fet'` i el comptador de salts torna a zero.
 
 ## 4. Revisió de les mecàniques actuals
 
@@ -120,43 +119,45 @@ Abans de fer-la, cada mecànica nova (premi, joc, pestanya, avís) ha de passar 
 | Guarda només el mínim i sense text lliure entre nens? | Sí |
 | El pare la pot veure al tauler? | Sí |
 
-## 7. Pendent de decidir i pla de canvis
+## 7. Decisions confirmades i pla de canvis executat
 
-Decisions que ha de prendre l'administrador abans dels canvis al motor:
+Decisions confirmades el **11 de novembre de 2026** ([ADR-0008](DECISIONS.md)):
 
-1. **Avís de temps:** als 60 minuts els dies normals i als 120 la vigília? Només avís o també bloqueig?
-2. **Franja de nit:** a les 21:30 i, la vigília, a les 22:00? Només avisa, o també deixa de donar estrelles i tanca el xat?
-3. **Descans:** quants «Ara no» abans que sigui obligatori? Proposta: 2 els dies normals i 3 la vigília.
-4. **Botó «Demà tinc examen»:** el posem, amb un màxim de 2 dies per món?
-5. **Dates d'examen:** les posa l'administrador al tauler quan les sap, o n'hi ha prou amb el botó i el pic del grup?
-6. **Pestanya Temps del rànquing:** treure-la, canviar-la per «dies d'estudi» o mantenir-la?
-7. **Qui veu el Benestar:** només l'administrador, o també un resum per a cada família?
+1. **Avís de temps:** avís amable **sense bloqueig** als **60 minuts** els dies normals i als **120 minuts** la vigília.
+2. **Franja de nit:** a partir de les **21:30** i, la vigília, de les **22:00** (hora de Catalunya): avís d'anar a dormir + **mode suau automàtic** dins dels mons (sense bloquejar les estrelles ni tocar `localStorage.bn_suau`) + xat tancat per horari (`bn_control.sql`).
+3. **Descans:** es registra (`descans`: `fet` o `salta`) i es pot dir «Ara no, continuo» com a màxim **2 vegades** seguides els dies normals i **3** la vigília; després els 5 minuts són obligatoris.
+4. **Botó «Demà tinc examen»:** actiu dins del món (confirmació en dos tocs), amb un màxim de **2 dies per món**, registrat amb `examen_dema`.
+5. **Dates d'examen:** l'administrador les pot posar al tauler quan les sap (manen per damunt de tot); quan no n'hi ha, s'apliquen el botó del nen (vigília individual) i el pic del grup.
+6. **Pestanya Temps del rànquing:** substituïda per **«Dies» («Dies d'estudi»)** (i el premi «Més constant» també compta dies diferents d'estudi).
+7. **Qui veu el Benestar:** **només l'administrador** a `/admin/`.
 
 | PR | Què fa | Toca el motor? | SQL nou | Estat |
 |---|---|---|---|---|
 | A | Aquest document, ADR-0007 i els enllaços | No | No | Fet |
 | B | Apartat «Benestar» al tauler: semàfor, pic de vigília en blau, alertes noves i data d'examen per món | No | `bn_admin_benestar`, `bn_priv.examens` | Fet (2.13.0, n2540) |
-| C | Fases del món: camp `neix` a `motor/mons.json`, `bn_vigilia(assig)`, avís de temps i descans segons la fase, registre del descans, botó «Demà tinc examen» | Sí, i la configuració | `bn_vigilia` | Pendent de les decisions 1, 3 i 4 |
-| D | Franja de nit segons la fase, amb l'hora a `bn_priv.config`: avís, mode suau i xat tancat | Sí | Una clau de config | Pendent de la decisió 2 |
-| E | Pla de 10 dies: el tema del dia segons l'edat del món i els temes que falten | Sí | No | Pendent |
-| F | Rànquing: pestanya Temps | Portada | Potser `bn_ranking_mons` | Pendent de la decisió 6 |
-| G | Textos amables quan es trenca un combo o se suspèn, i el missatge d'anar a dormir | Només textos | No | Pendent |
+| C | Fases del món: camp `neix` a `motor/mons.json`, `bn_vigilia(assig, neix)`, avís de temps i descans segons la fase, registre del descans, botó «Demà tinc examen» | Sí, i la configuració | `bn_bon_us.sql`, `bn_admin_benestar.sql` | Fet (2.20.0, g5) |
+| D | Franja de nit segons la fase, amb l'hora a `bn_priv.config`: avís, mode suau automàtic i xat tancat | Sí | Clau `bon_us` (`bn_bon_us.sql`) | Fet (2.20.0, g5) |
+| E | Pla de 10 dies: el tema del dia segons l'edat del món i els temes que falten (`#plaDia`) | Sí | No | Fet (2.20.0, g5) |
+| F | Rànquing: substitució de la pestanya Temps per «Dies» («Dies d'estudi») i nous senyals al tauler de Benestar | Portada i Admin | `bn_ranking_mons.sql` | Fet (2.21.0, g5) |
+| G | Textos amables quan es trenca un combo o se suspèn, i el missatge d'anar a dormir | Sí | No | Fet (2.20.0, g5) |
 
-Els canvis al motor obliguen a regenerar els 6 mons (`python3 motor/tot.py`), pujar versió i passar totes les proves `bnProva…`; van en PR separats dels del tauler.
+Els canvis al motor obliguen a regenerar els 7 mons (`python3 motor/tot.py`), pujar versió i passar totes les proves `bnProva…`; van en PR separats dels del tauler.
 
 ## 8. Per a qui programa: on és cada cosa
 
 | Cosa | On és |
 |---|---|
-| Descans de 25 minuts | `DESCANS_S`, `descans()` a `motor/plantilla-estudi-interactiu.html` |
-| Mode suau | `SUAU`, `aplicaSuau()`, `canviaSuau()` (clau `bn_suau` de l'aparell) |
+| Descans de 25 minuts i límit de salts | `DESCANS_S`, `descans()`, `saltsDescans()` a `motor/plantilla-estudi-interactiu.html` |
+| Mode suau i franja de nit | `SUAU`, `SUAU_MANUAL`, `aplicaSuau()`, `canviaSuau()`, `esHoraNit()`, `bannerNitHtml()` (clau `bn_suau` de l'aparell) |
+| Pla de 10 dies i avís de temps | `faseActual()`, `cartaPlaDia()`, `comprovaAvisTemps()` a `motor/plantilla-estudi-interactiu.html` |
 | Hora i dia d'entrada | event `entra` (`h`, `dw`) a `bn_log` |
 | Minuts | event `temps` (`s`), que s'envia en amagar o tancar la pàgina |
 | Topalls d'estrelles | [`PUNTUACIO.md`](PUNTUACIO.md), apartat 8 |
-| Previst: data de cada món | camp `neix` a `motor/mons.json` (si falta, el primer registre del món) |
-| Previst: fase del món | funció pública `bn_vigilia(assig)`, que només torna la fase, sense noms |
-| Previst: dates d'examen | taula `bn_priv.examens(assig, data)`, des del tauler |
-| Previst: botó del nen | event nou `examen_dema` |
+| Data de naixement de cada món | camp `neix` a `motor/mons.json` (si falta, el primer registre del món) |
+| Fase del món i config nocturna | `supabase/bn_bon_us.sql`: funció pública `bn_vigilia(assig, neix)` (sense noms) i clau `bon_us` a `bn_priv.config` |
+| Dates d'examen | taula `bn_priv.examens(assig, data)`, des del tauler (`supabase/bn_admin_benestar.sql`) |
+| Botó del nen i descans al registre | events `examen_dema` i `descans` (`accio: 'fet' \| 'salta'`) a `bn_log` |
+| Dies d'estudi al rànquing | columna `dies` a `supabase/bn_ranking_mons.sql` i pestanya `data-t="dies"` a `index.html` |
 
 ## 9. D'on ve
 

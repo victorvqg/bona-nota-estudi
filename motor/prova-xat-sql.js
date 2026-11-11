@@ -149,7 +149,8 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   const lin = fitxer("index.html").match(/const NIV=(\[.*?\]);/), NIV = lin ? vm.runInNewContext(lin[1]) : [];
   const niv = p => { let i = 0; while (i < NIV.length - 1 && p >= NIV[i + 1][0]) i++; return i };
   ok(igual(NIV.map(x => x[0]), [0, 10, 25, 45, 70, 100, 140, 190, 250, 330]), "els llindars NIV de la portada són els del SQL");
-  const rq = await q("select nom, punts_max, mons from public.bn_ranking_mons()"); let iguals = rq.length > 5;
+  const rq = await q("select nom, punts_max, mons, dies from public.bn_ranking_mons()"); let iguals = rq.length > 5;
+  ok(rq.every(r => Number.isInteger(r.dies) && r.dies >= 1), "bn_ranking_mons torna els dies d'estudi (enters >= 1)");
   for (const r of rq) { const k = await val("select lower(trim($1))", [r.nom]), mons = await val("select bn_priv.xat_mons($1)", [k]), nen = await q("select * from bn_priv.xat_nen($1, bn_priv.xat_cfg())", [k]);
    if (!igual(mons, r.mons) || nen[0].nivell !== niv(r.punts_max) + 1) { iguals = false; console.log("    ", r.nom, JSON.stringify(mons), JSON.stringify(r.mons), nen[0].nivell, niv(r.punts_max) + 1) } }
   ok(iguals, `mons i nivell coincideixen amb bn_ranking_mons per als ${rq.length} nens del rànquing`);

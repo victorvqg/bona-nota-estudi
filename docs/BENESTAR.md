@@ -1,6 +1,6 @@
 # 💚 Benestar: com es llegeix al tauler
 
-Aquest document explica l'apartat **Benestar** del tauler d'admin a la versió **2.13.0**: què hi surt, què vol dir cada color i cada senyal, com es detecta la vigília d'examen, com es posa la data de l'examen i on és cada cosa al codi.
+Aquest document explica l'apartat **Benestar** del tauler d'admin (versions **2.13.0 → 2.21.0**): què hi surt, què vol dir cada color i cada senyal, com es detecta la vigília d'examen, com es posa la data de l'examen i on és cada cosa al codi.
 
 Completa els altres documents de regles:
 
@@ -51,8 +51,11 @@ Tots surten del registre d'activitat (`bn_log`) i, el del xat, dels missatges de
 | **Enganxa text** | Intenta enganxar text a les preguntes obertes | Camp `enganxat` de les obertes | Qualsevol cas | 🟡 |
 | **Entra per xatejar** | Xateja molt i estudia poc | Frases del xat i minuts d'estudi dels últims 7 dies | 10 frases o més i menys de 60 min d'estudi | 🟡 |
 | **Deixa de venir** | Fa dies que no entra | Com l'alerta «inactiu» del tauler | Com ara | 🟡 |
+| **Salta el descans** | S'ajorna repetidament la pausa de 25 min | Events `descans` amb `accio = 'salta'` seguits en una sessió | 2 o més seguits (3 a la vigília) | 🟡 |
 | **Poc i sovint** | Estudia en sessions curtes i en dies diferents | Dies amb 10-40 min en els últims 7 dies | 3 dies o més | 🟢 bo |
 | **Aprèn dels errors** | Corregeix i aprèn els errors al repàs | Errors apresos aquesta setmana contra la setmana passada | Aquesta setmana més que la passada | 🟢 bo |
+| **Fa el descans** | Completa les pauses de 5 min quan toca | Descansos `fet` respecte al total de `descans` del període | Almenys 2 fets i 2 de cada 3 o més | 🟢 bo |
+| **Demà tinc examen** | El nen ha premut el botó dins del món | Events `examen_dema` per nen i món (màxim 2 dies) | Fins a 2 dies per món | ⚪ context |
 | **Dos aparells** | Els minuts poden sortir doblats | Registres de temps de dos aparells que se solapen el mateix dia | Qualsevol cas | ⚪ context |
 
 **Finestres fixes.** «Poc i sovint», «aprèn dels errors», «entra per xatejar» i «deixa de venir» sempre miren els seus dies (els últims 7, o com l'alerta), triïs el període que triïs. La resta segueixen el període de la capçalera.
@@ -68,10 +71,11 @@ El dia abans d'un examen tothom estudia més, i ha de poder fer-ho. Per això el
 | Vigília | El dia abans de l'examen. |
 | Després | L'endemà de la vigília, o a partir del dia 12 del món. |
 
-**Com se sap que és vigília.** Mana la primera de les dues fonts que doni resposta:
+**Com se sap que és vigília.** Mana la primera de les fonts que doni resposta:
 
-1. **La data de l'examen que posa l'admin.** La vigília és el dia abans. Si hi ha data, el pic del grup no es mira per a aquell món (i la data compta encara que caigui fora dels dies 3-12).
-2. **El pic del grup.** Un dia entre el 3 i el 12 del món en què hi han estudiat **5 nens o més, o la meitat dels nens del món**, i entre tots hi han fet **el triple de minuts d'un dia normal** (la mediana dels altres dies amb activitat del món). Exemple real: a Comarques, un dia normal són 1-3 nens i 8-53 minuts; el 9 de novembre hi van entrar 9 nens i hi van fer 204 minuts.
+1. **La data de l'examen que posa l'admin.** La vigília és el dia abans. Si hi ha data, ni el pic del grup ni el botó del nen es miren per a aquell món (i la data compta encara que caigui fora dels dies 3-12).
+2. **El botó «Demà tinc examen» del nen** (vigília individual per a aquell nen i món, fins als 2 primers dies marcats dins dels 12 primers dies del món).
+3. **El pic del grup.** Un dia entre el 3 i el 12 del món en què hi han estudiat **5 nens o més, o la meitat dels nens del món**, i entre tots hi han fet **el triple de minuts d'un dia normal** (la mediana dels altres dies amb activitat del món). Exemple real: a Comarques, un dia normal són 1-3 nens i 8-53 minuts; el 9 de novembre hi van entrar 9 nens i hi van fer 204 minuts.
 
 Els dies de vigília, la marató surt en **blau** amb el llindar de 120 minuts, i la nit comença a les 22:00.
 
@@ -90,27 +94,27 @@ Els dies de vigília, la marató surt en **blau** amb el llindar de 120 minuts, 
 - **Període en dies sencers.** «7 dies» vol dir avui i els 6 dies d'abans, des de la mitjanit.
 - **Nens amagats.** Hi surten igualment (és el tauler de l'admin, com les alertes).
 
-## 7. Què no fa encara
+## 7. Què fa l'app dels nens (des de 2.20.0–2.21.0)
 
-Aquestes coses són a [`BON-US.md`](BON-US.md) (PR C a G) i esperen decisions de l'apartat 7, perquè toquen l'app dels nens:
+Totes les peces de [`BON-US.md`](BON-US.md) (PR C a G, [ADR-0008](DECISIONS.md)) estan actives:
 
-- Registrar si el nen fa el descans o el salta.
-- El botó «Demà tinc examen» dins del món.
-- Que el joc sàpiga la fase del món (`bn_vigilia`): avís de temps i descans segons la fase.
-- La franja de nit a l'app (avís, mode suau, xat tancat).
-- El pla de 10 dies.
+- Registra si el nen fa el descans (`fet`) o el salta (`salta`), i limita els salts a 2 (3 a la vigília).
+- Inclou el botó «Demà tinc examen» dins del món (màxim 2 dies per món).
+- Consulta la fase del món (`bn_vigilia`) per mostrar el pla de 10 dies i l'avís amable als 60/120 minuts.
+- Aplica la franja de nit (`21:30` / `22:00`): avís d'anar a dormir, mode suau automàtic i xat tancat.
+- Substitueix la pestanya «Temps» del rànquing de la portada per «Dies» («Dies d'estudi»).
 
 ## 8. Per a qui programa: on és cada cosa
 
 | Cosa | On és |
 |---|---|
-| SQL | `supabase/bn_admin_benestar.sql` (després de `bn_admin_tauler.sql`; el del xat és opcional) |
-| Senyals i fases | `public.bn_admin_benestar(correu, contrasenya, període, nom)` |
+| SQL | `supabase/bn_admin_benestar.sql` i `supabase/bn_bon_us.sql` |
+| Senyals i fases | `public.bn_admin_benestar(correu, contrasenya, període, nom)` i `public.bn_vigilia(assig, neix)` |
 | Dates d'examen | taula `bn_priv.examens(assig, data)` i `public.bn_admin_examen_desa(correu, contrasenya, assig, data)` |
 | Pantalla | `admin/index.html`: `tBenestar()`, `pintaBenestar()`, `htmlBenestar()`, `rpcB()`; demo: `demoBenestarRpc()` |
-| Proves | `motor/prova-admin-benestar-sql.js` (PGlite) i `motor/prova-admin-benestar.js` (Playwright) |
+| Proves | `motor/prova-admin-benestar-sql.js`, `motor/prova-bon-us-sql.js` (PGlite) i `motor/prova-admin-benestar.js` (Playwright) |
 
-Codis de senyal a la resposta: `marato_bloc`, `marato_dia`, `nit`, `pressa` (porta `encert`), `repetir`, `frustracio_suspesos`, `frustracio_costa`, `enganxa`, `xat` (porta `minuts`), `inactiu`, `poc_sovint`, `apren_errors`, `dos_aparells`.
+Codis de senyal a la resposta: `marato_bloc`, `marato_dia`, `nit`, `salta_descans`, `pressa` (porta `encert`), `repetir`, `frustracio_suspesos`, `frustracio_costa`, `enganxa`, `xat` (porta `minuts`), `inactiu`, `poc_sovint`, `apren_errors`, `fa_descans`, `examen_dema`, `dos_aparells`.
 
 **Per canviar un llindar:** al SQL, a la capçalera hi ha la taula de codis; canvia el número a la funció, actualitza aquest document i [`BON-US.md`](BON-US.md), i torna a passar `node motor/prova-admin-benestar-sql.js`.
 

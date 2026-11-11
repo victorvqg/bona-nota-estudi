@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.21.0 · 2026-11-11
+
+### Canviat
+- Portada, rànquing (`index.html`, `supabase/bn_ranking_mons.sql`): la pestanya «Temps» i el premi «Més constant» se substitueixen per **«Dies» («Dies d'estudi»)**, comptant els dies diferents d'estudi dels últims 120 dies a l'hora de Catalunya (`ADR-0008`, `docs/BON-US.md` PR F · g5).
+
+### Afegit
+- Admin, apartat «Benestar» (`admin/index.html`, `motor/prova-admin-benestar.js`): motius en paraules planeres i llegenda per als tres senyals nous del servidor (`fa_descans` en verd, `salta_descans` en groc i `examen_dema` en context) (g5).
+- Documentació (`docs/BON-US.md`, `docs/DECISIONS.md` ADR-0008, `docs/BENESTAR.md`, `docs/ESTAT.md`, `README.md`): decisions confirmades i documentació completa dels hàbits saludables de `2.20.0` i `2.21.0` (g5).
+
 ## 2.20.0 · 2026-11-11
 
 ### Afegit
