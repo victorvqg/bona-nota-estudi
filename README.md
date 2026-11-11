@@ -37,7 +37,7 @@ Aquest README explica **com està feta la web i com s'hi treballa**. El que no �
 
 **Tres regles que valen per a tot el repo:**
 
-1. **Mai s'edita una pàgina generada** (`<assignatura>/<tema>/index.html`, `sw.js`, `versio.json`, `admin/preguntes.json`). Es canvia `motor/` i es regenera amb `python3 motor/tot.py`.
+1. **Mai s'edita una pàgina generada** (`<assignatura>/<tema>/index.html`, `sw.js`, `versio.json`, `admin/preguntes.json`, `motor/regles.json`, `admin/regles.json`). Es canvia `motor/` i es regenera amb `python3 motor/tot.py`.
 2. **Cada canvi va per una branca i un PR.** Fusionar el PR és publicar.
 3. **El contingut surt dels apunts o del llibre.** Res inventat.
 
@@ -247,6 +247,7 @@ motor/
   prova-nuvol.js, prova-perfil.js    Proves de la sincronització amb el núvol i de la pàgina de perfil
   prova-xat*.js                      Proves del xat: el SQL (PGlite) i la portada
   prova-admin-*.js, prova-control-sql.js   Proves del tauler i del seu SQL (vegeu l'apartat 10)
+  prova-pin-intents-sql.js           Prova del bloqueig als 5 intents de PIN fallits (PGlite)
   local.py                           Servidor local que es posa al dia sol amb GitHub
 admin/                         Tauler d'administració
 supabase/*.sql                 Base de dades: registre, rànquing, perfils amb PIN, progrés al núvol, aspecte del nen, xat de la colla
@@ -575,8 +576,8 @@ Què es guarda, on i qui ho pot llegir. Del nen només es guarda **el nom que el
 - **Registre d'activitat** (`bn_log`): què fa cada nen i quan, per al panell d'admin i el rànquing. Només s'hi pot escriure; llegir-lo només ho pot fer l'admin.
 - **Rànquing:** `bn_ranking_mons` (total i estrelles per món). Els noms amagats o no permesos no hi surten.
 - **Reinicis** (`bn_priv.reinicis`): quan l'admin esborra el progrés d'un nen, es desa la data per món (o «tots»). L'app la rep amb `bn_progres_llegeix`, buida el progrés vell del dispositiu i el servidor no accepta progrés ni estrelles d'abans d'aquella data (`supabase/bn_admin_reinicia.sql`).
-- **Xat de la colla** (`supabase/bn_xat.sql`): taules privades `bn_priv.xat_*` (catàleg, missatges, vots i silencis) i la clau `xat` de `bn_priv.config`. De cada missatge només es guarden números: qui, quina frase i quina peça o quin company del rànquing; mai text. Cap taula del xat es pot llegir des del navegador: tot passa per funcions (`bn_xat_estat`, `bn_xat_envia` i `bn_xat_vota` demanen el PIN; `bn_xat_llegeix` és pública com el rànquing i no diu qui ha votat). Els missatges dels noms amagats o no permesos no surten. Les taules del xat encara no entren a les còpies de seguretat de l'admin (la configuració sí).
-- **PIN:** xifrat (bcrypt), mai es guarda tal qual. 5 errors en 15 minuts bloquegen el nom 15 minuts. Format i canvi: `supabase/bn_pin_nou.sql`.
+- **Xat de la colla** (`supabase/bn_xat.sql`): taules privades `bn_priv.xat_*` (catàleg, missatges, vots i silencis) i la clau `xat` de `bn_priv.config` (més l'horari automàtic a `xat_horari`, `supabase/bn_control.sql`). De cada missatge només es guarden números: qui, quina frase i quina peça o quin company del rànquing; mai text. Cap taula del xat es pot llegir des del navegador: tot passa per funcions (`bn_xat_estat`, `bn_xat_envia` i `bn_xat_vota` demanen el PIN; `bn_xat_llegeix` és pública com el rànquing i no diu qui ha votat). Els missatges dels noms amagats o no permesos no surten. Les taules del xat també entren a les còpies de seguretat i a la restauració de l'admin (`supabase/bn_copies.sql`).
+- **PIN:** xifrat (bcrypt), mai es guarda tal qual. 5 errors en 15 minuts bloquegen el nom 15 minuts: totes les funcions amb PIN tornen un codi (`'pin'`, `{"ok":false,"codi":"pin"}` o `-3`) sense llançar excepció SQL perquè la transacció no desfaci el comptador de `bn_priv.intents`. Format i canvi: `supabase/bn_pin_nou.sql`.
 - Els canvis a la base de dades es fan a Supabase i el seu SQL es desa a `supabase/`.
 
 ### 📷 Correcció de la foto del quadern
@@ -624,6 +625,8 @@ el tauler mostri el text de les preguntes.
 El tauler és a https://bonanota.net/admin/ i demana el correu i la contrasenya d'admin. Serveix per veure què fan els nens, cuidar-ne l'ús i gestionar-los.
 Gairebé totes les xifres arriben ja calculades del servidor, amb funcions de `supabase/bn_admin_*.sql`. El xat té la seva pestanya (vegeu l'apartat 6).
 
+A la barra superior hi ha el selector de període (`Avui`, `7 dies`, `30 dies`, `Tot`), el filtre d'assignatura (`#fAssig`) i el cercador/filtre de nen (`#fNen`). El desplegable `#fNen` mostra sempre **tots els nens** que existeixen a la base de dades (`bn_admin_ids`, que uneix `bn_priv.perfils` i `public.bn_log` a `supabase/bn_ids_i_punts.sql`), encara que no tinguin activitat en el període triat o que tinguin 0 registres. El registre (`bn_admin_logs`) es carrega paginat en blocs de 1.000 files (`?limit=1000&offset=…`) fins a cobrir tot el període seleccionat, de manera que el límit de 1.000 files per resposta de PostgREST no deixa cap nen fora.
+
 ### 🎛️ Control ràpid: xat, horari i mons
 
 A dalt de tot del Tauler (`#control`; l'horari també surt a la pestanya Xat). Des de la versió 2.17.0 permet:
@@ -657,9 +660,11 @@ Pestanya 📊 Tauler (`supabase/bn_admin_fonts_rep.sql`). `bn_admin_fonts_dia` t
 
 **Nens nous** (pestanya 👤 Nens, a dalt): les altes del període de dalt, amb `bn_admin_altes` (`supabase/bn_admin_fitxa.sql`). La data d'alta és la primera vegada que es veu el nen: el primer registre o `perfils.creat` (quan crea el perfil amb el PIN; els perfils d'abans del 10-11-2026 no la tenen), el que sigui abans. No es fa servir `nou` de l'event `entra`, que vol dir «nou en aquell aparell».
 
+**Nivells al tauler** (des de la 2.16.0): el tauler llegeix `admin/regles.json` (generat per `tot.py` des de la plantilla) i mostra el nivell de cada nen i de cada món —amb les estrelles que falten per al següent— a la taula de Nens, a la capçalera i els KPIs de la fitxa, a cada assignatura i a la pestanya «Al núvol».
+
 **Fitxa de cada nen → Al núvol:** l'estat que el nen ha desat al núvol a cada món (`bn_priv.progres`, amb `bn_admin_fitxa`): temes, preguntes que falla, errors pendents de repàs, obertes, exàmens, boss i fonts de les estrelles. Només hi són els nens que han jugat amb el PIN (si l'admin li treu el PIN, el progrés es continua veient); dels altres, només hi ha el registre. L'aprovat (70) és el mateix número que fa servir el tauler.
 
-**Fitxa de cada nen** (pestanya 👤 Nens → toca un nom): canviar el nom, amagar-lo del rànquing, treure el PIN i:
+**Fitxa de cada nen** (pestanya 👤 Nens → toca un nom): canviar el nom (conserva el registre, el perfil, el progrés i també els missatges, vots i silencis del xat; `supabase/bn_pin_nou.sql`), amagar-lo del rànquing, treure el PIN i:
 - **♻️ Esborrar el progrés:** tries «Tots els mons» o un món concret i confirmes (surten el nom del nen i el món, i «No es pot desfer»).
   S'esborren les estrelles, els tests, els jocs i el temps d'aquell món (o de tots), també del rànquing. **El nen es queda amb el nom i el PIN.**
   Als seus dispositius, el progrés d'abans s'esborra sol la propera vegada que hi entra (un dispositiu vell no el pot fer tornar).
@@ -671,7 +676,7 @@ Dins dels mons ja no hi ha cap botó per esborrar el progrés: només es pot fer
 ### 💾 Còpies de seguretat
 
 `admin/` → Còpies de seguretat (`supabase/bn_copies.sql`, ja executat al projecte «bonanota»):
-- Cada còpia guarda el registre, els perfils (PIN xifrat), el progrés al núvol, els noms amagats, la configuració i els reinicis. **No** guarda els administradors.
+- Cada còpia guarda el registre, els perfils (PIN xifrat), el progrés al núvol, els noms amagats, la configuració, els reinicis i les taules del xat (`xat_frases`, `xat_peces`, `xat_msg`, `xat_vots` i `xat_silenci`). **No** guarda els administradors.
 - Es fan soles **cada nit a les 3:00** (pg_cron `bn-copia-diaria`) i **just abans d'esborrar o canviar** dades des de l'admin (triggers `bn_copia_abans`); també amb el botó «Fes una còpia ara».
 - Les automàtiques es guarden 30 dies; la resta, 90. Des de l'admin es poden **descarregar** (JSON), **restaurar** (dues confirmacions; abans es fa una còpia de l'estat d'ara) i **esborrar**.
 - A part, Supabase guarda cada dia una còpia de tota la base de dades (7 dies), que es restaura des del seu panell.
@@ -695,8 +700,9 @@ El resultat surt a la pestanya **Actions** del repo.
 | 8 | `motor/prova-admin-fitxa-sql.js`, `prova-admin-fitxa.js` | La fitxa «Al núvol» i les altes: el SQL i el tauler |
 | 9 | `motor/prova-admin-benestar-sql.js`, `prova-admin-benestar.js` | El benestar: el SQL i l'apartat del tauler |
 | 10 | `motor/prova-admin-fonts-rep-sql.js`, `prova-admin-fonts-rep.js` | «Combos i repàs» i «Errors pendents de la colla»: el SQL i el tauler |
-| 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, i els nivells al tauler |
-| 12 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |
+| 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
+| 12 | `motor/prova-pin-intents-sql.js` | El bloqueig de 15 minuts al 5è intent de PIN fallit a totes les funcions amb PIN (issue #33) |
+| 13 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |
 
 Les proves `…-sql.js` executen el SQL de `supabase/` dins de **PGlite**, un Postgres de prova sense xarxa. Les altres obren la pàgina amb **Playwright** i un Supabase simulat: cap prova toca la base de dades real.
 
