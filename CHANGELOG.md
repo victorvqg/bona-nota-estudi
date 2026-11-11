@@ -15,7 +15,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
   - **Peces del xat** (`index.html`, `supabase/bn_xat.sql`, `motor/prova-xat-sql.js`): 3 peces noves desbloquejables amb 25 ⭐ a Anglès (`64` «el Present Continuous», `65` «els stative verbs» i `66` «el tresor de Fenn»; catàleg inicial de 66 peces).
 
 ### Canviat
-- Guia per a les famílies (`pares/index.html`): redactat més planer del paràgraf inicial («Com funciona Bona Nota») i actualitzat el recompte de peces del xat a 66 (g7).
+- Guia per a les famílies (`pares/index.html`, `motor/prova-pares.js`): redactat més planer del paràgraf inicial («Com funciona Bona Nota»), menú superior `.salt-llista` centrant i mostrant senceres les 7 pestanyes sense retallar «Preguntes freqüents» ni transparentar el fons, i recompte de peces del xat actualitzat a 66 (g7).
 
 ## 2.22.0 · 2026-11-11
 
