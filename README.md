@@ -10,6 +10,7 @@ Aquest README explica **com està feta la web i com s'hi treballa**. El que no �
 | Si vols saber… | Llegeix |
 |---|---|
 | Quins mons hi ha i com es juga | [`docs/MONS.md`](docs/MONS.md) |
+| Com es construeix un món d'Anglès (frases amb buits) | [`docs/MON-ANGLES.md`](docs/MON-ANGLES.md) |
 | Com es posen les notes | [`docs/AVALUACIO.md`](docs/AVALUACIO.md) |
 | Com es guanyen les estrelles | [`docs/PUNTUACIO.md`](docs/PUNTUACIO.md) |
 | Quin ús és sa: temps, descans i vigília d'examen | [`docs/BON-US.md`](docs/BON-US.md) |
@@ -162,6 +163,8 @@ La prova ha d'acabar amb «errors: cap».
 - La resposta correcta ha de ser l'opció més llarga entre el 15 % i el 40 % de les vegades: ni gairebé sempre ni gairebé mai, perquè totes dues coses són pistes.
 - **Cada enunciat de pregunta ha de ser únic a tot el món.** La prova i els identificadors (`qids`) reconeixen una pregunta pel seu text: dues preguntes «Quina frase és correcta?» amb opcions diferents es confonen.
 - La resposta model (`m`) de cada oberta ha d'estar escrita amb frases (4 paraules per idea i algun connector o un `=`): la prova ho comprova.
+
+Per afegir **frases amb buits** a qualsevol món, a `ASSIG.jocs` hi van jocs `tipus:"frases"`. El format i les regles són a [`docs/MON-ANGLES.md`](docs/MON-ANGLES.md) (serveix igual per a Català o Castellano, canviant la llengua).
 
 Per afegir un **Troba l'error** a qualsevol món, a `ASSIG.jocs` hi va un joc `tipus:"error"`. El format és al comentari de la secció «TROBA L'ERROR GENÈRIC» de la plantilla.
 
