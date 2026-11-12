@@ -32,9 +32,11 @@ Date.now = () => REAL() + DESPL;
  await db.exec("set role anon");
  const errDesc = await falla("insert into public.bn_log(assig, nom, sessio, aparell, event, detall) values ('angles', 'Laia', 's1', 'ap1', 'descans', '{\"accio\":\"fet\"}'::jsonb)");
  const errExD = await falla("insert into public.bn_log(assig, nom, sessio, aparell, event, detall) values ('angles', 'Laia', 's1', 'ap1', 'examen_dema', '{\"dia\":\"2026-11-18\"}'::jsonb)");
+ const errDub = await falla("insert into public.bn_log(assig, nom, sessio, aparell, event, detall) values ('angles', 'Laia', 's1', 'ap1', 'dubte', '{\"qid\":\"fenn/6\",\"motiu\":\"enunciat\"}'::jsonb)");
  const errInv = await falla("insert into public.bn_log(assig, nom, sessio, aparell, event, detall) values ('angles', 'Laia', 's1', 'ap1', 'inventat', '{}'::jsonb)");
  ok(errDesc === null, "anon pot inserir event 'descans'");
  ok(errExD === null, "anon pot inserir event 'examen_dema'");
+ ok(errDub === null, "anon pot inserir event 'dubte'");
  ok(errInv !== null, "event desconegut continua rebutjat pel CHECK");
  await db.exec("reset role");
 

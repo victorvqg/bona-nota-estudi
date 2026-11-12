@@ -7,6 +7,13 @@
 -- ============================================================
 
 -- Configuració inicial (si ja hi és, la deixa com l'hagi posada l'admin)
+create table if not exists bn_priv.examens(
+  assig text primary key check (assig ~ '^[a-z0-9_-]{1,40}$'),
+  data  date not null,
+  ts    timestamptz not null default now()
+);
+revoke all on bn_priv.examens from public, anon, authenticated;
+
 insert into bn_priv.config(clau, valor)
 values
   ('xat_horari', '{"actiu":false,"tanca_h":"21:30","obre_h":"07:00"}'),
@@ -416,7 +423,22 @@ revoke all on function bn_priv.rk_bool(jsonb, boolean, boolean) from public, ano
 revoke all on function bn_priv.ranquing_normalitza(jsonb, boolean) from public, anon, authenticated;
 revoke all on function bn_priv.ranquing_cfg() from public, anon, authenticated;
 
--- 5. RPC pública: estat de la web (mons tancats, estat del xat/horari i rànquing, sense PIN)
+-- 4d. Dates d'examen properes per mostrar a les targetes de la portada (sense cap dada personal · g23)
+create or replace function bn_priv.examens_propers() returns jsonb
+language plpgsql stable set search_path = '' as $$
+declare
+  v_avui date := (now() at time zone 'Europe/Madrid')::date;
+  v_res jsonb;
+begin
+  select coalesce(jsonb_object_agg(e.assig, to_char(e.data, 'YYYY-MM-DD') order by e.assig), '{}'::jsonb)
+    into v_res
+    from bn_priv.examens e
+   where e.data between v_avui and (v_avui + 30);
+  return coalesce(v_res, '{}'::jsonb);
+end $$;
+revoke all on function bn_priv.examens_propers() from public, anon, authenticated;
+
+-- 5. RPC pública: estat de la web (mons tancats, estat del xat/horari, rànquing i exàmens propers, sense PIN)
 create or replace function public.bn_estat_web() returns jsonb
 language plpgsql stable security definer set search_path = '' as $$
 declare
@@ -440,7 +462,8 @@ begin
       'obre_h',        h->>'obre_h'
     ),
     'mons_tancats', bn_priv.mons_tancats(),
-    'ranquing', bn_priv.ranquing_cfg()
+    'ranquing', bn_priv.ranquing_cfg(),
+    'examens', bn_priv.examens_propers()
   );
 end $$;
 

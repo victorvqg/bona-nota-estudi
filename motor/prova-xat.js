@@ -538,6 +538,32 @@ function servidorXat(o = {}) {
   ok((await p3.$("#xFeed")) !== null, "tot i tenir el rànquing en pausa, el xat de la colla continua accessible");
   sense(e3); await e3.ctx.close() }
 
+ console.log("26) pastilles de repàs i examen a les targetes de la portada i sense targeta «Pròximament» (g23)");
+ { const avuiIso = new Date().toISOString().slice(0, 10);
+  const demaIso = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  const futurIso = new Date(Date.now() + 4 * 864e5).toISOString().slice(0, 10);
+  const seedG23 = {
+   bn_jugador: "Prova", bn_pins: JSON.stringify({ prova: "1234A" }), bn_vol: "0",
+   bn_angles_perfils: JSON.stringify({ Prova: { nom: "Prova", punts: 12, rep: { "fenn|Q1": { tid: "fenn", q: "Q1", c: 0, prox: avuiIso }, "fenn|Q2": { tid: "fenn", q: "Q2", c: 1, prox: "2020-01-01" }, "fenn|Q3": { tid: "fenn", q: "Q3", c: 0, prox: "2099-01-01" } }, vigilia_dies: [avuiIso] } }),
+   bn_soc_perfils: JSON.stringify({ Prova: { nom: "Prova", punts: 8, rep: { "temps|Q1": { tid: "temps", q: "Q1", c: 0, prox: avuiIso } } } })
+  };
+  const e = await obre({
+   suau: true, seed: seedG23, viewport: { width: 390, height: 844 },
+   estat_web: { mons_tancats: [], examens: { socials: futurIso } }
+  }), { p } = e;
+  await p.click("#hsTanca"); await p.evaluate(d => { window.__bnDiaProva = d; window.bnPintaAvisosMons() }, avuiIso);
+  ok((await p.$$("main .prox")).length === 0, "la targeta buida «Pròximament» (.prox) ja no surt al final de la portada");
+  const angTxt = await txt(p, 'main .as[data-id="angles"] .avisos-mon');
+  const socTxt = await txt(p, 'main .as[data-id="socials"] .avisos-mon');
+  ok(/Examen demà!/.test(angTxt) && /2 per repassar/.test(angTxt), "Anglès mostra «📅 Examen demà!» (de vigilia_dies) i «🧠 2 per repassar»: " + angTxt);
+  ok(/Examen /.test(socTxt) && /1 per repassar/.test(socTxt), "Socials mostra la data d'examen d'admin (bn_estat_web.examens) i «🧠 1 per repassar»: " + socTxt);
+  const desborda = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+  ok(!desborda, "cap desbordament horitzontal a 390px amb les pastilles .avisos-mon");
+  // En mode tast les pastilles personals s'amaguen
+  await p.evaluate(() => activaTastPortada(false));
+  ok(await p.isHidden('main .as[data-id="angles"] .avisos-mon'), "en mode tast anònim s'amaguen les pastilles .avisos-mon");
+  sense(e); await e.ctx.close() }
+
  await nav.close(); srv.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : "\n✓ Totes les comprovacions del xat de la colla passen");
  process.exit(fallades ? 1 : 0);

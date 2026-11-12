@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a0139f9cee",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="c11936f992",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -73,7 +73,7 @@ button{font-family:inherit}
 .salta{position:fixed;top:-60px;left:14px;z-index:200;background:#facc15;color:#1e1b4b;font-weight:900;font-size:15px;padding:10px 18px;border-radius:12px;text-decoration:none;box-shadow:0 4px 0 #b91c1c;transition:top .15s}
 .salta:focus{top:10px;outline:3px solid #22d3ee;outline-offset:2px}
 nav button:focus-visible,.so-btn:focus-visible,.logo:focus-visible,#punts:focus-visible{outline:3px solid #facc15;outline-offset:2px}
-.btn:focus-visible,.opt:focus-visible,.passos button:focus-visible,.tile:focus-visible,.continua:focus-visible,.nivell:focus-visible,.estrelles[tabindex="0"]:focus-visible,.flash:focus-visible,.chip:focus-visible,.cub:focus-visible,.escolta:focus-visible,.valor button:focus-visible,.perfil:focus-visible,table.an tr[tabindex="0"]:focus-visible,.tema-nav button:focus-visible,.pop-tanca:focus-visible,.mi:focus-visible,.boss-carta:focus-visible{outline:3px solid var(--blau2);outline-offset:3px}
+.btn:focus-visible,.opt:focus-visible,.passos button:focus-visible,.tile:focus-visible,.continua:focus-visible,.nivell:focus-visible,.estrelles[tabindex="0"]:focus-visible,.flash:focus-visible,.chip:focus-visible,.cub:focus-visible,.escolta:focus-visible,.valor button:focus-visible,.perfil:focus-visible,table.an tr[tabindex="0"]:focus-visible,.tema-nav button:focus-visible,.pop-tanca:focus-visible,.mi:focus-visible,.boss-carta:focus-visible,.dubte-bt:focus-visible,.dubte-op:focus-visible,.dubte-x:focus-visible{outline:3px solid var(--blau2);outline-offset:3px}
 .tema-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .tema-nav .tn-btn{border:1.5px solid var(--vora);background:#fff;color:var(--fosc);border-radius:999px;padding:5px 12px;font-weight:800;font-size:13.5px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:border-color .15s,background .15s}
 .tema-nav .tn-btn:hover:not(:disabled){border-color:#93c5fd;background:#f8fbff}
@@ -192,6 +192,18 @@ ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;heig
 .escut small{color:var(--suau);font-weight:700;font-size:13px}
 .escut.obert{display:block;padding:12px 14px;border-radius:14px;border:2px dashed #86efac;background:#f0fdf4}
 .escut.obert .pregunta{font-size:17px;margin:6px 0 4px}
+/* 🤔 avís discret de pregunta confusa (màx. 2/dia, 3 motius tancats, sense text lliure · g23) */
+.dubte-wrap{margin-top:8px;display:flex;justify-content:flex-end;flex-wrap:wrap}
+.dubte-bt{appearance:none;border:1px solid #cbd5e1;background:#ffffffb3;color:#64748b;border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.dubte-bt:hover{border-color:#94a3b8;color:#334155;background:#fff}
+.dubte-box{width:100%;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:12px;padding:9px 11px;text-align:left}
+.dubte-box small{display:block;font-size:12.5px;font-weight:800;color:#475569;margin-bottom:6px}
+.dubte-ops{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.dubte-op{appearance:none;border:1.5px solid #cbd5e1;background:#fff;color:var(--txt);border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;transition:border-color .12s,background .12s}
+.dubte-op:hover{border-color:var(--blau);background:#eff6ff;color:#1d4ed8}
+.dubte-x{appearance:none;border:0;background:transparent;color:#64748b;font:inherit;font-size:13px;font-weight:900;padding:4px 8px;margin-left:auto;cursor:pointer;border-radius:8px}
+.dubte-x:hover{background:#e2e8f0;color:#1e293b}
+.dubte-fet{font-size:12.5px;font-weight:800;color:#047857;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:999px;padding:3px 10px}
 .rep-llista{display:inline-block;text-align:left;margin:4px auto 6px;padding-left:22px;font-weight:700;line-height:1.6}
 .rep-apr{font-weight:800;color:#047857}
 /* 🎯 missions del dia */
@@ -602,7 +614,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versión 2.38.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versión 2.39.0</small></div>
 
 <script src="../../sprites.js?v=0be9e885"></script>
 <script>
@@ -1661,11 +1673,26 @@ function test(ordre,k,bones,clau,pool,cb){
   if(ok&&pista&&REPAS&&tidR){const r=S.rep&&S.rep[tidR+"|"+q[0]];if(r){r.prox=diaMes(1);desa()}}
   const comboAbans=COMBO;
   if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=MODE_TAST?"":pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":REPAS&&rp?`+${rp} ⭐ error corregit`:"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}ratxaDif(true,q,nova>0&&!pista)}else{ratxa(false);ratxaDif(false,q,false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
-  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}${!ok&&comboAbans>=2?`<div style="margin-top:6px;font-size:14px;color:#9a3412;font-weight:700">💛 Tranquil, ${MODE_TAST?"llegint l'explicació":"l'error va al repàs: així"} és com s'aprèn!</div>`:""}</div><div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}${!ok&&comboAbans>=2?`<div style="margin-top:6px;font-size:14px;color:#9a3412;font-weight:700">💛 Tranquil, ${MODE_TAST?"llegint l'explicació":"l'error va al repàs: així"} és com s'aprèn!</div>`:""}</div>${dubteHtml(q,ok)}<div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
   document.getElementById("seg").onclick=()=>test(ordre,k+1,bones+(ok?1:0),clau,pool,cb);
  });
 }
+const DUBTES_MAX_DIA=2,DUBTE_MOTIUS=[["enunciat","No s'entén la pregunta"],["resposta","La resposta no em quadra"],["pista","Falta alguna dada o explicació"]];
+function dubteHtml(q,ok){if(MODE_TAST||!S.nom||!q||!q.id)return "";const e=diaEst(),d=e.dub||{};
+ if(d[q.id])return `<div class="dubte-wrap"><span class="dubte-fet">👍 Gràcies! Ho revisarem.</span></div>`;
+ if(Object.keys(d).length>=DUBTES_MAX_DIA)return "";
+ return `<div class="dubte-wrap" data-qid="${q.id}" data-ok="${ok?1:0}"><button type="button" class="dubte-bt" onclick="obreDubte(this)">🤔 Pregunta confusa?</button></div>`}
+function obreDubte(bt){const w=bt&&bt.closest(".dubte-wrap");if(!w||MODE_TAST)return;const rest=Math.max(0,DUBTES_MAX_DIA-Object.keys(diaEst().dub||{}).length);if(!rest){w.remove();return}
+ so("clic");w.innerHTML=`<div class="dubte-box"><small>🤔 Què t'ha semblat confús? (et ${rest===1?"queda 1 avís":"queden "+rest+" avisos"} avui)</small><div class="dubte-ops">${DUBTE_MOTIUS.map(([m,tx])=>`<button type="button" class="dubte-op" data-m="${m}" onclick="enviaDubte(this,'${m}')">${tx}</button>`).join("")}<button type="button" class="dubte-x" onclick="tancaDubte(this)" aria-label="Tanca">✕</button></div></div>`}
+function tancaDubte(bt){const w=bt&&bt.closest(".dubte-wrap");if(!w)return;w.innerHTML=`<button type="button" class="dubte-bt" onclick="obreDubte(this)">🤔 Pregunta confusa?</button>`}
+function enviaDubte(bt,motiu){const w=bt&&bt.closest(".dubte-wrap");if(!w||MODE_TAST)return;const qid=w.dataset.qid||"";
+ if(!/^[a-z0-9_-]+\/\d+$/i.test(qid)||!DUBTE_MOTIUS.some(x=>x[0]===motiu))return;
+ const e=diaEst();e.dub=e.dub||{};if(e.dub[qid]||Object.keys(e.dub).length>=DUBTES_MAX_DIA)return;
+ e.dub[qid]=motiu;guarda();so("clic");
+ registra("dubte",{qid,motiu,ok:+w.dataset.ok?1:0});
+ w.innerHTML=`<span class="dubte-fet">👍 Gràcies! Ho revisarem.</span>`;
+ if(Object.keys(e.dub).length>=DUBTES_MAX_DIA)document.querySelectorAll(".dubte-wrap").forEach(x=>{if(x!==w&&!x.querySelector(".dubte-fet"))x.remove()})}
 // 🛡️ Escut del combo: si falles amb un combo de 3 o més, pots respondre una pregunta germana del mateix tema (una que aquest test no ha tret).
 // Si l'encertes, recuperes la meitat del combo. No dona estrella ni compta per a la nota; si la falles, va al repàs com qualsevol error.
 let TPIST=0;
@@ -2040,7 +2067,7 @@ function fiExamenReal(perTemps){const e=EXR;if(!e||e.acabat)return;e.acabat=1;mi
  ULT={mode:e.tl?"real-temps":"real",bones:b,n,s:segs(e.t0),q:e.qs.map((q,k)=>`${q.id||"?"}:${e.r[k]===q[2]?1:0}:-:${e.r[k]===undefined?"-":e.r[k]}`)};desaJoc("examreal",pc);S.examens.push({d:avui(),pc,real:1});desa();
  if(pc>=50)arcade(pc,b,n,false);else fracas(pc,b,n);
  app.innerHTML=`<h2 class="sec">📝 Resultat de l'examen</h2><div class="box" style="text-align:center">${perTemps?`<p class="prog">⏱ S'ha acabat el temps!</p>`:""}<div class="ex-nota" style="color:${nota>=5?"#16a34a":"#dc2626"}">${nota.toString().replace(".",",")}<small style="font-size:18px">/10</small></div><p><b>${b} de ${n} encertades</b> · ${nota>=9?"Excel·lent!":nota>=7?"Molt bé!":nota>=5?"Aprovat!":"Encara et falta una mica: repassa els errors amb calma i torna-hi!"}</p>${nova?`<p class="prog">+${nova} ⭐ per preguntes noves d'avui</p>`:""}</div>
- <h2 class="sec">🔎 Revisa les respostes</h2><div class="box">${e.qs.map((q,k)=>{const ok=e.r[k]===q[2],tua=e.r[k]===undefined?"(sense resposta)":q[1][e.r[k]];return `<div class="ex-rev ${ok?"ok":"ko"}"><b>${k+1}. ${q[0]}</b><small>${ok?"✅":"❌"} La teva: ${tua}${ok?"":` · Correcta: <b>${q[1][q[2]]}</b>`}</small><small>💡 ${q[3]}</small></div>`}).join("")}
+ <h2 class="sec">🔎 Revisa les respostes</h2><div class="box">${e.qs.map((q,k)=>{const ok=e.r[k]===q[2],tua=e.r[k]===undefined?"(sense resposta)":q[1][e.r[k]];return `<div class="ex-rev ${ok?"ok":"ko"}"><b>${k+1}. ${q[0]}</b><small>${ok?"✅":"❌"} La teva: ${tua}${ok?"":` · Correcta: <b>${q[1][q[2]]}</b>`}</small><small>💡 ${q[3]}</small>${dubteHtml(q,ok)}</div>`}).join("")}
  <div class="fila"><button class="btn" onclick="examenReal()">Un altre examen</button>${repPendents().length?`<button class="btn verd" onclick="repas()">🔁 Repassa els errors</button>`:""}<button class="btn sec" onclick="vista('jocs')">Altres jocs</button></div></div>`;
  EXR=null}
 
@@ -2312,6 +2339,33 @@ async function bnProvaBonUs(){
   aplicaSuau();pintaAvisNit();SEST=0;desa();vista("inici")
  }}
 window.BN_PROVES.push("bnProvaBonUs");
+
+// prova (g23): botonet «🤔 Pregunta confusa?», 3 motius tancats (sense text lliure), 0 ⭐, topall de 2 al dia i ocult en mode tast
+function bnProvaDubte(){const s0=JSON.stringify({est:S.est||null,rep:S.rep||{},temes:S.temes,p:S.punts,f:S.fonts||{},ft:S.ftema||{}}),reg0=registra,enviats=[];
+ try{
+  if((T[0].q||[]).length<3)return "calen almenys 3 preguntes al primer tema";
+  registra=(ev,det)=>{if(ev==="dubte")enviats.push(det)};
+  delete diaEst().dub;aturaSeg();obre(0);pest="test";pintaTema();
+  document.querySelector(".opt").click();
+  let bt=document.querySelector(".dubte-bt");if(!bt)return "després de respondre ha de sortir .dubte-bt";
+  bt.click();
+  if(document.querySelector(".dubte-box input,.dubte-box textarea"))return "no pot haver-hi cap camp de text lliure a .dubte-box";
+  const ops=[...document.querySelectorAll(".dubte-op")];if(ops.length!==3)return `han de sortir 3 motius tancats i n'hi ha ${ops.length}`;
+  const pAbans=S.punts;ops[0].click();
+  if(S.punts!==pAbans)return "enviar un dubte no ha de donar estrelles";
+  if(enviats.length!==1||enviats[0].motiu!=="enunciat"||!/^[a-z0-9_-]+\/\d+$/i.test(enviats[0].qid||""))return "primer dubte mal registrat: "+JSON.stringify(enviats);
+  if(!document.querySelector(".dubte-fet"))return "ha de mostrar confirmació .dubte-fet";
+  document.getElementById("seg").click();
+  document.querySelector(".opt").click();
+  bt=document.querySelector(".dubte-bt");if(!bt)return "a la 2a pregunta encara ha de sortir .dubte-bt";
+  bt.click();document.querySelector('.dubte-op[data-m="resposta"]').click();
+  if(enviats.length!==2||enviats[1].motiu!=="resposta")return "segon dubte mal registrat";
+  document.getElementById("seg").click();
+  document.querySelector(".opt").click();
+  if(document.querySelector(".dubte-bt"))return "a la 3a pregunta ja s'ha assolit el topall de 2 dubtes/dia i no ha de sortir .dubte-bt";
+  return true
+ }finally{registra=reg0;REPAS=false;COMBO=0;aturaSeg();const b=JSON.parse(s0);if(b.est)S.est=b.est;else delete S.est;S.rep=b.rep;S.temes=b.temes;S.punts=b.p;S.fonts=b.f;S.ftema=b.ft;NIVPEND=null;SUPPEND=0;desa();vista("inici")}}
+window.BN_PROVES.push("bnProvaDubte");
 
 // ====================== 🎯 MISSIONS DEL DIA (Bona Nota 2.0) ======================
 // Cada dia, 3 missions curtes per món: les mateixes tot el dia (es trien amb el dia i el món) i es poden fer en uns 10 minuts.
@@ -2898,7 +2952,7 @@ document.addEventListener("keydown",e=>{
  if(k==="P"){
   const bp=document.getElementById("pista");if(bp&&bp.offsetParent!==null){e.preventDefault();bp.click();return}
  }
- if(e.key==="Enter"||e.key==="ArrowRight"){
+ if((e.key==="Enter"&&!(tg&&tg.tagName==="BUTTON"&&tg.id!=="seg"&&tg.id!=="exSeg"&&tg.id!=="jgSeg"))||e.key==="ArrowRight"){
   const sg=document.getElementById("seg")||document.getElementById("exSeg")||document.getElementById("jgSeg");
   if(sg&&!sg.disabled){e.preventDefault();sg.click();return}
  }
