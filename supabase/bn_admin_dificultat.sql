@@ -1,5 +1,5 @@
--- Bona Nota · càlcul de la dificultat real de cada pregunta a partir del registre (issue #16, fase 4 de n2505/n2506).
--- Executar al SQL Editor de Supabase DESPRÉS de bn_ranking_net.sql i bn_admin_tauler.sql (fa servir bn_priv.admin_ok,
+-- Bona Nota · càlcul de la dificultat real i agregació de dubtes («🤔 Pregunta confusa?») a partir del registre (issue #16, g24).
+-- Executar al SQL Editor de Supabase DESPRÉS de bn_ranking_net.sql, bn_bon_us.sql i bn_admin_tauler.sql (fa servir bn_priv.admin_ok,
 -- bn_priv.amagats i bn_priv.nom_prohibit). Idempotent («create or replace»).
 --
 -- Criteri (issue #16):
@@ -72,19 +72,67 @@ begin
            end dificultat
     from ord o
     group by o.assig, o.qid
+  ),
+  dubtes_cru as (
+    select l.assig,
+           lower(trim(l.nom)) k,
+           (l.detall ->> 'qid') qid,
+           (l.detall ->> 'motiu') motiu
+    from public.bn_log l
+    where l.ts >= v_desde and l.ts < v_fins
+      and l.event = 'dubte'
+      and (v_assig is null or l.assig = v_assig)
+      and lower(trim(l.nom)) <> '_alta'
+      and not bn_priv.nom_prohibit(l.nom)
+      and not exists (select 1 from bn_priv.amagats a where a.k = lower(trim(l.nom)))
+      and jsonb_typeof(l.detall) = 'object'
+      and (l.detall ->> 'qid') ~ '^[a-z0-9_-]{1,40}/[0-9]{1,5}$'
+      and (l.detall ->> 'qid') not like 'j-%'
+      and (l.detall ->> 'motiu') in ('enunciat', 'resposta', 'pista')
+  ),
+  dub as (
+    select d.assig, d.qid,
+           count(*)::int dubtes,
+           count(distinct d.k)::int dubtes_nens,
+           jsonb_build_object(
+             'enunciat', (count(*) filter (where d.motiu = 'enunciat'))::int,
+             'resposta', (count(*) filter (where d.motiu = 'resposta'))::int,
+             'pista',    (count(*) filter (where d.motiu = 'pista'))::int
+           ) dubtes_motius
+    from dubtes_cru d
+    group by d.assig, d.qid
+  ),
+  tot as (
+    select coalesce(ag.assig, dub.assig) assig,
+           coalesce(ag.qid, dub.qid) qid,
+           coalesce(ag.n, 0) n,
+           coalesce(ag.bones, 0) bones,
+           coalesce(ag.nens, 0) nens,
+           ag.encert,
+           ag.encert_1a,
+           ag.seg_mig,
+           coalesce(ag.suficient, false) suficient,
+           ag.dificultat,
+           coalesce(dub.dubtes, 0) dubtes,
+           coalesce(dub.dubtes_nens, 0) dubtes_nens,
+           coalesce(dub.dubtes_motius, '{"enunciat":0,"resposta":0,"pista":0}'::jsonb) dubtes_motius
+    from ag
+    full outer join dub on ag.assig = dub.assig and ag.qid = dub.qid
   )
   select
     coalesce((select jsonb_agg(jsonb_build_object(
-      'assig', ag.assig, 'qid', ag.qid, 'n', ag.n, 'bones', ag.bones, 'nens', ag.nens,
-      'encert', ag.encert, 'encert_1a', ag.encert_1a, 'seg_mig', ag.seg_mig,
-      'suficient', ag.suficient, 'dificultat', ag.dificultat
-    ) order by ag.assig, split_part(ag.qid, '/', 1), split_part(ag.qid, '/', 2)::int) from ag), '[]'::jsonb),
+      'assig', tot.assig, 'qid', tot.qid, 'n', tot.n, 'bones', tot.bones, 'nens', tot.nens,
+      'encert', tot.encert, 'encert_1a', tot.encert_1a, 'seg_mig', tot.seg_mig,
+      'suficient', tot.suficient, 'dificultat', tot.dificultat,
+      'dubtes', tot.dubtes, 'dubtes_nens', tot.dubtes_nens, 'dubtes_motius', tot.dubtes_motius
+    ) order by tot.assig, split_part(tot.qid, '/', 1), split_part(tot.qid, '/', 2)::int) from tot), '[]'::jsonb),
     jsonb_build_object(
-      'preguntes_vistes', (select count(*)::int from ag),
-      'amb_dades',        (select count(*)::int from ag where ag.suficient),
-      'dificils',         (select count(*)::int from ag where ag.dificultat = 3),
-      'normals',          (select count(*)::int from ag where ag.dificultat = 2),
-      'facils',           (select count(*)::int from ag where ag.dificultat = 1)
+      'preguntes_vistes', (select count(*)::int from tot),
+      'amb_dades',        (select count(*)::int from tot where tot.suficient),
+      'dificils',         (select count(*)::int from tot where tot.dificultat = 3),
+      'normals',          (select count(*)::int from tot where tot.dificultat = 2),
+      'facils',           (select count(*)::int from tot where tot.dificultat = 1),
+      'amb_dubtes',       (select count(*)::int from tot where tot.dubtes > 0)
     )
   into v_preg, v_resum;
 
