@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.33.0 · 2026-11-12
+
+### Corregit
+- **Horari automàtic i avís nocturn d'anar a dormir connectats als mons i a la portada** (`motor/plantilla-estudi-interactiu.html`, `index.html`, `motor/prova-admin-alta.js` · g17):
+  - **Connexió amb `Configuració → Horaris` (`bn_estat_web.horari`)**: els 7 mons i la portada ara llegeixen i guarden l'horari configurat al tauler (`actiu`, `tanca_h`/`obre_h` o `tanca_min`/`obre_min`, sumant +30 min a les vigílies d'examen) i el revaliden automàticament en tornar a la pestanya i cada 2 minuts.
+  - **Avís visible a totes les pantalles d'estudi (`#avisNitWrap` global + diàleg `#modalNit`)**: `#avisNitWrap` passa a fora d'`#app` (just sota la capçalera) perquè mai desaparegui en entrar a fitxes, targetes, tests, jocs, preguntes obertes o exàmens; quan arriba l'hora de tancar salta un diàleg clar i amable (`🌙 Ja és hora de descansar, <Nom>!`, amb `🏠 Plegar per avui` i `Acabo el que estic fent`, sense restar ni bloquejar estrelles i activant el mode suau), seguit d'un recordatori suau cada 15 minuts si el nen continua estudiant de nit.
+  - **Avís nocturn a la portada (`#avisNitPortada`)**: quan un nen amb sessió oberta entra a la portada en horari nocturn, veu d'entrada el bàner convidant-lo a descansar fins demà.
+
 ## 2.32.0 · 2026-11-12
 
 ### Canviat
