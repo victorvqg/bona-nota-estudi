@@ -71,6 +71,7 @@ function respon(st, f, cos) {
  // les targetes del pas 2 (bn_admin_fonts_rep.sql) també es carreguen al tauler: respostes buides perquè no surtin avisos de més
  if (f === "bn_admin_fonts_dia") return { periode: cos.p_periode || "30d", dies: [], total: {} };
  if (f === "bn_admin_rep_pendents") return [];
+ if (f === "bn_admin_dificultat") return { min_respostes: 8, dies: 365, assig: null, resum: { preguntes_vistes: 0, amb_dades: 0, dificils: 0, normals: 0, facils: 0 }, preguntes: [] };
  if (!st.sql) return undefined;
  if (f === "bn_admin_benestar") { const k = String(cos.p_nom || "").trim().toLowerCase(); return { periode: cos.p_periode || "7d", mons: st.d.mons(st), nens: st.d.nens.filter(n => !k || n.k === k) } }
  if (f === "bn_admin_examen_desa") { if (cos.p_data == null) delete st.examens[cos.p_assig]; else st.examens[cos.p_assig] = cos.p_data; return Object.entries(st.examens).map(([assig, data]) => ({ assig, data })) }

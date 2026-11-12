@@ -119,6 +119,8 @@ jobs:
         run: node motor/prova-admin-fonts-rep.js
       - name: Prova dels nivells al tauler i del control de xat, horari i mons
         run: node motor/prova-admin-alta.js
+      - name: Prova de la dificultat real de les preguntes al tauler (#16)
+        run: node motor/prova-admin-dificultat.js
 
   mons:
     name: Món (${{ matrix.mon }})

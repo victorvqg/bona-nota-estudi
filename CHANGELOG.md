@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.27.0 · 2026-11-12
+
+### Afegit
+- Admin, Tauler (`admin/index.html`, `motor/prova-admin-dificultat.js`): nou apartat **«⚡ Dificultat real de les preguntes»** (`#dificultat` / `#tDif`, complement de l'issue `#16`), que consulta `bn_admin_dificultat` i el compara directament al navegador amb `motor/dificultat.json` i `admin/preguntes.json`:
+  - Mostra 4 KPIs resum (preguntes amb `≥ 8` respostes sobre el banc total, difícils reals `< 55 %`, fàcils reals `> 90 %` i proposta de canvis `+afegir / −revisar` amb la mateixa regla que `motor/dificultat.py --proposa`).
+  - Selector de vista (`≥ 8 resp.`, `Canvis` i `Totes`), blocs plegables per món amb taula ordenable (Pregunta, Estat `➕ Proposa ⚡` / `➖ Revisa ⚡` / `⚡ Confirmada` / `Fàcil`, Encert, 1a resp., Nens i Segons), suport de `?demo` i botó **«Baixa JSON»** per descarregar la resposta llesta per a `python3 motor/dificultat.py --proposa` (g11).
+
 ## 2.26.0 · 2026-11-11
 
 ### Afegit

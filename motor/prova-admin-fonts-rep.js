@@ -71,6 +71,7 @@ function respon(st, f, cos) {
  if (f === "bn_admin_resum") return RESUM(cos.p_periode);
  if (["bn_admin_activitat", "bn_admin_calor", "bn_admin_domini", "bn_admin_fallades", "bn_admin_evolucio", "bn_admin_alertes", "bn_admin_errors_taller"].includes(f)) return [];
  if (f === "bn_admin_benestar") return { periode: cos.p_periode || "7d", mons: [], nens: [] };
+ if (f === "bn_admin_dificultat") return { min_respostes: 8, dies: 365, assig: null, resum: { preguntes_vistes: 0, amb_dades: 0, dificils: 0, normals: 0, facils: 0 }, preguntes: [] };
  if (f === "bn_admin_fonts_dia") {
   if (st.fd === 404) return undefined; if (st.fd === 500) return 500;
   const k = String(cos.p_nom || "").trim().toLowerCase(), a = cos.p_assig || "";
