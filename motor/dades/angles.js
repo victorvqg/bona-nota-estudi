@@ -381,4 +381,4 @@ const OB=[
 ];
 
 // 👾 Boss del món: nom i monstre del repte final
-ASSIG.boss={nom:"El Fantasma del Cinema",spr:"monstre"};
+ASSIG.boss={nom:"El Fantasma del Cinema",spr:"fantasma",fx:"focus",mus:"estrena",rotul:"THAT'S A WRAP!",em:["🎬","🍿","🎥","🌟"]};

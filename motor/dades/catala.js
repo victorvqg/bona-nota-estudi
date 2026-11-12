@@ -437,4 +437,4 @@ const OB=[
 ];
 
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
-ASSIG.boss={nom:"El Monstre dels Signes",spr:"monstre"};
+ASSIG.boss={nom:"El Monstre dels Signes",spr:"signes",fx:"espiral",mus:"alegria",rotul:"PUNT I FINAL!",em:["📖","✨","🎭","🖋️"]};

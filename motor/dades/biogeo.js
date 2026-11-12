@@ -268,4 +268,4 @@ function svgFigura(){
 }
 
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
-ASSIG.boss={nom:"El Cometa Rebel",spr:"monstre"};
+ASSIG.boss={nom:"El Cometa Rebel",spr:"cometa",fx:"orbites",mus:"cosmos",rotul:"SUPERNOVA!",em:["☄️","🪐","🚀","✨"]};

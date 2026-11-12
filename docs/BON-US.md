@@ -148,7 +148,7 @@ Els canvis al motor obliguen a regenerar els 7 mons (`python3 motor/tot.py`), pu
 | Cosa | On és |
 |---|---|
 | Descans de 25 minuts i límit de salts | `DESCANS_S`, `descans()`, `saltsDescans()` a `motor/plantilla-estudi-interactiu.html` |
-| Mode suau i franja de nit | `SUAU`, `SUAU_MANUAL`, `aplicaSuau()`, `canviaSuau()`, `esHoraNit()`, `bannerNitHtml()` (clau `bn_suau` de l'aparell) |
+| Mode suau i franja de nit | `SUAU`, `SUAU_MANUAL`, `aplicaSuau()`, `canviaSuau()`, `esHoraNit()`, `bannerNitHtml()`, `horariMonsSrv()`, `esMonsTancatsNit()`, `actualitzaTancamentMon()` (clau `bn_suau` de l'aparell i horari nocturn propi dels mons `mons_tanca_h` / `mons_obre_h` a `bn_control.sql`) |
 | Pla de 10 dies i avís de temps | `faseActual()`, `cartaPlaDia()`, `comprovaAvisTemps()` a `motor/plantilla-estudi-interactiu.html` |
 | Hora i dia d'entrada | event `entra` (`h`, `dw`) a `bn_log` |
 | Minuts | event `temps` (`s`), que s'envia en amagar o tancar la pàgina |

@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.43.0 · 2026-11-12
+
+### Afegit
+- **Celebracions audiovisuals pròpies per als 7 Bosses i sistema modular de variants per a nous mons** (`motor/plantilla-estudi-interactiu.html`, `motor/dades/*.js`, `docs/BOSS-I-EFECTES.md`, `README.md`, `docs/MONS.md` · g27):
+  - Els 7 Bosses tenen ara cadascun un **sprite pixel-art 16×16 propi** (`drac`, `cometa`, `borrasca`, `gegant`, `signes`, `faltas`, `fantasma`), una **celebració amb motion temàtic** (`explosio`, `orbites`, `tempesta`, `blocs`, `espiral`, `esborra`, `focus`) i una **fanfara musical WebAudio (~4 s)** (`epica`, `cosmos` *Zarathustra*, `primavera` Vivaldi, `chiptune` 8-bit, `alegria` Beethoven, `toreador` Bizet, `estrena` Hollywood), respectant `SUAU` / `prefers-reduced-motion`, `VOL === 0` i el topall diari de `+10 ⭐`.
+  - Medalla `🏆 N` a `.boss-carta`, botó `🎬 Celebració` a `#bossFi`, paràmetre `?demoBoss=1` per provar qualsevol Boss en 1 clic sense desar res, suport per definir `pix` 16×16 i `notes` WebAudio directament a `motor/dades/<nou>.js` sense tocar el motor, prova `bnProvaBossFesta` i guia completa a `docs/BOSS-I-EFECTES.md`.
+- **Tancament i reobertura automàtica a la nit també dins dels 7 mons** (`motor/plantilla-estudi-interactiu.html`, `docs/BON-US.md` · g27):
+  - `horariMonsSrv()`, `esMonsTancatsNit()` i `actualitzaTancamentMon()` apliquen l'horari nocturn propi (`mons_tanca_h` → `mons_obre_h`, p. ex. `22:00 → 08:00` quan `tanca_mons` és actiu) dins de cada món (`🌙 Hora de descansar!`), buidant el temps pendent en tancar i reobrint sol a l'hora d'obertura sense alterar `bn_mons_tancats` manual.
+
 ## 2.42.0 · 2026-11-12
 
 ### Afegit

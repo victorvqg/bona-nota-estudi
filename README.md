@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.42.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.43.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -11,6 +11,7 @@ Aquest README explica **com està feta la web i com s'hi treballa**. El que no �
 |---|---|
 | Quins mons hi ha i com es juga | [`docs/MONS.md`](docs/MONS.md) |
 | Com es construeix un món d'Anglès (frases amb buits) | [`docs/MON-ANGLES.md`](docs/MON-ANGLES.md) |
+| Com funcionen els Bosses, els efectes musicals i les variants per a nous mons | [`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md) |
 | Com es posen les notes | [`docs/AVALUACIO.md`](docs/AVALUACIO.md) |
 | Com es guanyen les estrelles | [`docs/PUNTUACIO.md`](docs/PUNTUACIO.md) |
 | Quin ús és sa: temps, descans i vigília d'examen | [`docs/BON-US.md`](docs/BON-US.md) |
@@ -127,6 +128,7 @@ Per provar una pantalla sense passar pel PIN, afegeix-ho a l'adreça d'un món. 
 | `?joc=<id>` | Un joc (a mates, `?joc=err` és Troba l'error) |
 | `?tema=<número>` | Un tema, comptant des de 0 |
 | `?vista=<vista>` | Una vista del món (per exemple, `jocs`) |
+| `?demoBoss=1` | Vista prèvia d'1 clic de la celebració del Boss del món (sprite, motion i música, sense jugar ni desar res) |
 | `?joc=<fitxa>&llibreta=1` | Una fitxa del Taller, directament a l'exemple resolt |
 
 ### Afegir o actualitzar un món
@@ -310,7 +312,7 @@ L'empremta es calcula amb el buit `__BN_VERSIO__` encara sense omplir, perquè n
 | `color` | 3 colors que omplen les variables CSS `--g1`, `--g2` i `--g3` |
 | `blocs` | `[{titol, n}]`: agrupa els temes. La suma de `n` ha de donar el nombre de temes |
 | `jocs` | Llista de jocs (vegeu «Jocs») |
-| `boss` | `{nom, spr}`: el repte final del món |
+| `boss` | `{nom, spr, fx, mus, rotul, em}` (i opcionalment `pix` 16×16 i `notes` a mida): el repte final del món i la seva celebració audiovisual ([`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md)) |
 | `foto`, `pissarra`, `repasExtra`, `destacat` | Opcionals: foto del quadern, full de brut, joc ofert en acabar el repàs i joc amb botó gran a l'inici |
 | `peu` | Ja no es mostra: només deixa constància d'on surt el contingut |
 
