@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.32.0 · 2026-11-12
+
+### Canviat
+- **Panell d'administració — Fase 3: Mons, Fitxa del món i autorefresc automàtic** (`admin/index.html`, `motor/prova-admin-*.js` · g16):
+  - **`Mons` (`?v=mons`)**: 3 sub-pestanyes (`Llista` amb 0 KPIs, taula de 7 columnes per als 7 mons, interruptor directe d'obertura/tancament via `bn_admin_control` i fila clicable cap a la Fitxa del món; `Domini global` i `Dificultat real` sense barres de filtre redundants).
+  - **`Fitxa del món` (`?v=mons&id=<mon>&tab=…`)**: nova vista individual amb selector ràpid `<select id="selFitxaMon">` i 3 pestanyes sota demanda (`Resum i notes` amb 4 KPIs, evolució de notes, estrelles per origen i resum per tema; `Domini i errors` amb matriu tema × nen clicable cap a la Fitxa del nen, fallades, errors pendents i dificultat real del món; i `Obertes` amb detall complet al panell lateral `#panell`), més una 4a pestanya `Taller` visible només als mons de matemàtiques (`divisibilitat`).
+  - **Autorefresc automàtic del tauler (`?v=sessions&p=curs` i totes les vistes)**: refresc en segon pla cada 30 s, en tornar a la pestanya (`visibilitychange` / `focus`), en recuperar connexió (`online`) i en canviar de secció, sense `cache` HTTP i conservant la posició de desplaçament i qualsevol cerca activa (`input.tb-q`), més recàrrega automàtica si hi ha una `VERSIO_ADMIN` més nova publicada.
+- **Horari a Configuració (`admin/index.html`)**: `estatXatCtrl()` i `pintaXCfg()` llegeixen també `tanca_h` i `obre_h` quan el servidor no envia `tanca_min`/`obre_min`, i desen tots dos formats a `bn_admin_control` (g16).
+
 ## 2.31.0 · 2026-11-12
 
 ### Canviat

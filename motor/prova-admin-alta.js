@@ -104,7 +104,7 @@ function dadesAdmin() {
   await p.goto(BASE + url); await p.waitForSelector("#shell:not([hidden])");
   const menu = async v => { const sel = await p.isVisible("#navInf") ? "#navInf" : "#nav"; await p.click(`${sel} [data-v="${v}"]`) };
   const txt = s => p.evaluate(s => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, " ").trim() : null }, s);
-  return { p, ctx, crides, errors, menu, txt };
+  return { p, ctx, d, crides, errors, menu, txt };
  }
 
  console.log("1) Admin ?demo: Inici (6 KPIs, Control ràpid d'1 clic, ajuda plegable), Configuració (4 pestanyes i panell lateral) i nivells (M5)");
@@ -236,6 +236,63 @@ function dadesAdmin() {
   await ctx.close();
  }
 
+ console.log("2a2) Fase 3 (Mons i Fitxa del món) + autorefresc a ?v=sessions&p=curs + horari tanca_h/obre_h");
+ {
+  // Mode ?demo: Mons → Llista (0 KPIs, ≤ 7 cols), Fitxa del món (Taller només a mates, Obertes obre #panell)
+  const dm = await obreAdmin("/admin/?demo&v=mons&p=30d");
+  await dm.p.waitForSelector("#tMons tbody tr[data-mon]");
+  const nColsMons = await dm.p.$$eval("#tMons thead th", ths => ths.length);
+  ok((await dm.p.$$("#contingut .kpi")).length === 0 && nColsMons === 7,
+   `Mons → Llista té 0 KPIs i exactament 7 columnes (obtingut: ${nColsMons})`);
+  await dm.p.click('#tMons tr[data-mon="socials"] td:first-child');
+  await dm.p.waitForSelector("#selFitxaMon");
+  const tabsSoc = await dm.p.$$eval('#contingut [role="tablist"] [role="tab"]', bs => bs.map(b => b.id.replace(/^mtb-/, "")));
+  ok(dm.p.url().includes("v=mons") && dm.p.url().includes("id=socials") && tabsSoc.join(",") === "resum,domini,obertes",
+   `Fitxa de Socials té les 3 pestanyes sense Taller (${tabsSoc.join(",")})`);
+  await dm.p.click("#mtb-obertes");
+  await dm.p.waitForSelector("#tMonObe tbody tr.clic");
+  await dm.p.click("#tMonObe tbody tr.clic td:first-child");
+  await dm.p.waitForSelector("#panell:not([hidden])");
+  ok((await dm.txt("#panellCos")).includes("Pregunta oberta"), "clicar una resposta oberta a la Fitxa del món obre el detall a #panell");
+  await dm.p.keyboard.press("Escape");
+  await dm.p.selectOption("#selFitxaMon", "divisibilitat");
+  await dm.p.waitForSelector("#mtb-taller");
+  const tabsDiv = await dm.p.$$eval('#contingut [role="tablist"] [role="tab"]', bs => bs.map(b => b.id.replace(/^mtb-/, "")));
+  ok(tabsDiv.join(",") === "resum,domini,obertes,taller", `Fitxa de Divisibilitat mostra la 4a pestanya Taller (${tabsDiv.join(",")})`);
+  await dm.p.goto(BASE + "/admin/?demo&v=mons&id=socials&tab=taller");
+  await dm.p.waitForSelector('#mtb-resum[aria-selected="true"]');
+  ok(!dm.p.url().includes("tab=taller"), "enllaç directe amb tab=taller a un món que no és mates cau netament a Resum");
+  ok(dm.errors.length === 0, "cap error de JS a Mons/Fitxa del món en ?demo");
+  await dm.ctx.close();
+
+  // Amb credencials: interruptor directe a Mons → Llista, horari amb tanca_h/obre_h sense tanca_min i autorefresc a ?v=sessions&p=curs
+  const cr = await obreAdmin("/admin/?v=mons", { cred: CRED });
+  cr.d.ctrl.horari = { actiu: true, tanca_h: "21:45", obre_h: "08:00" }; // format bn_xat.sql sense tanca_min/obre_min
+  await cr.p.waitForSelector('#tMons [data-mon-sw="socials"]');
+  await cr.p.click('#tMons [data-mon-sw="socials"]');
+  await cr.p.waitForFunction(() => document.querySelector('#tMons [data-mon-sw="socials"]')?.getAttribute("aria-checked") === "false");
+  const cMon = cr.crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg && Array.isArray(x.cos.p_cfg.mons_tancats)).pop();
+  ok(cMon && cMon.cos.p_cfg.mons_tancats.includes("socials"), "l'interruptor directe de Mons → Llista tanca 'socials' via bn_admin_control");
+
+  await cr.p.click("#btConfig");
+  await cr.p.waitForSelector("#xcTancaH");
+  ok((await cr.p.inputValue("#xcTancaH")) === "21:45" && (await cr.p.inputValue("#xcObreH")) === "08:00",
+   "Configuració → Horaris llegeix tanca_h='21:45' i obre_h='08:00' encara que el servidor no enviï tanca_min/obre_min");
+
+  // Autorefresc a ?v=sessions&p=curs conservant el text de cerca
+  await cr.p.goto(BASE + "/admin/?v=sessions&p=curs");
+  await cr.p.waitForSelector("#tSes table");
+  await cr.p.fill("#tSes input.tb-q", "Biel");
+  ok((await cr.p.$$("#tSes tbody tr[data-ses]")).length === 0, "abans que entri en Biel, la cerca 'Biel' no té cap sessió");
+  cr.d.logs.push({ id: 99, ts: new Date().toISOString(), assig: "socials", nom: "Biel", sessio: "s-biel-live", aparell: "ap-b", event: "entra", detall: { punts: 50 } });
+  await cr.p.evaluate(() => window.bnAdminAutoRefresca(true));
+  await cr.p.waitForFunction(() => (document.querySelector("#tSes")?.textContent || "").includes("Biel"));
+  ok((await cr.p.inputValue("#tSes input.tb-q")) === "Biel" && (await cr.txt("#tSes")).includes("Biel"),
+   "autorefresc a ?v=sessions&p=curs incorpora la nova sessió d'en Biel sense perdre la cerca activa");
+  ok(cr.errors.length === 0, "cap error de JS a Mons + autorefresc");
+  await cr.ctx.close();
+ }
+
  console.log("2b) Mòbil (360, 390 i 430 px): barra inferior fixa de 5 eixos i zero desbordament a Inici i Configuració");
  for (const w of [360, 390, 430]) {
   const { p, ctx, errors } = await obreAdmin("/admin/?demo", { viewport: { width: w, height: 800 } });
@@ -245,8 +302,14 @@ function dadesAdmin() {
   await p.click("#btConfig");
   await p.waitForSelector("#xcF");
   const sw2 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
-  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && errors.length === 0,
-   `${w} px: barra inferior #navInf activa, menú lateral ocult i zero desbordament (Inici ${sw1}px, Config ${sw2}px)`);
+  await p.click('#navInf [data-v="mons"]');
+  await p.waitForSelector('#tMons tr[data-mon="socials"]');
+  const sw3 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  await p.click('#tMons tr[data-mon="socials"] td:first-child');
+  await p.waitForSelector("#selFitxaMon");
+  const sw4 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && sw3 <= w && sw4 <= w && errors.length === 0,
+   `${w} px: barra inferior #navInf activa, menú lateral ocult i zero desbordament (Inici ${sw1}px, Config ${sw2}px, Mons ${sw3}px, Fitxa món ${sw4}px)`);
   await ctx.close();
  }
 
