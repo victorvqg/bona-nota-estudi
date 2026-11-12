@@ -92,15 +92,19 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
     await db.exec("insert into public.bn_log(assig, nom, sessio, aparell, event, detall) values ('socials', 'Laia', 's1', 'ap1', 'test', '{\"punts\":50}');");
     // tanca_min = obre_min (p. ex. 1290 = 1290) amb horari_actiu=true vol dir tancat les 24h per horari
     const dh = await ctrl({ xat_actiu: true, horari_actiu: true, tanca_min: 1290, obre_min: 1290 });
-    ok(dh.xat_actiu === true && dh.xat_en_horari_tancat === true && dh.xat_obert_ara === false && dh.horari.tanca_mons === false && dh.mons_tancats_nit === false,
-      "amb horari actiu i tanca_mons=false per defecte, xat_en_horari_tancat=true, xat_obert_ara=false i mons_tancats_nit=false");
+    ok(dh.xat_actiu === true && dh.xat_en_horari_tancat === true && dh.xat_obert_ara === false && dh.horari.tanca_mons === false && dh.horari.mons_tanca_h === "22:00" && dh.horari.mons_obre_h === "08:00" && dh.mons_tancats_nit === false,
+      "amb horari actiu i tanca_mons=false per defecte (22:00 → 08:00), xat_en_horari_tancat=true, xat_obert_ara=false i mons_tancats_nit=false");
 
-    const dhMons = await ctrl({ horari_tanca_mons: true });
+    const dhMons = await ctrl({ horari_actiu: false, horari_tanca_mons: true, mons_tanca_min: 1320, mons_obre_min: 1320 });
     const webNit = await val("select public.bn_estat_web()");
-    ok(dhMons.horari.tanca_mons === true && dhMons.mons_tancats_nit === true && webNit.horari.tanca_mons === true && webNit.mons_tancats_nit === true,
-      "horari_tanca_mons=true activa tanca_mons i mons_tancats_nit tant a bn_admin_control com a bn_estat_web");
-    ok(await falla("select public.bn_admin_control($1, $2, '{\"horari_tanca_mons\":\"si\"}'::jsonb)", ADM) !== null,
-      "horari_tanca_mons no booleà és rebutjat");
+    ok(dhMons.horari.actiu === false && dhMons.horari.tanca_mons === true && dhMons.mons_tancats_nit === true && webNit.horari.tanca_mons === true && webNit.mons_tancats_nit === true,
+      "horari_tanca_mons=true funciona amb horari propi (mons_tanca_h/mons_obre_h) fins i tot si l'horari del xat està desactivat");
+    const dhMonsH = await ctrl({ horari_actiu: true, mons_tanca_h: "22:15", mons_obre_h: "08:30" });
+    ok(dhMonsH.horari.mons_tanca_h === "22:15" && dhMonsH.horari.mons_obre_h === "08:30" && dhMonsH.horari.mons_tanca_min === 1335 && dhMonsH.horari.mons_obre_min === 510,
+      "mons_tanca_h i mons_obre_h es desen i retornen mons_tanca_min/mons_obre_min");
+    ok(await falla("select public.bn_admin_control($1, $2, '{\"horari_tanca_mons\":\"si\"}'::jsonb)", ADM) !== null &&
+       await falla("select public.bn_admin_control($1, $2, '{\"mons_tanca_h\":\"25:00\"}'::jsonb)", ADM) !== null,
+      "horari_tanca_mons no booleà i mons_tanca_h invàlid són rebutjats");
 
     const ll = await val("select public.bn_xat_llegeix()");
     ok(ll.actiu === false, "bn_xat_llegeix retorna actiu=false quan l'horari tanca el xat");

@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="4452c216cc",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="c546e32fc0",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -842,7 +842,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.41.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.42.0</small></footer>
 
 <script src="sprites.js?v=0be9e885"></script>
 <script>
@@ -897,7 +897,7 @@ const bnSo=(()=>{let ctx=null,armat=false,tocat=false,volOn=true,mut=null;const 
 (function(){const c=document.getElementById('cel');let h='';for(let i=0;i<90;i++){const s=Math.random()<.15?4:Math.random()<.5?2:3;
  h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
 // progrés guardat per cada assignatura (mateix navegador)
-let TAST_ACTIU=false,MOSTRA_FORM=false,HOR_PORTADA=null,EXAMENS_PORTADA={},ULT_ESTAT_PORTADA=0;
+let TAST_ACTIU=false,MOSTRA_FORM=false,HOR_PORTADA=null,EXAMENS_PORTADA={},ULT_ESTAT_PORTADA=0,MONS_TANCATS_MANUAL=new Set();
 try{const hw=JSON.parse(localStorage.getItem('bn_horari_web')||'null');if(hw&&typeof hw==='object')HOR_PORTADA=hw}catch(e){}
 try{const ew=JSON.parse(localStorage.getItem('bn_examens_web')||'null');if(ew&&typeof ew==='object'&&!Array.isArray(ew))EXAMENS_PORTADA=ew}catch(e){}
 function araDiaMadrid(){if(typeof window.__bnDiaProva==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(window.__bnDiaProva))return window.__bnDiaProva;
@@ -934,7 +934,7 @@ window.bnPintaAvisosMons=pintaAvisosMons;
 (function(){try{const u=new URLSearchParams(location.search),g=localStorage.getItem('bn_jugador')||'';TAST_ACTIU=u.get('tast')==='1'||(!g&&sessionStorage.getItem('bn_tast')==='1');if(TAST_ACTIU)sessionStorage.setItem('bn_tast','1')}catch(e){}})();
 function tastActiu(){return TAST_ACTIU}
 function fixaUrlTast(on){try{const u=new URL(location.href);if(on)u.searchParams.set('tast','1');else u.searchParams.delete('tast');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}catch(e){}}
-function refrescaJugaTargetes(){const tast=tastActiu();document.querySelectorAll('main .as[data-id]').forEach(a=>{const jSpan=a.querySelector('.juga span');if(!jSpan)return;if(!a.dataset.jugaBase)a.dataset.jugaBase=jSpan.textContent;if(a.classList.contains('mon-tancat')){jSpan.textContent='🔒 TANCAT';return}jSpan.textContent=tast?'TASTA ▶':a.dataset.jugaBase})}
+function refrescaJugaTargetes(){const tast=tastActiu();document.querySelectorAll('main .as[data-id]').forEach(a=>{const jSpan=a.querySelector('.juga span');if(!jSpan)return;if(!a.dataset.jugaBase)a.dataset.jugaBase=jSpan.textContent;if(a.classList.contains('mon-tancat')){jSpan.textContent=a.dataset.tancatNit?`🌙 FINS ${a.dataset.tancatNit}`:'🔒 TANCAT';return}jSpan.textContent=tast?'TASTA ▶':a.dataset.jugaBase})}
 function activaTastPortada(ambScroll){TAST_ACTIU=true;MOSTRA_FORM=false;try{sessionStorage.setItem('bn_tast','1')}catch(e){}fixaUrlTast(true);pintaHola();if(ambScroll){const m=document.querySelector('main');m.classList.remove('ilumina');void m.offsetWidth;m.classList.add('ilumina');setTimeout(()=>document.getElementById('tria').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'}),120)}}
 function surtTastPortada(obreForm){TAST_ACTIU=false;MOSTRA_FORM=!!obreForm;try{sessionStorage.removeItem('bn_tast')}catch(e){}fixaUrlTast(false);pintaHola();if(obreForm){const f=document.getElementById('entrada'),iN=document.getElementById('enNom');if(f)f.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});if(iN)setTimeout(()=>iN.focus(),80)}}
 (function(){let nom='',G='';try{G=localStorage.getItem('bn_jugador')||''}catch(e){}const pintades=[];
@@ -975,12 +975,38 @@ function normHoraPortada(h,m){if(typeof h==='string'&&/^([01]\d|2[0-3]):[0-5]\d$
 function araHmMadrid(){if(typeof window.__bnHoraProva==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(window.__bnHoraProva))return window.__bnHoraProva;
  try{const p={};new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Madrid',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()).forEach(x=>{p[x.type]=x.value});return `${String((+p.hour||0)%24).padStart(2,'0')}:${String(+p.minute||0).padStart(2,'0')}`}catch(e){const d=new Date();return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}}
 function horariNitPortada(){const act=!!(HOR_PORTADA&&HOR_PORTADA.actiu===true),t=act?normHoraPortada(HOR_PORTADA.tanca_h,HOR_PORTADA.tanca_min):null,o=act?normHoraPortada(HOR_PORTADA.obre_h,HOR_PORTADA.obre_min):null;return act&&t&&o?{tanca:t,obre:o}:{tanca:'21:30',obre:'06:00'}}
+function horariMonsPortada(){const act=!!(HOR_PORTADA&&HOR_PORTADA.tanca_mons===true),t=normHoraPortada(HOR_PORTADA&&HOR_PORTADA.mons_tanca_h,HOR_PORTADA&&HOR_PORTADA.mons_tanca_min)||'22:00',o=normHoraPortada(HOR_PORTADA&&HOR_PORTADA.mons_obre_h,HOR_PORTADA&&HOR_PORTADA.mons_obre_min)||'08:00';return {actiu:act,tanca:t,obre:o}}
+function esMonsTancatsNitPortada(){const perm=(!window.BN_NO_LOG&&!/[?&]demo\b/.test(location.search)&&!/^file:/.test(location.protocol))||!!window.__bnHoraProva;if(!perm)return false;const {actiu,tanca,obre}=horariMonsPortada();if(!actiu)return false;const hm=araHmMadrid();return tanca===obre?true:tanca<obre?(hm>=tanca&&hm<obre):(hm>=tanca||hm<obre)}
+function refrescaMonsTancatsPortada(){
+ const perNit=esMonsTancatsNitPortada(),{obre:mObre}=horariMonsPortada();
+ document.querySelectorAll('main .as[data-id]').forEach(a=>{
+  const id=a.dataset.id,manual=MONS_TANCATS_MANUAL.has(id),tancat=manual||perNit,port=a.querySelector('.portada');
+  let badge=port&&port.querySelector('.tag-tancat');
+  if(tancat){
+   a.classList.add('mon-tancat');a.setAttribute('aria-disabled','true');
+   if(!manual&&perNit)a.dataset.tancatNit=mObre;else delete a.dataset.tancatNit;
+   if(port&&!badge){badge=document.createElement('span');badge.className='tag-tancat';port.appendChild(badge)}
+   if(badge)badge.textContent=manual?'🔒 TANCAT':'🌙 DESCANS';
+  }else{
+   a.classList.remove('mon-tancat');a.removeAttribute('aria-disabled');delete a.dataset.tancatNit;
+   if(badge)badge.remove();
+  }
+ });
+ refrescaJugaTargetes();pintaAvisosMons();
+}
+window.bnRefrescaMonsPortada=refrescaMonsTancatsPortada;
 function pintaAvisNitPortada(){const el=document.getElementById('avisNitPortada');if(!el)return;
  const G=jugador(),tast=tastActiu(),actiu=(G&&!MOSTRA_FORM)||tast,perm=(!window.BN_NO_LOG&&!/[?&]demo\b/.test(location.search)&&!/^file:/.test(location.protocol))||!!window.__bnHoraProva;
- if(!actiu||!perm){el.hidden=true;return}
+ const monsNit=esMonsTancatsNitPortada();
+ if((!actiu&&!monsNit)||!perm){el.hidden=true;return}
+ const nomTxt=tast||!G?'':`, <b>${G.replace(/[<>&]/g,'')}</b>`;
+ if(monsNit){
+  const {tanca:mT,obre:mO}=horariMonsPortada();
+  el.innerHTML=`<span class="anp-ic" aria-hidden="true">🌙</span><span>Tots els mons estan apagats per descansar${nomTxt} (<b>${mT}</b>–<b>${mO}</b>). Les teves estrelles estan guardades i a les <b>${mO}</b> tornen a obrir sols!</span>`;
+  el.hidden=false;return;
+ }
  const {tanca,obre}=horariNitPortada(),hm=araHmMadrid(),nit=tanca<obre?(hm>=tanca&&hm<obre):(hm>=tanca||hm<obre);
  if(!nit){el.hidden=true;return}
- const nomTxt=tast?'':`, <b>${G.replace(/[<>&]/g,'')}</b>`;
  el.innerHTML=`<span class="anp-ic" aria-hidden="true">🌙</span><span>Ja és hora de descansar${nomTxt} (<b>${tanca}</b>)! Mentre dorms el cervell guarda el que has estudiat — millor continuar demà.</span>`;
  el.hidden=false}
 window.bnPintaAvisNitPortada=pintaAvisNitPortada;
@@ -1053,29 +1079,19 @@ function iniciEntrada(){
  const avisMonTancat=msg=>{let el=document.getElementById('monTancatToast');if(!el){el=document.createElement('div');el.id='monTancatToast';el.className='mon-tancat-toast';el.setAttribute('role','status');document.body.appendChild(el)}
   el.textContent=msg;el.classList.add('vis');clearTimeout(tToast);tToast=setTimeout(()=>el.classList.remove('vis'),3200)};
  const aplicaMonsTancats=llista=>{
-  const tancats=new Set(Array.isArray(llista)?llista.map(x=>String(x||'')):[]);
-  if(!tastActiu())try{localStorage.setItem('bn_mons_tancats',JSON.stringify([...tancats]))}catch(e){}
-  document.querySelectorAll('main .as[data-id]').forEach(a=>{
-   const id=a.dataset.id,tancat=tancats.has(id),port=a.querySelector('.portada');
-   let badge=port&&port.querySelector('.tag-tancat');
-   if(tancat){
-    a.classList.add('mon-tancat');a.setAttribute('aria-disabled','true');
-    if(port&&!badge){badge=document.createElement('span');badge.className='tag-tancat';badge.textContent='🔒 TANCAT';port.appendChild(badge)}
-   }else{
-    a.classList.remove('mon-tancat');a.removeAttribute('aria-disabled');
-    if(badge)badge.remove();
-   }
-  });
-  refrescaJugaTargetes();pintaAvisosMons();
+  MONS_TANCATS_MANUAL=new Set(Array.isArray(llista)?llista.map(x=>String(x||'')):[]);
+  if(!tastActiu())try{localStorage.setItem('bn_mons_tancats',JSON.stringify([...MONS_TANCATS_MANUAL]))}catch(e){}
+  refrescaMonsTancatsPortada();
  };
- try{const mem=JSON.parse(localStorage.getItem('bn_mons_tancats')||'[]');if(Array.isArray(mem)&&mem.length)aplicaMonsTancats(mem)}catch(e){}
+ try{const mem=JSON.parse(localStorage.getItem('bn_mons_tancats')||'[]');if(Array.isArray(mem)&&mem.length)MONS_TANCATS_MANUAL=new Set(mem.map(x=>String(x||'')))}catch(e){}
+ refrescaMonsTancatsPortada();
  const sincronitzaEstatPortada=()=>{
   if(!/^https?:/.test(location.protocol)||/[?&]demo\b/.test(location.search))return;
   ULT_ESTAT_PORTADA=Date.now();
   rpcP('bn_estat_web',{}).then(r=>{
    if(!r||typeof r!=='object')return;
-   if(Array.isArray(r.mons_tancats))aplicaMonsTancats(r.mons_tancats);
    if(r.horari&&typeof r.horari==='object'){HOR_PORTADA=r.horari;if(!tastActiu())try{localStorage.setItem('bn_horari_web',JSON.stringify(r.horari))}catch(e){}}
+   if(Array.isArray(r.mons_tancats))aplicaMonsTancats(r.mons_tancats);else refrescaMonsTancatsPortada();
    if(r.examens&&typeof r.examens==='object'&&!Array.isArray(r.examens)){EXAMENS_PORTADA=r.examens;if(!tastActiu())try{localStorage.setItem('bn_examens_web',JSON.stringify(r.examens))}catch(e){}}
    if(r.xat&&typeof r.xat.actiu==='boolean'&&typeof XAT==='object')XAT.actiu=r.xat.actiu;
    if(r.ranquing&&typeof r.ranquing==='object'&&typeof aplicaRkEstat==='function')aplicaRkEstat(r.ranquing,true);
@@ -1084,13 +1100,13 @@ function iniciEntrada(){
  };
  if(/^https?:/.test(location.protocol)&&!/[?&]demo\b/.test(location.search)){
   setTimeout(sincronitzaEstatPortada,0);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){pintaAvisNitPortada();if(Date.now()-ULT_ESTAT_PORTADA>20000)sincronitzaEstatPortada()}});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){refrescaMonsTancatsPortada();pintaAvisNitPortada();if(Date.now()-ULT_ESTAT_PORTADA>20000)sincronitzaEstatPortada()}});
   setInterval(()=>{if(document.visibilityState==='visible')sincronitzaEstatPortada()},120000);
-  setInterval(()=>{if(document.visibilityState==='visible')pintaAvisNitPortada()},30000);
+  setInterval(()=>{if(document.visibilityState==='visible'){refrescaMonsTancatsPortada();pintaAvisNitPortada()}},30000);
  }
  // sense nom, els mons esperen: primer el nom (o mode tast); si el món està tancat, no deixa entrar
  document.querySelectorAll('main .as[href]').forEach(a=>a.addEventListener('click',e=>{
-  if(a.classList.contains('mon-tancat')){e.preventDefault();avisMonTancat('🔒 Aquest món està tancat ara mateix. Tria un altre món!');return}
+  if(a.classList.contains('mon-tancat')){e.preventDefault();avisMonTancat(a.dataset.tancatNit?`🌙 Ara toca descansar! Tots els mons tornen a obrir a les ${a.dataset.tancatNit}.`:'🔒 Aquest món està tancat ara mateix. Tria un altre món!');return}
   if(tastActiu()){e.preventDefault();const h=a.getAttribute('href');location.href=h+(h.includes('?')?'&':'?')+'tast=1';return}
   if(jugador()&&!MOSTRA_FORM)return;e.preventDefault();errTast();f.scrollIntoView({behavior:'smooth',block:'center'})
  }));
@@ -1819,12 +1835,11 @@ function xatDemo(f,b){const ara=Date.now(),cfg={est_credit:10,max_dia:5,espera_s
  return new Promise(res=>setTimeout(()=>res(JSON.parse(JSON.stringify(o))),60))}
 // ---- 🎉 FESTA: ou de Pasqua del rànquing ----
 // 5 tocs seguits i ràpids dins del rànquing (fora dels botons) → festa amb música. Cada vegada en surt una altra:
-// 🌋 Terratrèmol (Grieg: «A la cova del rei de la muntanya», que s'accelera), 🥁 Desfilada (Mozart: «Marxa turca»),
-// 🐝 Abellots (Rimski-Kórsakov: «El vol del borinot»). Totes tres músiques són de domini públic, fetes amb WebAudio.
+// 🌋 Terratrèmol (Grieg), 🥁 Desfilada (Mozart), 🐝 Abellots (Rimski-Kórsakov), 🚀 Gravetat zero (Strauss: «El Danubi blau») i 🐉 Foc de Drac (fanfara heroica).
 const NF=n=>{const m=/^([A-G])(#?)(\d)$/.exec(n);return 440*2**(({C:-9,D:-7,E:-5,F:-4,G:-2,A:0,B:2}[m[1]]+(m[2]?1:0)+(m[3]-4)*12)/12)};
 const seqP=s=>s.trim().split(/\s+/).map(x=>{const[n,l]=x.split(":");return[n,+(l||1)]});
 const suau=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
-let FSO=false,FG=null,FSOR=null,FLFO=null,FESTA=null,FESTA_N=Math.floor(Math.random()*3),TOC_N=0,TOC_T=0;
+let FSO=false,FG=null,FSOR=null,FLFO=null,FESTA=null,FESTA_N=Math.floor(Math.random()*5),TOC_N=0,TOC_T=0;
 function fAc(){acH();
  if(!FSOR){FSOR=ACH.createBuffer(1,ACH.sampleRate,ACH.sampleRate);const d=FSOR.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
  FG=ACH.createGain();FG.connect(ACH.destination)}
@@ -1893,9 +1908,34 @@ function fxAbella(box,capa,v,mu){const D=mu.d*1000,pt=()=>[20+Math.random()*(v.W
   e.firstChild.animate([{transform:"translateY(-3px) rotate(-6deg)"},{transform:"translateY(3px) rotate(6deg)"}],{duration:70,iterations:Infinity,direction:"alternate"})}
  for(let i=0;i<9;i++)FESTA.t.push(setTimeout(()=>{const e=fEm(capa,["🌼","🌸","🌻","🌷"][i%4],30+Math.random()*(v.W-60),v.top+v.H-34,30);
   e.animate([{transform:"scale(0) rotate(-90deg)"},{transform:"scale(1.3) rotate(10deg)",offset:.6},{transform:"scale(1) rotate(0)"}],{duration:500,fill:"forwards"})},400+i*D/11))}
+// 🚀 Vals «El Danubi blau» (Strauss, domini públic) amb arpegis espacials de 3/4
+function musGravetat(){const u=.14,M=seqP("D4 F#4 A4 A4:2 -:1 A5:2 A5:1 F#5:2 F#5:1 D4 F#4 A4 A4:2 -:1 A5:2 A5:1 G5:2 G5:1 E4 G4 B4 B4:2 -:1 B5:2 B5:1 G5:2 G5:1 C#4 E4 A4 A4:2 -:1 A5:2 A5:1 F#5:3");
+ let t=0;for(const[n,l]of M){if(n!=="-"){fN(NF(n),t,l*u*.95,"triangle",.08);fN(NF(n)*2,t+.02,l*u*.5,"sine",.025)}t+=l*u}
+ const B=[["D3",["F#4","A4"]],["D3",["F#4","A4"]],["A2",["E4","G4"]],["A2",["E4","G4"]],["E3",["G4","B4"]],["E3",["G4","B4"]],["A2",["C#4","G4"]],["D3",["F#4","A4"]]];
+ B.forEach(([bs,ac],i)=>{const b0=(3+i*6)*u;if(b0>=t)return;fN(NF(bs),b0,u*1.8,"sine",.14);[1,2].forEach(p=>ac.forEach(x=>fN(NF(x),b0+p*2*u,u*1.2,"triangle",.03)))});
+ ["D4","F#4","A4","D5"].forEach((n,i)=>fN(NF(n),t-.2+i*.05,.9,"sine",.06));
+ return {d:t+.8}}
+// 🐉 Fanfara èpica amb metalls, timbals i alè de foc
+function musDrac(){const u=.11,M=seqP("D4 D4 A4:2 D5:2 C5 A#4 A4:2 G4 F4 G4:2 A4:2 D4 F4 A4 D5 F5:2 E5:2 D5 C#5 D5:2 F#5:2 A5:4");
+ let t=0;for(const[n,l]of M){fN(NF(n),t,l*u*.92,"sawtooth",.045);fN(NF(n)/2,t,l*u*.9,"triangle",.09);if(l>=2)fK(t,.45,120);t+=l*u}
+ fS(t-.5,.9,.22,"bandpass",1200);fK(t-.45,.8,110);
+ ["D3","A3","D4","F#4","A4","D5"].forEach(n=>fN(NF(n),t-.4,1.1,"triangle",.07));
+ return {d:t+.8}}
+function fxGravetat(box,capa,v,mu){const D=mu.d*1000,peces=pecesVisibles(box);
+ peces.forEach((e,i)=>FESTA.anims.push(e.animate([{transform:"translateY(0) rotate(0deg)"},{transform:`translate(${(i%2?1:-1)*8}px,-18px) rotate(${(i%2?1:-1)*3}deg)`},{transform:`translate(${(i%2?-1:1)*6}px,-8px) rotate(${(i%2?-1:1)*2}deg)`},{transform:"none"}],{duration:D,easing:"ease-in-out"})));
+ const E=["🪐","🚀","🛸","☄️","✨","🌙","🛰️"];
+ for(let i=0,n=MOBIL()?12:18;i<n;i++){const m=24+Math.random()*20,e=fEm(capa,E[i%E.length],0,0,m),x0=Math.random()<.5?-40:v.W+40,x1=x0<0?v.W+50:-50,y0=v.top+20+Math.random()*(v.H-40),y1=v.top+20+Math.random()*(v.H-40);
+  e.animate([{transform:`translate(${x0}px,${y0}px) rotate(0deg)`,opacity:0},{transform:`translate(${(x0+x1)/2}px,${Math.max(v.top+10,(y0+y1)/2-50)}px) rotate(${(i%2?1:-1)*180}deg)`,opacity:1,offset:.5},{transform:`translate(${x1}px,${y1}px) rotate(${(i%2?1:-1)*360}deg)`,opacity:0}],{duration:D*.78,delay:i*120,easing:"ease-in-out",fill:"both"})}}
+function fxDrac(box,capa,v,mu){const D=mu.d*1000,dr=fEm(capa,"🐉",0,0,MOBIL()?58:74),y0=v.top+Math.min(180,v.H*.32);
+ dr.animate([{transform:`translate(${v.W+80}px,${y0+30}px) scale(.8)`},{transform:`translate(${v.W*.55}px,${y0-20}px) scale(1.15)`,offset:.35},{transform:`translate(${v.W*.25}px,${y0+15}px) scale(1.1)`,offset:.7},{transform:`translate(-100px,${y0-30}px) scale(.9)`}],{duration:D*.88,easing:"ease-in-out",fill:"both"});
+ const E=["🔥","🌹","🛡️","👑","✨","⚔️"];
+ for(let i=0,n=MOBIL()?18:28;i<n;i++)FESTA.t.push(setTimeout(()=>{const x=v.W*(.75-.55*(i/n)),e=fEm(capa,E[i%E.length],x,y0+10,22+Math.random()*18),vx=(Math.random()-.6)*220,vy=80+Math.random()*180;
+  e.animate([{transform:"translate(0,0) scale(.4)",opacity:1},{transform:`translate(${vx*.5}px,${vy*.5}px) rotate(160deg) scale(1.15)`,opacity:1,offset:.55},{transform:`translate(${vx}px,${vy+90}px) rotate(320deg) scale(.8)`,opacity:0}],{duration:1250,easing:"ease-out",fill:"forwards"})},220+i*(D*.65/n)))}
 const FESTES=[{r:"TERRATRÈMOL!",tx:"linear-gradient(#fde68a,#f97316 55%,#b91c1c)",gl:"#f97316",mus:musTerra,fx:fxTerra,em:["💥","🪨","🔥","🌋"]},
  {r:"DESFILADA!",tx:"linear-gradient(90deg,#f472b6,#facc15,#4ade80,#22d3ee,#a78bfa)",gl:"#f0abfc",mus:musDesfi,fx:fxDesfi,em:["🎵","🎶","🥁","🎺"]},
- {r:"ABELLOTS!",tx:"linear-gradient(#fef9c3,#facc15 50%,#a16207)",gl:"#facc15",mus:musAbella,fx:fxAbella,em:["🐝","🌼","🍯","🌸"]}];
+ {r:"ABELLOTS!",tx:"linear-gradient(#fef9c3,#facc15 50%,#a16207)",gl:"#facc15",mus:musAbella,fx:fxAbella,em:["🐝","🌼","🍯","🌸"]},
+ {r:"GRAVETAT ZERO!",tx:"linear-gradient(90deg,#a5f3fc,#818cf8,#f0abfc)",gl:"#38bdf8",mus:musGravetat,fx:fxGravetat,em:["🚀","🪐","🛸","✨"]},
+ {r:"FOC DE DRAC!",tx:"linear-gradient(#fef08a,#ef4444 55%,#991b1b)",gl:"#ef4444",mus:musDrac,fx:fxDrac,em:["🐉","🔥","🌹","🛡️"]}];
 // La capa de la festa només ocupa la part del rànquing que es veu (n2490): abans ocupava tota la caixa (milers de
 // píxels d'alt) i, a més, hi havia un disc de llums de 2 pantalles d'ample amb mix-blend-mode que girava. A l'iPhone
 // aquella capa gegant no es pintava i amb ella desapareixien les abelles, la desfilada i els focus.

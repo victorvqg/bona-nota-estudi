@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.42.0 · 2026-11-12
+
+### Afegit
+- **Horari nocturn propi i editable per tancar i obrir tots els mons (`22:00 → 08:00`)** (`supabase/bn_control.sql`, `admin/index.html`, `index.html`, `motor/prova-control-sql.js`, `motor/prova-admin-xat.js`, `motor/prova-xat.js` · g26):
+  - `bn_priv.xat_horari_cfg()`, `public.bn_estat_web()` i `public.bn_admin_control()` (desplegats a `agippwtqvhpxdockuigl`) afegeixen `mons_tanca_h` (`'22:00'`), `mons_obre_h` (`'08:00'`), `mons_tanca_min` (`1320`) i `mons_obre_min` (`480`), avaluant `mons_tancats_nit` amb el seu propi horari encara que l'horari del xat tingui una altra franja o estigui desactivat.
+  - A `Configuració → Horaris` s'afegeix la fila editable `Tanca / Obre dels mons` (`#xcMonsTancaH` → `#xcMonsObreH`, horitzontal i independent del xat), i a la portada (`index.html`) tots els mons s'apaguen automàticament a l'hora configurada (`🌙 DESCANS`, `🌙 FINS HH:MM`, `#avisNitPortada` i avís en clicar) i es tornen a obrir sols a l'hora d'obertura sense trepitjar els tancaments manuals.
+  - A `Inici → Alertes` les alertes col·lectives mostren ara l'etiqueta clara `👥 Tot el grup` en lloc de `Colla`.
+- **Dues festes noves al rànquing públic (5 tocs): `🚀 GRAVETAT ZERO!` i `🐉 FOC DE DRAC!`** (`index.html`, `motor/prova-xat.js` · g26):
+  - `FESTES` passa de 3 a 5 celebracions musicals en WebAudio i motion: vals espacial *El Danubi blau* (Strauss) amb òrbites ingràvides i fanfara heroica amb vol del Drac, roses i flames.
+
 ## 2.41.0 · 2026-11-12
 
 ### Afegit
