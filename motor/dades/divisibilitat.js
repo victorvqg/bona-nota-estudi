@@ -308,7 +308,7 @@ function gbToca(b){const n=+b.dataset.n;if(!GB.j||b.classList.contains("ok")||b.
 function provaGarbell(j){jocGarbell(j);document.querySelectorAll(".gb").forEach(b=>{if(esPrimer(+b.dataset.n))gbToca(b)});return GB.j===null||"no ha acabat el garbell"}
 
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
-ASSIG.boss={nom:"El Gegant Primer",spr:"monstre"};
+ASSIG.boss={nom:"El Gegant Primer",spr:"gegant",fx:"blocs",mus:"chiptune",rotul:"FACTORITZAT!",em:["💎","🧱","🔢","⚡"]};
 
 //@inclou eines/exercicis-mates.js
 //@inclou eines/manipulatius-mates.js

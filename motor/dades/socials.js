@@ -291,4 +291,4 @@ function svgClimo(){
 }
 
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
-ASSIG.boss={nom:"La Gran Borrasca",spr:"borrasca"};
+ASSIG.boss={nom:"La Gran Borrasca",spr:"borrasca",fx:"tempesta",mus:"primavera",rotul:"SURT EL SOL!",em:["🌈","☀️","🌤️","🍃"]};

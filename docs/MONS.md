@@ -45,7 +45,7 @@ Després, aquí es comprova si se sap de veritat.
 - **👾 Boss del món** (a Jocs, i a l'inici quan està obert): el repte final abans de l'examen. S'obre quan has aprovat el 70 %
   dels temes o quan treus un 70 % o més en un examen (sorpresa o de veritat). 10 rondes amb contingut que ja és al món: preguntes de test de tots els temes, una de figura, una de parelles
   o de classificar, una d'ordenar (cop doble) i una oberta (treu vida segons les idees clau). Cada error treu un cor (n'hi ha 3);
-  el boss té el 80 % de la vida que poden treure totes les rondes. Guanyar: **+10 ⭐** un cop al dia. Els errors van al repàs.
+  el boss té el 80 % de la vida que poden treure totes les rondes. Guanyar: **+10 ⭐** un cop al dia, medalla `🏆` a la targeta i una **celebració amb moviment i música pròpia per a cada Boss** (com `SUPERNOVA!` amb *El Cometa Rebel* o `FOC DE SANT JORDI!` amb *El Drac de les Comarques*; vegeu [`BOSS-I-EFECTES.md`](BOSS-I-EFECTES.md)). Els errors van al repàs.
 - **🛡️ Escut del combo:** si falles amb un combo de 3 o més, pots respondre una pregunta germana del mateix tema
   (una que el test no ha tret). Si l'encertes, continues amb la meitat del combo.
 - **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de
@@ -98,8 +98,10 @@ Després, aquí es comprova si se sap de veritat.
 - **🥚 Secret:** toca **5 vegades seguides i ràpid** dins del rànquing (fora dels botons) i es fa una **festa amb música**.
   Del 2n al 4t toc surt una guspira ✨⚡🔥 i un «bip» cada cop més agut. Cada vegada surt una festa diferent:
   🌋 **Terratrèmol** (Grieg, «A la cova del rei de la muntanya», cada cop més ràpid i amb un BUM final),
-  🥁 **Desfilada** (Mozart, «Marxa turca», amb els nens del rànquing desfilant) i
-  🐝 **Abellots** (Rimski-Kórsakov, «El vol del borinot»). Totes tres músiques són de domini públic.
+  🥁 **Desfilada** (Mozart, «Marxa turca», amb els nens del rànquing desfilant),
+  🐝 **Abellots** (Rimski-Kórsakov, «El vol del borinot»),
+  🚀 **Gravetat zero** (Strauss, «El Danubi blau», amb òrbites espacials) i
+  🐉 **Foc de drac** (fanfara heroica amb el Drac i roses de Sant Jordi).
   Si el so està apagat, la festa només es veu. En mode suau només surt un rètol quiet.
 
 ---

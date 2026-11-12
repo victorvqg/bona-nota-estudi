@@ -433,4 +433,4 @@ const MAPA={w:600,h:640,c:[[1,"M227.3,388.8L233.2,383.8L237.1,386.7L243.8,383.2L
 // MAPA:fi
 
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
-ASSIG.boss={nom:"El Drac de les Comarques",spr:"monstre"};
+ASSIG.boss={nom:"El Drac de les Comarques",spr:"drac",fx:"explosio",mus:"epica",rotul:"FOC DE SANT JORDI!",em:["🐉","🌹","🔥","🛡️"]};
