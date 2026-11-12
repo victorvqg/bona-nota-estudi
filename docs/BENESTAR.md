@@ -20,7 +20,7 @@ Completa els altres documents de regles:
 
 ## 2. Què veus al tauler
 
-A **admin → Tauler → Benestar**, amb el període (avui, 7 dies, 30 dies, curs) i els filtres de nen i assignatura de la capçalera:
+A **admin → Nens → Benestar** (`?v=nens&tab=benestar`), amb el període de la capçalera (avui, 7 dies, 30 dies, curs) i els filtres locals de món i nen (i també de manera individual a **Fitxa del nen → Sessions i benestar**):
 
 - **Una fila per nen**, ordenades de pitjor a millor. El nom obre la fitxa del nen.
 - **El semàfor** és el pitjor senyal de vigilar que té el nen en el període:
@@ -81,7 +81,7 @@ Els dies de vigília, la marató surt en **blau** amb el llindar de 120 minuts, 
 
 ## 5. Com posar la data d'un examen
 
-1. A **Tauler → Benestar**, a la targeta del món, escriu la data a la casella «Data de l'examen» i prem **Desa** (o Retorn).
+1. A **Nens → Benestar**, a la targeta del món, escriu la data a la casella «Data de l'examen» i prem **Desa** (o Retorn).
 2. Per esborrar-la, prem la paperera o buida la casella: el tauler demana confirmació.
 3. Des d'aquell moment, la vigília del món és el dia abans d'aquesta data, i el semàfor de tots els nens es torna a calcular.
 

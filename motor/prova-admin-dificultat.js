@@ -36,7 +36,8 @@ function dadesDif(assig, xss) {
   { assig: "socials", qid: "atmos/4", n: 11, bones: 5, nens: 7, encert: 45.5, encert_1a: 42.9, seg_mig: 11.1, suficient: true, dificultat: 3 },     // és 3 a dificultat.json i < 75 % → ⚡ Confirmada
   { assig: "socials", qid: "temps/5", n: 12, bones: 11, nens: 7, encert: 91.7, encert_1a: 90.0, seg_mig: 5.0, suficient: true, dificultat: 1 },     // > 90 % i no marcada ⚡ → Fàcil
   { assig: "socials", qid: "temps/3", n: 4, bones: 2, nens: 3, encert: 50.0, encert_1a: 50.0, seg_mig: 8.0, suficient: false, dificultat: null },   // < 8 resp.
-  { assig: "angles", qid: "adjectius/1", n: 9, bones: 3, nens: 5, encert: 33.3, encert_1a: 25.0, seg_mig: 10.0, suficient: true, dificultat: 3 }
+  { assig: "angles", qid: "adjectius/1", n: 9, bones: 3, nens: 5, encert: 33.3, encert_1a: 25.0, seg_mig: 10.0, suficient: true, dificultat: 3 },
+  { assig: "biogeo", qid: "terra/1", n: 3, bones: 2, nens: 2, encert: 66.7, encert_1a: 50.0, seg_mig: 7.5, suficient: false, dificultat: null }       // món amb només < 8 resp.
  ];
  if (xss) totes.push({ assig: XSS, qid: XSS, n: 10, bones: 3, nens: 4, encert: 30.0, encert_1a: 30.0, seg_mig: 7.0, suficient: true, dificultat: 3 });
  const pr = assig ? totes.filter(r => r.assig === assig) : totes;
@@ -106,10 +107,15 @@ function dadesDif(assig, xss) {
   ok(["bn_admin_resum", "bn_admin_domini", "bn_admin_fallades", "bn_admin_benestar"].every(f => !crides.some(x => x.f === f)),
    "càrrega sota demanda: obrir Mons → Dificultat no demana el resum, domini, fallades ni benestar");
   await p.click('#tDif [data-dm="obre"]');
+  ok((await p.$$("#tDif details.dm-as")).length === 7, "surten sempre els 7 mons encara que alguns encara no arribin a 8 respostes o no tinguin dades");
   const tSoc = await txt('#tDif details[data-a="socials"]');
+  const tBio = await txt('#tDif details[data-a="biogeo"]');
+  const tDiv = await txt('#tDif details[data-a="divisibilitat"]');
   ok(tSoc.includes("➕ Proposa ⚡") && tSoc.includes("➖ Revisa ⚡") && tSoc.includes("⚡ Confirmada") && tSoc.includes("Fàcil (> 90 %)"),
    "compara bé amb motor/dificultat.json: Proposa ⚡, Revisa ⚡, Confirmada i Fàcil");
   ok(!tSoc.includes("temps/3"), "per defecte (≥ 8 resp.) no mostra les preguntes amb menys de 8 respostes");
+  ok(tBio.includes("< 8 resp. (1)") && tDiv.includes("Sense dades") && tDiv.includes("Taller"),
+   "els mons amb < 8 respostes o sense dades expliquen clarament per què encara no tenen taula a ≥ 8 resp.");
 
   // Mode «Canvis»: només les 2 de socials i 1 d'anglès que demanen acció
   await p.click('#difModes [data-dif-v="proposta"]');
@@ -117,10 +123,10 @@ function dadesDif(assig, xss) {
   ok(tCanvis.includes("➕ Proposa ⚡") && tCanvis.includes("➖ Revisa ⚡") && !tCanvis.includes("Fàcil (> 90 %)"),
    "el mode «Canvis» mostra només les propostes d'afegir o revisar");
 
-  // Mode «Totes»: inclou temps/3 (< 8 resp.)
+  // Mode «Totes»: inclou temps/3 (< 8 resp.) i terra/1 de biogeo
   await p.click('#difModes [data-dif-v="totes"]');
-  ok((await txt('#tDif details[data-a="socials"]')).includes("temps/3") && (await txt('#tDif details[data-a="socials"]')).includes("< 8 resp."),
-   "el mode «Totes» inclou també les preguntes amb < 8 respostes");
+  ok((await txt('#tDif details[data-a="socials"]')).includes("temps/3") && (await txt('#tDif details[data-a="socials"]')).includes("< 8 resp.") && (await txt('#tDif details[data-a="biogeo"]')).includes("terra/1"),
+   "el mode «Totes» inclou també les preguntes amb < 8 respostes de qualsevol món");
 
   // Descàrrega JSON per a dificultat.py --proposa
   const [dl] = await Promise.all([p.waitForEvent("download"), p.click("#btDifJson")]);

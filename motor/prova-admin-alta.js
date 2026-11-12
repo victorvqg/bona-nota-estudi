@@ -313,23 +313,29 @@ function dadesAdmin() {
   await cr.ctx.close();
  }
 
- console.log("2b) Mòbil (360, 390 i 430 px): barra inferior fixa de 5 eixos i zero desbordament a Inici i Configuració");
+ console.log("2b) Mòbil (360, 390 i 430 px): barra inferior fixa de 5 eixos, ≤ 8 columnes per taula i zero desbordament");
  for (const w of [360, 390, 430]) {
   const { p, ctx, errors } = await obreAdmin("/admin/?demo", { viewport: { width: w, height: 800 } });
   await p.waitForSelector("#control #ctrlXatSw");
+  const maxCols = () => p.$$eval("#contingut table", ts => Math.max(0, ...ts.map(t => t.querySelectorAll("thead th").length)));
   const navInfVis = await p.isVisible("#navInf"), navLatVis = await p.isVisible(".menu");
-  const sw1 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  const sw1 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc1 = await maxCols();
   await p.click("#btConfig");
   await p.waitForSelector("#xcF");
-  const sw2 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  const sw2 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc2 = await maxCols();
   await p.click('#navInf [data-v="mons"]');
   await p.waitForSelector('#tMons tr[data-mon="socials"]');
-  const sw3 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  const sw3 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc3 = await maxCols();
   await p.click('#tMons tr[data-mon="socials"] td:first-child');
   await p.waitForSelector("#selFitxaMon");
-  const sw4 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
-  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && sw3 <= w && sw4 <= w && errors.length === 0,
-   `${w} px: barra inferior #navInf activa, menú lateral ocult i zero desbordament (Inici ${sw1}px, Config ${sw2}px, Mons ${sw3}px, Fitxa món ${sw4}px)`);
+  const sw4 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc4 = await maxCols();
+  await p.click('#navInf [data-v="sessions"]');
+  await p.waitForSelector("#tSes tbody tr");
+  await p.click("#tSes tbody tr:first-child");
+  await p.waitForSelector("#panell:not([hidden])");
+  const sw5 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc5 = await maxCols();
+  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && sw3 <= w && sw4 <= w && sw5 <= w && Math.max(mc1, mc2, mc3, mc4, mc5) <= 8 && errors.length === 0,
+   `${w} px: barra inferior #navInf activa, ≤ 8 columnes i zero desbordament (Inici ${sw1}px, Config ${sw2}px, Mons ${sw3}px, Fitxa món ${sw4}px, Sessions+panell ${sw5}px)`);
   await ctx.close();
  }
 
