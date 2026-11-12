@@ -2,7 +2,7 @@ const ASSIG={
  id:"divisibilitat",
  nom:"Matemàtiques", tema:"Tema 2: Divisibilitat", curs:"1r ESO", ic:"🔢",
  pissarra:true,            // ✏️ botó del full de brut (eines/pissarra.js)
- foto:true,                // 📷 correcció de la foto del quadern (cal la funció bn-corregeix desplegada a Supabase)
+ foto:false,               // 📷 correcció de la foto del quadern arxivada (posa true quan ANTHROPIC_API_KEY estigui configurada a bn-corregeix)
  repasExtra:"rp-barreja",  // en acabar el repàs dels errors, botó per fer el repàs barrejat
  color:["#134e4a","#0d9488","#84cc16"],
  peu:"Bona Nota · Apunts de Matemàtiques · Tema 2: Divisibilitat (múltiples, divisors, criteris, primers, factors, MCM i MCD)",

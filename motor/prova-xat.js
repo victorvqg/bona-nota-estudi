@@ -54,23 +54,28 @@ const BASE = () => [
 // «servidor» del xat amb estat, segons el contracte del pla (bn_xat_llegeix, bn_xat_estat, bn_xat_envia, bn_xat_vota)
 function servidorXat(o = {}) {
  const S = { est: o.est ?? 14, cfg: Object.assign({ est_credit: 10, max_dia: 5, espera_s: 10, actiu: true }, o.cfg || {}), env: o.enviats || 0, ult: 0, seq: 100,
-  msgs: (o.msgs || BASE()).map(m => Object.assign({ p: null, c: null, esborrat: false }, m)), vots: { 3: new Set(["pau", "jana"]) }, silenci: o.silenci || null,
+  msgs: (o.msgs || BASE()).map(m => Object.assign({ p: null, c: null, esborrat: false }, m)), vots: o.vots || { 3: new Set(["pau", "jana"]) }, silenci: o.silenci || null,
   forca: Object.assign({}, o.forca || {}), off: o.off || { f: [], p: [] }, noves: o.noves || [], pin: "1234A", nivell: o.nivell || 4,
   mons: o.mons || { socials: 60, biogeo: 30, divisibilitat: 10 }, fi: o.fi || 0, xarxa: {}, retard: o.retard || {} }; // xarxa[f]: la propera crida falla · retard[f]: ms
  const k = s => String(s || "").trim().toLowerCase(), fiDia = () => { const d = new Date(); d.setHours(24, 0, 0, 0); return +d };
- const g = () => Math.min(S.cfg.max_dia, Math.floor(S.est / S.cfg.est_credit)), q = () => Math.max(0, g() - S.env), falten = () => g() >= S.cfg.max_dia ? 0 : (g() + 1) * S.cfg.est_credit - S.est;
- const teF = f => !S.off.f.includes(f.id) && f.n <= S.nivell, teP = w => !S.off.p.includes(w.id) && (w.m ? (S.mons[w.m] || 0) >= 25 : w.n <= S.nivell);
  const nv = id => (S.vots[id] || new Set()).size, pub = m => ({ id: m.id, nom: m.nom, f: m.f, p: m.p, c: m.c, ts: m.ts, v: nv(m.id) });
  const vis = () => S.msgs.filter(m => !m.esborrat).sort((a, b) => a.id - b.id);
+ const mddAhir = () => { const d = new Date(); d.setHours(0, 0, 0, 0); const a0 = +d - 864e5; let m = null;
+  vis().forEach(x => { if (x.ts >= a0 && x.ts < +d && nv(x.id) >= 1 && (!m || nv(x.id) > nv(m.id))) m = x }); return m };
+ const tePremi = () => { const m = mddAhir(); return !!m && k(m.nom) === "prova" };
+ const gec = () => Math.min(S.cfg.max_dia, Math.floor(S.est / S.cfg.est_credit)), bo = () => tePremi() ? 1 : 0;
+ const g = () => gec() + bo(), q = () => Math.max(0, g() - S.env);
+ const falten = () => { const b = Math.max(gec(), Math.max(0, S.env - bo())); return b >= S.cfg.max_dia ? 0 : (b + 1) * S.cfg.est_credit - S.est };
+ const teF = f => !S.off.f.includes(f.id) && f.n <= S.nivell, teP = w => !S.off.p.includes(w.id) && (w.m ? (S.mons[w.m] || 0) >= 25 : w.n <= S.nivell);
  function rpc(f, b) {
   if (S.forca[f]) { const r = S.forca[f]; delete S.forca[f]; return r }
   const ara = Date.now();
   if (f === "bn_xat_llegeix") {
-   const ms = vis().slice(-60), avui = new Date(); avui.setHours(0, 0, 0, 0); const ult = {}; let mdd = null;
+   const ms = vis().slice(-60), avui = new Date(); avui.setHours(0, 0, 0, 0); const ult = {}, ma = mddAhir(); let mdd = null;
    vis().forEach(m => { if (m.ts >= ara - 864e5) ult[k(m.nom)] = m; if (m.ts >= +avui && nv(m.id) >= 1 && (!mdd || nv(m.id) > nv(mdd.id))) mdd = m });
-   return { ara, actiu: S.cfg.actiu, msgs: ms.filter(m => m.id > (+b.p_des_de || 0)).map(pub), vots: Object.fromEntries(ms.map(m => [m.id, nv(m.id)])), ultims: Object.values(ult).map(pub), mdd: mdd && pub(mdd), off: S.off, noves: S.noves } }
+   return { ara, actiu: S.cfg.actiu, msgs: ms.filter(m => m.id > (+b.p_des_de || 0)).map(pub), vots: Object.fromEntries(ms.map(m => [m.id, nv(m.id)])), ultims: Object.values(ult).map(pub), mdd: mdd && pub(mdd), mdd_ahir: ma && pub(ma), off: S.off, noves: S.noves } }
   if (b.p_pin !== S.pin) return { codi: "pin" };
-  if (f === "bn_xat_estat") return { codi: "ok", ara, fi_dia: S.fi || fiDia(), est_avui: S.est, guanyats: g(), enviats: S.env, queden: q(), falten: falten(), nivell: S.nivell, mons: S.mons,
+  if (f === "bn_xat_estat") return { codi: "ok", ara, fi_dia: S.fi || fiDia(), est_avui: S.est, premi_ahir: tePremi(), guanyats: g(), enviats: S.env, queden: q(), falten: falten(), nivell: S.nivell, mons: S.mons,
    acabats: Object.keys(S.mons).filter(m => S.mons[m] >= 25), frases: XAT_FR.filter(teF).map(x => x.id), peces: XAT_PC.filter(teP).map(w => w.id).concat(S.noves.map(w => w.id)),
    meus: S.msgs.filter(m => (S.vots[m.id] || new Set()).has("prova")).map(m => m.id), cfg: S.cfg, espera_fins: S.ult + S.cfg.espera_s * 1000, silenci: S.silenci };
   if (S.silenci && (S.silenci.fins == null || S.silenci.fins > ara)) return { codi: "silenci", fins: S.silenci.fins ?? null }; // fins null: amagat o nom prohibit
@@ -80,14 +85,14 @@ function servidorXat(o = {}) {
    if (!fr || !teF(fr) || (C ? b.p_peca != null || !b.p_company : b.p_company != null || !w || w.s !== fr.s || !teP(w))) return { codi: "bloquejada" };
    const r = C && RANK.find(x => k(x.nom) === k(b.p_company));
    if (C && (!r || k(r.nom) === "prova")) return { codi: "company" };
-   if (S.env >= S.cfg.max_dia) return { codi: "max_dia" };
+   if (S.env >= S.cfg.max_dia + bo()) return { codi: "max_dia" };
    if (q() <= 0) return { codi: "sense_credit", falten: falten() };
    if (ara - S.ult < S.cfg.espera_s * 1000) return { codi: "espera", ms: S.cfg.espera_s * 1000 - (ara - S.ult) };
    S.env++; S.ult = ara; const m = { id: ++S.seq, nom: "Prova", f: fr.id, p: C ? null : w.id, c: C ? r.nom : null, ts: ara, esborrat: false }; S.msgs.push(m);
    return { codi: "ok", id: m.id, queden: q(), enviats: S.env, espera_fins: ara + S.cfg.espera_s * 1000 } }
   if (f === "bn_xat_vota") {
    const m = vis().find(x => x.id === +b.p_msg);
-   if (!m) return { codi: "no_existeix" }; if (k(m.nom) === "prova") return { codi: "propi" }; if (g() < 1) return { codi: "sense_credit", falten: falten() };
+   if (!m) return { codi: "no_existeix" }; if (k(m.nom) === "prova") return { codi: "propi" }; if (S.est < S.cfg.est_credit) return { codi: "sense_credit", falten: falten() };
    const v = S.vots[m.id] = S.vots[m.id] || new Set(); if (v.has("prova")) v.delete("prova"); else v.add("prova"); return { codi: "ok", on: v.has("prova"), vots: v.size } }
   return undefined }
  return { S, rpc };
@@ -456,6 +461,36 @@ function servidorXat(o = {}) {
   const t = await toast(p);
   ok(/no pots (escriure|votar)/.test(t) && (await lock(p)) === "XAT EN PAUSA" && /Ara no pots escriure al xat/.test(await txt(p, "#xLock")) && await p.isDisabled("#xEnvia"), f + " → {codi:'silenci',fins:null}: el mateix bloqueig, sense data");
   sense(e); await e.ctx.close() }
+
+ console.log("23) missatge d'ahir (mdd_ahir): corona al xat i +1 crèdit extra (premi_ahir) sense tocar estrelles");
+ { const d0 = new Date(); d0.setHours(0, 0, 0, 0); const ahTs = +d0 - 3600e3;
+  // 23a: la Jana va guanyar ahir → surt «👑 Missatge d'ahir: Jana» a #xMdd i la insígnia «👑 Ahir» als seus missatges
+  const msgsJ = [{ id: 10, nom: "Jana", f: 1, p: 1, ts: ahTs }, ...BASE()];
+  const votsJ = { 10: new Set(["pau", "nora", "ona"]), 3: new Set(["pau", "jana"]) };
+  const e1 = await obre({ xat: { est: 14, msgs: msgsJ, vots: votsJ } }), { p: p1 } = e1; await e1.xat();
+  const mddTxt = await txt(p1, "#xMdd");
+  ok(/👑 Missatge d'ahir: Jana/.test(mddTxt) && /\+1 crèdit avui/.test(mddTxt) && !/estrella/.test(mddTxt), "#xMdd mostra «👑 Missatge d'ahir: Jana» i «+1 crèdit avui», sense la paraula estrella: " + mddTxt);
+  ok((await txt(p1, '#xFeed .x-msg[data-xid="2"] .x-cor')) === "👑 Ahir" && (await p1.$$('#xFeed .x-msg[data-xid="3"] .x-cor')).length === 0, "insígnia «👑 Ahir» només als missatges de la guanyadora d'ahir");
+  sense(e1); await e1.ctx.close();
+
+  // 23b: «Prova» va guanyar ahir → amb 0 ⭐ té 1 crèdit a punt (6 monedes totals), pot enviar però votar demana 10 ⭐
+  const msgsP = [{ id: 10, nom: "Prova", f: 1, p: 1, ts: ahTs }, ...BASE()];
+  const votsP = { 10: new Set(["pau", "jana"]), 3: new Set(["pau"]) };
+  const e2 = await obre({ xat: { est: 0, msgs: msgsP, vots: votsP } }), { p: p2 } = e2; await e2.xat();
+  ok((await txt(p2, "#xLock")) === "", "amb 0 ⭐ i premi_ahir=true no surt INSERT COIN");
+  ok((await p2.$$(".xmon.plena")).length === 1 && (await p2.$$(".xmon.buida")).length === 5, "6 monedes: 1 plena (premi d'ahir) i 5 per guanyar estudiant");
+  ok(/👑 \+1 pel missatge d'ahir/.test(await txt(p2, ".xc-s")) && /Frases avui: 0 de 6/.test(await txt(p2, "#xAvui")), "indica el crèdit d'ahir i el topall de 6 frases");
+  await p2.click('#xFeed .x-vot[data-xv="3"]');
+  ok(/10/.test(await toast(p2)), "votar «Ben dit» continua demanant 10 ⭐ estudiades avui");
+  await peca(p2, 1); await p2.waitForTimeout(100); ok(!(await p2.isDisabled("#xEnvia")), "ENVIA actiu amb el crèdit d'ahir");
+  await p2.click("#xEnvia"); await p2.waitForTimeout(700);
+  ok((await p2.$$(".xmon.gastada")).length === 1 && (await lock(p2)) === "SENSE CRÈDITS", "un cop gastat el crèdit d'ahir amb 0 ⭐, passa a SENSE CRÈDITS");
+  sense(e2); await e2.ctx.close();
+
+  // 23c: amb 60 ⭐ i 6 frases enviades arriba a TORNA DEMÀ («Ja has dit les 6 frases d'avui»)
+  const e3 = await obre({ xat: { est: 60, enviats: 6, msgs: msgsP, vots: votsP } }), { p: p3 } = e3; await e3.xat();
+  ok((await lock(p3)) === "TORNA DEMÀ" && /Ja has dit les 6 frases d'avui/.test(await txt(p3, "#xLock p")), "amb premi_ahir, TORNA DEMÀ surt després de 6 frases");
+  sense(e3); await e3.ctx.close() }
 
  await nav.close(); srv.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : "\n✓ Totes les comprovacions del xat de la colla passen");

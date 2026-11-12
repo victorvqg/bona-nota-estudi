@@ -57,10 +57,11 @@ Un **crèdit** és el dret a enviar una frase al xat.
 | Regla | Valor per defecte | Límit configurable a l'admin |
 |---|---|---|
 | Estrelles per crèdit | **10 ⭐** guanyades avui = 1 crèdit = 1 frase | De 1 a 100 ⭐ |
-| Màxim de frases al dia | **5 frases** al dia per nen | D'1 a 20 frases |
+| Màxim de frases al dia | **5 frases** al dia per nen (**+1** si ahir va fer el missatge del dia) | D'1 a 20 frases |
 | Espera entre missatges | **10 segons** | De 0 a 600 segons |
 | Reinici diari | A **mitjanit**, hora de Madrid | Fix (canvia sol amb l'horari d'estiu i d'hivern) |
-| Votar «Ben dit» | Cal haver guanyat el **1r crèdit d'avui** (10 ⭐) | Segueix el valor d'estrelles per crèdit |
+| Votar «Ben dit» | Cal haver guanyat el **1r crèdit estudiat d'avui** (10 ⭐) | Segueix el valor d'estrelles per crèdit |
+| Premi del missatge d'ahir | **👑 + 1 crèdit extra** l'endemà (topall `max_dia + 1`, zero estrelles afegides) | Automàtic si té ≥ 1 vot «Ben dit» |
 
 **Com es calculen les «estrelles d'avui».** Per a cada món on el nen ha jugat avui, es mira el màxim d'estrelles que ha assolit avui i se li resta el màxim que tenia abans de mitjanit (si no hi havia jugat mai, 0; si per qualsevol motiu fos menor, compta 0). Després es fa la suma de tots els mons. Així hi entren totes les maneres de guanyar estrelles (tests, jocs, exàmens, preguntes obertes, combos, repàs, missions i boss) després de passar pel fre del servidor.
 
@@ -74,7 +75,7 @@ Tot passa dins de la finestra del **rànquing**, a la portada:
 
 - **Llegir:** qualsevol pot obrir la pestanya **💬 Xat** i llegir els últims **60 missatges** visibles. Els missatges propis surten a la dreta, en verd; els dels altres, a l'esquerra, amb l'animal i la insígnia del seu perfil i l'hora.
 - **Votar «Ben dit»:** cada missatge d'un altre nen té un botó amb un polze i el comptador de vots. Si ja has guanyat el primer crèdit d'avui (encara que ja l'hagis gastat parlant), pots posar o treure el teu vot. No es pot votar un missatge propi, i votar no gasta cap crèdit.
-- **Missatge del dia:** a dalt del xat hi surt destacat amb una corona el missatge d'avui que porta més vots «Ben dit» (en cas d'empat, el primer que es va escriure). En aquesta versió és un honor i no dona cap estrella de premi.
+- **Missatge del dia i premi d'ahir:** a dalt del xat hi surt destacat amb una corona el missatge d'avui que porta més vots «Ben dit» (en cas d'empat, el primer que es va escriure), i també el **👑 Missatge d'ahir** (`mdd_ahir`). Qui va fer el missatge més votat d'ahir lluu la insígnia **«👑 Ahir»** als seus missatges i rep **1 crèdit extra** avui (`premi_ahir`, topall `max_dia + 1`), sense afegir cap estrella al registre ni al rànquing.
 - **Bafarades al podi:** a totes les pestanyes del rànquing, els 3 primers del podi mostren una bafarada amb el seu últim missatge si l'han escrit en les últimes **24 hores**. Si toques una bafarada, s'obre el xat directament en aquell missatge i s'il·lumina.
 - **Comptador de no llegits:** la pestanya 💬 Xat mostra un cercle vermell amb el nombre de missatges nous d'altres nens des de l'última vegada que vas obrir el xat en aquell aparell (fins a `9+`). Quan obres la pestanya, el comptador desapareix.
 - **Targeta «Xat de la colla»:** a les pestanyes normals del rànquing, a dalt de la columna dreta, hi ha una targeta amb els **2 últims missatges**, una línia amb els teus crèdits i el botó **OBRE EL XAT ▶**.

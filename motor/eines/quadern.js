@@ -19,7 +19,7 @@ function obertesExtra(n,o){const box=document.querySelector("#app .box");if(!box
  const d=document.createElement("div");d.className="qd";
  d.innerHTML=`<div class="fb" style="margin-top:12px;text-align:left"><b>📒 L'has resolt al quadern?</b> Comprova-ho pas a pas:
   <div class="fila" style="justify-content:flex-start;margin-top:8px">${o.c?`<button class="btn sec" onclick="qdControls(${n})">✔ Comprova els resultats</button>`:""}${ASSIG.foto?`<button class="btn sec" onclick="qdFotoTria(${n})">📷 Fes una foto del full</button>`:""}</div>
-  <input type="file" id="qdFile" accept="image/*" capture="environment" hidden onchange="qdFoto(${n},this)"><div id="qdRes"></div></div>`;
+  ${ASSIG.foto?`<input type="file" id="qdFile" accept="image/*" capture="environment" hidden onchange="qdFoto(${n},this)">`:""}<div id="qdRes"></div></div>`;
  box.appendChild(d)}
 // ✔ punts de control: fa servir el motor del Taller (mateix teclat i mateixos avisos), i en acabar torna a la pregunta
 function qdControls(n){const o=OB[n];mxCss();mxCss2();const de=typeof diaEst==="function"?diaEst():{o:{}};de.c=de.c||{};JOCSTAR=de.c[n]?0:1;de.c[n]=1;

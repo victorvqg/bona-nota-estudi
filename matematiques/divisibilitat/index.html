@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="2f79f8329b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="116319bb3c",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -598,7 +598,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.28.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.29.0</small></div>
 
 <script src="../../sprites.js?v=0be9e885"></script>
 <script>
@@ -606,7 +606,7 @@ const ASSIG={
  id:"divisibilitat",
  nom:"Matemàtiques", tema:"Tema 2: Divisibilitat", curs:"1r ESO", ic:"🔢",
  pissarra:true,            // ✏️ botó del full de brut (eines/pissarra.js)
- foto:true,                // 📷 correcció de la foto del quadern (cal la funció bn-corregeix desplegada a Supabase)
+ foto:false,               // 📷 correcció de la foto del quadern arxivada (posa true quan ANTHROPIC_API_KEY estigui configurada a bn-corregeix)
  repasExtra:"rp-barreja",  // en acabar el repàs dels errors, botó per fer el repàs barrejat
  color:["#134e4a","#0d9488","#84cc16"],
  peu:"Bona Nota · Apunts de Matemàtiques · Tema 2: Divisibilitat (múltiples, divisors, criteris, primers, factors, MCM i MCD)",
@@ -1946,7 +1946,7 @@ function obertesExtra(n,o){const box=document.querySelector("#app .box");if(!box
  const d=document.createElement("div");d.className="qd";
  d.innerHTML=`<div class="fb" style="margin-top:12px;text-align:left"><b>📒 L'has resolt al quadern?</b> Comprova-ho pas a pas:
   <div class="fila" style="justify-content:flex-start;margin-top:8px">${o.c?`<button class="btn sec" onclick="qdControls(${n})">✔ Comprova els resultats</button>`:""}${ASSIG.foto?`<button class="btn sec" onclick="qdFotoTria(${n})">📷 Fes una foto del full</button>`:""}</div>
-  <input type="file" id="qdFile" accept="image/*" capture="environment" hidden onchange="qdFoto(${n},this)"><div id="qdRes"></div></div>`;
+  ${ASSIG.foto?`<input type="file" id="qdFile" accept="image/*" capture="environment" hidden onchange="qdFoto(${n},this)">`:""}<div id="qdRes"></div></div>`;
  box.appendChild(d)}
 // ✔ punts de control: fa servir el motor del Taller (mateix teclat i mateixos avisos), i en acabar torna a la pregunta
 function qdControls(n){const o=OB[n];mxCss();mxCss2();const de=typeof diaEst==="function"?diaEst():{o:{}};de.c=de.c||{};JOCSTAR=de.c[n]?0:1;de.c[n]=1;
