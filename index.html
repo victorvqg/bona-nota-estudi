@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="2f79f8329b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="116319bb3c",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -458,6 +458,7 @@ h1 span{display:inline-block}
 .x-mdd b{font-family:'Press Start 2P',monospace;font-size:8.5px;color:#fde68a;line-height:1.5}
 .x-mdd span{font-weight:900;font-size:14px;color:#fff;overflow-wrap:anywhere}
 .x-mdd small{font-weight:800;font-size:12px;color:#fde68a}
+.x-mdd .x-ma{margin-top:3px;padding-top:3px;border-top:1px solid #fde68a44;font-weight:800;font-size:12px;color:#fef3c7;overflow-wrap:anywhere}.x-mdd .x-ma b{font:inherit;font-weight:900;color:#fff}
 .x-feed{position:relative;height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding:4px 6px 8px 2px;border-radius:10px;scrollbar-width:thin;scrollbar-color:#6d28d9 transparent}
 .x-buit{margin:auto;font-weight:800;font-size:14px;color:#a5b4fc;text-align:center}
 .x-msg{display:flex;align-items:flex-end;gap:8px;max-width:90%}
@@ -469,8 +470,9 @@ h1 span{display:inline-block}
 .x-msg.flash .x-bomb{animation:xFlash 1.6s ease-out}
 @keyframes xMsg{from{transform:translateY(14px) scale(.9);opacity:0}}
 @keyframes xFlash{0%,40%{box-shadow:0 0 0 4px #facc15,0 0 24px #facc15}}
-.x-mh{display:flex;align-items:baseline;gap:8px}
+.x-mh{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
 .x-mh b{font-weight:900;font-size:13px;color:#c7d2fe}.x-msg.jo .x-mh b{color:#bbf7d0}
+.x-cor{display:inline-flex;align-items:center;gap:3px;font-family:'Press Start 2P',monospace;font-size:7px;line-height:1.2;color:#1e1b4b;background:#facc15;border:1px solid #fff;border-radius:99px;padding:2px 6px;white-space:nowrap}
 .x-mh time{font-weight:700;font-size:11px;color:#94a3b8;font-variant-numeric:tabular-nums}
 .x-mt{margin:2px 0 4px;font-weight:800;font-size:15px;line-height:1.35;color:#fff;overflow-wrap:anywhere}
 .x-vot{display:inline-flex;align-items:center;gap:5px;font:inherit;font-weight:900;font-size:12px;color:#c7d2fe;background:#ffffff10;border:1.5px solid #ffffff26;border-radius:99px;padding:2px 9px 2px 6px;cursor:pointer}
@@ -827,7 +829,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.28.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.29.0</small></footer>
 
 <script src="sprites.js?v=0be9e885"></script>
 <script>
@@ -1394,7 +1396,7 @@ document.getElementById("hsTabs").onkeydown=e=>{const ts=[...document.querySelec
 // Aquí només es mostra: del servidor arriben números (frase, peça) o un nom del rànquing, i el text es compon aquí amb el catàleg.
 // Llegir és gratis i sense PIN (bn_xat_llegeix); escriure i votar demanen nom i PIN. Si bn_xat_* no hi és (404) o no hi ha connexió,
 // XAT.ok és fals i el rànquing es veu exactament com abans. ?demo: un «servidor» local (xatDemo), sense cap crida al núvol.
-const XAT={ok:false,actiu:true,msgs:[],ultims:[],mdd:null,off:{f:[],p:[]},noves:[],dt:0,est:null,estErr:"",meus:new Set(),
+const XAT={ok:false,actiu:true,msgs:[],ultims:[],mdd:null,mddAhir:null,off:{f:[],p:[]},noves:[],dt:0,est:null,estErr:"",meus:new Set(),
  cat:"repte",selF:1,selP:null,cool:0,nou:0,flash:0,tL:null,tC:null,tM:null,tV:0,llegint:null,enviant:false,votant:false,mem:{},
  llegitFins:0,davant:null,nt:null,tk:null}; // llegitFins: l'id més alt que ha arribat de bn_xat_llegeix (el missatge propi que afegeix xatEnvia no hi compta)
 const XAT_CATS=[["repte","REPTE","#facc15"],["aura","AURA","#c4b5fd"],["classe","CLASSE","#f9a8d4"],["colla","COLLA","#a5f3fc"]];
@@ -1415,6 +1417,8 @@ const xatFila=()=>{const j=xatK(xatJo().nom);return j?(HSD||[]).find(r=>xatK(r.n
 const xatPot=()=>{const j=xatJo();return !!(j.nom&&j.pin)};
 const xatEstOk=()=>!!(XAT.est&&XAT.est.codi==="ok");
 const xatCfg=()=>Object.assign({est_credit:10,max_dia:5,espera_s:10,actiu:true},xatEstOk()&&XAT.est.cfg||{});
+const xatMaxEf=(c,E)=>c.max_dia+(E&&E.premi_ahir?1:0);
+const xatEsRei=nm=>!!(XAT.mddAhir&&xatK(XAT.mddAhir.nom)===xatK(nm));
 const xatAra=()=>Date.now()+XAT.dt; // hora del servidor
 const xatSilenci=()=>{const s=xatEstOk()&&XAT.est.silenci;return s&&(s.fins==null||+s.fins>xatAra())?s:null}; // fins:null = sense data (nom amagat o prohibit)
 const xatPotEnviar=()=>xatPot()&&xatEstOk()&&XAT.actiu&&!xatSilenci();
@@ -1454,6 +1458,8 @@ function xatLlegeix(nous){if(XAT.llegint)return XAT.llegint;const inc=nous&&XAT.
   if(r.vots&&typeof r.vots==="object")XAT.msgs.forEach(m=>{if(r.vots[m.id]!=null)m.v=+r.vots[m.id]||0}); // els comptadors es refresquen encara que només arribin els nous
   if(Array.isArray(r.ultims))XAT.ultims=r.ultims.map(xatMsg).filter(Boolean);
   if("mdd" in r)XAT.mdd=xatMsg(r.mdd);
+  if("mdd_ahir" in r)XAT.mddAhir=xatMsg(r.mdd_ahir);
+  else if(!inc){const av=new Date(xatAra());av.setHours(0,0,0,0);const ah=+av-864e5;let ma=null;XAT.msgs.forEach(m=>{if(m.ts>=ah&&m.ts<+av&&m.v>0&&(!ma||m.v>ma.v))ma=m});XAT.mddAhir=ma}
   if(r.off&&typeof r.off==="object")XAT.off={f:(r.off.f||[]).map(Number),p:(r.off.p||[]).map(Number)};
   if(Array.isArray(r.noves))XAT.noves=r.noves.filter(w=>w&&+w.id>=1001&&/^[PEJ]$/.test(w.s)&&w.t).map(w=>({id:+w.id,s:w.s,t:String(w.t).slice(0,60),n:w.m?null:Math.max(1,Math.min(10,+w.n||1)),m:w.m?String(w.m):null}));
   XAT.ok=true}).catch(()=>{if(!inc)XAT.ok=false}).then(()=>{XAT.llegint=null})}
@@ -1495,8 +1501,8 @@ function xatCredLinia(){if(tastActiu())return "👀 Mode tast: pots llegir el xa
  if(XAT.est&&XAT.est.codi==="pin")return "Torna a entrar amb el teu nom i PIN per parlar.";
  if(!xatPot())return "Entra amb el teu nom per parlar. Llegir és gratis!";
  if(!xatEstOk())return "Llegir és gratis!";
- const E=XAT.est,c=xatCfg(),q=+E.queden||0;
- return q>0?`Tens <b>${q} crèdit${q===1?"":"s"}</b> per parlar`:+E.enviats>=c.max_dia?`Ja has dit les ${c.max_dia} frases d'avui`:`Guanya <b>${+E.falten||0} ${ST()}</b> més per parlar (portes ${+E.est_avui||0} avui)`}
+ const E=XAT.est,c=xatCfg(),mx=xatMaxEf(c,E),q=+E.queden||0;
+ return q>0?`Tens <b>${q} crèdit${q===1?"":"s"}</b> per parlar`:+E.enviats>=mx?`Ja has dit les ${mx} frases d'avui`:`Guanya <b>${+E.falten||0} ${ST()}</b> més per parlar (portes ${+E.est_avui||0} avui)`}
 const xatLinia=m=>`<div class="l">${avHtml(m.nom,"av")}<span><em>${esc(m.nom)}:</em> ${xatTxt(m).html}</span></div>`;
 function xatPeekHtml(){const n=xatNous(),u=XAT.msgs.slice(-2);
  return `<div class="xpeek"><div class="t"><span>${bnSpr("bafarada")} XAT DE LA COLLA</span>${n?`<i>${n>9?"9+":n} nou${n===1?"":"s"}</i>`:""}</div>${u.length?u.map(xatLinia).join(""):`<div class="l"><span>Encara no ha parlat ningú. Pots ser el primer!</span></div>`}<div class="xpk-c">${bnSpr("moneda")} ${xatCredLinia()}</div><button class="x-bt" type="button" data-xobre="1">OBRE EL XAT ▶</button></div>`}
@@ -1510,12 +1516,13 @@ function xatHtml(){if(!XAT.ok)return `<div class="xat xat-aviat"><div class="hs-
  <div class="x-pas" id="xPas"></div><div class="x-xips x-peces" id="xPc"></div>
  <div class="x-env"><div class="x-previ buida" id="xPrevi" aria-live="polite"></div><button class="x-envia" id="xEnvia" type="button" disabled><span id="xEnvTx">ENVIA</span><span class="cool" id="xCool"></span></button></div>
  <div class="x-lim"><span id="xAvui"></span><span>${+c.espera_s>0?`1 missatge cada ${c.espera_s} segons`:"Sense espera entre missatges"}</span></div></div></div>`}
-function xatInfoHtml(){const c=xatCfg(),E=xatEstOk()?XAT.est:null,n=xatNiv(),jo=xatJo().nom,m=jo?xatUltim(jo):null,tf=xatFrases(),tp=xatPeces();
+function xatInfoHtml(){const c=xatCfg(),E=xatEstOk()?XAT.est:null,mx=xatMaxEf(c,E),n=xatNiv(),jo=xatJo().nom,m=jo?xatUltim(jo):null,tf=xatFrases(),tp=xatPeces();
  const cnt=ks=>{const t=tp.filter(w=>ks.includes(w.s));return `${t.filter(xatTeP).length}/${t.length}`};
  return `<div class="xinfo"><h4>${bnSpr("moneda")} COM ES GUANYA PARLAR</h4>
- ${E?`<div class="alb"><div><b>${+E.est_avui||0}</b><span>estrelles avui</span></div><div><b>${+E.queden||0}</b><span>crèdits per gastar</span></div><div><b>${+E.enviats||0}/${c.max_dia}</b><span>frases dites avui</span></div></div>`:`<p class="niv">${xatPot()?"Ara no es poden veure els teus crèdits.":"Entra amb el teu nom per veure els teus crèdits."}</p>`}
+ ${E?`<div class="alb"><div><b>${+E.est_avui||0}</b><span>estrelles avui</span></div><div><b>${+E.queden||0}</b><span>crèdits per gastar</span></div><div><b>${+E.enviats||0}/${mx}</b><span>frases dites avui</span></div></div>`:`<p class="niv">${xatPot()?"Ara no es poden veure els teus crèdits.":"Entra amb el teu nom per veure els teus crèdits."}</p>`}
  <ul class="regles-cred"><li><b>Cada ${c.est_credit} ${ST()} que guanyes avui = 1 crèdit = 1 frase.</b> Uns ${Math.max(1,Math.round(c.est_credit/2))} minuts d'estudi per frase.</li>
- <li><b>Màxim ${c.max_dia} frases al dia</b>, encara que guanyis més estrelles.</li>
+ <li><b>Màxim ${c.max_dia} frases al dia</b> (+1 extra si vas tenir el missatge d'ahir).</li>
+ <li><b>👑 Missatge del dia:</b> el més votat s'endú l'endemà la corona «👑 Ahir» i <b>+1 crèdit extra</b> per parlar.</li>
  <li><b>Llegir és gratis.</b> Per votar «Ben dit» cal haver guanyat ${c.est_credit} ${ST()} avui.</li>
  <li><b>Els crèdits no es guarden:</b> a mitjanit tornen a zero. Cada dia comences de nou.</li>
  <li><b>Les estrelles no es gasten:</b> es compten. Parlar no et fa baixar mai al rànquing.</li></ul>
@@ -1529,7 +1536,7 @@ function xatPintaVista(){const cos=document.querySelector("#hs .hs-cos.xat-on"),
  i._h=null;xatSet(i,xatInfoHtml());xatFeed(true);xatMdd();xatCompo();xatEspera(XAT.cool);xatVist()}
 const xatVotLab=m=>`Ben dit${xatEsJo(m.nom)?" (és teu)":""}: ${m.v} vot${m.v===1?"":"s"}`;
 const xatVotHtml=m=>{const jo=xatEsJo(m.nom),on=XAT.meus.has(m.id);return `<button class="x-vot${on?" on":""}" type="button" data-xv="${m.id}"${jo?" disabled":""} aria-pressed="${on}" aria-label="${xatVotLab(m)}">${bnSpr("polze")}<span>Ben dit</span><i>${m.v}</i></button>`};
-const xatMsgHtml=m=>`<div class="x-msg${xatEsJo(m.nom)?" jo":""}${m.id===XAT.nou?" nou":""}" data-xid="${m.id}">${avHtml(m.nom,"av")}<div class="x-bomb"><div class="x-mh"><b>${esc(m.nom)}</b><time>${xatHH(m.ts)}</time></div><p class="x-mt">${xatTxt(m).html}</p>${xatVotHtml(m)}</div></div>`;
+const xatMsgHtml=m=>`<div class="x-msg${xatEsJo(m.nom)?" jo":""}${m.id===XAT.nou?" nou":""}" data-xid="${m.id}">${avHtml(m.nom,"av")}<div class="x-bomb"><div class="x-mh"><b>${esc(m.nom)}</b>${xatEsRei(m.nom)?`<span class="x-cor" title="Missatge del dia d'ahir">👑 Ahir</span>`:""}<time>${xatHH(m.ts)}</time></div><p class="x-mt">${xatTxt(m).html}</p>${xatVotHtml(m)}</div></div>`;
 function xatVot(m){const b=document.querySelector(`#xFeed .x-vot[data-xv="${m.id}"]`);if(!b)return;const on=XAT.meus.has(m.id);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.setAttribute("aria-label",xatVotLab(m));b.querySelector("i").textContent=m.v}
 // missatges com un WhatsApp: en obrir, tots; després només s'hi afegeixen els nous i es refresquen els vots (sense perdre el focus ni el lloc)
 function xatFeed(tot){const f=document.getElementById("xFeed");if(!f)return;const baix=tot||f.scrollHeight-f.scrollTop-f.clientHeight<60;
@@ -1539,16 +1546,17 @@ function xatFeed(tot){const f=document.getElementById("xFeed");if(!f)return;cons
   let ant=null;XAT.msgs.forEach(m=>{let e=f.querySelector(`.x-msg[data-xid="${m.id}"]`); // cadascun al seu lloc (un d'un altre pot arribar després del propi)
    if(e)xatVot(m);else{(ant||f).insertAdjacentHTML(ant?"afterend":"afterbegin",xatMsgHtml(m));e=ant?ant.nextElementSibling:f.firstElementChild}ant=e})}
  if(baix)f.scrollTop=f.scrollHeight}
-// missatge del dia: el més votat d'avui (el calcula el servidor). En aquesta versió no té premi
-function xatMdd(){const e=document.getElementById("xMdd"),b=XAT.mdd;if(!e)return;const v=b?(XAT.msgs.find(m=>m.id===b.id)||b).v:0;
- xatSet(e,b?`${bnSpr("crown")}<div><b>MISSATGE DEL DIA (DE MOMENT)</b><span>${esc(b.nom)}: «${esc(xatTxt(b).text)}»</span><small>${v} «Ben dit»</small></div>`:`${bnSpr("crown")}<div><b>MISSATGE DEL DIA</b><span>Encara cap vot avui. Vota els que t'agradin amb «Ben dit»!</span></div>`)}
+// missatge del dia: el més votat d'avui, i el guanyador d'ahir (corona «👑 Ahir» + 1 crèdit extra de xat, sense estrelles)
+function xatMdd(){const e=document.getElementById("xMdd"),b=XAT.mdd,a=XAT.mddAhir;if(!e)return;const v=b?(XAT.msgs.find(m=>m.id===b.id)||b).v:0,va=a?(XAT.msgs.find(m=>m.id===a.id)||a).v:0;
+ const ah=a?`<div class="x-ma">👑 Missatge d'ahir: <b>${esc(a.nom)}</b> · «${esc(xatTxt(a).text)}» (${va} «Ben dit» · +1 crèdit avui)</div>`:"";
+ xatSet(e,b?`${bnSpr("crown")}<div><b>MISSATGE DEL DIA (DE MOMENT)</b><span>${esc(b.nom)}: «${esc(xatTxt(b).text)}»</span><small>${v} «Ben dit» · premi demà: 👑 + 1 crèdit</small>${ah}</div>`:`${bnSpr("crown")}<div><b>MISSATGE DEL DIA</b><span>Encara cap vot avui. Vota els que t'agradin amb «Ben dit»!</span>${ah}</div>`)}
 const xatFins=fi=>{const min=Math.max(0,Math.round((+fi-xatAra())/6e4));return `${Math.floor(min/60)} h ${min%60} min`};
 const xatQuan=t=>{const d=new Date(+t);return `al ${["diumenge","dilluns","dimarts","dimecres","dijous","divendres","dissabte"][d.getDay()]} ${d.getDate()} a les ${xatHH(t)}`};
 // comptador de crèdits i bloquejos de l'ENVIA (el nen pot preparar el missatge igualment)
-function xatCred(){const e=document.getElementById("xCred"),l=document.getElementById("xLock");if(!e||!l)return;const c=xatCfg(),E=xatEstOk()?XAT.est:null,S=xatSilenci();
- if(E){const g=+E.guanyats||0,env=+E.enviats||0,q=+E.queden||0,fal=+E.falten||0,pc=g>=c.max_dia?1:Math.max(0,Math.min(1,1-fal/c.est_credit));
-  const mons=Array.from({length:c.max_dia},(_,i)=>{const st=i<env?"gastada":i<g?"plena":"buida";return `<span class="xmon ${st}" title="${st==="plena"?"Crèdit per gastar":st==="gastada"?"Crèdit gastat":"Crèdit per guanyar"}">${st==="buida"?"":bnSpr("moneda")}</span>`}).join("");
-  xatSet(e,`<div class="x-cred"><div class="xc-t"><b>CRÈDITS</b><span class="xmons" role="img" aria-label="${q} per gastar, ${env} gastats, ${Math.max(0,c.max_dia-g)} per guanyar">${mons}</span><b class="xc-n">${String(q).padStart(2,"0")}</b></div><div class="xc-s">Avui portes <b>${+E.est_avui||0} ${ST()}</b> · ${g>=c.max_dia?`Ja tens els ${c.max_dia} crèdits d'avui`:`Següent crèdit a ${(g+1)*c.est_credit} · et falten ${fal}`}</div><div class="xc-barra"><i style="transform:scaleX(${pc.toFixed(3)})"></i></div></div>`)}
+function xatCred(){const e=document.getElementById("xCred"),l=document.getElementById("xLock");if(!e||!l)return;const c=xatCfg(),E=xatEstOk()?XAT.est:null,mx=xatMaxEf(c,E),S=xatSilenci();
+ if(E){const g=+E.guanyats||0,env=+E.enviats||0,q=+E.queden||0,fal=+E.falten||0,bo=E.premi_ahir?1:0,gEst=Math.max(0,g-bo),pc=gEst>=c.max_dia?1:Math.max(0,Math.min(1,1-fal/c.est_credit));
+  const mons=Array.from({length:mx},(_,i)=>{const st=i<env?"gastada":i<g?"plena":"buida";return `<span class="xmon ${st}" title="${bo&&i===mx-1?"Crèdit extra pel missatge d'ahir":st==="plena"?"Crèdit per gastar":st==="gastada"?"Crèdit gastat":"Crèdit per guanyar"}">${st==="buida"?"":bnSpr("moneda")}</span>`}).join("");
+  xatSet(e,`<div class="x-cred"><div class="xc-t"><b>CRÈDITS</b><span class="xmons" role="img" aria-label="${q} per gastar, ${env} gastats, ${Math.max(0,mx-g)} per guanyar">${mons}</span><b class="xc-n">${String(q).padStart(2,"0")}</b></div><div class="xc-s">${bo?`👑 +1 pel missatge d'ahir · `:""}Avui portes <b>${+E.est_avui||0} ${ST()}</b> · ${gEst>=c.max_dia?`Ja tens els ${mx} crèdits d'avui`:`Següent crèdit a ${(gEst+1)*c.est_credit} · et falten ${fal}`}</div><div class="xc-barra"><i style="transform:scaleX(${pc.toFixed(3)})"></i></div></div>`)}
  else xatSet(e,"");
  const lk=(t,p,cl,bt)=>`<div class="x-lock${cl||""}"><b class="xl-t${cl===" coin"?" parpa":""}">${t}</b><p>${p}</p>${bt?`<button class="x-bt" type="button" data-xtest="1">▶ CONTINUA ESTUDIANT</button>`:""}</div>`;
  xatSet(l,tastActiu()?lk("MODE TAST ANÒNIM","En mode tast pots llegir els missatges de la colla, però per escriure o votar cal entrar amb <b>nom i PIN</b>.")
@@ -1559,9 +1567,9 @@ function xatCred(){const e=document.getElementById("xCred"),l=document.getElemen
   :!XAT.actiu?lk("XAT TANCAT","Ara el xat està tancat. Pots llegir, però no escriure ni votar."," fi")
   :S?lk("XAT EN PAUSA",S.fins==null?"Ara no pots escriure al xat ni votar. Pots continuar llegint.":`Fins ${xatQuan(S.fins)} no pots escriure ni votar. Pots continuar llegint.`," fi")
   :+E.queden>0?""
-  :+E.enviats>=c.max_dia?lk("TORNA DEMÀ",`Ja has dit les <b>${c.max_dia} frases d'avui</b>. Pots continuar llegint i votant «Ben dit».<br><small>Els crèdits tornen a mitjanit (d'aquí a ${xatFins(E.fi_dia)}).</small>`," fi")
+  :+E.enviats>=mx?lk("TORNA DEMÀ",`Ja has dit les <b>${mx} frases d'avui</b>. Pots continuar llegint i votant «Ben dit».<br><small>Els crèdits tornen a mitjanit (d'aquí a ${xatFins(E.fi_dia)}).</small>`," fi")
   :!(+E.guanyats>0)?lk("INSERT COIN",`Per parlar, guanya <b>${c.est_credit} ${ST()} avui</b>. En portes <b>${+E.est_avui||0}</b>. Mentrestant, pots llegir el xat.`," coin",1)
-  :lk("SENSE CRÈDITS",`Guanya <b>${+E.falten||0} ${ST()} més</b> i tindràs una altra frase (${+E.guanyats+1} de ${c.max_dia}).`,"",1))}
+  :lk("SENSE CRÈDITS",`Guanya <b>${+E.falten||0} ${ST()} més</b> i tindràs una altra frase (${+E.guanyats+1} de ${mx}).`,"",1))}
 // frase triada dins de la categoria (la primera desbloquejada si no n'hi ha cap) i peça vàlida per al forat; si no, es buida
 const xatCompanys=()=>(HSD||[]).filter(r=>!xatEsJo(r.nom)).sort((a,b)=>b.punts-a.punts);
 function xatAjusta(){let f=xatFr(XAT.selF);if(!f||f.c!==XAT.cat||!xatTeF(f))f=xatFrases().find(x=>x.c===XAT.cat&&xatTeF(x))||null;XAT.selF=f?f.id:null;const p=XAT.selP;
@@ -1582,10 +1590,10 @@ function xatCompo(){const fr=document.getElementById("xFr");if(!fr)return;const 
  const pv=document.getElementById("xPrevi");
  if(f&&XAT.selP!=null){const cc=f.s==="C"?xatCompon(f.id,null,XAT.selP.slice(2)):xatCompon(f.id,XAT.selP,null);pv.classList.remove("buida");xatSet(pv,`<span>${cc.html}</span>`)}
  else{pv.classList.add("buida");xatSet(pv,!f?"Aquesta categoria encara està bloquejada.":f.s==="C"?"Ara tria a qui li dius.":"Ara tria la peça.")}
- const E=xatEstOk()?XAT.est:null,q=E?+E.queden||0:0,pot=xatPotEnviar();
+ const E=xatEstOk()?XAT.est:null,mx=xatMaxEf(c,E),q=E?+E.queden||0:0,pot=xatPotEnviar();
  document.getElementById("xEnvia").disabled=!f||XAT.selP==null||!pot||q<=0||XAT.cool>Date.now()||XAT.enviant;
  xatSet(document.getElementById("xEnvTx"),pot&&q>0?`ENVIA <span class="cost">${bnSpr("moneda")}1</span>`:`${bnSpr("cadenat")} ENVIA`);
- document.getElementById("xAvui").textContent=E?`Frases avui: ${+E.enviats||0} de ${c.max_dia}`:"";
+ document.getElementById("xAvui").textContent=E?`Frases avui: ${+E.enviats||0} de ${mx}`:"";
  xatCred()}
 // espera entre missatges: ENVIA desactivat i una barra que es buida (transform: peça petita)
 function xatEspera(fins){if(!(fins>Date.now()))return;XAT.cool=fins;const c=document.getElementById("xCool"),ms=fins-Date.now();
@@ -1672,18 +1680,19 @@ document.getElementById("hs").addEventListener("click",e=>{const t=e.target.clos
 // crèdits calculats aquí (la Laia porta 14 ⭐ avui; ?demo&estrelles=4, 10 o 60 per veure els bloquejos). Cap crida al núvol ni bots que parlin sols
 let XDEMO=null;
 function xatDemo(f,b){const ara=Date.now(),cfg={est_credit:10,max_dia:5,espera_s:10,actiu:true};b=b||{};
- if(!XDEMO){const E=+(location.search.match(/[?&]estrelles=(\d+)/)||[])[1],ms=[];let id=40;
+ if(!XDEMO){const E=+(location.search.match(/[?&]estrelles=(\d+)/)||[])[1],av0=new Date(ara),ms=[];av0.setHours(0,0,0,0);let id=40;
+  const mddA={id:39,nom:"Leo",f:11,p:null,c:"Laia",ts:+av0-36e5,v:4}; // guanyador d'ahir (fora de les 10 visibles de la demo)
   [["Max",17,44,null,41,["leo","ona"]],["Leo",13,43,null,34,["max","júlia","èric"]],["Èric",2,3,null,29,[]],["Àlex",7,25,null,27,["èric","martina","nora","hugo"]],
    ["Nora",14,59,null,22,["pau","jana","àlex","ona","leo"]],["Jana",11,null,"Pau",15,["pau","ona"]],["Pau",26,null,"Jana",14,["jana"]],
    ["Ona",18,47,null,9,["max","hugo","nora"]],["Hugo",9,37,null,6,[]],["Martina",23,null,"Laia",3,[]]].forEach(([nom,f,p,c,min,v])=>ms.push({id:++id,nom,f,p,c,ts:ara-min*6e4,vots:new Set(v)}));
-  XDEMO={est:isNaN(E)?14:E,env:0,ult:0,ms,seq:id};XAT.mem.bn_xat_vist=String(id-3)} // 3 missatges nous a la pestanya
+  XDEMO={est:isNaN(E)?14:E,env:0,ult:0,ms,mddA,seq:id};XAT.mem.bn_xat_vist=String(id-3)} // 3 missatges nous a la pestanya
  const D=XDEMO,r=(HSD||[]).find(x=>x.nom==="Laia")||{},nv=niv(r.punts_max||0)+1,mons=r.mons||{},fi=new Date(ara);fi.setHours(24,0,0,0);
  const g=Math.min(cfg.max_dia,Math.floor(D.est/cfg.est_credit)),q=Math.max(0,g-D.env),falten=g>=cfg.max_dia?0:(g+1)*cfg.est_credit-D.est;
  const teF=x=>nv>=x.n,teP=w=>w.m?(mons[w.m]||0)>=25:nv>=w.n,pub=m=>({id:m.id,nom:m.nom,f:m.f,p:m.p,c:m.c,ts:m.ts,v:m.vots.size});let o=null;
  if(f==="bn_xat_llegeix"){const ms=D.ms.slice(-60),avui=new Date(ara),ult={};let mdd=null;avui.setHours(0,0,0,0);
   D.ms.forEach(m=>{if(m.ts>=ara-864e5)ult[m.nom]=m;if(m.ts>=+avui&&m.vots.size&&(!mdd||m.vots.size>mdd.vots.size))mdd=m});
-  o={ara,actiu:true,msgs:ms.filter(m=>m.id>(+b.p_des_de||0)).map(pub),vots:Object.fromEntries(ms.map(m=>[m.id,m.vots.size])),ultims:Object.values(ult).map(pub),mdd:mdd&&pub(mdd),off:{f:[],p:[]},noves:[]}}
- else if(f==="bn_xat_estat")o={codi:"ok",ara,fi_dia:+fi,est_avui:D.est,guanyats:g,enviats:D.env,queden:q,falten,nivell:nv,mons,acabats:Object.keys(mons).filter(k=>mons[k]>=25),
+  o={ara,actiu:true,msgs:ms.filter(m=>m.id>(+b.p_des_de||0)).map(pub),vots:Object.fromEntries(ms.map(m=>[m.id,m.vots.size])),ultims:Object.values(ult).map(pub),mdd:mdd&&pub(mdd),mdd_ahir:D.mddA,off:{f:[],p:[]},noves:[]}}
+ else if(f==="bn_xat_estat")o={codi:"ok",ara,fi_dia:+fi,est_avui:D.est,guanyats:g,enviats:D.env,queden:q,falten,premi_ahir:false,nivell:nv,mons,acabats:Object.keys(mons).filter(k=>mons[k]>=25),
   frases:XAT_FR.filter(teF).map(x=>x.id),peces:XAT_PC.filter(teP).map(w=>w.id),meus:D.ms.filter(m=>m.vots.has("laia")).map(m=>m.id),cfg,espera_fins:D.ult+cfg.espera_s*1e3,silenci:null};
  else if(f==="bn_xat_envia"){const fr=XAT_FR.find(x=>x.id===b.p_frase),w=b.p_peca!=null?XAT_PC.find(x=>x.id===b.p_peca):null,C=fr&&fr.s==="C";
   if(!fr||!teF(fr)||(C?b.p_peca!=null||!b.p_company:b.p_company!=null||!w||w.s!==fr.s||!teP(w)))o={codi:"bloquejada"};

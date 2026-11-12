@@ -252,6 +252,10 @@ create or replace function bn_priv.xat_mitjanit() returns timestamptz
 language sql stable set search_path = '' as $$
   select date_trunc('day', now() at time zone 'Europe/Madrid') at time zone 'Europe/Madrid'
 $$;
+create or replace function bn_priv.xat_ahir_mitjanit() returns timestamptz
+language sql stable set search_path = '' as $$
+  select (date_trunc('day', now() at time zone 'Europe/Madrid') - interval '1 day') at time zone 'Europe/Madrid'
+$$;
 create or replace function bn_priv.xat_fi_dia() returns timestamptz
 language sql stable set search_path = '' as $$
   select (date_trunc('day', now() at time zone 'Europe/Madrid') + interval '1 day') at time zone 'Europe/Madrid'
@@ -338,21 +342,39 @@ language sql stable set search_path = '' as $$
                                 and bn_priv.xat_existeix(lower(trim(p_company)))))
 $$;
 
--- tot el que cal saber d'un nen per decidir: estrelles i crèdits d'avui, nivell, mons acabats (25 ⭐) i l'últim missatge.
--- «enviats» compta també els que l'admin ha esborrat: esborrar no torna el crèdit. «falten» és per al proper crèdit que podrà gastar:
--- si n'ha enviat més dels que ara guanyaria (l'admin ha apujat les estrelles per crèdit a mig dia), és l'enviats + 1.
+-- missatge del dia d'ahir: el missatge visible més votat escrit ahir (en hora de Catalunya, amb com a mínim 1 vot; empat: el primer).
+-- L'autor porta avui la corona «👑 Missatge d'ahir» i rep +1 crèdit extra per parlar (sense donar estrelles ni tocar bn_log).
+create or replace function bn_priv.xat_mdd_ahir()
+returns table(id bigint, k text, nom text, frase int, peca int, company text, ts timestamptz, n int)
+language sql stable set search_path = '' as $$
+  select m.id, m.k, m.nom, m.frase, m.peca, m.company, m.ts, count(*)::int n
+  from bn_priv.xat_msg m join bn_priv.xat_vots v on v.msg = m.id
+  where m.ts >= bn_priv.xat_ahir_mitjanit() and m.ts < bn_priv.xat_mitjanit()
+    and bn_priv.xat_vis(m.k, m.nom, m.company, m.esborrat)
+  group by m.id
+  order by count(*) desc, m.id
+  limit 1
+$$;
+
+-- tot el que cal saber d'un nen per decidir: estrelles i crèdits d'avui (+1 extra si va guanyar el missatge d'ahir), nivell, mons acabats (25 ⭐) i l'últim missatge.
+-- «enviats» compta també els que l'admin ha esborrat: esborrar no torna el crèdit. «falten» és per al proper crèdit d'estudi que podrà gastar:
+-- si n'ha enviat més dels que ara guanyaria (l'admin ha apujat les estrelles per crèdit a mig dia), és l'enviats (descomptat el premi) + 1.
+drop function if exists bn_priv.xat_nen(text, jsonb);
 create or replace function bn_priv.xat_nen(p_k text, p_cfg jsonb,
-  out est_avui int, out enviats int, out guanyats int, out queden int, out falten int,
+  out est_avui int, out enviats int, out guanyats int, out queden int, out falten int, out premi_ahir boolean,
   out nivell int, out mons jsonb, out acabats text[], out ultim timestamptz)
 language plpgsql stable set search_path = '' as $$
-declare ec int := (p_cfg->>'est_credit')::int; md int := (p_cfg->>'max_dia')::int; n int;
+declare ec int := (p_cfg->>'est_credit')::int; md int := (p_cfg->>'max_dia')::int; gec int; bo int; n int;
 begin
   est_avui := bn_priv.xat_est_avui(p_k);
+  premi_ahir := exists (select 1 from bn_priv.xat_mdd_ahir() d where d.k = p_k);
+  bo := case when premi_ahir then 1 else 0 end;
   select count(*) filter (where m.ts >= bn_priv.xat_mitjanit())::int, max(m.ts) into enviats, ultim
     from bn_priv.xat_msg m where m.k = p_k;
-  guanyats := least(md, est_avui / ec);
+  gec := least(md, est_avui / ec);
+  guanyats := gec + bo;
   queden := greatest(0, guanyats - enviats);
-  n := greatest(guanyats, enviats);
+  n := greatest(gec, greatest(0, enviats - bo));
   falten := case when n >= md then 0 else (n + 1) * ec - est_avui end;
   mons := bn_priv.xat_mons(p_k);
   nivell := bn_priv.xat_niv((select max(e.value::numeric) from jsonb_each_text(mons) e));
@@ -373,6 +395,7 @@ revoke all on function bn_priv.xat_horari_cfg() from public, anon, authenticated
 revoke all on function bn_priv.xat_en_horari_tancat(boolean, text, text, timestamptz) from public, anon, authenticated;
 revoke all on function bn_priv.xat_obert_ara(jsonb, timestamptz) from public, anon, authenticated;
 revoke all on function bn_priv.xat_mitjanit() from public, anon, authenticated;
+revoke all on function bn_priv.xat_ahir_mitjanit() from public, anon, authenticated;
 revoke all on function bn_priv.xat_fi_dia() from public, anon, authenticated;
 revoke all on function bn_priv.xat_ms(timestamptz) from public, anon, authenticated;
 revoke all on function bn_priv.xat_punts(jsonb) from public, anon, authenticated;
@@ -383,6 +406,7 @@ revoke all on function bn_priv.xat_al_ranquing(text) from public, anon, authenti
 revoke all on function bn_priv.xat_ocult(text, text) from public, anon, authenticated;
 revoke all on function bn_priv.xat_existeix(text) from public, anon, authenticated;
 revoke all on function bn_priv.xat_vis(text, text, text, boolean) from public, anon, authenticated;
+revoke all on function bn_priv.xat_mdd_ahir() from public, anon, authenticated;
 revoke all on function bn_priv.xat_nen(text, jsonb) from public, anon, authenticated;
 revoke all on function bn_priv.xat_ultims60() from public, anon, authenticated;
 
@@ -401,7 +425,7 @@ begin
   ef := r.ultim + make_interval(secs => (c->>'espera_s')::int);
   return jsonb_build_object(
     'codi', 'ok', 'ara', bn_priv.xat_ms(now()), 'fi_dia', bn_priv.xat_ms(bn_priv.xat_fi_dia()),
-    'est_avui', r.est_avui, 'guanyats', r.guanyats, 'enviats', r.enviats, 'queden', r.queden, 'falten', r.falten,
+    'est_avui', r.est_avui, 'guanyats', r.guanyats, 'enviats', r.enviats, 'queden', r.queden, 'falten', r.falten, 'premi_ahir', r.premi_ahir,
     'nivell', r.nivell, 'mons', r.mons, 'acabats', to_jsonb(r.acabats),
     'frases', coalesce((select jsonb_agg(f.id order by f.id) from bn_priv.xat_frases f where f.actiu and f.nivell <= r.nivell), '[]'::jsonb),
     'peces', coalesce((select jsonb_agg(x.id order by x.id) from bn_priv.xat_peces x
@@ -452,7 +476,7 @@ begin
     nom_c := bn_priv.xat_al_ranquing(lower(comp));
     if nom_c is null then return jsonb_build_object('codi', 'company'); end if;
   end if;
-  if r.enviats >= (c->>'max_dia')::int then return jsonb_build_object('codi', 'max_dia'); end if;
+  if r.enviats >= (c->>'max_dia')::int + (case when r.premi_ahir then 1 else 0 end) then return jsonb_build_object('codi', 'max_dia'); end if;
   if r.queden <= 0 then return jsonb_build_object('codi', 'sense_credit', 'falten', r.falten); end if;
   ef := r.ultim + make_interval(secs => (c->>'espera_s')::int);
   if ef > now() then return jsonb_build_object('codi', 'espera', 'ms', ceil(extract(epoch from ef - now()) * 1000)::bigint); end if;
@@ -500,6 +524,8 @@ language sql stable security definer set search_path = '' as $$
                         from u24 u), '[]'::jsonb),
     'mdd', (select jsonb_build_object('id', d.id, 'nom', d.nom, 'f', d.frase, 'p', d.peca, 'c', d.company, 'ts', bn_priv.xat_ms(d.ts), 'v', d.n)
             from mdd d),
+    'mdd_ahir', (select jsonb_build_object('id', d.id, 'nom', d.nom, 'f', d.frase, 'p', d.peca, 'c', d.company, 'ts', bn_priv.xat_ms(d.ts), 'v', d.n)
+                 from bn_priv.xat_mdd_ahir() d),
     'off', jsonb_build_object(
              'f', coalesce((select jsonb_agg(f.id order by f.id) from bn_priv.xat_frases f where not f.actiu), '[]'::jsonb),
              'p', coalesce((select jsonb_agg(x.id order by x.id) from bn_priv.xat_peces x where not x.actiu), '[]'::jsonb)),
@@ -524,8 +550,8 @@ begin
   if autor is null then return jsonb_build_object('codi', 'no_existeix'); end if;
   if autor = kk then return jsonb_build_object('codi', 'propi'); end if;
   select * into r from bn_priv.xat_nen(kk, c);
-  -- cal el PRIMER crèdit d'avui (no el següent per gastar): en falten est_credit − est_avui
-  if r.guanyats < 1 then return jsonb_build_object('codi', 'sense_credit', 'falten', (c->>'est_credit')::int - r.est_avui); end if;
+  -- cal el PRIMER crèdit d'estudi d'avui (no el premi d'ahir ni el següent per gastar): en falten est_credit − est_avui
+  if r.est_avui < (c->>'est_credit')::int then return jsonb_build_object('codi', 'sense_credit', 'falten', (c->>'est_credit')::int - r.est_avui); end if;
   delete from bn_priv.xat_vots v where v.msg = p_msg and v.k = kk;
   posat := not found;
   if posat then insert into bn_priv.xat_vots(msg, k) values (p_msg, kk) on conflict do nothing; end if;

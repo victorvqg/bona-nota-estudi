@@ -436,6 +436,42 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok(Array.isArray(totsIds) && totsIds.some(x => x.k === "berta" && x.id !== null) && totsIds.some(x => x.k === "sensepin" && x.id === null && x.nom === "SensePin"),
    "bn_admin_ids torna tant els nens amb perfil com els que només tenen registres a bn_log") }
 
+ console.log("12) missatge d'ahir (mdd_ahir) i premi d'1 crèdit extra (premi_ahir) sense tocar estrelles");
+ { await val("select public.bn_perfil_crea($1, $2)", ["Roc", PIN]);
+  await log("Roc", "socials", 30, "now() - interval '2 days'");
+  await q(`delete from bn_priv.xat_vots where msg in (select id from bn_priv.xat_msg where ts >= bn_priv.xat_ahir_mitjanit() and ts < ${M})`);
+  ok((await llegeix()).mdd_ahir === null, "sense vots d'ahir, mdd_ahir és null");
+  const mFa2 = await msg("pau", "Pau", 1, 1, null, `${M} - interval '26 hours'`);
+  for (const k of ["laia", "ona", "jana", "leo", "max"]) await vot(mFa2, k);
+  const mEsb = await msg("pau", "Pau", 1, 2, null, `${M} - interval '6 hours'`, true);
+  for (const k of ["laia", "ona", "jana", "leo"]) await vot(mEsb, k);
+  const mHugo = await msg("hugo", "Hugo", 1, 3, null, `${M} - interval '5 hours'`);
+  for (const k of ["pau", "jana", "laia"]) await vot(mHugo, k);
+  const mRoc = await msg("roc", "Roc", 1, 4, null, `${M} - interval '4 hours'`);
+  await vot(mRoc, "pau"); await vot(mRoc, "jana");
+  const mMart = await msg("martina", "Martina", 1, 5, null, `${M} - interval '3 hours'`);
+  await vot(mMart, "laia"); await vot(mMart, "ona");
+  const ll = await llegeix();
+  ok(ll.mdd_ahir && ll.mdd_ahir.id === mRoc && ll.mdd_ahir.nom === "Roc" && ll.mdd_ahir.v === 2,
+   "mdd_ahir tria el visible més votat d'ahir (empat pel primer escrit; ignora esborrats, amagats i fa 2 dies): " + JSON.stringify(ll.mdd_ahir));
+  let e = await estat("Roc");
+  ok(e.codi === "ok" && e.est_avui === 0 && e.premi_ahir === true && e.guanyats === 1 && e.queden === 1 && e.falten === 10,
+   "el guanyador d'ahir té premi_ahir=true i 1 crèdit amb 0 ⭐ avui: " + JSON.stringify([e.est_avui, e.premi_ahir, e.guanyats, e.queden, e.falten]));
+  ok((await estat("Martina")).premi_ahir === false, "qui empata més tard té premi_ahir=false");
+  ok(igual(await vota("Roc", mMart), { codi: "sense_credit", falten: 10 }), "votar «Ben dit» continua demanant 10 ⭐ estudiades avui");
+  await cfg({ espera_s: 0 });
+  const r1 = await envia("Roc", 1, 1);
+  ok(r1.codi === "ok" && r1.queden === 0 && r1.enviats === 1, "amb 0 ⭐ pot enviar la frase de premi: " + JSON.stringify(r1));
+  ok(igual(await envia("Roc", 1, 2), { codi: "sense_credit", falten: 10 }), "la 2a frase amb 0 ⭐ demana 10 ⭐");
+  ok((await val("select count(*)::int from public.bn_log where lower(trim(nom)) = 'roc' and ts >= " + M)) === 0, "el premi no afegeix cap estrella a bn_log");
+  await log("Roc", "biogeo", 50);
+  e = await estat("Roc");
+  ok(e.est_avui === 50 && e.premi_ahir === true && e.guanyats === 6 && e.enviats === 1 && e.queden === 5 && e.falten === 0,
+   "amb 50 ⭐ avui arriba a max_dia + 1 = 6 crèdits: " + JSON.stringify([e.guanyats, e.enviats, e.queden, e.falten]));
+  for (let i = 0; i < 5; i++) ok((await envia("Roc", 1, 1)).codi === "ok", "frase " + (i + 2) + "/6 del guanyador d'ahir");
+  ok(igual(await envia("Roc", 1, 1), { codi: "max_dia" }), "la 7a frase arriba al topall max_dia + 1");
+  await cfg({ espera_s: 10 }) }
+
  await db.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : `\n✓ Tot correcte (${((Date.now() - t0) / 1000).toFixed(1)} s)`);
  process.exit(fallades ? 1 : 0);

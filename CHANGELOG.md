@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.29.0 · 2026-11-12
+
+### Afegit
+- **Xat de la colla — Premi al «Missatge del dia»** (`index.html`, `supabase/bn_xat.sql`, `docs/XAT.md`, `motor/prova-xat-sql.js`, `motor/prova-xat.js` · g13):
+  - **Corona d'ahir i 1 crèdit extra (`premi_ahir`)**: qui ahir va escriure el missatge visible amb més vots «Ben dit» (`≥ 1` vot; empat desfet pel primer escrit) lluu avui la corona **«👑 Missatge d'ahir»** a la capçalera del xat, la insígnia **«👑 Ahir»** als seus missatges i rep **1 crèdit extra** per parlar avui (fins a `max_dia + 1` frases, per defecte `6`).
+  - **Zero estrelles al registre i bon ús**: el premi no afegeix cap estrella a `bn_log` ni altera el rànquing, i votar «Ben dit» continua requerint haver guanyat el primer crèdit estudiant avui (`10 ⭐`).
+
+### Canviat
+- **Matemàtiques (`motor/dades/divisibilitat.js`)**: s'amaga temporalment el botó «📷 Fes una foto del full» (`foto: false`) a les preguntes de quadern mentre la correcció per foto (`bn-corregeix` / `ANTHROPIC_API_KEY`) resta arxivada, deixant actiu «✔ Comprova els resultats» (g13).
+
 ## 2.28.0 · 2026-11-12
 
 ### Afegit
