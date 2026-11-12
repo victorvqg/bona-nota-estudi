@@ -110,7 +110,7 @@ function servidorXat(o = {}) {
    if (/supabase\.co/.test(u)) { nuvol.push(u); if (!/\/rest\/v1\/rpc\//.test(u)) return r.abort();
     const f = u.split("/rpc/")[1].split("?")[0], cos = r.request().postDataJSON() || {}; crides.push({ f, cos });
     if (X && X.S.xarxa[f]) { delete X.S.xarxa[f]; return r.abort() } // sense connexió
-    const resp = f === "bn_ranking_mons" ? RANK : f === "bn_ranking_remuntada" || f === "bn_aspectes" ? [] : X && /^bn_xat_/.test(f) ? X.rpc(f, cos) : undefined;
+    const resp = f === "bn_ranking_mons" ? RANK : f === "bn_ranking_remuntada" ? (o.remuntada || []) : f === "bn_estat_web" ? o.estat_web : f === "bn_aspectes" ? [] : X && /^bn_xat_/.test(f) ? X.rpc(f, cos) : undefined;
     if (X && X.S.retard[f]) await new Promise(res => setTimeout(res, X.S.retard[f]));
     if (resp === undefined) return r.fulfill({ status: 404, contentType: "application/json", body: '{"message":"no existeix"}' });
     return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(resp) }) }
@@ -122,7 +122,7 @@ function servidorXat(o = {}) {
   const errors = []; p.on("pageerror", e => errors.push(e.message));
   await p.goto(BASEURL + "/" + (o.q || ""));
   if (!/demo/.test(o.q || "")) await p.click("#btHs");
-  await p.waitForSelector("#hs .podi", { timeout: 8000 }); await p.waitForTimeout(400);
+  await p.waitForSelector("#hs .podi, #hs .hs-pausa", { timeout: 8000 }); await p.waitForTimeout(400);
   const n = f => crides.filter(c => c.f === f).length;
   return { p, ctx, X, crides, nuvol, errors, n, xat: () => p.click('.hs-tab[data-t="xat"]').then(() => p.waitForTimeout(350)) };
  }
@@ -490,6 +490,52 @@ function servidorXat(o = {}) {
   // 23c: amb 60 ⭐ i 6 frases enviades arriba a TORNA DEMÀ («Ja has dit les 6 frases d'avui»)
   const e3 = await obre({ xat: { est: 60, enviats: 6, msgs: msgsP, vots: votsP } }), { p: p3 } = e3; await e3.xat();
   ok((await lock(p3)) === "TORNA DEMÀ" && /Ja has dit les 6 frases d'avui/.test(await txt(p3, "#xLock p")), "amb premi_ahir, TORNA DEMÀ surt després de 6 frases");
+  sense(e3); await e3.ctx.close() }
+
+ console.log("24) pestanya Remuntada (g22): podi, taula «Repàs», premi i missatge quan encara no hi ets");
+ { const e = await obre({ suau: true, remuntada: [{ nom: "Hugo", apr: 12 }, { nom: "Nora", apr: 5 }, { nom: "Ona", apr: 1 }] }), { p } = e;
+  await p.click('.hs-tab[data-t="remuntada"]'); await p.waitForTimeout(250);
+  ok(/Hugo/.test(await txt(p, "#hs .pd.p1 .pd-nom")) && /12.*errors recuperats/.test(await txt(p, "#hs .pd.p1 .pd-val")), "podi 1r Remuntada: Hugo amb 12 errors recuperats");
+  ok(/1.*error recuperat/.test(await txt(p, "#hs .pd.p3 .pd-val")), "singular correcte: 1 error recuperat");
+  ok(/Repàs/.test(await txt(p, "#hs .ht-cap .c-x")), "capçalera de columna activa: Repàs");
+  ok(/Repassa els teus errors i sortiràs a la remuntada/.test(await txt(p, "#hs .hs-tu p")), "missatge motivador a .hs-tu quan encara no tens repassos");
+  ok(/Remuntada de la setmana[\s\S]*Hugo[\s\S]*12[\s\S]*al repàs en 7 dies/.test(await txt(p, "#hs .hs-caixeta")), "premi «Remuntada de la setmana» actualitzat");
+  sense(e); await e.ctx.close() }
+
+ console.log("25) configuració del rànquing des de l'admin (bn_estat_web.ranquing): XX primers, pròpia fila, pestanyes, meta i pausa");
+ { const seedOna = { bn_jugador: "Ona", bn_pins: JSON.stringify({ ona: "1111A" }), bn_vol: "0" };
+  const e1 = await obre({
+   suau: true, seed: seedOna,
+   estat_web: { ranquing: { actiu: true, top: 3, mostrar_propia: true, pestanya_inicial: "setmana", pestanyes: { punts: true, dies: true, nivell: false, setmana: true, remuntada: true }, mostra_premis: false, mostra_meta: true, meta_estrelles: 20, meta_pct: 50 } }
+  }), { p: p1 } = e1;
+  ok((await p1.getAttribute('.hs-tab[data-t="setmana"]', "aria-selected")) === "true", "obre directament a la pestanya inicial configurada («setmana»)");
+  ok(await p1.isHidden('.hs-tab[data-t="nivell"]'), "la pestanya desactivada («nivell») queda amagada");
+  await p1.click('.hs-tab[data-t="punts"]'); await p1.waitForTimeout(200);
+  ok(/Top 3 de 6 jugadors/.test(await txt(p1, "#hs .a-taula .hs-sec small")), "indica «Top 3 de 6 jugadors» quan hi ha més jugadors que el tall");
+  const files1 = await p1.$$eval("#hs .hs-taula .ht-fila:not(.ht-mat):not(.ht-cap) .nm", ns => ns.map(n => n.textContent.trim()));
+  ok(files1.length === 4 && files1[0].startsWith("Pau") && files1[2].startsWith("Prova") && files1[3].startsWith("Ona") && (await p1.$("#hs .hs-taula .ht-salt")) !== null,
+   "amb mostrar_propia=true, l'Ona (#6) es veu sota «···» sense ensenyar els #4 i #5: " + files1.join(" | "));
+  ok((await p1.$$("#hs .a-premis")).length === 0 && /Aconseguida! 4 de 6 heu fet 20/.test(await txt(p1, "#hs .hs-meta")),
+   "premis amagats (mostra_premis=false) i meta de la colla ajustada a 50% i 20 ⭐ (4 de 6 → aconseguida!)");
+  sense(e1); await e1.ctx.close();
+
+  const e2 = await obre({
+   suau: true, seed: seedOna,
+   estat_web: { ranquing: { actiu: true, top: 3, mostrar_propia: false } }
+  }), { p: p2 } = e2;
+  const files2 = await p2.$$eval("#hs .hs-taula .ht-fila:not(.ht-mat):not(.ht-cap) .nm", ns => ns.map(n => n.textContent.trim()));
+  ok(files2.length === 3 && !files2.some(n => n.startsWith("Ona")) && (await p2.$("#hs .hs-taula .ht-salt")) === null,
+   "amb mostrar_propia=false, la taula talla exactament als 3 primers sense fila pròpia extra");
+  sense(e2); await e2.ctx.close();
+
+  const e3 = await obre({
+   suau: true,
+   estat_web: { ranquing: { actiu: false } }
+  }), { p: p3 } = e3;
+  ok(/EL RÀNQUING ESTÀ EN PAUSA ARA MATEIX/.test(await txt(p3, "#hs .hs-pausa")) && await p3.isHidden('.hs-tab[data-t="punts"]') && !(await p3.isHidden('.hs-tab[data-t="xat"]')),
+   "amb actiu=false, mostra la pantalla de pausa del rànquing, amaga les pestanyes de punts i manté oberta la pestanya Xat");
+  await e3.xat();
+  ok((await p3.$("#xFeed")) !== null, "tot i tenir el rànquing en pausa, el xat de la colla continua accessible");
   sense(e3); await e3.ctx.close() }
 
  await nav.close(); srv.close();

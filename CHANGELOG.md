@@ -5,6 +5,18 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.38.0 · 2026-11-12
+
+### Afegit
+- **Configuració del rànquing públic (`XX primers` i opcions de visibilitat) al panell d'administració i a Supabase** (`supabase/bn_control.sql`, `admin/index.html`, `index.html`, `motor/prova-control-sql.js`, `motor/prova-admin-alta.js`, `motor/prova-xat.js` · g22):
+  - **`⚙ Configuració → Rànquing` (`?v=config&tab=ranquing`)** i drecera directa des de `Rànquing → Classificació` (`#btRkAjusta` + pastilla `#rkTopPill`): permet obrir o posar en pausa el rànquing públic (`actiu`), escollir quants jugadors surten a la taula pública (`top`: de `3` a `100`, per defecte `Top 10`, amb dreceres `Top 3`, `Top 5`, `Top 10`, `Top 15`, `Top 25`, `Tots`), decidir si un nen fora del tall veu la seva pròpia fila sota `···` (`mostrar_propia`), triar quina pestanya s'obre primer (`pestanya_inicial`), activar o amagar qualsevol pestanya (`punts`, `setmana`, `remuntada`, `dies`, `nivell`), i ajustar tant la «🌍 Meta de la colla» (`mostra_meta`, `meta_estrelles`, `meta_pct`) com els «🏆 Premis de la colla» (`mostra_premis`), amb botó de restauració als valors inicials.
+  - **Persistència validada a Supabase (`bn_priv.config`, clau `'ranquing'`)**: noves funcions privades `bn_priv.ranquing_normalitza` i `bn_priv.ranquing_cfg()` a `bn_control.sql` (desplegades a `agippwtqvhpxdockuigl`), integrades a `public.bn_estat_web().ranquing` i `public.bn_admin_control(...)`.
+
+### Canviat
+- **Pestanya «🧠 Remuntada» del rànquing per errors recuperats al repàs espaiat** (`supabase/bn_ranking_remuntada.sql`, `index.html`, `motor/prova-bon-us-sql.js`, `motor/prova-xat.js`, `docs/PUNTUACIO.md`, `docs/MONS.md` · g22):
+  - `public.bn_ranking_remuntada()` (desplegada a `agippwtqvhpxdockuigl`) suma ara cada error encertat al repàs en els últims 7 dies (**+1 🧠** per encert de test `bones` o d'extensió `ext`: frases, mapa, taller, troba l'error… amb topall de 20 per sessió) més **+2 🧠 extra** per cada error que arriba al 3r repàs i queda après per sempre (`apr`), mantenint intactes les capses `[0, 3, 7]` del motor perquè el rànquing reflecteixi l'esforç des del primer dia de la setmana d'estudi.
+  - Textos de la pestanya `Remuntada` i del premi *Remuntada de la setmana* a `index.html` ajustats a `errors recuperats` / `Repàs` i missatge específic a «La teva posició» quan encara no hi ha repassos fets.
+
 ## 2.37.0 · 2026-11-12
 
 ### Afegit
