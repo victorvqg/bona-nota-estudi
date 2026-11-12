@@ -354,6 +354,74 @@ function dadesAdmin() {
   await ctx.close();
  }
 
+ console.log("4) Horari nocturn connectat (bn_estat_web.horari → portada #avisNitPortada i món #modalNit + #avisNit dins d'un tema)");
+ {
+  const ctx = await nav.newContext({ viewport: { width: 360, height: 780 } }), p = await ctx.newPage();
+  await p.route("https://fonts.googleapis.com/**", r => r.fulfill({ status: 200, contentType: "text/css", body: "" }));
+  await p.route("https://fonts.gstatic.com/**", r => r.abort());
+  await p.route("https://cdn.jsdelivr.net/**", r => r.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
+  await p.route("**/rest/v1/bn_log**", r => r.fulfill({ status: 201, contentType: "application/json", body: "" }));
+  await p.route("**/rest/v1/rpc/**", r => {
+   const f = r.request().url().split("/rpc/")[1].split("?")[0];
+   if (f === "bn_estat_web") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ xat_obert_ara: false, xat_en_horari_tancat: true, horari: { actiu: true, tanca_h: "21:15", obre_h: "07:30" }, mons_tancats: [] }) });
+   if (f === "bn_vigilia") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ dia0: "2026-11-02", fase: "aprendre", assig: "socials", nit_h: "21:30", nit_vigilia_h: "22:00", obre_h: "06:00" }) });
+   if (f === "bn_punts_mons") return r.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+   if (f === "bn_reinicis") return r.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+   if (f === "bn_progres_llegeix") return r.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+   if (f === "bn_punts_maxim") return r.fulfill({ status: 200, contentType: "application/json", body: "0" });
+   if (f === "bn_perfil_id") return r.fulfill({ status: 200, contentType: "application/json", body: "12" });
+   if (f === "bn_progres_desa") return r.fulfill({ status: 200, contentType: "application/json", body: "1" });
+   return r.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+  });
+  await p.addInitScript(() => {
+   localStorage.setItem("bn_jugador", "Biel");
+   localStorage.setItem("bn_pins", JSON.stringify({ biel: "4587B" }));
+   localStorage.setItem("bn_noms_aparell", JSON.stringify(["Biel"]));
+   window.__bnHoraProva = "21:20";
+  });
+  const errors = []; p.on("pageerror", e => errors.push(e.message));
+  await p.goto(BASE + "/");
+  await p.waitForSelector("#avisNitPortada:not([hidden])");
+  const portTxt = await p.textContent("#avisNitPortada");
+  const swPort = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  ok(portTxt.includes("Biel") && portTxt.includes("21:15") && swPort <= 360,
+   `portada a 360 px mostra #avisNitPortada amb 'Biel' i l'hora de l'admin '21:15' sense desbordament (${swPort}px)`);
+
+  // Dins del món: comencem a les 21:10 (abans de 21:15) estudiant dins d'un test de tema (no pas a #inici)
+  await p.goto(BASE + "/sociales/t3-clima/");
+  await p.waitForSelector("#app .hero, #modalNit");
+  await p.evaluate(() => {
+   const m = document.getElementById("modalNit"); if (m) m.remove();
+   NIT_ULTIM_AVIS = 0; AVIS_NIT_TANCAT = false;
+   HORA_PROVA = { dia: "2026-11-05", hm: "21:10", min: 1270 };
+   comprovaBonUsTick();
+   obre(0); pest = "test"; pintaTema();
+  });
+  ok((await p.$("#modalNit")) === null && (await p.$("#avisNit")) === null,
+   "a les 21:10 (abans de les 21:15 de l'admin) no surt ni #modalNit ni #avisNit");
+
+  // Passen a ser les 21:20 mentre en Biel continua dins del test del Tema 1
+  await p.evaluate(() => {
+   HORA_PROVA = { dia: "2026-11-05", hm: "21:20", min: 1280 };
+   comprovaBonUsTick();
+  });
+  await p.waitForSelector("#modalNit");
+  const nitTit = await p.textContent("#nitTit");
+  const nitCos = await p.textContent("#modalNit");
+  const swMon = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  const teSuau = await p.evaluate(() => document.body.classList.contains("suau"));
+  ok(nitTit.includes("Biel") && nitCos.includes("21:15") && (await p.$("#avisNit")) !== null && teSuau && swMon <= 360,
+   `a les 21:20 dins d'un test salta #modalNit + #avisNit amb '21:15', activa mode suau i no desborda a 360 px (${swMon}px)`);
+
+  // Clicant «Acabo el que estic fent» tanca el diàleg però manté #avisNit visible encara que canviï de pestanya/joc
+  await p.click("#btNitAcabo");
+  await p.evaluate(() => { pest = "fitxa"; pintaTema(); });
+  ok((await p.$("#modalNit")) === null && (await p.isVisible("#avisNit")),
+   "després d'«Acabo el que estic fent», #avisNit es manté visible en canviar de pestanya dins del tema");
+  ok(errors.length === 0, "cap error de JS en tot el flux nocturn");
+  await ctx.close();
+ }
+
  await nav.close(); srv.close();
  if (fallades) { console.error(`\n✗ ${fallades} comprovacions han fallat`); process.exit(1) }
  console.log("\n✓ Totes les comprovacions de nivells (M5) i control de xat/horari/mons han passat");

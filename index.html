@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="2c75e7b8b6",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="538d128431",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -603,6 +603,10 @@ h1 span{display:inline-block}
 main.en-tast .prog.on{display:none}
 .tria{margin-top:18px;font-family:'Press Start 2P',monospace;font-size:clamp(12px,3vw,16px);color:#facc15;text-shadow:2px 2px 0 #b91c1c;animation:triaBota 1.2s ease-in-out infinite}
 .tria[hidden]{display:none}
+.avis-nit-portada{position:relative;z-index:2;max-width:680px;margin:14px auto 0;padding:12px 16px;border-radius:16px;background:linear-gradient(135deg,#1e1b4be6,#312e81e6);border:2px solid #818cf8;color:#e0e7ff;font-size:14.5px;font-weight:700;line-height:1.45;display:flex;align-items:center;gap:12px;text-align:left;box-shadow:0 10px 28px #0006}
+.avis-nit-portada[hidden]{display:none}
+.avis-nit-portada b{color:#fde68a}
+.avis-nit-portada .anp-ic{font-size:26px;line-height:1;flex-shrink:0}
 @keyframes triaBota{50%{transform:translateY(6px)}}
 main.bloc .as{filter:grayscale(.5) brightness(.75)}
 main.ilumina .as{opacity:1;animation:ilumina 1.2s ease-out 2}
@@ -718,6 +722,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
   <button class="en-tast" id="btTastPortada" type="button">👀 Fes un tast sense compte (anònim)</button>
   <p class="en-peu">El PIN són <b>4 números i 1 lletra al final</b> (per exemple 4587R). El primer cop, inventa-te'n un i recorda'l: amb el PIN continues des de qualsevol aparell.</p>
  </form>
+ <div class="avis-nit-portada" id="avisNitPortada" hidden role="status"></div>
  <div class="tria" id="tria" hidden>👇 Ara tria el teu món 👇</div>
 </header>
 
@@ -829,7 +834,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.32.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.33.0</small></footer>
 
 <script src="sprites.js?v=0be9e885"></script>
 <script>
@@ -884,7 +889,8 @@ const bnSo=(()=>{let ctx=null,armat=false,tocat=false,volOn=true,mut=null;const 
 (function(){const c=document.getElementById('cel');let h='';for(let i=0;i<90;i++){const s=Math.random()<.15?4:Math.random()<.5?2:3;
  h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
 // progrés guardat per cada assignatura (mateix navegador)
-let TAST_ACTIU=false,MOSTRA_FORM=false;
+let TAST_ACTIU=false,MOSTRA_FORM=false,HOR_PORTADA=null,ULT_ESTAT_PORTADA=0;
+try{const hw=JSON.parse(localStorage.getItem('bn_horari_web')||'null');if(hw&&typeof hw==='object')HOR_PORTADA=hw}catch(e){}
 (function(){try{const u=new URLSearchParams(location.search),g=localStorage.getItem('bn_jugador')||'';TAST_ACTIU=u.get('tast')==='1'||(!g&&sessionStorage.getItem('bn_tast')==='1');if(TAST_ACTIU)sessionStorage.setItem('bn_tast','1')}catch(e){}})();
 function tastActiu(){return TAST_ACTIU}
 function fixaUrlTast(on){try{const u=new URL(location.href);if(on)u.searchParams.set('tast','1');else u.searchParams.delete('tast');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}catch(e){}}
@@ -924,6 +930,19 @@ function rpcP(f,body){return fetch("https://agippwtqvhpxdockuigl.supabase.co/res
 const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
 function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
 function estrellesTotals(nom){let tot=0;if(!nom)return 0;try{document.querySelectorAll('.as[data-clau]').forEach(a=>{const ps=JSON.parse(localStorage.getItem(a.dataset.clau+'_perfils')||'{}'),k=Object.keys(ps).find(x=>x.trim().toLowerCase()===nom.trim().toLowerCase()),S=k?ps[k]:null;if(S&&S.punts>0)tot+=S.punts})}catch(e){}return tot}
+function normHoraPortada(h,m){if(typeof h==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(h))return h;if(typeof m==='number'&&Number.isFinite(m)&&m>=0&&m<1440)return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(Math.floor(m%60)).padStart(2,'0')}`;return null}
+function araHmMadrid(){if(typeof window.__bnHoraProva==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(window.__bnHoraProva))return window.__bnHoraProva;
+ try{const p={};new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Madrid',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()).forEach(x=>{p[x.type]=x.value});return `${String((+p.hour||0)%24).padStart(2,'0')}:${String(+p.minute||0).padStart(2,'0')}`}catch(e){const d=new Date();return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}}
+function horariNitPortada(){const act=!!(HOR_PORTADA&&HOR_PORTADA.actiu===true),t=act?normHoraPortada(HOR_PORTADA.tanca_h,HOR_PORTADA.tanca_min):null,o=act?normHoraPortada(HOR_PORTADA.obre_h,HOR_PORTADA.obre_min):null;return act&&t&&o?{tanca:t,obre:o}:{tanca:'21:30',obre:'06:00'}}
+function pintaAvisNitPortada(){const el=document.getElementById('avisNitPortada');if(!el)return;
+ const G=jugador(),tast=tastActiu(),actiu=(G&&!MOSTRA_FORM)||tast,perm=(!window.BN_NO_LOG&&!/[?&]demo\b/.test(location.search)&&!/^file:/.test(location.protocol))||!!window.__bnHoraProva;
+ if(!actiu||!perm){el.hidden=true;return}
+ const {tanca,obre}=horariNitPortada(),hm=araHmMadrid(),nit=tanca<obre?(hm>=tanca&&hm<obre):(hm>=tanca||hm<obre);
+ if(!nit){el.hidden=true;return}
+ const nomTxt=tast?'':`, <b>${G.replace(/[<>&]/g,'')}</b>`;
+ el.innerHTML=`<span class="anp-ic" aria-hidden="true">🌙</span><span>Ja és hora de descansar${nomTxt} (<b>${tanca}</b>)! Mentre dorms el cervell guarda el que has estudiat — millor continuar demà.</span>`;
+ el.hidden=false}
+window.bnPintaAvisNitPortada=pintaAvisNitPortada;
 function pintaHola(){const G=jugador(),tast=tastActiu(),h=document.getElementById('hola'),f=document.getElementById('entrada'),t=document.getElementById('tria'),m=document.querySelector('main');
  m.classList.toggle('en-tast',tast);refrescaJugaTargetes();
  if(tast){
@@ -931,13 +950,14 @@ function pintaHola(){const G=jugador(),tast=tastActiu(),h=document.getElementByI
   f.hidden=true;t.hidden=false;t.textContent='👇 Tria un món per fer-ne un tast 👇';m.classList.remove('bloc');
   document.getElementById('enTastEntra').onclick=()=>surtTastPortada(true);
   document.getElementById('enTastSurt').onclick=()=>surtTastPortada(false);
-  return}
+  pintaAvisNitPortada();return}
  t.textContent='👇 Ara tria el teu món 👇';
  if(G&&!MOSTRA_FORM){const tot=estrellesTotals(G),btEst=tot>0?` <button class="hola-est" id="enEst" type="button" title="Obre el rànquing">⭐ ${tot}</button>`:'';
   h.innerHTML=`${avHtml(G,'hola-av')}Hola, <em>${G.replace(/[<>&]/g,'')}</em>! 👋${btEst} <a class="hola-perfil" href="perfil/" title="Tria el teu animal i el teu perfil arcade">👾 Perfil</a> <button class="canvia" id="enCanvia" type="button">No ets tu?</button>`;f.hidden=true;t.hidden=false;m.classList.remove('bloc');
   document.getElementById('enCanvia').onclick=()=>{try{localStorage.removeItem('bn_jugador')}catch(e){}location.reload()};
   const eB=document.getElementById('enEst');if(eB)eB.onclick=()=>document.getElementById('btHs').click()}
- else{h.innerHTML='';f.hidden=false;t.hidden=true;m.classList.add('bloc')}}
+ else{h.innerHTML='';f.hidden=false;t.hidden=true;m.classList.add('bloc')}
+ pintaAvisNitPortada()}
 function iniciEntrada(){
  const f=document.getElementById('entrada'),iN=document.getElementById('enNom'),iP=document.getElementById('enPin'),av=document.getElementById('enAvis'),ns=document.getElementById('enNoms'),btTast=document.getElementById('btTastPortada');
  if(btTast)btTast.onclick=()=>activaTastPortada(true);
@@ -1008,12 +1028,22 @@ function iniciEntrada(){
   refrescaJugaTargetes();
  };
  try{const mem=JSON.parse(localStorage.getItem('bn_mons_tancats')||'[]');if(Array.isArray(mem)&&mem.length)aplicaMonsTancats(mem)}catch(e){}
- if(/^https?:/.test(location.protocol)&&!/[?&]demo\b/.test(location.search)){
-  setTimeout(()=>rpcP('bn_estat_web',{}).then(r=>{
+ const sincronitzaEstatPortada=()=>{
+  if(!/^https?:/.test(location.protocol)||/[?&]demo\b/.test(location.search))return;
+  ULT_ESTAT_PORTADA=Date.now();
+  rpcP('bn_estat_web',{}).then(r=>{
    if(!r||typeof r!=='object')return;
    if(Array.isArray(r.mons_tancats))aplicaMonsTancats(r.mons_tancats);
+   if(r.horari&&typeof r.horari==='object'){HOR_PORTADA=r.horari;if(!tastActiu())try{localStorage.setItem('bn_horari_web',JSON.stringify(r.horari))}catch(e){}}
    if(r.xat&&typeof r.xat.actiu==='boolean'&&typeof XAT==='object')XAT.actiu=r.xat.actiu;
-  }).catch(()=>{}),0);
+   pintaAvisNitPortada();
+  }).catch(()=>{});
+ };
+ if(/^https?:/.test(location.protocol)&&!/[?&]demo\b/.test(location.search)){
+  setTimeout(sincronitzaEstatPortada,0);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){pintaAvisNitPortada();if(Date.now()-ULT_ESTAT_PORTADA>20000)sincronitzaEstatPortada()}});
+  setInterval(()=>{if(document.visibilityState==='visible')sincronitzaEstatPortada()},120000);
+  setInterval(()=>{if(document.visibilityState==='visible')pintaAvisNitPortada()},30000);
  }
  // sense nom, els mons esperen: primer el nom (o mode tast); si el món està tancat, no deixa entrar
  document.querySelectorAll('main .as[href]').forEach(a=>a.addEventListener('click',e=>{
