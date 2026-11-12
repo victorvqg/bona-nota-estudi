@@ -31,21 +31,27 @@ const RESUM = p => ({ periode: p || "7d", desde: new Date().toISOString(), ara: 
 
 function dadesDif(assig, xss) {
  const totes = [
-  { assig: "socials", qid: "temps/1", n: 10, bones: 4, nens: 6, encert: 40.0, encert_1a: 33.3, seg_mig: 9.4, suficient: true, dificultat: 3, dubtes: 2, dubtes_nens: 2, dubtes_motius: { enunciat: 1, resposta: 1, pista: 0 } },      // no és a dificultat.json → ➕ Proposa ⚡ + 🤔 2
+  { assig: "socials", qid: "temps/1", n: 10, bones: 4, nens: 6, encert: 40.0, encert_1a: 33.3, seg_mig: 9.4, suficient: true, dificultat: 3, dubtes: 2, dubtes_nens: 2, dubtes_motius: { enunciat: 1, resposta: 1, pista: 0 },
+    dubtes_detall: [{ nom: "Jana", k: "jana", motiu: "enunciat", ok: false, origen: "test", ts: 1762900000 }, { nom: "Pau", k: "pau", motiu: "resposta", ok: true, origen: "examen-real", ts: 1762850000 }] },      // no és a dificultat.json → ➕ Proposa ⚡ + 🤔 2
   { assig: "socials", qid: "atmos/9", n: 10, bones: 8, nens: 6, encert: 80.0, encert_1a: 75.0, seg_mig: 6.2, suficient: true, dificultat: 2 },      // és 3 a dificultat.json i >= 75 % → ➖ Revisa ⚡
   { assig: "socials", qid: "atmos/4", n: 11, bones: 5, nens: 7, encert: 45.5, encert_1a: 42.9, seg_mig: 11.1, suficient: true, dificultat: 3 },     // és 3 a dificultat.json i < 75 % → ⚡ Confirmada
   { assig: "socials", qid: "temps/5", n: 12, bones: 11, nens: 7, encert: 91.7, encert_1a: 90.0, seg_mig: 5.0, suficient: true, dificultat: 1 },     // > 90 % i no marcada ⚡ → Fàcil
   { assig: "socials", qid: "temps/3", n: 4, bones: 2, nens: 3, encert: 50.0, encert_1a: 50.0, seg_mig: 8.0, suficient: false, dificultat: null },   // < 8 resp.
-  { assig: "socials", qid: "temps/9", n: 0, bones: 0, nens: 0, encert: null, encert_1a: null, seg_mig: null, suficient: false, dificultat: null, dubtes: 1, dubtes_nens: 1, dubtes_motius: { enunciat: 0, resposta: 0, pista: 1 } },  // 0 resp. però amb dubte 🤔 1
+  { assig: "socials", qid: "temps/9", n: 0, bones: 0, nens: 0, encert: null, encert_1a: null, seg_mig: null, suficient: false, dificultat: null, dubtes: 1, dubtes_nens: 1, dubtes_motius: { enunciat: 0, resposta: 0, pista: 1 },
+    dubtes_detall: [{ nom: "Biel", k: "biel", motiu: "pista", ok: false, origen: "repas", ts: 1762950000 }] },  // 0 resp. però amb dubte 🤔 1
   { assig: "angles", qid: "adjectius/1", n: 9, bones: 3, nens: 5, encert: 33.3, encert_1a: 25.0, seg_mig: 10.0, suficient: true, dificultat: 3 },
   { assig: "biogeo", qid: "terra/1", n: 3, bones: 2, nens: 2, encert: 66.7, encert_1a: 50.0, seg_mig: 7.5, suficient: false, dificultat: null }       // món amb només < 8 resp.
  ];
- if (xss) totes.push({ assig: XSS, qid: XSS, n: 10, bones: 3, nens: 4, encert: 30.0, encert_1a: 30.0, seg_mig: 7.0, suficient: true, dificultat: 3 });
+ if (xss) totes.push({ assig: XSS, qid: XSS, n: 10, bones: 3, nens: 4, encert: 30.0, encert_1a: 30.0, seg_mig: 7.0, suficient: true, dificultat: 3, dubtes: 1, dubtes_nens: 1, dubtes_motius: { enunciat: 1 }, dubtes_detall: [{ nom: XSS, k: XSS, motiu: XSS, ok: false, origen: XSS, ts: 1762960000 }] });
  const pr = assig ? totes.filter(r => r.assig === assig) : totes;
  const suf = pr.filter(r => r.suficient);
+ const dubLlista = [];
+ pr.forEach(r => (r.dubtes_detall || []).forEach(d => dubLlista.push(Object.assign({ assig: r.assig, qid: r.qid }, d))));
+ dubLlista.sort((a, b) => b.ts - a.ts);
  return {
   min_respostes: 8, dies: 365, assig: assig || null,
-  resum: { preguntes_vistes: pr.length, amb_dades: suf.length, dificils: suf.filter(r => r.dificultat === 3).length, normals: suf.filter(r => r.dificultat === 2).length, facils: suf.filter(r => r.dificultat === 1).length, amb_dubtes: pr.filter(r => (r.dubtes || 0) > 0).length },
+  resum: { preguntes_vistes: pr.length, amb_dades: suf.length, dificils: suf.filter(r => r.dificultat === 3).length, normals: suf.filter(r => r.dificultat === 2).length, facils: suf.filter(r => r.dificultat === 1).length, amb_dubtes: pr.filter(r => (r.dubtes || 0) > 0).length, total_dubtes: dubLlista.length },
+  dubtes_llista: dubLlista,
   preguntes: pr
  };
 }
@@ -124,11 +130,17 @@ function dadesDif(assig, xss) {
   ok(tCanvis.includes("➕ Proposa ⚡") && tCanvis.includes("➖ Revisa ⚡") && !tCanvis.includes("Fàcil (> 90 %)"),
    "el mode «Canvis» mostra només les propostes d'afegir o revisar");
 
+  // Taula superior directa de preguntes confuses (g25): visible d'entrada a dalt de tot amb món, tema, on ha sorgit, pregunta i nen
+  const tDubTop = await txt("#tDifDubBox");
+  const nColsDub = await p.$$eval("#tDifDubBox thead th", ths => ths.length);
+  ok(nColsDub === 6 && tDubTop.includes("Jana") && tDubTop.includes("Biel") && tDubTop.includes("Test del tema") && tDubTop.includes("Examen de veritat") && tDubTop.includes("Repàs d'errors"),
+   "la taula superior de preguntes confuses mostra 6 columnes amb el món, el tema, on ha sorgit (test / examen / repàs), la pregunta i el nen");
+
   // Mode «🤔 Dubtes»: mostra temps/1 (amb prou respostes) i temps/9 (0 respostes però marcada confusa, sense NaN)
   await p.click('#difModes [data-dif-v="dubtes"]');
-  const tDubtes = await txt('#tDif details[data-a="socials"]');
-  ok(tDubtes.includes("temps/1") && tDubtes.includes("temps/9") && tDubtes.includes("0 resp.") && !tDubtes.includes("NaN") && !tDubtes.includes("temps/5"),
-   "el mode «🤔 Dubtes» mostra les preguntes marcades confuses (inclosa temps/9 amb 0 respostes i sense NaN)");
+  const tDubtes = await txt("#tDifDubBox");
+  ok(tDubtes.includes("temps/1") && tDubtes.includes("temps/9") && tDubtes.includes("0 resp. de test") && !tDubtes.includes("NaN") && !tDubtes.includes("temps/5"),
+   "el mode «🤔 Dubtes» mostra la taula dedicada amb totes les preguntes marcades confuses (inclosa temps/9 amb 0 respostes i sense NaN)");
 
   // Mode «Totes»: inclou temps/3 (< 8 resp.) i terra/1 de biogeo
   await p.click('#difModes [data-dif-v="totes"]');

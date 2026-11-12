@@ -212,6 +212,15 @@ function respon(st, f, cos) {
   await p.click("#dlgOk"); c = await crida("bn_admin_examen_desa", n0 + 2);
   ok(c && c.cos.p_assig === "comarques" && c.cos.p_data === null && !st.examens.comarques, "i, confirmat, l'esborra");
   ok((await p.$$(".toast.err-t")).length === 0, "cap avís d'error");
+  // Pestanya «Missatges al nen» (g25): catàleg complet de missatges de Bon Ús i Benestar
+  await p.click('[data-go-msgs="1"]');
+  await p.waitForSelector("#missatgesNen .mn-card");
+  const nCardsMsgs = await p.$$eval("#missatgesNen .mn-card", cs => cs.length);
+  ok(nCardsMsgs === 13 && (await txt("#missatgesNen")).includes("Què NO veu mai el nen"),
+   `Nens → Missatges al nen mostra les 13 targetes de missatges literals i el bloc de privadesa (obtingut: ${nCardsMsgs})`);
+  await p.click('#mnCats [data-mn-cat="nit"]');
+  const nCardsNit = await p.$$eval("#missatgesNen .mn-card", cs => cs.length);
+  ok(nCardsNit === 3, `el filtre «Horari de nit» de Missatges al nen filtra les 3 targetes nocturnes (obtingut: ${nCardsNit})`);
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  console.log("4) el SQL encara no hi és (404): avís només en aquest apartat");

@@ -61,16 +61,23 @@ const ADM = ["admin@prova.cat", "secret-prova"], DOLENTA = [ADM[0], "incorrecta"
   await ins("_alta", "socials", "test", ["temps/3:0:5:0"]);           // _alta → ignorat
   await ins("Nen" + i, "socials", "test", ["j-climo/1:0:5:0", "brut", "temps/3:x:abc:0"]); // j-* i mal formades → ignorades
  }
- // dubtes dels nens («🤔 Pregunta confusa?», g24): compten en preguntes amb respostes i també en preguntes encara amb 0 respostes (temps/9)
- const insDub = (nom, assig, qid, motiu) => db.query(
-  `insert into public.bn_log(ts, assig, nom, sessio, aparell, event, detall)
-   values (now() - interval '2 hours', $2, $1, 's', 'a', 'dubte', $3::jsonb)`,
-  [nom, assig, JSON.stringify({ qid, motiu, ok: 0 })]
+ // dubtes dels nens («🤔 Pregunta confusa?», g24/g25): compten en preguntes amb respostes i amb 0 respostes (temps/9), amb detall de nen i origen
+ await db.query(
+  `insert into public.bn_log(ts, assig, nom, sessio, aparell, event, detall) values
+   (now() - interval '2 hours', 'socials', 'Nen0', 's-test', 'a', 'test', '{"tema":"temps","q":["temps/1:0:6:1"]}'::jsonb),
+   (now() - interval '119 minutes', 'socials', 'Nen1', 's-rep', 'a', 'joc', '{"joc":"repas","q":["temps/1:0:5:2"]}'::jsonb),
+   (now() - interval '118 minutes', 'socials', 'Nen2', 's-exr', 'a', 'examen', '{"mode":"real","q":["temps/9:1:7:0"]}'::jsonb)`
  );
- await insDub("Nen0", "socials", "temps/1", "enunciat");
- await insDub("Nen1", "socials", "temps/1", "resposta");
- await insDub("Nen0", "socials", "temps/1", "enunciat");
- await insDub("Nen2", "socials", "temps/9", "pista"); // 0 respostes de test, però té dubte → ha d'aparèixer amb n=0
+ const insDub = (nom, assig, qid, motiu, sess = "s", okV = 0) => db.query(
+  `insert into public.bn_log(ts, assig, nom, sessio, aparell, event, detall)
+   values (now() - interval '2 hours', $2, $1, $4, 'a', 'dubte', $3::jsonb)`,
+  [nom, assig, JSON.stringify({ qid, motiu, ok: okV }), sess]
+ );
+ await insDub("Nen0", "socials", "temps/1", "enunciat", "s-test", 0);
+ await insDub("Nen1", "socials", "temps/1", "resposta", "s-rep", 0);
+ await insDub("Nen0", "socials", "temps/1", "enunciat", "s-test", 0);
+ await insDub("Nen2", "socials", "temps/9", "pista", "s-exr", 1); // només en aquell examen de veritat (1 resposta a temps/9, o provem temps/8 amb 0 resp.)
+ await insDub("Nen3", "socials", "temps/8", "pista", "s-sense", 0); // 0 respostes de test/examen, però té dubte → ha d'aparèixer amb n=0
  await insDub("amagat1", "socials", "temps/1", "pista"); // amagat → ignorat
  await insDub("tonto", "socials", "temps/1", "pista");   // nom prohibit → ignorat
  await insDub("_alta", "socials", "temps/1", "pista");   // _alta → ignorat
@@ -80,16 +87,21 @@ const ADM = ["admin@prova.cat", "secret-prova"], DOLENTA = [ADM[0], "incorrecta"
 
  const r = await val("select public.bn_admin_dificultat($1, $2) r", ADM);
  const preg = (a, qid) => r.preguntes.find(x => x.assig === a && x.qid === qid);
- ok(r.min_respostes === 8 && r.resum.preguntes_vistes === 7 && r.resum.amb_dades === 5 && r.resum.amb_dubtes === 2,
-  "resum: 7 preguntes vàlides vistes (inclosa temps/9 amb dubte i 0 resp.), 5 amb >= 8 respostes i 2 amb dubtes");
+ ok(r.min_respostes === 8 && r.resum.preguntes_vistes === 8 && r.resum.amb_dades === 5 && r.resum.amb_dubtes === 3 && r.resum.total_dubtes === 5,
+  "resum: 8 preguntes vàlides vistes (inclosa temps/8 amb dubte i 0 resp.), 5 amb >= 8 respostes, 3 amb dubtes i 5 avisos totals");
  ok(preg("socials", "temps/1").dubtes === 3 && preg("socials", "temps/1").dubtes_nens === 2
   && preg("socials", "temps/1").dubtes_motius.enunciat === 2 && preg("socials", "temps/1").dubtes_motius.resposta === 1 && preg("socials", "temps/1").dubtes_motius.pista === 0,
   "temps/1 agrega 3 dubtes de 2 nens (2 enunciat, 1 resposta), excloent amagats, prohibits, _alta i motius invàlids");
- ok(preg("socials", "temps/9").n === 0 && preg("socials", "temps/9").encert === null && preg("socials", "temps/9").suficient === false
-  && preg("socials", "temps/9").dubtes === 1 && preg("socials", "temps/9").dubtes_motius.pista === 1,
-  "temps/9 sense respostes de test però amb 1 dubte apareix amb n=0, encert=null i dubtes=1");
- ok(preg("socials", "temps/1").dificultat === 3 && preg("socials", "temps/1").encert === 40,
-  "temps/1 amb 40 % d'encert (< 55 %) → dificultat 3 (difícil)");
+ const dd1 = preg("socials", "temps/1").dubtes_detall || [];
+ ok(dd1.length === 3 && dd1.some(x => x.nom === "Nen0" && x.origen === "test" && x.ok === false) && dd1.some(x => x.nom === "Nen1" && x.origen === "repas")
+  && Array.isArray(r.dubtes_llista) && r.dubtes_llista.length === 5
+  && r.dubtes_llista.some(x => x.qid === "temps/9" && x.nom === "Nen2" && x.origen === "examen-real" && x.ok === true),
+  "dubtes_detall i dubtes_llista retornen el nen, el motiu, ok i l'origen exacte (test, repas, examen-real)");
+ ok(preg("socials", "temps/8").n === 0 && preg("socials", "temps/8").encert === null && preg("socials", "temps/8").suficient === false
+  && preg("socials", "temps/8").dubtes === 1 && preg("socials", "temps/8").dubtes_motius.pista === 1,
+  "temps/8 sense respostes de test però amb 1 dubte apareix amb n=0, encert=null i dubtes=1");
+ ok(preg("socials", "temps/1").dificultat === 3 && preg("socials", "temps/1").encert === 36.4,
+  "temps/1 amb < 55 % d'encert → dificultat 3 (difícil)");
  ok(preg("socials", "temps/2").dificultat === 2 && preg("socials", "temps/2").encert === 80,
   "temps/2 amb 80 % d'encert → dificultat 2 (normal)");
  ok(preg("socials", "temps/3").dificultat === 1 && preg("socials", "temps/3").encert === 100 && preg("socials", "temps/3").n === 10,

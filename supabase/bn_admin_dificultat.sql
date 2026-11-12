@@ -1,4 +1,4 @@
--- Bona Nota · càlcul de la dificultat real i agregació de dubtes («🤔 Pregunta confusa?») a partir del registre (issue #16, g24).
+-- Bona Nota · càlcul de la dificultat real i agregació detallada de dubtes («🤔 Pregunta confusa?») a partir del registre (issue #16, g24, g25).
 -- Executar al SQL Editor de Supabase DESPRÉS de bn_ranking_net.sql, bn_bon_us.sql i bn_admin_tauler.sql (fa servir bn_priv.admin_ok,
 -- bn_priv.amagats i bn_priv.nom_prohibit). Idempotent («create or replace»).
 --
@@ -13,6 +13,8 @@
 --       encert > 90 %  → dificultat 1 (fàcil)
 --       55 % .. 90 %   → dificultat 2 (normal)
 --   · També calcula encert_1a (encert comptant només la primera resposta de cada nen a la pregunta, sense l'efecte de repetir).
+--   · A més (g24/g25), recull els avisos «dubte» amb detall de cada nen, motiu, resultat (ok), quan i on han sorgit
+--     (test del tema, repàs d'errors, examen sorpresa o examen de veritat).
 
 create or replace function public.bn_admin_dificultat(
   p_email text,
@@ -30,6 +32,7 @@ declare
   v_desde timestamptz := now() - make_interval(days => v_dies);
   v_fins timestamptz := now() + interval '1 minute';
   v_preg jsonb;
+  v_dubtes jsonb;
   v_resum jsonb;
 begin
   perform bn_priv.admin_ok(p_email, p_pass);
@@ -74,11 +77,47 @@ begin
     group by o.assig, o.qid
   ),
   dubtes_cru as (
-    select l.assig,
+    select l.id,
+           l.ts,
+           l.assig,
+           trim(l.nom) nom,
            lower(trim(l.nom)) k,
            (l.detall ->> 'qid') qid,
-           (l.detall ->> 'motiu') motiu
+           (l.detall ->> 'motiu') motiu,
+           case
+             when (l.detall ->> 'ok') in ('1', 'true') then true
+             when (l.detall ->> 'ok') in ('0', 'false') then false
+             else null::boolean
+           end ok,
+           coalesce(
+             case when (l.detall ->> 'on') in ('test', 'repas', 'examen', 'examen-real') then (l.detall ->> 'on') end,
+             cx.origen
+           ) origen
     from public.bn_log l
+    left join lateral (
+      select case
+               when l2.event = 'joc' and coalesce(l2.detall ->> 'joc', '') = 'repas' then 'repas'
+               when l2.event = 'examen' and coalesce(l2.detall ->> 'mode', '') like 'real%' then 'examen-real'
+               when l2.event = 'examen' then 'examen'
+               when l2.event = 'test' then 'test'
+               else null
+             end origen
+      from public.bn_log l2
+      where l2.ts between l.ts - interval '30 minutes' and l.ts + interval '30 minutes'
+        and l2.assig = l.assig
+        and l2.sessio = l.sessio
+        and (l2.event in ('test', 'examen') or (l2.event = 'joc' and coalesce(l2.detall ->> 'joc', '') = 'repas'))
+      order by (
+        exists (
+          select 1
+          from jsonb_array_elements_text(case when jsonb_typeof(l2.detall -> 'q') = 'array' then l2.detall -> 'q' else '[]'::jsonb end) qx(v)
+          where split_part(qx.v, ':', 1) = (l.detall ->> 'qid')
+        )
+      ) desc,
+      abs(extract(epoch from (l2.ts - l.ts))) asc,
+      l2.id desc
+      limit 1
+    ) cx on true
     where l.ts >= v_desde and l.ts < v_fins
       and l.event = 'dubte'
       and (v_assig is null or l.assig = v_assig)
@@ -90,6 +129,11 @@ begin
       and (l.detall ->> 'qid') not like 'j-%'
       and (l.detall ->> 'motiu') in ('enunciat', 'resposta', 'pista')
   ),
+  dub_ord as (
+    select dc.*,
+           row_number() over (partition by dc.assig, dc.qid order by dc.ts desc, dc.id desc) rn_q
+    from dubtes_cru dc
+  ),
   dub as (
     select d.assig, d.qid,
            count(*)::int dubtes,
@@ -98,8 +142,22 @@ begin
              'enunciat', (count(*) filter (where d.motiu = 'enunciat'))::int,
              'resposta', (count(*) filter (where d.motiu = 'resposta'))::int,
              'pista',    (count(*) filter (where d.motiu = 'pista'))::int
-           ) dubtes_motius
-    from dubtes_cru d
+           ) dubtes_motius,
+           coalesce(
+             jsonb_agg(
+               jsonb_build_object(
+                 'nom', d.nom,
+                 'k', d.k,
+                 'motiu', d.motiu,
+                 'ok', d.ok,
+                 'origen', d.origen,
+                 'ts', floor(extract(epoch from d.ts))::bigint
+               )
+               order by d.ts desc, d.id desc
+             ) filter (where d.rn_q <= 20),
+             '[]'::jsonb
+           ) dubtes_detall
+    from dub_ord d
     group by d.assig, d.qid
   ),
   tot as (
@@ -115,7 +173,8 @@ begin
            ag.dificultat,
            coalesce(dub.dubtes, 0) dubtes,
            coalesce(dub.dubtes_nens, 0) dubtes_nens,
-           coalesce(dub.dubtes_motius, '{"enunciat":0,"resposta":0,"pista":0}'::jsonb) dubtes_motius
+           coalesce(dub.dubtes_motius, '{"enunciat":0,"resposta":0,"pista":0}'::jsonb) dubtes_motius,
+           coalesce(dub.dubtes_detall, '[]'::jsonb) dubtes_detall
     from ag
     full outer join dub on ag.assig = dub.assig and ag.qid = dub.qid
   )
@@ -124,23 +183,32 @@ begin
       'assig', tot.assig, 'qid', tot.qid, 'n', tot.n, 'bones', tot.bones, 'nens', tot.nens,
       'encert', tot.encert, 'encert_1a', tot.encert_1a, 'seg_mig', tot.seg_mig,
       'suficient', tot.suficient, 'dificultat', tot.dificultat,
-      'dubtes', tot.dubtes, 'dubtes_nens', tot.dubtes_nens, 'dubtes_motius', tot.dubtes_motius
+      'dubtes', tot.dubtes, 'dubtes_nens', tot.dubtes_nens,
+      'dubtes_motius', tot.dubtes_motius, 'dubtes_detall', tot.dubtes_detall
     ) order by tot.assig, split_part(tot.qid, '/', 1), split_part(tot.qid, '/', 2)::int) from tot), '[]'::jsonb),
+    coalesce((select jsonb_agg(jsonb_build_object(
+      'assig', u.assig, 'qid', u.qid, 'nom', u.nom, 'k', u.k,
+      'motiu', u.motiu, 'ok', u.ok, 'origen', u.origen,
+      'ts', floor(extract(epoch from u.ts))::bigint
+    ) order by u.ts desc, u.id desc)
+    from (select * from dubtes_cru order by ts desc, id desc limit 200) u), '[]'::jsonb),
     jsonb_build_object(
       'preguntes_vistes', (select count(*)::int from tot),
       'amb_dades',        (select count(*)::int from tot where tot.suficient),
       'dificils',         (select count(*)::int from tot where tot.dificultat = 3),
       'normals',          (select count(*)::int from tot where tot.dificultat = 2),
       'facils',           (select count(*)::int from tot where tot.dificultat = 1),
-      'amb_dubtes',       (select count(*)::int from tot where tot.dubtes > 0)
+      'amb_dubtes',       (select count(*)::int from tot where tot.dubtes > 0),
+      'total_dubtes',     (select count(*)::int from dubtes_cru)
     )
-  into v_preg, v_resum;
+  into v_preg, v_dubtes, v_resum;
 
   return jsonb_build_object(
     'min_respostes', v_min,
     'dies', v_dies,
     'assig', v_assig,
     'resum', v_resum,
+    'dubtes_llista', v_dubtes,
     'preguntes', v_preg
   );
 end $$;

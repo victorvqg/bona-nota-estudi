@@ -16,11 +16,11 @@ revoke all on bn_priv.examens from public, anon, authenticated;
 
 insert into bn_priv.config(clau, valor)
 values
-  ('xat_horari', '{"actiu":false,"tanca_h":"21:30","obre_h":"07:00"}'),
+  ('xat_horari', '{"actiu":false,"tanca_mons":false,"tanca_h":"21:30","obre_h":"07:00"}'),
   ('mons', '{"tancats":[]}')
 on conflict (clau) do nothing;
 
--- 1. Configuració d'horari automàtic del xat (amb valors per defecte segurs)
+-- 1. Configuració d'horari automàtic del xat i dels mons (amb valors per defecte segurs)
 create or replace function bn_priv.xat_horari_cfg() returns jsonb
 language plpgsql stable set search_path = '' as $$
 declare
@@ -35,11 +35,12 @@ begin
   th := case when j->>'tanca_h' ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then j->>'tanca_h' else '21:30' end;
   oh := case when j->>'obre_h'  ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then j->>'obre_h'  else '07:00' end;
   return jsonb_build_object(
-    'actiu',     case when j->>'actiu' in ('true', 'false') then (j->>'actiu')::boolean else false end,
-    'tanca_h',   th,
-    'obre_h',    oh,
-    'tanca_min', split_part(th, ':', 1)::int * 60 + split_part(th, ':', 2)::int,
-    'obre_min',  split_part(oh, ':', 1)::int * 60 + split_part(oh, ':', 2)::int);
+    'actiu',      case when j->>'actiu' in ('true', 'false') then (j->>'actiu')::boolean else false end,
+    'tanca_mons', case when j->>'tanca_mons' in ('true', 'false') then (j->>'tanca_mons')::boolean else false end,
+    'tanca_h',    th,
+    'obre_h',     oh,
+    'tanca_min',  split_part(th, ':', 1)::int * 60 + split_part(th, ':', 2)::int,
+    'obre_min',   split_part(oh, ':', 1)::int * 60 + split_part(oh, ':', 2)::int);
 end $$;
 
 -- 2. Comprova si una hora cau dins la franja de tancament automàtic (Europe/Madrid)
@@ -452,6 +453,7 @@ begin
     'xat_actiu', (c->>'actiu')::boolean,
     'xat_obert_ara', obert,
     'xat_en_horari_tancat', en_horari,
+    'mons_tancats_nit', (en_horari and coalesce((h->>'tanca_mons')::boolean, false)),
     'horari', h,
     'xat', jsonb_build_object(
       'actiu',         obert,
@@ -520,14 +522,21 @@ begin
       on conflict (clau) do update set valor = excluded.valor;
     end if;
 
-    -- B) Configurar l'horari automàtic del xat (accepta tanca_h/obre_h o tanca_min/obre_min)
-    if (p_cfg ? 'horari_actiu') or (p_cfg ? 'tanca_h') or (p_cfg ? 'obre_h') or (p_cfg ? 'tanca_min') or (p_cfg ? 'obre_min') then
+    -- B) Configurar l'horari automàtic del xat i dels mons (accepta tanca_h/obre_h o tanca_min/obre_min i horari_tanca_mons)
+    if (p_cfg ? 'horari_actiu') or (p_cfg ? 'horari_tanca_mons') or (p_cfg ? 'tanca_h') or (p_cfg ? 'obre_h') or (p_cfg ? 'tanca_min') or (p_cfg ? 'obre_min') then
       if p_cfg ? 'horari_actiu' then
         t := p_cfg->>'horari_actiu';
         if t is null or t not in ('true', 'false') then
           raise exception 'horari_actiu ha de ser true o false' using errcode = '22023';
         end if;
         h := h || jsonb_build_object('actiu', t::boolean);
+      end if;
+      if p_cfg ? 'horari_tanca_mons' then
+        t := p_cfg->>'horari_tanca_mons';
+        if t is null or t not in ('true', 'false') then
+          raise exception 'horari_tanca_mons ha de ser true o false' using errcode = '22023';
+        end if;
+        h := h || jsonb_build_object('tanca_mons', t::boolean);
       end if;
       if p_cfg ? 'tanca_min' then
         t := coalesce(p_cfg->>'tanca_min', '');
@@ -560,7 +569,12 @@ begin
         h := h || jsonb_build_object('obre_h', t);
       end if;
       insert into bn_priv.config(clau, valor)
-      values ('xat_horari', jsonb_build_object('actiu', (h->>'actiu')::boolean, 'tanca_h', h->>'tanca_h', 'obre_h', h->>'obre_h')::text)
+      values ('xat_horari', jsonb_build_object(
+        'actiu', (h->>'actiu')::boolean,
+        'tanca_mons', coalesce((h->>'tanca_mons')::boolean, false),
+        'tanca_h', h->>'tanca_h',
+        'obre_h', h->>'obre_h'
+      )::text)
       on conflict (clau) do update set valor = excluded.valor;
       h := bn_priv.xat_horari_cfg();
     end if;
@@ -706,6 +720,7 @@ begin
     'xat_actiu', (c->>'actiu')::boolean,
     'xat_obert_ara', obert,
     'xat_en_horari_tancat', en_horari,
+    'mons_tancats_nit', (en_horari and coalesce((h->>'tanca_mons')::boolean, false)),
     'horari', h,
     'xat', jsonb_build_object(
       'actiu',         (c->>'actiu')::boolean,

@@ -445,6 +445,44 @@ tr.xm.esb .xm-t,tr.xm.esb td.xm-td-n{opacity:.6}
  #tXMsgs .taula-w td.xm-td-a{grid-column:2;grid-row:3;justify-self:end}
  #tXMsgs .xm-a{flex-wrap:wrap;justify-content:flex-end}
 }
+/* taula destacada de preguntes confuses a Dificultat real (g25) */
+.dub-box{margin:0 0 14px;border-color:var(--warn-bd,var(--border2))}
+.link-mon{all:unset;cursor:pointer;display:inline-flex;align-items:center}
+.link-mon:hover .pill-mon{filter:brightness(.96);text-decoration:underline}
+.link-mon:focus-visible{outline:2px solid var(--primary);border-radius:99px}
+.dub-tema{font-weight:700;display:block;overflow-wrap:anywhere}
+.dub-taula td{overflow-wrap:anywhere}
+@media (max-width:767px){
+ .dub-taula .taula-w{overflow-x:visible}
+ .dub-taula .taula-w table,.dub-taula .taula-w tbody{display:block}
+ .dub-taula .taula-w thead{display:none}
+ .dub-taula .taula-w tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 8px;padding:10px 12px;border-bottom:1px solid var(--border);align-items:center}
+ .dub-taula .taula-w tr:last-child{border-bottom:0}
+ .dub-taula .taula-w td{padding:0;border:0;min-width:0;white-space:normal;text-align:left;height:auto}
+ .dub-taula .taula-w td.dub-td-m,.dub-taula .taula-w td.dub-td-tm,.dub-taula .taula-w td.dub-td-q,.dub-taula .taula-w td.dub-td-mo{grid-column:1/-1}
+ .dub-taula .taula-w td.dub-td-n{grid-column:1}
+ .dub-taula .taula-w td.dub-td-ts{grid-column:2;text-align:right;font-size:12px;color:var(--muted)}
+}
+/* catàleg visual de missatges de Bon ús i Benestar al nen (?v=nens&tab=missatges · g25) */
+.mn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,350px),1fr));gap:12px}
+.mn-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.mn-cap{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mn-cap h3{margin:0;font-size:14.5px;font-weight:700;line-height:1.35}
+.mn-tags{display:flex;flex-wrap:wrap;gap:5px}
+.mn-prev{border-radius:12px;padding:11px 13px;font-size:13px;line-height:1.45;border:1.5px solid var(--border2);background:var(--card);overflow-wrap:anywhere}
+.mn-prev b{font-weight:700}
+.mn-prev.p-nit{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#e0e7ff;border-color:#818cf8}
+.mn-prev.p-desc{background:linear-gradient(155deg,#0f766e,#1e3a8a);color:#fff;border-color:#2dd4bf}
+.mn-prev.p-temps{background:linear-gradient(135deg,#fffbeb,#fef3c7);color:#78350f;border-color:#fcd34d}
+.mn-prev.p-pla{background:linear-gradient(135deg,#eff6ff,#dbeafe);color:#1e3a8a;border-color:#60a5fa}
+.mn-prev.p-xat{background:#120d26;color:#f8fafc;border-color:#a855f7}
+.mn-prev .mn-bts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mn-prev .mn-bt{display:inline-block;padding:3px 9px;border-radius:8px;font-size:11.5px;font-weight:700;background:#16a34a;color:#fff}
+.mn-prev .mn-bt.sec{background:#ffffff24;color:inherit;border:1px solid #ffffff45}
+.mn-prev:not(.p-nit):not(.p-desc):not(.p-xat) .mn-bt.sec{background:var(--card2);border-color:var(--border2)}
+.mn-meta{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--muted);margin-top:auto}
+.mn-meta div{overflow-wrap:anywhere}
+.mn-meta b{color:var(--text);font-weight:600}
 .xt{font-weight:700;border-radius:3px;padding:0 1px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .xt.P{background:var(--primary-soft);color:var(--primary)}.xt.J{background:var(--warn-bg);color:var(--warn)}
 .xt.E{background:#fce7f3;color:#9d174d}.xt.C{background:#cffafe;color:#155e75}
@@ -667,7 +705,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.40.0";
+const VERSIO_ADMIN="2.41.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -1163,6 +1201,7 @@ document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const tr=e.tar
 document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-mon]");if(b){e.preventDefault();obreFitxaMon(b.dataset.obreMon)}});
 document.addEventListener("click",e=>{const sw=e.target.closest("[data-mon-sw]");if(sw){e.preventDefault();toggleMonCtrl(sw.dataset.monSw)}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go-cfg]");if(b){e.preventDefault();navega("config",{tab:b.dataset.goCfg})}});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-go-msgs]");if(b){e.preventDefault();navega("nens",{tab:"missatges"})}});
 const mini=(v,max,cls,et)=>`<span class="mini"><span>${et??v}</span><span class="b"><i class="${cls||""}" style="width:${Math.max(2,Math.min(100,Math.round(100*(+v||0)/Math.max(1,max))))}%"></i></span></span>`;
 
 // ====================== NENS ======================
@@ -2340,32 +2379,33 @@ async function rpcCtrl(cfg){if(DEMO)return demoControlRpc(cfg);
  const r=await fetch(API.replace("bn_admin_logs","bn_admin_control"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_cfg:cfg||null})});
  if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
 function ctrlDe(){if(!CTRL){CTRL=rpcCtrl(null).then(d=>{CTRL_NOMES_XAT=false;return CTRL_D=d}).catch(e=>{
-  if(e==="falta"){CTRL_NOMES_XAT=true;const act=X&&X.cfg?X.cfg.actiu!==false:true;return CTRL_D={xat_actiu:act,xat_obert_ara:act,xat_en_horari_tancat:false,horari:{actiu:false,tanca_min:1290,obre_min:420},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)}}
+  if(e==="falta"){CTRL_NOMES_XAT=true;const act=X&&X.cfg?X.cfg.actiu!==false:true;return CTRL_D={xat_actiu:act,xat_obert_ara:act,xat_en_horari_tancat:false,mons_tancats_nit:false,horari:{actiu:false,tanca_mons:false,tanca_min:1290,obre_min:420},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)}}
   throw e})}return CTRL}
-function estatXatCtrl(d){d=oB(d);const xatAct=d.xat_actiu!==false,hor=oB(d.horari),hAct=hor.actiu===true,tancaM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,obreM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
+function estatXatCtrl(d){d=oB(d);const xatAct=d.xat_actiu!==false,hor=oB(d.horari),hAct=hor.actiu===true,tancaMons=hor.tanca_mons===true,tancaM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,obreM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
  const tancatH=typeof d.xat_en_horari_tancat==="boolean"?d.xat_en_horari_tancat:enHorariTancat(hAct,tancaM,obreM);
  const obertAra=typeof d.xat_obert_ara==="boolean"?d.xat_obert_ara:(xatAct&&!tancatH);
- return {xatAct,hAct,tancaM,obreM,tancatH,obertAra}}
+ const monsNit=typeof d.mons_tancats_nit==="boolean"?d.mons_tancats_nit:(tancatH&&tancaMons);
+ return {xatAct,hAct,tancaMons,monsNit,tancaM,obreM,tancatH,obertAra}}
 async function tControl(){const el=$("#tCtrl");if(!el)return;const tok=TOK;
  let d;try{d=await ctrlDe();await monsLlista()}catch(e){CTRL=null;if(tok!==TOK||!$("#tCtrl"))return;
   $("#tCtrl").removeAttribute("aria-busy");$("#tCtrl").innerHTML=avisErr(`No s'ha pogut carregar el control (${e&&e.message||e}).`);return}
  if(tok!==TOK||!$("#tCtrl"))return;pintaControl(d)}
 function pintaControl(d){const el=$("#tCtrl");if(!el)return;el.removeAttribute("aria-busy");d=oB(d);CTRL_D=d;
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
- const {xatAct,hAct,tancaM,obreM,tancatH}=estatXatCtrl(d);
+ const {xatAct,hAct,tancaMons,monsNit,tancaM,obreM,tancatH}=estatXatCtrl(d);
  const tancats=new Set(aR(d.mons_tancats).map(x=>String(x).trim().toLowerCase()));
  const ms=(MONSL&&MONSL.length?MONSL:Object.entries(ASSIGS).map(([id,nom])=>({id,nom}))),nOb=ms.filter(m=>!tancats.has(m.id)).length;
  const pillX=!xatAct?`<span class="pill bad" id="ctrlXatEstat">malament · Tancat manualment</span>`:tancatH?`<span class="pill warn" id="ctrlXatEstat">avís · Tancat per horari (${minAHora(tancaM)}–${minAHora(obreM)})</span>`:`<span class="pill ok" id="ctrlXatEstat">bé · Obert ara${hAct?` (${minAHora(tancaM)})`:""}</span>`;
  el.innerHTML=`<div class="ctrl-grid">
   <div class="ctrl-box">
    <div class="ctrl-cap"><h3>${ic("xat")}Xat de la colla</h3>${pillX}</div>
-   <div class="ctrl-fila"><div><b id="ctrlXatL">Escriptura i vots</b><small>${hAct?`Horari actiu: ${minAHora(tancaM)}–${minAHora(obreM)}`:"Sense horari automàtic"}</small></div>
+   <div class="ctrl-fila"><div><b id="ctrlXatL">Escriptura i vots</b><small>${hAct?`Horari actiu: ${minAHora(tancaM)}–${minAHora(obreM)}${tancaMons?" · també tanca mons":""}`:"Sense horari automàtic"}</small></div>
     <button class="sw" type="button" role="switch" id="ctrlXatSw" aria-labelledby="ctrlXatL" aria-checked="${xatAct}"${nd}><i></i><span>${xatAct?"Obert":"Tancat"}</span></button></div>
    <div style="display:flex;justify-content:flex-end"><button class="linkb" type="button" data-go-cfg="horaris">${ic("config")}Horaris i crèdits ${ic("endavant")}</button></div>
   </div>
   <div class="ctrl-box">
    <div class="ctrl-cap"><h3>${ic("llibre")}Mons a la web</h3>
-    <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap"><span class="pill ${nOb===ms.length?"ok":nOb===0?"bad":"warn"}" id="ctrlMonsEstat">${nOb} de ${ms.length} oberts</span>
+    <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">${monsNit?`<span class="pill warn">🌙 Tancats de nit (${minAHora(tancaM)}–${minAHora(obreM)})</span>`:""}<span class="pill ${nOb===ms.length?"ok":nOb===0?"bad":"warn"}" id="ctrlMonsEstat">${nOb} de ${ms.length} oberts</span>
      <button class="btn sec petit" type="button" id="ctrlMonsObre"${nd||tancats.size===0?" disabled":""}>Activa'ls tots</button>
      <button class="btn sec petit" type="button" id="ctrlMonsTanca"${nd||tancats.size===ms.length?" disabled":""}>Tanca'ls tots</button></div></div>
    <div class="ctrl-mons">${ms.map(m=>{const ob=!tancats.has(m.id);return `<div class="ctrl-mon${ob?"":" tancat"}" style="--mc:${colAssig(m.id)}">
@@ -2609,20 +2649,102 @@ function pintaAlertesTaula(){
 }
 // ====================== SECCIONS DE NENS, MONS, SESSIONS I RÀNQUING (sota demanda) ======================
 async function vistaNensSeccio(c){
- const tok=++TOK,ll=[["llista","Llista"],["benestar","Benestar"]],tab=ll.some(x=>x[0]===TAB)?TAB:"llista";
+ const tok=++TOK,ll=[["llista","Llista"],["benestar","Benestar"],["missatges","Missatges al nen"]],tab=ll.some(x=>x[0]===TAB)?TAB:"llista";
  TAB=tab;escriuUrl(false);
- c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Nens")+`<div id="nensCos">${LOGS_DIES===DIES?"":esqTaula()}</div>`;
+ c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Nens")+`<div id="nensCos">${tab!=="missatges"&&LOGS_DIES===DIES?"":esqTaula()}</div>`;
  lligaPestanyes(c,ll);
+ if(tab==="missatges"){await vistaMissatgesNen($("#nensCos"),tok);return}
  try{await asseguraLogs()}catch(e){if(tok!==TOK)return;$("#nensCos").innerHTML=avisErr(`No s'han pogut carregar les dades (${e}).`);return}
  if(tok!==TOK||VISTA!=="nens")return;
  const cos=$("#nensCos");if(!cos)return;
  if(tab==="llista"){
   vistaNens(cos);
  }else{
-  const pintaB=()=>{cos.innerHTML=barraFiltresLocals({assig:true,nen:true})+card("benestar","c-12","cor","Benestar","Un semàfor per nen amb els motius en paraules planeres, i la fase i data d'examen de cada món.",`<div id="tBen" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
+  const pintaB=()=>{cos.innerHTML=barraFiltresLocals({assig:true,nen:true})+card("benestar","c-12","cor","Benestar","Un semàfor per nen amb els motius en paraules planeres, i la fase i data d'examen de cada món.",`<div id="tBen" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`,`<button class="btn sec petit" type="button" data-go-msgs="1">${ic("ull")}<span>Què veu el nen</span></button>`);
    lligaFiltresLocals(()=>{TOK++;pintaB()});tBenestar()};
   pintaB();
  }
+}
+let MN_FILTRE="tots";
+async function vistaMissatgesNen(cos,tok){
+ if(!cos)return;
+ let ctrl=CTRL_D,xc=X&&X.cfg?X.cfg:null;
+ try{const [c0,x0]=await Promise.all([ctrlDe().catch(()=>null),xc?Promise.resolve(xc):rpcX("bn_admin_xat_config").catch(()=>null)]);if(c0)ctrl=c0;if(x0&&typeof x0==="object")xc=x0}catch(e){}
+ if(tok!==TOK||VISTA!=="nens"||TAB!=="missatges"||!$("#nensCos"))return;
+ const hor=oB(ctrl&&ctrl.horari),hAct=hor.actiu===true,hMons=hor.tanca_mons===true;
+ const tM=hAct?(nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290):1290,oM=hAct?(nN(hor.obre_min)??horaAMin(hor.obre_h)??360):360;
+ const tH=minAHora(tM),oH=minAHora(oM),tVigH=tM>=1080&&tM<=1409?minAHora(tM+30):"22:00";
+ const estCred=nN(xc&&xc.est_credit)||10,maxDia=nN(xc&&xc.max_dia)||5;
+ const CATS=[["tots","Tots"],["nit","🌙 Nit i horari"],["pauses","⏳ Pauses i temps"],["pla","📅 Pla i vigília"],["anims","💛 Ànims i ajuda"],["xat","💬 Xat i privacitat"]];
+ const EF={
+  acompanya:["ok","🟢 Només avisa (no bloqueja)"],
+  pausa:["warn","🟡 Pausa guiada"],
+  bloqueja:["bad","🔴 Bloqueja l'acció"],
+  privat:["info","🔒 Invisible per al nen"]
+ };
+ const ITEMS=[
+  {cat:"nit",on:"Portada",ef:"acompanya",tit:"🌙 Avís d'anar a dormir a la portada",cls:"p-nit",
+   prev:`🌙 Ja és hora de descansar, <b>Pau</b> (<b>${esc(tH)}</b>)! Mentre dorms el cervell guarda el que has estudiat — millor continuar demà.`,
+   quan:`Quan passa de les <b>${esc(tH)}</b> i abans de les <b>${esc(oH)}</b> (${hAct?"horari automàtic actiu a Configuració → Horaris":"horari per defecte 21:30–06:00 perquè l'horari automàtic està desactivat"}).`,
+   perque:`Recordar de manera amable que el son consolida la memòria, sense espantar ni esborrar cap estrella.`},
+  {cat:"nit",on:"Dins dels mons",ef:"acompanya",tit:"🌙 Finestra nocturna + Mode suau automàtic",cls:"p-nit",
+   prev:`<b>Ja és hora de descansar, Pau!</b><br>Ja passen de les <b>${esc(tH)}</b>. Mentre dorms, el cervell endreça i guarda el que has estudiat avui — demà ho recordaràs molt millor!<br><small>🌙 Mode suau activat automàticament · les teves estrelles estan guardades</small><div class="mn-bts"><span class="mn-bt">🏠 Plegar per avui</span><span class="mn-bt sec">Acabo el que estic fent</span></div>`,
+   quan:`Dins de qualsevol món a partir de les <b>${esc(tH)}</b> (o de les <b>${esc(tVigH)}</b> si el món està en vigília d'examen demà). Si prem «Acabo el que estic fent», no li talla el test però li torna a recordar cada <b>15 minuts</b> i manté la banda fixa a dalt.`,
+   perque:`Abaixar els estímuls visuals i sonors a la nit (activa sol el Mode suau) i convidar a plegar sense tallar en sec una pregunta a mitges.`},
+  {cat:"nit",on:"Portada i mons",ef:"bloqueja",tit:"🔒 Món tancat (manual o per horari nocturn)",cls:"p-nit",
+   prev:`<b>🔒 Aquest món està tancat ara mateix</b>${hMons&&hAct?` <small>(o 🌙 Descans nocturn fins a les ${esc(oH)})</small>`:""}<br>Les teves estrelles continuen guardades al rànquing! Tria un altre món a la portada.<div class="mn-bts"><span class="mn-bt">🚪 Tots els mons</span></div>`,
+   quan:`Quan tanques un món a <b>Mons → Llista</b>, o de <b>${esc(tH)} a ${esc(oH)}</b> si actives <b>«Tanca també els mons a la nit»</b> (ara mateix: <b>${hAct&&hMons?"ACTIU":"desactivat"}</b>).`,
+   perque:`Permetre als adults tancar l'accés del tot quan calgui descans obligatori, tranquil·litzant sempre el nen que no ha perdut cap punt.`},
+  {cat:"pauses",on:"Dins dels mons",ef:"pausa",tit:"🧠 Pausa activa cada 25 minuts seguits",cls:"p-desc",
+   prev:`<b>🧠 Ja portes 25 minuts, Pau! Toca descans</b><br>El cervell guarda millor el que has après si fas una pausa curta: 🚰 Beu un got d'aigua · 🤸 Estira braços i esquena · 👀 Mira lluny per la finestra · <b>5:00</b><div class="mn-bts"><span class="mn-bt sec">Torno a estudiar ▶ (als 5:00)</span><span class="mn-bt sec">Ara no, continuo</span></div>`,
+   quan:`Cada <b>25 minuts d'estudi actiu</b> (si canvia de pestanya més de 5 minuts, el comptador es reinicia). Pot prémer «Ara no, continuo» com a màxim <b>2 cops</b> un dia normal (o <b>3 cops</b> la vigília d'examen); si l'ajorna, li torna a sortir al cap de 10 minuts.`,
+   perque:`Evitar la fatiga visual i mental en pantalles seguides i afavorir pauses curtes d'atenció.`},
+  {cat:"pauses",on:"Dins dels mons",ef:"bloqueja",tit:"🧘 Pausa obligatòria de 5 minuts després d'ajornar",cls:"p-desc",
+   prev:`<b>🧘 Ja has ajornat el descans 2 vegades:</b> ara toca fer els 5 minuts de pausa perquè el cervell guardi el que has estudiat.`,
+   quan:`Quan ja ha ajornat la pausa dels 25 minuts el màxim permès del dia (<b>2 cops</b> en dia normal, <b>3 cops</b> en vigília). Llavors desapareix el botó «Ara no, continuo» fins que acabi el compte enrere de 5:00.`,
+   perque:`Posar un límit real però previsible quan porta gairebé una hora seguida sense descansar.`},
+  {cat:"pauses",on:"Dins dels mons",ef:"acompanya",tit:"⏳ Avís amable de temps acumulat al dia",cls:"p-temps",
+   prev:`⏳ <b>Ja portes 60 minuts avui, Pau!</b> Per avui ja està molt bé: si vols anar plegant, demà ho recordaràs encara millor. <div class="mn-bts"><span class="mn-bt sec">Entesos ✓</span></div>`,
+   quan:`Un sol cop al dia en arribar a <b>60 minuts</b> acumulats el mateix dia en aquell món (o <b>120 minuts</b> si és vigília d'examen). No bloqueja l'estudi.`,
+   perque:`Premiar l'esforç fet i evitar maratons innecessàries per pur afany de sumar estrelles.`},
+  {cat:"pla",on:"Inici del món",ef:"acompanya",tit:"📅 Pla d'estudi del dia i botó «Demà tinc examen»",cls:"p-pla",
+   prev:`<b>📅 Pla d'estudi d'avui</b> · <small>Dia 4 del món</small><br>Et queden <b>2 temes</b> per aprovar. Pla d'avui: fes <b>🌡️ Temps i clima</b> i repassa <b>3 errors</b>.<div class="mn-bts"><span class="mn-bt sec">📅 Demà tinc examen</span></div>`,
+   quan:`A la pantalla inicial de cada món mentre està en fase d'aprenentatge. El botó «Demà tinc examen» demana confirmació en <b>2 tocs</b>, es pot desmarcar si s'ha tocat per error i té un límit de <b>2 dies per món</b>.`,
+   perque:`Donar un objectiu diari concret i abastable en comptes d'atabalar amb tot el temari de cop.`},
+  {cat:"pla",on:"Inici del món",ef:"acompanya",tit:"🎯 Vigília d'examen i 🌿 Repàs post-examen",cls:"p-pla",
+   prev:`<b>🎯 Avui és vigília d'examen</b> · Res d'atabalar-se amb temes nous amb pressa: repassa els errors pendents i fes un Examen de veritat per anar-hi ben segur.<hr style="border:0;border-top:1px solid #93c5fd;margin:7px 0"><b>🌿 Repàs lliure, sense pressa</b> · Entra quan et vingui de gust per mantenir fresc el que ja saps, al teu ritme.`,
+   quan:`<b>Vigília</b>: el dia abans de la data d'examen posada per l'admin a Benestar, o quan el nen marca «Demà tinc examen». <b>Post-examen</b>: a partir de l'endemà de l'examen.`,
+   perque:`Rebaixar l'ansietat abans de l'examen (prioritzant repàs d'errors i simulacre) i treure tota pressió un cop ja ha passat.`},
+  {cat:"anims",on:"Tests i exàmens",ef:"acompanya",tit:"💛 Missatge quan es trenca una ratxa + 🛡️ Escut del combo",cls:"",
+   prev:`💡 <b>Gairebé!</b> (explicació de la resposta)<br><span style="color:#9a3412;font-weight:700">💛 Tranquil, l'error va al repàs: així és com s'aprèn!</span><div class="mn-bts"><span class="mn-bt">🛡️ Salva el combo ×2</span></div>`,
+   quan:`Quan falla una pregunta portant un combo de <b>2 o més encerts</b> seguits. Si portava <b>combo ×3 o més</b>, li ofereix l'<b>Escut del combo</b> (una pregunta germana del tema per recuperar la meitat de la ratxa, sense donar estrella extra).`,
+   perque:`Evitar la ràbia de perdre una ratxa llarga per una sola distracció i recordar que fallar serveix per alimentar el repàs espaiat.`},
+  {cat:"anims",on:" Tests i exàmens",ef:"acompanya",tit:"📝 Suspès amable a l'examen i 🤔 Pregunta confusa?",cls:"",
+   prev:`<b>4 de 10 encertades</b> · Encara et falta una mica: repassa els errors amb calma i torna-hi!<hr style="border:0;border-top:1px solid var(--border);margin:7px 0"><small>🤔 <b>Pregunta confusa?</b> → No s'entén la pregunta · La resposta no em quadra · Falta alguna dada o explicació → <b>👍 Gràcies! Ho revisarem.</b></small>`,
+   quan:`El missatge d'ànim surt quan treu menys d'un 5/10 a l'Examen de veritat. El botonet <b>«🤔 Pregunta confusa?»</b> surt sota la correcció (màxim <b>2 avisos/dia i món</b>, 0 ⭐, 3 motius tancats sense text lliure) i t'arriba directe a <b>Mons → Dificultat real</b>.`,
+   perque:`Substituir el «Suspès / Fracàs» per orientació constructiva i donar veu a l'alumne si una pregunta li sembla mal redactada.`},
+  {cat:"anims",on:"Preguntes obertes",ef:"bloqueja",tit:"✏️ Protecció d'escriptura pròpia (anti-enganxar i còpia)",cls:"",
+   prev:`✏️ Aquí no es pot enganxar: escriu-ho amb les teves paraules.<br><small>Altres avisos: «Escriu una mica més: com a mínim N paraules» · «Aquest text és una còpia de la resposta. Escriu-ho amb les teves paraules» · «🔒 Ja has vist la resposta d'aquesta pregunta. Pots practicar, però fins al DD/MM no puntua.»</small>`,
+   quan:`Quan intenta fer <b>copiar i enganxar / arrossegar text</b> a una pregunta oberta, escriu tecles a l'atzar, copia l'enunciat o ja ha mirat la resposta model aquell dia.`,
+   perque:`Garantir que practica l'expressió escrita real amb les seves paraules (sense penalitzar-lo: pot practicar tants cops com vulgui).`},
+  {cat:"xat",on:"Xat de la colla",ef:"bloqueja",tit:"💬 Crèdits d'estudi, topall diari i xat tancat / en pausa",cls:"p-xat",
+   prev:`<b>INSERT COIN</b> · Per parlar, guanya <b>${estCred} ⭐ avui</b>.<br><b>TORNA DEMÀ</b> · Ja has dit les <b>${maxDia} frases d'avui</b>. Pots continuar llegint i votant «Ben dit».<br><b>XAT TANCAT</b> · Ara el xat està tancat. Pots llegir, però no escriure ni votar.`,
+   quan:`Quan encara no ha guanyat <b>${estCred} ⭐</b> avui per desbloquejar crèdit, quan arriba al màxim de <b>${maxDia} frases diàries</b>, quan el xat és fora d'horari (<b>${esc(tH)}–${esc(oH)}</b>) o si té un silenci temporal actiu.`,
+   perque:`Fer que el xat sigui una petita recompensa lligada a haver estudiat abans, amb frases tancades segures i un sostre diari clar.`},
+  {cat:"xat",on:"Només a /admin/",ef:"privat",tit:"🔒 Què NO veu mai el nen (100% privat per a l'adult)",cls:"",
+   prev:`<b>Cap semàfor ni etiqueta sobre el nen:</b> l'alumne <b>mai no veu</b> el semàfor de Benestar (🟢/🟡/🔴/🔵), ni avisos de «respon massa de pressa», «frustració per suspesos», «marató», «inactiu» ni si està amagat del rànquing públic.`,
+   quan:`Sempre: tots els indicadors diagnòstics de <b>Nens → Benestar</b>, <b>Inici → Alertes</b> i la visibilitat del rànquing viuen exclusivament dins d'<code>/admin/</code>.`,
+   perque:`Per disseny (<code>BON-US.md</code>): les mètriques serveixen perquè l'adult acompanyi més bé, mai per jutjar ni etiquetar l'infant davant seu o de la colla.`}
+ ];
+ const render=()=>{
+  const fil=MN_FILTRE==="tots"?ITEMS:ITEMS.filter(x=>x.cat===MN_FILTRE);
+  cos.innerHTML=card("missatgesNen","c-12","ull","Missatges de Bon ús i Benestar que veu l'alumne",
+   `<p>Recull complet i literal de tots els missatges d'acompanyament, descans, horari i límits que pot veure un nen a Bona Nota, amb els valors que tens configurats ara mateix.</p>`,
+   `<div class="eines-t" style="margin-bottom:12px"><div class="seg" id="mnCats" role="group" aria-label="Categoria de missatges">${CATS.map(([id,t])=>`<button type="button" data-mn-cat="${esc(id)}" aria-pressed="${MN_FILTRE===id}">${esc(t)} (${id==="tots"?ITEMS.length:ITEMS.filter(x=>x.cat===id).length})</button>`).join("")}</div><span class="esp"></span><button class="btn sec petit" type="button" data-go-cfg="horaris">${ic("rellotge")}<span>Configura horari (${esc(tH)} → ${esc(oH)})</span></button></div>
+   <div class="mn-grid">${fil.map(it=>{const [ec,et]=EF[it.ef]||["neutre",it.ef];return `<article class="mn-card"><div class="mn-cap"><h3>${it.tit}</h3><div class="mn-tags"><span class="pill neutre">${esc(it.on.trim())}</span><span class="pill ${ec}">${esc(et)}</span></div></div><div class="mn-prev ${it.cls}" aria-label="Vista prèvia del missatge">${it.prev}</div><div class="mn-meta"><div><b>Quan surt:</b> ${it.quan}</div><div><b>Per què:</b> ${it.perque}</div></div></article>`}).join("")}</div>`);
+  cos.querySelectorAll("[data-mn-cat]").forEach(b=>b.onclick=()=>{MN_FILTRE=b.dataset.mnCat;render()});
+ };
+ render();
 }
 async function vistaMonsSeccio(c){
  const ll=[["llista","Llista"],["dificultat","Dificultat real"]],tab=ll.some(x=>x[0]===TAB)?TAB:"llista";
@@ -3410,25 +3532,73 @@ function pintaDificultat(elId="tDif",assigFix=""){const x=$("#"+elId),d=assigFix
   const bj=x.querySelector("#btDifJson");if(bj&&!DEMO)bj.onclick=()=>{const b=new Blob([JSON.stringify(d,null,2)+"\n"],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");
    a.href=u;a.download=`bn-dificultat-${assigFix?assigFix+"-":""}${diaMad()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1e3)}}
  catch(e){console.error(e);x.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
+const DUB_MOTIU={enunciat:"No s'entén la pregunta",resposta:"La resposta no quadra",pista:"Falta dada o explicació"};
+const DUB_ORIGEN={test:"Test del tema",repas:"Repàs d'errors",examen:"Examen sorpresa","examen-real":"Examen de veritat"};
 function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix||TF.assig,unSol=!!assigFix,minR=nN(d.min_respostes)||8,dies=nN(d.dies)||365,net=t=>String(t||"").replace(/<[^>]+>/g,"");
  // total de preguntes de test del catàleg (sense j-*) per món
  const catTot=new Map();Object.keys(oB(PREG)).forEach(k=>{const p=k.split("/");if(p.length>=3&&!p[1].startsWith("j-")&&(!fa||p[0]===fa))catTot.set(p[0],(catTot.get(p[0])||0)+1)});
  const totBanc=[...catTot.values()].reduce((s,v)=>s+v,0);
+ const byAq=new Map();
  const L=aR(d.preguntes).filter(r=>r&&typeof r==="object"&&!Array.isArray(r)).map(r=>{
   const a=r.assig==null||r.assig===""?"?":String(r.assig),qid=r.qid==null||r.qid===""?"?":String(r.qid);
   const q=oB(PREG)[a+"/"+qid]||null,act=nN(oB(oB(QDIF_ADM)[a])[qid])||2,n=nN(r.n)||0,bones=nN(r.bones)||0,nens=nN(r.nens)||0;
   const enc=n>0?(nN(r.encert)??0):null,enc1=n>0?nN(r.encert_1a):null,seg=n>0?nN(r.seg_mig):null,suf=!!r.suficient&&n>=minR&&enc!=null,dif=suf?(nN(r.dificultat)||(enc<55?3:enc>90?1:2)):null;
   const dubtes=nN(r.dubtes)||0,dubNens=nN(r.dubtes_nens)||0,dm=oB(r.dubtes_motius);
   const dubMotius={enunciat:nN(dm.enunciat)||0,resposta:nN(dm.resposta)||0,pista:nN(dm.pista)||0};
+  const dubDetall=aR(r.dubtes_detall).filter(u=>u&&typeof u==="object"&&!Array.isArray(u)).map(u=>({
+   nom:String(u.nom||u.k||"Alumne").trim(),k:String(u.k||u.nom||"").trim().toLowerCase(),motiu:String(u.motiu||""),
+   ok:typeof u.ok==="boolean"?u.ok:null,origen:String(u.origen||""),ts:(nN(u.ts)||0)*1000
+  }));
   const dubTip=dubtes?`${pl(dubtes,"avís de pregunta confusa","avisos de pregunta confusa")} (${pl(dubNens,"nen","nens")}): `+[dubMotius.enunciat?`no s'entén ${dubMotius.enunciat}`:"",dubMotius.resposta?`resposta ${dubMotius.resposta}`:"",dubMotius.pista?`falta dada ${dubMotius.pista}`:""].filter(Boolean).join(" · "):"";
   // mateixa regla que motor/dificultat.py --proposa: afegir si < 55 % i no és 3; revisar si és 3 i encert >= 75 %
   const estat=!suf?"pendent":dif===3&&act!==3?"afegir":act===3&&enc>=75?"revisar":act===3?"confirmada":dif===1?"facil":"normal";
   const ordE={afegir:1,revisar:2,confirmada:3,normal:4,facil:5,pendent:6}[estat]||9;
-  return {assig:a,qid,text:q?net(q.t):`Pregunta ${qid}`,tema:q?String(q.tema||""):"",bona:q&&Array.isArray(q.o)&&q.o[q.c]!=null?net(q.o[q.c]):null,n,bones,nens,enc,enc1,seg,suf,dif,act,estat,ordE,dubtes,dubNens,dubMotius,dubTip}
+  const row={assig:a,qid,text:q?net(q.t):`Pregunta ${qid}`,tema:q?String(q.tema||""):"",bona:q&&Array.isArray(q.o)&&q.o[q.c]!=null?net(q.o[q.c]):null,n,bones,nens,enc,enc1,seg,suf,dif,act,estat,ordE,dubtes,dubNens,dubMotius,dubDetall,dubTip};
+  byAq.set(a+"/"+qid,row);
+  return row
  }).filter(r=>!fa||r.assig===fa);
  const nota=!unSol&&TF.nom.trim()?`<p class="fr-nota">${ic("info")}<span>És de tota la colla (últims ${dies} dies, sense comptar el repàs): el filtre de nen i el període curt no s'hi apliquen.</span></p>`:"";
- if(!L.length)return {h:nota+buit("llamp",fa?"Encara no hi ha respostes de test o examen en aquest món.":"Encara no hi ha respostes registrades per calcular la dificultat.",`Calen almenys ${minR} respostes per pregunta en tests o exàmens.`)};
+ if(!L.length&&!aR(d.dubtes_llista).length)return {h:nota+buit("llamp",fa?"Encara no hi ha respostes de test o examen en aquest món.":"Encara no hi ha respostes registrades per calcular la dificultat.",`Calen almenys ${minR} respostes per pregunta en tests o exàmens.`)};
  const sufL=L.filter(r=>r.suf),afegir=sufL.filter(r=>r.estat==="afegir"),revisar=sufL.filter(r=>r.estat==="revisar"),dificils=sufL.filter(r=>r.dif===3),facils=sufL.filter(r=>r.dif===1),ambDub=L.filter(r=>r.dubtes>0);
+ // Construïm les files detallades de preguntes confuses (món, tema, on ha sorgit, pregunta, nen, motiu i quan)
+ const normDubRow=(a,qid,u)=>{
+  const q=oB(PREG)[a+"/"+qid]||null,st=byAq.get(a+"/"+qid)||null;
+  const tema=q&&q.tema?String(q.tema):(st&&st.tema)||String(qid.split("/")[0]||"—");
+  const text=q?net(q.t):(st&&st.text)||`Pregunta ${qid}`;
+  const bona=q&&Array.isArray(q.o)&&q.o[q.c]!=null?net(q.o[q.c]):(st&&st.bona)||null;
+  const nom=String(u.nom||u.k||"Alumne").trim(),k=String(u.k||u.nom||"").trim().toLowerCase();
+  const motiu=String(u.motiu||""),motiuTxt=DUB_MOTIU[motiu]||motiu||"Pregunta confusa";
+  const origen=String(u.origen||""),origenTxt=DUB_ORIGEN[origen]||"";
+  return {assig:a,qid,tema,text,bona,nom,k,motiu,motiuTxt,ok:typeof u.ok==="boolean"?u.ok:null,origen,origenTxt,ts:(nN(u.ts)||0)*1000,
+   n:st?st.n:0,bones:st?st.bones:0,enc:st?st.enc:null,act:st?st.act:2}
+ };
+ let dubRows=aR(d.dubtes_llista).filter(u=>u&&typeof u==="object"&&!Array.isArray(u)).map(u=>{
+  const a=u.assig==null||u.assig===""?"?":String(u.assig),qid=u.qid==null||u.qid===""?"?":String(u.qid);
+  return normDubRow(a,qid,u)
+ }).filter(r=>!fa||r.assig===fa);
+ if(!dubRows.length&&ambDub.length){
+  ambDub.forEach(r=>{
+   if(r.dubDetall.length)r.dubDetall.forEach(u=>dubRows.push(normDubRow(r.assig,r.qid,u)));
+   else{const mTxt=[r.dubMotius.enunciat?`No s'entén (${r.dubMotius.enunciat})`:"",r.dubMotius.resposta?`Resposta (${r.dubMotius.resposta})`:"",r.dubMotius.pista?`Falta dada (${r.dubMotius.pista})`:""].filter(Boolean).join(" · ")||"Pregunta confusa";
+    dubRows.push({assig:r.assig,qid:r.qid,tema:r.tema||String(r.qid.split("/")[0]||"—"),text:r.text,bona:r.bona,nom:pl(r.dubNens||r.dubtes,"nen","nens"),k:"",motiu:"",motiuTxt:mTxt,ok:null,origen:"",origenTxt:"",ts:0,n:r.n,bones:r.bones,enc:r.enc,act:r.act})}
+  });
+ }
+ dubRows.sort((x,y)=>y.ts-x.ts||x.assig.localeCompare(y.assig)||x.qid.localeCompare(y.qid));
+ const colsDub=[
+  ...(unSol?[]:[{k:"assig",t:"Món",cls:"nw dub-td-m",v:r=>nomAssig(r.assig),csv:r=>nomAssig(r.assig),h:r=>`<button type="button" class="link-mon" data-obre-mon="${esc(r.assig)}" title="Obre la fitxa del món">${pillMon(r.assig)}</button>`}]),
+  {k:"tema",t:"Tema / On",cls:"dub-td-tm",v:r=>`${r.tema} ${r.origenTxt}`,csv:r=>`${r.tema}${r.origenTxt?" · "+r.origenTxt:""} (${r.qid})`,q:r=>`${r.tema} ${r.origenTxt} ${r.qid}`,
+   h:r=>`<span class="dub-tema">${esc(r.tema)}</span><span class="q-s">${r.origenTxt?`<b>${esc(r.origenTxt)}</b> · `:""}id ${esc(r.qid)}</span>`},
+  {k:"text",t:"Pregunta",cls:"cur dub-td-q",v:r=>r.text,csv:r=>r.text,q:r=>`${r.text} ${r.bona||""} ${r.qid}`,
+   h:r=>`<span class="q-t">${r.act===3?"⚡ ":""}${esc(r.text)}</span><span class="q-s">${r.bona?`bona: <span class="ok">${esc(r.bona)}</span> · `:""}${r.enc==null?"0 resp. de test":`encert colla: <b>${fmtD(r.enc)}%</b> (${r.bones}/${r.n})`}</span>`},
+  {k:"nom",t:"Nen",cls:"nw dub-td-n",v:r=>r.nom,csv:r=>r.nom,h:r=>r.k?`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`:`<span class="muted">${esc(r.nom)}</span>`},
+  {k:"motiuTxt",t:"Què diu",cls:"dub-td-mo",v:r=>r.motiuTxt,csv:r=>`${r.motiuTxt}${r.ok===true?" (encertada)":r.ok===false?" (fallada)":""}`,q:r=>`${r.motiuTxt} ${r.ok===true?"encertada":r.ok===false?"fallada":""}`,
+   h:r=>`<span class="pill warn">🤔 ${esc(r.motiuTxt)}</span>${r.ok===true?`<span class="q-s">✅ L'havia encertada</span>`:r.ok===false?`<span class="q-s">❌ L'havia fallada</span>`:""}`},
+  {k:"ts",t:"Quan",cls:"nw dub-td-ts",v:r=>r.ts,csv:r=>r.ts?dataC(r.ts):"—",h:r=>r.ts?`<time title="${esc(dataC(r.ts))}">${esc(dataC(r.ts))}</time>`:"—"}
+ ];
+ const htmlCaixaDubtes=()=>dubRows.length?card(idPrefix+"DubBox","dub-box","alerta",`🤔 Preguntes confuses marcades pels alumnes`,
+  `<p>Aquí veus cada vegada que un alumne ha premut <b>«🤔 Pregunta confusa?»</b> després de respondre: en quin <b>món</b>, quin <b>tema</b> i quina activitat ha sorgit, l'enunciat exacte, <b>quin nen</b> l'ha marcada i quin motiu ha triat.</p>`,
+  `<div class="dub-taula">${taula(idPrefix+"DubT",colsDub,dubRows,{k:"ts",desc:true,alta:true,etiqueta:"Preguntes confuses",csvNom:`bona-nota-preguntes-confuses${fa?"-"+fa:""}`})}</div>`,
+  `<span class="pill warn">${pl(dubRows.length,"avís","avisos")} · ${pl(ambDub.length||new Set(dubRows.map(x=>x.assig+"/"+x.qid)).size,"pregunta","preguntes")}</span>`):"";
  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
  const kpis=unSol?"":`<div class="kpis" style="margin-bottom:14px">
   ${kp(`Amb ≥ ${minR} respostes`,totBanc?`${sufL.length} / ${totBanc}`:String(sufL.length),`${L.length} vistes al registre${ambDub.length?` · ${pl(ambDub.length,"amb dubte 🤔","amb dubtes 🤔")}`:totBanc?` (${Math.round(sufL.length*100/totBanc)} % amb prou dades)`:""}`)}
@@ -3444,8 +3614,12 @@ function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix
   <button type="button" data-dif-v="dubtes" aria-pressed="${DIF_VISTA==="dubtes"}">🤔 Dubtes (${ambDub.length})</button>
   <button type="button" data-dif-v="totes" aria-pressed="${DIF_VISTA==="totes"}">Totes (${L.length})</button>
  </div><span class="esp"></span>${unSol?"":`<button class="btn petit" type="button" id="btProposaDif"${nd} title="Descarrega motor/dificultat.json actualitzat amb les propostes (+${afegir.length} / −${revisar.length})">${ic("baixar")}<span>⚡ Proposa dificultat.json</span></button><button class="btn sec petit" type="button" id="btDifJson"${nd}>${ic("baixar")}<span>Baixa JSON</span></button>`}</div>`;
- if(!fil.length&&unSol){const msg=DIF_VISTA==="proposta"?(sufL.length?"Cap canvi proposat en les preguntes que ja tenen prou respostes.":"Encara cap pregunta arriba al mínim de respostes per proposar canvis."):DIF_VISTA==="dubtes"?"Cap alumne ha marcat cap pregunta confusa en aquest món.":`Encara cap pregunta arriba a ${minR} respostes (n'hi ha ${L.length} de vistes).`;
-  return {h:nota+kpis+eines+buit("llamp",msg,"Pots prémer «Totes» per veure les preguntes amb menys respostes.")}}
+ if(DIF_VISTA==="dubtes"){
+  return {h:nota+kpis+eines+(dubRows.length?htmlCaixaDubtes():buit("ok",unSol?"Cap alumne ha marcat cap pregunta confusa en aquest món.":"Cap alumne ha marcat encara cap pregunta com a confusa.","Quan algú premi «🤔 Pregunta confusa?» després de respondre, sortirà aquí amb el món, el tema, la pregunta i el nen.")),PL:null}
+ }
+ const dubDestacat=htmlCaixaDubtes();
+ if(!fil.length&&unSol){const msg=DIF_VISTA==="proposta"?(sufL.length?"Cap canvi proposat en les preguntes que ja tenen prou respostes.":"Encara cap pregunta arriba al mínim de respostes per proposar canvis."):`Encara cap pregunta arriba a ${minR} respostes (n'hi ha ${L.length} de vistes).`;
+  return {h:nota+kpis+dubDestacat+eines+buit("llamp",msg,"Pots prémer «Totes» per veure les preguntes amb menys respostes.")}}
  const pillE=r=>({
   afegir:`<span class="pill bad" title="Encert < 55 % i encara no és a dificultat.json">➕ Proposa ⚡</span>`,
   revisar:`<span class="pill info" title="Marcada ⚡ a dificultat.json però amb ≥ 75 % d'encert">➖ Revisa ⚡</span>`,
@@ -3455,8 +3629,9 @@ function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix
   pendent:`<span class="pill neutre" title="Encara no arriba a ${minR} respostes">${r.act===3?"⚡ ":""}&lt; ${minR} resp.</span>`
  })[r.estat]||`<span class="pill neutre">—</span>`;
  const txtReal=r=>r.dif===3?"⚡ difícil":r.dif===1?"fàcil":r.dif===2?"normal":"pendent";
+ const resumNensDub=r=>r.dubDetall.length?` · 🤔 ${r.dubDetall.slice(0,3).map(u=>`<b>${esc(u.nom)}</b> (${esc(DUB_MOTIU[u.motiu]||u.motiu||"dubte")})`).join(", ")}${r.dubDetall.length>3?"…":""}`:(r.dubtes?` · 🤔 ${esc(r.dubTip)}`:"");
  const cols=[
-  {k:"text",t:"Pregunta",cls:"cur",h:r=>`<span class="q-t">${r.act===3?"⚡ ":""}${esc(r.text)}</span><span class="q-s">${r.tema?esc(r.tema)+" · ":""}${r.bona?`bona: <span class="ok">${esc(r.bona)}</span> · `:""}fitxer: <b>${r.act===3?"⚡ difícil":"normal"}</b> · real: <b>${txtReal(r)}</b> · id ${esc(r.qid)}</span>`},
+  {k:"text",t:"Pregunta",cls:"cur",h:r=>`<span class="q-t">${r.act===3?"⚡ ":""}${esc(r.text)}</span><span class="q-s">${r.tema?esc(r.tema)+" · ":""}${r.bona?`bona: <span class="ok">${esc(r.bona)}</span> · `:""}fitxer: <b>${r.act===3?"⚡ difícil":"normal"}</b> · real: <b>${txtReal(r)}</b> · id ${esc(r.qid)}${resumNensDub(r)}</span>`},
   {k:"ordE",t:"Estat ⚡",cls:"nw",v:r=>r.ordE*100-Math.min(99,r.dubtes),q:r=>`${r.estat} ${r.dubtes?`dubte confusa ${r.dubTip}`:""}`,h:r=>pillE(r)+(r.dubtes?` <span class="pill warn" title="${esc(r.dubTip)}">🤔 ${r.dubtes}</span>`:"")},
   {k:"enc",t:"Encert",num:true,v:r=>r.enc??-1,h:r=>r.enc==null?`<span class="muted">0 resp.</span>`:mini(Math.round(r.enc),100,r.enc<55?"bad":"primary",`${fmtD(r.enc)}%`)+` <span class="muted">(${r.bones}/${r.n})</span>`},
   {k:"enc1",t:"1a resp.",num:true,v:r=>r.enc1??-1,h:r=>r.enc1==null?"—":`${fmtD(r.enc1)}%`},
@@ -3464,7 +3639,7 @@ function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix
   {k:"seg",t:"Segons",num:true,v:r=>r.seg??-1,h:r=>r.seg==null?"—":fmtD(r.seg)}];
  if(unSol){
   const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>🤔 N</b>: avisos de «Pregunta confusa?» marcats pels alumnes.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen.</span></div>`;
-  return {h:nota+eines+taula(idPrefix+"T-0",cols,fil,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(fa)}`})+lleg,PL:null}}
+  return {h:nota+dubDestacat+eines+taula(idPrefix+"T-0",cols,fil,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(fa)}`})+lleg,PL:null}}
  const canvisA=a=>fil.filter(r=>r.assig===a&&(r.estat==="afegir"||r.estat==="revisar")).length;
  const filesA=a=>fil.filter(r=>r.assig===a).length,vistesA=a=>L.filter(r=>r.assig===a).length;
  const baseAssigs=fa?[fa]:[...new Set([...Object.keys(ASSIGS),...catTot.keys(),...L.map(r=>r.assig)])];
@@ -3494,7 +3669,7 @@ function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix
     <small><span class="dm-pit" title="${esc(pitjor.text)}">Més baixa: <b>${esc(pitjor.text)}</b></span><span>${pEnc==null?`🤔 ${pitjor.dubtes}`:`${fmtD(pEnc)}%`}</span></small>`,
    taula(idPrefix+"T-"+i,cols,rs,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(a)}`}))}).join("");
  const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>🤔 N</b>: avisos de «Pregunta confusa?» marcats pels alumnes.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen.</span></div>`;
- return {h:nota+kpis+eines+PL.eines()+blocs+lleg,PL}}
+ return {h:nota+kpis+dubDestacat+eines+PL.eines()+blocs+lleg,PL}}
 
 // ====================== CONFIGURACIÓ (§4.6: Horaris i crèdits, Catàleg, Llindars, Còpies) ======================
 let CPTOK=0,COPIES=[];
@@ -3944,20 +4119,22 @@ function pintaXMsgs(){const el=$("#xMsgs");if(!el||!X)return;const nd=xND(),FR=x
 function pintaXSil(){const el=$("#xSil");if(!el||!X)return;const nd=xND(),ara=Date.now(),L=X.sil.filter(s=>tsMs(s.fins)>ara).sort((a,b)=>tsMs(a.fins)-tsMs(b.fins)),noms=xNoms();
  el.innerHTML=(L.length?`<div class="xs-l">${L.map(s=>{const n=nomDe(s.k);return `<div class="xs">${nenH(n)}<div class="xs-c"><span>Fins <b>${esc(dataC(tsMs(s.fins)))}</b></span>${s.motiu?`<small>${esc(s.motiu)}</small>`:""}</div><button class="btn sec petit" type="button" data-xtreu="${esc(s.k)}"${nd}>${ic("desfes")}Treu el silenci</button></div>`}).join("")}</div>`:buit("ok","Ningú silenciat ara mateix."))
   +`<div class="xs-nou"><label for="xsNom">Silencia un nom</label><div class="xs-f"><select id="xsNom"${noms.length?"":" disabled"}>${noms.length?noms.map(n=>`<option value="${esc(kNom(n))}">${esc(n)}</option>`).join(""):`<option value="">Encara no hi ha cap nom</option>`}</select><button class="btn perill-sec" type="button" id="xsBt"${nd||(noms.length?"":" disabled")}>${ic("silenci")}Silencia…</button></div><p class="sub" style="margin:8px 0 0">Després triaràs 1, 3 o 7 dies i el motiu.</p></div>`}
-function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.cfg,hor=oB(CTRL_D&&CTRL_D.horari);let obert=cf.actiu!==false,hAct=hor.actiu===true,tM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,oM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
+function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.cfg,hor=oB(CTRL_D&&CTRL_D.horari);let obert=cf.actiu!==false,hAct=hor.actiu===true,hMons=hor.tanca_mons===true,tM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,oM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
  el.innerHTML=`<form id="xcF" novalidate>
   <div class="xcfg-g"><label for="xcEst">Estrelles per crèdit<small>De 1 a 100. Cada crèdit és una frase.</small></label><input id="xcEst" type="number" inputmode="numeric" min="1" max="100" step="1" value="${esc(cf.est_credit)}"></div>
   <div class="xcfg-g"><label for="xcMax">Màxim de frases al dia<small>De 1 a 20, encara que guanyi més estrelles.</small></label><input id="xcMax" type="number" inputmode="numeric" min="1" max="20" step="1" value="${esc(cf.max_dia)}"></div>
   <div class="xcfg-g"><label for="xcEsp">Segons d'espera<small>De 0 a 600, entre un missatge i el següent.</small></label><input id="xcEsp" type="number" inputmode="numeric" min="0" max="600" step="1" value="${esc(cf.espera_s)}"></div>
   <div class="xcfg-g"><span id="xcActL">Xat obert<small>Tancat: es pot llegir, però ningú pot escriure ni votar.</small></span><button class="sw" type="button" role="switch" id="xcAct" aria-labelledby="xcActL" aria-checked="${obert}"${nd}><i></i><span>${obert?"Obert":"Tancat"}</span></button></div>
   <div class="xcfg-g"><span id="xcHorL">Horari automàtic<small>Tanca el xat sol i avisa als mons quan toca descansar (hora de Madrid).</small></span><button class="sw" type="button" role="switch" id="xcHorari" aria-labelledby="xcHorL" aria-checked="${hAct}"${nd}><i></i><span>${hAct?"Actiu":"Desactivat"}</span></button></div>
+  <div class="xcfg-g"><span id="xcHorMonsL">Tanca també els mons a la nit<small>Si està actiu, dins la franja Tanca / Obre tampoc es pot estudiar als mons (si no, només avisa i tanca el xat).</small></span><button class="sw" type="button" role="switch" id="xcTancaMons" aria-labelledby="xcHorMonsL" aria-checked="${hMons}"${nd}><i></i><span>${hMons?"Sí":"No"}</span></button></div>
   <div class="xcfg-g"><label for="xcTancaH">Tanca / Obre<small>Per exemple: 21:30 a 07:00.</small></label><span style="display:inline-flex;gap:6px;align-items:center"><input id="xcTancaH" type="time" value="${minAHora(tM)}" style="width:98px"${nd}><span class="muted">→</span><input id="xcObreH" type="time" value="${minAHora(oM)}" style="width:98px"${nd}></span></div>
   <p class="xcfg-calc" id="xcCalc"></p>
-  <div class="xcfg-p"><p class="xerr" id="xcErr" role="alert"></p><button class="btn" type="submit" id="xcDesa"${nd}>Desa la configuració</button></div></form>`;
+  <div class="xcfg-p"><button class="linkb" type="button" data-go-msgs="1">${ic("cor")}Què veu el nen ${ic("endavant")}</button><span class="esp"></span><p class="xerr" id="xcErr" role="alert"></p><button class="btn" type="submit" id="xcDesa"${nd}>Desa la configuració</button></div></form>`;
  const calc=()=>{const e=+$("#xcEst").value,mx=+$("#xcMax").value;$("#xcCalc").textContent=e>0&&mx>0?`Un nen actiu guanya unes 2 ⭐ per minut: cada frase li costa uns ${fmtD(Math.round(e*5)/10)} minuts d'estudi, i les ${mx} del dia, uns ${fmtD(Math.round(e*mx/2))}.`:""};
  ["#xcEst","#xcMax"].forEach(s=>{$(s).oninput=calc});calc();
  $("#xcAct").onclick=()=>{obert=!obert;const b=$("#xcAct");b.setAttribute("aria-checked",obert);b.querySelector("span").textContent=obert?"Obert":"Tancat"};
  $("#xcHorari").onclick=()=>{hAct=!hAct;const b=$("#xcHorari");b.setAttribute("aria-checked",hAct);b.querySelector("span").textContent=hAct?"Actiu":"Desactivat"};
+ $("#xcTancaMons").onclick=()=>{hMons=!hMons;const b=$("#xcTancaMons");b.setAttribute("aria-checked",hMons);b.querySelector("span").textContent=hMons?"Sí":"No"};
  $("#xcF").onsubmit=async e=>{e.preventDefault();if(DEMO){toast("No disponible en demo","avis");return}
   const v=(s,a,b)=>{const x=$(s).value.trim();return /^\d+$/.test(x)&&+x>=a&&+x<=b?+x:null},est=v("#xcEst",1,100),mx=v("#xcMax",1,20),esp=v("#xcEsp",0,600),tH=horaAMin($("#xcTancaH").value),oH=horaAMin($("#xcObreH").value),err=$("#xcErr");
   const mal=est==null?["#xcEst","Les estrelles per crèdit han de ser un número de 1 a 100."]:mx==null?["#xcMax","El màxim de frases ha de ser un número de 1 a 20."]:esp==null?["#xcEsp","Els segons d'espera han de ser un número de 0 a 600."]:tH==null?["#xcTancaH","Escriu una hora de tancament vàlida."]:oH==null?["#xcObreH","Escriu una hora d'obertura vàlida."]:null;
@@ -3965,7 +4142,7 @@ function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.c
   if(!obert&&X.cfg.actiu!==false&&!await dialeg({titol:"Tancar el xat?",ok:"Sí, tanca el xat",icona:"xat",cos:`<p>Mentre estigui tancat, tothom podrà llegir el xat, però <b>ningú podrà escriure ni votar</b>.</p><p>El pots tornar a obrir quan vulguis des d'aquí.</p>`}))return;
   const b=$("#xcDesa");b.disabled=true;
   try{const r=await rpcX("bn_admin_xat_config",{p_cfg:{est_credit:est,max_dia:mx,espera_s:esp,actiu:obert}});X.cfg=Object.assign({},XCFG0,r&&typeof r==="object"?r:{});
-   try{const rc=await rpcCtrl({xat_actiu:obert,horari_actiu:hAct,tanca_min:tH,obre_min:oH,tanca_h:minAHora(tH),obre_h:minAHora(oH)});CTRL=Promise.resolve(rc);CTRL_D=rc}catch(er){}
+   try{const rc=await rpcCtrl({xat_actiu:obert,horari_actiu:hAct,horari_tanca_mons:hMons,tanca_min:tH,obre_min:oH,tanca_h:minAHora(tH),obre_h:minAHora(oH)});CTRL=Promise.resolve(rc);CTRL_D=rc}catch(er){}
    pintaXCfg();pintaXRes();
    toast(X.cfg.actiu===false?"Configuració desada: el xat està tancat":"Configuració desada")}
   catch(x){toast(errX(x,"desar la configuració"),"err");const y=$("#xcDesa");if(y)y.disabled=false}}}
@@ -4121,9 +4298,10 @@ function demoMon(k,a){const L=DEMO_L.filter(l=>clauNen(l)===k&&l.assig===a),net=
  return {assig:a,mod:ts,ts,reinici:null,punts,temps,dies:dies.size,dia_ult:[...dies].sort().pop()||null,ultim:null,temes,rep,rep_n:rep.length,rep_avui:rep.filter(r=>r.prox<=av).length,
   ob,examens:examens.slice(-20),boss:boss.v?boss:null,apresos,jocs,fonts,ftema,fjoc,est:null}}
 let DEMO_CTRL=null;
-function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{actiu:true,tanca_min:1290,obre_min:420},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)};
+function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{actiu:true,tanca_mons:false,tanca_min:1290,obre_min:420},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)};
  if(cfg&&typeof cfg==="object"){if(typeof cfg.xat_actiu==="boolean")DEMO_CTRL.xat_actiu=cfg.xat_actiu;
   if(typeof cfg.horari_actiu==="boolean")DEMO_CTRL.horari.actiu=cfg.horari_actiu;
+  if(typeof cfg.horari_tanca_mons==="boolean")DEMO_CTRL.horari.tanca_mons=cfg.horari_tanca_mons;
   if(typeof cfg.tanca_min==="number")DEMO_CTRL.horari.tanca_min=cfg.tanca_min;
   if(typeof cfg.obre_min==="number")DEMO_CTRL.horari.obre_min=cfg.obre_min;
   if(Array.isArray(cfg.mons_tancats))DEMO_CTRL.mons_tancats=cfg.mons_tancats.slice();
@@ -4135,7 +4313,7 @@ function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{act
    DEMO_CTRL.ranquing=rkCfgNorm(Object.assign({},cur,cfg.ranquing,{pestanyes:Object.assign({},cur.pestanyes,oB(cfg.ranquing.pestanyes))}));
   }}
  const tH=enHorariTancat(DEMO_CTRL.horari.actiu,DEMO_CTRL.horari.tanca_min,DEMO_CTRL.horari.obre_min);
- return Object.assign({},JSON.parse(JSON.stringify(DEMO_CTRL)),{llindars:llindarsNorm(DEMO_CTRL.llindars),ranquing:rkCfgNorm(DEMO_CTRL.ranquing),xat_en_horari_tancat:tH,xat_obert_ara:DEMO_CTRL.xat_actiu&&!tH})}
+ return Object.assign({},JSON.parse(JSON.stringify(DEMO_CTRL)),{llindars:llindarsNorm(DEMO_CTRL.llindars),ranquing:rkCfgNorm(DEMO_CTRL.ranquing),xat_en_horari_tancat:tH,xat_obert_ara:DEMO_CTRL.xat_actiu&&!tH,mons_tancats_nit:tH&&DEMO_CTRL.horari.tanca_mons===true})}
 function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
  if(f==="bn_admin_fitxa"){const ls=DEMO_L.filter(l=>clauNen(l)===k0),pf=demoPerfil(k0,ls.length?Date.parse(ls[0].ts):null),P=DEMO_PERF[k0]||{};
   let as=[...new Set(ls.map(l=>l.assig))].sort();if(!pf||P.res)as=[];if(P.mons)as=as.slice(0,P.mons);
@@ -4186,7 +4364,7 @@ async function demoFontsRepRpc(f,x){
    as.filter(a=>!a0||a===a0).forEach(a=>demoMon(k,a).rep.forEach(r=>{const key=a+"|"+(r.tid==null?"":r.tid);let g=G.get(key);if(!g){g={assig:a,tid:r.tid==null?null:r.tid,n:0,ks:new Set(),avui:0,q:new Map()};G.set(key,g)}
     g.n++;g.ks.add(k);if(r.prox<=av)g.avui++;g.q.set(r.q,(g.q.get(r.q)||0)+1)}))});
   return [...G.values()].map(g=>({assig:g.assig,tid:g.tid,n:g.n,nens:g.ks.size,avui:g.avui,preguntes:[...g.q].sort((p,q)=>q[1]-p[1]).slice(0,5).map(([q,n])=>({q,n}))})).sort((p,q)=>q.n-p.n||p.assig.localeCompare(q.assig)).slice(0,300)}
- if(f==="bn_admin_dificultat"){await Promise.all([preguntes(),carregaDifActual()]);const a0=x.p_assig||null,minR=x.p_min||8,dies=x.p_dies||365,out=[];
+ if(f==="bn_admin_dificultat"){await Promise.all([preguntes(),carregaDifActual()]);const a0=x.p_assig||null,minR=x.p_min||8,dies=x.p_dies||365,out=[],dubLlista=[],araS=Math.floor(Date.now()/1000);
   const R=rndD(20261116),perMon=new Map();
   Object.keys(oB(PREG)).forEach(k=>{const p=k.split("/");if(p.length<3||p[1].startsWith("j-"))return;const a=p[0];if(a0&&a!==a0)return;if(!perMon.has(a))perMon.set(a,[]);perMon.get(a).push(p[1]+"/"+p[2])});
   perMon.forEach((qids,a)=>{const difM=oB(oB(QDIF_ADM)[a]);
@@ -4196,9 +4374,12 @@ async function demoFontsRepRpc(f,x){
     const [n,bones,nens,enc1,seg]=pat,enc=Math.round(bones*1000/n)/10,suf=n>=minR,dif=!suf?null:enc<55?3:enc>90?1:2;
     const dubtes=i===0&&(a==="socials"||a==="angles")?2:i===6&&a==="socials"?1:0;
     const dubMot=dubtes===2?{enunciat:1,resposta:1,pista:0}:dubtes===1?{enunciat:0,resposta:0,pista:1}:{enunciat:0,resposta:0,pista:0};
-    out.push({assig:a,qid,n,bones,nens,encert:enc,encert_1a:enc1,seg_mig:seg+Math.round(R()*10)/10,suficient:suf,dificultat:dif,dubtes,dubtes_nens:dubtes,dubtes_motius:dubMot})})});
+    const dubDet=dubtes===2?(a==="socials"?[{nom:"Jana",k:"jana",motiu:"enunciat",ok:false,origen:"test",ts:araS-7200},{nom:"Pau",k:"pau",motiu:"resposta",ok:false,origen:"examen-real",ts:araS-86400}]:[{nom:"Ona",k:"ona",motiu:"enunciat",ok:false,origen:"repas",ts:araS-14400},{nom:"Pau",k:"pau",motiu:"resposta",ok:true,origen:"test",ts:araS-172800}]):dubtes===1?[{nom:"Nora",k:"nora",motiu:"pista",ok:false,origen:"examen",ts:araS-43200}]:[];
+    dubDet.forEach(d=>dubLlista.push(Object.assign({assig:a,qid},d)));
+    out.push({assig:a,qid,n,bones,nens,encert:enc,encert_1a:enc1,seg_mig:seg+Math.round(R()*10)/10,suficient:suf,dificultat:dif,dubtes,dubtes_nens:dubtes,dubtes_motius:dubMot,dubtes_detall:dubDet})})});
+  dubLlista.sort((p,q)=>q.ts-p.ts);
   const suf=out.filter(r=>r.suficient);
-  return {min_respostes:minR,dies,assig:a0,resum:{preguntes_vistes:out.length,amb_dades:suf.length,dificils:suf.filter(r=>r.dificultat===3).length,normals:suf.filter(r=>r.dificultat===2).length,facils:suf.filter(r=>r.dificultat===1).length,amb_dubtes:out.filter(r=>r.dubtes>0).length},preguntes:out}}
+  return {min_respostes:minR,dies,assig:a0,resum:{preguntes_vistes:out.length,amb_dades:suf.length,dificils:suf.filter(r=>r.dificultat===3).length,normals:suf.filter(r=>r.dificultat===2).length,facils:suf.filter(r=>r.dificultat===1).length,amb_dubtes:out.filter(r=>r.dubtes>0).length,total_dubtes:dubLlista.length},dubtes_llista:dubLlista,preguntes:out}}
  throw "demo"}
 function demoDesde(p){const n=new Date();if(p==="avui"){n.setHours(0,0,0,0);return n.getTime()}if(p==="30d")return Date.now()-30*864e5;if(p==="curs"){const y=n.getMonth()<8?n.getFullYear()-1:n.getFullYear();return new Date(y,8,1).getTime()}return Date.now()-7*864e5}
 const demoLogs=(des,fins,fa=TF.assig,fn=TF.nom)=>{const k=String(fn||"").trim().toLowerCase();return DEMO_L.filter(l=>{const t=Date.parse(l.ts);return t>=des&&t<fins&&(!fa||l.assig===fa)&&(!k||clauNen(l)===k)})};

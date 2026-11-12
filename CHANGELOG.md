@@ -5,6 +5,17 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.41.0 · 2026-11-12
+
+### Afegit
+- **Taula detallada de preguntes confuses («🤔 Pregunta confusa?») amb món, tema, activitat d'origen, pregunta i nen** (`supabase/bn_admin_dificultat.sql`, `admin/index.html`, `motor/prova-dificultat-sql.js`, `motor/prova-admin-dificultat.js` · g25):
+  - `public.bn_admin_dificultat(...)` (desplegada a `agippwtqvhpxdockuigl`) incorpora ara `dubtes_detall` per pregunta i `dubtes_llista` ordenat cronològicament amb el nen (`nom`, `k`), el motiu (`enunciat`, `resposta`, `pista`), si la resposta va ser encertada (`ok`), el `ts` i l'origen exacte (`'test' | 'repas' | 'examen' | 'examen-real'`, llegit de `detall->>'on'` o inferit per sessió ±30 min).
+  - Nova targeta i taula directa `#tDifDubBox` (6 columnes a `Mons → Dificultat real`, 5 a `Fitxa del món → Domini i errors`, i mode dedicat `🤔 Dubtes`) que mostra d'un cop d'ull el món, el tema, on ha sorgit, l'enunciat amb la resposta correcta, l'alumne (amb enllaç a la seva fitxa) i el motiu.
+- **Pestanya «Nens → Missatges al nen» amb catàleg complet de Bon Ús i Benestar** (`admin/index.html`, `motor/prova-admin-benestar.js` · g25):
+  - Nova sub-pestanya `?v=nens&tab=missatges` (amb accés directe des de `Benestar` i `Configuració → Horaris`) que mostra les 13 vistes prèvies literals dels missatges que pot veure un alumne (horari de nit, descansos de 25 min, avís de 60/120 min, pla diari i vigília, ànims i escut d'error, tancaments de xat/rànquing/mons), amb les xifres reals configurades, explicant **quan surten**, **per què** i què queda 100 % privat als adults.
+- **Interruptor «Tanca també els mons a la nit» a `Configuració → Horaris`** (`supabase/bn_control.sql`, `admin/index.html`, `motor/prova-control-sql.js`, `motor/prova-admin-xat.js` · g25):
+  - Nou paràmetre `horari.tanca_mons` (i `mons_tancats_nit` calculat segons hora de Madrid a `bn_estat_web()` i `bn_admin_control()`, desplegats a `agippwtqvhpxdockuigl`) i interruptor `#xcTancaMons` a `Configuració → Horaris` i indicador a `Inici → Control ràpid`.
+
 ## 2.40.0 · 2026-11-12
 
 ### Afegit

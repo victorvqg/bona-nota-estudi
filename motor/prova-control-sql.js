@@ -92,8 +92,15 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
     await db.exec("insert into public.bn_log(assig, nom, sessio, aparell, event, detall) values ('socials', 'Laia', 's1', 'ap1', 'test', '{\"punts\":50}');");
     // tanca_min = obre_min (p. ex. 1290 = 1290) amb horari_actiu=true vol dir tancat les 24h per horari
     const dh = await ctrl({ xat_actiu: true, horari_actiu: true, tanca_min: 1290, obre_min: 1290 });
-    ok(dh.xat_actiu === true && dh.xat_en_horari_tancat === true && dh.xat_obert_ara === false,
-      "amb horari actiu en franja tancada, xat_en_horari_tancat=true i xat_obert_ara=false encara que xat_actiu sigui true");
+    ok(dh.xat_actiu === true && dh.xat_en_horari_tancat === true && dh.xat_obert_ara === false && dh.horari.tanca_mons === false && dh.mons_tancats_nit === false,
+      "amb horari actiu i tanca_mons=false per defecte, xat_en_horari_tancat=true, xat_obert_ara=false i mons_tancats_nit=false");
+
+    const dhMons = await ctrl({ horari_tanca_mons: true });
+    const webNit = await val("select public.bn_estat_web()");
+    ok(dhMons.horari.tanca_mons === true && dhMons.mons_tancats_nit === true && webNit.horari.tanca_mons === true && webNit.mons_tancats_nit === true,
+      "horari_tanca_mons=true activa tanca_mons i mons_tancats_nit tant a bn_admin_control com a bn_estat_web");
+    ok(await falla("select public.bn_admin_control($1, $2, '{\"horari_tanca_mons\":\"si\"}'::jsonb)", ADM) !== null,
+      "horari_tanca_mons no booleà és rebutjat");
 
     const ll = await val("select public.bn_xat_llegeix()");
     ok(ll.actiu === false, "bn_xat_llegeix retorna actiu=false quan l'horari tanca el xat");
@@ -101,9 +108,9 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
     const env = await val("select public.bn_xat_envia('Laia', '4587A', 1, 1, null)");
     ok(env && env.codi === "tancat", "bn_xat_envia retorna codi='tancat' quan l'horari automàtic té el xat tancat");
 
-    // Desactivem l'horari automàtic → el xat torna a estar obert
-    const dObert = await ctrl({ horari_actiu: false, mons_tancats: [] });
-    ok(dObert.xat_obert_ara === true && dObert.mons_tancats.length === 0, "en desactivar l'horari i buidar mons_tancats, tot torna a estar obert");
+    // Desactivem l'horari automàtic → el xat i els mons tornen a estar oberts
+    const dObert = await ctrl({ horari_actiu: false, horari_tanca_mons: false, mons_tancats: [] });
+    ok(dObert.xat_obert_ara === true && dObert.mons_tancats_nit === false && dObert.mons_tancats.length === 0, "en desactivar l'horari i buidar mons_tancats, tot torna a estar obert");
   }
 
   console.log("6) permisos per a anon");
