@@ -66,6 +66,12 @@ function respon(st, f, cos) {
  if (f === "bn_admin_logs") return st.d.logs;
  if (f === "bn_admin_ids" || f === "bn_aspectes") return [];
  if (f === "bn_admin_usuari" && cos.p_accio === "estat") return { pau: 6, laia: 2, rita: 7 }[String(cos.p_nom).trim().toLowerCase()] || 0;
+ if (f === "bn_admin_resum") return { periode: cos.p_periode || "7d", ara: { nens: 4, sessions: 5, minuts: 5, nota: 80, encert: 80 }, abans: null };
+ if (["bn_admin_alertes", "bn_admin_domini", "bn_admin_fallades"].includes(f)) return [];
+ if (f === "bn_admin_benestar") return { periode: cos.p_periode || "7d", mons: [], nens: [{ k: "pau", nom: "Pau", semafor: "verd", dies_estudi: 2, descansos_fets: 1, descansos_saltats: 0, senyals: [] }] };
+ if (f === "bn_admin_fonts_dia") return { periode: cos.p_periode || "7d", dies: [], total: {} };
+ if (f === "bn_admin_control") return { xat_actiu: true, xat_obert_ara: true, xat_en_horari_tancat: false, horari: { actiu: false, tanca_min: 1290, obre_min: 420 }, mons_tancats: [] };
+ if (f === "bn_admin_xat_resum") return { frases: 2 };
  if (!st.sql) return undefined;
  if (f === "bn_admin_fitxa") return st.d.fitxa[String(cos.p_nom || "").trim().toLowerCase()] || { k: String(cos.p_nom || "").trim().toLowerCase(), perfil: null, amagat: false, mons: [] };
  if (f === "bn_admin_altes") return st.d.altes;
@@ -101,33 +107,58 @@ function respon(st, f, cos) {
   return { p, ctx, st, crides, errors, menu, crida, txt, errG, kpi, fitxa };
  }
 
- console.log("1) ?demo: altes i «Al núvol» amb dades inventades, sense cap crida");
+ console.log("1) ?demo: Nens nous a Inici, Nens → Llista compacta (4 KPIs i 7 col.) i Fitxa completa de 4 pestanyes sense cap crida");
  { const { p, ctx, crides, errors, menu, txt, errG, fitxa } = await obre("/admin/?demo");
-  await menu("nens"); await p.waitForSelector("#altesCos table");
+  await p.waitForSelector("#altesCos table");
   const at = await txt("#altes");
-  ok(at.startsWith("Nens nous") && at.includes("dels últims 7 dies") && (await p.$$("#altesCos .kpi")).length === 4, "targeta «Nens nous» a dalt de Nens, amb el període de dalt (7 dies) i 4 xifres");
-  ok((await p.evaluate(() => { const a = document.getElementById("altes"); return !!a && a.parentElement.firstElementChild === a })), "la targeta és la primera de la vista Nens");
+  ok(at.startsWith("Nens nous") && at.includes("dels últims 7 dies"), "targeta «Nens nous» a Inici amb el període de dalt (7 dies)");
   ok(at.includes("Gina") && at.includes("Encara no ha jugat") && (await p.$('#altesCos [data-obre-nen="gina"]')) === null, "un perfil sense registre surt com «Encara no ha jugat», sense enllaç a la fitxa");
   ok((await p.$('#altesCos [data-obre-nen="laia"]')) !== null && (await p.$('#altesCos [data-obre-nen="nora"]')) !== null, "els nens nous amb registre al període tenen enllaç a la fitxa");
+  // Nens → Llista: 4 KPIs sense subtítol, 7 columnes i sense duplicats d'altes ni d'estrelles per origen
+  await menu("nens"); await p.waitForSelector("#tNens table");
+  ok((await p.$$("#nensKpis .kpi")).length === 4 && (await p.$$("#nensKpis .kpi-s")).length === 0 && (await p.$$("#tNens th")).length === 7 && (await p.$("#altes")) === null && (await p.$("#origens")) === null,
+   "Nens → Llista té 4 KPIs sense subtítol, 7 columnes i zero targetes duplicades");
+  // Tornem a Inici i obrim la fitxa des d'una alta
+  await menu("inici"); await p.waitForSelector('#altesCos [data-obre-nen="laia"]');
   await p.click('#altesCos [data-obre-nen="laia"]'); await p.waitForSelector("#tb-nuv");
-  ok((await txt("#titol")) === "Fitxa del nen" && (await txt(".perfil h2")) === "Laia", "el nom d'una alta obre la seva fitxa");
-  // pestanyes amb el teclat: de Sessions, fletxa dreta → «Al núvol»; Home → Resum; End → «Al núvol»
-  ok((await p.$$(".pestanyes [role=tab]")).length === 4 && (await txt(".pestanyes [role=tab]:last-child")) === "Al núvol", "pestanya «Al núvol» després de Sessions");
+  ok((await txt("#titol")) === "Fitxa del nen" && (await txt(".perfil h2")) === "Laia" && (await p.$("#selFitxaNen")) !== null, "el nom d'una alta obre la seva fitxa amb el selector ràpid de nen (#selFitxaNen)");
+  // 4 pestanyes amb el teclat: Resum i estrelles · Aprenentatge · Sessions i benestar · Núvol i gestió
+  const nomsTabs = await p.$$eval(".pestanyes [role=tab]", bs => bs.map(b => b.textContent.trim()));
+  ok(nomsTabs.join(" | ") === "Resum i estrelles | Aprenentatge | Sessions i benestar | Núvol i gestió", "les 4 pestanyes de la Fitxa tenen l'estructura nova");
   await p.click("#tb-ses"); await p.keyboard.press("ArrowRight"); await p.waitForSelector('#nuv[data-estat="fet"]');
-  ok((await p.getAttribute("#tb-nuv", "aria-selected")) === "true" && (await p.evaluate(() => document.activeElement.id)) === "tb-nuv" && !(await p.isHidden("#tp-nuv")) && (await p.isHidden("#tp-ses")), "fletxa dreta des de Sessions obre «Al núvol» (amb el focus)");
+  ok((await p.getAttribute("#tb-nuv", "aria-selected")) === "true" && (await p.evaluate(() => document.activeElement.id)) === "tb-nuv" && !(await p.isHidden("#tp-nuv")) && (await p.isHidden("#tp-ses")), "fletxa dreta des de Sessions i benestar obre «Núvol i gestió» (amb el focus)");
   await p.keyboard.press("Home");
-  ok((await p.getAttribute("#tb-resum", "aria-selected")) === "true" && (await p.isHidden("#tp-nuv")), "Home torna a Resum");
+  ok((await p.getAttribute("#tb-resum", "aria-selected")) === "true" && (await p.isHidden("#tp-nuv")), "Home torna a Resum i estrelles");
   await p.keyboard.press("End");
-  ok((await p.getAttribute("#tb-nuv", "aria-selected")) === "true" && (await p.getAttribute("#tb-nuv", "tabindex")) === "0" && (await p.getAttribute("#tb-resum", "tabindex")) === "-1", "End va a «Al núvol» (tabindex mòbil)");
-  ok((await p.$$("#nuv .dm-as")).length >= 1 && (await txt("#nuv .nv-perfil")).includes("PIN nou"), "la Laia de demo té mons desats i PIN nou");
-  // l'Àlex: perfil d'abans i dos mons, amb títols de preguntes.json
-  await fitxa("àlex", true);
+  ok((await p.getAttribute("#tb-nuv", "aria-selected")) === "true" && (await p.getAttribute("#tb-nuv", "tabindex")) === "0" && (await p.getAttribute("#tb-resum", "tabindex")) === "-1", "End va a «Núvol i gestió» (tabindex mòbil)");
+  ok((await p.$$("#nuv .dm-as")).length >= 1 && (await txt("#nuv .nv-perfil")).includes("PIN nou") && (await p.$("#fitxaCopies #fCopFes")) !== null && (await p.$("#canvia")) !== null,
+   "«Núvol i gestió» agrupa el progrés al núvol, l'accés directe a còpia i les accions del compte");
+  // Pestanya Aprenentatge + selector ràpid #selFitxaNen conserva la pestanya activa (?v=nens&id=àlex&tab=apr)
+  await p.click("#tb-apr"); await p.waitForSelector("#fDom .dm-as, #fDom .buit");
+  await p.selectOption("#selFitxaNen", "àlex");
+  await p.waitForSelector("#fDom .dm-as");
+  ok((await txt(".perfil h2")) === "Àlex" && (await p.getAttribute("#tb-apr", "aria-selected")) === "true" && p.url().includes("tab=apr"),
+   "el selector ràpid #selFitxaNen canvia de nen mantenint la pestanya activa (Aprenentatge)");
+  // Obrir detall d'una resposta oberta al panell lateral (#panell)
+  if ((await p.$$("#tFitxaObe tbody tr[data-fobe]")).length > 0) {
+   await p.click("#tFitxaObe tbody tr[data-fobe]"); await p.waitForSelector("#panell:not([hidden]) .obe-txt");
+   ok((await txt("#panellTitol")).startsWith("Oberta ·"), "clicar una resposta oberta a Fitxa → Aprenentatge n'obre el detall al panell lateral");
+   await p.click("#panellTanca");
+  }
+  // Pestanya Sessions i benestar: semàfor individual i cronologia al panell lateral
+  await p.click("#tb-ses"); await p.waitForSelector("#fBen:not([aria-busy]) .pill");
+  await p.click("#tFitxaSes tbody tr[data-fses]"); await p.waitForSelector("#panell:not([hidden]) .lin");
+  ok((await txt("#panellTitol")).startsWith("Sessió de Àlex") && (await p.$$("#tp-ses .kpi")).length === 4,
+   "Fitxa → Sessions i benestar mostra 4 KPIs, el benestar individual i obre la sessió al panell lateral");
+  await p.click("#panellTanca");
+  // l'Àlex a Núvol i gestió: perfil d'abans i dos mons, amb títols de preguntes.json
+  await p.click("#tb-nuv"); await p.waitForSelector('#nuv[data-estat="fet"]');
   const a = await txt("#nuv");
   ok((await p.$$("#nuv .dm-as")).length === 2 && a.includes("2 mons"), "l'Àlex de demo té dos mons");
   ok(a.includes("Alta: d'abans") && a.includes("Què és la ciència") && a.includes("Temes aprovats") && a.includes("Errors pendents de repàs") && a.includes("D'on surten les estrelles"), "amb títols de tema de preguntes.json i els apartats del pla");
-  // tema fosc amb la fitxa oberta: es queda a «Al núvol»
+  // tema fosc amb la fitxa oberta: es queda a «Núvol i gestió»
   await p.click("#tema"); await p.waitForSelector('#nuv[data-estat="fet"]');
-  ok((await p.getAttribute("#tb-nuv", "aria-selected")) === "true" && (await p.$$("#nuv .dm-as")).length === 2, "en canviar de tema es queda a «Al núvol», sense tornar a carregar");
+  ok((await p.getAttribute("#tb-nuv", "aria-selected")) === "true" && (await p.$$("#nuv .dm-as")).length === 2, "en canviar de tema es queda a «Núvol i gestió», sense tornar a carregar");
   await p.click("#tema");
   await fitxa("pau", true);
   ok((await txt("#nuv")).includes("Té PIN, però encara no ha desat res al núvol") && (await p.$$("#nuv .dm-as")).length === 0 && (await txt("#nuv .nv-perfil")).includes("PIN antic"), "en Pau (PIN antic, res desat): «Té PIN, però encara no ha desat res al núvol»");
@@ -137,29 +168,32 @@ function respon(st, f, cos) {
   ok((await txt("#nuv")).includes("No té PIN: només hi ha el registre (pestanyes anteriors)") && (await txt("#nuv .nv-perfil")).includes("Sense PIN"), "l'Hugo (sense PIN): «No té PIN: només hi ha el registre (pestanyes anteriors)»");
   await fitxa("ona", true);
   ok((await txt("#nuv")).includes("No té PIN") && (await txt("#nuv .nv-perfil")).includes("Amagat del rànquing"), "l'Ona (sense PIN, amagada)");
-  await menu("nens"); await p.waitForSelector("#altesCos table");
-  ok((await txt("#altes")).includes("dels últims 30 dies") && (await p.$$("#altesCos tbody tr")).length >= 6, "amb 30 dies, més altes (" + (await p.$$("#altesCos tbody tr")).length + ")");
+  await menu("inici"); await p.waitForSelector("#altesCos table");
+  ok((await txt("#altes")).includes("dels últims 30 dies") && (await p.$$("#altesCos tbody tr")).length >= 6, "amb 30 dies a Inici, més altes (" + (await p.$$("#altesCos tbody tr")).length + ")");
   ok(crides.length === 0, "cap crida a Supabase en demo (" + crides.map(c => c.f).join(", ") + ")");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("2) amb credencials: «Al núvol» i les altes");
+ console.log("2) amb credencials: «Núvol i gestió» sota demanda i «Nens nous» a Inici");
  { const { p, ctx, crides, errors, menu, crida, txt, errG, kpi, fitxa } = await obre("/admin/", { cred: CRED });
-  await menu("nens"); await p.waitForSelector("#altesCos table");
+  await p.waitForSelector("#altesCos table");
   let c = await crida("bn_admin_altes");
-  ok(c && c.cos.p_periode === "7d" && c.cos.p_email === CRED.e && c.cos.p_pass === CRED.p, "Nens crida bn_admin_altes amb p_email, p_pass i el període de dalt (p_periode '7d')");
+  ok(c && c.cos.p_periode === "7d" && c.cos.p_email === CRED.e && c.cos.p_pass === CRED.p, "Inici crida bn_admin_altes amb p_email, p_pass i el període de dalt (p_periode '7d')");
   const at = await txt("#altes");
   ok((await p.$('#altesCos [data-obre-nen="pau"]')) !== null && (await p.$('#altesCos [data-obre-nen="biel"]')) !== null, "en Pau i en Biel (amb registre al període) tenen enllaç a la fitxa");
   ok((await p.$('#altesCos [data-obre-nen="nou"]')) === null && at.includes("Nou") && at.includes("Encara no ha jugat"), "en Nou (perfil sense registre): «Encara no ha jugat» i sense enllaç");
-  const kN = await kpi("#altesCos", "Nens nous"), kP = await kpi("#altesCos", "Amb PIN"), kJ = await kpi("#altesCos", "Encara no han jugat");
-  ok(at.includes("Sense PIN") && at.includes("4 de 7") && kN && kN.v === "4" && kP && kP.v === "3" && kJ && kJ.v === "2", "PIN, dies actius la primera setmana i xifres (4 nens nous, 3 amb PIN, 2 encara no han jugat)");
-  ok((await p.$$("#tNens tbody tr")).length === 4, "la llista de nens es pinta igual a sota");
+  ok(at.includes("Sense PIN") && at.includes("4 de 7") && (await p.$$("#altesCos tbody tr")).length === 4, "PIN, dies actius la primera setmana i les 4 files d'altes");
+  await menu("nens"); await p.waitForSelector("#tNens table");
+  ok((await p.$$("#tNens tbody tr")).length === 4, "Nens → Llista mostra els 4 nens amb activitat");
+  await menu("inici"); await p.waitForSelector('#altesCos [data-obre-nen="pau"]');
   await p.click('#altesCos [data-obre-nen="pau"]'); await p.waitForSelector("#tb-nuv");
   ok((await txt(".perfil h2")) === "Pau", "el nom d'una alta obre la fitxa");
   await p.waitForTimeout(150);
-  ok(!crides.some(x => x.f === "bn_admin_fitxa"), "bn_admin_fitxa no es crida fins que s'obre la pestanya");
+  ok(!crides.some(x => x.f === "bn_admin_fitxa") && !crides.some(x => x.f === "bn_admin_domini"), "bn_admin_fitxa i bn_admin_domini no es criden fins que s'obren les seves pestanyes");
+  await p.click("#tb-apr"); await p.waitForSelector("#fDom .buit, #fDom .dm-as");
+  ok(crides.some(x => x.f === "bn_admin_domini" && x.cos.p_nom === "Pau") && crides.some(x => x.f === "bn_admin_fallades" && x.cos.p_nom === "Pau"), "obrir Fitxa → Aprenentatge demana bn_admin_domini i bn_admin_fallades només per a en Pau");
   await p.click("#tb-nuv"); await p.waitForSelector('#nuv[data-estat="fet"]');
   c = await crida("bn_admin_fitxa");
-  ok(c && c.cos.p_nom === "Pau" && c.cos.p_email === CRED.e && c.cos.p_pass === CRED.p, "«Al núvol» crida bn_admin_fitxa {p_email, p_pass, p_nom:'Pau'}");
+  ok(c && c.cos.p_nom === "Pau" && c.cos.p_email === CRED.e && c.cos.p_pass === CRED.p, "«Núvol i gestió» crida bn_admin_fitxa {p_email, p_pass, p_nom:'Pau'}");
   const t = await txt("#nuv");
   ok((await p.$$("#nuv .dm-as")).length === 3 && t.includes("3 mons"), "tres mons (un mal format)");
   ok(t.includes("Temps i clima") && t.includes("L'atmosfera: capes i funcions") && t.includes("La relació de divisibilitat"), "títols de tema de preguntes.json");
@@ -182,21 +216,21 @@ function respon(st, f, cos) {
   ok((await txt("#nuv")).includes("Té PIN, però encara no ha desat res al núvol") && (await crida("bn_admin_fitxa", 2)).cos.p_nom === "Laia", "la Laia (PIN, cap món): «Té PIN, però encara no ha desat res al núvol»");
   await fitxa("biel", true);
   ok((await txt("#nuv")).includes("No té PIN: només hi ha el registre (pestanyes anteriors)"), "en Biel (sense perfil): «No té PIN: només hi ha el registre (pestanyes anteriors)»");
-  // el període de dalt també mana a les altes
-  await menu("nens"); await p.click('#periode [data-d="30"]'); await p.waitForSelector("#altesCos table");
+  // el període de dalt també mana a les altes d'Inici
+  await menu("inici"); await p.click('#periode [data-d="30"]'); await p.waitForSelector("#altesCos table");
   c = await crida("bn_admin_altes", 2);
   ok(c && c.cos.p_periode === "30d" && (await txt("#altesSub")).includes("dels últims 30 dies"), "amb 30 dies, bn_admin_altes rep p_periode '30d'");
   ok((await p.$$(".toast.err-t")).length === 0, "cap avís d'error");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  console.log("3) XSS: el que va escriure el navegador d'un nen no s'executa");
- { const { p, ctx, errors, menu, txt, errG, kpi, fitxa } = await obre("/admin/", { cred: CRED });
-  await menu("nens"); await p.waitForSelector("#altesCos table"); await p.waitForTimeout(300);
-  ok((await txt("#altes")).includes(XSS), "el nom d'una alta amb HTML surt com a text");
+ { const { p, ctx, errors, txt, errG, kpi, fitxa } = await obre("/admin/", { cred: CRED });
+  await p.waitForSelector("#altesCos table"); await p.waitForTimeout(300);
+  ok((await txt("#altes")).includes(XSS), "el nom d'una alta amb HTML surt com a text a Inici");
   await fitxa("rita", true); await p.waitForTimeout(400);
   const t = await txt("#nuv");
   ok(t.includes(XSS) && t.includes("×2"), "la pregunta de «fallades», el «tid» i les claus amb HTML surten com a text");
-  ok((await p.$$('#nuv img, #altes img')).length === 0, "cap <img> injectat a «Al núvol» ni a les altes");
+  ok((await p.$$('#nuv img, #altes img')).length === 0, "cap <img> injectat a «Núvol i gestió» ni a les altes");
   ok((await p.$$("#nuv [onerror], #altes [onerror]")).length === 0, "cap atribut onerror al DOM");
   ok(await p.evaluate(() => [...document.querySelectorAll("#nuv [title]")].some(e => e.title === '<img src=x onerror="window.__xss=1">')), "als atributs (title) el text també va escapat i es llegeix tal qual");
   const kE = await kpi("#nuv", "Estrelles"), kD = await kpi("#nuv", "Dies d'estudi");
@@ -207,28 +241,35 @@ function respon(st, f, cos) {
 
  console.log("4) el SQL encara no hi és (404)");
  { const { p, ctx, crides, errors, menu, txt, errG, fitxa } = await obre("/admin/", { cred: CRED, sql: false });
-  await menu("nens"); await p.waitForSelector("#altesCos .avis");
-  ok((await txt("#altesCos .avis")).includes("supabase/bn_admin_fitxa.sql") && (await p.$('#altesCos [data-copia="supabase/bn_admin_fitxa.sql"]')) !== null, "altes: avís de supabase/bn_admin_fitxa.sql");
+  await p.waitForSelector("#altesCos .avis");
+  ok((await txt("#altesCos .avis")).includes("supabase/bn_admin_fitxa.sql") && (await p.$('#altesCos [data-copia="supabase/bn_admin_fitxa.sql"]')) !== null, "altes a Inici: avís aïllat de supabase/bn_admin_fitxa.sql");
+  await menu("nens"); await p.waitForSelector("#tNens table");
   ok((await p.$$("#tNens tbody tr")).length === 4, "la llista de nens es veu igual");
   await fitxa("pau", true);
-  ok((await txt("#nuv .avis")).includes("supabase/bn_admin_fitxa.sql") && (await p.$('#nuv [data-copia="supabase/bn_admin_fitxa.sql"]')) !== null, "«Al núvol»: avís de supabase/bn_admin_fitxa.sql");
+  ok((await txt("#nuv .avis")).includes("supabase/bn_admin_fitxa.sql") && (await p.$('#nuv [data-copia="supabase/bn_admin_fitxa.sql"]')) !== null, "«Núvol i gestió»: avís de supabase/bn_admin_fitxa.sql");
   await p.click("#tb-resum");
   ok(!(await p.isHidden("#tp-resum")) && (await txt("#tp-resum")).includes("Estrelles"), "la resta de la fitxa funciona igual");
   ok(crides.some(x => x.f === "bn_admin_fitxa"), "s'ha intentat la crida");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("5) mòbil (360, 390 i 430 px), tema fosc");
+ console.log("5) mòbil (360, 390 i 430 px), tema fosc: Inici, Nens i les 4 pestanyes de la Fitxa");
  for (const mw of [360, 390, 430]) {
   const { p, ctx, errors, menu, txt, fitxa } = await obre("/admin/?demo", { viewport: { width: mw, height: 844 }, fosc: true });
-  await menu("nens"); await p.waitForSelector("#altesCos table");
+  await p.waitForSelector("#altesCos table");
   if (mw === 390) ok((await p.evaluate(() => document.documentElement.dataset.tema)) === "fosc", "tema fosc");
   const ample = () => p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
-  let w = await ample(); ok(w <= mw, `${mw} px · Nens amb les altes: res no surt per la dreta (ample ${w})`);
-  await fitxa("àlex", true); await p.click("#nuv .dm-as summary"); await p.waitForTimeout(150);
-  w = await ample(); ok(w <= mw, `${mw} px · «Al núvol» desplegat: res no surt per la dreta (ample ${w})`);
+  let w = await ample(); ok(w <= mw, `${mw} px · Inici amb les altes: res no surt per la dreta (ample ${w})`);
+  await menu("nens"); await p.waitForSelector("#tNens table");
+  w = await ample(); ok(w <= mw, `${mw} px · Nens → Llista: res no surt per la dreta (ample ${w})`);
+  await fitxa("àlex", true); await p.click("#nuv .dm-as summary"); await p.waitForTimeout(120);
+  w = await ample(); ok(w <= mw, `${mw} px · Fitxa «Núvol i gestió» desplegada: res no surt per la dreta (ample ${w})`);
   const fora = await p.$$eval("#nuv .kpi, #nuv .dm-cap, .pestanyes", es => es.filter(e => { const r = e.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
   ok(fora === 0, `${mw} px · xifres, capçaleres dels mons i pestanyes es veuen senceres`);
-  if (mw === 390) ok((await txt("#tb-nuv")) === "Al núvol", "la pestanya es veu al mòbil");
+  await p.click("#tb-apr"); await p.waitForSelector("#fDom .dm-as");
+  w = await ample(); ok(w <= mw, `${mw} px · Fitxa «Aprenentatge»: res no surt per la dreta (ample ${w})`);
+  await p.click("#tb-ses"); await p.waitForSelector("#fBen:not([aria-busy]) .pill");
+  w = await ample(); ok(w <= mw, `${mw} px · Fitxa «Sessions i benestar»: res no surt per la dreta (ample ${w})`);
+  if (mw === 390) ok((await txt("#tb-nuv")) === "Núvol i gestió", "la pestanya «Núvol i gestió» es veu al mòbil");
   ok(errors.length === 0, "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  await nav.close(); srv.close();

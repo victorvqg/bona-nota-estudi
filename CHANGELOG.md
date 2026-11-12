@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.31.0 · 2026-11-12
+
+### Canviat
+- **Panell d'administració — Fase 2: Nens, Fitxa completa, Benestar i Sessions** (`admin/index.html`, `motor/prova-admin-fitxa.js`, `motor/prova-admin-alta.js` · g15):
+  - **`Nens` (`?v=nens`)**: sub-pestanyes `Llista` (4 KPIs sense subtítol i taula compacta de 7 columnes amb constància/ratxa, estrelles + nivell i semàfor unificat de benestar, eliminant duplicats de `Nens nous` i d'`Estrelles per origen`) i `Benestar` (`?v=nens&tab=benestar`, semàfor del grup en paraules planeres, fases del món i gestió de dates d'examen).
+  - **`Fitxa del nen` (`?v=nens&id=<nen>&tab=…`)**: vista completa amb **selector ràpid `<select id="selFitxaNen">`** per saltar entre qualsevol nen mantenint la pestanya activa i 4 pestanyes amb càrrega sota demanda i navegació per teclat (`Resum i estrelles`, `Aprenentatge` amb domini individual, fallades pròpies, combos/repàs/boss i obertes amb detall al panell lateral `#panell`, `Sessions i benestar` amb semàfor individual i cronologia al panell lateral, i `Núvol i gestió` amb progrés sincronitzat, drecera directa a còpia de seguretat i accions del compte).
+  - **`Sessions` (`?v=sessions`)**: 3 sub-pestanyes (`Sessions` amb filtres locals `#fAssig`/`#fNen`, 4 KPIs i cronologia al panell lateral; `Activitat` amb gràfics d'activitat, mapa de calor, evolució de notes, constància i nova targeta d'**evolució diària d'estrelles per origen** `bn_admin_fonts_dia`; i `Registre` acotat a 1.500 files visibles amb cerca ràpida i descàrrega de CSV complet).
+
 ## 2.30.0 · 2026-11-12
 
 ### Canviat

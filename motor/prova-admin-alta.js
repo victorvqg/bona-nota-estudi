@@ -147,16 +147,28 @@ function dadesAdmin() {
   ok((await p.$("#embutAlta")) === null, "s'ha tret «Embut d'alta» de la vista Nens");
   const nensCols = await p.$$("#tNens th");
   const nensTxt = await txt("#tNens");
-  ok(nensCols.length <= 8 && nensTxt.includes("Nivell") && (await p.$$("#tNens .niv-p")).length >= 5 && (await p.$("#tNens .tb-q")) !== null && (await p.$("#tNens [data-tcsv]")) !== null,
-   "taula de Nens compleix ≤ 8 columnes, porta cerca i CSV, i mostra les pastilles de nivell");
+  ok(nensCols.length === 7 && nensTxt.includes("Estrelles i nivell") && (await p.$$("#tNens .niv-p")).length >= 5 && (await p.$("#tNens .tb-q")) !== null && (await p.$("#tNens [data-tcsv]")) !== null,
+   "taula de Nens compleix 7 columnes (≤ 8), porta cerca i CSV, i mostra les pastilles de nivell i benestar");
   await p.click('#tNens [data-obre-nen="àlex"]');
   await p.waitForSelector("#tb-nuv");
   const detTxt = await txt("#contingut");
-  ok(detTxt.includes("Nivell") && (await p.$$(".perfil .niv-p")).length === 1 && p.url().includes("v=nens") && p.url().includes("id="),
+  ok(detTxt.includes("Estrelles") && (await p.$$(".perfil .niv-p")).length === 1 && p.url().includes("v=nens") && p.url().includes("id="),
    "fitxa del nen mostra el nivell a la capçalera i reflecteix ?v=nens&id=… a l'URL");
   await p.click("#tb-nuv");
   await p.waitForSelector('#nuv[data-estat="fet"]');
-  ok((await p.$$("#nuv .niv-p")).length >= 1, "pestanya «Al núvol» mostra el nivell del nen");
+  ok((await p.$$("#nuv .niv-p")).length >= 1, "pestanya «Núvol i gestió» mostra el nivell del nen");
+  // Sessions: 3 pestanyes (Sessions amb filtres locals, Activitat amb Evolució d'estrelles per origen sense filtres, Registre sense filtres)
+  await menu("sessions");
+  await p.waitForSelector("#tSes table");
+  ok((await p.$("#fAssig")) !== null && (await p.$("#fNen")) !== null && (await p.$$("#tSes th")).length === 6, "Sessions → Sessions té filtres locals (#fAssig, #fNen) i 6 columnes");
+  await p.click('[data-vtab="activitat"]');
+  await p.waitForSelector("#actFontsCos .fest");
+  ok((await p.$("#fAssig")) === null && (await p.$("#fNen")) === null && (await txt("#actFonts")).includes("Evolució d'estrelles per origen"),
+   "Sessions → Activitat mostra l'evolució diària d'estrelles per origen sense barra de filtres locals");
+  await p.click('[data-vtab="registre"]');
+  await p.waitForSelector("#tLog table");
+  ok((await p.$("#fAssig")) === null && (await p.$("#flcsv")) !== null && (await p.$$("#tLog th")).length === 6,
+   "Sessions → Registre mostra el registre acotat amb cerca i CSV complet sense filtres locals");
   ok(crides.length === 0 && errors.length === 0, "cap crida a Supabase ni error de JS en mode demo");
   await ctx.close();
  }
