@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.28.0 · 2026-11-12
+
+### Afegit
+- Mons de **Català** (`catala/t2`) i **Lengua Castellana** (`castellano/t2-t3`): estès el tipus de joc **«✍️ Frases amb buits»** (`tipus:"frases"`) a totes les llengües amb **12 jocs nous i 144 frases** (g12):
+  - **Català (`motor/dades/catala.js`)**: **6 jocs de frases (72 frases)** enllaçats des de la fitxa dels 12 temes (`T[i].frases`): *De viva veu o per escrit*, *Els quatre gèneres en frases*, *El sintagma nominal i els noms*, *Gènere, nombre i invariables*, *El clau o la clau?* i *Porta tancada o entreoberta*.
+  - **Castellà (`motor/dades/castellano.js`)**: **6 jocs de frases (72 frases)** amb lectura en veu alta en castellà (`es-ES`), enllaçats des de la fitxa dels 15 temes (`T[i].frases`): *El texto y el diccionario*, *Sustantivos, género y número*, *Comas, punto y coma y cartas*, *La noticia, la lírica y los relatos*, *Artículos, demostrativos y numerales* i *Polisemia y reglas de la B*.
+
 ## 2.27.0 · 2026-11-12
 
 ### Afegit
