@@ -564,6 +564,32 @@ function servidorXat(o = {}) {
   ok(await p.isHidden('main .as[data-id="angles"] .avisos-mon'), "en mode tast anònim s'amaguen les pastilles .avisos-mon");
   sense(e); await e.ctx.close() }
 
+ // 27) horari nocturn propi dels mons (22:00 → 08:00) a la portada i les 5 festes del rànquing (g26)
+ console.log("27) horari nocturn propi dels mons (22:00 → 08:00) i les 5 festes del rànquing (Gravetat zero + Foc de Drac · g26)");
+ { const e = await obre({
+   suau: false, seed: { bn_jugador: "Laia" },
+   estat_web: { mons_tancats: [], horari: { actiu: false, tanca_mons: true, mons_tanca_h: "22:00", mons_obre_h: "08:00" } }
+  }), { p } = e;
+  // Disparem les 5 festes seguides (incloent GRAVETAT ZERO! i FOC DE DRAC!)
+  const rotuls = await p.evaluate(() => {
+   const vista = [];
+   for (let k = 0; k < 5; k++) { festa(); const r = document.querySelector(".hs-rotul"); if (r) vista.push(r.textContent); fiFesta(true); }
+   return vista;
+  });
+  ok(rotuls.includes("GRAVETAT ZERO!") && rotuls.includes("FOC DE DRAC!") && rotuls.length === 5, "les 5 festes del rànquing (incloent GRAVETAT ZERO! i FOC DE DRAC!) s'executen sense errors: " + rotuls.join(" · "));
+  await p.click("#hsTanca");
+  await p.evaluate(() => { window.__bnHoraProva = "22:10"; window.bnRefrescaMonsPortada(); window.bnPintaAvisNitPortada(); });
+  const nTancatsNit = await p.$$eval("main .as.mon-tancat[data-tancat-nit='08:00']", xs => xs.length);
+  ok(nTancatsNit === 7, `a les 22:10 tots els 7 mons queden apagats per descans nocturn fins a les 08:00 (obtingut: ${nTancatsNit})`);
+  ok((await txt(p, 'main .as[data-id="biogeo"] .tag-tancat')) === "🌙 DESCANS" && (await txt(p, 'main .as[data-id="biogeo"] .juga span')) === "🌙 FINS 08:00", "les targetes mostren «🌙 DESCANS» i «🌙 FINS 08:00»");
+  ok(await p.isVisible("#avisNitPortada") && (await txt(p, "#avisNitPortada")).includes("22:00") && (await txt(p, "#avisNitPortada")).includes("08:00"), "#avisNitPortada mostra la franja nocturna pròpia dels mons (22:00–08:00)");
+  await p.click('main .as[data-id="biogeo"]', { force: true });
+  ok((await txt(p, "#monTancatToast")).includes("08:00"), "en clicar un món apagat de nit surt l'avís amable amb l'hora d'obertura (08:00)");
+  await p.evaluate(() => { window.__bnHoraProva = "08:05"; window.bnRefrescaMonsPortada(); window.bnPintaAvisNitPortada(); });
+  const nTancatsDia = await p.$$eval("main .as.mon-tancat", xs => xs.length);
+  ok(nTancatsDia === 0 && await p.isHidden("#avisNitPortada"), "a les 08:05 tots els 7 mons es reobren sols i desapareix l'avís nocturn");
+  sense(e); await e.ctx.close() }
+
  await nav.close(); srv.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : "\n✓ Totes les comprovacions del xat de la colla passen");
  process.exit(fallades ? 1 : 0);
