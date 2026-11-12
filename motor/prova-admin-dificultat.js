@@ -122,23 +122,23 @@ function dadesDif(assig, xss) {
   ok((await txt('#tDif details[data-a="socials"]')).includes("temps/3") && (await txt('#tDif details[data-a="socials"]')).includes("< 8 resp."),
    "el mode «Totes» inclou també les preguntes amb < 8 respostes");
 
-  // Filtre de nen: no torna a cridar bn_admin_dificultat i mostra l'avís .fr-nota
-  const nAbans = crides.filter(x => x.f === "bn_admin_dificultat").length;
-  await p.selectOption("#fNen", "Pau");
-  await p.waitForSelector("#tDif .fr-nota");
-  ok(crides.filter(x => x.f === "bn_admin_dificultat").length === nAbans && (await txt("#tDif .fr-nota")).includes("el filtre de nen"),
-   "filtrar per nen no torna a cridar bn_admin_dificultat i n'informa amb .fr-nota");
-  await p.selectOption("#fNen", "");
-
-  // Filtre d'assignatura: crida nova amb p_assig = 'socials'
-  await p.selectOption("#fAssig", "socials");
-  await p.waitForFunction(() => document.querySelectorAll("#tDif details.dm-as").length === 1);
-  const cSoc = crides.filter(x => x.f === "bn_admin_dificultat").pop();
-  ok(cSoc && cSoc.cos.p_assig === "socials", "filtrar per assignatura demana p_assig='socials'");
-
   // Descàrrega JSON per a dificultat.py --proposa
   const [dl] = await Promise.all([p.waitForEvent("download"), p.click("#btDifJson")]);
   ok(dl.suggestedFilename().startsWith("bn-dificultat-") && dl.suggestedFilename().endsWith(".json"), "Baixa JSON descarrega bn-dificultat-AAAA-MM-DD.json");
+
+  // Fitxa del món (socials) → Domini i errors: crida bn_admin_dificultat amb p_assig = 'socials'
+  await p.goto(BASE + "/admin/?v=mons&id=socials&tab=domini");
+  await p.waitForFunction(() => { const e = document.querySelector("#tMonDif"); return e && !e.hasAttribute("aria-busy") });
+  const cSoc = crides.filter(x => x.f === "bn_admin_dificultat").pop();
+  const tMonSoc = await txt("#tMonDif");
+  ok(cSoc && cSoc.cos.p_assig === "socials" && tMonSoc.includes("➕ Proposa ⚡") && !tMonSoc.includes("adjectius/1"),
+   "Fitxa del món (socials) → Domini i errors demana p_assig='socials' i mostra només les preguntes del món");
+
+  // Selector #selFitxaMon canvia a 'angles' i demana p_assig = 'angles'
+  await p.selectOption("#selFitxaMon", "angles");
+  await p.waitForFunction(() => { const e = document.querySelector("#tMonDif"); return e && !e.hasAttribute("aria-busy") && e.textContent.includes("adjectius/1") });
+  const cAng = crides.filter(x => x.f === "bn_admin_dificultat").pop();
+  ok(cAng && cAng.cos.p_assig === "angles", "canviar de món amb #selFitxaMon demana p_assig='angles'");
   ok(errors.length === 0, "sense errors de consola amb credencials");
   await ctx.close();
  }

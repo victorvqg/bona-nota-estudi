@@ -233,6 +233,7 @@ dialog::backdrop{background:rgba(15,23,42,.55)}
 .fitxa-sel select{min-width:165px;max-width:250px}
 .perfil{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .perfil h2{font-size:21px;margin:0;font-weight:700}
+.mon-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:var(--card2);border:2px solid var(--mc,#94a3b8);flex:none}
 .xips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .pestanyes{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:16px 0 14px;overflow-x:auto;max-width:100%}
 .pestanyes.compacta{margin:0 0 14px}
@@ -605,7 +606,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.31.0";
+const VERSIO_ADMIN="2.32.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -741,7 +742,8 @@ function obrePanell({titol,cos,onClose}){PANELL_RET=document.activeElement;PANEL
  const f=$("#panellCos input,#panellCos select,#panellCos button")||$("#panellTanca");if(f)f.focus()}
 function tancaPanell(){if($("#panell").hidden)return;$("#panell").hidden=true;$("#panellVelo").hidden=true;$("#panellCos").innerHTML="";
  const cb=PANELL_TANCAR;PANELL_TANCAR=null;if(cb)try{cb()}catch(e){}
- if(PANELL_RET&&typeof PANELL_RET.focus==="function"&&document.contains(PANELL_RET))PANELL_RET.focus();PANELL_RET=null}
+ if(PANELL_RET&&typeof PANELL_RET.focus==="function"&&document.contains(PANELL_RET))PANELL_RET.focus();PANELL_RET=null;
+ if(CRED&&!DEMO&&ACT&&Date.now()-ACT.getTime()>=(window.__BN_AUTO_MS||AUTO_MS))setTimeout(()=>refrescaAuto(),50)}
 document.addEventListener("click",e=>{if(e.target.id==="panellVelo"||e.target.closest("#panellTanca"))tancaPanell()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#panell").hidden&&!($("#dlg")&&$("#dlg").open)){e.preventDefault();tancaPanell()}});
 // avatar: el mateix animal i el mateix color que al rànquing (sprites.js; si no s'ha pogut carregar, un cercle amb la inicial).
@@ -792,36 +794,76 @@ function login(msg){$("#shell").hidden=true;tancaPanell();const w=$("#loginWrap"
 let IDS={},NOMS_TOTS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN">sense PIN</span>`;
 function mostraApp(){$("#loginWrap").hidden=true;$("#loginWrap").innerHTML="";$("#shell").hidden=false;document.body.classList.toggle("demo",DEMO);$("#demoBar").hidden=!DEMO}
 // Carrega bn_admin_logs només quan una vista/pestanya en necessita les files crues
+async function baixaLogs(d){
+ const cosL=JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:d});
+ const r=await fetch(API,{method:"POST",cache:"no-store",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
+ if(!r.ok)throw r.status;
+ const L=await r.json();
+ while(Array.isArray(L)&&L.length>0&&L.length%1000===0&&L.length<20000){
+  try{const rp=await fetch(`${API}?limit=1000&offset=${L.length}`,{method:"POST",cache:"no-store",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
+   if(!rp.ok)break;const pag=await rp.json();if(!Array.isArray(pag)||!pag.length||pag[0].id===L[0].id)break;L.push(...pag);if(pag.length<1000)break}catch(e){break}}
+ return Array.isArray(L)?L:[];
+}
 async function asseguraLogs(){
  if(DEMO){await preguntes();demoInit();if(LOGS_DIES!==DIES){LOGS=demoLogsDies(DIES);LOGS_DIES=DIES}return LOGS}
  if(LOGS_DIES===DIES)return LOGS;
  if(LOGS_PROM&&LOGS_PROM.d===DIES)return LOGS_PROM.p;
- const d=DIES,cosL=JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:d});
- const p=(async()=>{
-  const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
-  if(!r.ok)throw r.status;
-  const L=await r.json();
-  while(Array.isArray(L)&&L.length>0&&L.length%1000===0&&L.length<20000){
-   try{const rp=await fetch(`${API}?limit=1000&offset=${L.length}`,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
-    if(!rp.ok)break;const pag=await rp.json();if(!Array.isArray(pag)||!pag.length||pag[0].id===L[0].id)break;L.push(...pag);if(pag.length<1000)break}catch(e){break}}
-  LOGS=Array.isArray(L)?L:[];LOGS_DIES=d;return LOGS;
- })();
+ const d=DIES,p=baixaLogs(d).then(L=>{LOGS=L;LOGS_DIES=d;return LOGS});
  LOGS_PROM={d,p};p.catch(()=>{if(LOGS_PROM&&LOGS_PROM.p===p)LOGS_PROM=null});return p;
 }
-let FAPR=null;
-function netejaCaches(){ESTATS={};NUV=null;FAPR=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+async function carregaIds(){
+ try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",cache:"no-store",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});
+  if(!ri.ok)return;const ids={},noms={};
+  (await ri.json()).forEach(x=>{if(!x||!x.k)return;if(x.id!=null)ids[x.k]=x.id;if(x.nom&&x.k!=="_alta")noms[x.k]=String(x.nom).trim()});
+  IDS=ids;NOMS_TOTS=noms}catch(e){}
+}
+let FAPR=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null;
+const AUTO_MS=30000;
+function netejaCaches(){ESTATS={};NUV=null;FAPR=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
 async function carrega(){
  netejaCaches();
  await carregaRegles();
  if(DEMO){await preguntes();demoInit();IDS=demoIds();NOMS_TOTS=demoNoms();LOGS=[];mostraApp();ACT=new Date();await pinta();return true}
  try{
-  const r=await fetch(`${API}?limit=1`,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:1})});
+  const r=await fetch(`${API}?limit=1`,{method:"POST",cache:"no-store",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:1})});
   if(!r.ok){CRED=null;sessionStorage.removeItem("bn_admin");login(r.status===404?"El panell encara no està activat a la base de dades.":"Correu o contrasenya incorrectes.");return false}
   await r.json().catch(()=>null);
-  await Promise.all([carregaAspectes(),(async()=>{try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});IDS={};NOMS_TOTS={};
-   if(ri.ok)(await ri.json()).forEach(x=>{if(!x||!x.k)return;if(x.id!=null)IDS[x.k]=x.id;if(x.nom&&x.k!=="_alta")NOMS_TOTS[x.k]=String(x.nom).trim()})}catch(e){}})()]);
+  await Promise.all([carregaAspectes(),carregaIds()]);
   mostraApp();ACT=new Date();await pinta();return true;
  }catch(e){login("No hi ha connexió. Torna-ho a provar.");return false}
+}
+// Actualització silenciosa automàtica (cada 30 s, en tornar a la pestanya i en canviar de secció), sense esborrar filtres ni moure l'scroll
+async function refrescaAuto(forcat=false){
+ if(!CRED||DEMO||$("#shell").hidden||VISTA==="config"||AUTO_CURS)return false;
+ if(!forcat&&(document.visibilityState==="hidden"||($("#dlg")&&$("#dlg").open)||!$("#panell").hidden))return false;
+ const ae=document.activeElement;
+ if(!forcat&&ae&&ae.matches&&ae.matches("#contingut input:not(.tb-q),#contingut textarea,#contingut select"))return false;
+ const sy=window.scrollY,fTq=ae&&ae.matches&&ae.matches("input.tb-q[data-tq]")?{id:ae.dataset.tq,s0:ae.selectionStart,s1:ae.selectionEnd}:null;
+ AUTO_CURS=true;
+ try{
+  const d=DIES,calLogs=VISTA==="nens"||VISTA==="mons"||VISTA==="sessions"||VISTA==="fitxa"||(VISTA==="ranquing"&&TAB==="reptes");
+  const [L]=await Promise.all([calLogs?baixaLogs(d):Promise.resolve(null),carregaIds(),carregaAspectes()]);
+  if(!CRED||$("#shell").hidden)return false;
+  if(calLogs&&Array.isArray(L)&&DIES===d){LOGS=L;LOGS_DIES=d;LOGS_PROM=null;invalidarDades({logs:false})}
+  else invalidarDades({logs:true});
+  ACT=new Date();
+  await pinta();
+  scrollTo(0,sy);
+  if(fTq){const inp=document.querySelector(`input.tb-q[data-tq="${CSS&&CSS.escape?CSS.escape(fTq.id):fTq.id}"]`);
+   if(inp){inp.focus({preventScroll:true});try{if(fTq.s0!=null)inp.setSelectionRange(fTq.s0,fTq.s1)}catch(e){}}}
+  return true;
+ }catch(e){return false}
+ finally{AUTO_CURS=false}
+}
+window.bnAdminAutoRefresca=refrescaAuto;
+function comprovaVersioAdmin(){
+ if(location.protocol!=="https:"||!window.fetch)return;
+ fetch("./index.html?_t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{
+  const m=t&&t.match(/const VERSIO_ADMIN="([^"]+)"/);if(!m||m[1]===VERSIO_ADMIN)return;
+  try{if(sessionStorage.getItem("bn_adm_ver")===m[1])return;sessionStorage.setItem("bn_adm_ver",m[1])}catch(e){}
+  const sp=new URLSearchParams(location.search);sp.set("_b",m[1]);location.replace(location.pathname+"?"+sp.toString()+location.hash);
+ }).catch(()=>{});
 }
 
 // ====================== MENÚ, GESTOR D'ADREÇA WEB I CAPÇALERA ======================
@@ -830,17 +872,22 @@ const VISTES_OK=new Set(["inici","nens","mons","sessions","ranquing","config"]);
 const PERIODES=[[1,"Avui","avui"],[7,"7 dies","7d"],[30,"30 dies","30d"],[365,"Curs","curs"]];
 const DIES_DE_P={avui:1,"7d":7,"30d":30,curs:365};
 const P_DE_DIES={1:"avui",7:"7d",30:"30d",365:"curs"};
-const TABS_DEF={nens:"llista",mons:"domini",sessions:"sessions",ranquing:"classificacio",config:"horaris"};
+const TABS_DEF={nens:"llista",mons:"llista",sessions:"sessions",ranquing:"classificacio",config:"horaris"};
 const FITXA_TABS={resum:"tb-resum","tb-resum":"tb-resum",apr:"tb-apr","tb-apr":"tb-apr",aprenentatge:"tb-apr",ses:"tb-ses","tb-ses":"tb-ses",sessions:"tb-ses",nuv:"tb-nuv","tb-nuv":"tb-nuv",nuvol:"tb-nuv"};
 const FITXA_SLUG={"tb-resum":"resum","tb-apr":"apr","tb-ses":"ses","tb-nuv":"nuv"};
+const MON_TABS={resum:"mtb-resum","mtb-resum":"mtb-resum",domini:"mtb-domini","mtb-domini":"mtb-domini",errors:"mtb-domini",obertes:"mtb-obertes","mtb-obertes":"mtb-obertes",taller:"mtb-taller","mtb-taller":"mtb-taller"};
+const MON_SLUG={"mtb-resum":"resum","mtb-domini":"domini","mtb-obertes":"obertes","mtb-taller":"taller"};
+const normMonId=id=>{const k=String(id||"").trim().toLowerCase();return k==="matematiques"||k==="matemàtiques"?"divisibilitat":k};
+const esMonMates=id=>{const k=normMonId(id),m=(MONSL||[]).find(x=>x.id===k);return k==="divisibilitat"||!!(m&&String(m.carpeta||"").startsWith("matematiques/"))};
 function llegeixUrl(){
  const sp=new URLSearchParams(location.search);
  const p=sp.get("p");if(p&&DIES_DE_P[p])DIES=DIES_DE_P[p];
  let v=(sp.get("v")||"").trim().toLowerCase(),id=(sp.get("id")||"").trim()||null,tab=(sp.get("tab")||"").trim().toLowerCase()||null;
  if(v==="fitxa"&&id){v="nens"}
  if(!VISTES_OK.has(v))v="inici";
+ if(v==="mons"&&id)id=normMonId(id);
  VISTA=v;ELEM=id;FITXA=v==="nens"&&id?id:null;
- TAB=FITXA?(FITXA_TABS[tab]||"tb-resum"):(tab||TABS_DEF[v]||null);
+ TAB=FITXA?(FITXA_TABS[tab]||"tb-resum"):(v==="mons"&&ELEM)?(MON_TABS[tab]||"mtb-resum"):(tab||TABS_DEF[v]||null);
 }
 function escriuUrl(push){
  const sp=new URLSearchParams();if(DEMO)sp.set("demo","1");
@@ -848,7 +895,7 @@ function escriuUrl(push){
  if(ELEM&&(VISTA==="nens"||VISTA==="mons"))sp.set("id",ELEM);
  const defT=TABS_DEF[VISTA]||null;
  if(TAB&&TAB!==defT&&!ELEM)sp.set("tab",TAB);
- else if(TAB&&ELEM){const sl=FITXA_SLUG[TAB]||TAB;if(sl&&sl!=="resum"&&sl!=="tb-resum")sp.set("tab",sl)}
+ else if(TAB&&ELEM){const sl=FITXA_SLUG[TAB]||MON_SLUG[TAB]||TAB;if(sl&&sl!=="resum"&&sl!=="tb-resum"&&sl!=="mtb-resum")sp.set("tab",sl)}
  if(DIES!==7&&VISTA!=="config")sp.set("p",P_DE_DIES[DIES]||"7d");
  const qs=sp.toString(),url=location.pathname+(qs?"?"+qs:"");
  if(url!==location.pathname+location.search){try{history[push?"pushState":"replaceState"](null,"",url)}catch(e){}}
@@ -857,13 +904,16 @@ function navega(v,o={}){
  if(!VISTES_OK.has(v))v="inici";
  const canviSeccio=v!==VISTA;
  if(canviSeccio){TF.assig="";TF.nom=""}
+ if(CRED&&!DEMO&&v!=="config"&&ACT&&Date.now()-ACT.getTime()>=10000){invalidarDades({logs:true});ACT=new Date()}
  tancaPanell();
- VISTA=v;ELEM=o.id||null;FITXA=v==="nens"&&ELEM?ELEM:null;
- TAB=FITXA?(FITXA_TABS[o.tab]||"tb-resum"):(o.tab||(ELEM?null:TABS_DEF[v]||null));
+ const id=o.id?(v==="mons"?normMonId(o.id):o.id):null;
+ VISTA=v;ELEM=id;FITXA=v==="nens"&&id?id:null;
+ TAB=FITXA?(FITXA_TABS[o.tab]||"tb-resum"):(v==="mons"&&id)?(MON_TABS[o.tab]||"mtb-resum"):(o.tab||(id?null:TABS_DEF[v]||null));
  escriuUrl(o.push!==false);
  return pinta().then(()=>{if(o.scroll!==false)scrollTo(0,0)});
 }
 function obreFitxaNen(k){if(!k)return;return navega("nens",{id:String(k).trim().toLowerCase()})}
+function obreFitxaMon(id,tab){if(!id)return;return navega("mons",{id:normMonId(id),tab})}
 function muntaShell(){
  llegeixUrl();
  $("#logoMenu").innerHTML=`${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span>`;
@@ -879,12 +929,18 @@ function muntaShell(){
  $("#btConfig").onclick=()=>{navega("config");$("#contingut").focus({preventScroll:true})};
  $("#periode").onclick=e=>{const b=e.target.closest("button");if(!b||+b.dataset.d===DIES)return;DIES=+b.dataset.d;
   $$("#periode button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.d===DIES));
-  ALTES=null;BEN=null;FDIA=null;FAPR=null;LOGS_DIES=null;LOGS_PROM=null;escriuUrl(true);pinta()};
+  ALTES=null;BEN=null;FDIA=null;FAPR=null;LOGS_DIES=null;LOGS_PROM=null;ACT=new Date();escriuUrl(true);pinta()};
  $("#refresca").onclick=()=>carrega();
  $("#tema").onclick=()=>{TEMA=TEMA==="fosc"?"clar":"fosc";try{localStorage.setItem("bn_admin_tema",TEMA)}catch(e){}aplicaTema();pinta()};
  const surt=()=>{if(DEMO){location.href="./";return}CRED=null;LOGS=[];LOGS_DIES=null;sessionStorage.removeItem("bn_admin");login()};
  $("#surt").onclick=surt;$("#surtMobil").onclick=surt;
  window.addEventListener("popstate",()=>{llegeixUrl();tancaPanell();pinta()});
+ comprovaVersioAdmin();
+ const miraAuto=()=>{if(CRED&&!DEMO&&ACT&&Date.now()-ACT.getTime()>=(window.__BN_AUTO_MIN_MS||10000))refrescaAuto()};
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){comprovaVersioAdmin();miraAuto()}});
+ window.addEventListener("focus",miraAuto);
+ window.addEventListener("online",miraAuto);
+ if(!AUTO_TIMER)AUTO_TIMER=setInterval(()=>{if(CRED&&!DEMO&&ACT&&Date.now()-ACT.getTime()>=(window.__BN_AUTO_MS||AUTO_MS)-1000)refrescaAuto()},5000);
 }
 function marcaMenu(){
  const v=VISTA==="fitxa"?"nens":VISTA;
@@ -892,7 +948,8 @@ function marcaMenu(){
  const bc=$("#btConfig");if(bc){if(v==="config")bc.setAttribute("aria-current","page");else bc.removeAttribute("aria-current")}
  const pw=$("#periodeWrap");if(pw)pw.hidden=v==="config";
  $$("#periode button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.d===DIES));
- $("#actualitzat").textContent=ACT?`Actualitzat a les ${hora(ACT)}`:"";
+ const act=$("#actualitzat");
+ if(act){act.textContent=ACT?`Actualitzat a les ${hora(ACT)}${DEMO?"":" · auto"}`:"";act.title=DEMO?"":"S'actualitza sol cada 30 s i en tornar a la pestanya"}
 }
 function nomsTots(){const m=new Map();
  Object.entries(NOMS_TOTS).forEach(([k,n])=>{if(k&&k!=="_alta"&&n)m.set(k,n)});
@@ -917,13 +974,14 @@ const LF=()=>LOGS.filter(l=>(!TF.assig||l.assig===TF.assig)&&(!TF.nom||clauNen(l
 async function pinta(){
  GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
  marcaMenu();
- const titols={inici:"Inici",nens:ELEM?"Fitxa del nen":"Nens",mons:"Mons",sessions:"Sessions",ranquing:"Rànquing",config:"Configuració",fitxa:"Fitxa del nen"};
+ const titols={inici:"Inici",nens:ELEM?"Fitxa del nen":"Nens",mons:ELEM?"Fitxa del món":"Mons",sessions:"Sessions",ranquing:"Rànquing",config:"Configuració",fitxa:"Fitxa del nen"};
  $("#titol").textContent=titols[VISTA]||"Inici";
  const c=$("#contingut");
  if(VISTA==="inici")return vistaInici(c);
  if(VISTA==="config")return vistaConfig(c);
- if((VISTA==="nens"&&ELEM)||(VISTA==="fitxa"&&FITXA)){const k=ELEM||FITXA;c.innerHTML=esqTaula();try{await asseguraLogs()}catch(e){}detall(k,true);return}
+ if((VISTA==="nens"&&ELEM)||(VISTA==="fitxa"&&FITXA)){const k=ELEM||FITXA;if(LOGS_DIES!==DIES)c.innerHTML=esqTaula();try{await asseguraLogs()}catch(e){}detall(k,true);return}
  if(VISTA==="nens")return vistaNensSeccio(c);
+ if(VISTA==="mons"&&ELEM)return detallMon(c,ELEM);
  if(VISTA==="mons")return vistaMonsSeccio(c);
  if(VISTA==="sessions")return vistaSessionsSeccio(c);
  if(VISTA==="ranquing")return vistaRanquingSeccio(c);
@@ -1015,6 +1073,10 @@ document.addEventListener("input",e=>{const inp=e.target.closest("input.tb-q[dat
 document.addEventListener("click",e=>{const tr=e.target.closest("tr.clic[data-nen]");if(tr&&!e.target.closest("button,a,input,select"))obreFitxaNen(tr.dataset.nen)});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const tr=e.target.closest&&e.target.closest("tr.clic[data-nen]");if(tr&&e.target===tr)obreFitxaNen(tr.dataset.nen)});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-nen]");if(b){e.preventDefault();obreFitxaNen(b.dataset.obreNen)}});
+document.addEventListener("click",e=>{const tr=e.target.closest("tr.clic[data-mon]");if(tr&&!e.target.closest("button,a,input,select"))obreFitxaMon(tr.dataset.mon)});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const tr=e.target.closest&&e.target.closest("tr.clic[data-mon]");if(tr&&e.target===tr)obreFitxaMon(tr.dataset.mon)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-mon]");if(b){e.preventDefault();obreFitxaMon(b.dataset.obreMon)}});
+document.addEventListener("click",e=>{const sw=e.target.closest("[data-mon-sw]");if(sw){e.preventDefault();toggleMonCtrl(sw.dataset.monSw)}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go-cfg]");if(b){e.preventDefault();navega("config",{tab:b.dataset.goCfg})}});
 const mini=(v,max,cls,et)=>`<span class="mini"><span>${et??v}</span><span class="b"><i class="${cls||""}" style="width:${Math.max(2,Math.min(100,Math.round(100*(+v||0)/Math.max(1,max))))}%"></i></span></span>`;
 
@@ -1467,10 +1529,10 @@ async function pintaFontsDiaActivitat(tok){const el=$("#actFontsCos");if(!el)ret
    claus.map(k=>`<div class="fest" data-font="${esc(k)}"><span>${ic(icF(k))}${esc(nomF(k))} <span class="muted">${pcF(D.tot[k])}%</span></span><div class="bfe"><i style="width:${Math.round(D.tot[k]*100/mx)}%;background:${colF(k)}"></i></div><b>${D.tot[k]}</b></div>`).join("");
   gFontsDia("gActFonts",D,claus)}
  catch(e){console.error(e);x.innerHTML=avisErr(`No s'ha pogut dibuixar l'evolució d'estrelles: ${e&&e.message||e}`)}}
-// mons per al selector: motor/mons.json (títol + assignatura); si no es pot llegir, els noms curts d'ASSIGS
+// mons per al selector i la secció Mons: motor/mons.json (títol + assignatura + carpeta); si no es pot llegir, els noms curts d'ASSIGS
 let MONSL=null;async function monsLlista(){if(MONSL)return MONSL;
- try{const r=await fetch("../motor/mons.json",{cache:"no-cache"});if(r.ok)MONSL=(await r.json()).map(m=>({id:m.dades,nom:`${m.titol} · ${m.materia}`.trim()}))}catch(e){}
- return MONSL=MONSL&&MONSL.length?MONSL:Object.entries(ASSIGS).map(([id,nom])=>({id,nom}))}
+ try{const r=await fetch("../motor/mons.json",{cache:"no-cache"});if(r.ok)MONSL=(await r.json()).map(m=>({id:m.dades,nom:`${m.titol} · ${m.materia}`.trim(),titol:m.titol||"",materia:m.materia||"",desc:m.desc||"",ic:m.ic||"",carpeta:m.carpeta||""}))}catch(e){}
+ return MONSL=MONSL&&MONSL.length?MONSL:Object.entries(ASSIGS).map(([id,nom])=>({id,nom,titol:nom,materia:"",desc:"",ic:"",carpeta:id==="divisibilitat"?"matematiques/divisibilitat":id}))}
 async function reinicia(nom,assig,mon){if(DEMO){toast("No disponible en demo","avis");return}$("#gest").innerHTML=`<p class="muted">Un moment…</p>`;
  try{const r=await fetch(API.replace("bn_admin_logs","bn_admin_reinicia"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_assig:assig})});
   if(r.status===404){$("#gest").innerHTML=avisSQL("supabase/bn_admin_reinicia.sql","Aquesta opció encara no està activada a la base de dades.");return}
@@ -1511,7 +1573,7 @@ function vistaSessions(c){const ls=LF(),g={};ls.forEach(l=>(g[l.sessio]=g[l.sess
   {k:"evs",t:"Què ha fet",ord:false,cls:"nw",q:r=>r.evs.join(" ")+" "+r.a.map(l=>JSON.stringify(l.detall)).join(" "),h:r=>r.evs.filter(e=>e!=="temps"&&e!=="entra").map(xipEv).join(" ")||`<span class="muted">—</span>`}
  ];
  const prev=TAULES.tSes;
- c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="sesCard">${S.length?taula("tSes",cols,S,{k:prev?prev.k:"ini",desc:prev?prev.desc:true,alta:true,etiqueta:"Sessions",csvNom:"bona-nota-sessions",fila:r=>` class="clic" data-ses="${esc(r.id)}" tabindex="0"`}):buit("sessions","Cap sessió amb aquests filtres.")}</div></div>`;
+ c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="sesCard">${S.length?taula("tSes",cols,S,{k:prev?prev.k:"ini",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Sessions",csvNom:"bona-nota-sessions",fila:r=>` class="clic" data-ses="${esc(r.id)}" tabindex="0"`}):buit("sessions","Cap sessió amb aquests filtres.")}</div></div>`;
  const obreSes=id=>{const s=S.find(x=>x.id===id);if(!s)return;
   obrePanell({titol:`Sessió de ${s.nom}`,cos:`<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px">${pillMon(s.assig)}<span class="xip">${dataC(s.ini)} → ${hora(s.fi)}</span><span class="xip">${fmtT(s.durada)} · ${pl(s.n,"acció","accions")}</span></div>
    <div style="margin-bottom:12px"><button class="btn sec petit" type="button" data-obre-nen="${esc(s.k)}">Obre la fitxa de ${esc(s.nom)} ${ic("endavant")}</button></div>
@@ -1520,7 +1582,7 @@ function vistaSessions(c){const ls=LF(),g={};ls.forEach(l=>(g[l.sessio]=g[l.sess
  if(tc){tc.onclick=e=>{const tr=e.target.closest("tr[data-ses]");if(tr&&!e.target.closest("button,a,input"))obreSes(tr.dataset.ses)};
   tc.onkeydown=e=>{if(e.key==="Enter"){const tr=e.target.closest&&e.target.closest("tr[data-ses]");if(tr&&e.target===tr)obreSes(tr.dataset.ses)}}}}
 function vistaLog(c){const ls=LF().slice().sort((a,b)=>b.ts.localeCompare(a.ts));
- const lim=ls.slice(0,1500);
+ const lim=ls.slice(0,1500),prev=TAULES.tLog;
  const cols=[
   {k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},
   {k:"nom",t:"Nen",cls:"nw",h:r=>nenH(r.nom)},
@@ -1529,7 +1591,7 @@ function vistaLog(c){const ls=LF().slice().sort((a,b)=>b.ts.localeCompare(a.ts))
   {k:"det",t:"Què ha fet",ord:false,cls:"cur",q:r=>JSON.stringify(r.detall||{}),h:r=>descriu(r)},
   {k:"aparell",t:"Dispositiu",cls:"nw",h:r=>`<span class="muted">${esc((r.aparell||"").slice(0,6))}</span>`}
  ];
- c.innerHTML=`<div class="targeta"><div class="eines-t"><span class="muted">${ls.length>1500?`Es mostren 1.500 de ${ls.length} registres`:pl(ls.length,"registre","registres")}</span><span class="esp"></span><button class="btn sec petit" type="button" id="flcsv">${ic("baixar")}CSV complet (${ls.length})</button></div>${lim.length?taula("tLog",cols,lim,{k:"ts",alta:true,etiqueta:"Registre complet",csvNom:"bona-nota-registre"}):buit("log","Cap registre amb aquests filtres.")}</div>`;
+ c.innerHTML=`<div class="targeta"><div class="eines-t"><span class="muted">${ls.length>1500?`Es mostren 1.500 de ${ls.length} registres`:pl(ls.length,"registre","registres")}</span><span class="esp"></span><button class="btn sec petit" type="button" id="flcsv">${ic("baixar")}CSV complet (${ls.length})</button></div>${lim.length?taula("tLog",cols,lim,{k:prev?prev.k:"ts",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Registre complet",csvNom:"bona-nota-registre"}):buit("log","Cap registre amb aquests filtres.")}</div>`;
  const bCsv=$("#flcsv");if(bCsv)bCsv.onclick=()=>baixaCSV("bona-nota-log",[["data","nom","assignatura","tipus","detall","sessio","aparell"],...ls.map(l=>[l.ts,l.nom,l.assig,l.event,JSON.stringify(l.detall),l.sessio,l.aparell])])}
 
 // ====================== DADES AGREGADES, INICI I VISTES SOTA DEMANDA ======================
@@ -1565,7 +1627,7 @@ async function rpcCtrl(cfg){if(DEMO)return demoControlRpc(cfg);
 function ctrlDe(){if(!CTRL){CTRL=rpcCtrl(null).then(d=>{CTRL_NOMES_XAT=false;return CTRL_D=d}).catch(e=>{
   if(e==="falta"){CTRL_NOMES_XAT=true;const act=X&&X.cfg?X.cfg.actiu!==false:true;return CTRL_D={xat_actiu:act,xat_obert_ara:act,xat_en_horari_tancat:false,horari:{actiu:false,tanca_min:1290,obre_min:420},mons_tancats:[]}}
   throw e})}return CTRL}
-function estatXatCtrl(d){d=oB(d);const xatAct=d.xat_actiu!==false,hor=oB(d.horari),hAct=hor.actiu===true,tancaM=nN(hor.tanca_min)??1290,obreM=nN(hor.obre_min)??420;
+function estatXatCtrl(d){d=oB(d);const xatAct=d.xat_actiu!==false,hor=oB(d.horari),hAct=hor.actiu===true,tancaM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,obreM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
  const tancatH=typeof d.xat_en_horari_tancat==="boolean"?d.xat_en_horari_tancat:enHorariTancat(hAct,tancaM,obreM);
  const obertAra=typeof d.xat_obert_ara==="boolean"?d.xat_obert_ara:(xatAct&&!tancatH);
  return {xatAct,hAct,tancaM,obreM,tancatH,obertAra}}
@@ -1601,6 +1663,11 @@ function pintaControl(d){const el=$("#tCtrl");if(!el)return;el.removeAttribute("
  $("#ctrlMonsTanca").onclick=async()=>{if(await dialeg({titol:"Tancar tots els mons?",ok:"Sí, tanca'ls tots",icona:"llibre",cos:`<p>Tots els mons sortiran amb <b>🔒 TANCAT</b> a la portada i els nens no hi podran entrar fins que en tornis a activar algun.</p><p>Les estrelles del rànquing es mantenen intactes.</p>`}))ctrlCanvia({mons_tancats:ms.map(m=>m.id)},"Tots els mons tancats")};
  el.querySelectorAll("[data-ctrl-mon]").forEach(b=>b.onclick=()=>{const id=b.dataset.ctrlMon,nou=new Set(tancats);if(nou.has(id))nou.delete(id);else nou.add(id);
   ctrlCanvia({mons_tancats:[...nou]},`${nomAssig(id)}: ${nou.has(id)?"tancat 🔒":"obert ✓"}`)})}
+async function toggleMonCtrl(id){if(!id)return;if(DEMO){toast("No disponible en demo","avis");return}
+ let d=CTRL_D;if(!d){try{d=await ctrlDe()}catch(e){toast(e==="falta"?"Cal executar supabase/bn_control.sql al SQL Editor de Supabase":`No s'ha pogut carregar el control (${e})`,"err");return}}
+ const k=normMonId(id),nou=new Set(aR(oB(d).mons_tancats).map(x=>String(x).trim().toLowerCase()));
+ if(nou.has(k))nou.delete(k);else nou.add(k);
+ await ctrlCanvia({mons_tancats:[...nou]},`${nomAssig(k)}: ${nou.has(k)?"tancat 🔒":"obert ✓"}`)}
 async function ctrlCanvia(patch,msgOk){if(DEMO){toast("No disponible en demo","avis");return}
  try{let r;
   if(CTRL_NOMES_XAT&&"xat_actiu" in patch){const xc=Object.assign({},XCFG0,(CTRL_D&&CTRL_D.xc)||{},X&&X.cfg||{},{actiu:!!patch.xat_actiu});
@@ -1611,6 +1678,10 @@ async function ctrlCanvia(patch,msgOk){if(DEMO){toast("No disponible en demo","a
   if($("#tCtrl"))pintaControl(r);
   if($("#xatTopSw")){const ex=estatXatCtrl(r);$("#xatTopSw").setAttribute("aria-checked",String(ex.xatAct));$("#xatTopSw span").textContent=ex.xatAct?"Obert":"Tancat"}
   if($("#kpiXatPill")){const ex=estatXatCtrl(r);$("#kpiXatPill").innerHTML=ex.obertAra?pillEstat("be","Xat obert ara"):ex.xatAct?pillEstat("avis","Tancat per horari"):pillEstat("malament","Tancat manualment")}
+  const tancats=new Set(aR(oB(r).mons_tancats).map(x=>String(x).trim().toLowerCase()));
+  if(TAULES.tMons)TAULES.tMons.rows.forEach(rw=>{rw.obert=!tancats.has(rw.id)});
+  $$("[data-mon-sw]").forEach(sw=>{const ob=!tancats.has(normMonId(sw.dataset.monSw));sw.setAttribute("aria-checked",String(ob));const sp=sw.querySelector("span");if(sp)sp.textContent=ob?"Obert":"Tancat"});
+  const pMon=$("#fitxaMonEstat");if(pMon&&ELEM){const ob=!tancats.has(normMonId(ELEM));pMon.innerHTML=ob?pillEstat("be","Obert a la portada"):pillEstat("malament","Tancat a la portada")}
   toast(msgOk||"Desat")}
  catch(e){toast(e==="falta"?"Cal executar supabase/bn_control.sql al SQL Editor de Supabase":`No s'ha pogut desar (${e})`,"err")}}
 
@@ -1669,13 +1740,11 @@ function tAlertes(al){const e=$("#tAl");if(!e)return;if(!al||!al.length){e.inner
  const prev=TAULES.tAlertes;
  e.innerHTML=taula("tAlertes",cols,rows,{k:prev?prev.k:"grav",desc:prev?prev.desc:true,alta:true,etiqueta:"Alertes",csvNom:"bona-nota-alertes",fila:r=>r.k?` class="clic" data-nen="${esc(r.k)}" tabindex="0"`:""});
 }
-document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-mon]");if(b){e.preventDefault();TF.assig=b.dataset.obreMon||"";navega("mons",{tab:"domini"})}});
-
 // ====================== SECCIONS DE NENS, MONS, SESSIONS I RÀNQUING (sota demanda) ======================
 async function vistaNensSeccio(c){
  const tok=++TOK,ll=[["llista","Llista"],["benestar","Benestar"]],tab=ll.some(x=>x[0]===TAB)?TAB:"llista";
  TAB=tab;escriuUrl(false);
- c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Nens")+`<div id="nensCos">${esqTaula()}</div>`;
+ c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Nens")+`<div id="nensCos">${LOGS_DIES===DIES?"":esqTaula()}</div>`;
  lligaPestanyes(c,ll);
  try{await asseguraLogs()}catch(e){if(tok!==TOK)return;$("#nensCos").innerHTML=avisErr(`No s'han pogut carregar les dades (${e}).`);return}
  if(tok!==TOK||VISTA!=="nens")return;
@@ -1689,36 +1758,203 @@ async function vistaNensSeccio(c){
  }
 }
 async function vistaMonsSeccio(c){
- const tok=++TOK,ll=[["domini","Domini"],["fallades","Fallades"],["pendents","Errors pendents"],["dificultat","Dificultat real"],["obertes","Obertes"],["taller","Taller de mates"]];
- const tab=ll.some(x=>x[0]===TAB)?TAB:"domini";TAB=tab;escriuUrl(false);
- const renderTab=async()=>{
-  const tk=++TOK;
-  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Mons")+barraFiltresLocals({assig:tab!=="taller",nen:true})+`<div id="monsCos">${esqTaula()}</div>`;
-  lligaPestanyes(c,ll);lligaFiltresLocals(renderTab);
-  const cos=$("#monsCos");if(!cos)return;
-  if(tab==="domini"){
-   cos.innerHTML=card("domini","c-12","diana","Domini per tema","Quants temes té aprovats cada nen i la millor nota de test a cada tema.",`<div id="tDom"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
-   try{const [dom]=await Promise.all([rpcT("bn_admin_domini"),preguntes()]);if(tk!==TOK||!$("#tDom"))return;tDomini(dom)}
-   catch(e){if(tk!==TOK||!$("#tDom"))return;$("#tDom").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El domini encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el domini (${e}).`)}
-  }else if(tab==="fallades"){
-   cos.innerHTML=card("fallades","c-12","creu","Preguntes més fallades","Top 20 per món, amb l'opció equivocada que més trien (parany).",`<div id="tFal"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
-   try{const [fall]=await Promise.all([rpcT("bn_admin_fallades"),preguntes()]);if(tk!==TOK||!$("#tFal"))return;tFallades(fall)}
-   catch(e){if(tk!==TOK||!$("#tFal"))return;$("#tFal").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","Les preguntes fallades encara no estan activades a la base de dades."):avisErr(`No s'han pogut carregar les fallades (${e}).`)}
-  }else if(tab==="pendents"){
-   cos.innerHTML=card("pendents","c-12","reinicia","Errors pendents de la colla","Temes on els nens amb PIN acumulen més errors per repassar al núvol.",`<div id="tRep" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
-   tPendents();
-  }else if(tab==="dificultat"){
-   cos.innerHTML=card("dificultat","c-12","llamp","Dificultat real de les preguntes","Encert real de cada pregunta en tests i exàmens dels últims 365 dies comparat amb motor/dificultat.json.",`<div id="tDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
-   tDificultat();
-  }else if(tab==="obertes"){
-   cos.innerHTML=card("obertes","c-12","llapis","Preguntes obertes: respostes sospitoses","Nens amb textos rebutjats, intents d'enganxar text o idees marcades no trobades.",`<div id="tObe"><div class="esq esq-f"></div></div>`);
-   try{await asseguraLogs();if(tk!==TOK||!$("#tObe"))return;tObertes()}catch(e){if(tk!==TOK||!$("#tObe"))return;$("#tObe").innerHTML=avisErr(`No s'han pogut carregar les obertes (${e}).`)}
-  }else if(tab==="taller"){
-   cos.innerHTML=card("taller","c-12","llapis","Taller de mates: on s'equivoquen","Errors més repetits als exercicis del Taller de mates (top 30).",`<div id="tErr"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
-   tErrorsTaller();
-  }
+ const ll=[["llista","Llista"],["dificultat","Dificultat real"]],tab=ll.some(x=>x[0]===TAB)?TAB:"llista";
+ TAB=tab;TF.assig="";TF.nom="";escriuUrl(false);
+ const tk=++TOK;
+ c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Mons")+`<div id="monsCos">${tab==="llista"&&LOGS_DIES===DIES?"":esqTaula()}</div>`;
+ lligaPestanyes(c,ll);
+ const cos=$("#monsCos");if(!cos)return;
+ if(tab==="llista"){
+  await vistaMonsLlista(cos,tk);
+ }else{
+  cos.innerHTML=card("dificultat","c-12","llamp","Dificultat real de les preguntes","Encert real de cada pregunta en tests i exàmens dels últims 365 dies comparat amb motor/dificultat.json.",`<div id="tDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
+  tDificultat("","tDif");
+ }
+}
+async function vistaMonsLlista(cos,tk){
+ let ms,ctrl,rep,pendOk=true;
+ try{[ms,ctrl,rep]=(await Promise.all([asseguraLogs(),monsLlista(),ctrlDe().catch(()=>null),repPendentsDe(null).catch(e=>{pendOk=false;return null})])).slice(1)}
+ catch(e){if(tk!==TOK||!$("#monsCos"))return;cos.innerHTML=avisErr(`No s'han pogut carregar els mons (${e}).`);return}
+ if(tk!==TOK||VISTA!=="mons"||ELEM||!$("#monsCos"))return;
+ const tancats=new Set(aR(oB(ctrl).mons_tancats).map(x=>String(x).trim().toLowerCase()));
+ const pendMap=new Map(),avuiMap=new Map();
+ if(pendOk){const L=Array.isArray(rep)?rep:aR(oB(rep).temes);
+  L.forEach(r=>{if(!r||typeof r!=="object"||r.assig==null)return;const a=String(r.assig);pendMap.set(a,(pendMap.get(a)||0)+(nN(r.n)||0));avuiMap.set(a,(avuiMap.get(a)||0)+(nN(r.avui)||0))})}
+ const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ const rows=ms.map(m=>{
+  const ls=LOGS.filter(l=>l.assig===m.id),nensAct=new Set(ls.map(clauNen)).size;
+  const te=ls.filter(l=>l.event==="test"&&l.detall&&l.detall.pc!=null),nota=te.length?mitj(te.map(l=>+l.detall.pc)):null;
+  let qTot=0,qOk=0;ls.forEach(l=>{if(!["test","examen","joc"].includes(l.event))return;aR(l.detall&&l.detall.q).forEach(q=>{const p=String(q).split(":");qTot++;if(p[1]==="1")qOk++})});
+  const encert=qTot?Math.round(qOk*100/qTot):null;
+  const temps=ls.filter(l=>l.event==="temps").reduce((s,l)=>s+(+((l.detall||{}).s)||0),0);
+  return {id:m.id,nom:nomAssig(m.id),titol:m.titol||"",obert:!tancats.has(m.id),nens:nensAct,nota,tests:te.length,encert,respostes:qTot,temps,pendents:pendOk?(pendMap.get(m.id)||0):null,avui:pendOk?(avuiMap.get(m.id)||0):0};
+ });
+ const cols=[
+  {k:"nom",t:"Món",cls:"nw",q:r=>`${r.nom} ${r.titol} ${r.id}`,h:r=>`<button type="button" class="nen-b" data-obre-mon="${esc(r.id)}">${pillMon(r.id)}</button>`},
+  {k:"obert",t:"Estat",cls:"nw",v:r=>r.obert?1:0,csv:r=>r.obert?"Obert":"Tancat",h:r=>`<button class="sw" type="button" role="switch" data-mon-sw="${esc(r.id)}" aria-label="Estat de ${esc(r.nom)}" aria-checked="${r.obert}"${nd}><i></i><span>${r.obert?"Obert":"Tancat"}</span></button>`},
+  {k:"nens",t:"Nens actius",num:true},
+  {k:"nota",t:"Nota mitjana",num:true,h:r=>r.nota==null?`<span class="muted">—</span>`:`${cpc(r.nota)} <span class="muted">(${r.tests})</span>`},
+  {k:"encert",t:"Encert",num:true,h:r=>r.encert==null?`<span class="muted">—</span>`:`${cpc(r.encert)} <span class="muted">(${r.respostes})</span>`},
+  {k:"temps",t:"Temps",num:true,h:r=>r.temps?fmtT(r.temps):`<span class="muted">0 min</span>`},
+  {k:"pendents",t:"Errors pendents",num:true,v:r=>r.pendents,h:r=>r.pendents==null?`<span class="muted">—</span>`:r.pendents?`<b>${r.pendents}</b>${r.avui?` <span class="pill warn" title="Toquen avui">${r.avui} avui</span>`:""}`:`<span class="muted">0</span>`}
+ ];
+ const prev=TAULES.tMons;
+ cos.innerHTML=`<div class="targeta">${taula("tMons",cols,rows,{k:prev?prev.k:"nens",desc:prev?prev.desc:true,manteQ:true,etiqueta:"Llista de mons",csvNom:"bona-nota-mons",fila:r=>` class="clic" data-mon="${esc(r.id)}" tabindex="0"`})}</div>`;
+}
+async function detallMon(c,monId0){
+ const tok=++TOK,monId=normMonId(monId0);
+ TF.assig="";TF.nom="";
+ const [ms,ctrl]=await Promise.all([monsLlista(),ctrlDe().catch(()=>null)]);
+ if(tok!==TOK||VISTA!=="mons")return;
+ let m=ms.find(x=>x.id===monId);
+ if(!m&&!ASSIGS[monId]){navega("mons");return}
+ if(!m)m={id:monId,nom:nomAssig(monId),titol:nomAssig(monId),materia:"",desc:"",ic:"",carpeta:monId};
+ const mates=esMonMates(monId);
+ const tabsDef=[["mtb-resum","mtp-resum","Resum i notes"],["mtb-domini","mtp-domini","Domini i errors"],["mtb-obertes","mtp-obertes","Obertes"],...(mates?[["mtb-taller","mtp-taller","Taller"]]:[])];
+ let tabIni=MON_TABS[TAB]||"mtb-resum";
+ if(tabIni==="mtb-taller"&&!mates)tabIni="mtb-resum";
+ VISTA="mons";ELEM=monId;FITXA=null;TAB=tabIni;escriuUrl(false);marcaMenu();$("#titol").textContent="Fitxa del món";
+ const tancats=new Set(aR(oB(ctrl).mons_tancats).map(x=>String(x).trim().toLowerCase())),ob=!tancats.has(monId);
+ const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ const opcMons=ms.map(x=>`<option value="${esc(x.id)}"${x.id===monId?" selected":""}>${esc(nomAssig(x.id))}${x.titol?` · ${esc(x.titol)}`:""}</option>`).join("");
+ c.innerHTML=`<div class="fitxa-bar"><button class="btn sec petit" type="button" id="tornaMon">${ic("enrere")} Tots els mons</button>
+  <div class="fitxa-sel"><label for="selFitxaMon">${ic("llibre")}<span>Canvia de món:</span></label><select id="selFitxaMon" aria-label="Canvia de món">${opcMons}</select></div></div>
+ <section class="targeta perfil"><span class="mon-ic" style="--mc:${colAssig(monId)}" aria-hidden="true">${esc(m.ic||"📚")}</span><div><h2>${esc(nomAssig(monId))}</h2>
+  <div class="xips">${pillMon(monId)}${m.nom?`<span class="xip">${esc(m.nom)}</span>`:""}<span id="fitxaMonEstat">${ob?pillEstat("be","Obert a la portada"):pillEstat("malament","Tancat a la portada")}</span>
+   <button class="sw" type="button" role="switch" id="fitxaMonSw" data-mon-sw="${esc(monId)}" aria-label="Estat de ${esc(nomAssig(monId))}" aria-checked="${ob}"${nd}><i></i><span>${ob?"Obert":"Tancat"}</span></button></div></div></section>
+ <div class="pestanyes" role="tablist" aria-label="Seccions del món">${tabsDef.map(([tid,pid,tit])=>`<button role="tab" type="button" id="${tid}" aria-controls="${pid}" aria-selected="${tid===tabIni}" tabindex="${tid===tabIni?0:-1}">${esc(tit)}</button>`).join("")}</div>
+ ${tabsDef.map(([tid,pid])=>`<section role="tabpanel" id="${pid}" aria-labelledby="${tid}"${tid===tabIni?"":" hidden"}></section>`).join("")}`;
+ $("#tornaMon").onclick=()=>navega("mons");
+ $("#selFitxaMon").onchange=e=>{const nid=normMonId(e.target.value);if(!nid||nid===monId)return;navega("mons",{id:nid,tab:MON_SLUG[TAB]||"resum"})};
+ const carregaTab=id=>{
+  if(id==="mtb-resum")pintaMonResum(monId,tok);
+  else if(id==="mtb-domini")pintaMonDomini(monId,tok);
+  else if(id==="mtb-obertes")pintaMonObertes(monId,tok);
+  else if(id==="mtb-taller")pintaMonTaller(monId,tok);
  };
- await renderTab();
+ const tabs=$$("#contingut .pestanyes [role=tab]"),obre=(t,focus)=>{tabs.forEach(x=>{const s=x===t;x.setAttribute("aria-selected",s);x.tabIndex=s?0:-1;$("#"+x.getAttribute("aria-controls")).hidden=!s});
+  TAB=t.id;escriuUrl(false);if(focus!==false)t.focus();carregaTab(t.id)};
+ tabs.forEach((t,i)=>{t.onclick=()=>obre(t);t.onkeydown=e=>{const mv={ArrowRight:1,ArrowLeft:-1}[e.key];if(mv){e.preventDefault();obre(tabs[(i+mv+tabs.length)%tabs.length])}else if(e.key==="Home"){e.preventDefault();obre(tabs[0])}else if(e.key==="End"){e.preventDefault();obre(tabs[tabs.length-1])}}});
+ carregaTab(tabIni);
+}
+async function pintaMonResum(monId,tok){
+ const tp=$("#mtp-resum");if(!tp||tp.dataset.estat)return;
+ tp.dataset.estat="carrega";
+ tp.innerHTML=`<div class="pila"><div id="monKpis">${esqKpis(4)}</div>
+  <div class="graella">
+   ${card("monEvoCard","c-6","puja","Evolució de les notes","Cada punt és un test o examen d'aquest món; una línia per nen.",`<div class="cv"><canvas id="gMonEvo" aria-label="Gràfic de l'evolució de les notes del món" role="img"></canvas></div>`)}
+   ${card("monFontsCard","c-6","estrella","D'on surten les estrelles","Repartiment de les estrelles noves guanyades en aquest món durant el període.",`<div id="monFontsCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+   ${card("monTemesCard","c-12","llibre","Notes i estudi per tema","Resum d'activitat, aprovats i nota mitjana a cada tema del món en el període.",`<div id="tMonTemes" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  </div></div>`;
+ const pRes=rpcT("bn_admin_resum",{p_assig:monId,p_nom:null});
+ const pEvo=rpcT("bn_admin_evolucio",{p_assig:monId,p_nom:null});
+ const pDom=Promise.all([rpcT("bn_admin_domini",{p_assig:monId,p_nom:null}),preguntes()]);
+ const pFonts=rpcR("bn_admin_fonts_dia",{p_periode:PERIODE[DIES]||"7d",p_assig:monId,p_nom:null});
+ pRes.then(resum=>{
+  if(tok!==TOK||ELEM!==monId||!$("#monKpis"))return;
+  const A=(resum&&resum.ara)||{},B=resum&&resum.abans;
+  $("#monKpis").innerHTML=filaKpis([
+   {t:"Nens actius",v:A.nens??"—",p:deltaKpi(A,B,"nens")},
+   {t:"Temps d'estudi",v:fmtM(A.minuts),p:deltaKpi(A,B,"minuts")},
+   {t:"Nota mitjana",v:pcVal(A.nota),p:deltaKpi(A,B,"nota")},
+   {t:"Encert preguntes",v:pcVal(A.encert),p:deltaKpi(A,B,"encert")}
+  ],4);
+ }).catch(e=>{if(tok!==TOK||ELEM!==monId||!$("#monKpis"))return;$("#monKpis").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El resum encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el resum (${e}).`)});
+ pEvo.then(evo=>{if(tok!==TOK||ELEM!==monId||!$("#gMonEvo"))return;gEvolucio(Array.isArray(evo)?evo:[],"gMonEvo")})
+  .catch(e=>{if(tok!==TOK||ELEM!==monId)return;const cv=$("#gMonEvo");if(cv&&cv.parentNode)cv.parentNode.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","L'evolució de notes encara no està activada a la base de dades."):avisErr(`No s'ha pogut carregar l'evolució (${e}).`)});
+ pFonts.then(d=>{
+  const x=$("#monFontsCos");if(tok!==TOK||ELEM!==monId||!x)return;x.removeAttribute("aria-busy");
+  const D=dadesCombos(d);if(!D.totAll){x.innerHTML=buit("estrella","Cap estrella nova amb origen registrat en aquest món durant el període.");return}
+  const claus=Object.keys(D.tot).sort((a,b)=>D.tot[b]-D.tot[a]),mx=Math.max(1,...claus.map(k=>D.tot[k])),pcF=v=>fmtD(Math.round(v*1000/D.totAll)/10);
+  x.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;font-size:12.5px"><span class="muted">${pl(D.perNen.length,"nen","nens")} amb estrelles noves</span><b>${D.totAll} ⭐</b></div>`+
+   claus.map(k=>`<div class="fest" data-font="${esc(k)}"><span>${ic(icF(k))}${esc(nomF(k))} <span class="muted">${pcF(D.tot[k])}%</span></span><div class="bfe"><i style="width:${Math.round(D.tot[k]*100/mx)}%;background:${colF(k)}"></i></div><b>${D.tot[k]}</b></div>`).join("");
+ }).catch(e=>{const x=$("#monFontsCos");if(tok!==TOK||ELEM!==monId||!x)return;x.removeAttribute("aria-busy");
+  x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_fonts_rep.sql","L'origen d'estrelles encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar les estrelles (${e}).`)});
+ pDom.then(([dom0])=>{
+  const el=$("#tMonTemes");if(tok!==TOK||ELEM!==monId||!el)return;el.removeAttribute("aria-busy");
+  const dom=Array.isArray(dom0)?dom0.filter(x=>x.assig===monId):[];
+  const tm=new Map();Object.entries(PREG||{}).forEach(([k,v])=>{const [as,t]=k.split("/");if(as===monId&&!t.startsWith("j-")&&!tm.has(t))tm.set(t,v.tema)});
+  dom.forEach(x=>{if(!tm.has(x.tema))tm.set(x.tema,x.titol||x.tema)});
+  if(!tm.size){el.innerHTML=buit("llibre","Encara no hi ha temes registrats per a aquest món.");return}
+  const rows=[...tm.entries()].map(([t,tit],ord)=>{
+   const ds=dom.filter(x=>x.tema===t),ambTest=ds.filter(x=>x.millor!=null),ap=ambTest.filter(x=>+x.millor>=APROVAT).length;
+   const nota=ambTest.length?mitj(ambTest.map(x=>+x.millor)):null,intents=ds.reduce((s,x)=>s+(+x.intents||0),0),seg=ds.reduce((s,x)=>s+(+x.segons_estudi||0),0);
+   return {ord,tit,nens:ds.length,ap,ambTest:ambTest.length,nota,intents,seg};
+  });
+  const cols=[
+   {k:"ord",t:"Tema",v:r=>r.ord,h:r=>`<span class="q-t">${esc(r.tit)}</span>`},
+   {k:"nens",t:"Nens",num:true},
+   {k:"ap",t:"Aprovats",num:true,h:r=>r.ambTest?`${r.ap} <span class="muted">de ${r.ambTest}</span>`:`<span class="muted">—</span>`},
+   {k:"nota",t:"Nota mitjana",num:true,h:r=>r.nota==null?`<span class="muted">—</span>`:cpc(r.nota)},
+   {k:"intents",t:"Tests",num:true},
+   {k:"seg",t:"Estudi previ",num:true,h:r=>r.seg?fmtT(r.seg):`<span class="muted">—</span>`}
+  ];
+  el.innerHTML=taula("tMonTemesT",cols,rows,{k:"ord",desc:false,eines:rows.length>6,etiqueta:`Temes · ${nomAssig(monId)}`,csvNom:`bona-nota-temes-${monId}`});
+ }).catch(e=>{const el=$("#tMonTemes");if(tok!==TOK||ELEM!==monId||!el)return;el.removeAttribute("aria-busy");
+  el.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El domini per tema encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar els temes (${e}).`)});
+ tp.dataset.estat="fet";
+}
+async function pintaMonDomini(monId,tok){
+ const tp=$("#mtp-domini");if(!tp||tp.dataset.estat)return;
+ tp.dataset.estat="carrega";
+ tp.innerHTML=`<div class="pila">
+  ${card("domini","c-12","diana","Domini per tema","Quants temes té aprovats cada nen i la millor nota de test a cada tema. Clica un nen per obrir-ne la fitxa.",`<div id="tDom" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  ${card("fallades","c-12","creu","Preguntes més fallades","Top 20 d'aquest món, amb l'opció equivocada que més trien (parany).",`<div id="tFal" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  ${card("pendents","c-12","reinicia","Errors pendents de repàs","Temes d'aquest món on els nens amb PIN acumulen més errors per repassar al núvol.",`<div id="tRep" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  ${card("monDifCard","c-12","llamp","Dificultat real de les preguntes","Encert real de les preguntes d'aquest món en tests i exàmens dels últims 365 dies.",`<div id="tMonDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+ </div>`;
+ Promise.all([rpcT("bn_admin_domini",{p_assig:monId,p_nom:null}),preguntes()]).then(([dom])=>{
+  if(tok!==TOK||ELEM!==monId||!$("#tDom"))return;$("#tDom").removeAttribute("aria-busy");tDomini(Array.isArray(dom)?dom:[],"tDom");
+ }).catch(e=>{if(tok!==TOK||ELEM!==monId||!$("#tDom"))return;$("#tDom").removeAttribute("aria-busy");
+  $("#tDom").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El domini encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el domini (${e}).`)});
+ Promise.all([rpcT("bn_admin_fallades",{p_assig:monId,p_nom:null}),preguntes()]).then(([fall])=>{
+  if(tok!==TOK||ELEM!==monId||!$("#tFal"))return;$("#tFal").removeAttribute("aria-busy");tFallades(Array.isArray(fall)?fall:[],"tFal","bn_admin_mfal");
+ }).catch(e=>{if(tok!==TOK||ELEM!==monId||!$("#tFal"))return;$("#tFal").removeAttribute("aria-busy");
+  $("#tFal").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","Les preguntes fallades encara no estan activades a la base de dades."):avisErr(`No s'han pogut carregar les fallades (${e}).`)});
+ tPendents(monId,"tRep");
+ tDificultat(monId,"tMonDif");
+ tp.dataset.estat="fet";
+}
+async function pintaMonObertes(monId,tok){
+ const tp=$("#mtp-obertes");if(!tp||tp.dataset.estat)return;
+ tp.dataset.estat="carrega";
+ tp.innerHTML=`<div class="pila">
+  ${card("monObeLlista","c-12","llapis","Respostes obertes del món","Totes les preguntes obertes, punts de control i fotos de quadern registrades en el període. Clica una fila per llegir-ne el detall complet al panell lateral.",`<div id="tMonObe" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  ${card("obertes","c-12","alerta","Respostes sospitoses per nen","Nens amb textos rebutjats, intents d'enganxar text o idees marcades no trobades en aquest món.",`<div id="tObe" aria-busy="true"><div class="esq esq-f"></div></div>`)}
+ </div>`;
+ try{await Promise.all([asseguraLogs(),preguntes()])}
+ catch(e){if(tok!==TOK||ELEM!==monId)return;const a=$("#tMonObe"),b=$("#tObe");if(a){a.removeAttribute("aria-busy");a.innerHTML=avisErr(`No s'han pogut carregar les respostes (${e}).`)}if(b){b.removeAttribute("aria-busy");b.innerHTML=""}return}
+ if(tok!==TOK||ELEM!==monId||!$("#tMonObe"))return;
+ tp.dataset.estat="fet";
+ const el=$("#tMonObe");el.removeAttribute("aria-busy");
+ const obs=LOGS.filter(l=>l.assig===monId&&l.event==="oberta").sort((a,b)=>b.ts.localeCompare(a.ts));
+ if(!obs.length){el.innerHTML=buit("llapis","Cap resposta oberta en aquest món durant el període.");}
+ else{
+  const rows=obs.map((l,idx)=>{const d=l.detall||{},reb=+d.rebutjat||0,eng=+d.enganxat||0,mode=d.mode||"oberta";
+   const tit=d.tema?titolTema(l.assig,String(d.tema)):"Pregunta oberta";
+   const modeTxt=mode==="control"?"Quadern (control)":mode==="foto"?"Foto quadern":mode==="practica"?"Pràctica":"Oberta";
+   return {idx,l,ts:l.ts,nom:l.nom,k:clauNen(l),tit,modeTxt,pc:d.pc!=null?+d.pc:null,reb,eng,s:+d.s||0,avisOrd:eng?3:reb?2:1}});
+  const cols=[
+   {k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},
+   {k:"nom",t:"Nen",cls:"nw",h:r=>`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`},
+   {k:"tit",t:"Tema · Mode",h:r=>`<span class="q-t">${esc(r.tit)}</span> <span class="pill neutre">${esc(r.modeTxt)}</span>`},
+   {k:"pc",t:"Resultat",num:true,h:r=>{const d=r.l.detall||{};if(d.mode==="foto")return d.ok?(d.correcte?pillEstat("be","Correcte"):pillEstat("avis","Amb error")):pillEstat("malament","Error");return r.pc!=null?cpc(r.pc):`<span class="muted">—</span>`}},
+   {k:"s",t:"Temps",num:true,h:r=>r.s?fmtT(r.s):`<span class="muted">—</span>`},
+   {k:"avisOrd",t:"Estat",cls:"nw",v:r=>r.avisOrd,h:r=>r.eng?pillEstat("malament","Ha enganxat"):r.reb?pillEstat("avis",pl(r.reb,"rebutjat","rebutjats")):pillEstat("be")}
+  ];
+  const prev=TAULES.tMonObeT;
+  el.innerHTML=taula("tMonObeT",cols,rows,{k:prev?prev.k:"ts",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:`Respostes obertes · ${nomAssig(monId)}`,csvNom:`bona-nota-obertes-${monId}`,fila:r=>` class="clic" data-mobe="${r.idx}" tabindex="0"`});
+  const obre=idx=>{const r=rows.find(x=>x.idx===+idx);if(r)obrePanellOberta(r.l,{k:r.k,nom:r.nom})};
+  el.onclick=e=>{const tr=e.target.closest("tr[data-mobe]");if(tr&&!e.target.closest("button,a,input"))obre(tr.dataset.mobe)};
+  el.onkeydown=e=>{if(e.key==="Enter"){const tr=e.target.closest&&e.target.closest("tr[data-mobe]");if(tr&&e.target===tr)obre(tr.dataset.mobe)}};
+ }
+ const eo=$("#tObe");if(eo){eo.removeAttribute("aria-busy");tObertes(monId)}
+}
+function pintaMonTaller(monId){
+ const tp=$("#mtp-taller");if(!tp||tp.dataset.estat)return;
+ tp.dataset.estat="fet";
+ tp.innerHTML=`<div class="pila">${card("taller","c-12","llapis","Taller de mates: on s'equivoquen","Errors més repetits als exercicis del Taller de mates (top 30).",`<div id="tErr" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}</div>`;
+ tErrorsTaller(monId);
 }
 async function vistaSessionsSeccio(c){
  const ll=[["sessions","Sessions"],["activitat","Activitat"],["registre","Registre"]],tab=ll.some(x=>x[0]===TAB)?TAB:"sessions";
@@ -1729,7 +1965,7 @@ async function vistaSessionsSeccio(c){
   if(tab!=="sessions"){TF.assig="";TF.nom=""}
   if(tab==="sessions"||tab==="registre"){try{await asseguraLogs()}catch(e){c.innerHTML=avisErr(`No s'han pogut carregar els registres (${e}).`);return}}
   if(tk!==TOK||VISTA!=="sessions")return;
-  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Sessions")+(tab==="sessions"?barraFiltresLocals({assig:true,nen:true}):"")+`<div id="sesCos">${esqTaula()}</div>`;
+  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Sessions")+(tab==="sessions"?barraFiltresLocals({assig:true,nen:true}):"")+`<div id="sesCos">${tab==="activitat"?esqTaula():""}</div>`;
   lligaPestanyes(c,ll);if(tab==="sessions")lligaFiltresLocals(renderTab);
   const cos=$("#sesCos");if(!cos)return;
   if(tab==="sessions")vistaSessions(cos);
@@ -1796,11 +2032,11 @@ function tCalor(cal){const mx=Math.max(1,...cal.map(c=>(+c.minuts)+c.accions)),D
  for(let dw=1;dw<=7;dw++){h+=`<span class="dw">${D[dw-1]}</span>`;for(let hh=0;hh<24;hh++){const c=cal.find(x=>x.dw===dw&&x.h===hh),v=c?(+c.minuts)+c.accions:0;
   h+=`<i title="${D[dw-1]} ${hh} h · ${c?`${c.minuts} min · ${c.accions} accions · ${c.nens} nens`:"res"}" style="${v?`background:rgba(var(--heat),${(.12+.88*v/mx).toFixed(2)})`:""}"></i>`}}
  $("#tCal").innerHTML=h+`</div></div><div class="llegenda"><span>0</span><span class="esc" aria-hidden="true"></span><span>${fmtD(Math.round(mx))} (minuts + accions en una hora)</span></div>`}
-function gEvolucio(evo){const noms=[...new Set(evo.map(e=>e.nom.trim()))].sort((a,b)=>a.localeCompare(b,"ca"));
- if(!evo.length){const c=$("#gEvo");if(c)c.parentNode.innerHTML=buit("puja","Encara no hi ha tests en aquest període.");return}
+function gEvolucio(evo,id="gEvo"){const noms=[...new Set(evo.map(e=>e.nom.trim()))].sort((a,b)=>a.localeCompare(b,"ca"));
+ if(!evo.length){const c=$("#"+id);if(c)c.parentNode.innerHTML=buit("puja","Encara no hi ha tests en aquest període.");return}
  const o=GOPC();o.parsing=false;o.scales.x=Object.assign(o.scales.x,{type:"linear",ticks:{color:cssV("--muted"),maxTicksLimit:7,callback:v=>diaC(v)}});o.scales.y=Object.assign(o.scales.y,{min:0,max:100,ticks:{color:cssV("--muted"),callback:v=>v+"%"}});
  o.plugins={tooltip:{callbacks:{title:it=>dataC(it[0].raw.x),label:it=>`${it.dataset.label}: ${it.raw.y}% · ${it.raw.ev==="examen"?"examen":"test"} ${it.raw.t||""}`}}};
- nouG("gEvo",{type:"line",data:{datasets:noms.map(n=>({label:n,borderColor:colorNen(n),backgroundColor:colorNen(n),cubicInterpolationMode:"monotone",clip:8,pointRadius:3,pointHoverRadius:5,borderWidth:2,
+ nouG(id,{type:"line",data:{datasets:noms.map(n=>({label:n,borderColor:colorNen(n),backgroundColor:colorNen(n),cubicInterpolationMode:"monotone",clip:8,pointRadius:3,pointHoverRadius:5,borderWidth:2,
   data:evo.filter(e=>e.nom.trim()===n).map(e=>({x:new Date(e.ts).getTime(),y:e.pc,t:e.tema,ev:e.event}))}))},options:o})}
 function tConstancia(act){const per={};act.forEach(a=>{const k=a.nom.trim().toLowerCase();(per[k]=per[k]||{nom:a.nom,dies:new Set(),min:0}).dies.add(a.dia);per[k].min+=+a.minuts});
  const avui=new Date();const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
@@ -1823,7 +2059,7 @@ function plegables(clau,assigs){let st={};try{st=JSON.parse(localStorage.getItem
   lliga:el=>{if(!el)return;
    el.querySelectorAll("details.dm-as").forEach(d=>d.addEventListener("toggle",()=>{st[d.dataset.a]=d.open;const c=d.querySelector(".dm-cap");if(c)c.title=`Toca per ${d.open?"plegar":"desplegar"} ${nomAssig(d.dataset.a)}`;desa()}));
    el.querySelectorAll("[data-dm]").forEach(b=>b.onclick=()=>{const o=b.dataset.dm==="obre";el.querySelectorAll("details.dm-as").forEach(d=>{d.open=o;st[d.dataset.a]=o});desa()})}}}
-function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=buit("diana","Encara no hi ha activitat de temes en aquest període.");return}
+function tDomini(dom,elId="tDom"){const el=$("#"+elId);if(!el)return;if(!dom.length){el.innerHTML=buit("diana","Encara no hi ha activitat de temes en aquest període.");return}
  // tots els temes de cada assignatura, en l'ordre del món (de preguntes.json), encara que ningú no els hagi fet
  const temesDe=a=>{const m=new Map();Object.entries(PREG||{}).forEach(([k,v])=>{const [as,t]=k.split("/");if(as===a&&!t.startsWith("j-")&&!m.has(t))m.set(t,v.tema)});
   dom.filter(x=>x.assig===a).forEach(x=>{if(!m.has(x.tema))m.set(x.tema,x.titol||x.tema)});return [...m.entries()]};
@@ -1836,7 +2072,7 @@ function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=buit("diana","Encara 
    noms=[...new Map(ds.map(x=>[x.nom.trim().toLowerCase(),x.nom])).values()].sort((x,y)=>x.localeCompare(y,"ca"));
   const cel=(n,t)=>ds.find(x=>x.tema===t&&x.nom.trim().toLowerCase()===n.trim().toLowerCase());
   const res=noms.map(n=>{const c={aprovat:0,suspes:0,fitxa:0,no:0};temes.forEach(([t])=>c[estat(cel(n,t))]++);const N=temes.length;
-   return `<button type="button" class="dm-nen" data-n="${esc(n)}" title="Filtra el tauler només per a ${esc(n)}"><span class="dn"><span class="nen">${avatar(n,"p")}<span>${esc(n)}</span></span><span>${c.aprovat}/${N}</span></span>
+   return `<button type="button" class="dm-nen" data-n="${esc(n)}" title="Obre la fitxa de ${esc(n)}"><span class="dn"><span class="nen">${avatar(n,"p")}<span>${esc(n)}</span></span><span>${c.aprovat}/${N}</span></span>
     <span class="dm-bar">${["aprovat","suspes","fitxa"].map(k=>c[k]?`<i style="width:${c[k]*100/N}%;background:${COL[k]}"></i>`:"").join("")}</span>
     <small>${c.aprovat} aprovats · ${c.suspes} per millorar · ${c.fitxa} només llegits · ${c.no} sense obrir</small></button>`}).join("");
   const files=temes.map(([t,tit])=>`<tr><td class="tm">${esc(tit)}</td>${noms.map(n=>{const c=cel(n,t),e=estat(c);
@@ -1850,10 +2086,10 @@ function tDomini(dom){if(!dom.length){$("#tDom").innerHTML=buit("diana","Encara 
      <small><span>${noms.length===1?`<b>${tot.aprovat}/${temes.length}</b> temes aprovats`:`<b>${tot.aprovat}/${TT}</b> aprovats entre tots`}</span><span>${pc}%</span></small>`,
     `<div class="dm-res">${res}</div>
    <div class="taula-w"><table class="dm-t"><thead><tr><th scope="col" class="tm">Tema</th>${noms.map(n=>`<th scope="col"><span class="nen" style="justify-content:center">${avatar(n,"p")}${esc(n)}</span></th>`).join("")}</tr></thead><tbody>${files}</tbody></table></div>`)});
- $("#tDom").innerHTML=h+`<div class="llegenda"><span>Millor nota:</span><span>0</span><span class="bands" aria-hidden="true"><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b50"></i><i class="b50"></i><i class="b70"></i><i class="b70"></i><i class="b90"></i></span><span>100</span>
+ el.innerHTML=h+`<div class="llegenda"><span>Millor nota:</span><span>0</span><span class="bands" aria-hidden="true"><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b50"></i><i class="b50"></i><i class="b70"></i><i class="b70"></i><i class="b90"></i></span><span>100</span>
   <span class="q"><i class="b0"></i>menys de 50</span><span class="q"><i class="b50"></i>50-69</span><span class="q"><i class="b70"></i>70-89 (aprovat)</span><span class="q"><i class="b90"></i>90-100</span><span class="q"><i class="bfx"></i>F = només fitxa</span><span>· = sense obrir</span><span>×3 = intents</span></div>`;
- $("#tDom").querySelectorAll(".dm-nen").forEach(x=>x.onclick=()=>{TF.nom=x.dataset.n;pinta();scrollTo(0,0)});
- PL.lliga($("#tDom"))}
+ el.querySelectorAll(".dm-nen").forEach(x=>x.onclick=()=>obreFitxaNen(x.dataset.n));
+ PL.lliga(el)}
 function tFallades(fall,elId="tFal",clau="bn_admin_fal"){const el=$("#"+elId);if(!el)return;
  if(!fall.length){el.innerHTML=buit("creu","Encara no hi ha preguntes fallades registrades en aquest període.","Es compten des del 4-11-2026.");return}
  const net=t=>String(t||"").replace(/<[^>]+>/g,"");
@@ -1879,15 +2115,15 @@ function tFallades(fall,elId="tFal",clau="bn_admin_fal"){const el=$("#"+elId);if
 // Es carrega a part de la resta: si la funció encara no és a la base de dades o falla, només aquest apartat ho diu.
 const TALLER_GEN={error:"Troba l'error",control:"Quadern (punts de control)",escala:"Escala (descompondre)",mcmmcd:"MCM i MCD",problema:"Problemes",criteri:"Criteris",divisors:"Divisors",multiples:"Múltiples",primer:"Primer o compost",divisio:"Divisió llarga",combinades:"Operacions combinades",fraccions:"Fraccions",equacio:"Equacions"};
 const TALLER_ERR={estima:"Estimació equivocada (abans de calcular)",linia:"Ha tocat una línia bona",per:"No ha sabut dir per què",escriu:"No ha sabut escriure-ho bé",no_primer:"Divisor que no és primer",no_divideix:"No és divisible pel que ha posat",no_menor:"No comença pel primer més petit",quocient:"Divisió mal feta",exponent:"Exponent mal comptat",mcm_exp_petit:"MCM amb l'exponent petit",mcd_exp_gran:"MCD amb l'exponent gran",mcd_no_comu:"MCD amb un factor no comú",mcm_falta:"Al MCM li falta un factor",confon_mcm_mcd:"Confon MCM i MCD",dada_sobrant:"Agafa la dada que no serveix",u_primer:"Diu que l'1 és primer",primer_compost:"Primer/compost equivocat",suma_xifres:"Suma de xifres mal feta",criteri_xifra:"Mira la xifra equivocada",multiple_no:"No és múltiple",fora_rang:"Fora de l'interval",falten:"N'hi falten",divisor_no:"No és divisor",calcul:"Error de càlcul",resta:"Resta mal feta",baixar:"No baixa la xifra",jerarquia:"No respecta la jerarquia",signe:"Error de signe",denominador:"Suma els denominadors",simplifica:"No simplifica",unitat:"Resposta/unitat equivocada","-":"Altres"};
-async function tErrorsTaller(){const el=$("#tErr");if(!el)return;const tok=TOK;
- let ep;try{ep=await rpcT("bn_admin_errors_taller")}
- catch(e){console.error(e);if(tok!==TOK||!$("#tErr"))return;$("#tErr").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_errors_taller.sql","Aquest apartat encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar els errors del Taller de mates (${e&&e.message||e}).`);return}
- if(tok!==TOK||!$("#tErr"))return;
- try{if(!Array.isArray(ep)||!ep.length){$("#tErr").innerHTML=buit("llapis","Encara no hi ha errors del Taller de mates en aquest període.","Els registres antics no en porten.");return}
-  const mx=Math.max(1,...ep.map(x=>+x.n||0));
-  $("#tErr").innerHTML=taula("tErrT",[{k:"gen",t:"Exercici",v:r=>TALLER_GEN[r.gen]||r.gen,h:r=>`<span class="q-t" title="${esc(r.gen)}">${esc(TALLER_GEN[r.gen]||r.gen)}</span>`},{k:"pas",t:"Pas"},
+async function tErrorsTaller(assigFix=""){const el=$("#tErr");if(!el)return;const tok=TOK;
+ let ep;try{ep=await rpcT("bn_admin_errors_taller",assigFix?{p_assig:assigFix,p_nom:null}:undefined)}
+ catch(e){console.error(e);if(tok!==TOK||!$("#tErr"))return;const x=$("#tErr");x.removeAttribute("aria-busy");x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_errors_taller.sql","Aquest apartat encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar els errors del Taller de mates (${e&&e.message||e}).`);return}
+ if(tok!==TOK||!$("#tErr"))return;const x=$("#tErr");x.removeAttribute("aria-busy");
+ try{if(!Array.isArray(ep)||!ep.length){x.innerHTML=buit("llapis","Encara no hi ha errors del Taller de mates en aquest període.","Els registres antics no en porten.");return}
+  const mx=Math.max(1,...ep.map(r=>+r.n||0));
+  x.innerHTML=taula("tErrT",[{k:"gen",t:"Exercici",v:r=>TALLER_GEN[r.gen]||r.gen,h:r=>`<span class="q-t" title="${esc(r.gen)}">${esc(TALLER_GEN[r.gen]||r.gen)}</span>`},{k:"pas",t:"Pas"},
    {k:"codi",t:"Error",v:r=>TALLER_ERR[r.codi]||r.codi,h:r=>`<span title="${esc(r.codi)}">${esc(TALLER_ERR[r.codi]||r.codi)}</span>`},{k:"n",t:"Vegades",num:true,v:r=>+r.n||0,h:r=>mini(+r.n||0,mx)},{k:"nens",t:"Nens",num:true,v:r=>+r.nens||0}],ep,{k:"n",alta:true,etiqueta:"Errors del Taller de mates"})}
- catch(e){console.error(e);$("#tErr").innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
+ catch(e){console.error(e);x.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
 // ---- Benestar (n2540 · supabase/bn_admin_benestar.sql · docs/BON-US.md §2 i §5) ----
 // Es demana a part de la resta, com el Taller: si la funció encara no és a la base de dades o falla, només aquest apartat ho diu.
 // El servidor calcula els senyals de cada nen (marató, nit, pressa…) i les vigílies de cada món; aquí s'escriuen en paraules planeres.
@@ -2042,12 +2278,13 @@ async function desaExamen(a,v){if(DEMO){toast("No disponible en demo","avis");re
   BEN=null;tBenestar().then(()=>{const j=inpEx(a);if(j&&document.activeElement===document.body)j.focus()})}
  catch(e){BEN_DESA=false;bl(false);toast(e==="falta"?"Falta executar supabase/bn_admin_benestar.sql":`No s'ha pogut desar la data (${e&&e.message||e})`,"err")}}
 // ---- Repàs, boss i missions: es calcula amb el registre que el tauler ja té (LF(): període i filtres actuals), sense cap funció nova a Supabase ----
-function tObertes(){const el=$("#tObe");if(!el)return;const m={},fila=l=>m[clauNen(l)]||(m[clauNen(l)]={nom:l.nom,fetes:0,rebutjat:0,enganxat:0,crec:0});
- LF().forEach(l=>{const d=l.detall||{};if(l.event==="oberta"&&d.mode!=="control"&&d.mode!=="foto"){const f=fila(l);f.fetes++;f.rebutjat+=+d.rebutjat||0;f.enganxat+=+d.enganxat||0}
+function tObertes(assigFix=""){const el=$("#tObe");if(!el)return;const fa=assigFix||TF.assig,k0=TF.nom.trim().toLowerCase();
+ const m={},fila=l=>m[clauNen(l)]||(m[clauNen(l)]={k:clauNen(l),nom:l.nom,fetes:0,rebutjat:0,enganxat:0,crec:0});
+ LOGS.filter(l=>(!fa||l.assig===fa)&&(!k0||clauNen(l)===k0)).forEach(l=>{const d=l.detall||{};if(l.event==="oberta"&&d.mode!=="control"&&d.mode!=="foto"){const f=fila(l);f.fetes++;f.rebutjat+=+d.rebutjat||0;f.enganxat+=+d.enganxat||0}
   if(l.event==="valora"&&Array.isArray(d.crec))fila(l).crec+=d.crec.length});
  const rows=Object.values(m).filter(r=>r.rebutjat||r.enganxat||r.crec);if(!rows.length){el.innerHTML=buit("ok","Cap resposta sospitosa en aquest període.");return}
  const num=(k,t)=>({k,t,num:true,v:r=>r[k]});
- el.innerHTML=taula("tObeT",[{k:"nom",t:"Nen",v:r=>r.nom},num("fetes","Obertes fetes"),num("rebutjat","Textos rebutjats"),num("enganxat","Intents d'enganxar"),num("crec","Idees que diu haver posat")],rows,{k:"rebutjat",etiqueta:"Respostes sospitoses per nen"})}
+ el.innerHTML=taula("tObeT",[{k:"nom",t:"Nen",cls:"nw",v:r=>r.nom,h:r=>`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`},num("fetes","Obertes fetes"),num("rebutjat","Textos rebutjats"),num("enganxat","Intents d'enganxar"),num("crec","Idees que diu haver posat")],rows,{k:"rebutjat",etiqueta:"Respostes sospitoses per nen"})}
 function tMotivacio(){const el=$("#tMot");if(!el)return;const ls=LF(),m={};
  const fila=(k,nom)=>m[k]||(m[k]={nom,rep:0,apr:0,boss:0,guanyats:0,mis:0});
  ls.filter(l=>l.event==="joc").forEach(l=>{const d=l.detall||{};
@@ -2081,10 +2318,10 @@ async function rpcR(f,extra){if(DEMO)return demoFontsRepRpc(f,extra||{});const r
 // No s'hi envia cap paràmetre que la funció no tingui: PostgREST tornaria 404. Si la crida falla, no es guarda (la propera vegada es torna a provar).
 function fontsDiaDe(){const p=PERIODE[DIES]||"7d",a=TF.assig||null,n=TF.nom.trim()||null;
  if(!FDIA||FDIA.p!==p||FDIA.a!==a||FDIA.n!==n){const o={p,a,n};o.prom=rpcR("bn_admin_fonts_dia",{p_periode:p,p_assig:a,p_nom:n});o.prom.catch(()=>{if(FDIA===o)FDIA=null});FDIA=o}return FDIA.prom}
-function repPendentsDe(){const a=TF.assig||null;
+function repPendentsDe(a0){const a=a0!==undefined?(a0||null):(TF.assig||null);
  if(!REPP||REPP.a!==a){const o={a};o.prom=rpcR("bn_admin_rep_pendents",{p_assig:a});o.prom.catch(()=>{if(REPP===o)REPP=null});REPP=o}return REPP.prom}
 async function carregaDifActual(){if(QDIF_ADM)return QDIF_ADM;try{const r=await fetch("../motor/dificultat.json",{cache:"no-cache"});QDIF_ADM=r.ok?await r.json():{}}catch(e){QDIF_ADM={}}return QDIF_ADM}
-function dificultatDe(){const a=TF.assig||null;
+function dificultatDe(a0){const a=a0!==undefined?(a0||null):(TF.assig||null);
  if(!DIFR||DIFR.a!==a){const o={a};o.prom=rpcR("bn_admin_dificultat",{p_assig:a});o.prom.catch(()=>{if(DIFR===o)DIFR=null});DIFR=o}return DIFR.prom}
 async function tCombos(){const el=$("#tCom");if(!el)return;const tok=TOK;let d;
  try{d=await fontsDiaDe()}
@@ -2141,49 +2378,51 @@ function gFontsDia(id,D,ks){const o=GOPC();o.scales.x.stacked=true;o.scales.x.gr
 function lligaAltres(el,D){const det=el.querySelector("details.fr-altres");if(!det)return;
  const fes=()=>{if(det.open&&!det.dataset.g){det.dataset.g="1";gFontsDia("gComA",D,D.altres)}};
  det.addEventListener("toggle",()=>{COM_OBERT=det.open;fes()});fes()}
-async function tPendents(){const el=$("#tRep");if(!el)return;const tok=TOK;let d;
- try{d=(await Promise.all([repPendentsDe(),preguntes()]))[0]}
- catch(e){console.error(e);const x=$("#tRep");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+async function tPendents(assigFix="",elId="tRep"){const el=$("#"+elId);if(!el)return;const tok=TOK;let d;
+ try{d=(await Promise.all([repPendentsDe(assigFix),preguntes()]))[0]}
+ catch(e){console.error(e);const x=$("#"+elId);if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
   x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_fonts_rep.sql","Els errors pendents de la colla encara no estan activats a la base de dades. La resta del tauler funciona igual."):avisErr(`No s'han pogut carregar els errors pendents de la colla (${e&&e.message||e}).`);return}
- const x=$("#tRep");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
- try{const r=htmlPendents(d);x.innerHTML=r.h;if(r.PL)r.PL.lliga(x)}
+ const x=$("#"+elId);if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+ try{const r=htmlPendents(d,assigFix);x.innerHTML=r.h;if(r.PL)r.PL.lliga(x)}
  catch(e){console.error(e);x.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
 // resposta [{assig, tid, n, nens, avui, preguntes:[{q, n}]}] (tid null = errors sense tema, com els de «Troba l'error») → un bloc plegable per món
-function htmlPendents(d){const fa=TF.assig;
+function htmlPendents(d,assigFix=""){const fa=assigFix||TF.assig,unSol=!!assigFix;
  const L=(Array.isArray(d)?d:aR(oB(d).temes)).filter(r=>r&&typeof r==="object"&&!Array.isArray(r)).map(r=>{const a=r.assig==null||r.assig===""?"?":String(r.assig),tid=r.tid==null||r.tid===""?null:String(r.tid),T=titols().get(a);
    const pr=aR(r.preguntes).filter(q=>q&&typeof q==="object"&&!Array.isArray(q)).map(q=>({q:q.q==null||q.q===""?"—":String(q.q),n:nN(q.n)||0})).filter(q=>q.n>0).sort((x,y)=>y.n-x.n).slice(0,5);
    return {assig:a,tid,tit:tid==null?"Sense tema":titolTema(a,tid),conegut:tid!=null&&!!T&&T.has(tid),n:nN(r.n)||0,nens:nN(r.nens)||0,avui:nN(r.avui)||0,pr}})
   .filter(r=>r.n>0&&(!fa||r.assig===fa));
- const nota=TF.nom.trim()?`<p class="fr-nota">${ic("info")}<span>És de tota la colla: el filtre de nen no s'hi aplica (la resposta no porta noms, només quants nens).</span></p>`:"";
+ const nota=!unSol&&TF.nom.trim()?`<p class="fr-nota">${ic("info")}<span>És de tota la colla: el filtre de nen no s'hi aplica (la resposta no porta noms, només quants nens).</span></p>`:"";
  if(!L.length)return {h:nota+buit("ok",fa?"Cap error pendent de repàs en aquest món.":"Cap error pendent de repàs.","Només hi surten els nens amb PIN: és el que tenen desat al núvol.")};
  const sumA=a=>L.filter(r=>r.assig===a).reduce((s,r)=>s+r.n,0);
- const assigs=[...new Set(L.map(r=>r.assig))].sort((x,y)=>sumA(y)-sumA(x)||nomAssig(x).localeCompare(nomAssig(y),"ca")),PL=plegables("bn_admin_rep",assigs);
+ const assigs=[...new Set(L.map(r=>r.assig))].sort((x,y)=>sumA(y)-sumA(x)||nomAssig(x).localeCompare(nomAssig(y),"ca")),PL=unSol?null:plegables("bn_admin_rep",assigs);
  const N=L.reduce((s,r)=>s+r.n,0),AV=L.reduce((s,r)=>s+r.avui,0),nT=L.filter(r=>r.tid!=null).length;
  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
- const kpis=`<div class="kpis" style="margin-bottom:16px">${kp("Errors pendents",N,`a ${pl(assigs.length,"món","mons")}`)}${kp("Toquen avui",AV,`${Math.round(AV*100/N)} % dels pendents`)}${kp("Temes amb errors",nT,L.length>=300?"es mostren els 300 amb més errors":"")}</div>`;
+ const kpis=unSol?"":`<div class="kpis" style="margin-bottom:16px">${kp("Errors pendents",N,`a ${pl(assigs.length,"món","mons")}`)}${kp("Toquen avui",AV,`${Math.round(AV*100/N)} % dels pendents`)}${kp("Temes amb errors",nT,L.length>=300?"es mostren els 300 amb més errors":"")}</div>`;
  const cols=mx=>[{k:"tema",t:"Tema",cls:"tmn",v:r=>r.tid==null?"￿":r.tit,h:r=>r.tid==null?`<span class="q-t">Sense tema</span><span class="nv-id">errors de jocs com «Troba l'error»</span>`:`<span class="q-t">${esc(r.tit)}</span>${r.conegut?"":`<span class="nv-id">no és a preguntes.json</span>`}`},
   {k:"n",t:"Errors pendents",num:true,h:r=>`<span class="fr-l">Errors pendents</span>${mini(r.n,mx,"bad",String(r.n))}`},{k:"nens",t:"Nens",num:true,h:r=>`<span class="fr-l">Nens</span>${r.nens}`},
   {k:"avui",t:"Toquen avui",num:true,h:r=>`<span class="fr-l">Toquen avui</span>${r.avui?`<span class="pill warn">${r.avui}</span>`:`<span class="muted">0</span>`}`},
   {k:"pr",t:"Preguntes més repetides",cls:"tfa",ord:false,h:r=>`<span class="fr-l">Preguntes més repetides</span>`+(r.pr.length?`<ul class="nv-f">${r.pr.map(q=>`<li><b>×${q.n}</b><span class="nv-q" title="${esc(q.q)}">${esc(q.q)}</span></li>`).join("")}</ul>`:`<span class="muted">—</span>`)}];
- const h=assigs.map((a,i)=>{const rs=L.filter(r=>r.assig===a),n=sumA(a),av=rs.reduce((s,r)=>s+r.avui,0),nt=rs.filter(r=>r.tid!=null).length,top=rs.reduce((m,r)=>r.n>m.n?r:m,rs[0]),mx=Math.max(1,...rs.map(r=>r.n));
+ const h=unSol?taula("tRepT-0",cols(Math.max(1,...L.map(r=>r.n))),L,{k:"n",etiqueta:`Errors pendents de la colla · ${nomAssig(fa)}`}):assigs.map((a,i)=>{const rs=L.filter(r=>r.assig===a),n=sumA(a),av=rs.reduce((s,r)=>s+r.avui,0),nt=rs.filter(r=>r.tid!=null).length,top=rs.reduce((m,r)=>r.n>m.n?r:m,rs[0]),mx=Math.max(1,...rs.map(r=>r.n));
   return PL.bloc(a,`${pl(nt,"tema","temes")}${nt<rs.length?" i errors sense tema":""} · ${pl(n,"error pendent","errors pendents")} · ${pl(av,"toca","toquen")} avui`,"",
    `<span class="dm-bar" aria-hidden="true"><i style="width:${Math.round(top.n*100/n)}%;background:var(--bad)"></i></span><small><span class="dm-pit" title="${esc(top.tit)}">Més: <b>${esc(top.tit)}</b></span><span>${top.n}</span></small>`,
    taula("tRepT-"+i,cols(mx),rs,{k:"n",etiqueta:`Errors pendents de la colla · ${nomAssig(a)}`}))}).join("");
  const lleg=`<div class="llegenda"><span><b>×3</b>: la tenen pendent 3 nens.</span><span><b>Toquen avui</b>: el repàs del joc ja els demana (data de repàs d'avui o d'abans).</span><span><b>Sense tema</b>: errors que el joc no lliga a cap tema, com els de «Troba l'error».</span></div>`;
- return {h:nota+kpis+PL.eines()+h+lleg,PL}}
+ return {h:nota+kpis+(PL?PL.eines():"")+h+lleg,PL}}
 // ---- Dificultat real de les preguntes (supabase/bn_admin_dificultat.sql, issue #16) ----
-async function tDificultat(){const el=$("#tDif");if(!el)return;const tok=TOK;let d;
- try{d=(await Promise.all([dificultatDe(),preguntes(),carregaDifActual()]))[0]}
- catch(e){console.error(e);const x=$("#tDif");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+async function tDificultat(assigFix="",elId="tDif"){const el=$("#"+elId);if(!el)return;const tok=TOK;let d;
+ try{d=(await Promise.all([dificultatDe(assigFix),preguntes(),carregaDifActual()]))[0]}
+ catch(e){console.error(e);const x=$("#"+elId);if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
   x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_dificultat.sql","El càlcul de dificultat real encara no està activat a la base de dades. La resta del tauler funciona igual."):avisErr(`No s'ha pogut carregar la dificultat real de les preguntes (${e&&e.message||e}).`);return}
- const x=$("#tDif");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");DIF_D=d;pintaDificultat()}
-function pintaDificultat(){const x=$("#tDif");if(!x||!DIF_D)return;
- try{const r=htmlDificultat(DIF_D);x.innerHTML=r.h;if(r.PL)r.PL.lliga(x);
-  x.querySelectorAll("[data-dif-v]").forEach(b=>b.onclick=()=>{if(DIF_VISTA===b.dataset.difV)return;DIF_VISTA=b.dataset.difV;pintaDificultat()});
-  const bj=x.querySelector("#btDifJson");if(bj&&!DEMO)bj.onclick=()=>{const b=new Blob([JSON.stringify(DIF_D,null,2)+"\n"],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");
-   a.href=u;a.download=`bn-dificultat-${diaMad()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1e3)}}
+ const x=$("#"+elId);if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+ if(assigFix)x._difD=d;else DIF_D=d;
+ pintaDificultat(elId,assigFix)}
+function pintaDificultat(elId="tDif",assigFix=""){const x=$("#"+elId),d=assigFix?x&&x._difD:DIF_D;if(!x||!d)return;
+ try{const r=htmlDificultat(d,assigFix,elId);x.innerHTML=r.h;if(r.PL)r.PL.lliga(x);
+  x.querySelectorAll("[data-dif-v]").forEach(b=>b.onclick=()=>{if(DIF_VISTA===b.dataset.difV)return;DIF_VISTA=b.dataset.difV;pintaDificultat(elId,assigFix)});
+  const bj=x.querySelector("#btDifJson");if(bj&&!DEMO)bj.onclick=()=>{const b=new Blob([JSON.stringify(d,null,2)+"\n"],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");
+   a.href=u;a.download=`bn-dificultat-${assigFix?assigFix+"-":""}${diaMad()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1e3)}}
  catch(e){console.error(e);x.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
-function htmlDificultat(d){d=oB(d);const fa=TF.assig,minR=nN(d.min_respostes)||8,dies=nN(d.dies)||365,net=t=>String(t||"").replace(/<[^>]+>/g,"");
+function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix||TF.assig,unSol=!!assigFix,minR=nN(d.min_respostes)||8,dies=nN(d.dies)||365,net=t=>String(t||"").replace(/<[^>]+>/g,"");
  // total de preguntes de test del catàleg (sense j-*) per món
  const catTot=new Map();Object.keys(oB(PREG)).forEach(k=>{const p=k.split("/");if(p.length>=3&&!p[1].startsWith("j-")&&(!fa||p[0]===fa))catTot.set(p[0],(catTot.get(p[0])||0)+1)});
  const totBanc=[...catTot.values()].reduce((s,v)=>s+v,0);
@@ -2196,11 +2435,11 @@ function htmlDificultat(d){d=oB(d);const fa=TF.assig,minR=nN(d.min_respostes)||8
   const ordE={afegir:1,revisar:2,confirmada:3,normal:4,facil:5,pendent:6}[estat]||9;
   return {assig:a,qid,text:q?net(q.t):`Pregunta ${qid}`,tema:q?String(q.tema||""):"",bona:q&&Array.isArray(q.o)&&q.o[q.c]!=null?net(q.o[q.c]):null,n,bones,nens,enc,enc1,seg,suf,dif,act,estat,ordE}
  }).filter(r=>!fa||r.assig===fa);
- const nota=TF.nom.trim()?`<p class="fr-nota">${ic("info")}<span>És de tota la colla (últims ${dies} dies, sense comptar el repàs): el filtre de nen i el període curt no s'hi apliquen.</span></p>`:"";
+ const nota=!unSol&&TF.nom.trim()?`<p class="fr-nota">${ic("info")}<span>És de tota la colla (últims ${dies} dies, sense comptar el repàs): el filtre de nen i el període curt no s'hi apliquen.</span></p>`:"";
  if(!L.length)return {h:nota+buit("llamp",fa?"Encara no hi ha respostes de test o examen en aquest món.":"Encara no hi ha respostes registrades per calcular la dificultat.",`Calen almenys ${minR} respostes per pregunta en tests o exàmens.`)};
  const sufL=L.filter(r=>r.suf),afegir=sufL.filter(r=>r.estat==="afegir"),revisar=sufL.filter(r=>r.estat==="revisar"),dificils=sufL.filter(r=>r.dif===3),facils=sufL.filter(r=>r.dif===1);
  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
- const kpis=`<div class="kpis" style="margin-bottom:14px">
+ const kpis=unSol?"":`<div class="kpis" style="margin-bottom:14px">
   ${kp(`Amb ≥ ${minR} respostes`,totBanc?`${sufL.length} / ${totBanc}`:String(sufL.length),`${L.length} vistes al registre${totBanc?` (${Math.round(sufL.length*100/totBanc)} % amb prou dades)`:""}`)}
   ${kp("Difícils reals (< 55 %)",dificils.length,afegir.length?`+${afegir.length} noves fora de dificultat.json`:"totes ja marcades ⚡")}
   ${kp("Fàcils reals (> 90 %)",facils.length,revisar.length?`${revisar.length} marcades ⚡ amb ≥ 75 % d'encert`:"cap ⚡ amb encert alt")}
@@ -2208,11 +2447,11 @@ function htmlDificultat(d){d=oB(d);const fa=TF.assig,minR=nN(d.min_respostes)||8
  </div>`;
  const fil=DIF_VISTA==="proposta"?sufL.filter(r=>r.estat==="afegir"||r.estat==="revisar"):DIF_VISTA==="totes"?L:sufL;
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
- const eines=`<div class="eines-t"><div class="seg" id="difModes" role="group" aria-label="Preguntes a mostrar">
+ const eines=`<div class="eines-t"><div class="seg" id="${unSol?"difModesMon":"difModes"}" role="group" aria-label="Preguntes a mostrar">
   <button type="button" data-dif-v="dades" aria-pressed="${DIF_VISTA==="dades"}">≥ ${minR} resp. (${sufL.length})</button>
   <button type="button" data-dif-v="proposta" aria-pressed="${DIF_VISTA==="proposta"}">Canvis (${afegir.length+revisar.length})</button>
   <button type="button" data-dif-v="totes" aria-pressed="${DIF_VISTA==="totes"}">Totes (${L.length})</button>
- </div><span class="esp"></span><button class="btn sec petit" type="button" id="btDifJson"${nd}>${ic("baixar")}<span>Baixa JSON</span></button></div>`;
+ </div><span class="esp"></span>${unSol?"":`<button class="btn sec petit" type="button" id="btDifJson"${nd}>${ic("baixar")}<span>Baixa JSON</span></button>`}</div>`;
  if(!fil.length){const msg=DIF_VISTA==="proposta"?(sufL.length?"Cap canvi proposat en les preguntes que ja tenen prou respostes.":"Encara cap pregunta arriba al mínim de respostes per proposar canvis."):`Encara cap pregunta arriba a ${minR} respostes (n'hi ha ${L.length} de vistes).`;
   return {h:nota+kpis+eines+buit("llamp",msg,"Pots prémer «Totes» per veure les preguntes amb menys respostes.")}}
  const pillE=r=>({
@@ -2229,6 +2468,9 @@ function htmlDificultat(d){d=oB(d);const fa=TF.assig,minR=nN(d.min_respostes)||8
   {k:"enc",t:"Encert",num:true,v:r=>r.enc,h:r=>mini(Math.round(r.enc),100,r.enc<55?"bad":"primary",`${fmtD(r.enc)}%`)+` <span class="muted">(${r.bones}/${r.n})</span>`},
   {k:"enc1",t:"1a resp.",num:true,v:r=>r.enc1??-1,h:r=>r.enc1==null?"—":`${fmtD(r.enc1)}%`},
   {k:"nens",t:"Nens",num:true},{k:"seg",t:"Segons",num:true,v:r=>r.seg??-1,h:r=>r.seg==null?"—":fmtD(r.seg)}];
+ if(unSol){
+  const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen, sense l'efecte de repetir.</span></div>`;
+  return {h:nota+eines+taula(idPrefix+"T-0",cols,fil,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(fa)}`})+lleg,PL:null}}
  const canvisA=a=>fil.filter(r=>r.assig===a&&(r.estat==="afegir"||r.estat==="revisar")).length;
  const assigs=[...new Set(fil.map(r=>r.assig))].sort((x,y)=>canvisA(y)-canvisA(x)||fil.filter(r=>r.assig===y).length-fil.filter(r=>r.assig===x).length||nomAssig(x).localeCompare(nomAssig(y),"ca")),PL=plegables("bn_admin_dif",assigs);
  const blocs=assigs.map((a,i)=>{const rs=fil.filter(r=>r.assig===a),totM=catTot.get(a)||0,sufM=sufL.filter(r=>r.assig===a).length,
@@ -2237,7 +2479,7 @@ function htmlDificultat(d){d=oB(d);const fa=TF.assig,minR=nN(d.min_respostes)||8
   return PL.bloc(a,`${totM?`${sufM}/${totM} amb ≥ ${minR} resp.`:`${pl(rs.length,"pregunta","preguntes")}`}${dfM?` · ${pl(dfM,"difícil real","difícils reals")}`:""}`,mig,
    `<span class="dm-bar" aria-hidden="true"><i style="width:${Math.max(4,Math.round(100-pitjor.enc))}%;background:${pitjor.enc<55?"var(--bad)":"var(--primary)"}"></i></span>
     <small><span class="dm-pit" title="${esc(pitjor.text)}">Més baixa: <b>${esc(pitjor.text)}</b></span><span>${fmtD(pitjor.enc)}%</span></small>`,
-   taula("tDifT-"+i,cols,rs,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(a)}`}))}).join("");
+   taula(idPrefix+"T-"+i,cols,rs,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(a)}`}))}).join("");
  const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen, sense l'efecte de repetir.</span></div>`;
  return {h:nota+kpis+eines+PL.eines()+blocs+lleg,PL}}
 
@@ -2475,13 +2717,13 @@ function pintaXMsgs(){const el=$("#xMsgs");if(!el||!X)return;const nd=xND(),FR=x
 function pintaXSil(){const el=$("#xSil");if(!el||!X)return;const nd=xND(),ara=Date.now(),L=X.sil.filter(s=>tsMs(s.fins)>ara).sort((a,b)=>tsMs(a.fins)-tsMs(b.fins)),noms=xNoms();
  el.innerHTML=(L.length?`<div class="xs-l">${L.map(s=>{const n=nomDe(s.k);return `<div class="xs">${nenH(n)}<div class="xs-c"><span>Fins <b>${esc(dataC(tsMs(s.fins)))}</b></span>${s.motiu?`<small>${esc(s.motiu)}</small>`:""}</div><button class="btn sec petit" type="button" data-xtreu="${esc(s.k)}"${nd}>${ic("desfes")}Treu el silenci</button></div>`}).join("")}</div>`:buit("ok","Ningú silenciat ara mateix."))
   +`<div class="xs-nou"><label for="xsNom">Silencia un nom</label><div class="xs-f"><select id="xsNom"${noms.length?"":" disabled"}>${noms.length?noms.map(n=>`<option value="${esc(kNom(n))}">${esc(n)}</option>`).join(""):`<option value="">Encara no hi ha cap nom</option>`}</select><button class="btn perill-sec" type="button" id="xsBt"${nd||(noms.length?"":" disabled")}>${ic("silenci")}Silencia…</button></div><p class="sub" style="margin:8px 0 0">Després triaràs 1, 3 o 7 dies i el motiu.</p></div>`}
-function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.cfg,hor=oB(CTRL_D&&CTRL_D.horari);let obert=cf.actiu!==false,hAct=hor.actiu===true,tM=nN(hor.tanca_min)??1290,oM=nN(hor.obre_min)??420;
+function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.cfg,hor=oB(CTRL_D&&CTRL_D.horari);let obert=cf.actiu!==false,hAct=hor.actiu===true,tM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,oM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
  el.innerHTML=`<form id="xcF" novalidate>
   <div class="xcfg-g"><label for="xcEst">Estrelles per crèdit<small>De 1 a 100. Cada crèdit és una frase.</small></label><input id="xcEst" type="number" inputmode="numeric" min="1" max="100" step="1" value="${esc(cf.est_credit)}"></div>
   <div class="xcfg-g"><label for="xcMax">Màxim de frases al dia<small>De 1 a 20, encara que guanyi més estrelles.</small></label><input id="xcMax" type="number" inputmode="numeric" min="1" max="20" step="1" value="${esc(cf.max_dia)}"></div>
   <div class="xcfg-g"><label for="xcEsp">Segons d'espera<small>De 0 a 600, entre un missatge i el següent.</small></label><input id="xcEsp" type="number" inputmode="numeric" min="0" max="600" step="1" value="${esc(cf.espera_s)}"></div>
   <div class="xcfg-g"><span id="xcActL">Xat obert<small>Tancat: es pot llegir, però ningú pot escriure ni votar.</small></span><button class="sw" type="button" role="switch" id="xcAct" aria-labelledby="xcActL" aria-checked="${obert}"${nd}><i></i><span>${obert?"Obert":"Tancat"}</span></button></div>
-  <div class="xcfg-g"><span id="xcHorL">Horari automàtic<small>Tanca el xat sol cada dia (hora de Madrid).</small></span><button class="sw" type="button" role="switch" id="xcHorari" aria-labelledby="xcHorL" aria-checked="${hAct}"${nd}><i></i><span>${hAct?"Actiu":"Desactivat"}</span></button></div>
+  <div class="xcfg-g"><span id="xcHorL">Horari automàtic<small>Tanca el xat sol i avisa als mons quan toca descansar (hora de Madrid).</small></span><button class="sw" type="button" role="switch" id="xcHorari" aria-labelledby="xcHorL" aria-checked="${hAct}"${nd}><i></i><span>${hAct?"Actiu":"Desactivat"}</span></button></div>
   <div class="xcfg-g"><label for="xcTancaH">Tanca / Obre<small>Per exemple: 21:30 a 07:00.</small></label><span style="display:inline-flex;gap:6px;align-items:center"><input id="xcTancaH" type="time" value="${minAHora(tM)}" style="width:98px"${nd}><span class="muted">→</span><input id="xcObreH" type="time" value="${minAHora(oM)}" style="width:98px"${nd}></span></div>
   <p class="xcfg-calc" id="xcCalc"></p>
   <div class="xcfg-p"><p class="xerr" id="xcErr" role="alert"></p><button class="btn" type="submit" id="xcDesa"${nd}>Desa la configuració</button></div></form>`;
@@ -2496,7 +2738,7 @@ function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.c
   if(!obert&&X.cfg.actiu!==false&&!await dialeg({titol:"Tancar el xat?",ok:"Sí, tanca el xat",icona:"xat",cos:`<p>Mentre estigui tancat, tothom podrà llegir el xat, però <b>ningú podrà escriure ni votar</b>.</p><p>El pots tornar a obrir quan vulguis des d'aquí.</p>`}))return;
   const b=$("#xcDesa");b.disabled=true;
   try{const r=await rpcX("bn_admin_xat_config",{p_cfg:{est_credit:est,max_dia:mx,espera_s:esp,actiu:obert}});X.cfg=Object.assign({},XCFG0,r&&typeof r==="object"?r:{});
-   try{const rc=await rpcCtrl({xat_actiu:obert,horari_actiu:hAct,tanca_min:tH,obre_min:oH});CTRL=Promise.resolve(rc);CTRL_D=rc}catch(er){}
+   try{const rc=await rpcCtrl({xat_actiu:obert,horari_actiu:hAct,tanca_min:tH,obre_min:oH,tanca_h:minAHora(tH),obre_h:minAHora(oH)});CTRL=Promise.resolve(rc);CTRL_D=rc}catch(er){}
    pintaXCfg();pintaXRes();
    toast(X.cfg.actiu===false?"Configuració desada: el xat està tancat":"Configuració desada")}
   catch(x){toast(errX(x,"desar la configuració"),"err");const y=$("#xcDesa");if(y)y.disabled=false}}}
