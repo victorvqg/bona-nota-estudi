@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.35.0 · 2026-11-12
+
+### Canviat
+- **Panell d'administració — Fase 4: Rànquing i Xat compactats** (`admin/index.html`, `motor/prova-admin-xat.js` · g19):
+  - **`Rànquing → Classificació` (`?v=ranquing`)**: 4 xifres clau sense subtítol (`Nens visibles`, `Nens amagats`, `Estrelles del període` via `bn_admin_fonts_dia` i `Missatges avui` via `bn_admin_xat_resum`), selector de vista (`Total`, `Per món` amb desplegable `#rkMon` i `Setmana`) alimentat per `bn_ranking_mons`, taula principal `#tRk` de 5 columnes (`Posició`, `Nen` clicable cap a la Fitxa, `Estrelles`, `Nivell` i interruptor `Visible` directe d'1 clic via `bn_admin_usuari` `'amaga'`) i bloc inferior `#rkAmagatsCard` / `#rkAmagats` amb els nens amagats i interruptor d'1 clic (`'mostra'`) per tornar-los a fer visibles.
+  - **`Rànquing → Reptes` (`?v=ranquing&tab=reptes`)**: resum compacte de `Combos i repàs` i `Repàs i boss` amb KPIs sense subtítol i enllaços directes a la Fitxa de cada nen.
+  - **`Rànquing → Xat` (`?v=ranquing&tab=xat`)**: capçalera amb interruptor directe `#xatModSw` per obrir/tancar el xat al moment, dreceres a `Catàleg` i `Horaris`, taula compacta `#tXMsgs` de 5 columnes (`Hora`, `Nen`, `Text`, `Estat` i `Silenciar`) adaptada sense cap desbordament al mòbil (`360`/`390`/`430 px`) i bloc de `Silenciats` amb botó per aixecar el silenci o silenciar ràpidament.
+
 ## 2.34.0 · 2026-11-12
 
 ### Afegit
