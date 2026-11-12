@@ -40,14 +40,30 @@ function estatNou() {
    { id: 5, nom: "Gina", f: 1, p: 2, c: null, ts: fa(50), esborrat: false, v: 0 },
    { id: 6, nom: "Ona", f: 1, p: 999, c: null, ts: fa(60), esborrat: false, v: 1 }],
   ocults: [5],
+  amagats: ["ona"],
+  rk: [
+   { nom: "Pau", punts: 180, temps_s: 3600, punts_max: 140, setmana: 45, mons: { socials: 140, divisibilitat: 40 }, dies: 8 },
+   { nom: "Jana", punts: 120, temps_s: 2900, punts_max: 95, setmana: 0, mons: { socials: 25, comarques: 95 }, dies: 6 },
+   { nom: "Àlex", punts: 90, temps_s: 2100, punts_max: 90, setmana: 30, mons: { divisibilitat: 90 }, dies: 5 },
+   { nom: "Ona", punts: 60, temps_s: 1500, punts_max: 60, setmana: 10, mons: { angles: 60 }, dies: 3 }
+  ],
   sil: [{ k: "hugo", fins: ara + 2 * 864e5, motiu: "Repeteix el mateix missatge" }] };
 }
 function respon(st, f, cos) {
  if (f === "bn_admin_logs") return [{ id: 1, ts: new Date().toISOString(), assig: "socials", nom: "Biel", sessio: "s1", aparell: "a1", event: "entra", detall: { punts: 0 } }];
- if (f === "bn_admin_ids") return [{ k: "biel", nom: "Biel", id: 1 }];
- if (f === "bn_aspectes" || f === "bn_ranking_mons" || f === "bn_admin_altes" || f === "bn_admin_alertes") return [];
+ if (f === "bn_admin_ids") return [{ k: "biel", nom: "Biel", id: 1 }, { k: "pau", nom: "Pau", id: 2 }, { k: "jana", nom: "Jana", id: 3 }, { k: "àlex", nom: "Àlex", id: 4 }, { k: "ona", nom: "Ona", id: 5 }];
+ if (f === "bn_aspectes" || f === "bn_admin_alertes") return [];
+ if (f === "bn_ranking_mons") return st.rk.filter(r => !st.amagats.includes(r.nom.toLowerCase()));
+ if (f === "bn_admin_altes") return st.rk.map((r, i) => ({ k: r.nom.toLowerCase(), nom: r.nom, id: i + 2, punts: r.punts, mons: Object.keys(r.mons).length, dies7: r.dies, amagat: st.amagats.includes(r.nom.toLowerCase()), te_pin: true }));
+ if (f === "bn_admin_usuari") {
+  const k = String(cos.p_nom || "").trim().toLowerCase();
+  if (cos.p_accio === "amaga") { if (!st.amagats.includes(k)) st.amagats.push(k); return 1 }
+  if (cos.p_accio === "mostra") { st.amagats = st.amagats.filter(x => x !== k); return 1 }
+  if (cos.p_accio === "estat") return (st.amagats.includes(k) ? 1 : 0) | 6;
+  return 1;
+ }
  if (f === "bn_admin_resum") return { periode: cos.p_periode || "7d", ara: { nens: 1, minuts: 10, tests: 1, nota: 80, encert: 80 }, abans: null };
- if (f === "bn_admin_fonts_dia") return { periode: cos.p_periode || "7d", dies: [], total: {} };
+ if (f === "bn_admin_fonts_dia") return { periode: cos.p_periode || "7d", dies: [], total: { temes: 52, combo: 14 } };
  if (f === "bn_admin_control") {
   if (cos.p_cfg && typeof cos.p_cfg.xat_actiu === "boolean") st.cfg.actiu = cos.p_cfg.xat_actiu;
   return { xat_actiu: st.cfg.actiu, xat_obert_ara: st.cfg.actiu, horari: { actiu: true, tanca_min: 1290, obre_min: 420 }, mons_tancats: [] };
@@ -126,6 +142,7 @@ function respon(st, f, cos) {
   ok((await p.getAttribute('#nav [data-v="ranquing"]', "aria-current")) === "page" && (await p.getAttribute('[data-vtab="xat"]', "aria-selected")) === "true", "entrada «Rànquing» marcada i sub-pestanya «Xat» seleccionada");
   ok((await txt("#contingut .avis")).includes("Mode demo"), "avís de mode demo");
   ok((await p.$$("#xRes .kpi")).length === 4, "resum del dia amb 4 KPIs compactes");
+  ok((await p.$$("#tXMsgs thead th")).length === 5, "taula de missatges del xat compactada a 5 columnes (Hora, Nen, Text, Estat, Silenciar)");
   ok((await txt('#xMsgs .xm[data-xid="12"] .xm-t')) === "Vaig a pel teu lloc!", "text compost amb contracció: «Vaig a pel teu lloc!»");
   ok((await txt('#xMsgs .xm[data-xid="7"]')).includes("Peça desactivada") && (await txt('#xMsgs .xm[data-xid="1"] .xm-t')) === "Vaig a per …!", "peça desactivada marcada i peça que no existeix com «…»");
   ok((await p.$$("#xMsgs .xm.esb")).length === 2, "els missatges esborrats també surten");
@@ -135,9 +152,17 @@ function respon(st, f, cos) {
   ok(vd.length > 3 && !vd.includes("13") && !vd.includes("6") && !vd.includes("5") && (await txt('#xFil [data-f="vis"]')) === "Visibles " + vd.length, "«Visibles» fa servir vis (" + vd.join(",") + ")");
   await p.click('#xFil [data-f="tots"]');
   ok((await txt("#xSil")).includes("Hugo"), "un silenci actiu en demo");
-  const activesMod = await p.$$eval("#xatModSw, #xMsgs button, #xSil button", bs => bs.filter(b => !b.disabled).length);
+  const activesMod = await p.$$eval("#xatModSw, #xMsgs .xm-a button, #xSil button", bs => bs.filter(b => !b.disabled).length);
   ok(activesMod === 0, "totes les accions de moderació desactivades en demo");
   ok((await p.getAttribute("[data-xesb]", "title")) === "No disponible en demo", "«No disponible en demo» als botons");
+  // Rànquing → Classificació en demo: 4 KPIs, selector Total/Per món/Setmana, 5 columnes i bloc d'amagats (Ona)
+  await p.click('[data-vtab="classificacio"]');
+  await p.waitForSelector("#tRk tbody tr");
+  ok((await p.$$("#rkKpis .kpi")).length === 4 && (await p.$$("#rkKpis .kpi-s")).length === 0 && (await p.$$("#tRk thead th")).length === 5,
+   "Rànquing → Classificació té 4 KPIs sense subtítol i taula de 5 columnes");
+  ok((await txt("#rkAmagats")).includes("Ona") && !(await txt("#tRk")).includes("Ona"),
+   "el bloc inferior d'amagats mostra l'Ona i la classificació pública l'exclou");
+  await p.click('[data-vtab="xat"]'); await p.waitForSelector('[data-go-cfg="cataleg"]');
   // enllaç ràpid cap a Configuració → Catàleg
   await p.click('[data-go-cfg="cataleg"]');
   await p.waitForSelector("#xkTaula tbody tr");
@@ -256,6 +281,35 @@ function respon(st, f, cos) {
   await vesXat(); await p.waitForSelector("#xMsgs .xm");
   ok((await txt("#xRes")).includes("Xat tancat") && (await txt('.xm[data-xid="10"] .xm-t')).includes("Jana"), "Rànquing → Xat mostra «Xat tancat»");
 
+  // Rànquing → Classificació amb credencials: selector Total / Per món / Setmana + amagar i tornar a mostrar en 1 clic
+  await p.click('[data-vtab="classificacio"]');
+  await p.waitForSelector("#tRk tbody tr");
+  const rkKpisTxt = await txt("#rkKpis");
+  ok(rkKpisTxt.includes("3") && rkKpisTxt.includes("1") && rkKpisTxt.includes("66") && rkKpisTxt.includes("6"),
+   "els 4 KPIs de Classificació mostren visibles (3), amagats (1), estrelles del període (66) i missatges avui (6)");
+  await p.click('#rkVista [data-rkv="mon"]');
+  await p.selectOption("#rkMon", "divisibilitat");
+  const filesDiv = await p.$$eval("#tRk tbody tr", trs => trs.map(tr => tr.cells[1].textContent.trim()));
+  ok(filesDiv[0].includes("Àlex") && filesDiv[1].includes("Pau") && filesDiv.length === 2,
+   `selector «Per món» (Divisibilitat) ordena Àlex (90) davant d'en Pau (40): ${filesDiv.join(", ")}`);
+  await p.click('#rkVista [data-rkv="setmana"]');
+  const filesSetm = await p.$$eval("#tRk tbody tr", trs => trs.map(tr => tr.cells[1].textContent.trim()));
+  ok(filesSetm.length === 2 && !filesSetm.some(x => x.includes("Jana")),
+   "selector «Setmana» mostra només qui ha sumat estrelles en 7 dies (Pau +45, Àlex +30)");
+  await p.click('#rkVista [data-rkv="total"]');
+  await p.click('#tRk [data-rk-vis="jana"]');
+  c = await crida("bn_admin_usuari");
+  ok(c && c.cos.p_nom === "Jana" && c.cos.p_accio === "amaga", "desactivar Visible a #tRk envia bn_admin_usuari {p_nom:'Jana', p_accio:'amaga'}");
+  await p.waitForTimeout(150);
+  ok(!(await txt("#tRk")).includes("Jana") && (await txt("#rkAmagats")).includes("Jana") && (await txt("#rkAmagats")).includes("Ona"),
+   "la Jana passa immediatament al bloc inferior d'amagats");
+  await p.click('#rkAmagats [data-rk-mostra="ona"]');
+  c = await crida("bn_admin_usuari", 2);
+  ok(c && c.cos.p_nom === "Ona" && c.cos.p_accio === "mostra", "activar l'interruptor d'amagats envia bn_admin_usuari {p_nom:'Ona', p_accio:'mostra'}");
+  await p.waitForTimeout(150);
+  ok((await txt("#tRk")).includes("Ona") && !(await txt("#rkAmagats")).includes("Ona"),
+   "l'Ona torna a sortir a la classificació pública en un sol clic");
+
   const xat = crides.filter(x => x.f.startsWith("bn_admin_xat_"));
   ok(xat.length > 10 && xat.every(x => x.cos.p_email === CRED.e && x.cos.p_pass === CRED.p), `les ${xat.length} crides bn_admin_xat_* porten p_email i p_pass`);
   ok((await p.$$(".toast.err-t")).length === 0, "cap avís d'error");
@@ -283,6 +337,9 @@ function respon(st, f, cos) {
   const ample = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
   const fora = await p.$$eval("#xMsgs .xm-a button, #xsBt", bs => bs.filter(b => { const r = b.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
   ok(ample <= wPx && fora === 0, `${wPx} px · Rànquing → Xat: res no surt per la dreta (ample ${ample}) i botons sencers`);
+  await p.click('[data-vtab="classificacio"]'); await p.waitForSelector("#tRk tbody tr");
+  const ampleRk = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  ok(ampleRk <= wPx, `${wPx} px · Rànquing → Classificació: res no surt per la dreta (ample ${ampleRk})`);
   await p.click("#btConfig"); await p.waitForSelector("#xcDesa");
   const ampleCfg = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
   ok(ampleCfg <= wPx && (await txt("#titol")) === "Configuració", `${wPx} px · Configuració → Horaris: res no surt per la dreta (ample ${ampleCfg})`);

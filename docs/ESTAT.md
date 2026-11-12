@@ -3,7 +3,7 @@
 Data: 2026-11-12
 
 ## Què funciona
-- **Versió actual: 2.34.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.35.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`), tots 7 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 130 en total) i 3 peces del xat per món.
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -86,6 +86,13 @@ Data: 2026-11-12
 
 - **Bloc `g17` (`2.33.0`, Horari automàtic connectat als mons i diàleg d'avís nocturn)**:
   - Els 7 mons i la portada llegeixen `bn_estat_web.horari` (sincronitzat amb `Configuració → Horaris` i refrescat en directe cada 2 min / `visibilitychange`), `#avisNitWrap` passa a ser global a totes les pantalles del món (fitxes, tests, jocs, obertes i exàmens), salta el diàleg amable `#modalNit` amb recordatori cada 15 min i la portada mostra `#avisNitPortada`.
+
+- **Bloc `g18` (`2.34.0`, Informe complet de la Fitxa del nen i Log complet per dia a Sessions)**:
+  - Botons `Informe HTML / PDF` (`#btInfHtml`) i `Informe .md` (`#btInfMd`) a `?v=nens&id=<nen>` amb totes les dades de les 4 pestanyes, i vista `Log complet per dia` a `Sessions` amb filtres per món, nen, data (`#fDia` + `#fDiaCal`), tipus i cerca.
+
+- **Bloc `g19` (`2.35.0`, Nou panell d'administració — Fase 4: Rànquing i Xat)**:
+  - `Rànquing → Classificació` amb 4 KPIs sense subtítol (`Nens visibles`, `Nens amagats`, `Estrelles del període`, `Missatges avui`), selector `Total`/`Per món` (`#rkMon`)/`Setmana` via `bn_ranking_mons`, taula `#tRk` de 5 columnes amb interruptor directe `Visible` d'1 clic (`bn_admin_usuari` `'amaga'`) i bloc inferior `#rkAmagats` amb interruptor per tornar a mostrar els nens amagats (`'mostra'`).
+  - `Rànquing → Reptes` compactat i `Rànquing → Xat` amb interruptor `#xatModSw` d'1 clic, taula `#tXMsgs` de 5 columnes sense desbordament al mòbil i bloc de `Silenciats`.
 
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i 130 difícils a `motor/dificultat.json`); #16 dificultat calculada: el SQL (`bn_admin_dificultat`) i `dificultat.py --proposa` ja són actius, pendent d'acumular prou respostes (l'11/11/2026: 362 preguntes vistes, 95 amb ≥ 5 respostes i 40 amb ≥ 8, de 625 totals). Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.

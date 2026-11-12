@@ -418,21 +418,33 @@ details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10
  #tRep .taula-w tr:last-child{border-bottom:0}
  #tRep .taula-w td{padding:0;border:0;text-align:left;min-width:0}#tRep .taula-w td.tmn,#tRep .taula-w td.tfa{grid-column:1/-1}
  #tRep .fr-l{display:block}#tRep td .mini{justify-content:flex-start}}
-/* xat de la colla (n2528): missatges, silencis, configuració, catàleg i peça nova */
-.xm-l{max-height:max(480px,calc(100vh - 260px));overflow:auto;margin:0 -4px;padding:0 4px}
-.xm-l .grup{position:sticky;top:0;z-index:1;background:var(--card);margin:0;padding:12px 0 6px}
-.xm{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border)}
-.grup+.xm{border-top:0}
-.xm>.av{margin-top:2px}
-.xm-c{flex:1;min-width:0}
-.xm-h{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px}
-.xm-h time{color:var(--muted);font-size:12.5px}
-.xm-t{margin:2px 0 0;font-size:14.5px;overflow-wrap:anywhere}
-.xm-m{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.xm-a{display:flex;align-items:center;gap:6px;flex:none}
-.xm-v{display:inline-flex;align-items:center;gap:4px;min-width:42px;color:var(--muted);font-weight:600}
-.xm-v .ic{width:15px;height:15px}
-.xm.esb .xm-t,.xm.esb>.av{opacity:.6}
+/* rànquing (amagats) i xat de la colla (n2528 · Fase 4): missatges en taula de 5 columnes, silencis, configuració i catàleg */
+.rk-am-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.rk-am{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r1);min-width:0}
+.rk-am .nen-c{min-width:0;flex-wrap:wrap}
+.xm-tx{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.xm-t{margin:0;font-size:13.5px;overflow-wrap:anywhere}
+.xm-m{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.xm-e{display:inline-flex;flex-wrap:wrap;gap:5px;align-items:center}
+.xm-a{display:inline-flex;align-items:center;gap:6px;flex:none;justify-content:flex-end}
+.xm-v{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:12px;font-weight:600;flex:none}
+.xm-v .ic{width:14px;height:14px}
+tr.xm.esb .xm-t,tr.xm.esb td.xm-td-n{opacity:.6}
+@media (max-width:767px){
+ .rk-am-l{grid-template-columns:minmax(0,1fr)}
+ #tXMsgs .taula-w{overflow-x:visible}
+ #tXMsgs .taula-w table,#tXMsgs .taula-w tbody{display:block}
+ #tXMsgs .taula-w thead{display:none}
+ #tXMsgs .taula-w tr.xm{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 8px;padding:10px 12px;border-bottom:1px solid var(--border);align-items:center}
+ #tXMsgs .taula-w tr.xm:last-child{border-bottom:0}
+ #tXMsgs .taula-w td{padding:0;border:0;min-width:0;white-space:normal;text-align:left}
+ #tXMsgs .taula-w td.xm-td-n{grid-column:1;grid-row:1}
+ #tXMsgs .taula-w td.xm-td-h{grid-column:2;grid-row:1;text-align:right;font-size:12px;color:var(--muted)}
+ #tXMsgs .taula-w td.xm-td-t{grid-column:1/-1;grid-row:2}
+ #tXMsgs .taula-w td.xm-td-e{grid-column:1;grid-row:3}
+ #tXMsgs .taula-w td.xm-td-a{grid-column:2;grid-row:3;justify-self:end}
+ #tXMsgs .xm-a{flex-wrap:wrap;justify-content:flex-end}
+}
 .xt{font-weight:700;border-radius:3px;padding:0 1px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .xt.P{background:var(--primary-soft);color:var(--primary)}.xt.J{background:var(--warn-bg);color:var(--warn)}
 .xt.E{background:#fce7f3;color:#9d174d}.xt.C{background:#cffafe;color:#155e75}
@@ -626,7 +638,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.34.0";
+const VERSIO_ADMIN="2.35.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -837,10 +849,10 @@ async function carregaIds(){
   (await ri.json()).forEach(x=>{if(!x||!x.k)return;if(x.id!=null)ids[x.k]=x.id;if(x.nom&&x.k!=="_alta")noms[x.k]=String(x.nom).trim()});
   IDS=ids;NOMS_TOTS=noms}catch(e){}
 }
-let FAPR=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null;
+let FAPR=null,ALTES_CURS=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null,RK_VISTA="total",RK_MON="socials";
 const AUTO_MS=30000;
-function netejaCaches(){ESTATS={};NUV=null;FAPR=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
-function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
+function netejaCaches(){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
 async function carrega(){
  netejaCaches();
  await carregaRegles();
@@ -2517,24 +2529,38 @@ async function rpcRankingMons(){
  const r=await fetch(API.replace("bn_admin_logs","bn_ranking_mons"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_codi:null})});
  if(!r.ok)throw r.status;return r.json();
 }
+function altesCursDe(){if(!ALTES_CURS){const p=rpcF("bn_admin_altes",{p_periode:"curs"});p.catch(()=>{if(ALTES_CURS===p)ALTES_CURS=null});ALTES_CURS=p}return ALTES_CURS}
+function fontsDiaGlobalDe(){const p=PERIODE[DIES]||"7d";
+ if(FDIA&&FDIA.p===p&&FDIA.a===null&&FDIA.n===null)return FDIA.prom;
+ const o={p,a:null,n:null};o.prom=rpcR("bn_admin_fonts_dia",{p_periode:p,p_assig:null,p_nom:null});o.prom.catch(()=>{if(FDIA===o)FDIA=null});FDIA=o;return o.prom}
+async function amagatsRanquingDe(rk){
+ const visSet=new Set((Array.isArray(rk)?rk:[]).map(r=>String(r.nom||"").trim().toLowerCase()).filter(Boolean));
+ const m=new Map(),vistos=new Set();
+ try{const al=await altesCursDe();
+  (Array.isArray(al)?al:[]).forEach(x=>{if(!x||!x.k)return;const k=String(x.k).trim().toLowerCase(),nom=String(x.nom||x.k).trim();if(k&&k!=="_alta"&&nom&&!NOMS_TOTS[k])NOMS_TOTS[k]=nom;
+   vistos.add(k);const ev=ESTATS[k+"#v"],am=ev!=null?!!(ev&1):!!x.amagat;
+   if(am&&!visSet.has(k))m.set(k,{k,nom,punts:nN(x.punts),mons:nN(x.mons)})})}catch(e){}
+ Object.entries(NOMS_TOTS).forEach(([k,nom])=>{if(!k||k==="_alta"||!nom||visSet.has(k)||m.has(k))return;const ev=ESTATS[k+"#v"];if(ev!=null&&(ev&1))m.set(k,{k,nom:String(nom).trim(),punts:null,mons:null})});
+ const rest=Object.entries(NOMS_TOTS).filter(([k,nom])=>k&&k!=="_alta"&&nom&&!visSet.has(k)&&!vistos.has(k)&&ESTATS[k+"#v"]==null);
+ if(rest.length&&rest.length<=40){
+  await Promise.all(rest.map(async([k,nom])=>{const v=await estatDe(nom);ESTATS[k+"#v"]=v;if(v!=null&&(v&1)&&!visSet.has(k))m.set(k,{k,nom:String(nom).trim(),punts:null,mons:null})}));
+ }
+ return [...m.values()].sort((a,b)=>a.nom.localeCompare(b.nom,"ca"));
+}
 async function vistaRanquingSeccio(c){
  const ll=[["classificacio","Classificació"],["reptes","Reptes"],["xat","Xat"]],tab=ll.some(x=>x[0]===TAB)?TAB:"classificacio";
- TAB=tab;escriuUrl(false);
+ TAB=tab;if(tab!=="reptes"){TF.assig="";TF.nom=""}escriuUrl(false);
  const renderTab=async()=>{
   const tk=++TOK;
   GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
-  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Rànquing")+`<div id="rkCos">${esqTaula()}</div>`;
+  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Rànquing")+`<div id="rkCos">${tab==="classificacio"?`${esqKpis(4)}<div style="margin-top:14px">${esqTaula()}</div>`:esqTaula()}</div>`;
   lligaPestanyes(c,ll);
   const cos=$("#rkCos");if(!cos)return;
   if(tab==="classificacio"){
-   try{const rk=await rpcRankingMons();if(tk!==TOK||VISTA!=="ranquing")return;
-    const rows=(Array.isArray(rk)?rk:[]).map((r,i)=>({pos:i+1,nom:String(r.nom||"?"),k:String(r.nom||"").trim().toLowerCase(),punts:+r.punts||0,max:+r.punts_max||0,setm:+r.setmana||0,dies:+r.dies||0}));
-    const cols=[{k:"pos",t:"Posició",num:true},{k:"nom",t:"Nen",cls:"nw",h:r=>`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`},{k:"punts",t:"Estrelles",num:true},{k:"max",t:"Nivell",cls:"nw",v:r=>r.max,h:r=>pillNivell(r.max)},{k:"setm",t:"Setmana",num:true,h:r=>`+${r.setm}`},{k:"dies",t:"Dies actius",num:true}];
-    cos.innerHTML=card("rkCard","c-12","trofeu","Classificació pública","Classificació actual dels últims 120 dies segons bn_ranking_mons.",rows.length?taula("tRk",cols,rows,{k:"pos",desc:false,etiqueta:"Classificació",csvNom:"bona-nota-ranquing",fila:r=>` class="clic" data-nen="${esc(r.k)}" tabindex="0"`}):buit("trofeu","Encara no hi ha cap nen al rànquing."))}
-   catch(e){if(tk!==TOK||!$("#rkCos"))return;cos.innerHTML=avisErr(`No s'ha pogut carregar el rànquing (${e}).`)}
+   await vistaClassificacio(cos,tk);
   }else if(tab==="reptes"){
    try{await asseguraLogs()}catch(e){}
-   if(tk!==TOK||VISTA!=="ranquing")return;
+   if(tk!==TOK||VISTA!=="ranquing"||TAB!=="reptes")return;
    cos.innerHTML=barraFiltresLocals({assig:true,nen:true})+`<div class="pila">
     ${card("combos","c-12","foc","Combos i repàs","Surt de les diferències entre registres (el primer registre és la base): combos, super combo i les altres fonts des de la 2.9.0; triple combo i repàs des de la 2.10.0.",`<div id="tCom" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
     ${card("motivacio","c-12","trofeu","Repàs i boss","Errors apresos al repàs, intents de boss i estrelles de missions.",`<div id="tMot"></div>`)}
@@ -2545,6 +2571,76 @@ async function vistaRanquingSeccio(c){
   }
  };
  await renderTab();
+}
+async function vistaClassificacio(cos,tk){
+ let rk=[],amagats=[],fd=null,xRes=null,ctrl=null;
+ try{
+  const pRk=rpcRankingMons();
+  const [rk0,fd0,xr0,ct0]=await Promise.all([pRk,fontsDiaGlobalDe().catch(()=>null),rpcX("bn_admin_xat_resum").catch(()=>null),ctrlDe().catch(()=>null)]);
+  rk=Array.isArray(rk0)?rk0:[];fd=fd0;xRes=xr0;ctrl=ct0;
+  rk.forEach(r=>{const nom=String(r&&r.nom||"").trim(),k=nom.toLowerCase();if(k&&k!=="_alta"&&nom&&!NOMS_TOTS[k])NOMS_TOTS[k]=nom});
+  amagats=await amagatsRanquingDe(rk);
+ }catch(e){if(tk!==TOK||VISTA!=="ranquing"||TAB!=="classificacio"||!$("#rkCos"))return;cos.innerHTML=avisErr(`No s'ha pogut carregar el rànquing (${e}).`);return}
+ if(tk!==TOK||VISTA!=="ranquing"||TAB!=="classificacio"||!$("#rkCos"))return;
+ const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ const totEstPer=fd&&fd.total&&typeof fd.total==="object"?Object.values(fd.total).reduce((s,v)=>s+(nN(v)||0),0):null;
+ const ex=ctrl?estatXatCtrl(ctrl):null,xPill=ex?`<span class="muted">${ex.obertAra?"Xat obert":"Xat tancat"}</span>`:"";
+ const pintaTot=()=>{
+  if(!$("#rkCos")||VISTA!=="ranquing"||TAB!=="classificacio")return;
+  if(!ASSIGS[RK_MON])RK_MON=Object.keys(ASSIGS)[0]||"socials";
+  const kpis=`<div id="rkKpis">${filaKpis([
+   {t:"Nens visibles",v:rk.length},
+   {t:"Nens amagats",v:amagats.length,cls:amagats.length>0?"avis":""},
+   {t:"Estrelles del període",v:totEstPer==null?"—":totEstPer},
+   {t:"Missatges avui",v:xRes&&xRes.frases!=null?Math.round(+xRes.frases||0):"—",p:ex?`${pillEstat(ex.obertAra?"be":"avis")} ${xPill}`:""}
+  ],4)}</div>`;
+  const base=rk.map(r=>{const nom=String(r.nom||"?").trim(),k=nom.toLowerCase(),mons=oB(r.mons),punts=+r.punts||0,max=+r.punts_max||0,setm=+r.setmana||0,temps=+r.temps_s||0,estMon=+mons[RK_MON]||0;
+   const est=RK_VISTA==="setmana"?setm:RK_VISTA==="mon"?estMon:punts,nivMax=RK_VISTA==="mon"?estMon:max;
+   return {nom,k,punts,max,setm,temps,mons,est,nivMax}});
+  const fil=(RK_VISTA==="setmana"?base.filter(r=>r.setm>0):RK_VISTA==="mon"?base.filter(r=>r.est>0):base)
+   .sort((a,b)=>b.est-a.est||b.punts-a.punts||b.temps-a.temps||a.nom.localeCompare(b.nom,"ca"))
+   .map((r,i)=>Object.assign({pos:i+1},r));
+  // 5 columnes (§4.5: s'omet Ratxa perquè bn_ranking_mons no retorna cap camp ratxa)
+  const cols=[
+   {k:"pos",t:"Posició",num:true,h:r=>r.pos<=3?`<b>#${r.pos}</b>`:`#${r.pos}`},
+   {k:"nom",t:"Nen",cls:"nw",v:r=>r.nom,h:r=>`<span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>${idDe(r.k)}</span>`},
+   {k:"est",t:"Estrelles",num:true,v:r=>r.est,csv:r=>r.est,h:r=>RK_VISTA==="setmana"?`<b>+${r.est}</b> ⭐ <span class="muted">(${r.punts})</span>`:RK_VISTA==="mon"?`<b>${r.est}</b> ⭐ <span class="muted">de ${r.punts}</span>`:`<b>${r.est}</b> ⭐${r.setm>0?` <span class="muted">(+${r.setm} 7d)</span>`:""}`},
+   {k:"niv",t:"Nivell",cls:"nw",v:r=>r.nivMax,h:r=>pillNivell(r.nivMax)},
+   {k:"vis",t:"Visible",ord:false,cls:"nw",csv:()=>"Sí",h:r=>`<button class="sw" type="button" role="switch" data-rk-vis="${esc(r.k)}" data-rk-nom="${esc(r.nom)}" aria-checked="true" aria-label="Visible al rànquing: ${esc(r.nom)}"${nd}><i></i><span>Visible</span></button>`}
+  ];
+  const eines=`<div class="eines-t"><div class="seg" id="rkVista" role="group" aria-label="Vista de la classificació">
+   <button type="button" data-rkv="total" aria-pressed="${RK_VISTA==="total"}">Total</button>
+   <button type="button" data-rkv="mon" aria-pressed="${RK_VISTA==="mon"}">Per món</button>
+   <button type="button" data-rkv="setmana" aria-pressed="${RK_VISTA==="setmana"}">Setmana</button>
+  </div>${RK_VISTA==="mon"?`<label class="sr" for="rkMon">Món</label><select id="rkMon" aria-label="Món de la classificació">${Object.keys(ASSIGS).map(a=>`<option value="${esc(a)}"${RK_MON===a?" selected":""}>${esc(nomAssig(a))}</option>`).join("")}</select>`:""}</div>`;
+  const prev=TAULES.tRk,resetOrd=prev&&prev._v!==RK_VISTA+":"+RK_MON;
+  const taulaH=fil.length?taula("tRk",cols,fil,{k:!prev||resetOrd?"pos":prev.k,desc:!prev||resetOrd?false:prev.desc,manteQ:!resetOrd,etiqueta:"Classificació pública",csvNom:`bona-nota-ranquing-${RK_VISTA}`,fila:r=>` class="clic" data-nen="${esc(r.k)}" tabindex="0"`})
+   :buit("trofeu",RK_VISTA==="setmana"?"Cap nen ha sumat estrelles noves en els últims 7 dies.":RK_VISTA==="mon"?`Encara no hi ha cap nen amb estrelles a ${nomAssig(RK_MON)}.`:"Encara no hi ha cap nen al rànquing.");
+  if(TAULES.tRk)TAULES.tRk._v=RK_VISTA+":"+RK_MON;
+  const amH=amagats.length?`<div class="rk-am-l" id="rkAmagats">${amagats.map(a=>`<div class="rk-am" data-amagat="${esc(a.k)}"><span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(a.k)}">${avatar(a.nom,"p")}<span>${esc(a.nom)}</span></button>${idDe(a.k)}${a.punts!=null?`<span class="muted" style="font-size:12px">· ${a.punts} ⭐</span>`:""}</span><button class="sw" type="button" role="switch" data-rk-mostra="${esc(a.k)}" data-rk-nom="${esc(a.nom)}" aria-checked="false" aria-label="Torna a fer visible ${esc(a.nom)}"${nd}><i></i><span>Amagat</span></button></div>`).join("")}</div>`
+   :`<p class="muted" id="rkAmagats" style="margin:0;font-size:13px">Cap nen amagat del rànquing ara mateix.</p>`;
+  cos.innerHTML=`<div class="pila">${kpis}
+   ${card("rkCard","c-12","trofeu","Classificació pública","Classificació dels últims 120 dies calculada amb bn_ranking_mons. Desactiva «Visible» per amagar un nom de la portada i del xat en un clic.",eines+taulaH)}
+   ${card("rkAmagatsCard","c-12","ullno","Nens amagats del rànquing","No surten a la classificació pública ni al xat de la portada, però conserven el progrés i el registre d'admin. Activa l'interruptor per tornar-los a mostrar.",amH)}
+  </div>`;
+  const seg=$("#rkVista");if(seg)seg.onclick=e=>{const b=e.target.closest("button[data-rkv]");if(!b||b.dataset.rkv===RK_VISTA)return;RK_VISTA=b.dataset.rkv;pintaTot();xFocus(`#rkVista [data-rkv="${RK_VISTA}"]`)};
+  const selM=$("#rkMon");if(selM)selM.onchange=e=>{RK_MON=e.target.value;pintaTot();xFocus("#rkMon")};
+  cos.querySelectorAll("button[data-rk-vis],button[data-rk-mostra]").forEach(b=>b.onclick=async()=>{
+   if(DEMO){toast("No disponible en demo","avis");return}
+   const amaga=b.hasAttribute("data-rk-vis"),nom=b.dataset.rkNom,k=String(b.dataset.rkVis||b.dataset.rkMostra||"").trim().toLowerCase();
+   if(!nom||!k)return;b.disabled=true;
+   try{
+    await rpcU(nom,amaga?"amaga":"mostra");
+    const v0=ESTATS[k+"#v"]||0,vn=amaga?(v0|1):(v0&~1);
+    ESTATS[k+"#v"]=vn;ESTATS[k]=Promise.resolve(vn);ALTES_CURS=null;ALTES=null;
+    const rkN=await rpcRankingMons();rk=Array.isArray(rkN)?rkN:[];
+    amagats=await amagatsRanquingDe(rk);
+    toast(amaga?`${nom} ja no surt al rànquing`:`${nom} torna a sortir al rànquing`);
+    pintaTot();
+   }catch(er){b.disabled=false;toast(er===404?"Falta executar supabase/bn_admin_usuari.sql":`No s'ha pogut canviar la visibilitat (${er})`,"err")}
+  });
+ };
+ pintaTot();
 }
 function gActivitat(act){const dies=[...new Set(act.map(a=>a.dia))].sort(),noms=[...new Set(act.map(a=>a.nom))].sort((a,b)=>a.localeCompare(b,"ca"));
  if(!dies.length){const c=$("#gAct");if(c)c.parentNode.innerHTML=buit("calendari","Sense activitat en aquest període.");return}
@@ -2810,16 +2906,20 @@ function tObertes(assigFix=""){const el=$("#tObe");if(!el)return;const fa=assigF
  const num=(k,t)=>({k,t,num:true,v:r=>r[k]});
  el.innerHTML=taula("tObeT",[{k:"nom",t:"Nen",cls:"nw",v:r=>r.nom,h:r=>`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`},num("fetes","Obertes fetes"),num("rebutjat","Textos rebutjats"),num("enganxat","Intents d'enganxar"),num("crec","Idees que diu haver posat")],rows,{k:"rebutjat",etiqueta:"Respostes sospitoses per nen"})}
 function tMotivacio(){const el=$("#tMot");if(!el)return;const ls=LF(),m={};
- const fila=(k,nom)=>m[k]||(m[k]={nom,rep:0,apr:0,boss:0,guanyats:0,mis:0});
+ const fila=(k,nom)=>m[k]||(m[k]={k,nom,rep:0,apr:0,boss:0,guanyats:0,mis:0});
  ls.filter(l=>l.event==="joc").forEach(l=>{const d=l.detall||{};
   if(d.joc==="repas"){const f=fila(clauNen(l),l.nom);f.rep++;f.apr+=+d.apr||0}
   if(d.joc==="boss"){const f=fila(clauNen(l),l.nom);f.boss++;if(d.guanya)f.guanyats++}});
  nens(ls).forEach(n=>{const mis=Object.values(n.fonts).reduce((a,x)=>a+(+(x.f||{}).missio||0),0);if(mis)fila(n.k,n.nom).mis=mis});
  const rows=Object.values(m);if(!rows.length){el.innerHTML=buit("trofeu","Encara no hi ha repassos, boss ni missions en aquest període.");return}
- const sum=k=>rows.reduce((a,r)=>a+r[k],0),kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
+ const sum=k=>rows.reduce((a,r)=>a+r[k],0);
  const num=(k,t)=>({k,t,num:true,v:r=>r[k]});
- el.innerHTML=`<div class="kpis" style="margin-bottom:12px">${kp("Errors apresos",sum("apr"),pl(sum("rep"),"repàs fet","repassos fets"))}${kp("Boss guanyats",sum("guanyats"),`de ${pl(sum("boss"),"intent","intents")}`)}${kp("Estrelles de missions",sum("mis"),"acumulat")}</div>`+
-  taula("tMotT",[{k:"nom",t:"Nen",v:r=>r.nom},num("rep","Repassos"),num("apr","Errors apresos"),num("boss","Intents de boss"),num("guanyats","Boss guanyats"),num("mis","Estrelles de missions")],rows,{k:"apr",etiqueta:"Repàs, boss i missions per nen"})}
+ el.innerHTML=`<div style="margin-bottom:12px">${filaKpis([
+  {t:"Errors apresos",v:sum("apr"),p:`<span class="pill neutre">${pl(sum("rep"),"repàs fet","repassos fets")}</span>`},
+  {t:"Boss guanyats",v:sum("guanyats"),p:`<span class="pill neutre">de ${pl(sum("boss"),"intent","intents")}</span>`},
+  {t:"Estrelles de missions",v:sum("mis")}
+ ],3)}</div>`+
+  taula("tMotT",[{k:"nom",t:"Nen",cls:"nw",v:r=>r.nom,h:r=>`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`},num("rep","Repassos"),num("apr","Errors apresos"),num("boss","Intents de boss"),num("guanyats","Boss guanyats"),num("mis","Estrelles de missions")],rows,{k:"apr",etiqueta:"Repàs, boss i missions per nen",csvNom:"bona-nota-repas-boss",fila:r=>` class="clic" data-nen="${esc(r.k)}" tabindex="0"`})}
 function gTipus(){const k=TF.nom.trim().toLowerCase(),t={"Fitxes":0,"Targetes":0,"Tests":0,"Jocs":0,"Exàmens":0,"Obertes":0};
  LOGS.filter(l=>l.nom.trim().toLowerCase()===k&&(!TF.assig||l.assig===TF.assig)).forEach(l=>{const s=+(l.detall||{}).s||0;if(!s)return;
   const m={fitxa:"Fitxes",targetes:"Targetes",test:"Tests",joc:"Jocs",examen:"Exàmens",oberta:"Obertes"}[l.event];if(m)t[m]+=s});
@@ -3195,14 +3295,12 @@ function pintaXatModeracio(c){
  const nd=xND(),obert=X.cfg.actiu!==false;
  c.innerHTML=`${DEMO?`<div class="avis" style="margin-bottom:12px">${ic("info")}<div><p style="margin:0"><b>Mode demo:</b> missatges i silencis de mostra. Les accions d'escriptura estan desactivades.</p></div></div>`:""}
  <div id="xRes"></div>
- ${barraFiltresLocals({assig:false,nen:true})}
- <div class="graella">
-  ${card("xmCard","c-8","xat","Missatges","Del servidor només arriben números: el text es compon amb el catàleg. Pots filtrar tots, visibles o esborrats.",
-   `<p class="sub" id="xmSub" style="margin-bottom:8px"></p><div class="eines-t"><div class="seg" id="xFil" role="group" aria-label="Quins missatges es veuen"></div><span class="esp"></span><span class="muted" id="xN"></span></div><div id="xMsgs"></div>`,
+ <div class="pila">
+  ${card("xmCard","c-12","xat","Missatges","Del servidor només arriben números: el text es compon amb el catàleg. Pots filtrar tots, visibles o esborrats, i cercar per nom o paraula.",
+   `<div class="eines-t"><div class="seg" id="xFil" role="group" aria-label="Quins missatges es veuen"></div><span class="esp"></span><span class="muted" id="xN"></span></div><div id="xMsgs"></div>`,
    `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="sw" type="button" role="switch" id="xatModSw" aria-checked="${obert}" aria-label="Xat obert"${nd}><i></i><span>${obert?"Xat obert":"Xat tancat"}</span></button><button class="btn sec petit" type="button" data-go-cfg="cataleg">${ic("cataleg")}<span>Catàleg</span></button><button class="btn sec petit" type="button" data-go-cfg="horaris">${ic("ajust")}<span>Horaris</span></button></div>`)}
-  ${card("xsCard","c-4","silenci","Silenciats","Un nom silenciat pot llegir el xat, però no escriure ni votar. El silenci s'acaba sol quan passen els dies.",`<div id="xSil"></div>`)}
+  ${card("xsCard","c-12","silenci","Silenciats","Un nom silenciat pot llegir el xat, però no escriure ni votar. El silenci s'acaba sol quan passen els dies.",`<div id="xSil"></div>`)}
  </div>`;
- lligaFiltresLocals(()=>pintaXatModeracio(c));
  const sw=$("#xatModSw");
  if(sw)sw.onclick=async()=>{if(DEMO){toast("No disponible en demo","avis");return}const nou=X.cfg.actiu===false;
   if(!nou&&!await dialeg({titol:"Tancar el xat?",ok:"Sí, tanca el xat",icona:"xat",cos:`<p>Mentre estigui tancat, tothom podrà llegir el xat, però <b>ningú podrà escriure ni votar</b>.</p>`}))return;
@@ -3212,7 +3310,7 @@ function pintaXatModeracio(c){
    pintaXatModeracio(c);toast(nou?"Xat obert":"Xat tancat")}
   catch(e){sw.disabled=false;toast(errX(e,"canviar l'estat del xat"),"err")}};
  $("#xFil").onclick=e=>{const b=e.target.closest("button[data-f]");if(!b)return;XF=b.dataset.f;pintaXMsgs();xFocus(`#xFil [data-f="${XF}"]`)};
- $("#xMsgs").onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(b.dataset.xesb)xEsborra(b.dataset.xesb,true);else if(b.dataset.xrec)xEsborra(b.dataset.xrec,false);else if(b.dataset.xsil)xSilencia(b.dataset.xsil)};
+ $("#xMsgs").onclick=e=>{const b=e.target.closest("button[data-xesb],button[data-xrec],button[data-xsil]");if(!b||b.disabled)return;if(b.dataset.xesb)xEsborra(b.dataset.xesb,true);else if(b.dataset.xrec)xEsborra(b.dataset.xrec,false);else if(b.dataset.xsil)xSilencia(b.dataset.xsil)};
  $("#xSil").onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(b.dataset.xtreu)xTreuSilenci(b.dataset.xtreu);else if(b.id==="xsBt"&&$("#xsNom").value)xSilencia($("#xsNom").value)};
  pintaXRes();pintaXMsgs();pintaXSil();
 }
@@ -3223,21 +3321,31 @@ function pintaXRes(){const el=$("#xRes");if(!el||!X)return;const r=X.resum,cf=X.
   {t:`Al màxim (${esc(cf.max_dia)}/dia)`,v:n(r.al_maxim)},
   {t:"Vots «Ben dit»",v:n(r.vots)}
  ],4)}</div>`}
-function pintaXMsgs(){const el=$("#xMsgs");if(!el||!X)return;const nd=xND(),FR=xMapa(X.cat.frases),PC=xMapa(X.cat.peces),ara=Date.now(),k0=kNom(TF.nom),sil={};
+function pintaXMsgs(){const el=$("#xMsgs");if(!el||!X)return;const nd=xND(),FR=xMapa(X.cat.frases),PC=xMapa(X.cat.peces),ara=Date.now(),sil={};
  X.sil.forEach(s=>{if(tsMs(s.fins)>ara)sil[s.k]=s});
- const tots=X.msgs.filter(m=>!k0||kNom(m.nom)===k0).sort((a,b)=>tsMs(b.ts)-tsMs(a.ts)||b.id-a.id),nE=tots.filter(m=>m.esborrat).length;
- const ms=tots.filter(m=>XF==="tots"||(XF==="esb"?!!m.esborrat:xVis(m))),per=(PERIODES.find(([d])=>d===DIES)||[0,""])[1];
+ const tots=X.msgs.slice().sort((a,b)=>tsMs(b.ts)-tsMs(a.ts)||b.id-a.id),nE=tots.filter(m=>m.esborrat).length;
+ const ms=tots.filter(m=>XF==="tots"||(XF==="esb"?!!m.esborrat:xVis(m)));
  const xf=$("#xFil");if(xf)xf.innerHTML=[["tots","Tots",tots.length],["vis","Visibles",tots.filter(xVis).length],["esb","Esborrats",nE]].map(([f,t,n])=>`<button type="button" data-f="${f}" aria-pressed="${XF===f}">${t} <span class="muted">${n}</span></button>`).join("");
- const xs=$("#xmSub");if(xs)xs.innerHTML=`Període <b>${esc(per)}</b> · fins a 500 missatges (inclosos esborrats).${k0?` Filtrat per <b>${esc(TF.nom)}</b>.`:""}`;
- const xn=$("#xN");if(xn)xn.textContent=pl(ms.length,"missatge","missatges");
+ const xn=$("#xN");if(xn)xn.textContent=`Fins a 500 missatges · ${pl(ms.length,"mostrat","mostrats")}`;
  if(!ms.length){el.innerHTML=buit("xat",tots.length?"Cap missatge amb aquest filtre.":"Encara no hi ha cap missatge en aquest període.",tots.length?"":"Prova amb un període més llarg, a dalt.");return}
- const avui=diaL(ara),ahir=diaL(ara-864e5),g=[];
- ms.forEach(m=>{const t=tsMs(m.ts),d=diaL(t);let x=g[g.length-1];if(!x||x.d!==d)g.push(x={d,t,L:[]});x.L.push(m)});
- const fila=m=>{const t=xatCompon(m,FR,PC),k=kNom(m.nom),s=sil[k],id=esc(m.id),ts=tsMs(m.ts),v=+m.v||0;
-  return `<div class="xm${m.esborrat?" esb":""}" data-xid="${id}">${avatar(m.nom)}<div class="xm-c"><div class="xm-h"><b>${esc(m.nom)}</b><time title="${esc(dataC(ts))}">${esc(hora(ts))}</time>${m.esborrat?`<span class="pill bad">Esborrat</span>`:xVis(m)?"":`<span class="pill info" title="Nom amagat, prohibit o nen esborrat (l'autor o el company)">No surt a la portada</span>`}${s?`<span class="pill warn" title="${esc(s.motiu||"Silenciat")}">Silenciat fins ${esc(dataC(tsMs(s.fins)))}</span>`:""}</div>
-   <p class="xm-t">${t.html}</p>${t.marques.length?`<div class="xm-m">${t.marques.map(x=>`<span class="pill neutre">${esc(XMARCA[x]||x)}</span>`).join("")}</div>`:""}</div>
-   <div class="xm-a"><span class="xm-v" title="Vots «Ben dit»">${ic("polze")}<span class="sr">Vots «Ben dit»:</span>${v}</span>${m.esborrat?`<button class="btn sec petit" type="button" data-xrec="${id}"${nd}>${ic("desfes")}Recupera</button>`:`<button class="btn perill-sec petit" type="button" data-xesb="${id}"${nd}>${ic("paperera")}Esborra</button>`}<button class="btn-ic" type="button" data-xsil="${esc(k)}"${nd} aria-label="Silencia ${esc(m.nom)}" title="Silencia ${esc(m.nom)}">${ic("silenci")}</button></div></div>`};
- el.innerHTML=`<div class="xm-l">${g.map(x=>`<h3 class="grup">${x.d===avui?"Avui":x.d===ahir?"Ahir":esc(diaC(x.t))} · ${pl(x.L.length,"missatge","missatges")}</h3>${x.L.map(fila).join("")}`).join("")}</div>`}
+ const avui=diaL(ara),ahir=diaL(ara-864e5),hiNen=new Set([...Object.keys(NOMS_TOTS),...LOGS.map(clauNen)]);
+ const fmtHoraX=ts=>{const d=diaL(ts);return d===avui?`Avui ${hora(ts)}`:d===ahir?`Ahir ${hora(ts)}`:dataC(ts)};
+ const rows=ms.map(m=>{const comp=xatCompon(m,FR,PC),nom=String(m.nom||"?").trim(),k=kNom(nom),s=sil[k]||null,ts=tsMs(m.ts),vis=xVis(m),esb=!!m.esborrat;
+  const estatOrd=esb?3:!vis?2:s?1:0,estatCsv=esb?"Esborrat":!vis?"No surt a la portada":s?"Silenciat":"Visible";
+  return {id:m.id,nom,k,ts,v:+m.v||0,esborrat:esb,vis,sil:s,comp,estatOrd,estatCsv}});
+ // 5 columnes (§4.5): Hora, Nen, Text, Estat, Silenciar
+ const cols=[
+  {k:"ts",t:"Hora",cls:"nw xm-td-h",v:r=>r.ts*1000+((+r.id||0)%1000),csv:r=>dataC(r.ts),h:r=>`<time title="${esc(dataC(r.ts))}">${esc(fmtHoraX(r.ts))}</time>`},
+  {k:"nom",t:"Nen",cls:"nw xm-td-n",v:r=>r.nom,csv:r=>r.nom,h:r=>hiNen.has(r.k)?`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`:nenH(r.nom)},
+  {k:"txt",t:"Text",cls:"cur xm-td-t",v:r=>r.comp.text,csv:r=>r.comp.text,q:r=>`${r.comp.text} ${r.comp.marques.map(x=>XMARCA[x]||x).join(" ")}`,
+   h:r=>`<div class="xm-tx"><p class="xm-t">${r.comp.html}</p><span class="xm-v" title="Vots «Ben dit»">${ic("polze")}<span class="sr">Vots «Ben dit»:</span>${r.v}</span></div>${r.comp.marques.length?`<div class="xm-m">${r.comp.marques.map(x=>`<span class="pill neutre">${esc(XMARCA[x]||x)}</span>`).join("")}</div>`:""}`},
+  {k:"estat",t:"Estat",cls:"nw xm-td-e",v:r=>r.estatOrd,csv:r=>r.estatCsv,q:r=>`${r.estatCsv} ${r.sil?r.sil.motiu||"":""}`,
+   h:r=>`<span class="xm-e">${r.esborrat?`<span class="pill bad">Esborrat</span>`:r.vis?pillEstat("be","Visible"):`<span class="pill info" title="Nom amagat, prohibit o nen esborrat (l'autor o el company)">No surt a la portada</span>`}${r.sil?`<span class="pill warn" title="${esc(r.sil.motiu||"Silenciat")}">Silenciat fins ${esc(dataC(tsMs(r.sil.fins)))}</span>`:""}</span>`},
+  {k:"acc",t:"Silenciar",ord:false,cls:"nw xm-td-a",csv:()=>"",
+   h:r=>{const id=esc(r.id);return `<div class="xm-a">${r.esborrat?`<button class="btn sec petit" type="button" data-xrec="${id}"${nd}>${ic("desfes")}Recupera</button>`:`<button class="btn perill-sec petit" type="button" data-xesb="${id}"${nd}>${ic("paperera")}Esborra</button>`}<button class="btn-ic" type="button" data-xsil="${esc(r.k)}"${nd} aria-label="Silencia ${esc(r.nom)}" title="Silencia ${esc(r.nom)}">${ic("silenci")}</button></div>`}}
+ ];
+ const prev=TAULES.tXMsgs;
+ el.innerHTML=taula("tXMsgs",cols,rows,{k:prev?prev.k:"ts",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Missatges del xat",csvNom:"bona-nota-xat-missatges",fila:r=>` class="xm${r.esborrat?" esb":""}" data-xid="${esc(r.id)}"`})}
 function pintaXSil(){const el=$("#xSil");if(!el||!X)return;const nd=xND(),ara=Date.now(),L=X.sil.filter(s=>tsMs(s.fins)>ara).sort((a,b)=>tsMs(a.fins)-tsMs(b.fins)),noms=xNoms();
  el.innerHTML=(L.length?`<div class="xs-l">${L.map(s=>{const n=nomDe(s.k);return `<div class="xs">${nenH(n)}<div class="xs-c"><span>Fins <b>${esc(dataC(tsMs(s.fins)))}</b></span>${s.motiu?`<small>${esc(s.motiu)}</small>`:""}</div><button class="btn sec petit" type="button" data-xtreu="${esc(s.k)}"${nd}>${ic("desfes")}Treu el silenci</button></div>`}).join("")}</div>`:buit("ok","Ningú silenciat ara mateix."))
   +`<div class="xs-nou"><label for="xsNom">Silencia un nom</label><div class="xs-f"><select id="xsNom"${noms.length?"":" disabled"}>${noms.length?noms.map(n=>`<option value="${esc(kNom(n))}">${esc(n)}</option>`).join(""):`<option value="">Encara no hi ha cap nom</option>`}</select><button class="btn perill-sec" type="button" id="xsBt"${nd||(noms.length?"":" disabled")}>${ic("silenci")}Silencia…</button></div><p class="sub" style="margin:8px 0 0">Després triaràs 1, 3 o 7 dies i el motiu.</p></div>`}
