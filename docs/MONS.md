@@ -12,10 +12,10 @@ Després, aquí es comprova si se sap de veritat.
 |---|---|---|---|---|---|---|---|---|
 | 1 | Ciències socials | Tema 3: El clima | 10 | 80 | 15 | 5 | La Gran Borrasca | [obre'l](https://bonanota.net/sociales/t3-clima/) |
 | 2 | Biologia i Geologia | Bloc 1: Univers, Terra i cèl·lula | 11 | 88 | 13 | 5 | El Cometa Rebel | [obre'l](https://bonanota.net/bio-i-geo/univers/) |
-| 3 | Lengua Castellana | Temas 2 y 3 | 15 | 120 | 13 | 5 | El Monstruo de las Faltas | [obre'l](https://bonanota.net/castellano/t2-t3/) |
+| 3 | Lengua Castellana | Temas 2 y 3 | 15 | 120 | 13 | 11 | El Monstruo de las Faltas | [obre'l](https://bonanota.net/castellano/t2-t3/) |
 | 4 | Ciències socials | Les comarques de Catalunya | 7 | 56 | 7 | 7 | El Drac de les Comarques | [obre'l](https://bonanota.net/sociales/comarques/) |
 | 5 | Matemàtiques | Tema 2: Divisibilitat | 8 | 71 | 15 | 20 | El Gegant Primer | [obre'l](https://bonanota.net/matematiques/divisibilitat/) |
-| 6 | Català | Tema 2: La literatura, el nom i la puntuació | 12 | 109 | 15 | 10 | El Monstre dels Signes | [obre'l](https://bonanota.net/catala/t2/) |
+| 6 | Català | Tema 2: La literatura, el nom i la puntuació | 12 | 109 | 15 | 16 | El Monstre dels Signes | [obre'l](https://bonanota.net/catala/t2/) |
 | 7 | Anglès | Tema 2: That's Entertainment | 8 | 85 | 12 | 15 | El Fantasma del Cinema | [obre'l](https://bonanota.net/angles/t2/) |
 
 ---
@@ -53,7 +53,7 @@ Després, aquí es comprova si se sap de veritat.
 - **✍️ Frases amb buits:** frases fetes on falta un tros. Segons la frase, cal **triar** la paraula d'un banc, **escriure-la**
   (per exemple, el verb del parèntesi en la forma correcta) o **ordenar** les paraules. Al primer error surt una pista i al segon,
   la resposta. Després es veu la frase sencera amb la traducció i el perquè, i es pot escoltar. Les frases fallades tornen al repàs.
-  De moment n'hi ha al món d'Anglès.
+  N'hi ha als tres mons de llengües: Anglès, Català i Lengua Castellana.
 - **🔍 Troba l'error:** un exercici resolt per un company amb una trampa. Cal tocar la línia dolenta i dir per què. A mates, també
   s'ha de tornar a escriure bé, i al final surt la llibreta corregida. Els errors van al repàs. N'hi ha a mates i al món del clima (climograma).
 - **Exàmens:** l'examen sorpresa (15 preguntes barrejades) i l'examen de veritat, amb nota sobre 10.

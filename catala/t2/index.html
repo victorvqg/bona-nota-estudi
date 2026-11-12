@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="aef5d15f92",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="2f79f8329b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -598,7 +598,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
  </nav>
 </header>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.27.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.28.0</small></div>
 
 <script src="../../sprites.js?v=0be9e885"></script>
 <script>
@@ -609,6 +609,108 @@ const ASSIG={
  peu:"Bona Nota · Català 1r ESO (llibre de Barcanova) · Unitat 2: la literatura i els gèneres, el nom i els signes de puntuació",
  blocs:[{titol:"📚 La literatura i els gèneres",n:5},{titol:"🏷️ El nom",n:5},{titol:"✏️ Els signes de puntuació",n:2}],
  jocs:[
+  {id:"fr-oral-escrita",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🔥",titol:"De viva veu o per escrit",sub:"L'art de la paraula, l'oral i l'escrita",col:"#fef3c7",
+   enunciat:"✍️ Completa les frases sobre la literatura oral i l'escrita",
+   items:[
+    {f:"La literatura és l'art de dir coses de manera creativa amb un llenguatge ___.",ok:"estètic",no:["científic","matemàtic","secret"],pista:"Vol dir bonic, que busca la bellesa.",ex:"Literatura = art de la paraula amb un llenguatge estètic (bonic)."},
+    {f:"L'objectiu principal de la literatura és ___ i agradar.",ok:"emocionar",no:["ordenar","calcular","prohibir"],pista:"Fer sentir coses a qui escolta o llegeix.",ex:"La literatura busca emocionar i agradar comunicant fets, sentiments i imatges."},
+    {f:"Maria Dolors Alibés compara els bons records amb ___ que tenen espines.",r:["roses"],pista:"Són flors oloroses i suaus, però punxen.",ex:"Al conte del llibre, els records són com roses: suaus, però amb espines."},
+    {mots:"Les primeres obres literàries van ser orals.",no:["impreses."],pista:"Es deien de viva veu abans de l'escriptura.",ex:"Les primeres manifestacions literàries van ser orals, molt anteriors a l'escriptura."},
+    {f:"Quan encara no existia l'escriptura, els textos es guardaven a la ___.",r:["memòria"],pista:"Al cap de les persones, recordant-los.",ex:"Sense escriptura, les cançons i històries es conservaven a la memòria."},
+    {f:"La literatura oral passava de ___ a fills, i dels fills als ___.",ok:["pares","néts"],no:["copistes","llibres"],pista:"De generació en generació dins la família.",ex:"Pare → fill → nét: així es transmetia la literatura oral tradicional."},
+    {f:"La invenció de l'___ va portar l'escriptura i va fixar el text.",ok:"alfabet",no:["escenari","micròfon","diccionari"],pista:"El conjunt de lletres per poder escriure.",ex:"L'invent de l'alfabet va impulsar la literatura escrita."},
+    {f:"Abans de la impremta, els ___ copiaven els llibres manuscrits a mà.",r:["copistes"],pista:"Persones que feien còpies a mà.",ex:"Fins a la impremta de Gutenberg, els copistes copiaven els manuscrits a mà."},
+    {f:"Una obra és ___ quan no sabem qui l'ha feta.",r:["anònima"],pista:"Comença per «anò…» i porta accent obert a la o.",ex:"Anònima vol dir d'autor desconegut (no pas feta per molta gent alhora)."},
+    {f:"La literatura oral té ___ versions; en canvi, l'escrita té una versió ___.",ok:["diverses","única"],no:["impresa","secreta"],pista:"L'orador l'adapta; el llibre queda fixat.",ex:"Cada orador adapta l'oral (diverses versions), mentre que l'escrita queda invariable (versió única)."},
+    {mots:"Amb l'escriptura la lectura es torna silenciosa.",no:["cantada."],pista:"Una persona sola amb un llibre a les mans.",ex:"El lector solitari i silenciós va anar relegant el grup d'oients."},
+    {f:"El conjunt de cançons i relats populars transmesos de viva veu forma la literatura ___ tradicional.",ok:"oral",no:["escrita","impresa","privada"],pista:"Es transmet per la boca, parlant o cantant.",ex:"La literatura oral tradicional és patrimoni cultural popular."}
+   ],
+   final:"Ja tens clares les tres diferències: com es transmet, qui n'és l'autor i quantes versions té!"},
+  {id:"fr-generes",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🎭",titol:"Els quatre gèneres en frases",sub:"Vers, prosa, poesia, narrativa, teatre i assaig",col:"#ede9fe",
+   enunciat:"✍️ Completa les frases dels gèneres literaris",
+   items:[
+    {f:"Els quatre grans gèneres literaris són la poesia, la ___, el teatre i l'___.",ok:["narrativa","assaig"],no:["pintura","notícia"],pista:"Recorda el truc: la literatura PiNTA.",ex:"PiNTA: Poesia, Narrativa, Teatre i Assaig."},
+    {f:"Cada ratlla d'un poema és un ___, i un grup de versos forma una ___.",ok:["vers","estrofa"],no:["prosa","comèdia"],pista:"Primer una sola línia; després el conjunt de línies.",ex:"Un vers és cada ratlla del poema; una estrofa és un grup de versos."},
+    {f:"Els textos escrits sense regles mètriques, de punta a punta de ratlla, van en ___.",r:["prosa"],pista:"El contrari d'escriure en vers.",ex:"La prosa fa servir la forma habitual del llenguatge, sense regles mètriques."},
+    {f:"A la poesia ___, el poeta expressa un sentiment intens o una reflexió profunda.",ok:"lírica",no:["èpica","còmica","curta"],pista:"Sentiments íntims, com el mar i el mariner de Cèlia Viñas.",ex:"Poesia lírica = sentiments; poesia èpica = gestes d'herois."},
+    {f:"La poesia ___ narra en vers les gestes llegendàries d'uns herois, com el comte de Mataplana.",ok:"èpica",no:["lírica","dramàtica","oral"],pista:"Comença per «è…» i parla d'herois.",ex:"Verdaguer explica el comte de Mataplana en vers: és poesia èpica."},
+    {f:"En una obra narrativa, qui explica els fets reals o imaginaris és el ___.",r:["narrador"],pista:"La veu que narra la història.",ex:"A la narrativa (en prosa) sempre hi ha un narrador que explica els fets."},
+    {mots:"El teatre s'escriu amb diàlegs dels personatges.",no:["estrofes"],pista:"Parlen directament els actors dalt de l'escenari.",ex:"El teatre exposa un conflicte humà a través dels diàlegs per representar-lo."},
+    {f:"Al teatre, la ___ té un desenllaç fatal i la ___ té un desenllaç feliç.",ok:["tragèdia","comèdia"],no:["lírica","prosa"],pista:"T = Tomba (acaba malament) · C = Celebració (acaba bé).",ex:"Tragèdia → desenllaç fatal (com Julieta i el verí); comèdia → desenllaç feliç."},
+    {f:"El ___ és una obra teatral realista que té un desenllaç ___.",ok:["drama","incert"],no:["èpica","rimat"],pista:"D = Dubte: acaba a l'aire.",ex:"A diferència de la tragèdia, el drama planteja un conflicte realista amb desenllaç incert."},
+    {f:"El ___ d'una obra és la manera com acaba el conflicte.",r:["desenllaç"],pista:"Porta «ç» final i vol dir el final de l'embolic.",ex:"El desenllaç és com es resol o acaba el conflicte d'una obra."},
+    {f:"En un ___, l'autor exposa en prosa les seves reflexions i opinions sobre un tema.",r:["assaig"],pista:"És la A del truc PiNTA (com el text de Josep Pla).",ex:"L'assaig exposa en prosa les reflexions i opinions de l'autor amb voluntat literària."},
+    {f:"Quan Josep Pla opina sobre l'olivar i la vinya, escriu un text d'___.",ok:"assaig",no:["èpica","tragèdia","comèdia"],pista:"Hi dóna el seu punt de vista en prosa.",ex:"A l'activitat 13 del llibre, el fragment de Josep Pla és un assaig."}
+   ],
+   final:"Recorda sempre: PiNTA per als 4 gèneres i T-C-D (Tomba, Celebració, Dubte) per al teatre!"},
+  {id:"fr-sn-classes",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🧩",titol:"El sintagma nominal i els noms",sub:"Nucli, classes, col·lectius i mesura",col:"#dcfce7",
+   enunciat:"✍️ Completa les frases del sintagma nominal i les classes de noms",
+   items:[
+    {f:"El nom és una paraula ___ perquè canvia de gènere i de nombre.",ok:"variable",no:["invariable","verbal","mètrica"],pista:"Pot fer noi, noia, nois, noies.",ex:"El nom és variable: varia en gènere (masculí/femení) i nombre (singular/plural)."},
+    {mots:"Tot sintagma nominal té un sol nucli.",no:["verb."],pista:"La paraula protagonista del grup sempre és un sol nom.",ex:"Dins del sintagma nominal (SN), el nucli és sempre un sol nom."},
+    {f:"A «un sobre groguenc», «un» és l'___, «sobre» és el nucli i «groguenc» és el ___.",ok:["especificador","complement"],no:["verb","topònim"],pista:"Davant qui presenta; darrere qui dona detalls.",ex:"Especificador (davant) + nucli (el nom) + complement (darrere)."},
+    {f:"A «els teus ulls verds i ametllats», el nucli del sintagma nominal és ___.",r:["ulls"],pista:"És l'únic nom: si el treus, no saps de què parles.",ex:"El nucli és sempre un sol nom: «ulls»."},
+    {f:"Els noms propis de persona es diuen ___ i els de lloc es diuen ___.",ok:["antropònims","topònims"],no:["col·lectius","abstractes"],pista:"Paula és de persona; Menorca és de mapa.",ex:"Antropònims = noms propis de persona; topònims = noms propis de lloc."},
+    {f:"«Valentia» i «amistat» són noms ___ perquè designen realitats que no podem tocar.",ok:"abstractes",no:["concrets","propis","col·lectius"],pista:"El contrari de concret.",ex:"Els noms abstractes anomenen conceptes, qualitats o sentiments no materials."},
+    {f:"Un conjunt de pins és una ___.",r:["pineda"],pista:"És el nom col·lectiu de «pi».",ex:"Pi (individual) → pineda (col·lectiu)."},
+    {f:"«Ovella» és un nom individual, i el grup d'ovelles en singular es diu ___.",r:["ramat"],pista:"Comença per «ra…» i acaba en «-t».",ex:"Ramat és un nom col·lectiu: va en singular però designa moltes ovelles."},
+    {f:"El nom col·lectiu de «flor» és ___, i el d'«ocell» és ___.",ok:["ram","aviram"],no:["pineda","equip"],pista:"Un de flors per regalar i el conjunt d'aus.",ex:"Activitat 16 del llibre: flor → ram; ocell → aviram; jugador → equip."},
+    {f:"«Farina», «sal» i «oli» són noms ___ perquè no es compten per unitats.",ok:"no comptables",no:["comptables","propis","col·lectius"],pista:"No podem dir «dues farines» ni «tres sals».",ex:"Els no comptables no admeten numerals directament, sinó quantitatius o noms de mesura."},
+    {f:"A l'activitat 17 diem «un ___ d'oli» i «un ___ de sal».",ok:["rajolí","pessic"],no:["ramat","eixam"],pista:"Un fil fi d'oli i el que agafes amb els dits de sal.",ex:"Davant d'un nom no comptable hi podem posar un nom de mesura: rajolí d'oli, pessic de sal."},
+    {f:"A «un got de llet», el nom no comptable és ___.",r:["llet"],pista:"«Got» sí que es pot comptar (dos gots); el líquid de dins, no.",ex:"Got és el nom de mesura (comptable) i llet és el nom no comptable."}
+   ],
+   final:"Molt bé! Ja saps trobar el nucli del SN i classificar qualsevol nom per les 4 parelles."},
+  {id:"fr-genere-nombre",grup:"✍️ Frases amb buits",tipus:"frases",ic:"👫",titol:"Gènere, nombre i invariables",sub:"Articles trampa, femenins i plurals en -u / -us",col:"#fce7f3",
+   enunciat:"✍️ Completa les frases de gènere, nombre i noms invariables",
+   items:[
+    {f:"En català diem «___ costum» (masculí) i «___ dent» (femení).",ok:["el","la"],no:["les","els"],pista:"Van just al revés que en castellà!",ex:"En català és el costum (m.), els senyals (m.), la dent (f.) i les postres (f.)."},
+    {f:"Al final de l'àpat mengem ___ postres, en femení i plural.",ok:"les",no:["el","els","un"],pista:"En català és femení plural.",ex:"Sempre en femení i plural: les postres."},
+    {f:"El femení de «el cavall» és l'___.",r:["euga","l'euga"],pista:"Comença per «eu…» (mai «cavalla»!).",ex:"Cavall i euga fan el gènere amb paraules diferents (heterònims)."},
+    {f:"El femení de «el porc» és la ___, i el de «l'ase» és la ___.",ok:["truja","somera"],no:["cabra","ovella"],pista:"La femella del porc i la femella del ruc.",ex:"El porc → la truja (o la verra); l'ase o el ruc → la somera."},
+    {f:"El femení d'«actor» és ___, i el femení plural de «psicòleg» és ___.",ok:["actriu","psicòlogues"],no:["actora","psicòlegues"],pista:"Fixa't en el canvi -iu i en la grafia -gues.",ex:"Actor → actriu; psicòleg → psicòloga, psicòlegs, psicòlogues."},
+    {f:"El femení de «el gendre» és la jove o la ___.",r:["nora","la nora"],pista:"Una paraula curta de quatre lletres que comença per «n».",ex:"El gendre té dos femenins correctes: la jove o la nora."},
+    {f:"Com que «rossinyol» té una sola forma, diem «un rossinyol mascle» o «un rossinyol ___».",r:["femella"],pista:"S'hi afegeix aquesta paraula darrere per indicar el sexe.",ex:"Als noms d'animals d'una sola forma hi afegim mascle o femella."},
+    {f:"A «el cantant / la cantant», el nom és ___ en gènere i només canvia l'article.",ok:"invariable",no:["col·lectiu","propi","abstracte"],pista:"La paraula «cantant» no canvia gens.",ex:"Cantant, periodista, pilot o gimnasta són invariables en gènere."},
+    {f:"El plural d'«una tribu» és «les ___».",r:["tribus","les tribus"],pista:"Com que acaba en -u, hi afegim una -s.",ex:"Els singulars acabats en -u afegeixen -s: tribu → tribus, ritu → ritus."},
+    {f:"El plural d'«un virus» és «els ___».",r:["virus","els virus"],pista:"Ja acaba en -us en singular: no hi afegeixis res!",ex:"Si el singular ja acaba en -us (virus, focus, globus), el plural és idèntic."},
+    {f:"Tinc un llapis blau i dos ___ vermells a l'estoig.",ok:"llapis",no:["llapissos","llapisos","llàpissos"],pista:"Ja porta la essa de casa.",ex:"Llapis, dilluns i temps són invariables en nombre: dos llapis."},
+    {mots:"Tallem el paper amb les estisores.",no:["l'estisora."],pista:"És un nom que només es fa servir en plural.",ex:"Les estisores, les alicates, les pinces i les postres només es fan servir en plural."}
+   ],
+   final:"Genial! Ni «cavalla», ni «llapissos», ni «virussos» t'enganyaran a l'examen."},
+  {id:"fr-parelles-genere",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🔑",titol:"El clau o la clau?",sub:"Canvia l'article i canvia el significat",col:"#fef9c3",
+   enunciat:"✍️ Tria o escriu l'article i el nom segons el significat",
+   items:[
+    {f:"Per obrir la porta de casa necessito ___ clau, i per penjar el quadre clavo ___ clau.",ok:["la","el"],no:["les","els"],pista:"La que obre és femenina; el que es clava és masculí.",ex:"La clau obre el pany; el clau és la tija de ferro per clavar."},
+    {f:"El metge em pren ___ pols al canell per comptar el batec del cor.",ok:"el",no:["la","les","una"],pista:"El batec del cor és masculí.",ex:"El pols = batec del cor; la pols = partícules diminutes que s'escombren."},
+    {f:"Passa el drap per la prestatgeria, que hi ha molta ___.",ok:"pols",no:["clau","son","llum"],pista:"Partícules diminutes de brutícia (en femení: «molta…»).",ex:"La pols (en femení) són les partícules diminutes que s'acumulen als mobles."},
+    {f:"Badallo perquè tinc molta ___: me'n vaig a dormir!",ok:"son",no:["pols","clau","plata"],pista:"Tenir ganes de dormir és femení («molta…»).",ex:"La son = ganes de dormir; el son = l'acte de dormir."},
+    {f:"Durant ___ profund de la nit no va sentir gens el tro.",ok:"el son",no:["la son","la pols","la clau"],pista:"Aquí vol dir l'acte de dormir (masculí).",ex:"El son (masculí) és l'acte de dormir."},
+    {f:"He comprat ___ llum nou per a la tauleta de nit.",ok:"un",no:["una","les","la"],pista:"L'aparell elèctric (el llum) és masculí.",ex:"El llum = l'aparell que fa llum; la llum = la claror."},
+    {f:"Obre les cortines perquè entri ___ llum del sol.",ok:"la",no:["el","un","els"],pista:"La claror del sol és femenina.",ex:"La llum (femení) és la claror que il·lumina l'habitació."},
+    {f:"A la pel·lícula es veu com s'acosta ___ fi del món, però quin és ___ fi d'aquest invent?",ok:["la","el"],no:["les","una"],pista:"El final és femení; la finalitat o objectiu és masculí.",ex:"La fi = l'acabament o final; el fi = l'objectiu o la finalitat."},
+    {f:"Quina ___ que surt del contenidor d'escombraries!",ok:"pudor",no:["pols","son","clau"],pista:"En femení («quina…») vol dir mala olor.",ex:"La pudor = mala olor; el pudor = vergonya o modèstia."},
+    {f:"Per Tots Sants portem una ___ gran plena de panellets al mig de la taula.",r:["plata"],pista:"Semblant a un plat, però en femení perquè és més gran.",ex:"Una plata és un recipient semblant al plat però més gran."},
+    {f:"A taula hem posat una ___ d'aigua fresca i al rebedor, un ___ amb flors.",ok:["gerra","gerro"],no:["plata","plat"],pista:"Per beure va en femení; per posar-hi flors, en masculí.",ex:"Canvi d'ús segons el gènere: una gerra de suc o d'aigua / un gerro de flors."},
+    {mots:"Canviar l'article canvia tot el significat.",no:["accent"],pista:"El clau i la clau no són la mateixa cosa.",ex:"En aquestes parelles, el masculí i el femení són paraules amb significats diferents."}
+   ],
+   final:"El clau es clava i la clau obre; el pols batega i la pols s'escombra; el son dorm i la son badalla!"},
+  {id:"fr-puntuacio",grup:"✍️ Frases amb buits",tipus:"frases",ic:"✏️",titol:"Porta tancada o entreoberta",sub:"Punts, interrogants, punt i coma i dos punts",col:"#fee2e2",
+   enunciat:"✍️ Completa les regles i els exemples dels signes de puntuació",
+   items:[
+    {f:"Els títols i els subtítols no porten mai punt ___.",r:["final"],pista:"El punt que tanca tot un text.",ex:"El punt final marca l'acabament d'un text, però no es posa mai al final d'un títol."},
+    {f:"El punt i a ___ tanca un paràgraf, i a la ratlla següent deixem el ___.",ok:["part","sagnat"],no:["seguit","títol"],pista:"Canviem de ratlla i deixem un petit espai en blanc de 3 o 4 espais.",ex:"Després d'un punt i a part comencem paràgraf nou deixant el sagnat."},
+    {f:"«Va sonar el timbre. Tothom va sortir corrents.» Aquí hi ha un punt i ___.",r:["seguit"],pista:"Les dues oracions continuen a la mateixa ratlla.",ex:"El punt i seguit separa oracions dins del mateix paràgraf."},
+    {f:"Darrere d'un interrogant (?) o d'una admiració (!) que tanquen l'oració, s'escriu ___.",ok:"majúscula",no:["minúscula","punt","coma"],pista:"Són signes de «porta tancada».",ex:"Els signes que tanquen l'oració (. ? ! …) demanen majúscula darrere."},
+    {f:"A l'enumeració «Porto llapis, gomes, retoladors, etc.» no hi podem afegir punts ___.",r:["suspensius"],pista:"Els tres puntets (…) no van mai junts amb «etc.».",ex:"O posem «etc.» o posem punts suspensius (…), però mai totes dues coses alhora."},
+    {f:"Darrere el punt i coma (;) i els dos punts (:) d'una llista s'escriu ___.",ok:"minúscula",no:["majúscula","interrogant","punt"],pista:"Deixen la «porta entreoberta».",ex:"El punt i coma i els dos punts deixen l'oració entreoberta: darrere va minúscula."},
+    {f:"«A l'estiu anem a la platja___ a l'hivern, a la neu.»",ok:";",no:[".","?","…"],pista:"Separa dues oracions molt relacionades i «a l'hivern» va en minúscula.",ex:"Exemple del llibre: el punt i coma separa dues oracions amb relació de proximitat."},
+    {f:"«Hi ha quatre gèneres literaris___ poesia, narrativa, teatre i assaig.»",ok:":",no:[";","?","!"],pista:"Són un teló que s'obre per presentar una llista.",ex:"Els dos punts introdueixen una enumeració o un exemple."},
+    {f:"«No vaig poder venir a classe___ estava malalt.»",ok:":",no:["?","!","…"],pista:"La segona part explica la causa de la primera, en minúscula.",ex:"Els dos punts també introdueixen una explicació o causa de l'oració anterior."},
+    {f:"Quan els dos punts introdueixen les paraules d'algú entre cometes «», comencen amb ___.",ok:"majúscula",no:["minúscula","punt i coma","guionet"],pista:"És l'excepció dels dos punts: «Demà hi ha examen».",ex:"Darrere dos punts, la citació directa entre cometes «» comença amb majúscula."},
+    {mots:"Els títols no porten mai punt final.",no:["coma"],pista:"Una regla d'or de la pàgina 54.",ex:"Recorda-ho sempre als treballs i exàmens: els títols van sense punt final."},
+    {f:"«Si no t'afanyes___ Ja ho veuràs.»",ok:"…",no:[";",":",","],pista:"L'oració queda interrompuda a mitges i després ve majúscula.",ex:"Els punts suspensius marquen una oració no acabada; com que la tanquen, «Ja» va en majúscula."}
+   ],
+   final:"Porta tancada (. ? ! …) → majúscula. Porta entreoberta (; :) → minúscula (llevat de «Cita»)!"},
   {id:"veu",grup:"📚 Literatura",tipus:"ordena",ic:"🔥",titol:"De la veu al paper",sub:"Com va canviar la literatura",col:"#fef3c7",
    enunciat:"🔥 Ordena la història de la literatura",instr:"Toca els passos en ordre, <b>del més antic al més nou</b>.",
    items:[["Cançons i històries de viva veu","els primers humans, abans de l'escriptura","#fef3c7"],["Es guarden a la memòria","pares → fills → néts: literatura oral tradicional","#fef3c7"],["La invenció de l'alfabet","arriba l'escriptura: el text queda fixat","#e0e7ff"],["Els copistes","copien els llibres a mà (manuscrits)","#e0e7ff"],["La impremta","Gutenberg, cap al 1450","#dcfce7"]],
@@ -656,7 +758,7 @@ const ASSIG={
  ]
 };
 const T=[
- {id:"literatura",ic:"🎨",col:"#4338ca",titol:"La literatura: l'art de la paraula",font:"Llibre · Literatura 1.1 · pàg. 42",
+ {id:"literatura",frases:"fr-oral-escrita",ic:"🎨",col:"#4338ca",titol:"La literatura: l'art de la paraula",font:"Llibre · Literatura 1.1 · pàg. 42",
   idea:"La literatura és l'art de dir coses de manera creativa, amb un llenguatge estètic (bonic), per emocionar i agradar.",
   pts:["<b>Literatura</b> = l'<b>art de dir</b> coses de manera <b>creativa</b> per mitjà d'un <b>llenguatge estètic</b>.",
    "Busca la <b>bellesa</b> de les paraules per comunicar <b>fets, sentiments i imatges</b>.",
@@ -675,7 +777,7 @@ const T=[
      ["Què fa Maria Dolors Alibés per parlar dels bons records?",["Els compara amb roses que punxen","Diu, sense més, que de vegades fan mal","Fa una llista dels seus records"],0,"No diu «fan mal»: diu que són roses amb espines. Això és literatura."],
      ["Què comunica la literatura amb les paraules?",["Només dades i xifres","Fets, sentiments i imatges","Només històries d'herois"],1,"Busca la bellesa de les paraules per comunicar fets, sentiments i imatges."],
      ["La literatura és l'art de…",["la pintura","la paraula","la música"],1,"Fa art amb les paraules."]]},
- {id:"oral",ic:"🔥",col:"#ea580c",titol:"La literatura oral tradicional",font:"Llibre · Literatura 1.2 · pàg. 42",
+ {id:"oral",frases:"fr-oral-escrita",ic:"🔥",col:"#ea580c",titol:"La literatura oral tradicional",font:"Llibre · Literatura 1.2 · pàg. 42",
   idea:"Les primeres obres literàries van ser orals: es transmetien de viva veu, de pares a fills i a néts, molt abans que existís l'escriptura.",
   pts:["Les <b>primeres manifestacions literàries</b> van ser <b>orals</b> i són molt anteriors a l'escriptura.",
    "Els primers humans ja <b>cantaven cançons</b> i <b>s'explicaven històries</b>. Per fer-les més emocionants, feien servir l'art de la literatura.",
@@ -695,7 +797,7 @@ const T=[
      ["Què és la literatura oral tradicional?",["Les cançons i històries que es transmeten de viva veu","Les obres que llegim sols i en silenci, en un llibre imprès","Els llibres que copiaven els copistes"],0,"És un patrimoni cultural que passa de boca en boca."],
      ["Quin exemple de literatura oral surt a l'activitat 11 del llibre?",["Julieta i el verí","La roca que parla dels indis oglales","El comte de Mataplana"],1,"És una narració oral dels indis oglales."],
      ["Com eren els primers textos literaris?",["Textos no escrits","Textos escrits en vers","Textos d'un autor conegut"],0,"Van néixer abans de l'escriptura: eren textos no escrits."]]},
- {id:"escrita",ic:"✍️",col:"#b45309",titol:"La literatura escrita",font:"Llibre · Literatura 1.3 · pàg. 42-43",
+ {id:"escrita",frases:"fr-oral-escrita",ic:"✍️",col:"#b45309",titol:"La literatura escrita",font:"Llibre · Literatura 1.3 · pàg. 42-43",
   idea:"L'invent de l'alfabet va portar l'escriptura: el text va quedar fixat, l'obra va tenir un autor amb nom i la lectura es va tornar solitària i silenciosa.",
   pts:["La <b>invenció de l'alfabet</b> va impulsar un nou procediment per crear literatura: l'<b>escriptura</b>.",
    "L'<b>escriptor solitari i reflexiu</b> va anar <b>arraconant</b> l'artista popular que recitava de viva veu.",
@@ -716,7 +818,7 @@ const T=[
      ["Amb l'escriptura, com es va tornar la lectura?",["Cantada en grup, al voltant d'un foc","Solitària i silenciosa","Sempre en veu alta davant del públic"],1,"Una persona sola amb un llibre va relegar el grup d'oients."],
      ["Quina d'aquestes frases és de la literatura oral tradicional?",["Té el nom de l'autor a la portada","El text es manté sempre igual","És patrimoni popular"],2,"L'oral és anònima: és de tothom, patrimoni popular."],
      ["Qui era el copista?",["La persona que copiava els llibres a mà","L'orador que recitava davant del públic","L'autor que inventava les històries"],0,"Feia les còpies dels llibres manuscrits."]]},
- {id:"generes",ic:"📚",col:"#7c3aed",titol:"Els gèneres literaris: vers i prosa",font:"Llibre · Literatura 1.4 · pàg. 44",
+ {id:"generes",frases:"fr-generes",ic:"📚",col:"#7c3aed",titol:"Els gèneres literaris: vers i prosa",font:"Llibre · Literatura 1.4 · pàg. 44",
   idea:"Segons la forma i el contingut, les obres literàries es classifiquen en quatre grans gèneres: la poesia, la narrativa, el teatre i l'assaig.",
   pts:["Pensa en una biblioteca amb <b>quatre prestatgeries</b>: <b>poesia</b>, <b>narrativa</b>, <b>teatre</b> i <b>assaig</b>. Cada obra va a la seva segons <b>com està escrita</b> (la forma) i <b>de què parla</b> (el contingut).",
    "<b>Textos en vers</b>: segueixen <b>regles mètriques</b>: estrofes, un nombre regular de síl·labes, ritme i, sovint, rima. Cada <b>vers</b> va en una ratlla, i un grup de versos és una <b>estrofa</b>.",
@@ -736,7 +838,7 @@ const T=[
      ["Un poema narra la història llegendària d'uns herois excepcionals. Quin subgènere és?",["Lírica","Assaig","Èpica"],2,"Èpica = herois i gestes."],
      ["Una novel·la amb una història llarga i personatges complexos és…",["narrativa llarga","narrativa curta","poesia èpica"],0,"La curta té una història breu i personatges senzills."],
      ["Qui explica els fets en una obra narrativa?",["Els personatges, amb diàlegs","Un narrador","L'autor, amb les seves opinions"],1,"A la narrativa hi ha un narrador que explica els fets."]]},
- {id:"teatre",ic:"🎭",col:"#be185d",titol:"El teatre, l'assaig i com reconèixer els gèneres",font:"Llibre · Literatura 1.4 · pàg. 44-45 (activitat 13)",
+ {id:"teatre",frases:"fr-generes",ic:"🎭",col:"#be185d",titol:"El teatre, l'assaig i com reconèixer els gèneres",font:"Llibre · Literatura 1.4 · pàg. 44-45 (activitat 13)",
   idea:"El teatre exposa un conflicte humà amb els diàlegs dels personatges, per representar-lo; l'assaig exposa les reflexions i opinions de l'autor.",
   pts:["<b>Teatre</b> (en <b>diàlegs</b>): exposa un <b>conflicte humà</b> a través dels diàlegs dels personatges, perquè <b>actors i actrius</b> l'interpretin dalt d'un <b>escenari</b>.",
    "<b>Tragèdia</b>: to seriós i greu; desenllaç <b>fatal</b>.",
@@ -758,7 +860,7 @@ const T=[
      ["Un text amb el nom de cada personatge davant de les seves paraules és…",["teatre","poesia lírica","narrativa"],0,"Els diàlegs dels personatges són la marca del teatre."],
      ["Què és el desenllaç d'una obra?",["El títol de l'obra","Com acaba el conflicte","La primera escena"],1,"El desenllaç és el final del conflicte."],
      ["Quina diferència hi ha entre la tragèdia i el drama?",["La tragèdia acaba malament segur; el drama, a l'aire","La tragèdia fa riure i el drama no","El drama s'escriu en vers i la tragèdia, en prosa i sense diàlegs"],0,"Tots dos són seriosos, però només la tragèdia té un final fatal segur."]]},
- {id:"nom",ic:"🧩",col:"#16a34a",titol:"El nom i el sintagma nominal",font:"Llibre · Gramàtica 1.1 · pàg. 46",
+ {id:"nom",frases:"fr-sn-classes",ic:"🧩",col:"#16a34a",titol:"El nom i el sintagma nominal",font:"Llibre · Gramàtica 1.1 · pàg. 46",
   idea:"El nom anomena persones, animals, plantes, objectes i idees; canvia de gènere i de nombre, i és el nucli (el cor) del sintagma nominal.",
   pts:["Un <b>nom</b> designa una <b>persona</b> (<i>Harry</i>), un <b>animal</b> (<i>mussol</i>), una <b>planta</b> (<i>menta</i>), un <b>objecte</b> (<i>carta</i>) o una <b>idea</b> (<i>amistat</i>).",
    "És una paraula <b>variable</b>: canvia de <b>gènere</b> (masculí / femení) i de <b>nombre</b> (singular / plural): <i>noi, noia, nois, noies</i>.",
@@ -779,7 +881,7 @@ const T=[
      ["Quin és el nucli de «una pregunta difícil de respondre»?",["difícil","pregunta","respondre"],1,"«difícil de respondre» és el complement."],
      ["A «quatre trucs de màgia», què és «de màgia»?",["El complement","L'especificador","El nucli"],0,"Va darrere i diu quina mena de trucs."],
      ["Quin truc serveix per trobar el nucli?",["Buscar sempre la primera paraula del grup, la que el presenta","Pensar quina paraula, si la trec, ja no sé de què parlo","Buscar la paraula més llarga"],1,"El nucli és el protagonista: sense ell, no se sap de què parles."]]},
- {id:"classes",ic:"🗂️",col:"#0d9488",titol:"Les classes de noms",font:"Llibre · Gramàtica 1.2 · pàg. 46-47",
+ {id:"classes",frases:"fr-sn-classes",ic:"🗂️",col:"#0d9488",titol:"Les classes de noms",font:"Llibre · Gramàtica 1.2 · pàg. 46-47",
   idea:"Segons el que designen, els noms es classifiquen en quatre parelles: comuns i propis, concrets i abstractes, individuals i col·lectius, comptables i no comptables.",
   pts:["<b>Comuns</b>: qualsevol element d'una mateixa classe (<i>noia, illa, ciutat</i>). <b>Propis</b>: un element únic: noms de persona o <b>antropònims</b> (<i>Paula</i>) i noms de lloc o <b>topònims</b> (<i>Menorca, Maó</i>).",
    "<b>Concrets</b>: una persona, un animal o una cosa material (<i>pescador, gat, rosa</i>). <b>Abstractes</b>: realitats no materials: conceptes, qualitats o estats (<i>veritat, valentia, calma</i>).",
@@ -800,7 +902,7 @@ const T=[
      ["A «un got de llet», quin nom és el no comptable?",["got","llet","un"],1,"Got és el nom de mesura (comptable)."],
      ["«Ramat» és un nom…",["comú, concret, col·lectiu i comptable","propi, abstracte, individual i no comptable","comú, abstracte, individual i comptable"],0,"Un mateix nom porta quatre etiquetes."],
      ["«Ovella» és un nom individual o col·lectiu?",["Col·lectiu, perquè n'hi ha moltes","Individual: designa un sol element","Totes dues coses alhora"],1,"Ovella és individual; ramat és col·lectiu."]]},
- {id:"genere",ic:"👫",col:"#db2777",titol:"Les marques de gènere i de nombre",font:"Llibre · Gramàtica 1.3 · pàg. 48-49",
+ {id:"genere",frases:"fr-genere-nombre",ic:"👫",col:"#db2777",titol:"Les marques de gènere i de nombre",font:"Llibre · Gramàtica 1.3 · pàg. 48-49",
   idea:"L'article ens diu de quin gènere és un nom, i els noms de persones i d'animals canvien de forma amb unes marques que es diuen morfemes flexius.",
   pts:["La majoria dels noms tenen un <b>gènere assignat</b>. La <b>forma de l'article</b> diu si és <b>masculí (m.)</b> o <b>femení (f.)</b>: <i>un costum</i> (m.), <i>els senyals</i> (m.), <i>una dent</i> (f.), <i>les postres</i> (f.).",
    "Els noms de <b>persones o animals</b> canvien de forma amb marques de <b>gènere</b> i de <b>nombre</b>: els <b>morfemes flexius</b>. <i>nebot, neboda, nebots, nebodes</i> · <i>gall, gallina, galls, gallines</i> · <i>actor, actriu, actors, actrius</i>.",
@@ -821,7 +923,7 @@ const T=[
      ["Quina parella fa servir paraules diferents per a cada gènere?",["l'oncle / la tia","el nebot / la neboda","el gall / la gallina"],0,"Les altres canvien la terminació."],
      ["Quin és el femení de «gendre»?",["la gendra","la jove o la nora","la madrastra"],1,"Madrastra és el femení de padrastre."],
      ["«Postres»: com es diu en català?",["les postres","els postres","el postre"],0,"En català és femení i plural: les postres."]]},
- {id:"invariables",ic:"🔒",col:"#0284c7",titol:"Els noms invariables",font:"Llibre · Gramàtica 1.4 · pàg. 50",
+ {id:"invariables",frases:"fr-genere-nombre",ic:"🔒",col:"#0284c7",titol:"Els noms invariables",font:"Llibre · Gramàtica 1.4 · pàg. 50",
   idea:"Alguns noms no canvien: uns tenen la mateixa forma en masculí i en femení (només canvia l'article) i uns altres, la mateixa forma en singular i en plural.",
   pts:["<b>Invariables en gènere</b>: <i>un / una cantant, periodista, captaire, conserge, pilot, gimnasta</i>. Només canvia l'article.",
    "Professions amb <b>una sola forma</b>: <i>conferenciant, fisioterapeuta, fiscal, intèrpret, lampista, vigilant, xef</i>.",
@@ -842,7 +944,7 @@ const T=[
      ["Quina d'aquestes professions té una sola forma per als dos gèneres?",["fisioterapeuta","àrbitre","ministre"],0,"Àrbitre i ministre fan àrbitra i ministra."],
      ["A «el pilot / la pilot», què ens diu el gènere?",["La terminació del nom","Només l'article","La paraula mascle o femella"],1,"Els invariables de gènere deixen tota la feina a l'article."],
      ["Quin és el plural de «un ritu»?",["els ritu","els ritus","els rituts"],1,"Ritu acaba en -u: fa ritus."]]},
- {id:"clau",ic:"🔑",col:"#ca8a04",titol:"Noms iguals amb gènere i significat diferents",font:"Llibre · Gramàtica 1.5 · pàg. 50-51",
+ {id:"clau",frases:"fr-parelles-genere",ic:"🔑",col:"#ca8a04",titol:"Noms iguals amb gènere i significat diferents",font:"Llibre · Gramàtica 1.5 · pàg. 50-51",
   idea:"Alguns noms s'escriuen igual però volen dir coses diferents si són masculins o femenins: el clau i la clau, el pols i la pols, el son i la son.",
   pts:["<b>el clau</b>: tija de ferro · <b>la clau</b>: peça que activa un pany.",
    "<b>el pols</b>: batec del cor · <b>la pols</b>: partícules diminutes.",
@@ -863,7 +965,7 @@ const T=[
      ["«Un gerro de flors» i «una gerra de suc»: què canvia?",["Res, són sinònims","L'ús: un és per a flors i l'altre per a beure","Només la mida"],1,"El femení pot designar un ús diferent."],
      ["Per obrir la porta de casa necessites…",["la clau","el clau","el pols"],0,"La clau activa el pany."],
      ["En aquests noms, què canvia el significat?",["El gènere: masculí o femení","El nombre: singular o plural","L'accent"],0,"Mateixa paraula, gènere diferent, significat diferent."]]},
- {id:"punts",ic:"🛑",col:"#dc2626",titol:"El punt, l'interrogant, l'admiració i els punts suspensius",font:"Llibre · Ortografia 1 · pàg. 54",
+ {id:"punts",frases:"fr-puntuacio",ic:"🛑",col:"#dc2626",titol:"El punt, l'interrogant, l'admiració i els punts suspensius",font:"Llibre · Ortografia 1 · pàg. 54",
   idea:"Cada signe de puntuació té la seva feina. El punt, l'interrogant, l'admiració i els punts suspensius tanquen l'oració, i darrere seu va majúscula.",
   pts:["<b>Punt final</b>: marca l'acabament d'un text. <b>No</b> es posa al final d'un títol o d'un subtítol.",
    "<b>Punt i a part</b>: marca el final d'un paràgraf. A la ratlla següent es deixa el <b>sagnat</b>, un queixal en blanc de tres o quatre espais.",
@@ -884,7 +986,7 @@ const T=[
      ["Quina d'aquestes enumeracions està ben escrita?",["Porto llapis, gomes, retoladors, etc.","Porto llapis, gomes, retoladors, etc…","Porto llapis, gomes, retoladors etc"],0,"Etc. o punts suspensius, mai les dues coses."],
      ["Quin signe marca l'entonació de les oracions exclamatives?",["L'interrogant","L'admiració","El punt i coma"],1,"Quin gol més bonic!"],
      ["«Quin gol més bonic! Ha estat increïble.» Per què «Ha» comença amb majúscula?",["Perquè l'admiració tanca l'oració","Perquè és un verb","Perquè els verbs sempre comencen amb majúscula"],0,"L'admiració acaba l'oració: darrere, majúscula."]]},
- {id:"puntcoma",ic:"🎬",col:"#9333ea",titol:"El punt i coma i els dos punts",font:"Llibre · Ortografia 1 · pàg. 54-55",
+ {id:"puntcoma",frases:"fr-puntuacio",ic:"🎬",col:"#9333ea",titol:"El punt i coma i els dos punts",font:"Llibre · Ortografia 1 · pàg. 54-55",
   idea:"El punt i coma i els dos punts deixen l'oració entreoberta: darrere seu va minúscula, llevat de les paraules d'algú entre cometes.",
   pts:["<b>Punt i coma</b> (;): a) separa <b>dues oracions</b> que tenen una relació de proximitat: <i>A l'estiu anem a la platja; a l'hivern, a la neu.</i> b) separa <b>sèries llargues</b> i complexes (davant de la <i>i</i> final es posa una coma).",
    "<b>Dos punts</b> (:): a) separen dues oracions relacionades, en què la segona depèn de la primera: <i>No vaig poder venir: estava malalt.</i>",
