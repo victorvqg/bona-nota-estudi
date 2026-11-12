@@ -5,6 +5,18 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.39.0 · 2026-11-12
+
+### Afegit
+- **Pastilles d'errors per repassar avui (`🧠 X per repassar`) i de pròxim examen (`📅 Examen …`) a les targetes de la portada** (`index.html`, `motor/tot.py`, `supabase/bn_control.sql`, `motor/prova-control-sql.js`, `motor/prova-xat.js` · g23):
+  - Cada targeta `.as` de la portada mostra ara al jugador actiu (fora del mode `?tast=1` i si el món està obert i no reiniciat) quants errors del repàs espaiat (`S.rep` amb `prox <= avui`) li toquen avui (`🧠 X per repassar`) i la data del proper examen (`📅 Examen avui!`, `📅 Examen demà!` o `📅 Examen dj. 19/11`), combinant les dates oficials de `bn_priv.examens` (servides sense cap dada personal a `public.bn_estat_web().examens` via `bn_priv.examens_propers()`, desplegada a `agippwtqvhpxdockuigl`) i els avisos «Demà tinc examen» marcats pel nen (`S.vigilia_dies`).
+- **Botonet discret «🤔 Pregunta confusa?» després de respondre una pregunta** (`motor/plantilla-estudi-interactiu.html`, `supabase/bn_bon_us.sql`, `motor/prova-bon-us-sql.js` · g23):
+  - Als tests, al repàs, a l'Examen sorpresa i a la revisió de l'Examen de veritat apareix un botó discret `🤔 Pregunta confusa?` amb **3 motius tancats** (`enunciat`, `resposta`, `pista`, zero text lliure), **topall de 2 avisos al dia per món** (`diaEst().dub`), 0 ⭐ de recompensa i amagat en mode tast anònim (`?tast=1`), enregistrat com a event `'dubte'` a `public.bn_log` (`bn_log_event_check` ampliat i desplegat a `agippwtqvhpxdockuigl`).
+- **Export de la dificultat actual (`"dif": 1 | 3`) a `admin/preguntes.json`** (`motor/tot.py` · g23): `motor/tot.py` incorpora el valor de `motor/dificultat.json` a cada entrada d'`admin/preguntes.json` per permetre comparar-lo amb la dificultat real al tauler d'administració.
+
+### Eliminat
+- **Targeta «🔒 PRÒXIMAMENT» al final de la portada** (`index.html`, `motor/prova-xat.js` · g23): s'elimina la casella buida `.prox` que, amb l'ordre invers dels mons (`MÓN 7` → `MÓN 1`), quedava a sota del `MÓN 1`.
+
 ## 2.38.0 · 2026-11-12
 
 ### Afegit

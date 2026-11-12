@@ -3,7 +3,7 @@
 -- Idempotent: es pot tornar a executar tantes vegades com calgui.
 -- Depèn de: supabase/bn_log.sql (i opcionalment bn_ranking_net.sql, bn_admin_benestar.sql).
 --
---  1. Eixampla el CHECK d'events de public.bn_log amb 'descans' i 'examen_dema'
+--  1. Eixampla el CHECK d'events de public.bn_log amb 'descans', 'examen_dema' i 'dubte'
 --     (i conserva 'alta' per compatibilitat amb qualsevol entorn).
 --  2. Clau 'bon_us' a bn_priv.config: {"nit_h":"21:30","nit_vigilia_h":"22:00","obre_h":"06:00"}.
 --  3. Funció pública bn_vigilia(p_assig, p_neix): retorna la fase actual del món
@@ -15,7 +15,7 @@
 -- 1) nous events al registre d'activitat
 alter table public.bn_log drop constraint if exists bn_log_event_check;
 alter table public.bn_log add constraint bn_log_event_check
-  check (event in ('entra','fitxa','targetes','test','joc','examen','oberta','valora','temps','alta','descans','examen_dema'));
+  check (event in ('entra','fitxa','targetes','test','joc','examen','oberta','valora','temps','alta','descans','examen_dema','dubte'));
 
 create schema if not exists bn_priv;
 revoke all on schema bn_priv from public, anon, authenticated;

@@ -208,6 +208,22 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
       "reset_ranquing=true restaura tots els valors inicials");
   }
 
+  console.log("9) dates d'examen properes a bn_estat_web (g23)");
+  {
+    const avui = await val("select to_char((now() at time zone 'Europe/Madrid')::date, 'YYYY-MM-DD')");
+    const dema = await val("select to_char((now() at time zone 'Europe/Madrid')::date + 1, 'YYYY-MM-DD')");
+    const ahir = await val("select to_char((now() at time zone 'Europe/Madrid')::date - 1, 'YYYY-MM-DD')");
+    const lluny = await val("select to_char((now() at time zone 'Europe/Madrid')::date + 45, 'YYYY-MM-DD')");
+    await db.query("insert into bn_priv.examens(assig, data) values ('socials', $1::date), ('angles', $2::date), ('catala', $3::date), ('biogeo', $4::date)", [avui, dema, ahir, lluny]);
+    await db.exec("set role anon");
+    const wEx = await val("select public.bn_estat_web()");
+    ok(wEx.examens && wEx.examens.socials === avui && wEx.examens.angles === dema && !wEx.examens.catala && !wEx.examens.biogeo,
+      "bn_estat_web.examens exposa exàmens d'avui fins a +30 dies i omet passats o >30 dies");
+    ok(await falla("select bn_priv.examens_propers()") !== null, "anon no pot cridar bn_priv.examens_propers directament");
+    await db.exec("reset role");
+    await db.exec("delete from bn_priv.examens");
+  }
+
   if (fallades) {
     console.error(`✗ ${fallades} errors de ${passades + fallades}`);
     process.exit(1);

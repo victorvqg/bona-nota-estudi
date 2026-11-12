@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a0139f9cee",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="c11936f992",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -634,6 +634,13 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px
 .cos p{margin:0;color:#64748b;font-weight:700;font-size:14.5px}
 .xips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .xips span{background:#f1f5f9;border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px;color:#334155}
+.avisos-mon{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.avisos-mon[hidden],main.en-tast .avisos-mon,.as.mon-tancat .avisos-mon{display:none}
+.avm{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:4px 10px;font-weight:900;font-size:12.5px;line-height:1.25}
+.avm-rep{background:#ecfdf5;color:#047857;border:1.5px solid #6ee7b7}
+.avm-ex{background:#eff6ff;color:#1d4ed8;border:1.5px solid #93c5fd}
+.avm-ex.dema{background:#fffbeb;color:#b45309;border-color:#fcd34d}
+.avm-ex.avui{background:#fef2f2;color:#b91c1c;border-color:#fca5a5}
 .prog{margin-top:6px;display:none}
 .prog.on{display:block}
 .prog .barra{height:10px;border-radius:99px;background:#e2e8f0;overflow:hidden}
@@ -649,11 +656,6 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px
 .as.mon-tancat .juga span{background:linear-gradient(180deg,#64748b,#475569);box-shadow:0 5px 0 #1e293b}
 .mon-tancat-toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:85;transform:translate(-50%,16px);opacity:0;pointer-events:none;width:max-content;max-width:min(520px,calc(100% - 32px));padding:10px 16px;border-radius:14px;background:#0b1033f2;border:2px solid #f87171;font:800 14.5px/1.4 Nunito,system-ui,sans-serif;color:#fecaca;box-shadow:0 8px 24px #0009;transition:opacity .2s,transform .2s}
 .mon-tancat-toast.vis{opacity:1;transform:translate(-50%,0)}
-
-.prox{background:transparent;border:3px dashed #ffffff33;box-shadow:none;color:#c7d2fe;display:grid;place-items:center;text-align:center;min-height:300px;pointer-events:none}
-.prox .ic{font-size:56px;opacity:.6;display:block;animation:flota 5s ease-in-out infinite}
-.prox b{font-family:'Press Start 2P',monospace;font-size:12px;display:block;margin:16px 0 8px;color:#f0abfc}
-.prox small{font-weight:800;opacity:.75}
 
 footer{position:relative;z-index:1;text-align:center;color:#a5b4fc;font-size:14px;font-weight:700;padding:10px 18px 36px}
 footer b{color:var(--groc)}
@@ -676,7 +678,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
 .hs-rf b{animation-duration:2.8s}
 .hs-suau{position:absolute;left:50%;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:15px;color:var(--groc);background:#070a2af0;border:3px solid var(--groc);border-radius:14px;padding:12px 16px;white-space:nowrap}
 
-@media (max-width:520px){header{padding-top:40px}.flota{display:none}main{gap:18px}.prox{min-height:170px}}
+@media (max-width:520px){header{padding-top:40px}.flota{display:none}main{gap:18px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.as{opacity:1}}
 </style>
 </head>
@@ -735,6 +737,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <h2>Tema 2: That's Entertainment</h2>
    <p>Descriure algú, els dos presents, gèneres de pel·lis i llibres, el tresor de Fenn i com proposar un pla.</p>
    <div class="xips"><span>📖 8 fitxes</span><span>🎮 15 jocs</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
@@ -746,6 +749,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <h2>Tema 2: La literatura, el nom i la puntuació</h2>
    <p>Literatura oral i escrita, els gèneres, el nom (classes, gènere i nombre) i els signes de puntuació.</p>
    <div class="xips"><span>📖 12 fitxes</span><span>🎮 16 jocs</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
@@ -757,6 +761,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <h2>Tema 2: Divisibilitat</h2>
    <p>Múltiples, divisors, criteris, primers, factors, MCM i MCD.</p>
    <div class="xips"><span>📖 8 fitxes</span><span>🎮 20 jocs</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
@@ -768,6 +773,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <h2>Les comarques de Catalunya</h2>
    <p>MAPA de les 43 comarques, les seves capitals i les quatre demarcacions.</p>
    <div class="xips"><span>📖 7 fitxes</span><span>🎮 7 jocs</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
@@ -779,6 +785,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <h2>Temas 2 y 3</h2>
    <p>El texto, el sustantivo, la noticia, los géneros literarios, los determinantes y la b.</p>
    <div class="xips"><span>📖 15 fichas</span><span>🎮 11 juegos</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
@@ -790,6 +797,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <h2>Bloc 1: Univers, Terra i cèl·lula</h2>
    <p>La ciència i l'Univers, la Terra i la cèl·lula.</p>
    <div class="xips"><span>📖 11 fitxes</span><span>🎮 5 jocs</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
@@ -801,13 +809,13 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
    <h2>Tema 3: El clima</h2>
    <p>Temps, clima i la geografia de l'Anoia.</p>
    <div class="xips"><span>📖 10 fitxes</span><span>🎮 5 jocs</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
  </a>
  <!-- MONS:fi -->
  <!-- Per afegir un món: dades a motor/dades/<id>.js + entrada a motor/mons.json i executar «python3 motor/tot.py» -->
- <div class="as prox" aria-hidden="true"><div><span class="ic">🔒</span><b>PRÒXIMAMENT</b><small>Nous mons en camí…</small></div></div>
 </main>
 
 
@@ -834,7 +842,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.38.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.39.0</small></footer>
 
 <script src="sprites.js?v=0be9e885"></script>
 <script>
@@ -889,8 +897,40 @@ const bnSo=(()=>{let ctx=null,armat=false,tocat=false,volOn=true,mut=null;const 
 (function(){const c=document.getElementById('cel');let h='';for(let i=0;i<90;i++){const s=Math.random()<.15?4:Math.random()<.5?2:3;
  h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${(-Math.random()*3).toFixed(2)}s;animation-duration:${(2+Math.random()*3).toFixed(2)}s"></i>`}c.innerHTML=h})();
 // progrés guardat per cada assignatura (mateix navegador)
-let TAST_ACTIU=false,MOSTRA_FORM=false,HOR_PORTADA=null,ULT_ESTAT_PORTADA=0;
+let TAST_ACTIU=false,MOSTRA_FORM=false,HOR_PORTADA=null,EXAMENS_PORTADA={},ULT_ESTAT_PORTADA=0;
 try{const hw=JSON.parse(localStorage.getItem('bn_horari_web')||'null');if(hw&&typeof hw==='object')HOR_PORTADA=hw}catch(e){}
+try{const ew=JSON.parse(localStorage.getItem('bn_examens_web')||'null');if(ew&&typeof ew==='object'&&!Array.isArray(ew))EXAMENS_PORTADA=ew}catch(e){}
+function araDiaMadrid(){if(typeof window.__bnDiaProva==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(window.__bnDiaProva))return window.__bnDiaProva;
+ try{const p={};new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Madrid',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).forEach(x=>{p[x.type]=x.value});if(p.year&&p.month&&p.day)return `${p.year}-${p.month}-${p.day}`}catch(e){}
+ return new Date().toISOString().slice(0,10)}
+function avuiIsoPortada(){return (typeof window.__bnDiaProva==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(window.__bnDiaProva))?window.__bnDiaProva:new Date().toISOString().slice(0,10)}
+function sumaDiesIso(d,n){const ms=Date.parse(d+'T12:00:00Z');return Number.isFinite(ms)?new Date(ms+n*864e5).toISOString().slice(0,10):''}
+function fmtDiaExamen(dEx,dies){if(dies===0)return 'Examen avui!';if(dies===1)return 'Examen demà!';
+ const dt=new Date(dEx+'T12:00:00Z'),dw=['dg.','dl.','dt.','dc.','dj.','dv.','ds.'][dt.getUTCDay()];
+ return `Examen ${dw} ${dt.getUTCDate()}/${String(dt.getUTCMonth()+1).padStart(2,'0')}`}
+function pintaAvisosMons(){
+ let G='';try{G=localStorage.getItem('bn_jugador')||''}catch(e){}
+ const actiu=!!(G&&!MOSTRA_FORM&&!TAST_ACTIU),dMad=araDiaMadrid(),dRep=avuiIsoPortada();
+ document.querySelectorAll('main .as[data-clau]').forEach(a=>{
+  let box=a.querySelector('.avisos-mon');
+  if(!box){box=document.createElement('div');box.className='avisos-mon';const pr=a.querySelector('.prog');if(pr)pr.before(box);else{const cs=a.querySelector('.cos');if(cs)cs.appendChild(box)}}
+  if(!box)return;
+  if(!actiu||a.classList.contains('mon-tancat')){box.hidden=true;box.innerHTML='';return}
+  let S=null;
+  if(a.dataset.reiniciat!=='1'){try{const per=JSON.parse(localStorage.getItem(a.dataset.clau+'_perfils')||'{}')||{},k=Object.keys(per).find(x=>x.toLowerCase()===G.toLowerCase());if(k)S=per[k]}catch(e){}}
+  let nRep=0;
+  if(S&&S.rep&&typeof S.rep==='object'){for(const r of Object.values(S.rep)){if(r&&typeof r==='object'&&typeof r.prox==='string'&&r.prox<=dRep&&(r.tid||r.tipus))nRep++}}
+  const id=a.dataset.id||'',exAdm=EXAMENS_PORTADA&&typeof EXAMENS_PORTADA[id]==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(EXAMENS_PORTADA[id])?EXAMENS_PORTADA[id]:'';
+  let exNen='';
+  if(!exAdm&&S&&Array.isArray(S.vigilia_dies)){const vm=S.vigilia_mod&&typeof S.vigilia_mod==='object'?S.vigilia_mod:{};
+   exNen=S.vigilia_dies.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)&&!(vm[x]&&vm[x].on===0)).map(x=>sumaDiesIso(x,1)).filter(x=>x>=dMad).sort()[0]||''}
+  const dEx=exAdm||exNen,pills=[];
+  if(dEx){const dies=Math.round((Date.parse(dEx+'T00:00:00Z')-Date.parse(dMad+'T00:00:00Z'))/864e5);
+   if(dies>=0&&dies<=21){const cls=dies===0?' avui':dies===1?' dema':'';pills.push(`<span class="avm avm-ex${cls}">📅 ${fmtDiaExamen(dEx,dies)}</span>`)}}
+  if(nRep>0)pills.push(`<span class="avm avm-rep">🧠 ${nRep} per repassar</span>`);
+  if(pills.length){box.innerHTML=pills.join('');box.hidden=false}else{box.innerHTML='';box.hidden=true}
+ })}
+window.bnPintaAvisosMons=pintaAvisosMons;
 (function(){try{const u=new URLSearchParams(location.search),g=localStorage.getItem('bn_jugador')||'';TAST_ACTIU=u.get('tast')==='1'||(!g&&sessionStorage.getItem('bn_tast')==='1');if(TAST_ACTIU)sessionStorage.setItem('bn_tast','1')}catch(e){}})();
 function tastActiu(){return TAST_ACTIU}
 function fixaUrlTast(on){try{const u=new URL(location.href);if(on)u.searchParams.set('tast','1');else u.searchParams.delete('tast');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}catch(e){}}
@@ -911,7 +951,8 @@ function surtTastPortada(obreForm){TAST_ACTIU=false;MOSTRA_FORM=!!obreForm;try{s
  // (el món el buidarà del tot quan s'obri). bn_reinicis torna {món: ms, "*": ms}.
  if(!tastActiu()&&G&&pintades.length&&/^https?:/.test(location.protocol))setTimeout(()=>rpcP('bn_reinicis',{p_nom:G}).then(ri=>{if(!ri||typeof ri!=='object')return;
   pintades.forEach(([a,r])=>{if(r>=Math.max(+ri[a.dataset.id]||0,+ri['*']||0))return;
-   const p=a.querySelector('.prog');p.classList.remove('on');p.querySelector('.barra i').style.width='0';a.dataset.jugaBase='JUGA ▶';refrescaJugaTargetes()})}).catch(()=>{}),0);
+   a.dataset.reiniciat='1';
+   const p=a.querySelector('.prog');p.classList.remove('on');p.querySelector('.barra i').style.width='0';a.dataset.jugaBase='JUGA ▶';refrescaJugaTargetes()});pintaAvisosMons()}).catch(()=>{}),0);
 })();
 // ---- entrada: el nen escriu el nom (i el PIN) i de seguida tria el món ----
 function nomProhibit(n){
@@ -944,7 +985,7 @@ function pintaAvisNitPortada(){const el=document.getElementById('avisNitPortada'
  el.hidden=false}
 window.bnPintaAvisNitPortada=pintaAvisNitPortada;
 function pintaHola(){const G=jugador(),tast=tastActiu(),h=document.getElementById('hola'),f=document.getElementById('entrada'),t=document.getElementById('tria'),m=document.querySelector('main');
- m.classList.toggle('en-tast',tast);refrescaJugaTargetes();
+ m.classList.toggle('en-tast',tast);refrescaJugaTargetes();pintaAvisosMons();
  if(tast){
   h.innerHTML=`<span class="hola-tast"><span>👀 <b>Mode tast anònim</b> · Cap estrella ni nom es guarda ni surt al rànquing</span><span class="hola-tast-acc"><button class="hola-tast-entra" id="enTastEntra" type="button">🔐 Entra amb nom i PIN</button><button class="canvia" id="enTastSurt" type="button" style="margin-left:0">✕ Surt del tast</button></span></span>`;
   f.hidden=true;t.hidden=false;t.textContent='👇 Tria un món per fer-ne un tast 👇';m.classList.remove('bloc');
@@ -1025,7 +1066,7 @@ function iniciEntrada(){
     if(badge)badge.remove();
    }
   });
-  refrescaJugaTargetes();
+  refrescaJugaTargetes();pintaAvisosMons();
  };
  try{const mem=JSON.parse(localStorage.getItem('bn_mons_tancats')||'[]');if(Array.isArray(mem)&&mem.length)aplicaMonsTancats(mem)}catch(e){}
  const sincronitzaEstatPortada=()=>{
@@ -1035,9 +1076,10 @@ function iniciEntrada(){
    if(!r||typeof r!=='object')return;
    if(Array.isArray(r.mons_tancats))aplicaMonsTancats(r.mons_tancats);
    if(r.horari&&typeof r.horari==='object'){HOR_PORTADA=r.horari;if(!tastActiu())try{localStorage.setItem('bn_horari_web',JSON.stringify(r.horari))}catch(e){}}
+   if(r.examens&&typeof r.examens==='object'&&!Array.isArray(r.examens)){EXAMENS_PORTADA=r.examens;if(!tastActiu())try{localStorage.setItem('bn_examens_web',JSON.stringify(r.examens))}catch(e){}}
    if(r.xat&&typeof r.xat.actiu==='boolean'&&typeof XAT==='object')XAT.actiu=r.xat.actiu;
    if(r.ranquing&&typeof r.ranquing==='object'&&typeof aplicaRkEstat==='function')aplicaRkEstat(r.ranquing,true);
-   pintaAvisNitPortada();
+   pintaAvisNitPortada();pintaAvisosMons();
   }).catch(()=>{});
  };
  if(/^https?:/.test(location.protocol)&&!/[?&]demo\b/.test(location.search)){

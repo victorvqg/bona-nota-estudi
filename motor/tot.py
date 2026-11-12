@@ -53,6 +53,7 @@ for m in reversed(mons):
    <h2>{e(m['titol'])}</h2>
    <p>{e(m['desc'])}</p>
    <div class="xips"><span>📖 {i['n']} {'fichas' if es else 'fitxes'}</span><span>🎮 {i['j']} {'juegos' if es else 'jocs'}</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
   </div>
@@ -114,13 +115,18 @@ s = s[:a] + "\n" + (d / "eines" / "actualitza.js").read_text().rstrip("\n") + "\
 par.write_text(s)
 print("✓ pares")
 
-# 3b) text de totes les preguntes per al tauler d'admin (admin/preguntes.json): id → text, opcions, correcta, tema
+# 3b) text de totes les preguntes per al tauler d'admin (admin/preguntes.json): id → text, opcions, correcta, tema, dif (si != 2)
 from qids import ids_mon
+dif_tot = json.loads((d / "dificultat.json").read_text()) if (d / "dificultat.json").exists() else {}
 preguntes = {}
 for m in mons:
-    _, _, p = ids_mon(d / "dades" / f"{m['dades']}.js")
+    aid, _, p = ids_mon(d / "dades" / f"{m['dades']}.js")
+    dm = dif_tot.get(aid, {})
     for k, v in p.items():
         v["mon"] = m["titol"]
+        qshort = k.split("/", 1)[1] if "/" in k else k
+        if dm.get(qshort) in (1, 3):
+            v["dif"] = dm[qshort]
     preguntes.update(p)
 (arrel / "admin" / "preguntes.json").write_text(json.dumps(preguntes, ensure_ascii=False, separators=(",", ":")))
 print(f"✓ admin/preguntes.json: {len(preguntes)} preguntes")
