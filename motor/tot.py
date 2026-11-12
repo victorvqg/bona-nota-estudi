@@ -37,10 +37,10 @@ if r.returncode:
     sys.exit("ERROR llegint les dades amb node:\n" + r.stderr)
 info = json.loads(r.stdout)
 
-# 3) targetes
+# 3) targetes (dels més nous als més antics, al revés de mons.json)
 e = lambda t: html.escape(str(t), quote=False).replace('"', '&quot;')
 targetes = []
-for m in mons:
+for m in reversed(mons):
     i = info[str(d / "dades" / f"{m['dades']}.js")]
     c1, c2, c3 = m["colors"]
     es = m.get("llengua") == "es"

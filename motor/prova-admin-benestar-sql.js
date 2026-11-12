@@ -462,6 +462,40 @@ async function base() {
   ok((await falla("select * from bn_priv.examens")) !== null && (await falla("select bn_priv.benestar_num('1')")) !== null, "anon: no pot llegir bn_priv.examens ni cridar l'ajuda");
   ok((await falla("insert into bn_priv.examens(assig, data) values ('x', '2026-11-20')")) !== null, "anon: no pot escriure a bn_priv.examens");
   await db.exec("reset role") }
+
+ console.log("23) llindars personalitzats a bn_priv.config ('llindars')");
+ { await db.exec(fitxer("supabase/bn_control.sql"));
+  await db.query("select public.bn_admin_control($1, $2, $3::jsonb)", [
+   ...ADM,
+   JSON.stringify({
+    llindars: {
+     benestar: {
+      marato_bloc: { nivell: "groc", min: 80, min_vig: 140 },
+      pressa: { nivell: "vermell", seg: 4, encert_max: 60 },
+      inactiu: { nivell: "off", dies: 3 },
+      enganxa: { nivell: "context", intents: 1 }
+     }
+    }
+   })
+  ]);
+  const bc = await benestar("7d");
+  // Bloc tenia 75 min: amb min=80 ja no surt; Gap4 tenia 80 exactes -> tampoc; NoVigi tenia 130 -> ara surt en groc (nivell personalitzat) amb llindar 80
+  ok(sen(bc, "bloc", "marato_bloc").length === 0 && igual(sen(bc, "novigi", "marato_bloc"), [S("marato_bloc", "groc", "2026-11-17", "biogeo", 130, 80)]),
+   "marato_bloc aplica min=80 i nivell='groc' als dies normals");
+  // Pressa50 tenia 2s i 50% d'encert: amb seg=4 i encert_max=60 i nivell='vermell', ara salta en vermell i posa el semàfor en vermell
+  ok(sen(bc, "pressa50", "pressa").length === 1 && sen(bc, "pressa50", "pressa")[0].nivell === "vermell" && nen(bc, "pressa50").semafor === "vermell",
+   "pressa aplica seg=4, encert_max=60 i nivell='vermell' (i recalcula el semàfor a vermell)");
+  // Enganxa en 'context' no tenyeix el semàfor de groc (queda verd)
+  ok(igual(sen(bc, "enganxa", "enganxa"), [S("enganxa", "context", "2026-11-13", "biogeo", 2, 1)]) && nen(bc, "enganxa").semafor === "verd",
+   "enganxa amb nivell='context' surt com a context i deixa el semàfor en verd");
+  // Inactiu desactivat ('off'): Absent (dins 7d) queda verd sense senyal inactiu, i Absent12 (fora de 7d) no crea fila fantasma
+  ok(sen(bc, "absent", "inactiu").length === 0 && nen(bc, "absent").semafor === "verd" && !nen(bc, "absent12"),
+   "inactiu amb nivell='off' s'omet i no crea files fantasma fora del període");
+  // Restaura per defecte i comprova que torna a l'estat original
+  await db.query("select public.bn_admin_control($1, $2, '{\"reset_llindars\":true}'::jsonb)", ADM);
+  const b0 = await benestar("7d");
+  ok(igual(sen(b0, "bloc", "marato_bloc"), [S("marato_bloc", "vermell", "2026-11-12", "biogeo", 75, 60)]) && sen(b0, "absent", "inactiu").length === 1,
+   "reset_llindars restaura el comportament original de bn_admin_benestar") }
  await db.close();
 
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : `\n✓ Tot correcte (${((REAL() - t0) / 1000).toFixed(1)} s)`);

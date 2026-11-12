@@ -135,6 +135,35 @@ declare
   v_cfg jsonb;
   v_nit_norm int := 1290;
   v_nit_vig int := 1320;
+  v_ll_t text;
+  v_be jsonb;
+  v_mb_niv text := 'vermell';
+  v_mb_min int := 60;
+  v_mb_vig int := 120;
+  v_md_niv text := 'vermell';
+  v_md_min int := 90;
+  v_md_vig int := 120;
+  v_nit_niv text := 'groc';
+  v_nit_a int := 1;
+  v_nit_m int := 2;
+  v_sd_niv text := 'groc';
+  v_sd_salts int := 2;
+  v_pr_niv text := 'groc';
+  v_pr_seg int := 3;
+  v_pr_enc int := 50;
+  v_rp_niv text := 'groc';
+  v_rp_tests int := 4;
+  v_fs_niv text := 'groc';
+  v_fs_susp int := 3;
+  v_fc_niv text := 'groc';
+  v_fc_costa int := 2;
+  v_eg_niv text := 'groc';
+  v_eg_int int := 1;
+  v_xt_niv text := 'groc';
+  v_xt_fr int := 10;
+  v_xt_min int := 60;
+  v_ia_niv text := 'groc';
+  v_ia_dies int := 3;
 begin
   perform bn_priv.admin_ok(p_email, p_pass);
   if to_regclass('bn_priv.config') is not null then
@@ -149,6 +178,37 @@ begin
         v_nit_vig := split_part(v_cfg ->> 'nit_vigilia_h', ':', 1)::int * 60 + split_part(v_cfg ->> 'nit_vigilia_h', ':', 2)::int;
         if v_nit_vig < 360 then v_nit_vig := v_nit_vig + 1440; end if;
       end if;
+    end if;
+    execute 'select c.valor from bn_priv.config c where c.clau = ''llindars''' into v_ll_t;
+    begin v_be := (v_ll_t::jsonb)->'benestar'; exception when others then v_be := null; end;
+    if jsonb_typeof(v_be) = 'object' then
+      if (v_be #>> '{marato_bloc,nivell}') in ('vermell','groc','context','off') then v_mb_niv := v_be #>> '{marato_bloc,nivell}'; end if;
+      if (v_be #>> '{marato_bloc,min}') ~ '^[0-9]{1,3}$' then v_mb_min := least(240, greatest(20, (v_be #>> '{marato_bloc,min}')::int)); end if;
+      if (v_be #>> '{marato_bloc,min_vig}') ~ '^[0-9]{1,3}$' then v_mb_vig := least(300, greatest(30, (v_be #>> '{marato_bloc,min_vig}')::int)); end if;
+      if (v_be #>> '{marato_dia,nivell}') in ('vermell','groc','context','off') then v_md_niv := v_be #>> '{marato_dia,nivell}'; end if;
+      if (v_be #>> '{marato_dia,min}') ~ '^[0-9]{1,3}$' then v_md_min := least(300, greatest(30, (v_be #>> '{marato_dia,min}')::int)); end if;
+      if (v_be #>> '{marato_dia,min_vig}') ~ '^[0-9]{1,3}$' then v_md_vig := least(360, greatest(30, (v_be #>> '{marato_dia,min_vig}')::int)); end if;
+      if (v_be #>> '{nit,nivell}') in ('vermell','groc','context','off') then v_nit_niv := v_be #>> '{nit,nivell}'; end if;
+      if (v_be #>> '{nit,nits_avis}') ~ '^[0-9]{1,3}$' then v_nit_a := least(10, greatest(1, (v_be #>> '{nit,nits_avis}')::int)); end if;
+      if (v_be #>> '{nit,nits_malament}') ~ '^[0-9]{1,3}$' then v_nit_m := least(14, greatest(v_nit_a, (v_be #>> '{nit,nits_malament}')::int)); else v_nit_m := greatest(v_nit_a, v_nit_m); end if;
+      if (v_be #>> '{salta_descans,nivell}') in ('vermell','groc','context','off') then v_sd_niv := v_be #>> '{salta_descans,nivell}'; end if;
+      if (v_be #>> '{salta_descans,salts}') ~ '^[0-9]{1,3}$' then v_sd_salts := least(10, greatest(1, (v_be #>> '{salta_descans,salts}')::int)); end if;
+      if (v_be #>> '{pressa,nivell}') in ('vermell','groc','context','off') then v_pr_niv := v_be #>> '{pressa,nivell}'; end if;
+      if (v_be #>> '{pressa,seg}') ~ '^[0-9]{1,3}$' then v_pr_seg := least(10, greatest(1, (v_be #>> '{pressa,seg}')::int)); end if;
+      if (v_be #>> '{pressa,encert_max}') ~ '^[0-9]{1,3}$' then v_pr_enc := least(95, greatest(10, (v_be #>> '{pressa,encert_max}')::int)); end if;
+      if (v_be #>> '{repetir,nivell}') in ('vermell','groc','context','off') then v_rp_niv := v_be #>> '{repetir,nivell}'; end if;
+      if (v_be #>> '{repetir,tests}') ~ '^[0-9]{1,3}$' then v_rp_tests := least(15, greatest(2, (v_be #>> '{repetir,tests}')::int)); end if;
+      if (v_be #>> '{frustracio_suspesos,nivell}') in ('vermell','groc','context','off') then v_fs_niv := v_be #>> '{frustracio_suspesos,nivell}'; end if;
+      if (v_be #>> '{frustracio_suspesos,suspesos}') ~ '^[0-9]{1,3}$' then v_fs_susp := least(10, greatest(2, (v_be #>> '{frustracio_suspesos,suspesos}')::int)); end if;
+      if (v_be #>> '{frustracio_costa,nivell}') in ('vermell','groc','context','off') then v_fc_niv := v_be #>> '{frustracio_costa,nivell}'; end if;
+      if (v_be #>> '{frustracio_costa,costa}') ~ '^[0-9]{1,3}$' then v_fc_costa := least(10, greatest(1, (v_be #>> '{frustracio_costa,costa}')::int)); end if;
+      if (v_be #>> '{enganxa,nivell}') in ('vermell','groc','context','off') then v_eg_niv := v_be #>> '{enganxa,nivell}'; end if;
+      if (v_be #>> '{enganxa,intents}') ~ '^[0-9]{1,3}$' then v_eg_int := least(10, greatest(1, (v_be #>> '{enganxa,intents}')::int)); end if;
+      if (v_be #>> '{xat,nivell}') in ('vermell','groc','context','off') then v_xt_niv := v_be #>> '{xat,nivell}'; end if;
+      if (v_be #>> '{xat,frases}') ~ '^[0-9]{1,3}$' then v_xt_fr := least(50, greatest(2, (v_be #>> '{xat,frases}')::int)); end if;
+      if (v_be #>> '{xat,min_estudi_max}') ~ '^[0-9]{1,3}$' then v_xt_min := least(240, greatest(10, (v_be #>> '{xat,min_estudi_max}')::int)); end if;
+      if (v_be #>> '{inactiu,nivell}') in ('vermell','groc','context','off') then v_ia_niv := v_be #>> '{inactiu,nivell}'; end if;
+      if (v_be #>> '{inactiu,dies}') ~ '^[0-9]{1,3}$' then v_ia_dies := least(30, greatest(1, (v_be #>> '{inactiu,dies}')::int)); end if;
     end if;
   end if;
   v_d0 := date_trunc('day', bn_priv.desde(v_per) at time zone 'Europe/Madrid') at time zone 'Europe/Madrid';
@@ -257,8 +317,8 @@ begin
          from ta group by ta.k, ta.dia),
   mt as (
     select td.k, td.dia, td.assig, v.vg, round(coalesce(bm.s, 0) / 60) mbloc, round(td.s / 60) mdia,
-           (case when v.vg then 120 else 60 end) + w.extra lbloc,
-           (case when v.vg then 120 else 90 end) + w.extra ldia
+           (case when v.vg then v_mb_vig else v_mb_min end) + w.extra lbloc,
+           (case when v.vg then v_md_vig else v_md_min end) + w.extra ldia
     from td
     left join bm on bm.k = td.k and bm.dia = td.dia
     cross join lateral (select exists (select 1 from vig where vig.assig = td.assig and vig.dia = td.dia)
@@ -298,12 +358,12 @@ begin
     from (select tt.k, tt.assig, tt.tema, tt.ts, tt.pc < 70 sus from tt where tt.pc is not null) z
   ),
   fr as (select fx.k, fx.assig, fx.tema, count(*) n, max(fx.ts) ult from fx where fx.sus
-         group by fx.k, fx.assig, fx.tema, fx.grp having count(*) >= 3),
-  ia as (   -- com l'alerta «inactiu»: ha vingut els últims 30 dies, però no els últims 3
+         group by fx.k, fx.assig, fx.tema, fx.grp having count(*) >= v_fs_susp),
+  ia as (   -- com l'alerta «inactiu»: ha vingut els últims 30 dies, però no els últims N
     select lower(trim(x.nom)) k, max(x.nom) nom, max(x.ts) ult
     from public.bn_log x
     where x.ts >= v_ara - interval '30 days' and x.ts < v_fins and x.event <> 'alta' and lower(trim(x.nom)) <> '_alta' and (v_kk is null or lower(trim(x.nom)) = v_kk)
-    group by 1 having max(x.ts) < v_ara - interval '3 days'
+    group by 1 having max(x.ts) < v_ara - make_interval(days => v_ia_dies)
   ),
   xt as (
     select x.key k, (x.value ->> 'n')::int n, x.value ->> 'nom' nom, (x.value ->> 'ult')::timestamptz ult
@@ -343,7 +403,7 @@ begin
     select y.k, y.dia, y.assig, max(y.n) salts,
            case when exists (select 1 from vig where vig.assig = y.assig and vig.dia = y.dia)
                   or exists (select 1 from exd_vig ev where ev.k = y.k and ev.assig = y.assig and ev.dia = y.dia)
-                then 3 else 2 end llindar
+                then v_sd_salts + 1 else v_sd_salts end llindar
     from (select dsc_g.k, dsc_g.dia, dsc_g.assig, dsc_g.grp, count(*) n
           from dsc_g where dsc_g.es_salta group by 1, 2, 3, 4) y
     group by y.k, y.dia, y.assig
@@ -355,54 +415,60 @@ begin
   ),
   sen as (
     -- marató (un per nen i dia: el de bloc si passa, si no el del dia)
-    select mt.k, case when mt.mbloc > mt.lbloc then 'marato_bloc' else 'marato_dia' end codi,
-           case when mt.vg then 'blau' else 'vermell' end nivell, mt.dia, mt.assig,
-           case when mt.mbloc > mt.lbloc then mt.mbloc else mt.mdia end::numeric valor,
-           case when mt.mbloc > mt.lbloc then mt.lbloc else mt.ldia end::numeric llindar,
+    select mt.k,
+           case when v_mb_niv <> 'off' and mt.mbloc > mt.lbloc then 'marato_bloc' else 'marato_dia' end codi,
+           case when mt.vg then 'blau'
+                when v_mb_niv <> 'off' and mt.mbloc > mt.lbloc then v_mb_niv
+                else v_md_niv end nivell,
+           mt.dia, mt.assig,
+           case when v_mb_niv <> 'off' and mt.mbloc > mt.lbloc then mt.mbloc else mt.mdia end::numeric valor,
+           case when v_mb_niv <> 'off' and mt.mbloc > mt.lbloc then mt.lbloc else mt.ldia end::numeric llindar,
            null::jsonb extra   -- claus de més (només pressa i xat)
-    from mt where mt.mbloc > mt.lbloc or mt.mdia > mt.ldia
+    from mt where (v_mb_niv <> 'off' and mt.mbloc > mt.lbloc) or (v_md_niv <> 'off' and mt.mdia > mt.ldia)
     union all
     -- nit (un per nit)
-    select nn.k, 'nit', case when nn.nits >= 2 then 'vermell' else 'groc' end, nn.nit, nn.assig, nn.mins::numeric, nn.llindar::numeric, null::jsonb
-    from nn
+    select nn.k, 'nit',
+           case when v_nit_niv = 'groc' and nn.nits >= v_nit_m then 'vermell' else v_nit_niv end,
+           nn.nit, nn.assig, nn.mins::numeric, nn.llindar::numeric, null::jsonb
+    from nn where v_nit_niv <> 'off' and nn.nits >= v_nit_a
     union all
     -- pressa
-    select pr.k, 'pressa', 'groc', (pr.ult at time zone 'Europe/Madrid')::date, pr.assig, round(pr.sp, 1), 3::numeric,
+    select pr.k, 'pressa', v_pr_niv, (pr.ult at time zone 'Europe/Madrid')::date, pr.assig, round(pr.sp, 1), v_pr_seg::numeric,
            jsonb_build_object('encert', round(pr.enc * 100))
-    from pr where pr.n >= 10 and pr.sp < 3 and pr.enc < 0.5
+    from pr where v_pr_niv <> 'off' and pr.n >= 10 and pr.sp < v_pr_seg and pr.enc * 100 < v_pr_enc
     union all
     -- repetir sense aprendre
-    select tt.k, 'repetir', 'groc', tt.dia, tt.assig, count(*)::numeric, 4::numeric, null::jsonb
-    from tt where tt.est = 0
-    group by tt.k, tt.dia, tt.assig, tt.tema having count(*) >= 4
+    select tt.k, 'repetir', v_rp_niv, tt.dia, tt.assig, count(*)::numeric, v_rp_tests::numeric, null::jsonb
+    from tt where v_rp_niv <> 'off' and tt.est = 0
+    group by tt.k, tt.dia, tt.assig, tt.tema having count(*) >= v_rp_tests
     union all
     -- frustració: suspesos seguits d'un tema
-    select fr.k, 'frustracio_suspesos', 'groc', (max(fr.ult) at time zone 'Europe/Madrid')::date, fr.assig, max(fr.n)::numeric, 3::numeric, null::jsonb
-    from fr group by fr.k, fr.assig, fr.tema
+    select fr.k, 'frustracio_suspesos', v_fs_niv, (max(fr.ult) at time zone 'Europe/Madrid')::date, fr.assig, max(fr.n)::numeric, v_fs_susp::numeric, null::jsonb
+    from fr where v_fs_niv <> 'off' group by fr.k, fr.assig, fr.tema
     union all
     -- frustració: «Costa» repetit en un món
-    select lp.k, 'frustracio_costa', 'groc', (max(lp.ts) at time zone 'Europe/Madrid')::date, lp.assig, count(*)::numeric, 2::numeric, null::jsonb
-    from lp where lp.event = 'valora' and lp.detall ->> 'v' = 'Costa'
-    group by lp.k, lp.assig having count(*) >= 2
+    select lp.k, 'frustracio_costa', v_fc_niv, (max(lp.ts) at time zone 'Europe/Madrid')::date, lp.assig, count(*)::numeric, v_fc_costa::numeric, null::jsonb
+    from lp where v_fc_niv <> 'off' and lp.event = 'valora' and lp.detall ->> 'v' = 'Costa'
+    group by lp.k, lp.assig having count(*) >= v_fc_costa
     union all
     -- enganxa text a les obertes
-    select z.k, 'enganxa', 'groc', (max(z.ts) at time zone 'Europe/Madrid')::date, z.assig, sum(z.n), 1::numeric, null::jsonb
+    select z.k, 'enganxa', v_eg_niv, (max(z.ts) at time zone 'Europe/Madrid')::date, z.assig, sum(z.n), v_eg_int::numeric, null::jsonb
     from (select lp.k, lp.assig, lp.ts,
                  case when lp.detall -> 'enganxat' = 'true'::jsonb then 1 else bn_priv.benestar_num(lp.detall ->> 'enganxat') end n
           from lp where lp.event = 'oberta') z
-    where z.n > 0
-    group by z.k, z.assig
+    where v_eg_niv <> 'off' and z.n > 0
+    group by z.k, z.assig having sum(z.n) >= v_eg_int
     union all
     -- entra per xatejar (últims 7 dies)
-    select xt.k, 'xat', 'groc', (xt.ult at time zone 'Europe/Madrid')::date, null::text, xt.n::numeric, 10::numeric,
+    select xt.k, 'xat', v_xt_niv, (xt.ult at time zone 'Europe/Madrid')::date, null::text, xt.n::numeric, v_xt_fr::numeric,
            jsonb_build_object('minuts', coalesce(xm.m, 0))
     from xt left join xm on xm.k = xt.k
-    where xt.n >= 10 and coalesce(xm.m, 0) < 60
+    where v_xt_niv <> 'off' and xt.n >= v_xt_fr and coalesce(xm.m, 0) < v_xt_min
     union all
     -- deixa de venir
-    select ia.k, 'inactiu', 'groc', (ia.ult at time zone 'Europe/Madrid')::date, null::text,
-           (v_avui - (ia.ult at time zone 'Europe/Madrid')::date)::numeric, 3::numeric, null::jsonb
-    from ia
+    select ia.k, 'inactiu', v_ia_niv, (ia.ult at time zone 'Europe/Madrid')::date, null::text,
+           (v_avui - (ia.ult at time zone 'Europe/Madrid')::date)::numeric, v_ia_dies::numeric, null::jsonb
+    from ia where v_ia_niv <> 'off'
     union all
     -- poc i sovint (últims 7 dies)
     select dm.k, 'poc_sovint', 'bo', max(dm.dia), null::text, count(*)::numeric, 3::numeric, null::jsonb
@@ -417,9 +483,9 @@ begin
     select dsc_b.k, 'fa_descans', 'bo', dsc_b.ult, null::text, dsc_b.fets::numeric, dsc_b.tot::numeric, null::jsonb
     from dsc_b where dsc_b.fets >= 2 and dsc_b.fets * 3 >= dsc_b.tot * 2
     union all
-    -- salta el descans (2 o més seguits un dia normal, 3 la vigília)
-    select dsc_s.k, 'salta_descans', 'groc', dsc_s.dia, dsc_s.assig, dsc_s.salts::numeric, dsc_s.llindar::numeric, null::jsonb
-    from dsc_s where dsc_s.salts >= dsc_s.llindar
+    -- salta el descans (N o més seguits un dia normal, N+1 la vigília)
+    select dsc_s.k, 'salta_descans', v_sd_niv, dsc_s.dia, dsc_s.assig, dsc_s.salts::numeric, dsc_s.llindar::numeric, null::jsonb
+    from dsc_s where v_sd_niv <> 'off' and dsc_s.salts >= dsc_s.llindar
     union all
     -- el nen ha marcat «demà tinc examen» (fins als 2 primers dies del món)
     select exd.k, 'examen_dema', 'context', exd.dia, exd.assig, exd.ord::numeric, 2::numeric, null::jsonb
@@ -434,7 +500,7 @@ begin
   nk as (
     select lp.k, lp.nom from lp
     union all
-    select ia.k, ia.nom from ia
+    select ia.k, ia.nom from ia where v_ia_niv <> 'off'
     union all
     select xt.k, xt.nom from xt where exists (select 1 from sen where sen.k = xt.k and sen.codi = 'xat')
   ),

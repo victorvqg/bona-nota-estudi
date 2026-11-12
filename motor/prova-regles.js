@@ -96,11 +96,11 @@ const mResumAp = taulerSql.match(/'aprovats'[\s\S]*?\(detall->>'pc'\)::int\s*>=\
 prova(!!mResumAp, "No s'ha trobat el càlcul d'aprovats a bn_admin_resum (supabase/bn_admin_tauler.sql)");
 prova(+mResumAp[1] === aprova, `L'aprovat de bn_admin_resum (${mResumAp[1]}) no coincideix amb APROVA (${aprova})`);
 
-const mAlBaixa = taulerSql.match(/z\.p\[1\]\s*<\s*z\.p\[2\]\s*and\s*z\.p\[2\]\s*<\s*z\.p\[3\]\s*and\s*z\.p\[1\]\s*<\s*(\d+)/);
+const mAlBaixa = taulerSql.match(/z\.p\[1\]\s*<\s*z\.p\[2\]\s*and\s*z\.p\[2\]\s*<\s*z\.p\[3\]\s*and\s*z\.p\[1\]\s*<\s*(?:coalesce\(v_baixa_pc,\s*)?(\d+)\)?/);
 prova(!!mAlBaixa, "No s'ha trobat l'alerta de nota que baixa a bn_admin_alertes (supabase/bn_admin_tauler.sql)");
 prova(+mAlBaixa[1] === aprova, `El llindar de l'alerta 'baixa' (${mAlBaixa[1]}) no coincideix amb APROVA (${aprova})`);
 
-const mAlEncallat = taulerSql.match(/having count\(\*\)\s*>=\s*3\s*and\s*max\(\(l\.detall->>'pc'\)::int\)\s*<\s*(\d+)/);
+const mAlEncallat = taulerSql.match(/having\s+(?:v_enc_g\s*>\s*0\s+and\s+)?count\(\*\)\s*>=\s*(?:coalesce\(v_enc_n,\s*3\)|3)\s*and\s*max\(\(l\.detall->>'pc'\)::int\)\s*<\s*(\d+)/);
 prova(!!mAlEncallat, "No s'ha trobat l'alerta d'encallat a bn_admin_alertes (supabase/bn_admin_tauler.sql)");
 prova(+mAlEncallat[1] === aprova, `El llindar de l'alerta 'encallat' (${mAlEncallat[1]}) no coincideix amb APROVA (${aprova})`);
 
@@ -130,11 +130,11 @@ const mDemoResum = admSrc.match(/aprovats:te\.length\?Math\.round\(100\*te\.filt
 prova(!!mDemoResum, "No s'ha trobat el càlcul d'aprovats DEMO a admin/index.html");
 prova(mDemoResum[1] === "APROVAT" || +mDemoResum[1] === aprova, `L'aprovat DEMO (${mDemoResum[1]}) no coincideix amb APROVA (${aprova})`);
 
-const mDemoEnc = admSrc.match(/if\(g\.length>=3&&mx<(APROVAT|\d+)\)al\.push\(\{tipus:"encallat"/);
+const mDemoEnc = admSrc.match(/if\((?:LA\.encallat\.grav>0&&)?g\.length>=(?:LA\.encallat\.vegades|3)&&mx<(APROVAT|\d+)\)al\.push\(\{tipus:"encallat"/);
 prova(!!mDemoEnc, "No s'ha trobat l'alerta DEMO 'encallat' a admin/index.html");
 prova(mDemoEnc[1] === "APROVAT" || +mDemoEnc[1] === aprova, `El llindar DEMO 'encallat' (${mDemoEnc[1]}) no coincideix amb APROVA (${aprova})`);
 
-const mDemoBaixa = admSrc.match(/p\[2\]<p\[1\]&&p\[1\]<p\[0\]&&p\[2\]<(APROVAT|\d+)\)al\.push\(\{tipus:"baixa"/);
+const mDemoBaixa = admSrc.match(/p\[2\]<p\[1\]&&p\[1\]<p\[0\]&&p\[2\]<(?:\(LA\.baixa\.nota_max\|\|)?(APROVAT|\d+)\)?\)al\.push\(\{tipus:"baixa"/);
 prova(!!mDemoBaixa, "No s'ha trobat l'alerta DEMO 'baixa' a admin/index.html");
 prova(mDemoBaixa[1] === "APROVAT" || +mDemoBaixa[1] === aprova, `El llindar DEMO 'baixa' (${mDemoBaixa[1]}) no coincideix amb APROVA (${aprova})`);
 

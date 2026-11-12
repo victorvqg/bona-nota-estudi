@@ -3,7 +3,7 @@
 Data: 2026-11-12
 
 ## Què funciona
-- **Versió actual: 2.36.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.37.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`), tots 7 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 130 en total) i 3 peces del xat per món.
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -97,6 +97,11 @@ Data: 2026-11-12
 - **Bloc `g20` (`2.36.0`, Nou panell d'administració — Fase 5 completada: neteja final, 7 mons a Dificultat/Domini i documentació)**:
   - Els 7 mons es mostren sempre a `Mons → Dificultat real` i `Mons → Domini global` encara que tinguin `< 8` respostes per pregunta o sense activitat al període, amb resum clar a la capçalera i accés d'1 clic a `Totes`.
   - Neteja definitiva de codi/CSS obsolet a `admin/index.html`, invariant `≤ 8` columnes verificat a `motor/prova-admin-alta.js` i documentació (`docs/ARQUITECTURA.md`, `README.md`, `docs/XAT.md`, `docs/BENESTAR.md`) actualitzada.
+
+- **Bloc `g21` (`2.37.0`, Alertes plegables amb filtres, Llindars editables a Supabase i mons dels més nous als més antics)**:
+  - `Inici → Alertes` (`#alertes`) plegable amb resum de pastilles (`malament`, `avís`, `informatiu`), auto-plegat quan no hi ha cap alerta urgent, 3 desplegables de filtre (`#fAlGrav`, `#fAlTipus`, `#fAlAssig`), enunciat real de `admin/preguntes.json` i drecera `⚙ Ajusta`.
+  - `⚙ Configuració → Llindars` (`?v=config&tab=llindars`) editable amb desat i restauració a Supabase (`bn_priv.config` clau `'llindars'`, desplegat a `agippwtqvhpxdockuigl`), aplicable en directe a `bn_admin_alertes` (6 regles) i `bn_admin_benestar` (11 senyals de vigilància).
+  - Ordre dels mons invertit a la portada (`index.html`), als mons (`MONS`) i a l'admin (`ASSIGS` i `monsLlista()`): surten primer els més nous (`MÓN 7` → `MÓN 1`).
 
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i 130 difícils a `motor/dificultat.json`); #16 dificultat calculada: el SQL (`bn_admin_dificultat`) i `dificultat.py --proposa` ja són actius, pendent d'acumular prou respostes (l'11/11/2026: 362 preguntes vistes, 95 amb ≥ 5 respostes i 40 amb ≥ 8, de 625 totals). Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.

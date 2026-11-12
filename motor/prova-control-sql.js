@@ -115,8 +115,55 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
     ok(c && c.xat_obert_ara === true, "anon pot cridar bn_admin_control amb credencials d'admin");
     const ePriv1 = await falla("select bn_priv.mons_tancats()");
     const ePriv2 = await falla("select bn_priv.xat_obert_ara()");
-    ok(ePriv1 !== null && ePriv2 !== null, "anon no pot cridar bn_priv.mons_tancats() ni bn_priv.xat_obert_ara()");
+    const ePriv3 = await falla("select bn_priv.llindars_cfg()");
+    ok(ePriv1 !== null && ePriv2 !== null && ePriv3 !== null, "anon no pot cridar bn_priv.mons_tancats(), bn_priv.xat_obert_ara() ni bn_priv.llindars_cfg()");
     await db.exec("reset role;");
+  }
+
+  console.log("7) llindars configurables d'Alertes i Benestar (bn_admin_control + bn_admin_alertes)");
+  {
+    const d0 = await ctrl(null);
+    ok(d0.llindars && d0.llindars.alertes.inactiu.dies_avis === 3 && d0.llindars.alertes.encallat.grav === 3 && d0.llindars.benestar.marato_bloc.min === 60,
+      "per defecte bn_admin_control retorna llindars inicials complets (alertes i benestar)");
+
+    // Rebutja valors fora de rang o estructura invàlida
+    const eGrav = await falla("select public.bn_admin_control($1, $2, '{\"llindars\":{\"alertes\":{\"encallat\":{\"grav\":9}}}}'::jsonb)", ADM);
+    ok(eGrav !== null, "gravetat fora de 0..3 a llindars.alertes és rebutjada");
+    const eNiv = await falla("select public.bn_admin_control($1, $2, '{\"llindars\":{\"benestar\":{\"pressa\":{\"nivell\":\"blau\"}}}}'::jsonb)", ADM);
+    ok(eNiv !== null, "nivell desconegut a llindars.benestar és rebutjat");
+    const eDies = await falla("select public.bn_admin_control($1, $2, '{\"llindars\":{\"alertes\":{\"inactiu\":{\"dies_avis\":10,\"dies_malament\":5}}}}'::jsonb)", ADM);
+    ok(eDies !== null, "dies_malament < dies_avis és rebutjat");
+
+    // Muntem dades a bn_log per comprovar bn_admin_alertes amb llindars per defecte vs personalitzats:
+    // - Pau: va entrar fa 5 dies (amb per defecte >=3d -> gravetat 2; si apugem dies_avis a 6 -> no surt; si posem grav=3 -> gravetat 3)
+    // - Ona: 2 tests suspesos del mateix tema (amb vegades=3 per defecte -> no surt; amb vegades=2 i grav=2 -> surt amb gravetat 2)
+    await db.exec(`
+      set session_replication_role = replica;
+      insert into public.bn_log(ts, assig, nom, sessio, aparell, event, detall) values
+        (now() - interval '5 days', 'socials', 'Pau', 'sp1', 'ap1', 'entra', '{}'),
+        (now() - interval '1 day',  'catala',  'Ona', 'so1', 'ap2', 'test',  '{"tema":"c1","titol":"Tema 1","mode":"tema","pc":50}'),
+        (now() - interval '12 hours','catala', 'Ona', 'so2', 'ap2', 'test',  '{"tema":"c1","titol":"Tema 1","mode":"tema","pc":60}');
+      set session_replication_role = origin;
+    `);
+    const al0 = await val("select public.bn_admin_alertes($1, $2, '30d', null, null)", ADM);
+    const pau0 = al0.find(a => a.tipus === "inactiu" && a.nom === "Pau");
+    const ona0 = al0.find(a => a.tipus === "encallat" && a.nom === "Ona");
+    ok(pau0 && pau0.gravetat === 2 && !ona0, "amb llindars per defecte: Pau surt com inactiu (grav 2) i Ona encara no està encallada (2 < 3)");
+
+    // Personalitzem llindars: inactiu desactivat (grav 0) i encallat a partir de 2 vegades amb gravetat 1 (informatiu)
+    const d1 = await ctrl({ llindars: { alertes: { inactiu: { grav: 0, dies_avis: 4, dies_malament: 8 }, encallat: { grav: 1, vegades: 2 } }, benestar: { pressa: { nivell: "vermell", seg: 4 } } } });
+    ok(d1.llindars.alertes.inactiu.grav === 0 && d1.llindars.alertes.encallat.vegades === 2 && d1.llindars.benestar.pressa.nivell === "vermell",
+      "bn_admin_control desa i fusiona els llindars personalitzats");
+
+    const al1 = await val("select public.bn_admin_alertes($1, $2, '30d', null, null)", ADM);
+    const pau1 = al1.find(a => a.tipus === "inactiu" && a.nom === "Pau");
+    const ona1 = al1.find(a => a.tipus === "encallat" && a.nom === "Ona");
+    ok(!pau1 && ona1 && ona1.gravetat === 1, "bn_admin_alertes aplica de seguida grav=0 (desactiva inactiu) i vegades=2 amb grav=1 a encallat");
+
+    // Restaura valors per defecte
+    const dReset = await ctrl({ reset_llindars: true });
+    ok(dReset.llindars.alertes.inactiu.grav === 2 && dReset.llindars.alertes.encallat.vegades === 3 && dReset.llindars.benestar.pressa.nivell === "groc",
+      "reset_llindars=true restaura tots els valors inicials");
   }
 
   if (fallades) {

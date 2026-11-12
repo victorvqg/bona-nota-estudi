@@ -5,6 +5,17 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.37.0 · 2026-11-12
+
+### Afegit
+- **Alertes plegables amb filtres a Inici i configuració editable de llindars (`Malament` / `Avís` / `Informatiu` / `Desactivat`) a Supabase** (`admin/index.html`, `supabase/bn_control.sql`, `supabase/bn_admin_tauler.sql`, `supabase/bn_admin_benestar.sql`, `motor/prova-control-sql.js`, `motor/prova-admin-benestar-sql.js`, `motor/prova-admin-alta.js` · g21):
+  - **`Inici → Alertes` (`#alertes`) plegable i filtrable**: capçalera amb botó de plegar/desplegar (`#btAlPlega`), resum de pastilles (`X malament`, `Y avís`, `Z informatiu`), obertura automàtica quan hi ha alguna alerta `malament` o `avís` i plegat automàtic quan no n'hi ha cap, drecera `⚙ Ajusta` (`#btAlAjusta`), 3 desplegables de filtre (`#fAlGrav` per defecte a `Malament i avís`, `#fAlTipus` i `#fAlAssig`) i resolució de l'enunciat real de `admin/preguntes.json` a les alertes de pregunta fallada.
+  - **`⚙ Configuració → Llindars` (`?v=config&tab=llindars`) editable al servidor**: taula `#tLlindarsAl` per a les 6 regles d'`Alertes d'Inici` (`inactiu`, `encallat`, `baixa`, `rapid`, `pregunta`, `pendent`) i taula `#tLlindarsBen` per als 11 senyals de vigilància de `Benestar` (`marato_bloc`, `marato_dia`, `nit`, `salta_descans`, `pressa`, `repetir`, `frustracio_suspesos`, `frustracio_costa`, `enganxa`, `xat`, `inactiu`), on cada regla permet triar si compta com a **Malament** (vermell), **Avís** (groc), **Informatiu** (bé/context) o **Desactivat**, ajustar-ne els llindars numèrics i desar-ho o restaurar-ho als valors inicials (`#btDesaLlindars` / `#btResetLlindars`).
+  - **Persistència validada a Supabase (`bn_priv.config`, clau `'llindars'`)**: noves funcions privades `bn_priv.llindars_normalitza` i `bn_priv.llindars_cfg()` a `bn_control.sql` (desplegades a `agippwtqvhpxdockuigl`), integrades dins `bn_admin_control`, `bn_admin_alertes` i `bn_admin_benestar` conservant intacta la vigília d'examen en blau.
+
+### Canviat
+- **Ordre invers dels mons: dels més nous als més antics (`MÓN 7` → `MÓN 1`)** (`motor/tot.py`, `motor/build.py`, `admin/index.html`, `motor/prova-admin-alta.js` · g21): la portada (`bonanota.net`), el desglossament d'estrelles dins de cada món (`MONS`) i el panell d'administració mostren ara primer els mons més recents (`Anglès`, `Català`, `Matemàtiques`, `Comarques`, `Castellano`, `Bio i Geo`, `Socials`), mantenint `motor/mons.json` en ordre cronològic perquè cada món nou afegit al final aparegui automàticament a dalt de tot.
+
 ## 2.36.0 · 2026-11-12
 
 ### Canviat

@@ -104,6 +104,194 @@ revoke all on function bn_priv.xat_en_horari_tancat(boolean, text, text, timesta
 revoke all on function bn_priv.xat_obert_ara(jsonb, timestamptz) from public, anon, authenticated;
 revoke all on function bn_priv.mons_tancats() from public, anon, authenticated;
 
+-- 4b. Configuració de llindars d'Alertes d'Inici i de Benestar (clau 'llindars' a bn_priv.config)
+create or replace function bn_priv.ll_int(p_v jsonb, p_def int, p_min int, p_max int, p_estricte boolean default false)
+returns int language plpgsql immutable set search_path = '' as $$
+declare n int;
+begin
+  if p_v is null then return p_def; end if;
+  if jsonb_typeof(p_v) <> 'number' or (p_v::text) !~ '^[0-9]{1,5}$' then
+    if p_estricte then raise exception 'llindars no valids' using errcode = '22023'; end if;
+    return p_def;
+  end if;
+  n := (p_v::text)::int;
+  if n < p_min or n > p_max then
+    if p_estricte then raise exception 'llindars fora de rang' using errcode = '22023'; end if;
+    return least(p_max, greatest(p_min, n));
+  end if;
+  return n;
+end $$;
+
+create or replace function bn_priv.ll_grav(p_v jsonb, p_def int, p_estricte boolean default false)
+returns int language plpgsql immutable set search_path = '' as $$
+begin
+  if p_v is null then return p_def; end if;
+  if jsonb_typeof(p_v) <> 'number' or (p_v::text) not in ('0','1','2','3') then
+    if p_estricte then raise exception 'gravetat no valida' using errcode = '22023'; end if;
+    return p_def;
+  end if;
+  return (p_v::text)::int;
+end $$;
+
+create or replace function bn_priv.ll_niv(p_v jsonb, p_def text, p_estricte boolean default false)
+returns text language plpgsql immutable set search_path = '' as $$
+declare s text;
+begin
+  if p_v is null then return p_def; end if;
+  if jsonb_typeof(p_v) <> 'string' then
+    if p_estricte then raise exception 'nivell no valid' using errcode = '22023'; end if;
+    return p_def;
+  end if;
+  s := p_v #>> '{}';
+  if s not in ('vermell', 'groc', 'context', 'off') then
+    if p_estricte then raise exception 'nivell no valid' using errcode = '22023'; end if;
+    return p_def;
+  end if;
+  return s;
+end $$;
+
+create or replace function bn_priv.llindars_normalitza(p_raw jsonb, p_estricte boolean default false)
+returns jsonb language plpgsql immutable set search_path = '' as $$
+declare
+  j jsonb := case when jsonb_typeof(p_raw) = 'object' then p_raw else '{}'::jsonb end;
+  al jsonb;
+  be jsonb;
+  da int;
+  dm int;
+  na int;
+  nm int;
+  k text;
+begin
+  if p_estricte and p_raw is not null and jsonb_typeof(p_raw) <> 'object' then
+    raise exception 'llindars ha de ser un objecte' using errcode = '22023';
+  end if;
+  if p_estricte then
+    for k in select jsonb_object_keys(j) loop
+      if k not in ('alertes', 'benestar') then raise exception 'clau de llindars desconeguda' using errcode = '22023'; end if;
+    end loop;
+    if (j ? 'alertes') and jsonb_typeof(j->'alertes') <> 'object' then
+      raise exception 'alertes ha de ser un objecte' using errcode = '22023';
+    end if;
+    if (j ? 'benestar') and jsonb_typeof(j->'benestar') <> 'object' then
+      raise exception 'benestar ha de ser un objecte' using errcode = '22023';
+    end if;
+  end if;
+
+  al := case when jsonb_typeof(j->'alertes') = 'object' then j->'alertes' else '{}'::jsonb end;
+  be := case when jsonb_typeof(j->'benestar') = 'object' then j->'benestar' else '{}'::jsonb end;
+
+  if p_estricte then
+    for k in select jsonb_object_keys(al) loop
+      if k not in ('inactiu','encallat','baixa','rapid','pregunta','pendent') or jsonb_typeof(al->k) <> 'object' then
+        raise exception 'regla d''alerta no valida' using errcode = '22023';
+      end if;
+    end loop;
+    for k in select jsonb_object_keys(be) loop
+      if k not in ('marato_bloc','marato_dia','nit','salta_descans','pressa','repetir','frustracio_suspesos','frustracio_costa','enganxa','xat','inactiu')
+         or jsonb_typeof(be->k) <> 'object' then
+        raise exception 'senyal de benestar no valid' using errcode = '22023';
+      end if;
+    end loop;
+  end if;
+
+  da := bn_priv.ll_int(al #> '{inactiu,dies_avis}', 3, 1, 30, p_estricte);
+  dm := bn_priv.ll_int(al #> '{inactiu,dies_malament}', 7, 1, 60, p_estricte);
+  if dm < da then
+    if p_estricte then raise exception 'dies_malament ha de ser >= dies_avis' using errcode = '22023'; end if;
+    dm := da;
+  end if;
+
+  na := bn_priv.ll_int(be #> '{nit,nits_avis}', 1, 1, 10, p_estricte);
+  nm := bn_priv.ll_int(be #> '{nit,nits_malament}', 2, 1, 14, p_estricte);
+  if nm < na then
+    if p_estricte then raise exception 'nits_malament ha de ser >= nits_avis' using errcode = '22023'; end if;
+    nm := na;
+  end if;
+
+  return jsonb_build_object(
+    'alertes', jsonb_build_object(
+      'inactiu', jsonb_build_object(
+        'grav',          bn_priv.ll_grav(al #> '{inactiu,grav}', 2, p_estricte),
+        'dies_avis',     da,
+        'dies_malament', dm),
+      'encallat', jsonb_build_object(
+        'grav',          bn_priv.ll_grav(al #> '{encallat,grav}', 3, p_estricte),
+        'vegades',       bn_priv.ll_int(al #> '{encallat,vegades}', 3, 2, 15, p_estricte)),
+      'baixa', jsonb_build_object(
+        'grav',          bn_priv.ll_grav(al #> '{baixa,grav}', 2, p_estricte),
+        'nota_max',      bn_priv.ll_int(al #> '{baixa,nota_max}', 70, 30, 100, p_estricte)),
+      'rapid', jsonb_build_object(
+        'grav',          bn_priv.ll_grav(al #> '{rapid,grav}', 2, p_estricte),
+        'seg_max',       bn_priv.ll_int(al #> '{rapid,seg_max}', 3, 1, 10, p_estricte),
+        'tests_min',     bn_priv.ll_int(al #> '{rapid,tests_min}', 2, 1, 10, p_estricte)),
+      'pregunta', jsonb_build_object(
+        'grav',          bn_priv.ll_grav(al #> '{pregunta,grav}', 1, p_estricte),
+        'pct_error',     bn_priv.ll_int(al #> '{pregunta,pct_error}', 50, 20, 95, p_estricte),
+        'nens_min',      bn_priv.ll_int(al #> '{pregunta,nens_min}', 3, 2, 30, p_estricte)),
+      'pendent', jsonb_build_object(
+        'grav',          bn_priv.ll_grav(al #> '{pendent,grav}', 1, p_estricte),
+        'temes_min',     bn_priv.ll_int(al #> '{pendent,temes_min}', 1, 1, 20, p_estricte))
+    ),
+    'benestar', jsonb_build_object(
+      'marato_bloc', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{marato_bloc,nivell}', 'vermell', p_estricte),
+        'min',           bn_priv.ll_int(be #> '{marato_bloc,min}', 60, 20, 240, p_estricte),
+        'min_vig',       bn_priv.ll_int(be #> '{marato_bloc,min_vig}', 120, 30, 300, p_estricte)),
+      'marato_dia', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{marato_dia,nivell}', 'vermell', p_estricte),
+        'min',           bn_priv.ll_int(be #> '{marato_dia,min}', 90, 30, 300, p_estricte),
+        'min_vig',       bn_priv.ll_int(be #> '{marato_dia,min_vig}', 120, 30, 360, p_estricte)),
+      'nit', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{nit,nivell}', 'groc', p_estricte),
+        'nits_avis',     na,
+        'nits_malament', nm),
+      'salta_descans', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{salta_descans,nivell}', 'groc', p_estricte),
+        'salts',         bn_priv.ll_int(be #> '{salta_descans,salts}', 2, 1, 10, p_estricte)),
+      'pressa', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{pressa,nivell}', 'groc', p_estricte),
+        'seg',           bn_priv.ll_int(be #> '{pressa,seg}', 3, 1, 10, p_estricte),
+        'encert_max',    bn_priv.ll_int(be #> '{pressa,encert_max}', 50, 10, 95, p_estricte)),
+      'repetir', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{repetir,nivell}', 'groc', p_estricte),
+        'tests',         bn_priv.ll_int(be #> '{repetir,tests}', 4, 2, 15, p_estricte)),
+      'frustracio_suspesos', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{frustracio_suspesos,nivell}', 'groc', p_estricte),
+        'suspesos',      bn_priv.ll_int(be #> '{frustracio_suspesos,suspesos}', 3, 2, 10, p_estricte)),
+      'frustracio_costa', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{frustracio_costa,nivell}', 'groc', p_estricte),
+        'costa',         bn_priv.ll_int(be #> '{frustracio_costa,costa}', 2, 1, 10, p_estricte)),
+      'enganxa', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{enganxa,nivell}', 'groc', p_estricte),
+        'intents',       bn_priv.ll_int(be #> '{enganxa,intents}', 1, 1, 10, p_estricte)),
+      'xat', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{xat,nivell}', 'groc', p_estricte),
+        'frases',        bn_priv.ll_int(be #> '{xat,frases}', 10, 2, 50, p_estricte),
+        'min_estudi_max',bn_priv.ll_int(be #> '{xat,min_estudi_max}', 60, 10, 240, p_estricte)),
+      'inactiu', jsonb_build_object(
+        'nivell',        bn_priv.ll_niv(be #> '{inactiu,nivell}', 'groc', p_estricte),
+        'dies',          bn_priv.ll_int(be #> '{inactiu,dies}', 3, 1, 30, p_estricte))
+    )
+  );
+end $$;
+
+create or replace function bn_priv.llindars_cfg() returns jsonb
+language plpgsql stable set search_path = '' as $$
+declare
+  t text;
+  j jsonb;
+begin
+  select c.valor into t from bn_priv.config c where c.clau = 'llindars';
+  begin j := t::jsonb; exception when others then j := null; end;
+  return bn_priv.llindars_normalitza(j, false);
+end $$;
+
+revoke all on function bn_priv.ll_int(jsonb, int, int, int, boolean) from public, anon, authenticated;
+revoke all on function bn_priv.ll_grav(jsonb, int, boolean) from public, anon, authenticated;
+revoke all on function bn_priv.ll_niv(jsonb, text, boolean) from public, anon, authenticated;
+revoke all on function bn_priv.llindars_normalitza(jsonb, boolean) from public, anon, authenticated;
+revoke all on function bn_priv.llindars_cfg() from public, anon, authenticated;
+
 -- 5. RPC pública: estat de la web (mons tancats i estat del xat/horari, sense PIN)
 create or replace function public.bn_estat_web() returns jsonb
 language plpgsql stable security definer set search_path = '' as $$
@@ -145,6 +333,10 @@ declare
   c jsonb;
   h jsonb;
   tancats jsonb;
+  ll jsonb;
+  ll_in jsonb;
+  ll_al jsonb;
+  ll_be jsonb;
   t text;
   m int;
   mon_id text;
@@ -157,6 +349,7 @@ begin
   c := bn_priv.xat_cfg();
   h := bn_priv.xat_horari_cfg();
   tancats := bn_priv.mons_tancats();
+  ll := bn_priv.llindars_cfg();
 
   if p_cfg is not null then
     if jsonb_typeof(p_cfg) <> 'object' then
@@ -270,6 +463,55 @@ begin
       values ('mons', jsonb_build_object('tancats', tancats)::text)
       on conflict (clau) do update set valor = excluded.valor;
     end if;
+
+    -- E) Restaurar els llindars d'Alertes i Benestar als valors inicials
+    if p_cfg ? 'reset_llindars' then
+      t := p_cfg->>'reset_llindars';
+      if t is null or t not in ('true', 'false') then
+        raise exception 'reset_llindars ha de ser true o false' using errcode = '22023';
+      end if;
+      if t = 'true' then
+        delete from bn_priv.config where clau = 'llindars';
+        ll := bn_priv.llindars_cfg();
+      end if;
+    end if;
+
+    -- F) Desar els llindars d'Alertes i Benestar (accepta objecte complet o parcial)
+    if p_cfg ? 'llindars' then
+      ll_in := p_cfg->'llindars';
+      if ll_in is null or jsonb_typeof(ll_in) <> 'object' then
+        raise exception 'llindars ha de ser un objecte' using errcode = '22023';
+      end if;
+      -- Validem estructura i fusionem amb l'actual abans de validar tipus, rangs i coherència creuada
+      for t in select jsonb_object_keys(ll_in) loop
+        if t not in ('alertes', 'benestar') or jsonb_typeof(ll_in->t) <> 'object' then
+          raise exception 'clau de llindars no valida' using errcode = '22023';
+        end if;
+      end loop;
+      ll_al := ll->'alertes';
+      if ll_in ? 'alertes' then
+        for t in select jsonb_object_keys(ll_in->'alertes') loop
+          if t not in ('inactiu','encallat','baixa','rapid','pregunta','pendent') or jsonb_typeof(ll_in->'alertes'->t) <> 'object' then
+            raise exception 'regla d''alerta no valida' using errcode = '22023';
+          end if;
+          ll_al := jsonb_set(ll_al, array[t], coalesce(ll_al->t, '{}'::jsonb) || (ll_in->'alertes'->t));
+        end loop;
+      end if;
+      ll_be := ll->'benestar';
+      if ll_in ? 'benestar' then
+        for t in select jsonb_object_keys(ll_in->'benestar') loop
+          if t not in ('marato_bloc','marato_dia','nit','salta_descans','pressa','repetir','frustracio_suspesos','frustracio_costa','enganxa','xat','inactiu')
+             or jsonb_typeof(ll_in->'benestar'->t) <> 'object' then
+            raise exception 'senyal de benestar no valid' using errcode = '22023';
+          end if;
+          ll_be := jsonb_set(ll_be, array[t], coalesce(ll_be->t, '{}'::jsonb) || (ll_in->'benestar'->t));
+        end loop;
+      end if;
+      ll := bn_priv.llindars_normalitza(jsonb_build_object('alertes', ll_al, 'benestar', ll_be), true);
+      insert into bn_priv.config(clau, valor)
+      values ('llindars', ll::text)
+      on conflict (clau) do update set valor = excluded.valor;
+    end if;
   end if;
 
   en_horari := bn_priv.xat_en_horari_tancat((h->>'actiu')::boolean, h->>'tanca_h', h->>'obre_h', now());
@@ -292,7 +534,8 @@ begin
       'max_dia',       (c->>'max_dia')::int,
       'espera_s',      (c->>'espera_s')::int
     ),
-    'mons_tancats', tancats
+    'mons_tancats', tancats,
+    'llindars', ll
   );
 end $$;
 
