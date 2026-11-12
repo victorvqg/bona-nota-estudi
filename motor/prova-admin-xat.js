@@ -176,8 +176,8 @@ function respon(st, f, cos) {
   ok(activesCat === 0, "interruptors del catàleg i #xnBt al drawer desactivats en demo");
   await p.click("#panellTanca");
   await p.click('[data-vtab="horaris"]'); await p.waitForSelector("#xcDesa");
-  const activesHor = await p.$$eval("#xcDesa, #xcAct, #xcHorari", bs => bs.filter(b => !b.disabled).length);
-  ok(activesHor === 0, "accions d'horaris i crèdits desactivades en demo");
+  const activesHor = await p.$$eval("#xcDesa, #xcAct, #xcHorari, #xcTancaMons", bs => bs.filter(b => !b.disabled).length);
+  ok(activesHor === 0, "accions d'horaris i crèdits (inclòs #xcTancaMons) desactivades en demo");
   ok(crides.length === 0, "cap crida a Supabase en demo (" + crides.map(c => c.f).join(", ") + ")");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
@@ -240,10 +240,13 @@ function respon(st, f, cos) {
   ok(await p.evaluate(() => document.getElementById("periodeWrap").hidden), "a Configuració s'amaga el selector global de període");
   await p.fill("#xcMax", "50"); await p.click("#xcDesa"); await p.waitForTimeout(200);
   ok(!crides.some(x => x.f === "bn_admin_xat_config" && x.cos.p_cfg) && (await txt("#xcErr")).includes("1 a 20"), "un màxim de 50 no s'envia i surt l'avís");
-  await p.fill("#xcMax", "5"); await p.fill("#xcEst", "12"); await p.click("#xcDesa");
+  await p.fill("#xcMax", "5"); await p.fill("#xcEst", "12"); await p.click("#xcTancaMons"); await p.click("#xcDesa");
   for (let i = 0; i < 40 && !crides.some(x => x.f === "bn_admin_xat_config" && x.cos.p_cfg); i++) await p.waitForTimeout(50);
   c = crides.filter(x => x.f === "bn_admin_xat_config" && x.cos.p_cfg).pop();
   ok(c && JSON.stringify(c.cos.p_cfg) === JSON.stringify({ est_credit: 12, max_dia: 5, espera_s: 10, actiu: true }), "desar → bn_admin_xat_config amb p_cfg " + (c ? JSON.stringify(c.cos.p_cfg) : "—"));
+  for (let i = 0; i < 40 && !crides.some(x => x.f === "bn_admin_control" && x.cos.p_cfg); i++) await p.waitForTimeout(50);
+  const cCtrl = crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg).pop();
+  ok(cCtrl && cCtrl.cos.p_cfg.horari_tanca_mons === true, "desar amb #xcTancaMons actiu envia horari_tanca_mons:true a bn_admin_control");
   await p.waitForTimeout(150);
   await p.click("#xcAct"); await p.click("#xcDesa"); await p.waitForSelector("#dlg[open]");
   ok((await txt("#dlgT")) === "Tancar el xat?", "tancar el xat demana confirmació");

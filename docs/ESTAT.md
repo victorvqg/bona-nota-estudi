@@ -3,7 +3,7 @@
 Data: 2026-11-12
 
 ## Què funciona
-- **Versió actual: 2.40.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.41.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`), tots 7 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 130 en total) i 3 peces del xat per món.
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -116,6 +116,11 @@ Data: 2026-11-12
 - **Bloc `g24` (`2.40.0`, Full d'examen d'1 pàgina A4, agregació de dubtes i descàrrega de `dificultat.json` al tauler d'admin)**:
   - `Fitxa del nen` (`admin/index.html`): botó `Full d'examen (1 pàg.)` (`#btFullExamen`) que genera un full A4 per a l'alumne amb preguntes fallades + resposta bona en verd, temes per repassar, idees clau d'obertes / Taller i 3 passos tranquils abans de l'examen.
   - `bn_admin_dificultat.sql` (desplegat a `agippwtqvhpxdockuigl`) i `admin/index.html`: agregació de `'dubte'` per pregunta i motiu (`dubtes`, `dubtes_nens`, `dubtes_motius`, fins i tot amb `0` respostes), filtre `🤔 Dubtes`, pastilla `🤔 N`, filtre `Preguntes confuses` al log, contrast explícit `fitxer vs real` i botó `⚡ Proposa dificultat.json` (`#btProposaDif`).
+
+- **Bloc `g25` (`2.41.0`, Detall de preguntes confuses per món/tema/nen, pestanya «Missatges al nen» i configuració de tancament nocturn de mons)**:
+  - `bn_admin_dificultat.sql` i `admin/index.html`: taula directa `#tDifDubBox` de 6 columnes a `Mons → Dificultat real` (i 5 a `Fitxa del món`) amb el món, tema, activitat d'origen (`test` / `repas` / `examen` / `examen-real`), pregunta amb resposta correcta, nen i motiu (`dubtes_detall` i `dubtes_llista`).
+  - `Nens → Missatges al nen` (`?v=nens&tab=missatges`): catàleg visual filtrable dels 13 missatges de Bon Ús i Benestar que pot veure l'alumne amb valors vius i explicació de quan i per què surten.
+  - `bn_control.sql` i `Configuració → Horaris`: opció `horari.tanca_mons` (`#xcTancaMons`, «Tanca també els mons a la nit») i `mons_tancats_nit` a `bn_estat_web()`.
 
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i 130 difícils a `motor/dificultat.json`); #16 dificultat calculada: el SQL (`bn_admin_dificultat`) i `dificultat.py --proposa` ja són actius, pendent d'acumular prou respostes (l'11/11/2026: 362 preguntes vistes, 95 amb ≥ 5 respostes i 40 amb ≥ 8, de 625 totals). Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.
