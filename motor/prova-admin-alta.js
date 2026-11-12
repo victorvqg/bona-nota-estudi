@@ -73,6 +73,13 @@ function dadesAdmin() {
    if (f === "bn_admin_benestar") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", mons: [], nens: [] }) });
    if (f === "bn_admin_fonts_dia") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", dies: [], total: {} }) });
    if (f === "bn_admin_dificultat") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ min_respostes: 8, dies: 365, assig: null, resum: { preguntes_vistes: 0, amb_dades: 0, dificils: 0, normals: 0, facils: 0 }, preguntes: [] }) });
+   if (f === "bn_admin_xat_config") {
+    if (cos.p_cfg && typeof cos.p_cfg.actiu === "boolean") d.ctrl.xat_actiu = cos.p_cfg.actiu;
+    return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ est_credit: 10, max_dia: 5, espera_s: 10, actiu: d.ctrl.xat_actiu }) });
+   }
+   if (f === "bn_admin_copies") {
+    return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([{ id: 1, ts: new Date().toISOString(), motiu: "automàtica", files: { bn_log: 3, perfils: 3, progres: 2, amagats: 0, config: 1, reinicis: 0 }, mida: 15200 }]) });
+   }
    if (f === "bn_admin_control") {
     if (cos.p_cfg && typeof cos.p_cfg === "object") {
      if (typeof cos.p_cfg.xat_actiu === "boolean") d.ctrl.xat_actiu = cos.p_cfg.xat_actiu;
@@ -95,28 +102,58 @@ function dadesAdmin() {
   if (o.cred) await p.addInitScript(c => sessionStorage.setItem("bn_admin", JSON.stringify(c)), o.cred);
   const errors = []; p.on("pageerror", e => errors.push(e.message));
   await p.goto(BASE + url); await p.waitForSelector("#shell:not([hidden])");
-  const menu = async v => { if (await p.isVisible("#obreMenu")) await p.click("#obreMenu"); await p.click(`#nav [data-v="${v}"]`) };
+  const menu = async v => { const sel = await p.isVisible("#navInf") ? "#navInf" : "#nav"; await p.click(`${sel} [data-v="${v}"]`) };
   const txt = s => p.evaluate(s => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, " ").trim() : null }, s);
   return { p, ctx, crides, errors, menu, txt };
  }
 
- console.log("1) Admin ?demo: panell de Control ràpid i nivells (M5) sense cap crida al núvol, i sense Embut d'alta");
+ console.log("1) Admin ?demo: Inici (6 KPIs, Control ràpid d'1 clic, ajuda plegable), Configuració (4 pestanyes i panell lateral) i nivells (M5)");
  {
   const { p, ctx, crides, errors, menu, txt } = await obreAdmin("/admin/?demo");
   await p.waitForSelector("#control #ctrlXatSw");
+  ok((await txt("#titol")) === "Inici" && !(await p.isHidden("#periodeWrap")), "s'obre per defecte a Inici amb el selector de període visible");
+  ok((await p.$$("#iniciKpis .kpi")).length === 6 && (await p.$$("#iniciKpis .kpi-s")).length === 0,
+   "Inici mostra exactament 6 KPIs compactes i cap subtítol sota les xifres");
   const ctrlTxt = await txt("#control");
-  ok(ctrlTxt.includes("Control ràpid: Xat, Horari i Mons") && (await p.$$("#control [data-ctrl-mon]")).length === 7,
-   "targeta «Control ràpid: Xat, Horari i Mons» al Tauler amb els 7 mons");
+  ok(ctrlTxt.includes("Control ràpid") && (await p.$$("#control [data-ctrl-mon]")).length === 7,
+   "targeta «Control ràpid» a Inici amb interruptor del xat i dels 7 mons");
+  // Ajuda plegable (i)
+  const btAj = "#control .btn-ajuda", boxAj = "#control .ajuda-box";
+  ok((await p.isHidden(boxAj)) === true, "l'explicació secundària (i) està plegada per defecte");
+  await p.click(btAj);
+  ok((await p.isHidden(boxAj)) === false && (await p.getAttribute(btAj, "aria-expanded")) === "true", "clicar el botó (i) desplega l'ajuda");
+
+  // Enllaç ràpid a Configuració -> Horaris, i comprovació de les 4 subseccions (Horaris, Catàleg, Llindars, Còpies)
+  await p.click('#control [data-go-cfg="horaris"]');
+  await p.waitForSelector("#xcF");
+  ok((await txt("#titol")) === "Configuració" && (await p.isHidden("#periodeWrap")) === true && p.url().includes("v=config"),
+   "Configuració amaga el selector de període i sincronitza ?v=config a l'URL");
+  await p.click('[data-vtab="llindars"]');
+  await p.waitForSelector("#tLlindarsPed table");
+  ok((await p.$$("#tLlindarsPed th")).length === 4 && (await p.$$("#tLlindarsBen th")).length === 3,
+   "Configuració → Llindars mostra les taules compactes de regles pedagògiques i de benestar");
+  await p.click('[data-vtab="copies"]');
+  await p.waitForSelector("#tCop table");
+  ok((await p.$$("#tCop th")).length === 4, "Configuració → Còpies té exactament 4 columnes (Data, Abast, Mida o detall, Acció)");
+  await p.click("#tCop [data-cp-prev]");
+  await p.waitForSelector("#panell:not([hidden]) .cp-det");
+  ok((await txt("#panellTitol")).startsWith("Còpia #") && (await p.$$("#panellCos [data-cr]")).length === 1,
+   "clicar Detall a Còpies obre el desglossament i les accions al panell lateral (#panell)");
+  await p.click("#panellTanca");
+  ok(await p.isHidden("#panell"), "tancar el panell lateral l'amaga netament");
+
   await menu("nens");
+  await p.waitForSelector("#tNens table");
   ok((await p.$("#embutAlta")) === null, "s'ha tret «Embut d'alta» de la vista Nens");
+  const nensCols = await p.$$("#tNens th");
   const nensTxt = await txt("#tNens");
-  ok(nensTxt.includes("Nivell") && (await p.$$("#tNens .niv-p")).length >= 5,
-   "taula de Nens mostra la columna Nivell amb les pastilles de nivell");
+  ok(nensCols.length <= 8 && nensTxt.includes("Nivell") && (await p.$$("#tNens .niv-p")).length >= 5 && (await p.$("#tNens .tb-q")) !== null && (await p.$("#tNens [data-tcsv]")) !== null,
+   "taula de Nens compleix ≤ 8 columnes, porta cerca i CSV, i mostra les pastilles de nivell");
   await p.click('#tNens [data-obre-nen="àlex"]');
   await p.waitForSelector("#tb-nuv");
   const detTxt = await txt("#contingut");
-  ok(detTxt.includes("Nivell") && (await p.$$(".perfil .niv-p")).length === 1,
-   "fitxa del nen mostra el nivell a la capçalera i als KPIs");
+  ok(detTxt.includes("Nivell") && (await p.$$(".perfil .niv-p")).length === 1 && p.url().includes("v=nens") && p.url().includes("id="),
+   "fitxa del nen mostra el nivell a la capçalera i reflecteix ?v=nens&id=… a l'URL");
   await p.click("#tb-nuv");
   await p.waitForSelector('#nuv[data-estat="fet"]');
   ok((await p.$$("#nuv .niv-p")).length >= 1, "pestanya «Al núvol» mostra el nivell del nen");
@@ -124,34 +161,53 @@ function dadesAdmin() {
   await ctx.close();
  }
 
- console.log("2) Admin amb credencials: activar/desactivar xat, horari i mons des de #control, i nivells M5");
+ console.log("2) Admin amb credencials: càrrega sota demanda a Inici, control d'1 clic, Configuració → Horaris i nivells M5");
  {
   const { p, ctx, crides, errors, menu, txt } = await obreAdmin("/admin/", { cred: CRED });
   await p.waitForSelector("#control #ctrlXatSw");
-  // Tanquem el xat des del botó ràpid
+  await p.waitForTimeout(120);
+  // Verifiquem que Inici NO dispara la bateria d'11-12 RPCs d'altres seccions
+  const noInici = ["bn_admin_domini", "bn_admin_fallades", "bn_admin_activitat", "bn_admin_calor", "bn_admin_evolucio", "bn_admin_benestar", "bn_admin_dificultat", "bn_admin_rep_pendents", "bn_admin_copies", "bn_admin_xat_msgs"];
+  ok(noInici.every(f => !crides.some(c => c.f === f)),
+   "càrrega sota demanda: entrar a Inici no demana cap RPC de Mons, Sessions, Benestar, Xat ni Còpies");
+
+  // Tanquem el xat des del botó ràpid d'1 clic a Inici
   await p.click("#ctrlXatSw");
   await p.waitForTimeout(80);
   ok((await p.getAttribute("#ctrlXatSw", "aria-checked")) === "false" && (await txt("#ctrlXatEstat")).includes("Tancat manualment"),
    "clicar #ctrlXatSw tanca el xat i actualitza l'estat a «Tancat manualment»");
 
-  // Canviem l'horari i el desem
-  await p.fill("#ctrlTancaH", "22:00");
-  await p.fill("#ctrlObreH", "07:30");
-  await p.click("#ctrlHorariDesa");
-  await p.waitForTimeout(80);
-  const cHor = crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg && x.cos.p_cfg.tanca_min === 1320 && x.cos.p_cfg.obre_min === 450);
-  ok(cHor.length === 1, "Desa l'horari envia tanca_min=1320 (22:00) i obre_min=450 (07:30) a bn_admin_control");
-
-  // Tanquem el món de Socials
+  // Tanquem el món de Socials des d'Inici
   await p.click('#control [data-ctrl-mon="socials"]');
   await p.waitForTimeout(80);
   ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes("6 de 7 oberts"),
    "clicar l'interruptor d'un món el tanca i actualitza el comptador a «6 de 7 oberts»");
 
-  // Comprovem els nivells a Nens i que #fNen mostra tots els nens de bn_admin_ids (encara que no tinguin registres al període)
+  // Canviem l'horari i el desem des de Configuració → Horaris i crèdits
+  await p.click("#btConfig");
+  await p.waitForSelector("#xcF");
+  await p.fill("#xcTancaH", "22:00");
+  await p.fill("#xcObreH", "07:30");
+  await p.click("#xcDesa");
+  await p.waitForTimeout(100);
+  const cHor = crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg && x.cos.p_cfg.tanca_min === 1320 && x.cos.p_cfg.obre_min === 450);
+  ok(cHor.length === 1, "Configuració → Horaris envia tanca_min=1320 (22:00) i obre_min=450 (07:30) a bn_admin_control");
+
+  // Comprovem que el filtre local #fNen (a Sessions) mostra tots els nens de bn_admin_ids
+  await menu("sessions");
+  await p.waitForSelector("#fNen");
   const fNenTxt = await txt("#fNen");
   ok(fNenTxt.includes("Leyre") && fNenTxt.includes("Sebastià") && fNenTxt.includes("Pau") && fNenTxt.includes("Laia"),
-   "el filtre superior #fNen mostra tots els nens de bn_admin_ids encara que no tinguin registres en el període triat");
+   "el filtre local #fNen mostra tots els nens de bn_admin_ids encara que no tinguin registres en el període triat");
+
+  // Obrir el detall d'una sessió al panell lateral
+  await p.waitForSelector("#tSes tr[data-ses]");
+  await p.click("#tSes tr[data-ses]");
+  await p.waitForSelector("#panell:not([hidden]) .lin");
+  ok((await txt("#panellTitol")).startsWith("Sessió de "), "clicar una fila a Sessions n'obre el detall al panell lateral (#panell)");
+  await p.keyboard.press("Escape");
+  ok(await p.isHidden("#panell"), "Escape tanca el panell lateral");
+
   await menu("nens");
   await p.waitForSelector("#tNens table");
   const filaPau = await txt('#tNens tr:has([data-obre-nen="pau"])');
@@ -165,6 +221,20 @@ function dadesAdmin() {
   ok(nuvTxt.includes("6 · Mestre") && nuvTxt.includes("3 · Investigador") && nuvTxt.includes("falten 20 ⭐ per a Campió"),
    "a «Al núvol» es mostra el nivell de cada món i les estrelles que falten");
   ok(errors.length === 0, "cap error de JS a la consola");
+  await ctx.close();
+ }
+
+ console.log("2b) Mòbil (360, 390 i 430 px): barra inferior fixa de 5 eixos i zero desbordament a Inici i Configuració");
+ for (const w of [360, 390, 430]) {
+  const { p, ctx, errors } = await obreAdmin("/admin/?demo", { viewport: { width: w, height: 800 } });
+  await p.waitForSelector("#control #ctrlXatSw");
+  const navInfVis = await p.isVisible("#navInf"), navLatVis = await p.isVisible(".menu");
+  const sw1 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  await p.click("#btConfig");
+  await p.waitForSelector("#xcF");
+  const sw2 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && errors.length === 0,
+   `${w} px: barra inferior #navInf activa, menú lateral ocult i zero desbordament (Inici ${sw1}px, Config ${sw2}px)`);
   await ctx.close();
  }
 

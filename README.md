@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.29.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.30.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -641,9 +641,9 @@ el tauler mostri el text de les preguntes.
 ## 9. Tauler d'administració
 
 El tauler és a https://bonanota.net/admin/ i demana el correu i la contrasenya d'admin. Serveix per veure què fan els nens, cuidar-ne l'ús i gestionar-los.
-Gairebé totes les xifres arriben ja calculades del servidor, amb funcions de `supabase/bn_admin_*.sql`. El xat té la seva pestanya (vegeu l'apartat 6).
+S'organitza en **5 seccions principals** (`Inici`, `Nens`, `Mons`, `Sessions` i `Rànquing`, amb barra inferior fixa al mòbil) més l'accés **⚙ Configuració** (`Horaris i crèdits`, `Catàleg del xat`, `Llindars` i `Còpies`) a la barra superior, i carrega les funcions de `supabase/bn_admin_*.sql` **sota demanda** segons la pantalla oberta.
 
-A la barra superior hi ha el selector de període (`Avui`, `7 dies`, `30 dies`, `Tot`), el filtre d'assignatura (`#fAssig`) i el cercador/filtre de nen (`#fNen`). El desplegable `#fNen` mostra sempre **tots els nens** que existeixen a la base de dades (`bn_admin_ids`, que uneix `bn_priv.perfils` i `public.bn_log` a `supabase/bn_ids_i_punts.sql`), encara que no tinguin activitat en el període triat o que tinguin 0 registres. El registre (`bn_admin_logs`) es carrega paginat en blocs de 1.000 files (`?limit=1000&offset=…`) fins a cobrir tot el període seleccionat, de manera que el límit de 1.000 files per resposta de PostgREST no deixa cap nen fora.
+A la barra superior hi ha només el selector global de període (`Avui`, `7 dies`, `30 dies`, `Curs`, ocult a `Configuració`), actualitzar, tema clar/fosc i `Configuració`; els filtres d'assignatura (`#fAssig`) i de nen (`#fNen`) apareixen localment a cada sub-vista que els admet. El desplegable `#fNen` mostra sempre **tots els nens** que existeixen a la base de dades (`bn_admin_ids`, que uneix `bn_priv.perfils` i `public.bn_log` a `supabase/bn_ids_i_punts.sql`), encara que no tinguin activitat en el període triat o que tinguin 0 registres. El registre (`bn_admin_logs`) es carrega sota demanda paginat en blocs de 1.000 files (`?limit=1000&offset=…`) fins a cobrir tot el període seleccionat, de manera que el límit de 1.000 files per resposta de PostgREST no deixa cap nen fora.
 
 ### 🎛️ Control ràpid: xat, horari i mons
 

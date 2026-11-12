@@ -100,53 +100,70 @@ input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:var
 .cerca input{border:0;box-shadow:none!important;padding:7px 0;min-height:34px;flex:1;min-width:0;background:transparent}
 .cerca .ic{color:var(--soft)}
 /* ---- targetes i graella ---- */
-.graella{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.graella{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
 .c-12{grid-column:span 12}.c-8{grid-column:span 8}.c-6{grid-column:span 6}.c-4{grid-column:span 4}
 @media (max-width:1099px){.c-8,.c-6,.c-4{grid-column:span 12}}
-.targeta{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh1);padding:16px 20px;min-width:0}
-.targeta>h2,.seccio-t{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:15.5px;font-weight:600}
-.targeta>h2 .ic{color:var(--soft)}
-.targeta .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+.targeta{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh1);padding:14px 16px;min-width:0}
+.targeta-cap{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.targeta-cap-t{display:inline-flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap}
+.targeta>h2,.targeta-cap>h2,.targeta-cap-t>h2,.seccio-t{display:inline-flex;align-items:center;gap:7px;margin:0;font-size:15px;font-weight:600}
+.targeta>h2{margin-bottom:8px}
+.targeta>h2 .ic,.targeta-cap>h2 .ic,.targeta-cap-t>h2 .ic{color:var(--soft)}
+.targeta .sub{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+.btn-ajuda{all:unset;box-sizing:border-box;cursor:pointer;display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;border:1px solid var(--border2);background:var(--card2);color:var(--muted);font-size:11.5px;font-weight:700;font-style:italic;font-family:Georgia,serif;line-height:1;flex:none}
+.btn-ajuda:hover,.btn-ajuda[aria-expanded="true"]{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+.btn-ajuda:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.ajuda-box{margin:0 0 12px;padding:8px 12px;border-radius:var(--r1);background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:12.5px;line-height:1.45}
 .seccio{scroll-margin-top:96px}
-.grup{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:20px 0 8px}
-.grup:first-of-type{margin-top:8px}
-.eines-t{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.grup{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 8px}
+.grup:first-of-type{margin-top:6px}
+.eines-t{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
 .eines-t .esp{flex:1}
-/* xifres clau */
-.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-@media (min-width:1200px){.kpis{grid-template-columns:repeat(5,minmax(0,1fr))}}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh1);padding:14px 16px;display:flex;flex-direction:column;gap:3px;min-width:0}
-.kpi-t{font-size:12.5px;font-weight:500;color:var(--muted)}
-.kpi-v{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
-.kpi-p{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:22px}
-.kpi-s{font-size:12.5px;color:var(--muted)}
+/* xifres clau (màx 6 a Inici, màx 4 a la resta; sense subtítols) */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.kpis.kpis-6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.kpis.kpis-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1199px){.kpis.kpis-6{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:900px){.kpis.kpis-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh1);padding:11px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi-t{font-size:12px;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi-v{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2;font-variant-numeric:tabular-nums}
+.kpi-p{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:20px;margin-top:2px}
+.kpi-s{font-size:12px;color:var(--muted)}
 .kpi.avis{border-color:var(--warn)}
 .kpi.avis .kpi-v{color:var(--warn)}
-.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:600;line-height:1.6;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:600;line-height:1.55;white-space:nowrap}
 .pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.warn{background:var(--warn-bg);color:var(--warn)}
 .pill.info{background:var(--info-bg);color:var(--info)}.pill.neutre{background:var(--card2);color:var(--muted);border:1px solid var(--border)}
-.vs{font-size:12px;color:var(--muted)}
-.xip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;background:var(--card2);border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.pill-mon{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:600;line-height:1.55;white-space:nowrap;background:var(--mb,var(--card2));color:var(--mt,var(--text));border:1px solid var(--mbd,var(--border))}
+.pill-mon i{width:7px;height:7px;border-radius:50%;background:var(--mc,#64748b);flex:none}
+.vs{font-size:11.5px;color:var(--muted)}
+.xip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:600;background:var(--card2);border:1px solid var(--border);color:var(--muted);white-space:nowrap}
 .xa{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .xa i{width:8px;height:8px;border-radius:50%;flex:none}
-.pc{font-weight:600}.pc.ok{color:var(--ok)}.pc.warn{color:var(--warn)}.pc.bad{color:var(--bad)}
+.pc{font-weight:600;font-variant-numeric:tabular-nums}.pc.ok{color:var(--ok)}.pc.warn{color:var(--warn)}.pc.bad{color:var(--bad)}
 /* etiquetes per tipus d'esdeveniment */
-.ev{display:inline-flex;align-items:center;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600;white-space:nowrap}
+.ev{display:inline-flex;align-items:center;border-radius:6px;padding:1px 7px;font-size:11.5px;font-weight:600;white-space:nowrap}
 .ev-entra{background:#e0e7ff;color:#3730a3}.ev-fitxa{background:#e0f2fe;color:#075985}.ev-targetes{background:#cffafe;color:#155e75}
 .ev-test{background:#ede9fe;color:#5b21b6}.ev-joc{background:#fce7f3;color:#9d174d}.ev-examen{background:#fee2e2;color:#991b1b}
 .ev-oberta{background:#ffedd5;color:#9a3412}.ev-valora{background:#dcfce7;color:#166534}.ev-temps{background:#f1f5f9;color:#334155}
 [data-tema="fosc"] .ev-entra{background:#1e1b4b;color:#c7d2fe}[data-tema="fosc"] .ev-fitxa{background:#082f49;color:#bae6fd}[data-tema="fosc"] .ev-targetes{background:#083344;color:#a5f3fc}
 [data-tema="fosc"] .ev-test{background:#2e1065;color:#ddd6fe}[data-tema="fosc"] .ev-joc{background:#500724;color:#fbcfe8}[data-tema="fosc"] .ev-examen{background:#450a0a;color:#fecaca}
 [data-tema="fosc"] .ev-oberta{background:#431407;color:#fed7aa}[data-tema="fosc"] .ev-valora{background:#052e16;color:#bbf7d0}[data-tema="fosc"] .ev-temps{background:#1e293b;color:#cbd5e1}
-/* taules: es desplacen de costat dins de la targeta; capçalera enganxada */
+/* taules compactes (~36 px d'alçada de fila, màx 8 cols, cerca local i CSV) */
+.tb-bloc{display:flex;flex-direction:column;gap:8px;min-width:0}
+.tb-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.tb-bar .cerca{min-height:32px;max-width:260px;min-width:140px;padding:0 8px}
+.tb-bar .cerca input{min-height:30px;padding:4px 0;font-size:12.5px}
+.tb-bar .tb-meta{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
 .taula-w{overflow:auto;border:1px solid var(--border);border-radius:var(--r1);background:var(--card)}
-.taula-w.alta{max-height:max(420px,calc(100vh - 230px))}
-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
-th{position:sticky;top:0;z-index:1;background:var(--card2);color:var(--muted);font-weight:600;font-size:12px;text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
-td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.taula-w.alta{max-height:max(380px,calc(100vh - 240px))}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;font-variant-numeric:tabular-nums}
+th{position:sticky;top:0;z-index:1;background:var(--card2);color:var(--muted);font-weight:600;font-size:11.5px;text-align:left;padding:7px 10px;height:32px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:5px 10px;height:36px;border-bottom:1px solid var(--border);vertical-align:middle}
 td.num,td.nw{white-space:nowrap}
 tbody tr:last-child td{border-bottom:0}
-th.num,td.num{text-align:right}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
 td.cur{max-width:520px}
 th button.ord{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:inherit}
 th button.ord:hover{color:var(--text)}
@@ -214,6 +231,11 @@ dialog::backdrop{background:rgba(15,23,42,.55)}
 .perfil h2{font-size:22px;margin:0;font-weight:700}
 .xips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .pestanyes{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:24px 0 16px;overflow-x:auto}
+.pestanyes.compacta{margin:0 0 14px}
+.filtres-loc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+.cp-det{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 16px}
+.cp-det div{padding:8px 10px;border-radius:var(--r1);background:var(--card2);border:1px solid var(--border);font-size:12.5px}
+.cp-det b{display:block;font-size:15px;margin-top:2px;font-variant-numeric:tabular-nums}
 .pestanyes button{all:unset;cursor:pointer;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
 .pestanyes button:hover{color:var(--text)}
 .pestanyes button[aria-selected="true"]{color:var(--primary);border-bottom-color:var(--primary)}
@@ -472,42 +494,55 @@ td.xtx{min-width:190px}
 .pw input{padding-right:44px}
 .pw .btn-ic{position:absolute;right:2px;top:50%;transform:translateY(-50%)}
 .login .err{color:var(--bad);font-weight:600;font-size:13px;min-height:20px;margin:12px 0}
-/* mòbil: barra de dalt amb botó de menú */
-.mobil-barra{display:none}
-.velo{display:none}
+/* panell lateral superposat (drawer) */
+.panell-velo{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:120}
+.panell{position:fixed;top:0;right:0;bottom:0;width:min(460px,100vw);background:var(--card);border-left:1px solid var(--border);box-shadow:var(--sh2);z-index:125;display:flex;flex-direction:column;overflow:hidden;animation:entraP .18s ease}
+@keyframes entraP{from{transform:translateX(24px);opacity:0}}
+.panell-cap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--card2);flex:none}
+.panell-cap h2{margin:0;font-size:16px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panell-cos{padding:16px 18px 24px;overflow-y:auto;flex:1;min-height:0}
+/* barra fixa inferior mòbil (5 entrades principals) i engranatge superior */
+.nav-inf{display:none}
+.btn-ic[aria-current="page"]{background:var(--primary-soft);color:var(--primary)}
+.cap-acc{display:inline-flex;align-items:center;gap:4px}
+.nom-mobil{display:none}
 /* ---- responsiu ---- */
 @media (max-width:1199px){
  :root{--menu:68px}
  .menu .ll,.logo-t,.menu-peu small{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
- .menu .sub{display:none}
  .logo{justify-content:center;padding:18px 0 14px}
  .nav-b{justify-content:center;padding:10px 0}
 }
 @media (max-width:767px){
  :root{--menu:0px}
- .menu{width:280px;transform:translateX(-102%);transition:transform .2s ease;box-shadow:var(--sh2)}
- body.menu-obert .menu{transform:none}
- .menu .ll,.logo-t,.menu-peu small{position:static!important;width:auto;height:auto;overflow:visible;clip:auto}
- .menu .sub{display:flex}
- .logo{justify-content:flex-start;padding:18px 18px 14px}
- .nav-b{justify-content:flex-start;padding:9px 12px}
- .mobil-barra{display:flex;position:sticky;top:var(--dalt);z-index:45;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border-bottom:1px solid var(--border);font-weight:700}
- .mobil-barra .logo-m{width:26px;height:26px}
- body.menu-obert .velo{display:block;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:49}
- .cap{position:static;padding:14px 16px}
- .cap h1{width:100%;font-size:18px}
- .filtres-g{width:100%}
- .filtres-g select{flex:1;min-width:0}
- .seg{width:100%}.seg button{flex:1;text-align:center;padding:6px 4px}
- main{padding:16px}
- .targeta{padding:14px 14px}
- .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
- .kpi-v{font-size:24px}
- .fest{grid-template-columns:minmax(110px,150px) minmax(40px,1fr) 44px}
+ .menu{display:none}
+ .principal{margin-left:0;padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}
+ .nom-mobil{display:inline-grid}
+ .cap{position:sticky;top:var(--dalt);padding:10px 12px;gap:8px}
+ .cap h1{font-size:17px;margin-right:auto}
+ .act small{display:none}
+ #refresca span{display:none}
+ #refresca{padding:7px 9px}
+ .filtres-g{width:100%;order:3}
+ .seg{width:100%}.seg button{flex:1;text-align:center;padding:5px 4px;font-size:12.5px}
+ .tb-bar .cerca{max-width:none;flex:1 1 160px}
+ main{padding:12px}
+ .targeta{padding:12px}
+ .kpis,.kpis.kpis-6,.kpis.kpis-4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .kpi{padding:10px 12px}
+ .kpi-v{font-size:21px}
+ .fest{grid-template-columns:minmax(100px,140px) minmax(40px,1fr) 42px}
  .cst{grid-template-columns:minmax(90px,120px) minmax(40px,1fr)}
  .cst .r{grid-column:1/-1}
  .pz-fila>div:last-child{width:100%}.pz-fila .btn{width:100%}.nodemo{text-align:left}
  .calor{min-width:0;grid-template-columns:22px repeat(24,minmax(0,1fr));gap:2px}.calor .h3{visibility:hidden}
+ .nav-inf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);border-top:1px solid var(--border);padding:4px 2px calc(4px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 10px rgba(15,23,42,.06)}
+ .nav-inf button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 2px;border-radius:var(--r1);color:var(--muted);font-size:11px;font-weight:600;line-height:1.15;min-width:0;text-align:center}
+ .nav-inf button .ic{width:18px;height:18px}
+ .nav-inf button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .nav-inf button[aria-current="page"]{color:var(--primary);background:var(--primary-soft)}
+ .nav-inf button:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+ .toasts{bottom:76px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -523,27 +558,36 @@ td.xtx{min-width:190px}
   <div class="logo" id="logoMenu"></div>
   <nav id="nav" aria-label="Pantalles"></nav>
   <div class="menu-peu">
-   <button class="nav-b" id="tema" type="button"></button>
    <a class="nav-b" href="../" title="Torna a la portada de Bona Nota"><span id="icInici"></span><span class="ll">Portada</span></a>
    <button class="nav-b" id="surt" type="button" title="Surt"><span id="icSurt"></span><span class="ll">Surt</span></button>
    <small id="vadm"></small>
   </div>
  </aside>
- <div class="velo" id="velo"></div>
  <div class="principal">
-  <div class="mobil-barra"><button class="btn-ic" id="obreMenu" type="button" aria-label="Obre el menú" aria-expanded="false" aria-controls="menu"></button><span id="logoMobil"></span></div>
   <header class="cap">
-   <h1 id="titol">Tauler</h1>
-   <div class="filtres-g" role="group" aria-label="Filtres">
+   <h1 id="titol">Inici</h1>
+   <div class="filtres-g" id="periodeWrap" role="group" aria-label="Període">
     <div class="seg" id="periode" role="group" aria-label="Període"></div>
-    <label class="sr" for="fAssig">Assignatura</label><select id="fAssig"></select>
-    <label class="sr" for="fNen">Nen</label><select id="fNen"></select>
    </div>
-   <div class="act"><button class="btn sec" id="refresca" type="button"></button><small id="actualitzat" aria-live="polite"></small></div>
+   <div class="act">
+    <small id="actualitzat" aria-live="polite"></small>
+    <button class="btn sec petit" id="refresca" type="button"></button>
+    <div class="cap-acc">
+     <button class="btn-ic" id="tema" type="button"></button>
+     <button class="btn-ic" id="btConfig" type="button" data-v="config" aria-label="Configuració" title="Configuració"></button>
+     <button class="btn-ic nom-mobil" id="surtMobil" type="button" aria-label="Surt" title="Surt"></button>
+    </div>
+   </div>
   </header>
   <main id="contingut" tabindex="-1"></main>
  </div>
+ <nav class="nav-inf" id="navInf" aria-label="Menú principal mòbil"></nav>
 </div>
+<div class="panell-velo" id="panellVelo" hidden></div>
+<aside class="panell" id="panell" role="dialog" aria-modal="true" aria-labelledby="panellTitol" hidden>
+ <div class="panell-cap"><h2 id="panellTitol"></h2><button class="btn-ic" id="panellTanca" type="button" aria-label="Tanca el panell"></button></div>
+ <div class="panell-cos" id="panellCos"></div>
+</aside>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 <dialog id="dlg" aria-labelledby="dlgT"></dialog>
 <div id="errG" class="avis err" role="alert"></div>
@@ -551,7 +595,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.29.0";
+const VERSIO_ADMIN="2.30.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -560,13 +604,14 @@ const API="https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/bn_admin_logs",K
 const ASSIGS={socials:"Socials (clima)",biogeo:"Bio i Geo",castellano:"Castellano",comarques:"Comarques",divisibilitat:"Mates (divisibilitat)",catala:"Català (tema 2)",angles:"Anglès (tema 2)"};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let CRED=null,LOGS=[],VISTA="tauler",FITXA=null,FILTRE={q:"",assig:"",event:""},FS={q:"",assig:"",event:""},FN={q:""},DIES=7,ACT=null,ESTATS={};
+let CRED=null,LOGS=[],LOGS_DIES=null,LOGS_PROM=null,VISTA="inici",ELEM=null,TAB=null,FITXA=null,FILTRE={q:"",assig:"",event:""},FS={q:"",assig:"",event:""},FN={q:""},DIES=7,ACT=null,ESTATS={};
 try{CRED=JSON.parse(sessionStorage.getItem("bn_admin")||"null")}catch(e){}
 if(DEMO)CRED={e:"demo",p:""};
 
 // ====================== ICONES (SVG de línia, estil Lucide, escrites aquí) ======================
 const IC={
  tauler:'<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+ config:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>',
  nens:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
  sessions:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
  log:'<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>',
@@ -628,11 +673,13 @@ const LOGO=`<svg class="logo-m" viewBox="0 0 32 32" aria-hidden="true"><rect wid
 // ====================== TEMA CLAR / FOSC ======================
 let TEMA="clar";try{TEMA=localStorage.getItem("bn_admin_tema")||(matchMedia("(prefers-color-scheme:dark)").matches?"fosc":"clar")}catch(e){}
 function aplicaTema(){document.documentElement.dataset.tema=TEMA==="fosc"?"fosc":"";if(TEMA!=="fosc")document.documentElement.removeAttribute("data-tema");
- const b=$("#tema");if(b){const f=TEMA==="fosc";b.innerHTML=`${ic(f?"sol":"lluna")}<span class="ll">${f?"Tema clar":"Tema fosc"}</span>`;b.title=f?"Canvia al tema clar":"Canvia al tema fosc";b.setAttribute("aria-label",b.title)}}
+ const b=$("#tema");if(b){const f=TEMA==="fosc";b.innerHTML=ic(f?"sol":"lluna");b.title=f?"Canvia al tema clar":"Canvia al tema fosc";b.setAttribute("aria-label",b.title)}}
 aplicaTema();
 
-// ====================== FORMATS ======================
+// ====================== FORMATS, PÍNDOLES I UTILITATS COMPARTIDES ======================
 const fmtT=s=>{s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
+const fmtM=m=>m==null?"—":m>=60?`${Math.floor(m/60)} h ${Math.round(m%60)} min`:`${Math.round(m)} min`;
+const pcVal=v=>v==null?"—":v+"%";
 const DS=["dg","dl","dt","dc","dj","dv","ds"],MS=["gen","febr","març","abr","maig","juny","jul","ag","set","oct","nov","des"];
 const dataC=ts=>{const d=new Date(ts);return `${DS[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]} · ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`};
 const dataH=dataC;
@@ -643,9 +690,50 @@ const fmtD=v=>String(v).replace(".",","),pl=(n,u,m)=>`${n} ${n===1?u:m}`;
 const cpc=pc=>`<span class="pc ${pc>=80?"ok":pc>=50?"warn":"bad"}">${pc}%</span>`;
 const clauNen=l=>l.nom.trim().toLowerCase();
 const nomAssig=a=>ASSIGS[a]||a;
-const colAssig=a=>{try{if(typeof BN_MON!=="undefined"&&BN_MON[a])return bnMat(BN_MON[a].mat).color}catch(e){}return "#94a3b8"};
-const xipAssig=a=>`<span class="xa"><i style="background:${colAssig(a)}"></i>${esc(nomAssig(a))}</span>`;
+// Píndoles d'estat unificades en 3 nivells semàfor: bé, avís, malament
+const ESTAT_SEM={be:["ok","bé"],ok:["ok","bé"],verd:["ok","bé"],avis:["warn","avís"],warn:["warn","avís"],groc:["warn","avís"],malament:["bad","malament"],bad:["bad","malament"],vermell:["bad","malament"]};
+const pillEstat=(niv,tt)=>{const [c,t]=ESTAT_SEM[niv]||["neutre",String(niv||"—")];return `<span class="pill ${c}"${tt?` title="${esc(tt)}"`:""}>${esc(t)}</span>`};
+// Color fix per a cada món / matèria (clar i fosc)
+const COL_MON={
+ angles:["#2563eb","#eff6ff","#1e40af","#bfdbfe","#60a5fa","#0c1d3a","#bfdbfe","#1e3a6e"],
+ biogeo:["#16a34a","#f0fdf4","#166534","#bbf7d0","#4ade80","#052e1a","#bbf7d0","#14532d"],
+ castellano:["#dc2626","#fef2f2","#991b1b","#fecaca","#f87171","#3b0d0d","#fecaca","#7f1d1d"],
+ catala:["#d97706","#fffbeb","#92400e","#fde68a","#fbbf24","#3a2905","#fde68a","#78350f"],
+ divisibilitat:["#7c3aed","#f5f3ff","#5b21b6","#ddd6fe","#c084fc","#2e1065","#ddd6fe","#4c1d95"],
+ socials:["#0891b2","#ecfeff","#155e75","#a5f3fc","#22d3ee","#083344","#a5f3fc","#155e75"],
+ comarques:["#0d9488","#f0fdfa","#115e59","#99f6e4","#2dd4bf","#042f2e","#99f6e4","#115e59"]
+};
+const colAssig=a=>{const p=COL_MON[a];if(p)return p[TEMA==="fosc"?4:0];try{if(typeof BN_MON!=="undefined"&&BN_MON[a])return bnMat(BN_MON[a].mat).color}catch(e){}return "#64748b"};
+function pillMon(a){const p=COL_MON[a],f=TEMA==="fosc",mc=p?p[f?4:0]:colAssig(a),mb=p?p[f?5:1]:"var(--card2)",mt=p?p[f?6:2]:"var(--text)",mbd=p?p[f?7:3]:"var(--border)";
+ return `<span class="pill-mon" data-mon="${esc(a||"")}" style="--mc:${mc};--mb:${mb};--mt:${mt};--mbd:${mbd}"><i></i>${esc(nomAssig(a))}</span>`}
+const xipAssig=pillMon;
 const xipEv=e=>`<span class="ev ev-${esc(e)}">${esc(e)}</span>`;
+function deltaKpi(ara,abans,k){if(!abans||abans[k]==null||!ara||ara[k]==null)return "";const x=ara[k]-abans[k];
+ if(!x)return `<span class="pill neutre">= igual</span>`;const up=x>0;
+ return `<span class="pill ${up?"ok":"bad"}">${up?"▲":"▼"} ${fmtD(Math.abs(Math.round(x*10)/10))}</span>`}
+// Fila de xifres clau sense subtítols (màx 6 a Inici, màx 4 a la resta)
+function filaKpis(items,max=4){const L=(items||[]).slice(0,max),cls=max>=6?" kpis-6":" kpis-4";
+ return `<div class="kpis${cls}">${L.map(x=>`<div class="kpi${x.cls?" "+x.cls:""}"><div class="kpi-t">${x.t}</div><div class="kpi-v">${x.v??"—"}</div>${x.p?`<div class="kpi-p">${x.p}</div>`:""}</div>`).join("")}</div>`}
+// Ajudes plegables (icona «i») i constructor de targeta compacta
+let AJUDA_SEQ=0;
+function ajuda(txt,id){if(!txt)return {bt:"",box:""};const aid=id||("aj-"+(++AJUDA_SEQ));
+ return {bt:`<button type="button" class="btn-ajuda" aria-expanded="false" aria-controls="${esc(aid)}" aria-label="Informació sobre l'apartat" title="Més informació">i</button>`,
+  box:`<div class="ajuda-box" id="${esc(aid)}" hidden>${txt}</div>`}}
+function card(id,col,icona,titol,ajudaTxt,cos,extra=""){const a=ajuda(ajudaTxt,id+"-aj");
+ return `<section class="targeta seccio${col?" "+col:""}" id="${esc(id)}" aria-labelledby="${esc(id)}-t"><div class="targeta-cap"><div class="targeta-cap-t"><h2 id="${esc(id)}-t">${ic(icona)}<span>${titol}</span></h2>${a.bt}</div>${extra||""}</div>${a.box}${cos}</section>`}
+document.addEventListener("click",e=>{const b=e.target.closest(".btn-ajuda");if(!b)return;const box=document.getElementById(b.getAttribute("aria-controls"));if(!box)return;
+ const o=box.hidden;box.hidden=!o;b.setAttribute("aria-expanded",String(o))});
+// Panell lateral superposat (drawer)
+let PANELL_RET=null,PANELL_TANCAR=null;
+function obrePanell({titol,cos,onClose}){PANELL_RET=document.activeElement;PANELL_TANCAR=onClose||null;
+ $("#panellTitol").textContent=titol||"Detall";$("#panellCos").innerHTML=cos||"";$("#panellTanca").innerHTML=ic("x");
+ $("#panellVelo").hidden=false;$("#panell").hidden=false;
+ const f=$("#panellCos input,#panellCos select,#panellCos button")||$("#panellTanca");if(f)f.focus()}
+function tancaPanell(){if($("#panell").hidden)return;$("#panell").hidden=true;$("#panellVelo").hidden=true;$("#panellCos").innerHTML="";
+ const cb=PANELL_TANCAR;PANELL_TANCAR=null;if(cb)try{cb()}catch(e){}
+ if(PANELL_RET&&typeof PANELL_RET.focus==="function"&&document.contains(PANELL_RET))PANELL_RET.focus();PANELL_RET=null}
+document.addEventListener("click",e=>{if(e.target.id==="panellVelo"||e.target.closest("#panellTanca"))tancaPanell()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#panell").hidden&&!($("#dlg")&&$("#dlg").open)){e.preventDefault();tancaPanell()}});
 // avatar: el mateix animal i el mateix color que al rànquing (sprites.js; si no s'ha pogut carregar, un cercle amb la inicial).
 // Si el nen ha triat aspecte a /perfil/ (ASPECTES, de bn_aspectes()), surt el seu animal i la seva insígnia.
 let ASPECTES={};
@@ -665,17 +753,17 @@ const avisSQL=(fitxer,txt)=>`<div class="avis">${ic("info")}<div><p>${esc(txt)}<
 const avisErr=txt=>`<div class="avis err">${ic("alerta")}<div><p>${esc(txt)}</p></div></div>`;
 document.addEventListener("click",e=>{const b=e.target.closest("[data-copia]");if(!b)return;const t=b.dataset.copia;
  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Copiat: "+t)).catch(()=>toast("No s'ha pogut copiar. Selecciona'l a mà.","avis"))});
-const esqKpis=n=>`<div class="kpis">${Array(n).fill('<div class="esq esq-kpi"></div>').join("")}</div>`;
-const esqTauler=()=>`<div class="esq esq-t"></div>${esqKpis(3)}<div class="esq esq-t"></div>${esqKpis(5)}<div class="graella" style="margin-top:24px"><div class="esq esq-g c-6"></div><div class="esq esq-g c-6"></div></div>`;
-const esqTaula=()=>`<div class="targeta"><div class="esq esq-t" style="width:240px;margin-top:0"></div>${Array(8).fill('<div class="esq esq-f"></div>').join("")}</div>`;
+const esqKpis=n=>`<div class="kpis ${n>=6?"kpis-6":"kpis-4"}">${Array(n).fill('<div class="esq esq-kpi"></div>').join("")}</div>`;
+const esqTauler=()=>`${esqKpis(6)}<div class="graella" style="margin-top:14px"><div class="esq esq-g c-12" style="height:170px"></div><div class="esq esq-g c-6" style="height:220px"></div><div class="esq esq-g c-6" style="height:220px"></div></div>`;
+const esqTaula=()=>`<div class="targeta"><div class="esq esq-t" style="width:200px;margin-top:0"></div>${Array(6).fill('<div class="esq esq-f"></div>').join("")}</div>`;
 // diàleg de confirmació: diu exactament què passarà; torna una promesa (true = confirmat)
 function dialeg({titol,cos,ok="Confirma",perill=true,icona="alerta",irreversible=false}){const d=$("#dlg");
  d.innerHTML=`<form method="dialog"><div class="dlg-c"><h2 id="dlgT">${ic(icona)}${esc(titol)}</h2>${cos}${irreversible?`<p class="irreversible">${ic("alerta")}No es pot desfer.</p>`:""}</div>
   <div class="dlg-p"><button class="btn sec" value="no" type="submit" id="dlgNo">Cancel·la</button><button class="btn ${perill?"perill":""}" value="si" type="submit" id="dlgOk">${esc(ok)}</button></div></form>`;
  return new Promise(res=>{d.onclose=()=>res(d.returnValue==="si");d.returnValue="";d.showModal();const f=d.querySelector("input,select");(f||d.querySelector(perill?"#dlgNo":"#dlgOk")).focus()})}
 
-// ====================== LOGIN ======================
-function login(msg){$("#shell").hidden=true;const w=$("#loginWrap");w.hidden=false;
+// ====================== LOGIN I CÀRREGA SOTA DEMANDA ======================
+function login(msg){$("#shell").hidden=true;tancaPanell();const w=$("#loginWrap");w.hidden=false;
  w.innerHTML=`<main class="login-fons"><form class="login" id="fl" novalidate><div class="logo">${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span></div>
   <h1>Entra al panell</h1><p class="muted">Només per a l'administrador de Bona Nota.</p>
   <label for="em">Correu</label><input type="email" id="em" autocomplete="username" required>
@@ -693,76 +781,140 @@ function login(msg){$("#shell").hidden=true;const w=$("#loginWrap");w.hidden=fal
 }
 let IDS={},NOMS_TOTS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN">sense PIN</span>`;
 function mostraApp(){$("#loginWrap").hidden=true;$("#loginWrap").innerHTML="";$("#shell").hidden=false;document.body.classList.toggle("demo",DEMO);$("#demoBar").hidden=!DEMO}
-async function carrega(){
- ESTATS={};NUV=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;
- if(!$("#shell").hidden&&VISTA!=="tauler")$("#contingut").innerHTML=esqTaula();
- await carregaRegles();
- if(DEMO){await preguntes();demoInit();LOGS=demoLogsDies(DIES);IDS=demoIds();NOMS_TOTS=demoNoms();mostraApp();ACT=new Date();pinta();return true}
- try{const cosL=JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:DIES});
+// Carrega bn_admin_logs només quan una vista/pestanya en necessita les files crues
+async function asseguraLogs(){
+ if(DEMO){await preguntes();demoInit();if(LOGS_DIES!==DIES){LOGS=demoLogsDies(DIES);LOGS_DIES=DIES}return LOGS}
+ if(LOGS_DIES===DIES)return LOGS;
+ if(LOGS_PROM&&LOGS_PROM.d===DIES)return LOGS_PROM.p;
+ const d=DIES,cosL=JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:d});
+ const p=(async()=>{
   const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
+  if(!r.ok)throw r.status;
+  const L=await r.json();
+  while(Array.isArray(L)&&L.length>0&&L.length%1000===0&&L.length<20000){
+   try{const rp=await fetch(`${API}?limit=1000&offset=${L.length}`,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
+    if(!rp.ok)break;const pag=await rp.json();if(!Array.isArray(pag)||!pag.length||pag[0].id===L[0].id)break;L.push(...pag);if(pag.length<1000)break}catch(e){break}}
+  LOGS=Array.isArray(L)?L:[];LOGS_DIES=d;return LOGS;
+ })();
+ LOGS_PROM={d,p};p.catch(()=>{if(LOGS_PROM&&LOGS_PROM.p===p)LOGS_PROM=null});return p;
+}
+function netejaCaches(){ESTATS={};NUV=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+async function carrega(){
+ netejaCaches();
+ await carregaRegles();
+ if(DEMO){await preguntes();demoInit();IDS=demoIds();NOMS_TOTS=demoNoms();LOGS=[];mostraApp();ACT=new Date();await pinta();return true}
+ try{
+  const r=await fetch(`${API}?limit=1`,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:1})});
   if(!r.ok){CRED=null;sessionStorage.removeItem("bn_admin");login(r.status===404?"El panell encara no està activat a la base de dades.":"Correu o contrasenya incorrectes.");return false}
-  LOGS=await r.json();
-  // PostgREST retalla RETURNS SETOF bn_log a 1.000 files per crida: si n'hi ha 1.000, es demanen les pàgines següents (fins a 20.000)
-  while(Array.isArray(LOGS)&&LOGS.length>0&&LOGS.length%1000===0&&LOGS.length<20000){
-   try{const rp=await fetch(`${API}?limit=1000&offset=${LOGS.length}`,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:cosL});
-    if(!rp.ok)break;const pag=await rp.json();if(!Array.isArray(pag)||!pag.length||pag[0].id===LOGS[0].id)break;LOGS.push(...pag);if(pag.length<1000)break}catch(e){break}}
-  await carregaAspectes();try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});IDS={};NOMS_TOTS={};
-   if(ri.ok)(await ri.json()).forEach(x=>{if(!x||!x.k)return;if(x.id!=null)IDS[x.k]=x.id;if(x.nom&&x.k!=="_alta")NOMS_TOTS[x.k]=String(x.nom).trim()})}catch(e){}
-  mostraApp();ACT=new Date();pinta();return true;
+  await r.json().catch(()=>null);
+  await Promise.all([carregaAspectes(),(async()=>{try{const ri=await fetch(API.replace("bn_admin_logs","bn_admin_ids"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});IDS={};NOMS_TOTS={};
+   if(ri.ok)(await ri.json()).forEach(x=>{if(!x||!x.k)return;if(x.id!=null)IDS[x.k]=x.id;if(x.nom&&x.k!=="_alta")NOMS_TOTS[x.k]=String(x.nom).trim()})}catch(e){}})()]);
+  mostraApp();ACT=new Date();await pinta();return true;
  }catch(e){login("No hi ha connexió. Torna-ho a provar.");return false}
 }
 
-// ====================== MENÚ, CAPÇALERA I FILTRES ======================
-const MENU=[["tauler","Tauler"],["nens","Nens"],["sessions","Sessions"],["log","Log complet"],["xat","Xat"],["copies","Còpies de seguretat"]];
-const SECCIONS=[["control","Control i horari"],["resum","Resum"],["alertes","Alertes"],["benestar","Benestar"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["combos","Combos i repàs"],["pendents","Errors pendents de la colla"],["obertes","Obertes"],["domini","Domini"],["fallades","Fallades"],["dificultat","Dificultat real"],["taller","Taller de mates"]];
-const PERIODES=[[1,"Avui"],[7,"7 dies"],[30,"30 dies"],[365,"Curs"]];
+// ====================== MENÚ, GESTOR D'ADREÇA WEB I CAPÇALERA ======================
+const MENU=[["inici","Inici","inici"],["nens","Nens","nens"],["mons","Mons","llibre"],["sessions","Sessions","sessions"],["ranquing","Rànquing","trofeu"]];
+const VISTES_OK=new Set(["inici","nens","mons","sessions","ranquing","config"]);
+const PERIODES=[[1,"Avui","avui"],[7,"7 dies","7d"],[30,"30 dies","30d"],[365,"Curs","curs"]];
+const DIES_DE_P={avui:1,"7d":7,"30d":30,curs:365};
+const P_DE_DIES={1:"avui",7:"7d",30:"30d",365:"curs"};
+const TABS_DEF={nens:"llista",mons:"domini",sessions:"sessions",ranquing:"classificacio",config:"horaris"};
+function llegeixUrl(){
+ const sp=new URLSearchParams(location.search);
+ const p=sp.get("p");if(p&&DIES_DE_P[p])DIES=DIES_DE_P[p];
+ let v=(sp.get("v")||"").trim().toLowerCase(),id=(sp.get("id")||"").trim()||null,tab=(sp.get("tab")||"").trim().toLowerCase()||null;
+ if(v==="fitxa"&&id){v="nens"}
+ if(!VISTES_OK.has(v))v="inici";
+ VISTA=v;ELEM=id;FITXA=v==="nens"&&id?id:null;TAB=tab||TABS_DEF[v]||null;
+}
+function escriuUrl(push){
+ const sp=new URLSearchParams();if(DEMO)sp.set("demo","1");
+ if(VISTA&&VISTA!=="inici")sp.set("v",VISTA);
+ if(ELEM&&(VISTA==="nens"||VISTA==="mons"))sp.set("id",ELEM);
+ const defT=TABS_DEF[VISTA]||null;
+ if(TAB&&TAB!==defT&&!ELEM)sp.set("tab",TAB);
+ else if(TAB&&ELEM&&TAB!=="tb-resum")sp.set("tab",TAB);
+ if(DIES!==7&&VISTA!=="config")sp.set("p",P_DE_DIES[DIES]||"7d");
+ const qs=sp.toString(),url=location.pathname+(qs?"?"+qs:"");
+ if(url!==location.pathname+location.search){try{history[push?"pushState":"replaceState"](null,"",url)}catch(e){}}
+}
+function navega(v,o={}){
+ if(!VISTES_OK.has(v))v="inici";
+ const canviSeccio=v!==VISTA;
+ if(canviSeccio){TF.assig="";TF.nom=""}
+ tancaPanell();
+ VISTA=v;ELEM=o.id||null;FITXA=v==="nens"&&ELEM?ELEM:null;
+ TAB=o.tab||(ELEM?null:TABS_DEF[v]||null);
+ escriuUrl(o.push!==false);
+ return pinta().then(()=>{if(o.scroll!==false)scrollTo(0,0)});
+}
+function obreFitxaNen(k){if(!k)return;return navega("nens",{id:String(k).trim().toLowerCase()})}
 function muntaShell(){
- $("#logoMenu").innerHTML=`${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span>`;$("#logoMobil").outerHTML=`<span style="display:inline-flex;align-items:center;gap:8px">${LOGO}Bona Nota · Admin</span>`;
- $("#nav").innerHTML=MENU.map(([v,t])=>`<button class="nav-b" type="button" data-v="${v}" title="${t}">${ic(v)}<span class="ll">${t}</span></button>${v==="tauler"?`<div class="sub" aria-label="Apartats del tauler">${SECCIONS.map(([s,ts])=>`<button type="button" data-sec="${s}">${ts}</button>`).join("")}</div>`:""}`).join("");
- $("#icInici").outerHTML=ic("inici");$("#icSurt").outerHTML=ic("surt");$("#obreMenu").innerHTML=ic("menu");
+ llegeixUrl();
+ $("#logoMenu").innerHTML=`${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span>`;
+ $("#nav").innerHTML=MENU.map(([v,t,icn])=>`<button class="nav-b" type="button" data-v="${v}" title="${t}">${ic(icn)}<span class="ll">${t}</span></button>`).join("");
+ $("#navInf").innerHTML=MENU.map(([v,t,icn])=>`<button type="button" data-v="${v}">${ic(icn)}<span>${t}</span></button>`).join("");
+ $("#icInici").outerHTML=ic("inici");$("#icSurt").outerHTML=ic("surt");
  $("#refresca").innerHTML=`${ic("actualitza")}<span>Actualitza</span>`;
+ $("#btConfig").innerHTML=ic("config");$("#surtMobil").innerHTML=ic("surt");
  $("#periode").innerHTML=PERIODES.map(([d,t])=>`<button type="button" data-d="${d}" aria-pressed="${d===DIES}">${t}</button>`).join("");
- $("#vadm").textContent="versió "+VERSIO_ADMIN;aplicaTema();
- $("#nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;tancaMenu();
-  if(b.dataset.v){VISTA=b.dataset.v;FITXA=null;pinta();$("#contingut").focus({preventScroll:true});scrollTo(0,0)}
-  else if(b.dataset.sec){const vés=()=>{const s=document.getElementById(b.dataset.sec);if(s)s.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})};
-   if(VISTA!=="tauler"){VISTA="tauler";FITXA=null;pinta().then(vés)}else vés()}};
- $("#periode").onclick=e=>{const b=e.target.closest("button");if(!b||+b.dataset.d===DIES)return;DIES=+b.dataset.d;$$("#periode button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.d===DIES));carrega()};
- $("#fAssig").onchange=e=>{TF.assig=e.target.value;pinta()};$("#fNen").onchange=e=>{TF.nom=e.target.value;pinta()};
+ $("#vadm").textContent="versió "+VERSIO_ADMIN;aplicaTema();escriuUrl(false);
+ const clicNav=e=>{const b=e.target.closest("button[data-v]");if(!b)return;navega(b.dataset.v);$("#contingut").focus({preventScroll:true})};
+ $("#nav").onclick=clicNav;$("#navInf").onclick=clicNav;
+ $("#btConfig").onclick=()=>{navega("config");$("#contingut").focus({preventScroll:true})};
+ $("#periode").onclick=e=>{const b=e.target.closest("button");if(!b||+b.dataset.d===DIES)return;DIES=+b.dataset.d;
+  $$("#periode button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.d===DIES));
+  ALTES=null;BEN=null;FDIA=null;LOGS_DIES=null;LOGS_PROM=null;escriuUrl(true);pinta()};
  $("#refresca").onclick=()=>carrega();
  $("#tema").onclick=()=>{TEMA=TEMA==="fosc"?"clar":"fosc";try{localStorage.setItem("bn_admin_tema",TEMA)}catch(e){}aplicaTema();pinta()};
- $("#surt").onclick=()=>{if(DEMO){location.href="./";return}CRED=null;LOGS=[];sessionStorage.removeItem("bn_admin");login()};
- $("#obreMenu").onclick=()=>{const o=!document.body.classList.contains("menu-obert");document.body.classList.toggle("menu-obert",o);$("#obreMenu").setAttribute("aria-expanded",o);if(o){const f=$("#nav button");if(f)f.focus()}};
- $("#velo").onclick=tancaMenu;
- document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.body.classList.contains("menu-obert")){tancaMenu();$("#obreMenu").focus()}});
+ const surt=()=>{if(DEMO){location.href="./";return}CRED=null;LOGS=[];LOGS_DIES=null;sessionStorage.removeItem("bn_admin");login()};
+ $("#surt").onclick=surt;$("#surtMobil").onclick=surt;
+ window.addEventListener("popstate",()=>{llegeixUrl();tancaPanell();pinta()});
 }
-function tancaMenu(){document.body.classList.remove("menu-obert");const b=$("#obreMenu");if(b)b.setAttribute("aria-expanded","false")}
-function marcaMenu(){const v=VISTA==="fitxa"?"nens":VISTA;$$("#nav .nav-b").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")})}
+function marcaMenu(){
+ const v=VISTA==="fitxa"?"nens":VISTA;
+ $$("#nav .nav-b,#navInf button").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+ const bc=$("#btConfig");if(bc){if(v==="config")bc.setAttribute("aria-current","page");else bc.removeAttribute("aria-current")}
+ const pw=$("#periodeWrap");if(pw)pw.hidden=v==="config";
+ $$("#periode button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.d===DIES));
+ $("#actualitzat").textContent=ACT?`Actualitzat a les ${hora(ACT)}`:"";
+}
 function nomsTots(){const m=new Map();
  Object.entries(NOMS_TOTS).forEach(([k,n])=>{if(k&&k!=="_alta"&&n)m.set(k,n)});
  LOGS.forEach(l=>{const k=clauNen(l);if(k&&k!=="_alta"&&l.nom)m.set(k,l.nom)});
  return [...m.values()].sort((a,b)=>a.localeCompare(b,"ca"))}
-function pintaFiltres(){
- const as=[...new Set([...Object.keys(ASSIGS),...LOGS.map(l=>l.assig)])].filter(Boolean);
- const noms=nomsTots();
- $("#fAssig").innerHTML=`<option value="">Totes les assignatures</option>${as.map(a=>`<option value="${esc(a)}" ${TF.assig===a?"selected":""}>${esc(nomAssig(a))}</option>`).join("")}`;
- $("#fNen").innerHTML=`<option value="">Tots els nens</option>${noms.map(n=>`<option ${TF.nom.toLowerCase()===n.toLowerCase()?"selected":""}>${esc(n)}</option>`).join("")}`;
- $("#actualitzat").textContent=ACT?`Actualitzat a les ${hora(ACT)}`:""}
-// registres amb els filtres globals (assignatura i nen) per a Nens, Sessions i Log
+function barraFiltresLocals({assig=true,nen=true}={}){
+ const as=[...new Set([...Object.keys(ASSIGS),...LOGS.map(l=>l.assig)])].filter(Boolean),noms=nomsTots();
+ return `<div class="filtres-loc" role="group" aria-label="Filtres locals">${assig?`<label class="sr" for="fAssig">Món</label><select id="fAssig"><option value="">Tots els mons</option>${as.map(a=>`<option value="${esc(a)}" ${TF.assig===a?"selected":""}>${esc(nomAssig(a))}</option>`).join("")}</select>`:""}${nen?`<label class="sr" for="fNen">Nen</label><select id="fNen"><option value="">Tots els nens</option>${noms.map(n=>`<option ${TF.nom.toLowerCase()===n.toLowerCase()?"selected":""}>${esc(n)}</option>`).join("")}</select>`:""}${(TF.assig||TF.nom)?`<button class="btn sec petit" type="button" id="fNeteja">Neteja filtres</button>`:""}</div>`}
+function lligaFiltresLocals(rerender){
+ const fa=$("#fAssig"),fn=$("#fNen"),bt=$("#fNeteja");
+ if(fa)fa.onchange=e=>{TF.assig=e.target.value;FDIA=null;REPP=null;DIFR=null;rerender()};
+ if(fn)fn.onchange=e=>{TF.nom=e.target.value;BEN=null;FDIA=null;rerender()};
+ if(bt)bt.onclick=()=>{TF.assig="";TF.nom="";BEN=null;FDIA=null;REPP=null;DIFR=null;rerender()};
+}
+function htmlPestanyes(llista,actual,label="Apartats"){
+ return `<div class="pestanyes compacta" role="tablist" aria-label="${esc(label)}">${llista.map(([id,tit])=>`<button role="tab" type="button" data-vtab="${esc(id)}" aria-selected="${id===actual}" tabindex="${id===actual?0:-1}">${esc(tit)}</button>`).join("")}</div>`}
+function lligaPestanyes(el,llista){if(!el)return;const bs=[...el.querySelectorAll("[data-vtab]")];
+ bs.forEach((b,i)=>{b.onclick=()=>navega(VISTA,{tab:b.dataset.vtab,scroll:false});
+  b.onkeydown=e=>{const m={ArrowRight:1,ArrowLeft:-1}[e.key];if(m){e.preventDefault();const nx=bs[(i+m+bs.length)%bs.length];nx.focus();navega(VISTA,{tab:nx.dataset.vtab,scroll:false})}}})}
 const LF=()=>LOGS.filter(l=>(!TF.assig||l.assig===TF.assig)&&(!TF.nom||clauNen(l)===TF.nom.trim().toLowerCase()));
 
-function pinta(){
- marcaMenu();pintaFiltres();
- $("#titol").textContent={tauler:"Tauler",nens:"Nens",sessions:"Sessions",log:"Log complet",fitxa:"Fitxa del nen",copies:"Còpies de seguretat",xat:"Xat de la colla"}[VISTA]||"Tauler";
- if(VISTA==="tauler")return pintaTauler();
+async function pinta(){
+ GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
+ marcaMenu();
+ const titols={inici:"Inici",nens:ELEM?"Fitxa del nen":"Nens",mons:"Mons",sessions:"Sessions",ranquing:"Rànquing",config:"Configuració",fitxa:"Fitxa del nen"};
+ $("#titol").textContent=titols[VISTA]||"Inici";
  const c=$("#contingut");
- if(VISTA==="fitxa"&&FITXA){detall(FITXA,true);return Promise.resolve()}
- if(VISTA==="copies"){vistaCopies(c);return Promise.resolve()}
- if(VISTA==="xat"){vistaXat(c);return Promise.resolve()}
- // a «Nens», les altes surten encara que no hi hagi registres (un nen pot tenir perfil i no haver jugat)
- if(!LOGS.length){c.innerHTML=`<div class="pila">${VISTA==="nens"?cartaAltes():""}<div class="targeta">${buit("safata","Encara no hi ha cap registre en aquest període.","Prova amb un període més llarg (30 dies o Curs).")}</div></div>`;if(VISTA==="nens")pintaAltes();return Promise.resolve()}
- if(VISTA==="nens")vistaNens(c);else if(VISTA==="sessions")vistaSessions(c);else vistaLog(c);
- return Promise.resolve()}
+ if(VISTA==="inici")return vistaInici(c);
+ if(VISTA==="config")return vistaConfig(c);
+ if((VISTA==="nens"&&ELEM)||(VISTA==="fitxa"&&FITXA)){const k=ELEM||FITXA;c.innerHTML=esqTaula();try{await asseguraLogs()}catch(e){}detall(k,true);return}
+ if(VISTA==="nens")return vistaNensSeccio(c);
+ if(VISTA==="mons")return vistaMonsSeccio(c);
+ if(VISTA==="sessions")return vistaSessionsSeccio(c);
+ if(VISTA==="ranquing")return vistaRanquingSeccio(c);
+ return vistaInici(c);
+}
 
 // ====================== DADES DELS NENS (a partir del registre) ======================
 // l'examen de mates (eines/exercicis-mates.js) registra «nota» sobre 10 en lloc de «pc»
@@ -808,46 +960,69 @@ function estatDe(nom){const k=nom.trim().toLowerCase();if(!(k in ESTATS))ESTATS[
 const txtPin=v=>v==null?"—":v&2?(v&4?"PIN nou":"PIN antic"):"Sense PIN";
 const pillPin=v=>v==null?`<span class="muted">…</span>`:v&2?(v&4?`<span class="pill ok">${ic("escut")}PIN nou</span>`:`<span class="pill warn" title="Encara té el PIN antic de 4 números: se li demanarà canviar-lo quan entri">PIN antic</span>`):`<span class="pill neutre">Sense PIN</span>`;
 
-// ====================== TAULES ORDENABLES ======================
+// ====================== COMPONENT ÚNIC DE TAULA (màx 8 columnes, ~36 px, ordenació, cerca local i CSV) ======================
 const TAULES={};
-function taula(id,cols,rows,o={}){TAULES[id]={cols,rows,k:o.k||(cols.find(c=>c.ord!==false)||{}).k,desc:o.desc!==false,fila:o.fila,etiqueta:o.etiqueta||""};
- return `<div class="taula-w${o.alta?" alta":""}" id="${esc(id)}" role="region" aria-label="${esc(o.etiqueta||"Taula")}" tabindex="0">${taulaHTML(id)}</div>`}
-function taulaHTML(id){const T=TAULES[id],c=T.cols.find(x=>x.k===T.k),rs=[...T.rows];
+const netTxt=s=>String(s??"").replace(/<[^>]+>/g," ").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\s+/g," ").trim();
+function taula(id,cols,rows,o={}){
+ const prev=TAULES[id],cs=(cols||[]).slice(0,8);
+ TAULES[id]={cols:cs,rows:rows||[],k:o.k||(cs.find(c=>c.ord!==false)||{}).k,desc:o.desc!==false,q:prev&&o.manteQ?prev.q:"",fila:o.fila,etiqueta:o.etiqueta||"Taula",alta:!!o.alta,eines:o.eines!==false,csvNom:o.csvNom||id};
+ const T=TAULES[id],rs=taulaFiles(T);
+ const bar=T.eines?`<div class="tb-bar"><label class="cerca">${ic("cerca")}<span class="sr">Cerca a ${esc(T.etiqueta)}</span><input type="search" class="tb-q" data-tq="${esc(id)}" placeholder="Filtra…" value="${esc(T.q)}"></label><span class="tb-meta"><span class="tb-cnt">${pl(rs.length,"fila","files")}</span><button class="btn sec petit" type="button" data-tcsv="${esc(id)}">${ic("baixar")}CSV</button></span></div>`:"";
+ return `<div class="tb-bloc" id="${esc(id)}" data-taula="${esc(id)}">${bar}<div class="taula-w${T.alta?" alta":""}" role="region" aria-label="${esc(T.etiqueta)}" tabindex="0">${taulaHTML(id,rs)}</div></div>`;
+}
+function taulaTextFila(T,r){return T.cols.map(c=>c.q?c.q(r):c.h?netTxt(c.h(r)):String(r[c.k]??"")).join(" ").toLowerCase()}
+function taulaFiles(T){
+ const q=(T.q||"").trim().toLowerCase();
+ const rs=q?T.rows.filter(r=>taulaTextFila(T,r).includes(q)):[...T.rows];
+ const c=T.cols.find(x=>x.k===T.k);
  if(c){const v=r=>c.v?c.v(r):r[c.k];rs.sort((a,b)=>{const x=v(a),y=v(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;const r=(typeof x==="number"&&typeof y==="number")?x-y:String(x).localeCompare(String(y),"ca",{numeric:true});return T.desc?-r:r})}
+ return rs;
+}
+function taulaHTML(id,rs0){const T=TAULES[id],rs=rs0||taulaFiles(T);
+ if(!rs.length)return buit("cerca","Cap fila coincideix amb el filtre.");
  return `<table><thead><tr>${T.cols.map(x=>x.ord===false?`<th scope="col" class="${x.num?"num":""}">${x.t}</th>`
   :`<th scope="col" class="${x.num?"num":""}" aria-sort="${x.k===T.k?(T.desc?"descending":"ascending"):"none"}"><button type="button" class="ord" data-k="${x.k}">${x.t}${ic(x.k===T.k?(T.desc?"avall":"amunt"):"ordena")}</button></th>`).join("")}</tr></thead>
   <tbody>${rs.map(r=>`<tr${T.fila?T.fila(r):""}>${T.cols.map(x=>`<td class="${x.num?"num":""}${x.cls?" "+x.cls:""}">${x.h?x.h(r):esc(r[x.k]??"")}</td>`).join("")}</tr>`).join("")}</tbody></table>`}
-document.addEventListener("click",e=>{const b=e.target.closest("th button.ord");if(!b)return;const w=b.closest(".taula-w"),T=TAULES[w.id];if(!T)return;const k=b.dataset.k;
- if(T.k===k)T.desc=!T.desc;else{T.k=k;T.desc=!!(T.cols.find(c=>c.k===k)||{}).num}w.innerHTML=taulaHTML(w.id);const nb=w.querySelector(`th button[data-k="${k}"]`);if(nb)nb.focus()});
+function refrescaTaula(id){const bl=document.getElementById(id),T=TAULES[id];if(!bl||!T)return;const rs=taulaFiles(T),w=bl.querySelector(".taula-w")||bl,cnt=bl.querySelector(".tb-cnt");
+ w.innerHTML=taulaHTML(id,rs);if(cnt)cnt.textContent=pl(rs.length,"fila","files")}
+document.addEventListener("click",e=>{
+ const b=e.target.closest("th button.ord");
+ if(b){const bl=b.closest("[data-taula]")||b.closest(".taula-w"),id=bl&&bl.id,T=id&&TAULES[id];if(!T)return;const k=b.dataset.k;
+  if(T.k===k)T.desc=!T.desc;else{T.k=k;T.desc=!!(T.cols.find(c=>c.k===k)||{}).num}refrescaTaula(id);const nb=bl.querySelector(`th button[data-k="${k}"]`);if(nb)nb.focus();return}
+ const csv=e.target.closest("button[data-tcsv]");
+ if(csv){const id=csv.dataset.tcsv,T=TAULES[id];if(!T)return;const rs=taulaFiles(T);
+  const cap=T.cols.map(c=>netTxt(c.t)||c.k);
+  const cos=rs.map(r=>T.cols.map(c=>c.csv?c.csv(r):c.h?netTxt(c.h(r)):r[c.k]??""));
+  baixaCSV(T.csvNom,[cap,...cos]);return}
+});
+document.addEventListener("input",e=>{const inp=e.target.closest("input.tb-q[data-tq]");if(!inp)return;const id=inp.dataset.tq,T=TAULES[id];if(!T)return;T.q=inp.value;refrescaTaula(id)});
 // files que obren la fitxa del nen (clic o Retorn)
-document.addEventListener("click",e=>{const tr=e.target.closest("tr.clic[data-nen]");if(tr&&!e.target.closest("button,a"))detall(tr.dataset.nen)});
-document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const tr=e.target.closest&&e.target.closest("tr.clic[data-nen]");if(tr&&e.target===tr)detall(tr.dataset.nen)});
-document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-nen]");if(b){e.preventDefault();detall(b.dataset.obreNen)}});
+document.addEventListener("click",e=>{const tr=e.target.closest("tr.clic[data-nen]");if(tr&&!e.target.closest("button,a,input,select"))obreFitxaNen(tr.dataset.nen)});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const tr=e.target.closest&&e.target.closest("tr.clic[data-nen]");if(tr&&e.target===tr)obreFitxaNen(tr.dataset.nen)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-nen]");if(b){e.preventDefault();obreFitxaNen(b.dataset.obreNen)}});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-go-cfg]");if(b){e.preventDefault();navega("config",{tab:b.dataset.goCfg})}});
 const mini=(v,max,cls,et)=>`<span class="mini"><span>${et??v}</span><span class="b"><i class="${cls||""}" style="width:${Math.max(2,Math.min(100,Math.round(100*(+v||0)/Math.max(1,max))))}%"></i></span></span>`;
 
 // ====================== NENS ======================
-// targeta del començament de «Nens»: d'on surten les estrelles de tothom i quantes estrelles per minut dona cada activitat
 function cartaOrigens(ls){const {fonts,ritme}=resumFonts(ls),tot=Object.values(fonts).reduce((a,b)=>a+b,0);if(!tot)return "";
  const mx=Math.max(1,...Object.values(fonts)),pc=v=>String(Math.round(v*1000/tot)/10).replace(".",",");
  const files=FONTS_EST.filter(([k])=>fonts[k]).map(([k,icn,nom])=>`<div class="fest"><span>${ic(icn)}${nom} <span class="muted">${pc(fonts[k])} %</span></span><div class="bfe"><i style="width:${Math.round(fonts[k]*100/mx)}%"></i></div><b>${fonts[k]}</b></div>`).join("");
  const NOMS=[["test","Tests"],["joc","Jocs"],["examen","Exàmens"],["oberta","Obertes"]];
  const rit=NOMS.map(([k,n])=>{const r=ritme[k],v=r&&r.s>=120?(r.est*60/r.s).toFixed(1).replace(".",","):"—";return `<span class="pill neutre">${n}: <b>${v}</b> ⭐/min</span>`}).join(" ");
- return `<div class="targeta" id="origens"><h2>${ic("estrella")}Estrelles per origen (tots els nens)</h2><p class="sub">${tot} estrelles amb origen conegut · el màxim de cada nen i món</p>${files}<p class="sub" style="margin-top:10px">Estrelles per minut: ${rit}</p></div>`}
+ return card("origens","","estrella","Estrelles per origen (tots els nens)",`${tot} estrelles amb origen conegut (màxim per nen i món).`,`${files}<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">${rit}</div>`)}
 function vistaNens(c){const N=nens(LF());
- c.innerHTML=`<div class="pila">${cartaAltes()}${cartaOrigens(LF())}<div class="targeta"><div class="eines-t"><label class="cerca">${ic("cerca")}<span class="sr">Cerca un nen</span><input id="qn" type="search" placeholder="Cerca un nen…" value="${esc(FN.q)}"></label><span class="esp"></span><span class="muted" id="nN"></span></div><div id="tNens"></div></div></div>`;
- const files=()=>{const q=FN.q.trim().toLowerCase();return N.filter(n=>!q||n.nom.toLowerCase().includes(q))};
- const rows=()=>files().map(n=>{const e=ESTATS[n.k+"#v"],vals=Object.values(n.punts),est=vals.reduce((a,b)=>a+b,0),estMax=vals.length?Math.max(0,...vals):0;return {k:n.k,nom:n.nom,ult:n.ult,temps:n.temps,est,estMax,nota:mitj(n.tests),tests:n.tests.length,pin:e===undefined?null:e,assigs:[...n.assigs]}});
+ c.innerHTML=`<div class="pila">${cartaAltes()}${cartaOrigens(LF())}<div class="targeta"><div id="tNensWrap"></div></div></div>`;
+ const rows=()=>N.map(n=>{const e=ESTATS[n.k+"#v"],vals=Object.values(n.punts),est=vals.reduce((a,b)=>a+b,0),estMax=vals.length?Math.max(0,...vals):0;return {k:n.k,nom:n.nom,ult:n.ult,temps:n.temps,est,estMax,nota:mitj(n.tests),tests:n.tests.length,pin:e===undefined?null:e,assigs:[...n.assigs]}});
  const cols=[{k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom)}<span>${esc(r.nom)}</span></button>${idDe(r.k)}</span>`},
-  {k:"ult",t:"Últim dia",cls:"nw",h:r=>diaC(r.ult)},{k:"temps",t:"Temps",num:true,h:r=>fmtT(r.temps)},{k:"est",t:"Estrelles",num:true,h:r=>`${r.est}`},
-  {k:"niv",t:"Nivell",num:true,cls:"nw",v:r=>r.estMax,h:r=>pillNivell(r.estMax)},
+  {k:"ult",t:"Últim dia",cls:"nw",h:r=>diaC(r.ult)},{k:"temps",t:"Temps",num:true,h:r=>fmtT(r.temps)},
+  {k:"est",t:"Estrelles · Nivell",num:true,cls:"nw",v:r=>r.est,h:r=>`<b>${r.est}</b> ⭐ ${pillNivell(r.estMax)}`},
   {k:"nota",t:"Nota mitjana",num:true,h:r=>r.nota==null?`<span class="muted">—</span>`:`${cpc(r.nota)} <span class="muted">(${r.tests})</span>`},
   {k:"pin",t:"PIN",v:r=>r.pin==null?null:r.pin&6,h:r=>pillPin(r.pin)},{k:"amagat",t:"Al rànquing",v:r=>r.pin==null?null:r.pin&1,h:r=>r.pin==null?`<span class="muted">…</span>`:r.pin&1?`<span class="pill warn">${ic("ullno")}Amagat</span>`:`<span class="pill neutre">Visible</span>`},
-  {k:"assigs",t:"Assignatures",ord:false,h:r=>r.assigs.map(xipAssig).join(" · ")}];
- const pintaT=()=>{const prev=TAULES.tNens;const rs=rows();$("#nN").textContent=`${rs.length} ${rs.length===1?"nen":"nens"}`;
-  $("#tNens").innerHTML=rs.length?taula("tNens",cols,rs,{k:prev?prev.k:"ult",desc:prev?prev.desc:true,etiqueta:"Llista de nens",fila:r=>` class="clic" data-nen="${esc(r.k)}" tabindex="0"`}):buit("cerca","Cap nen coincideix amb la cerca.")};
- $("#qn").oninput=e=>{FN.q=e.target.value;pintaT()};pintaT();pintaAltes();
- // estat del PIN i si està amagat: es demana per a cada nen i s'omple quan arriba
- N.forEach(n=>estatDe(n.nom).then(v=>{ESTATS[n.k+"#v"]=v;if(VISTA==="nens"&&$("#tNens"))pintaT()}));
+  {k:"assigs",t:"Assignatures",ord:false,h:r=>r.assigs.map(xipAssig).join(" ")}];
+ const pintaT=()=>{const prev=TAULES.tNens;const rs=rows(),w=$("#tNensWrap");if(!w)return;
+  w.innerHTML=rs.length?taula("tNens",cols,rs,{k:prev?prev.k:"ult",desc:prev?prev.desc:true,manteQ:true,etiqueta:"Llista de nens",csvNom:"bona-nota-nens",fila:r=>` class="clic" data-nen="${esc(r.k)}" tabindex="0"`}):buit("cerca","Cap nen en aquest període.")};
+ pintaT();pintaAltes();
+ N.forEach(n=>estatDe(n.nom).then(v=>{ESTATS[n.k+"#v"]=v;if(VISTA==="nens"&&$("#tNensWrap"))pintaT()}));
 }
 
 // ====================== FITXA DEL NEN ======================
@@ -862,10 +1037,12 @@ function blocSessions(ls){const g={};ls.forEach(l=>(g[l.sessio]=g[l.sessio]||[])
  return ss.map(a=>{const t=a.filter(l=>l.event==="temps").reduce((s,l)=>s+(l.detall.s||0),0);
   return `<div class="ses"><h3>${xipAssig(a[0].assig)}<small>${dataC(a[0].ts)} → ${hora(a[a.length-1].ts)} · ${fmtT(t)} · ${a.length} accions</small></h3>
   ${a.map(l=>`<div class="lin"><time>${hora(l.ts)}</time><span>${xipEv(l.event)} ${descriu(l)}</span></div>`).join("")}</div>`}).join("")}
-// manté: es torna a pintar la mateixa fitxa (tema, filtres) i es queda a la mateixa pestanya
 let PEST=null;
-function detall(k,manté){const n=nens(LOGS).find(x=>x.k===k);if(!n){VISTA="nens";FITXA=null;pinta();return}
- VISTA="fitxa";FITXA=k;marcaMenu();pintaFiltres();$("#titol").textContent="Fitxa del nen";
+function detall(k,manté){k=String(k||"").trim().toLowerCase();
+ let n=nens(LOGS).find(x=>x.k===k);
+ if(!n&&NOMS_TOTS[k])n={k,nom:NOMS_TOTS[k],assigs:new Set(),ses:new Set(),ap:new Set(),ult:null,temps:0,tests:[],jocs:0,exam:[],punts:{},fonts:{}};
+ if(!n){VISTA="nens";ELEM=null;FITXA=null;escriuUrl(false);pinta();return}
+ VISTA="nens";ELEM=k;FITXA=k;escriuUrl(false);marcaMenu();$("#titol").textContent="Fitxa del nen";
  const ls=LOGS.filter(l=>clauNen(l)===k),vals=Object.values(n.punts),est=vals.reduce((a,b)=>a+b,0),estMax=vals.length?Math.max(0,...vals):0,nv=nivellDe(estMax),c=$("#contingut");
  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
@@ -878,7 +1055,7 @@ function detall(k,manté){const n=nens(LOGS).find(x=>x.k===k);if(!n){VISTA="nens
   <button role="tab" type="button" id="tb-ses" aria-controls="tp-ses" aria-selected="false" tabindex="-1">Sessions</button>
   <button role="tab" type="button" id="tb-nuv" aria-controls="tp-nuv" aria-selected="false" tabindex="-1">Al núvol</button></div>
  <section role="tabpanel" id="tp-resum" aria-labelledby="tb-resum"><div class="kpis">${kp("Estrelles",est,[...n.assigs].map(a=>n.punts[a]!=null?`${esc(nomAssig(a))}: ${n.punts[a]}`:"").filter(Boolean).join(" · "))}${kp("Nivell",`${esc(nv.ic)} ${nv.n} · ${esc(nv.nom)}`,nv.seg!=null?`falten ${nv.falten} ⭐ per a ${esc(nv.segNom)}`:`nivell màxim (${estMax} ⭐)`)}${kp("Temps d'estudi",fmtT(n.temps))}${kp("Sessions",n.ses.size)}
-  ${kp("Tests",n.tests.length,n.tests.length?`nota mitjana ${mitj(n.tests)}%`:"")}${kp("Jocs",n.jocs)}${kp("Millor examen",n.exam.length?Math.max(...n.exam)+"%":"—",n.exam.length?pl(n.exam.length,"examen","exàmens"):"")}${kp("Dispositius",n.ap.size)}${kp("Última vegada",diaC(n.ult),hora(n.ult))}</div>
+  ${kp("Tests",n.tests.length,n.tests.length?`nota mitjana ${mitj(n.tests)}%`:"")}${kp("Jocs",n.jocs)}${kp("Millor examen",n.exam.length?Math.max(...n.exam)+"%":"—",n.exam.length?pl(n.exam.length,"examen","exàmens"):"")}${kp("Dispositius",n.ap.size)}${kp("Última vegada",n.ult?diaC(n.ult):"—",n.ult?hora(n.ult):"")}</div>
   <div class="targeta" style="margin-top:16px"><h2>${ic("llibre")}Assignatures</h2><p class="sub">On ha estudiat en aquest període</p>${[...n.assigs].map(a=>`<div class="fest"><span>${xipAssig(a)} ${n.punts[a]!=null?pillNivell(n.punts[a]):""}</span><div class="bfe"><i style="width:${Math.round(100*ls.filter(l=>l.assig===a).length/Math.max(1,ls.length))}%;background:${colAssig(a)}"></i></div><b>${ls.filter(l=>l.assig===a).length}</b></div>`).join("")}<p class="sub" style="margin:8px 0 0">Nombre d'accions registrades a cada assignatura.</p></div></section>
  <section role="tabpanel" id="tp-est" aria-labelledby="tb-est" hidden><div class="targeta"><h2>${ic("estrella")}D'on surten les estrelles</h2><p class="sub">Per assignatura, segons el que ha fet</p>${blocEstrelles(n)}</div></section>
  <section role="tabpanel" id="tp-ses" aria-labelledby="tb-ses" hidden><div class="targeta"><h2>${ic("sessions")}Sessions</h2><p class="sub">Cada sessió amb tot el que ha fet, de la més nova a la més antiga</p>${blocSessions(ls)}</div></section>
@@ -890,13 +1067,12 @@ function detall(k,manté){const n=nens(LOGS).find(x=>x.k===k);if(!n){VISTA="nens
   <div class="pz-fila"><div><b>Esborrar el progrés</b><p>Esborra les estrelles, els tests, els jocs i el temps d'un món o de tots. El nen es queda amb el nom i el PIN.</p></div><div><button class="btn perill-sec" type="button" id="reinicia"${nd}>${ic("reinicia")}Esborra el progrés</button>${ndTxt}</div></div>
   <div class="pz-fila"><div><b>Esborrar el nen del tot</b><p>Treu el nen sencer: registre d'activitat, PIN i progrés de tots els mons.</p></div><div><button class="btn perill" type="button" id="esborra"${nd}>${ic("paperera")}Esborra el nen</button>${ndTxt}</div></div>
   <div id="gest" aria-live="polite"></div></section>`;
- $("#torna").onclick=()=>{VISTA="nens";FITXA=null;pinta()};
- // pestanyes accessibles (fletxes del teclat)
- // «Al núvol» crida bn_admin_fitxa només quan s'obre (i en guarda la resposta mentre la fitxa és oberta)
- const tabs=$$(".pestanyes [role=tab]"),obre=(t,focus)=>{tabs.forEach(x=>{const s=x===t;x.setAttribute("aria-selected",s);x.tabIndex=s?0:-1;$("#"+x.getAttribute("aria-controls")).hidden=!s});
-  PEST={k,id:t.id};if(focus!==false)t.focus();if(t.id==="tb-nuv")pintaNuvol(n)};
+ $("#torna").onclick=()=>navega("nens");
+ const tabs=$$("#contingut .pestanyes [role=tab]"),obre=(t,focus)=>{tabs.forEach(x=>{const s=x===t;x.setAttribute("aria-selected",s);x.tabIndex=s?0:-1;$("#"+x.getAttribute("aria-controls")).hidden=!s});
+  PEST={k,id:t.id};TAB=t.id;escriuUrl(false);if(focus!==false)t.focus();if(t.id==="tb-nuv")pintaNuvol(n)};
  tabs.forEach((t,i)=>{t.onclick=()=>obre(t);t.onkeydown=e=>{const m={ArrowRight:1,ArrowLeft:-1}[e.key];if(m){e.preventDefault();obre(tabs[(i+m+tabs.length)%tabs.length])}else if(e.key==="Home"){e.preventDefault();obre(tabs[0])}else if(e.key==="End"){e.preventDefault();obre(tabs[tabs.length-1])}}});
- if(manté&&PEST&&PEST.k===k&&PEST.id!=="tb-resum"){const t=$("#"+PEST.id);if(t)obre(t,false)}else PEST={k,id:"tb-resum"};
+ const tabIni=(TAB&&TAB.startsWith("tb-")?TAB:(manté&&PEST&&PEST.k===k?PEST.id:"tb-resum"));
+ if(tabIni!=="tb-resum"){const t=$("#"+tabIni);if(t)obre(t,false)}else PEST={k,id:"tb-resum"};
  estatDe(n.nom).then(v=>{if(FITXA!==k||v==null)return;
   if(v&1){$("#amaga").innerHTML=`${ic("ull")}<span>Torna'l a mostrar al rànquing</span>`;$("#amaga").dataset.a="mostra";$("#amagaTxt").textContent="Ara està amagat: no surt al rànquing de la portada."}
   else $("#amagaTxt").textContent="Ara surt al rànquing de la portada.";
@@ -1010,29 +1186,51 @@ function monNuvol(m,a,i,PL){
  const meta=`Desat ${ts&&ts>0?esc(dataC(ts)):"—"} · ${punts} ⭐ · ${dies!=null?pl(dies,"dia","dies"):"— dies"} d'estudi${rein&&rein>0?` · reiniciat ${esc(diaC(rein))}`:""}`;
  return PL.bloc(a,meta,`${pillNivell(punts)}<span class="pill neutre">${ic("estrella")}${punts}</span>`,
   `<span class="dm-bar" aria-hidden="true"><i style="width:${pcA_}%;background:var(--ok)"></i></span><small><span><b>${ap}/${tot}</b> temes aprovats</span><span>${repN?pl(repN,"error","errors")+" per repassar":"res per repassar"}</span></small>`,cos)}
-// ---- «Nens nous» (bn_admin_altes): a dalt de la vista Nens, amb el període de la capçalera ----
-const cartaAltes=()=>`<section class="targeta" id="altes" aria-labelledby="altesT"><h2 id="altesT">${ic("usuari")}Nens nous</h2><p class="sub" id="altesSub">Altes ${esc({avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[PERIODE[DIES]]||"")}: la data d'alta és la primera vegada que el veiem: el primer registre o el dia que va crear el perfil amb el PIN, el que sigui abans.</p><div id="altesCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div></section>`;
+// ---- «Nens nous» (bn_admin_altes): bloc compacte per a Inici i Nens ----
+const cartaAltes=(col="")=>{const titolP={avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[PERIODE[DIES]||"7d"]||"";
+ return card("altes",col,"usuari","Nens nous","La data d'alta és el primer registre o el dia que va crear el perfil amb PIN, el que sigui abans.",`<div id="altesCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`,`<span class="pill neutre" id="altesSub">${esc(titolP)}</span>`)};
 function altesDe(p){if(!ALTES||ALTES.p!==p)ALTES={p,prom:rpcF("bn_admin_altes",{p_periode:p})};return ALTES.prom}
 async function pintaAltes(){const p=PERIODE[DIES]||"7d";if(!$("#altesCos"))return;let L;
  const viu=()=>{const e=$("#altesCos");return e&&(PERIODE[DIES]||"7d")===p?e:null};
+ const sub=$("#altesSub");if(sub)sub.textContent={avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[p]||"";
  try{L=await altesDe(p)}catch(e){if(ALTES&&ALTES.p===p)ALTES=null;const el=viu();if(!el)return;el.removeAttribute("aria-busy");
   el.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_fitxa.sql","Les altes encara no estan activades a la base de dades. La resta de la pantalla funciona igual."):avisErr(`No s'han pogut carregar les altes (${e&&e.message||e}).`);return}
  const el=viu();if(!el)return;el.removeAttribute("aria-busy");
- try{const k0=TF.nom.trim().toLowerCase(),amb=new Set(LOGS.map(clauNen));
-  const rows=aR(L).filter(r=>r&&typeof r==="object"&&r.k!=null).map(r=>{const k=String(r.k);return {k,nom:String(r.nom??r.k),alta:nN(r.alta),primer:nN(r.primer),pin:nN(r.pin_ts),asp:nN(r.aspecte_ts),id:nN(r.id),
-   mons:nN(r.mons)||0,punts:nN(r.punts)||0,dies7:nN(r.dies7)||0,amagat:r.amagat===true,tePin:r.te_pin===true,hi:amb.has(k)}}).filter(r=>!k0||r.k===k0);
+ try{const k0=(VISTA==="inici"?"":TF.nom.trim().toLowerCase());
+  const hi=LOGS_DIES===DIES?new Set(LOGS.map(clauNen)):null;
+  const rows=aR(L).filter(r=>r&&typeof r==="object"&&r.k!=null).map(r=>{const k=String(r.k).trim().toLowerCase(),nom=String(r.nom??r.k);if(k&&k!=="_alta"&&!NOMS_TOTS[k])NOMS_TOTS[k]=nom;
+   const primer=nN(r.primer),teFitxa=hi?hi.has(k):primer!=null;
+   return {k,nom,alta:nN(r.alta),primer,teFitxa,pin:nN(r.pin_ts),id:nN(r.id),mons:nN(r.mons)||0,punts:nN(r.punts)||0,dies7:nN(r.dies7)||0,amagat:r.amagat===true,tePin:r.te_pin===true}}).filter(r=>!k0||r.k===k0);
   if(!rows.length){el.innerHTML=buit("usuari",k0?"Aquest nen no és nou en aquest període.":"Cap nen nou en aquest període.",k0?"":"Prova amb un període més llarg (30 dies o Curs).");return}
-  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`,N=rows.length,nPin=rows.filter(r=>r.tePin).length,nAsp=rows.filter(r=>r.asp).length,nNo=rows.filter(r=>r.primer==null).length;
   const dia=v=>v?`<span title="${esc(dataC(v))}">${esc(diaC(v))}</span>`:`<span class="muted">—</span>`;
-  const cols=[{k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c">${r.hi?`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}" title="Obre la fitxa de ${esc(r.nom)}">${avatar(r.nom)}<span>${esc(r.nom)}</span></button>`:nenH(r.nom)}${r.id!=null?`<span class="xip" title="Número d'identificació">#${r.id}</span>`:""}${r.amagat?`<span class="pill warn" title="Amagat del rànquing">Amagat</span>`:""}</span>`},
-   {k:"alta",t:"Alta",cls:"nw",h:r=>dia(r.alta)},{k:"primer",t:"Primer registre",cls:"nw",h:r=>r.primer?dia(r.primer):`<span class="pill warn">Encara no ha jugat</span>`},
-   {k:"pin",t:"PIN creat",cls:"nw",v:r=>r.tePin?(r.pin||1):null,h:r=>r.tePin?(r.pin?dia(r.pin):"Sí"):`<span class="pill neutre">Sense PIN</span>`},
-   {k:"asp",t:"Perfil triat",cls:"nw",h:r=>dia(r.asp)},{k:"mons",t:"Mons",num:true},{k:"punts",t:"Estrelles",num:true},
-   {k:"dies7",t:"Dies actius la 1a setmana",num:true,h:r=>r.primer==null?`<span class="muted">—</span>`:mini(r.dies7,7,"",`${r.dies7} de 7`)}];
+  const kpisH=VISTA==="nens"?`<div style="margin-bottom:10px">${filaKpis([
+   {t:"Nens nous",v:rows.length},
+   {t:"Amb PIN",v:rows.filter(r=>r.tePin).length},
+   {t:"Sense PIN",v:rows.filter(r=>!r.tePin).length},
+   {t:"Encara no han jugat",v:rows.filter(r=>r.primer==null).length}
+  ],4)}</div>`:"";
+  const cols=[
+   {k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c">${r.teFitxa?`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}" title="Obre la fitxa de ${esc(r.nom)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`:`<span class="nen">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></span>`}${r.id!=null?`<span class="xip">#${r.id}</span>`:""}${r.amagat?`<span class="pill warn" title="Amagat del rànquing">${ic("ullno")}</span>`:""}</span>`},
+   {k:"alta",t:"Alta",cls:"nw",h:r=>dia(r.alta)},
+   {k:"primer",t:"1r registre",cls:"nw",h:r=>r.primer?dia(r.primer):`<span class="pill warn">Encara no ha jugat</span>`},
+   {k:"pin",t:"PIN",cls:"nw",v:r=>r.tePin?1:0,h:r=>r.tePin?pillEstat("be",r.pin?dataC(r.pin):"Té PIN"):`<span class="pill neutre">Sense PIN</span>`},
+   {k:"punts",t:"Estrelles",num:true},
+   {k:"dies7",t:"1a setm.",num:true,h:r=>r.primer==null?`<span class="muted">—</span>`:`${r.dies7} de 7`}];
   const prev=TAULES.tAltes;
-  el.innerHTML=`<div class="kpis" style="margin-bottom:12px">${kp("Nens nous",N)}${kp("Amb PIN",nPin,`de ${N}`)}${kp("Han triat perfil",nAsp,`de ${N}`)}${kp("Encara no han jugat",nNo,"tenen perfil però cap registre")}</div>`+
-   taula("tAltes",cols,rows,{k:prev?prev.k:"alta",desc:prev?prev.desc:true,alta:true,etiqueta:"Nens nous"})}
+  el.innerHTML=kpisH+taula("tAltes",cols,rows,{k:prev?prev.k:"alta",desc:prev?prev.desc:true,alta:true,etiqueta:"Nens nous",csvNom:"bona-nota-altes",fila:r=>r.teFitxa?` class="clic" data-nen="${esc(r.k)}" tabindex="0"`:""})}
  catch(e){console.error(e);el.innerHTML=avisErr(`Les altes no s'han pogut dibuixar: ${e&&e.message||e}`)}}
+// ---- Resum compacte d'estrelles per origen del període a Inici (bn_admin_fonts_dia) ----
+async function pintaFontsDiaInici(tok){const el=$("#fontsDiaCos");if(!el)return;let d;
+ try{const p=PERIODE[DIES]||"7d";d=await rpcR("bn_admin_fonts_dia",{p_periode:p,p_assig:null,p_nom:null})}
+ catch(e){if(tok!==TOK||!$("#fontsDiaCos"))return;const x=$("#fontsDiaCos");x.removeAttribute("aria-busy");
+  x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_fonts_rep.sql","L'origen d'estrelles per període encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar les estrelles per origen (${e&&e.message||e}).`);return}
+ const x=$("#fontsDiaCos");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+ try{const D=dadesCombos(d);if(!D.totAll){x.innerHTML=buit("estrella","Cap estrella nova amb origen registrat en aquest període.","Prova amb un període més llarg (30 dies o Curs).");return}
+  const claus=Object.keys(D.tot).sort((a,b)=>D.tot[b]-D.tot[a]),mx=Math.max(1,...claus.map(k=>D.tot[k]));
+  const pcF=v=>fmtD(Math.round(v*1000/D.totAll)/10);
+  x.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;font-size:12.5px"><span class="muted">${pl(D.perNen.length,"nen","nens")} amb estrelles noves</span><b>${D.totAll} ⭐</b></div>`+
+   claus.map(k=>`<div class="fest" data-font="${esc(k)}"><span>${ic(icF(k))}${esc(nomF(k))} <span class="muted">${pcF(D.tot[k])}%</span></span><div class="bfe"><i style="width:${Math.round(D.tot[k]*100/mx)}%;background:${colF(k)}"></i></div><b>${D.tot[k]}</b></div>`).join("")}
+ catch(e){console.error(e);x.innerHTML=avisErr(`No s'ha pogut dibuixar el resum d'estrelles: ${e&&e.message||e}`)}}
 // mons per al selector: motor/mons.json (títol + assignatura); si no es pot llegir, els noms curts d'ASSIGS
 let MONSL=null;async function monsLlista(){if(MONSL)return MONSL;
  try{const r=await fetch("../motor/mons.json",{cache:"no-cache"});if(r.ok)MONSL=(await r.json()).map(m=>({id:m.dades,nom:`${m.titol} · ${m.materia}`.trim()}))}catch(e){}
@@ -1041,8 +1239,8 @@ async function reinicia(nom,assig,mon){if(DEMO){toast("No disponible en demo","a
  try{const r=await fetch(API.replace("bn_admin_logs","bn_admin_reinicia"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_assig:assig})});
   if(r.status===404){$("#gest").innerHTML=avisSQL("supabase/bn_admin_reinicia.sql","Aquesta opció encara no està activada a la base de dades.");return}
   if(!r.ok){$("#gest").innerHTML=avisErr(`No s'ha pogut fer (${r.status}).`);return}
-  const n=await r.json(),k=nom.trim().toLowerCase();await carrega();
-  if(nens().some(x=>x.k===k))detall(k);else{VISTA="nens";FITXA=null;pinta()} // si se li ha esborrat tot, ja no surt a la llista fins que torni a jugar
+  const n=await r.json(),k=nom.trim().toLowerCase();await carrega();await asseguraLogs().catch(()=>{});
+  if(nens().some(x=>x.k===k)||NOMS_TOTS[k])detall(k);else navega("nens");
   toast(`Progrés de ${nom} esborrat (${mon}): ${n} registres`);
  }catch(e){$("#gest").innerHTML=avisErr("No hi ha connexió.")}}
 async function rpcU(nom,accio,nou){if(DEMO){if(accio==="estat")return demoEstat(nom);throw "demo"}const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:accio,p_nou:nou||null})});if(!r.ok)throw r.status;return r.json()}
@@ -1050,54 +1248,66 @@ async function usuari(nom,accio,nou){if(DEMO){toast("No disponible en demo","avi
  try{const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:accio,p_nou:nou||null})});
   if(r.status===404){$("#gest").innerHTML=avisSQL("supabase/bn_admin_usuari.sql","Aquesta opció encara no està activada a la base de dades.");return}
   if(!r.ok){$("#gest").innerHTML=avisErr(`No s'ha pogut fer (${r.status}).`);return}
-  const n=await r.json();await carrega();if(accio==="amaga"||accio==="mostra"||accio==="treupin")detall(nom.trim().toLowerCase());if(accio==="canvia"){const k=nou.trim().toLowerCase();if(nens().some(x=>x.k===k))detall(k)}
-  if(accio==="esborra"){VISTA="nens";FITXA=null;pinta()}
+  const n=await r.json();await carrega();await asseguraLogs().catch(()=>{});
+  if(accio==="amaga"||accio==="mostra"||accio==="treupin")detall(nom.trim().toLowerCase());
+  if(accio==="canvia"){const k=nou.trim().toLowerCase();if(nens().some(x=>x.k===k)||NOMS_TOTS[k])detall(k)}
+  if(accio==="esborra")navega("nens");
   toast(accio==="esborra"?`${nom} esborrat (${n} registres)`:accio==="amaga"?`${nom} ja no surt al rànquing`:accio==="mostra"?`${nom} torna a sortir al rànquing`:accio==="treupin"?`PIN de ${nom} esborrat`:`${nom} → ${nou} (${n} registres)`);
  }catch(e){$("#gest").innerHTML=avisErr("No hi ha connexió.")}}
 
-// ====================== SESSIONS I LOG (filtres, etiquetes, CSV) ======================
+// ====================== SESSIONS I REGISTRE (amb detall en panell lateral) ======================
 function baixaCSV(nom,files){const cel=v=>`"${String(v??"").replace(/"/g,'""')}"`;const t=files.map(r=>r.map(cel).join(";")).join("\n");
- const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+t],{type:"text/csv"}));a.download=`${nom}-${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
-const filtresT=(F,ids,evs,as,placeholder)=>`<div class="eines-t"><label class="cerca">${ic("cerca")}<span class="sr">Cerca</span><input id="${ids}q" type="search" placeholder="${placeholder}" value="${esc(F.q)}"></label>
- <label class="sr" for="${ids}a">Assignatura</label><select id="${ids}a"><option value="">Totes les assignatures</option>${as.map(a=>`<option value="${esc(a)}" ${F.assig===a?"selected":""}>${esc(nomAssig(a))}</option>`).join("")}</select>
- <label class="sr" for="${ids}e">Tipus d'esdeveniment</label><select id="${ids}e"><option value="">Tots els tipus</option>${evs.map(e=>`<option ${F.event===e?"selected":""}>${esc(e)}</option>`).join("")}</select>
- <span class="esp"></span><span class="muted" id="${ids}n"></span><button class="btn sec" type="button" id="${ids}csv">${ic("baixar")}Exporta CSV</button></div>`;
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+t],{type:"text/csv"}));a.download=`${nom}-${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 function vistaSessions(c){const ls=LF(),g={};ls.forEach(l=>(g[l.sessio]=g[l.sessio]||[]).push(l));
  const S=Object.entries(g).map(([id,a])=>{a.sort((x,y)=>x.ts.localeCompare(y.ts));return {id,a,nom:a[0].nom,k:clauNen(a[0]),assig:a[0].assig,ini:a[0].ts,fi:a[a.length-1].ts,durada:a.filter(l=>l.event==="temps").reduce((s,l)=>s+(l.detall.s||0),0),n:a.length,evs:[...new Set(a.map(l=>l.event))]}});
- c.innerHTML=`<div class="targeta">${filtresT(FS,"fs",[...new Set(ls.map(l=>l.event))],[...new Set(ls.map(l=>l.assig))],"Cerca nom o activitat…")}<div id="tSes"></div></div>`;
- const files=()=>{const q=FS.q.trim().toLowerCase();return S.filter(s=>(!FS.assig||s.assig===FS.assig)&&(!FS.event||s.evs.includes(FS.event))&&(!q||(s.nom+" "+s.a.map(l=>JSON.stringify(l.detall)).join(" ")).toLowerCase().includes(q)))};
- const cols=[{k:"ini",t:"Inici",cls:"nw",h:r=>dataC(r.ini)},{k:"nom",t:"Nen",cls:"nw",h:r=>nenH(r.nom)},{k:"assig",t:"Assignatura",h:r=>xipAssig(r.assig)},{k:"durada",t:"Durada",num:true,h:r=>fmtT(r.durada)},{k:"n",t:"Accions",num:true},
-  {k:"evs",t:"Què ha fet",ord:false,cls:"nw",h:r=>r.evs.filter(e=>e!=="temps"&&e!=="entra").map(xipEv).join(" ")||`<span class="muted">—</span>`},{k:"det",t:"<span class='sr'>Detall</span>",ord:false,h:r=>`<button class="btn sec petit" type="button" data-ses="${esc(r.id)}" aria-expanded="false">Detall</button>`}];
- const pintaT=()=>{const f=files();$("#fsn").textContent=pl(f.length,"sessió","sessions");const prev=TAULES.tSes;
-  $("#tSes").innerHTML=f.length?taula("tSes",cols,f,{k:prev?prev.k:"ini",desc:prev?prev.desc:true,alta:true,etiqueta:"Sessions"}):buit("cerca","Cap sessió amb aquests filtres.")};
- $("#tSes").onclick=e=>{const b=e.target.closest("[data-ses]");if(!b)return;const tr=b.closest("tr"),nx=tr.nextElementSibling;
-  if(nx&&nx.classList.contains("det")){nx.remove();b.setAttribute("aria-expanded","false");b.textContent="Detall";return}
-  const s=S.find(x=>x.id===b.dataset.ses);const d=document.createElement("tr");d.className="det";d.innerHTML=`<td colspan="${cols.length}">${s.a.map(l=>`<div class="lin"><time>${hora(l.ts)}</time><span>${xipEv(l.event)} ${descriu(l)}</span></div>`).join("")}</td>`;tr.after(d);b.setAttribute("aria-expanded","true");b.textContent="Amaga"};
- $("#fsq").oninput=e=>{FS.q=e.target.value;pintaT()};$("#fsa").onchange=e=>{FS.assig=e.target.value;pintaT()};$("#fse").onchange=e=>{FS.event=e.target.value;pintaT()};
- $("#fscsv").onclick=()=>baixaCSV("bona-nota-sessions",[["inici","fi","nom","assignatura","durada_s","accions","tipus","sessio"],...files().map(s=>[s.ini,s.fi,s.nom,s.assig,Math.round(s.durada),s.n,s.evs.join(" "),s.id])]);
- pintaT()}
-function vistaLog(c){const ls=LF();
- c.innerHTML=`<div class="targeta">${filtresT(FILTRE,"fl",[...new Set(ls.map(l=>l.event))],[...new Set(ls.map(l=>l.assig))],"Cerca nom o text…")}<div id="tl"></div></div>`;
- const files=()=>{const q=FILTRE.q.toLowerCase();return ls.filter(l=>(!FILTRE.assig||l.assig===FILTRE.assig)&&(!FILTRE.event||l.event===FILTRE.event)&&(!q||(l.nom+" "+JSON.stringify(l.detall)).toLowerCase().includes(q)))};
- const pintaT=()=>{const f=files().slice().sort((a,b)=>b.ts.localeCompare(a.ts));$("#fln").textContent=pl(f.length,"registre","registres");
-  $("#tl").innerHTML=f.length?`<div class="taula-w alta" role="region" aria-label="Log complet" tabindex="0"><table><thead><tr><th scope="col">Data</th><th scope="col">Nen</th><th scope="col">Assignatura</th><th scope="col">Tipus</th><th scope="col">Què ha fet</th><th scope="col">Dispositiu</th></tr></thead><tbody>${f.slice(0,1500).map(l=>`<tr><td style="white-space:nowrap">${dataC(l.ts)}</td><td>${nenH(l.nom)}</td><td>${xipAssig(l.assig)}</td><td>${xipEv(l.event)}</td><td class="cur">${descriu(l)}</td><td><span class="muted">${esc((l.aparell||"").slice(0,6))}</span></td></tr>`).join("")}</tbody></table></div>${f.length>1500?`<p class="muted" style="margin:10px 0 0">Es mostren 1.500 de ${f.length}. Fes servir els filtres o el CSV.</p>`:""}`:buit("cerca","Cap registre amb aquests filtres.")};
- $("#flq").oninput=e=>{FILTRE.q=e.target.value;pintaT()};$("#fla").onchange=e=>{FILTRE.assig=e.target.value;pintaT()};$("#fle").onchange=e=>{FILTRE.event=e.target.value;pintaT()};
- $("#flcsv").onclick=()=>baixaCSV("bona-nota-log",[["data","nom","assignatura","tipus","detall","sessio","aparell"],...files().map(l=>[l.ts,l.nom,l.assig,l.event,JSON.stringify(l.detall),l.sessio,l.aparell])]);
- pintaT()}
+ const kpis=filaKpis([
+  {t:"Sessions",v:S.length},
+  {t:"Durada mitjana",v:S.length?fmtT(S.reduce((s,x)=>s+x.durada,0)/S.length):"—"},
+  {t:"Nens únics",v:new Set(S.map(x=>x.k)).size},
+  {t:"Accions",v:ls.length}
+ ],4);
+ const cols=[
+  {k:"ini",t:"Inici",cls:"nw",h:r=>dataC(r.ini)},
+  {k:"nom",t:"Nen",cls:"nw",h:r=>nenH(r.nom)},
+  {k:"assig",t:"Món",cls:"nw",h:r=>pillMon(r.assig)},
+  {k:"durada",t:"Durada",num:true,h:r=>fmtT(r.durada)},
+  {k:"n",t:"Accions",num:true},
+  {k:"evs",t:"Què ha fet",ord:false,cls:"nw",q:r=>r.evs.join(" ")+" "+r.a.map(l=>JSON.stringify(l.detall)).join(" "),h:r=>r.evs.filter(e=>e!=="temps"&&e!=="entra").map(xipEv).join(" ")||`<span class="muted">—</span>`}
+ ];
+ const prev=TAULES.tSes;
+ c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="sesCard">${S.length?taula("tSes",cols,S,{k:prev?prev.k:"ini",desc:prev?prev.desc:true,alta:true,etiqueta:"Sessions",csvNom:"bona-nota-sessions",fila:r=>` class="clic" data-ses="${esc(r.id)}" tabindex="0"`}):buit("sessions","Cap sessió amb aquests filtres.")}</div></div>`;
+ const obreSes=id=>{const s=S.find(x=>x.id===id);if(!s)return;
+  obrePanell({titol:`Sessió de ${s.nom}`,cos:`<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px">${pillMon(s.assig)}<span class="xip">${dataC(s.ini)} → ${hora(s.fi)}</span><span class="xip">${fmtT(s.durada)} · ${pl(s.n,"acció","accions")}</span></div>
+   <div style="margin-bottom:12px"><button class="btn sec petit" type="button" data-obre-nen="${esc(s.k)}">Obre la fitxa de ${esc(s.nom)} ${ic("endavant")}</button></div>
+   <div>${s.a.map(l=>`<div class="lin"><time>${hora(l.ts)}</time><span>${xipEv(l.event)} ${descriu(l)}</span></div>`).join("")}</div>`})};
+ const tc=$("#sesCard");
+ if(tc){tc.onclick=e=>{const tr=e.target.closest("tr[data-ses]");if(tr&&!e.target.closest("button,a,input"))obreSes(tr.dataset.ses)};
+  tc.onkeydown=e=>{if(e.key==="Enter"){const tr=e.target.closest&&e.target.closest("tr[data-ses]");if(tr&&e.target===tr)obreSes(tr.dataset.ses)}}}}
+function vistaLog(c){const ls=LF().slice().sort((a,b)=>b.ts.localeCompare(a.ts));
+ const lim=ls.slice(0,1500);
+ const cols=[
+  {k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},
+  {k:"nom",t:"Nen",cls:"nw",h:r=>nenH(r.nom)},
+  {k:"assig",t:"Món",cls:"nw",h:r=>pillMon(r.assig)},
+  {k:"event",t:"Tipus",cls:"nw",h:r=>xipEv(r.event)},
+  {k:"det",t:"Què ha fet",ord:false,cls:"cur",q:r=>JSON.stringify(r.detall||{}),h:r=>descriu(r)},
+  {k:"aparell",t:"Dispositiu",cls:"nw",h:r=>`<span class="muted">${esc((r.aparell||"").slice(0,6))}</span>`}
+ ];
+ c.innerHTML=`<div class="targeta"><div class="eines-t"><span class="muted">${ls.length>1500?`Es mostren 1.500 de ${ls.length} registres`:pl(ls.length,"registre","registres")}</span><span class="esp"></span><button class="btn sec petit" type="button" id="flcsv">${ic("baixar")}CSV complet (${ls.length})</button></div>${lim.length?taula("tLog",cols,lim,{k:"ts",alta:true,etiqueta:"Registre complet",csvNom:"bona-nota-registre"}):buit("log","Cap registre amb aquests filtres.")}</div>`;
+ const bCsv=$("#flcsv");if(bCsv)bCsv.onclick=()=>baixaCSV("bona-nota-log",[["data","nom","assignatura","tipus","detall","sessio","aparell"],...ls.map(l=>[l.ts,l.nom,l.assig,l.event,JSON.stringify(l.detall),l.sessio,l.aparell])])}
 
-// ====================== TAULER (dades agregades al servidor: supabase/bn_admin_tauler.sql) ======================
+// ====================== DADES AGREGADES, INICI I VISTES SOTA DEMANDA ======================
 const PERIODE={1:"avui",7:"7d",30:"30d",365:"curs"};
 const TF={assig:"",nom:""};let TD=null,GRAF=[],TOK=0;
 // 8 colors que es distingeixen bé (un per nen, el mateix a tots els gràfics); en tema fosc, més clars
 const PAL_C=["#2563eb","#ea580c","#16a34a","#db2777","#9333ea","#0891b2","#ca8a04","#475569"],PAL_F=["#60a5fa","#fb923c","#4ade80","#f472b6","#c084fc","#22d3ee","#facc15","#94a3b8"];
 const PAL=()=>TEMA==="fosc"?PAL_F:PAL_C;
-// color fix per nen: segons l'ordre alfabètic de tots els noms del registre
-const colorNen=n=>{const k=String(n).trim().toLowerCase(),tots=[...new Set(LOGS.map(l=>l.nom.trim().toLowerCase()))].sort();let i=tots.indexOf(k);
+const colorNen=n=>{const k=String(n).trim().toLowerCase(),tots=[...new Set([...Object.keys(NOMS_TOTS),...LOGS.map(l=>l.nom.trim().toLowerCase())])].sort();let i=tots.indexOf(k);
  if(i<0){i=0;for(const c of k)i=(i*31+c.charCodeAt(0))>>>0}return PAL()[i%PAL().length]};
 const bandPc=pc=>pc==null?"bfx":pc>=90?"b90":pc>=70?"b70":pc>=50?"b50":"b0";
 let PREG=null;async function preguntes(){if(PREG)return PREG;try{const r=await fetch("preguntes.json",{cache:"no-cache"});PREG=r.ok?await r.json():{}}catch(e){PREG={}}return PREG}
-async function rpcT(f){if(DEMO)return demoRpc(f);const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
- body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_periode:PERIODE[DIES]||"7d",p_assig:TF.assig||null,p_nom:TF.nom||null})});
+async function rpcT(f,extra){if(DEMO)return demoRpc(f);const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
+ body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_periode:PERIODE[DIES]||"7d",p_assig:TF.assig||null,p_nom:TF.nom||null,...(extra||{})})});
  if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
 const cssV=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 function temaGrafics(){if(!window.Chart)return;const C=Chart.defaults;C.animation=false;C.font.family="Inter, system-ui, sans-serif";C.font.size=12;C.color=cssV("--muted");C.borderColor=cssV("--grid");
@@ -1106,8 +1316,8 @@ function temaGrafics(){if(!window.Chart)return;const C=Chart.defaults;C.animatio
 const eixos=()=>({x:{grid:{color:cssV("--grid")},ticks:{color:cssV("--muted")}},y:{grid:{color:cssV("--grid")},ticks:{color:cssV("--muted")},beginAtZero:true}});
 const GOPC=()=>({responsive:true,maintainAspectRatio:false,scales:eixos()});
 const nouG=(id,cfg)=>{const c=document.getElementById(id);if(!c)return;if(!window.Chart){c.parentNode.innerHTML=buit("resum","No s'ha pogut carregar el gràfic.","Comprova la connexió i torna-ho a provar.");return}GRAF.push(new Chart(c,cfg))};
-const targeta=(id,col,icona,titol,sub,cos)=>`<section class="targeta seccio ${col}" id="${id}" aria-labelledby="${id}-t"><h2 id="${id}-t">${ic(icona)}${titol}</h2>${sub?`<p class="sub">${sub}</p>`:""}${cos}</section>`;
-// ---- Control ràpid: Xat, Horari automàtic i Mons a la web (n2537 · supabase/bn_control.sql) ----
+const targeta=(id,col,icona,titol,sub,cos)=>card(id,col,icona,titol,sub,cos);
+// ---- Control ràpid (1 clic): Xat i Mons a la web (supabase/bn_control.sql) ----
 let CTRL=null,CTRL_D=null,CTRL_NOMES_XAT=false;
 const minAHora=m=>{m=Math.max(0,Math.min(1439,Math.round(+m||0)));return `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`};
 const horaAMin=h=>{const m=String(h||"").trim().match(/^([01]\d|2[0-3]):([0-5]\d)$/);return m?(+m[1])*60+(+m[2]):null};
@@ -1119,50 +1329,40 @@ async function rpcCtrl(cfg){if(DEMO)return demoControlRpc(cfg);
 function ctrlDe(){if(!CTRL){CTRL=rpcCtrl(null).then(d=>{CTRL_NOMES_XAT=false;return CTRL_D=d}).catch(e=>{
   if(e==="falta"){CTRL_NOMES_XAT=true;const act=X&&X.cfg?X.cfg.actiu!==false:true;return CTRL_D={xat_actiu:act,xat_obert_ara:act,xat_en_horari_tancat:false,horari:{actiu:false,tanca_min:1290,obre_min:420},mons_tancats:[]}}
   throw e})}return CTRL}
+function estatXatCtrl(d){d=oB(d);const xatAct=d.xat_actiu!==false,hor=oB(d.horari),hAct=hor.actiu===true,tancaM=nN(hor.tanca_min)??1290,obreM=nN(hor.obre_min)??420;
+ const tancatH=typeof d.xat_en_horari_tancat==="boolean"?d.xat_en_horari_tancat:enHorariTancat(hAct,tancaM,obreM);
+ const obertAra=typeof d.xat_obert_ara==="boolean"?d.xat_obert_ara:(xatAct&&!tancatH);
+ return {xatAct,hAct,tancaM,obreM,tancatH,obertAra}}
 async function tControl(){const el=$("#tCtrl");if(!el)return;const tok=TOK;
  let d;try{d=await ctrlDe();await monsLlista()}catch(e){CTRL=null;if(tok!==TOK||!$("#tCtrl"))return;
   $("#tCtrl").removeAttribute("aria-busy");$("#tCtrl").innerHTML=avisErr(`No s'ha pogut carregar el control (${e&&e.message||e}).`);return}
  if(tok!==TOK||!$("#tCtrl"))return;pintaControl(d)}
 function pintaControl(d){const el=$("#tCtrl");if(!el)return;el.removeAttribute("aria-busy");d=oB(d);CTRL_D=d;
- const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"",ndSql="";
- const xatAct=d.xat_actiu!==false,hor=oB(d.horari),hAct=hor.actiu===true,tancaM=nN(hor.tanca_min)??1290,obreM=nN(hor.obre_min)??420;
- const tancatH=typeof d.xat_en_horari_tancat==="boolean"?d.xat_en_horari_tancat:enHorariTancat(hAct,tancaM,obreM);
- const obertAra=typeof d.xat_obert_ara==="boolean"?d.xat_obert_ara:(xatAct&&!tancatH);
+ const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ const {xatAct,hAct,tancaM,obreM,tancatH}=estatXatCtrl(d);
  const tancats=new Set(aR(d.mons_tancats).map(x=>String(x).trim().toLowerCase()));
  const ms=(MONSL&&MONSL.length?MONSL:Object.entries(ASSIGS).map(([id,nom])=>({id,nom}))),nOb=ms.filter(m=>!tancats.has(m.id)).length;
- const pillX=!xatAct?`<span class="pill bad" id="ctrlXatEstat">Tancat manualment</span>`:tancatH?`<span class="pill warn" id="ctrlXatEstat">Tancat per horari (${minAHora(tancaM)}–${minAHora(obreM)})</span>`:`<span class="pill ok" id="ctrlXatEstat">Obert ara${hAct?` · tanca a les ${minAHora(tancaM)}`:""}</span>`;
+ const pillX=!xatAct?`<span class="pill bad" id="ctrlXatEstat">malament · Tancat manualment</span>`:tancatH?`<span class="pill warn" id="ctrlXatEstat">avís · Tancat per horari (${minAHora(tancaM)}–${minAHora(obreM)})</span>`:`<span class="pill ok" id="ctrlXatEstat">bé · Obert ara${hAct?` (${minAHora(tancaM)})`:""}</span>`;
  el.innerHTML=`<div class="ctrl-grid">
   <div class="ctrl-box">
-   <div class="ctrl-cap"><h3>${ic("xat")}Xat de la colla i horari</h3>${pillX}</div>
-   <div class="ctrl-fila"><div><b id="ctrlXatL">Xat obert</b><small>Si el tanques, es pot llegir però ningú pot escriure ni votar.</small></div>
+   <div class="ctrl-cap"><h3>${ic("xat")}Xat de la colla</h3>${pillX}</div>
+   <div class="ctrl-fila"><div><b id="ctrlXatL">Escriptura i vots</b><small>${hAct?`Horari actiu: ${minAHora(tancaM)}–${minAHora(obreM)}`:"Sense horari automàtic"}</small></div>
     <button class="sw" type="button" role="switch" id="ctrlXatSw" aria-labelledby="ctrlXatL" aria-checked="${xatAct}"${nd}><i></i><span>${xatAct?"Obert":"Tancat"}</span></button></div>
-   <div class="ctrl-fila"><div><b id="ctrlHorL">Horari automàtic (hora de Madrid)</b><small>Tanca el xat sol cada dia entre aquestes hores.</small></div>
-    <button class="sw" type="button" role="switch" id="ctrlHorariSw" aria-labelledby="ctrlHorL" aria-checked="${hAct}"${nd||ndSql}><i></i><span>${hAct?"Actiu":"Desactivat"}</span></button></div>
-   <div class="ctrl-hores">
-    <label for="ctrlTancaH">Tanca a les <input type="time" id="ctrlTancaH" value="${minAHora(tancaM)}"${nd||ndSql}></label>
-    <label for="ctrlObreH">Obre a les <input type="time" id="ctrlObreH" value="${minAHora(obreM)}"${nd||ndSql}></label>
-    <button class="btn sec petit" type="button" id="ctrlHorariDesa"${nd||ndSql}>Desa l'horari</button>
-   </div>
+   <div style="display:flex;justify-content:flex-end"><button class="linkb" type="button" data-go-cfg="horaris">${ic("config")}Horaris i crèdits ${ic("endavant")}</button></div>
   </div>
   <div class="ctrl-box">
    <div class="ctrl-cap"><h3>${ic("llibre")}Mons a la web</h3>
     <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap"><span class="pill ${nOb===ms.length?"ok":nOb===0?"bad":"warn"}" id="ctrlMonsEstat">${nOb} de ${ms.length} oberts</span>
-     <button class="btn sec petit" type="button" id="ctrlMonsObre"${nd||ndSql||tancats.size===0?" disabled":""}>Activa'ls tots</button>
-     <button class="btn sec petit" type="button" id="ctrlMonsTanca"${nd||ndSql||tancats.size===ms.length?" disabled":""}>Tanca'ls tots</button></div></div>
-   <p class="sub" style="margin:-4px 0 0">Un món tancat surt en gris amb «🔒 TANCAT» a la portada i no deixa entrar-hi, però conserva totes les estrelles al rànquing.</p>
+     <button class="btn sec petit" type="button" id="ctrlMonsObre"${nd||tancats.size===0?" disabled":""}>Activa'ls tots</button>
+     <button class="btn sec petit" type="button" id="ctrlMonsTanca"${nd||tancats.size===ms.length?" disabled":""}>Tanca'ls tots</button></div></div>
    <div class="ctrl-mons">${ms.map(m=>{const ob=!tancats.has(m.id);return `<div class="ctrl-mon${ob?"":" tancat"}" style="--mc:${colAssig(m.id)}">
-    <div class="ctrl-mon-t"><b title="${esc(m.nom)}">${esc(nomAssig(m.id))}</b><small>${ob?"Obert a la portada":"🔒 Tancat a la portada"}</small></div>
-    <button class="sw" type="button" role="switch" data-ctrl-mon="${esc(m.id)}" aria-label="${esc(nomAssig(m.id))}" aria-checked="${ob}"${nd||ndSql}><i></i><span>${ob?"Obert":"Tancat"}</span></button></div>`}).join("")}</div>
+    <div class="ctrl-mon-t"><b title="${esc(m.nom)}">${esc(nomAssig(m.id))}</b><small>${ob?"Obert":"🔒 Tancat"}</small></div>
+    <button class="sw" type="button" role="switch" data-ctrl-mon="${esc(m.id)}" aria-label="${esc(nomAssig(m.id))}" aria-checked="${ob}"${nd}><i></i><span>${ob?"Obert":"Tancat"}</span></button></div>`}).join("")}</div>
   </div>
  </div>`;
  $("#ctrlXatSw").onclick=()=>ctrlCanvia({xat_actiu:!xatAct},xatAct?"Xat tancat":"Xat obert");
- $("#ctrlHorariSw").onclick=()=>{const t=horaAMin($("#ctrlTancaH").value)??tancaM,o=horaAMin($("#ctrlObreH").value)??obreM;
-  ctrlCanvia({horari_actiu:!hAct,tanca_min:t,obre_min:o},!hAct?`Horari automàtic activat (${minAHora(t)}–${minAHora(o)})`:"Horari automàtic desactivat")};
- $("#ctrlHorariDesa").onclick=()=>{const t=horaAMin($("#ctrlTancaH").value),o=horaAMin($("#ctrlObreH").value);
-  if(t==null||o==null){toast("Escriu una hora vàlida (HH:MM).","err");return}
-  ctrlCanvia({horari_actiu:hAct,tanca_min:t,obre_min:o},`Horari desat: tanca a les ${minAHora(t)} i obre a les ${minAHora(o)}`)};
  $("#ctrlMonsObre").onclick=()=>ctrlCanvia({mons_tancats:[]},"Tots els mons activats");
- $("#ctrlMonsTanca").onclick=async()=>{if(await dialeg({titol:"Tancar tots els mons?",ok:"Sí, tanca'ls tots",icona:"llibre",cos:`<p>Els 6 mons sortiran amb <b>🔒 TANCAT</b> a la portada i els nens no hi podran entrar fins que en tornis a activar algun.</p><p>Les estrelles del rànquing es mantenen intactes.</p>`}))ctrlCanvia({mons_tancats:ms.map(m=>m.id)},"Tots els mons tancats")};
+ $("#ctrlMonsTanca").onclick=async()=>{if(await dialeg({titol:"Tancar tots els mons?",ok:"Sí, tanca'ls tots",icona:"llibre",cos:`<p>Tots els mons sortiran amb <b>🔒 TANCAT</b> a la portada i els nens no hi podran entrar fins que en tornis a activar algun.</p><p>Les estrelles del rànquing es mantenen intactes.</p>`}))ctrlCanvia({mons_tancats:ms.map(m=>m.id)},"Tots els mons tancats")};
  el.querySelectorAll("[data-ctrl-mon]").forEach(b=>b.onclick=()=>{const id=b.dataset.ctrlMon,nou=new Set(tancats);if(nou.has(id))nou.delete(id);else nou.add(id);
   ctrlCanvia({mons_tancats:[...nou]},`${nomAssig(id)}: ${nou.has(id)?"tancat 🔒":"obert ✓"}`)})}
 async function ctrlCanvia(patch,msgOk){if(DEMO){toast("No disponible en demo","avis");return}
@@ -1172,63 +1372,182 @@ async function ctrlCanvia(patch,msgOk){if(DEMO){toast("No disponible en demo","a
    r=Object.assign({},CTRL_D,{xat_actiu:rx.actiu!==false,xat_obert_ara:rx.actiu!==false,xc:rx})}
   else r=await rpcCtrl(patch);
   CTRL=Promise.resolve(r);CTRL_D=r;if(X&&X.cfg&&typeof r.xat_actiu==="boolean")X.cfg.actiu=r.xat_actiu;
-  pintaControl(r);toast(msgOk||"Desat")}
+  if($("#tCtrl"))pintaControl(r);
+  if($("#xatTopSw")){const ex=estatXatCtrl(r);$("#xatTopSw").setAttribute("aria-checked",String(ex.xatAct));$("#xatTopSw span").textContent=ex.xatAct?"Obert":"Tancat"}
+  if($("#kpiXatPill")){const ex=estatXatCtrl(r);$("#kpiXatPill").innerHTML=ex.obertAra?pillEstat("be","Xat obert ara"):ex.xatAct?pillEstat("avis","Tancat per horari"):pillEstat("malament","Tancat manualment")}
+  toast(msgOk||"Desat")}
  catch(e){toast(e==="falta"?"Cal executar supabase/bn_control.sql al SQL Editor de Supabase":`No s'ha pogut desar (${e})`,"err")}}
-async function pintaTauler(){const tok=++TOK;
- GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
- const c=$("#contingut");c.innerHTML=esqTauler();
- ctrlDe().catch(()=>{}); // control ràpid (xat, horari i mons): es demana alhora i va a part
- benestarDe(); // el benestar es demana alhora que la resta, però va a part (tBenestar): si falla, només ho diu el seu apartat
- fontsDiaDe();repPendentsDe();dificultatDe(); // el mateix amb «Combos i repàs» (tCombos), «Errors pendents de la colla» (tPendents) i «Dificultat real» (tDificultat)
- let dades;try{const [resum,act,calor,domini,fall,evo,alert]=await Promise.all(["bn_admin_resum","bn_admin_activitat","bn_admin_calor","bn_admin_domini","bn_admin_fallades","bn_admin_evolucio","bn_admin_alertes"].map(rpcT));
-  dades={resum,act,calor,domini,fall,evo,alert};await preguntes()}
- catch(e){console.error(e);if(tok!==TOK)return;c.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El tauler encara no està activat a la base de dades. Mentrestant, tens les altres pantalles."):avisErr(`No s'han pogut carregar les dades del tauler (${e}).`);return}
- if(tok!==TOK||VISTA!=="tauler")return;
- TD=dades;
- const {resum,act,calor,domini,fall,evo,alert}=dades,A=resum.ara||{},B=resum.abans;
- const dl=k=>{if(!B||B[k]==null||A[k]==null)return"";const x=A[k]-B[k];if(!x)return `<span class="pill neutre">= igual</span><span class="vs">vs període anterior</span>`;const up=x>0;
-  return `<span class="pill ${up?"ok":"bad"}">${up?"▲":"▼"} ${Math.abs(Math.round(x*10)/10)}</span><span class="vs">vs període anterior</span>`};
- const kpi=(t,v,k,sub,cls)=>`<div class="kpi${cls?" "+cls:""}"><div class="kpi-t">${t}</div><div class="kpi-v">${v??"—"}</div><div class="kpi-p">${k?dl(k):""}</div>${sub?`<div class="kpi-s">${sub}</div>`:""}</div>`;
- const fmtM=m=>m==null?"—":m>=60?`${Math.floor(m/60)} h ${Math.round(m%60)} min`:`${Math.round(m)} min`;
- const pc=v=>v==null?"—":v+"%";
- const titolP={avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[resum.periode]||"";
- const lent=A.seg_preg!=null&&A.seg_preg<3;
- c.innerHTML=`${targeta("control","c-12","ajust","Control ràpid: Xat, Horari i Mons","Obre o tanca el xat de la colla, programa'n l'horari automàtic i activa o desactiva cada món a la web.",`<div id="tCtrl" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
- <section class="seccio" id="resum" aria-labelledby="resum-t" style="margin-top:20px"><h2 class="seccio-t" id="resum-t" style="font-size:17px">Resum</h2><p class="muted" style="margin:0">Dades ${titolP}${TF.assig?` · ${esc(nomAssig(TF.assig))}`:""}${TF.nom?` · ${esc(TF.nom)}`:""}.${B?"":" (Al curs sencer no es compara amb cap període anterior.)"}</p>
-  <h3 class="grup">Activitat</h3><div class="kpis">${kpi("Nens actius",A.nens,"nens","han fet alguna cosa")}${kpi("Dies d'estudi",A.dies,"dies","dies × nen amb activitat")}${kpi("Temps d'estudi",fmtM(A.minuts),"minuts",A.sessions!=null?pl(A.sessions,"sessió","sessions"):"")}</div>
-  <h3 class="grup">Rendiment</h3><div class="kpis">${kpi("Nota mitjana dels tests",pc(A.nota),"nota",A.tests!=null?pl(A.tests,"test","tests"):"")}${kpi("Tests aprovats",pc(A.aprovats),"aprovats","amb un 70% o més")}${kpi("Encert de les preguntes",pc(A.encert),"encert",A.respostes!=null?`de ${A.respostes} respostes`:"")}
-   ${kpi("Nota dels exàmens",pc(A.nota_exam),"nota_exam",A.examens!=null?pl(A.examens,"examen","exàmens"):"")}${kpi("Segons per pregunta",A.seg_preg==null?"—":fmtD(A.seg_preg)+" s",null,lent?"Menys de 3 s: potser endevina":"temps mitjà per resposta",lent?"avis":"")}</div>
-  <h3 class="grup">Volum</h3><div class="kpis">${kpi("Tests",A.tests,"tests")}${kpi("Exàmens",A.examens,"examens")}${kpi("Jocs",A.jocs,"jocs")}${kpi("Preguntes obertes",A.obertes,"obertes")}${kpi("Fitxes llegides",A.fitxes,"fitxes")}</div></section>
- <div class="graella" style="margin-top:24px">
-  ${targeta("alertes","c-12","alerta","Alertes","El que convé mirar ara, de més a menys important.",`<div id="tAl"></div>`)}
-  ${targeta("benestar","c-12","cor","Benestar","Si l'ús és sa: un semàfor per nen amb els motius en paraules planeres, i la fase de cada món. El dia abans d'un examen és normal estudiar més: aquelles sessions llargues surten en blau.",`<div id="tBen" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
-  ${targeta("activitat","c-6","calendari","Activitat per dia","Minuts d'estudi de cada nen per dia",`<div class="cv"><canvas id="gAct" aria-label="Gràfic de minuts d'estudi per dia i nen" role="img"></canvas></div>`)}
-  ${targeta("calor","c-6","graella","Quan estudien","Activitat per hora i dia de la setmana",`<div id="tCal"></div>`)}
-  ${targeta("notes","c-6","puja","Evolució de les notes","Cada punt és un test (o examen); una línia per nen",`<div class="cv"><canvas id="gEvo" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>`)}
-  ${targeta("constancia","c-6","foc","Constància","Dies que ha estudiat en aquest període i ratxa actual de dies seguits",`<div id="tCst"></div>`)}
-  ${targeta("motivacio","c-12","trofeu","Repàs, boss i missions","Errors apresos al repàs i intents de boss en aquest període. Les estrelles de missions són el total acumulat de cada nen.",`<div id="tMot"></div>`)}
-  ${targeta("combos","c-12","foc","Combos i repàs","Estrelles de combo, triple combo, super combo i repàs guanyades cada dia, i de qui són. Surt de les diferències del comptador d'estrelles de cada font entre registres del mateix nen i món (cada test, joc, examen, oberta o sessió): l'estrella cau el dia d'aquell registre, i el primer registre de cada nen i món és la base. El triple combo va arribar amb la 2.9.0 i el super combo amb la 2.10.0: abans no n'hi ha.",`<div id="tCom" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
-  ${targeta("pendents","c-12","reinicia","Errors pendents de la colla","Per a cada món, els temes on els nens acumulen més errors per repassar: on cal reforçar. És el que hi ha desat al núvol ara mateix (només els nens amb PIN), així que no depèn del període. «Toquen avui»: el repàs del joc ja els demana avui.",`<div id="tRep" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
-  ${targeta("obertes","c-12","llapis","Preguntes obertes: respostes sospitoses","Nens amb textos rebutjats (massa curts, sense sentit o copiats), intents d'enganxar text o que diuen haver posat idees que el programa no ha trobat. Es compta des de la versió 2.6.0.",`<div id="tObe"></div>`)}
-  ${TF.nom?targeta("temps","c-12","rellotge",`En què passa el temps ${esc(TF.nom)}`,"Segons registrats per tipus d'activitat (dades del període)",`<div class="cv"><canvas id="gTip" aria-label="Gràfic del temps per tipus d'activitat" role="img"></canvas></div>`):""}
-  ${targeta("domini","c-12","diana","Domini per tema","Per a cada assignatura: quants temes té aprovats cada nen (barra) i la millor nota de test a cada tema. Passa el ratolí per una nota per veure intents i última nota.",`<div id="tDom"></div>`)}
-  ${targeta("fallades","c-12","creu","Preguntes més fallades","Top 20 per assignatura, amb l'opció equivocada que més trien (el «parany»). Compta des del 4-11-2026, quan es va començar a registrar cada pregunta.",`<div id="tFal"></div>`)}
-  ${targeta("dificultat","c-12","llamp","Dificultat real de les preguntes","Encert real de cada pregunta en tests i exàmens dels últims 365 dies (sense comptar el repàs), comparat amb motor/dificultat.json (⚡ difícil < 55 % · fàcil > 90 % a partir de 8 respostes · issue #16).",`<div id="tDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
-  ${targeta("taller","c-12","llapis","Taller de mates: on s'equivoquen","Els errors que més es repeteixen als exercicis del Taller de mates (jocs i examen simulat): exercici, pas i error típic. Top 30. Els registres antics no ho porten.",`<div id="tErr"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
- </div>`;
- // cada apartat per separat: si un falla, la resta es veu igual i l'error surt escrit al seu lloc
- const prova=(id,f)=>{try{f()}catch(e){const el=$(id);if(el)(el.closest(".cv")||el).innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`);console.error(e)}};
- prova("#tAl",()=>tAlertes(alert));prova("#gAct",()=>gActivitat(act));prova("#tCal",()=>tCalor(calor));prova("#gEvo",()=>gEvolucio(evo));
- prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));prova("#tMot",()=>tMotivacio());prova("#tObe",()=>tObertes());if(TF.nom)prova("#gTip",()=>gTipus());
- tControl();tErrorsTaller();tBenestar();tCombos();tPendents();tDificultat();
+
+// ====================== SECCIÓ 1: INICI (una sola vista compacta, sota demanda) ======================
+async function vistaInici(c){
+ const tok=++TOK;
+ TF.assig="";TF.nom="";
+ c.innerHTML=`<div class="pila"><div id="iniciKpis">${esqKpis(6)}</div>
+  <div class="graella">
+   ${card("control","c-12","ajust","Control ràpid","Obre o tanca el xat i cadascun dels mons en un clic. Els horaris automàtics i els crèdits són a Configuració.",`<div id="tCtrl" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+   ${card("alertes","c-12","alerta","Alertes","Avisos d'activitat, notes que baixen, temes encallats o preguntes molt fallades. Clica un nen per obrir-ne la fitxa.",`<div id="tAl" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+   ${cartaAltes("c-6")}
+   ${card("fontsDia","c-6","estrella","Estrelles per origen","Repartiment de les estrelles noves guanyades durant el període seleccionat.",`<div id="fontsDiaCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  </div></div>`;
+ tControl();
+ pintaAltes();
+ pintaFontsDiaInici(tok);
+ const pResum=rpcT("bn_admin_resum",{p_assig:null,p_nom:null});
+ const pAlertes=rpcT("bn_admin_alertes",{p_assig:null,p_nom:null});
+ const pXatRes=rpcX("bn_admin_xat_resum").catch(()=>null);
+ const pCtrl=ctrlDe().catch(()=>null);
+ Promise.all([pResum,pXatRes,pCtrl]).then(([resum,xRes,ctrl])=>{
+  if(tok!==TOK||VISTA!=="inici"||!$("#iniciKpis"))return;
+  const A=(resum&&resum.ara)||{},B=resum&&resum.abans,ex=estatXatCtrl(ctrl||{});
+  const xPill=`<span id="kpiXatPill">${ex.obertAra?pillEstat("be","Xat obert ara"):ex.xatAct?pillEstat("avis","Tancat per horari"):pillEstat("malament","Tancat manualment")}</span>`;
+  $("#iniciKpis").innerHTML=filaKpis([
+   {t:"Nens actius",v:A.nens??"—",p:deltaKpi(A,B,"nens")},
+   {t:"Sessions",v:A.sessions??"—",p:deltaKpi(A,B,"sessions")},
+   {t:"Temps d'estudi",v:fmtM(A.minuts),p:deltaKpi(A,B,"minuts")},
+   {t:"Nota mitjana",v:pcVal(A.nota),p:deltaKpi(A,B,"nota")},
+   {t:"Encert preguntes",v:pcVal(A.encert),p:deltaKpi(A,B,"encert")},
+   {t:"Xat avui",v:xRes&&xRes.frases!=null?pl(xRes.frases,"frase","frases"):"—",p:xPill}
+  ],6);
+ }).catch(e=>{
+  if(tok!==TOK||VISTA!=="inici"||!$("#iniciKpis"))return;
+  $("#iniciKpis").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El resum del tauler encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el resum (${e}).`);
+ });
+ pAlertes.then(al=>{
+  if(tok!==TOK||VISTA!=="inici"||!$("#tAl"))return;
+  $("#tAl").removeAttribute("aria-busy");tAlertes(Array.isArray(al)?al:[]);
+ }).catch(e=>{
+  if(tok!==TOK||VISTA!=="inici"||!$("#tAl"))return;
+  $("#tAl").removeAttribute("aria-busy");
+  $("#tAl").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","Les alertes encara no estan activades a la base de dades."):avisErr(`No s'han pogut carregar les alertes (${e}).`);
+ });
 }
-function tAlertes(al){const e=$("#tAl");if(!al.length){e.innerHTML=buit("ok","Cap alerta. Tot en ordre.");return}
- const icT={inactiu:"son",baixa:"baixa",encallat:"mur",rapid:"llamp",pregunta:"pregunta",pendent:"safata"};
- const grav=g=>g>=3?`<span class="pill bad">Atenció</span>`:g===2?`<span class="pill warn">Revisar</span>`:`<span class="pill info">Info</span>`;
- const fila=a=>{const k=a.nom?a.nom.trim().toLowerCase():"",hi=k&&LOGS.some(l=>clauNen(l)===k);
-  return `<div class="al">${ic(icT[a.tipus]||"info")}<div class="txt"><div>${a.nom?`<b>${esc(a.nom)}</b> · `:""}${esc(a.text)}</div><div class="meta">${grav(a.gravetat)}${a.assig?xipAssig(a.assig):""}${hi?`<button class="linkb" type="button" data-obre-nen="${esc(k)}">Obre la fitxa ${ic("endavant")}</button>`:""}</div></div></div>`};
- const imp=al.filter(a=>a.gravetat>1),info=al.filter(a=>a.gravetat<=1);
- e.innerHTML=(imp.length?imp.map(fila).join(""):buit("ok","Cap alerta important."))+(info.length?`<details class="mes"><summary>+ ${info.length} ${info.length===1?"avís":"avisos"} per saber-ho (temes pendents, preguntes difícils)</summary>${info.map(fila).join("")}</details>`:"")}
+function tAlertes(al){const e=$("#tAl");if(!e)return;if(!al||!al.length){e.innerHTML=buit("ok","Cap alerta en aquest període.");return}
+ const rows=al.map((a,i)=>{const nom=a.nom?String(a.nom).trim():"",k=nom?nom.toLowerCase():"",g=+a.gravetat||1;
+  return {i,nom,k,assig:a.assig||"",text:String(a.text||""),grav:g,tipus:String(a.tipus||"")}});
+ const cols=[
+  {k:"nom",t:"Nen",cls:"nw",v:r=>r.nom||"zzz",h:r=>r.nom?nenH(r.nom):`<span class="muted">Colla</span>`},
+  {k:"text",t:"Motiu",cls:"cur",h:r=>`${r.assig?pillMon(r.assig)+" ":""}${esc(r.text)}`},
+  {k:"grav",t:"Gravetat",cls:"nw",num:false,v:r=>r.grav,h:r=>r.grav>=3?pillEstat("malament","Atenció prioritària"):r.grav===2?pillEstat("avis","Convé revisar"):pillEstat("be","Informatiu")},
+  {k:"acc",t:"Acció",ord:false,cls:"nw",h:r=>r.k?`<button class="linkb" type="button" data-obre-nen="${esc(r.k)}">Fitxa ${ic("endavant")}</button>`:r.assig?`<button class="linkb" type="button" data-obre-mon="${esc(r.assig)}">Món ${ic("endavant")}</button>`:`<span class="muted">—</span>`}
+ ];
+ const prev=TAULES.tAlertes;
+ e.innerHTML=taula("tAlertes",cols,rows,{k:prev?prev.k:"grav",desc:prev?prev.desc:true,alta:true,etiqueta:"Alertes",csvNom:"bona-nota-alertes",fila:r=>r.k?` class="clic" data-nen="${esc(r.k)}" tabindex="0"`:""});
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-mon]");if(b){e.preventDefault();TF.assig=b.dataset.obreMon||"";navega("mons",{tab:"domini"})}});
+
+// ====================== VISTES INTERMÈDIES SOTA DEMANDA (pendents de Fases 2, 3 i 4) ======================
+async function vistaNensSeccio(c){
+ const tok=++TOK,ll=[["llista","Llista"],["benestar","Benestar"]],tab=ll.some(x=>x[0]===TAB)?TAB:"llista";
+ TAB=tab;escriuUrl(false);
+ c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Nens")+`<div id="nensCos">${esqTaula()}</div>`;
+ lligaPestanyes(c,ll);
+ try{await asseguraLogs()}catch(e){if(tok!==TOK)return;$("#nensCos").innerHTML=avisErr(`No s'han pogut carregar les dades (${e}).`);return}
+ if(tok!==TOK||VISTA!=="nens")return;
+ const cos=$("#nensCos");if(!cos)return;
+ if(tab==="llista"){
+  if(!LOGS.length){cos.innerHTML=`<div class="pila">${cartaAltes()}<div class="targeta">${buit("safata","Encara no hi ha cap registre en aquest període.","Prova amb un període més llarg (30 dies o Curs).")}</div></div>`;pintaAltes();return}
+  vistaNens(cos);
+ }else{
+  const pintaB=()=>{cos.innerHTML=barraFiltresLocals({assig:true,nen:true})+card("benestar","c-12","cor","Benestar","Un semàfor per nen amb els motius en paraules planeres, i la fase i data d'examen de cada món.",`<div id="tBen" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
+   lligaFiltresLocals(()=>{TOK++;pintaB()});tBenestar()};
+  pintaB();
+ }
+}
+async function vistaMonsSeccio(c){
+ const tok=++TOK,ll=[["domini","Domini"],["fallades","Fallades"],["pendents","Errors pendents"],["dificultat","Dificultat real"],["obertes","Obertes"],["taller","Taller de mates"]];
+ const tab=ll.some(x=>x[0]===TAB)?TAB:"domini";TAB=tab;escriuUrl(false);
+ const renderTab=async()=>{
+  const tk=++TOK;
+  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Mons")+barraFiltresLocals({assig:tab!=="taller",nen:true})+`<div id="monsCos">${esqTaula()}</div>`;
+  lligaPestanyes(c,ll);lligaFiltresLocals(renderTab);
+  const cos=$("#monsCos");if(!cos)return;
+  if(tab==="domini"){
+   cos.innerHTML=card("domini","c-12","diana","Domini per tema","Quants temes té aprovats cada nen i la millor nota de test a cada tema.",`<div id="tDom"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
+   try{const [dom]=await Promise.all([rpcT("bn_admin_domini"),preguntes()]);if(tk!==TOK||!$("#tDom"))return;tDomini(dom)}
+   catch(e){if(tk!==TOK||!$("#tDom"))return;$("#tDom").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El domini encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el domini (${e}).`)}
+  }else if(tab==="fallades"){
+   cos.innerHTML=card("fallades","c-12","creu","Preguntes més fallades","Top 20 per món, amb l'opció equivocada que més trien (parany).",`<div id="tFal"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
+   try{const [fall]=await Promise.all([rpcT("bn_admin_fallades"),preguntes()]);if(tk!==TOK||!$("#tFal"))return;tFallades(fall)}
+   catch(e){if(tk!==TOK||!$("#tFal"))return;$("#tFal").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","Les preguntes fallades encara no estan activades a la base de dades."):avisErr(`No s'han pogut carregar les fallades (${e}).`)}
+  }else if(tab==="pendents"){
+   cos.innerHTML=card("pendents","c-12","reinicia","Errors pendents de la colla","Temes on els nens amb PIN acumulen més errors per repassar al núvol.",`<div id="tRep" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
+   tPendents();
+  }else if(tab==="dificultat"){
+   cos.innerHTML=card("dificultat","c-12","llamp","Dificultat real de les preguntes","Encert real de cada pregunta en tests i exàmens dels últims 365 dies comparat amb motor/dificultat.json.",`<div id="tDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
+   tDificultat();
+  }else if(tab==="obertes"){
+   cos.innerHTML=card("obertes","c-12","llapis","Preguntes obertes: respostes sospitoses","Nens amb textos rebutjats, intents d'enganxar text o idees marcades no trobades.",`<div id="tObe"><div class="esq esq-f"></div></div>`);
+   try{await asseguraLogs();if(tk!==TOK||!$("#tObe"))return;tObertes()}catch(e){if(tk!==TOK||!$("#tObe"))return;$("#tObe").innerHTML=avisErr(`No s'han pogut carregar les obertes (${e}).`)}
+  }else if(tab==="taller"){
+   cos.innerHTML=card("taller","c-12","llapis","Taller de mates: on s'equivoquen","Errors més repetits als exercicis del Taller de mates (top 30).",`<div id="tErr"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`);
+   tErrorsTaller();
+  }
+ };
+ await renderTab();
+}
+async function vistaSessionsSeccio(c){
+ const ll=[["sessions","Sessions"],["activitat","Activitat"],["registre","Registre"]],tab=ll.some(x=>x[0]===TAB)?TAB:"sessions";
+ TAB=tab;escriuUrl(false);
+ const renderTab=async()=>{
+  const tk=++TOK;
+  GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
+  if(tab==="sessions"||tab==="registre"){try{await asseguraLogs()}catch(e){c.innerHTML=avisErr(`No s'han pogut carregar els registres (${e}).`);return}}
+  if(tk!==TOK||VISTA!=="sessions")return;
+  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Sessions")+barraFiltresLocals({assig:true,nen:true})+`<div id="sesCos">${esqTaula()}</div>`;
+  lligaPestanyes(c,ll);lligaFiltresLocals(renderTab);
+  const cos=$("#sesCos");if(!cos)return;
+  if(tab==="sessions")vistaSessions(cos);
+  else if(tab==="registre")vistaLog(cos);
+  else{
+   cos.innerHTML=`<div class="graella">
+    ${card("activitat","c-6","calendari","Activitat per dia","Minuts d'estudi de cada nen per dia.",`<div class="cv"><canvas id="gAct" aria-label="Gràfic de minuts d'estudi per dia i nen" role="img"></canvas></div>`)}
+    ${card("calor","c-6","graella","Quan estudien","Activitat per hora i dia de la setmana.",`<div id="tCal"></div>`)}
+    ${card("notes","c-6","puja","Evolució de les notes","Cada punt és un test o examen; una línia per nen.",`<div class="cv"><canvas id="gEvo" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>`)}
+    ${card("constancia","c-6","foc","Constància","Dies d'estudi en el període i ratxa actual.",`<div id="tCst"></div>`)}
+   </div>`;
+   try{const [act,calor,evo]=await Promise.all([rpcT("bn_admin_activitat"),rpcT("bn_admin_calor"),rpcT("bn_admin_evolucio")]);
+    if(tk!==TOK||VISTA!=="sessions")return;gActivitat(act);tCalor(calor);gEvolucio(evo);tConstancia(act)}
+   catch(e){if(tk!==TOK||!$("#sesCos"))return;cos.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","Els gràfics d'activitat encara no estan activats a la base de dades."):avisErr(`No s'ha pogut carregar l'activitat (${e}).`)}
+  }
+ };
+ await renderTab();
+}
+async function rpcRankingMons(){
+ if(DEMO){await preguntes();demoInit();const per={};DEMO_L.forEach(l=>{const k=clauNen(l),r=per[k]||(per[k]={nom:l.nom,mons:{},dies:new Set(),t:0});
+  r.dies.add(diaL(l.ts));if(l.event==="temps")r.t+=(l.detall&&l.detall.s)||0;if(l.detall&&l.detall.punts!=null)r.mons[l.assig]=Math.max(r.mons[l.assig]||0,+l.detall.punts||0)});
+  return Object.entries(per).filter(([k])=>!(demoEstat(k)&1)).map(([,r])=>{const vs=Object.values(r.mons);return {nom:r.nom,punts:vs.reduce((s,v)=>s+v,0),temps_s:r.t,punts_max:vs.length?Math.max(...vs):0,setmana:Math.round(vs.reduce((s,v)=>s+v,0)*.25),mons:r.mons,dies:r.dies.size}}).sort((a,b)=>b.punts-a.punts)}
+ const r=await fetch(API.replace("bn_admin_logs","bn_ranking_mons"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_codi:null})});
+ if(!r.ok)throw r.status;return r.json();
+}
+async function vistaRanquingSeccio(c){
+ const ll=[["classificacio","Classificació"],["reptes","Reptes"],["xat","Xat"]],tab=ll.some(x=>x[0]===TAB)?TAB:"classificacio";
+ TAB=tab;escriuUrl(false);
+ const renderTab=async()=>{
+  const tk=++TOK;
+  GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
+  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Rànquing")+`<div id="rkCos">${esqTaula()}</div>`;
+  lligaPestanyes(c,ll);
+  const cos=$("#rkCos");if(!cos)return;
+  if(tab==="classificacio"){
+   try{const rk=await rpcRankingMons();if(tk!==TOK||VISTA!=="ranquing")return;
+    const rows=(Array.isArray(rk)?rk:[]).map((r,i)=>({pos:i+1,nom:String(r.nom||"?"),k:String(r.nom||"").trim().toLowerCase(),punts:+r.punts||0,max:+r.punts_max||0,setm:+r.setmana||0,dies:+r.dies||0}));
+    const cols=[{k:"pos",t:"Posició",num:true},{k:"nom",t:"Nen",cls:"nw",h:r=>`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`},{k:"punts",t:"Estrelles",num:true},{k:"max",t:"Nivell",cls:"nw",v:r=>r.max,h:r=>pillNivell(r.max)},{k:"setm",t:"Setmana",num:true,h:r=>`+${r.setm}`},{k:"dies",t:"Dies actius",num:true}];
+    cos.innerHTML=card("rkCard","c-12","trofeu","Classificació pública","Classificació actual dels últims 120 dies segons bn_ranking_mons.",rows.length?taula("tRk",cols,rows,{k:"pos",desc:false,etiqueta:"Classificació",csvNom:"bona-nota-ranquing",fila:r=>` class="clic" data-nen="${esc(r.k)}" tabindex="0"`}):buit("trofeu","Encara no hi ha cap nen al rànquing."))}
+   catch(e){if(tk!==TOK||!$("#rkCos"))return;cos.innerHTML=avisErr(`No s'ha pogut carregar el rànquing (${e}).`)}
+  }else if(tab==="reptes"){
+   try{await asseguraLogs()}catch(e){}
+   if(tk!==TOK||VISTA!=="ranquing")return;
+   cos.innerHTML=barraFiltresLocals({assig:true,nen:true})+`<div class="pila">
+    ${card("combos","c-12","foc","Combos i repàs","Surt de les diferències entre registres (el primer registre és la base): combos, super combo i les altres fonts des de la 2.9.0; triple combo i repàs des de la 2.10.0.",`<div id="tCom" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+    ${card("motivacio","c-12","trofeu","Repàs i boss","Errors apresos al repàs, intents de boss i estrelles de missions.",`<div id="tMot"></div>`)}
+   </div>`;
+   lligaFiltresLocals(renderTab);tCombos();tMotivacio();
+  }else{
+   await vistaXatModeracio(cos);
+  }
+ };
+ await renderTab();
+}
 function gActivitat(act){const dies=[...new Set(act.map(a=>a.dia))].sort(),noms=[...new Set(act.map(a=>a.nom))].sort((a,b)=>a.localeCompare(b,"ca"));
  if(!dies.length){const c=$("#gAct");if(c)c.parentNode.innerHTML=buit("calendari","Sense activitat en aquest període.");return}
  const o=GOPC();o.scales.x.stacked=true;o.scales.x.grid={display:false};o.scales.y.stacked=true;o.scales.y.title={display:true,text:"minuts",color:cssV("--muted")};
@@ -1683,9 +2002,7 @@ function htmlDificultat(d){d=oB(d);const fa=TF.assig,minR=nN(d.min_respostes)||8
  const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen, sense l'efecte de repetir.</span></div>`;
  return {h:nota+kpis+eines+PL.eines()+blocs+lleg,PL}}
 
-// ====================== CÒPIES DE SEGURETAT (supabase/bn_copies.sql) ======================
-// Còpies de les dades de Bona Nota dins de la mateixa base de dades: automàtiques cada nit, abans d'esborrar o canviar res
-// des de l'admin, manuals, i abans de restaurar. Aquí es veuen, es descarreguen (JSON), es restauren i s'esborren.
+// ====================== CONFIGURACIÓ (§4.6: Horaris i crèdits, Catàleg, Llindars, Còpies) ======================
 let CPTOK=0,COPIES=[];
 async function rpcC(f,extra){if(DEMO)return demoCopiesRpc(f);const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
  body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,...(extra||{})})});if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
@@ -1693,30 +2010,106 @@ const MOTIU={"automàtica":["info","Automàtica"],"manual":["neutre","Manual"],"
 const pillMotiu=m=>{const r=/^abans de restaurar la #(\d+)/.exec(m||""),[cl,t]=MOTIU[m]||(r?["warn",`Abans de restaurar la #${r[1]}`]:["neutre",m||"—"]);return `<span class="pill ${cl}">${esc(t)}</span>`};
 const contingut=f=>[[f.bn_log,"registre","registres"],[f.perfils,"perfil","perfils"],[f.progres,"progrés","progressos"]].filter(x=>x[0]!=null).map(([n,u,m])=>pl(n,u,m)).join(" · ");
 const kb=b=>b>=1048576?fmtD((b/1048576).toFixed(1))+" MB":Math.max(1,Math.round((b||0)/1024))+" KB";
-function vistaCopies(c){const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
- c.innerHTML=`<div class="graella">
- <section class="targeta c-12" aria-labelledby="cpT"><h2 id="cpT">${ic("copies")}Còpies de seguretat</h2>
-  <p class="sub">Cada còpia guarda totes les dades de Bona Nota: el registre d'activitat, els perfils (amb el PIN xifrat), el progrés al núvol, els noms amagats i els reinicis. No guarda els administradors. Es fan soles <b>cada nit a les 3:00</b> i <b>just abans d'esborrar o canviar res</b> des de l'admin. Les automàtiques es guarden 30 dies; les altres, 90. El fitxer descarregat porta els PIN xifrats: guarda'l en un lloc privat.</p>
-  <div class="eines-t"><span class="muted" id="cpN"></span><span class="esp"></span><button class="btn" type="button" id="cpFes"${nd}>${ic("copies")}Fes una còpia ara</button></div>
-  ${DEMO?`<p class="muted" style="margin:-4px 0 10px;font-size:12.5px">En demo les accions no estan disponibles.</p>`:""}
-  <div id="cpLlista">${Array(4).fill('<div class="esq esq-f"></div>').join("")}</div></section>
- <section class="targeta c-12" aria-labelledby="cpS"><h2 id="cpS">${ic("escut")}Còpia completa de Supabase</h2>
-  <p class="sub">A més, Supabase fa cada dia una còpia de <b>tota</b> la base de dades i en guarda 7 dies. Es restaura des del panell de Supabase i torna tot el projecte enrere, no només una part.</p>
-  <a class="btn sec" href="https://supabase.com/dashboard/project/agippwtqvhpxdockuigl/database/backups/scheduled" target="_blank" rel="noopener">${ic("extern")}Obre les còpies de Supabase</a></section></div>`;
- $("#cpFes").onclick=fesCopia;carregaCopies()}
+
+async function vistaConfig(c){
+ const ll=[["horaris","Horaris i crèdits"],["cataleg","Catàleg del xat"],["llindars","Llindars"],["copies","Còpies"]],tab=ll.some(x=>x[0]===TAB)?TAB:"horaris";
+ TAB=tab;escriuUrl(false);
+ const tk=++TOK;
+ c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Configuració")+`<div id="cfgCos">${tab==="llindars"?"":esqTaula()}</div>`;
+ lligaPestanyes(c,ll);
+ const cos=$("#cfgCos");if(!cos)return;
+ if(tab==="horaris"){
+  try{const [cfg]=await Promise.all([rpcX("bn_admin_xat_config"),ctrlDe().catch(()=>null)]);
+   if(tk!==TOK||VISTA!=="config"||TAB!=="horaris")return;
+   X=Object.assign(X||{resum:{},msgs:[],sil:[],cat:{frases:[],peces:[]},mons:[]},{cfg:Object.assign({},XCFG0,cfg&&typeof cfg==="object"?cfg:{})});
+   cos.innerHTML=(DEMO?`<div class="avis" style="margin-bottom:12px">${ic("info")}<div><p style="margin:0"><b>Mode demo:</b> configuració de mostra. Les accions d'escriptura estan desactivades.</p></div></div>`:"")+
+    card("cfgHoraris","c-12","rellotge","Horaris i crèdits del xat","Els crèdits i l'horari d'obertura i tancament es calculen al servidor des del moment que deses. Les dates d'examen de cada món es configuren a Nens → Benestar.",`<div id="xCfg"></div>`);
+   pintaXCfg()}
+  catch(e){if(tk!==TOK||!$("#cfgCos"))return;cos.innerHTML=e==="falta"?avisSQL("supabase/bn_xat.sql","Cal executar supabase/bn_xat.sql: el xat de la colla encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar la configuració (${e}).`)}
+ }else if(tab==="cataleg"){
+  try{const [cat,mons]=await Promise.all([rpcX("bn_admin_xat_cataleg"),monsLlista()]);
+   if(tk!==TOK||VISTA!=="config"||TAB!=="cataleg")return;
+   X=Object.assign(X||{resum:{},msgs:[],sil:[],cfg:Object.assign({},XCFG0)},{cat:xCat(cat),mons:mons||[]});
+   cos.innerHTML=(DEMO?`<div class="avis" style="margin-bottom:12px">${ic("info")}<div><p style="margin:0"><b>Mode demo:</b> mostra reduïda del catàleg. El catàleg complet té 26 frases i 66 peces.</p></div></div>`:"")+
+    card("cfgCataleg","c-12","cataleg","Catàleg del xat","Una frase o peça desactivada ja no es pot triar a la portada, i als missatges vells una peça desactivada es veu com «…». Aquí es veu igualment, marcada.",`<div id="xCat"></div>`,`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${DEMO?`<span class="pill warn" id="xkDemo">Mostra de demo</span>`:""}<button class="btn petit" type="button" id="btNovaPeca">${ic("mes")}<span>Peça nova</span></button></div>`);
+   const bt=$("#btNovaPeca");if(bt)bt.onclick=()=>{obrePanell({titol:"Peça nova al catàleg",cos:`<div id="xNova"></div>`});pintaXNova()};
+   pintaXCat()}
+  catch(e){if(tk!==TOK||!$("#cfgCos"))return;cos.innerHTML=e==="falta"?avisSQL("supabase/bn_xat.sql","Cal executar supabase/bn_xat.sql: el catàleg del xat encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el catàleg (${e}).`)}
+ }else if(tab==="llindars"){
+  pintaLlindars(cos);
+ }else{
+  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+  cos.innerHTML=card("cfgCopies","c-12","copies","Còpies de seguretat","Cada còpia desa el registre d'activitat, els perfils amb PIN xifrat, el progrés al núvol, els noms amagats i els reinicis (mai els administradors). Es fan soles cada nit a les 3:00 (guardades 30 dies) i abans d'esborrar o canviar res des de l'admin (guardades 90 dies). Supabase fa a part una còpia diària completa de 7 dies.",
+   `${DEMO?`<p class="muted" style="margin:0 0 10px;font-size:12px">En demo les accions d'escriptura i descàrrega estan desactivades.</p>`:""}<div id="cpLlista">${Array(4).fill('<div class="esq esq-f"></div>').join("")}</div>`,
+   `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="muted" id="cpN" style="font-size:12px"></span><a class="btn sec petit" href="https://supabase.com/dashboard/project/agippwtqvhpxdockuigl/database/backups/scheduled" target="_blank" rel="noopener">${ic("extern")}<span>Còpies de Supabase</span></a><button class="btn petit" type="button" id="cpFes"${nd}>${ic("copies")}<span>Fes una còpia ara</span></button></div>`);
+  $("#cpFes").onclick=fesCopia;carregaCopies();
+ }
+}
+function pintaLlindars(cos){
+ const regPed=[
+  {p:"Nota d'aprovat",v:`${APROVAT} %`,ef:"Temes aprovats, exàmens i matriu de domini",or:"regles.json"},
+  {p:"Descans proposat",v:"25 min",ef:" Pausa breu suggerida durant la sessió d'estudi",or:"plantilla del món"},
+  {p:"Repàs espaiat",v:"Caixes 0–3",ef:"Errors pendents es programen per dies segons encerts seguits",or:"plantilla del món"},
+  {p:"Perfils per aparell",v:"Màx. 2",ef:"Topall local de germans; el mode tast va a sessionStorage",or:"plantilla del món"}
+ ];
+ const nivH=`<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px">${NIVELLS.map(([min,nom,icn],i)=>`<span class="pill neutre">${esc(icn)} ${i+1} · ${esc(nom)} <span class="muted">(${min} ⭐)</span></span>`).join("")}</div>`;
+ const regBen=[
+  {ord:1,s:"Marató d'estudi",est:"malament",r:"> 60 min seguits sense pausa de 5 min, o > 90 min/dia (+30 cap de setmana); la vigília fins a 120 min (context)"},
+  {ord:2,s:"Entrada de nit (2+ nits)",est:"malament",r:"2 nits o més entre les 21:30 (22:00 la vigília) i les 06:00"},
+  {ord:3,s:"Entrada de nit (1 nit)",est:"avis",r:"1 nit entre les 21:30 (22:00 la vigília) i les 06:00"},
+  {ord:4,s:"Respon amb pressa",est:"avis",r:"< 3 s per pregunta i < 50 % d'encert amb 10 respostes o més"},
+  {ord:5,s:"Repetir sense aprendre",est:"avis",r:"4 tests o més del mateix tema el mateix dia sense estrelles noves"},
+  {ord:6,s:"Frustració",est:"avis",r:"3 suspesos seguits d'un tema o 2 valoracions «Costa»"},
+  {ord:7,s:"Enganxa text",est:"avis",r:"Intent d'enganxar text a les preguntes obertes"},
+  {ord:8,s:"Entra per xatejar",est:"avis",r:"10 frases o més i < 60 min d'estudi en 7 dies"},
+  {ord:9,s:"Deixa de venir",est:"avis",r:"3 dies o més sense entrar (> 7 dies puja de gravetat a les alertes)"},
+  {ord:10,s:"Salta el descans",est:"avis",r:"2 salts seguits o més del descans de 25 min (3 la vigília)"},
+  {ord:11,s:"Poc i sovint",est:"be",r:"3 dies o més amb 10–40 min d'estudi en els últims 7 dies"},
+  {ord:12,s:"Aprèn dels errors",est:"be",r:"Més errors apresos al repàs en 7 dies que la setmana anterior"},
+  {ord:13,s:"Fa el descans",est:"be",r:"Almenys 2 de cada 3 descansos proposats (mínim 2 fets)"}
+ ];
+ cos.innerHTML=`<div class="pila">
+  ${card("cfgLlindarsPed","","diana","Regles pedagògiques i nivells","Valors actius compartits entre el generador dels mons (motor/tot.py) i el panell d'administració (admin/regles.json).",
+   taula("tLlindarsPed",[{k:"p",t:"Paràmetre",cls:"nw",h:r=>`<b>${esc(r.p)}</b>`},{k:"v",t:"Valor actiu",cls:"nw",h:r=>`<span class="pill info">${esc(r.v)}</span>`},{k:"ef",t:"Efecte"},{k:"or",t:"Origen",cls:"nw muted"}],regPed,{eines:false,etiqueta:"Regles pedagògiques"})+nivH)}
+  ${card("cfgLlindarsBen","","cor","Llindars de benestar i bon ús","Senyals que calcula bn_admin_benestar al servidor (docs/BON-US.md §5). La vigília es fixa amb la data d'examen de cada món o pel pic del grup entre els dies 3 i 12.",
+   taula("tLlindarsBen",[{k:"s",t:"Senyal",cls:"nw",h:r=>`<b>${esc(r.s)}</b>`},{k:"ord",t:"Estat",cls:"nw",v:r=>r.ord,h:r=>pillEstat(r.est)},{k:"r",t:"Regla activa"}],regBen,{k:"ord",desc:false,etiqueta:"Llindars de benestar",csvNom:"bona-nota-llindars"}))}
+ </div>`;
+}
+function obrePanellCopia(r){if(!r)return;const f=r.files||{},nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ const files=[["Registre d'activitat (bn_log)",f.bn_log],["Perfils amb PIN",f.perfils],["Progrés al núvol",f.progres],["Noms amagats",f.amagats],["Configuració",f.config],["Reinicis",f.reinicis]].filter(x=>x[1]!=null);
+ obrePanell({titol:`Còpia #${r.id} · ${dataC(r.ts)}`,cos:`<div class="pila" style="gap:12px">
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pillMotiu(r.motiu)}<span class="pill neutre">${kb(r.mida)}</span></div>
+  <dl class="cp-det">${files.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(fmtM(v))}</dd>`).join("")}</dl>
+  <p class="muted" style="margin:0;font-size:12px">El fitxer JSON inclou els PIN xifrats dels perfils; desa'l només en un lloc privat. Restaurar demana doble confirmació i fa abans una còpia automàtica de l'estat actual.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:4px">
+   <button class="btn sec" type="button" data-cb="${r.id}"${nd}>${ic("baixar")}Descarrega JSON</button>
+   <button class="btn perill-sec" type="button" data-cr="${r.id}"${nd}>${ic("reinicia")}Restaura</button>
+   <button class="btn perill" type="button" data-ce="${r.id}"${nd}>${ic("paperera")}Esborra</button>
+  </div></div>`});
+ $("#panellCos").onclick=e=>{const b=e.target.closest("button[data-cb],button[data-cr],button[data-ce]");if(!b||b.disabled)return;
+  if(b.dataset.cb)baixaCopia(r);else if(b.dataset.cr)restauraCopia(r);else esborraCopia(r)};
+}
 async function carregaCopies(){const tok=++CPTOK;if(!$("#cpLlista"))return;let L;
  try{L=await rpcC("bn_admin_copies")}catch(e){if(tok!==CPTOK||!$("#cpLlista"))return;
   $("#cpLlista").innerHTML=e==="falta"?avisSQL("supabase/bn_copies.sql","Les còpies de seguretat encara no estan activades a la base de dades."):avisErr(`No s'han pogut carregar les còpies (${e}).`);return}
  if(tok!==CPTOK||!$("#cpLlista"))return;COPIES=Array.isArray(L)?L:[];
- $("#cpN").textContent=pl(COPIES.length,"còpia","còpies")+(COPIES.length?` · l'última: ${dataC(COPIES[0].ts)}`:"");
+ const cpN=$("#cpN");if(cpN)cpN.textContent=pl(COPIES.length,"còpia","còpies")+(COPIES.length?` · última: ${dataC(COPIES[0].ts)}`:"");
  if(!COPIES.length){$("#cpLlista").innerHTML=buit("copies","Encara no hi ha cap còpia.","La primera automàtica es farà aquesta nit a les 3:00.");return}
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
- $("#cpLlista").innerHTML=taula("tCop",[{k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},{k:"motiu",t:"Tipus",cls:"nw",h:r=>pillMotiu(r.motiu)},
-  {k:"n",t:"Contingut",cls:"nw",v:r=>(r.files||{}).bn_log||0,h:r=>esc(contingut(r.files||{}))},{k:"mida",t:"Mida",num:true,h:r=>kb(r.mida)},
-  {k:"acc",t:"<span class='sr'>Accions</span>",ord:false,cls:"nw",h:r=>`<button class="btn sec petit" type="button" data-cb="${r.id}"${nd}>${ic("baixar")}Descarrega</button> <button class="btn perill-sec petit" type="button" data-cr="${r.id}"${nd}>${ic("reinicia")}Restaura</button> <button class="btn-ic perill" type="button" data-ce="${r.id}" aria-label="Esborra la còpia #${r.id}" title="Esborra la còpia"${nd}>${ic("paperera")}</button>`}],
-  COPIES,{k:"ts",etiqueta:"Còpies de seguretat"});
- $("#cpLlista").onclick=e=>{const b=e.target.closest("button[data-cb],button[data-cr],button[data-ce]");if(!b||b.disabled)return;const id=+(b.dataset.cb||b.dataset.cr||b.dataset.ce),r=COPIES.find(x=>+x.id===id);if(!r)return;
-  if(b.dataset.cb)baixaCopia(r);else if(b.dataset.cr)restauraCopia(r);else esborraCopia(r)}}
+ // 4 columnes (§4.6): Data, Abast, Mida o detall i Acció; detall i restauració al panell lateral
+ const cols=[
+  {k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},
+  {k:"motiu",t:"Abast",cls:"nw",h:r=>pillMotiu(r.motiu)},
+  {k:"mida",t:"Mida o detall",v:r=>+r.mida||0,h:r=>`<b>${kb(r.mida)}</b> <span class="muted">· ${esc(contingut(r.files||{}))}</span>`},
+  {k:"acc",t:"Acció",ord:false,cls:"nw",h:r=>`<button class="btn sec petit" type="button" data-cp-prev="${r.id}">${ic("ull")}Detall i accions</button> <button class="btn sec petit" type="button" data-cb="${r.id}"${nd} title="Descarrega JSON">${ic("baixar")}JSON</button>`}
+ ];
+ $("#cpLlista").innerHTML=taula("tCop",cols,COPIES,{k:"ts",etiqueta:"Còpies de seguretat",csvNom:"bona-nota-copies",fila:r=>` class="clic" data-copia-id="${r.id}" tabindex="0"`});
+ $("#cpLlista").onclick=e=>{
+  const b=e.target.closest("button[data-cp-prev],button[data-cb]");
+  if(b){if(b.disabled)return;const r=COPIES.find(x=>+x.id===+(b.dataset.cpPrev||b.dataset.cb));if(!r)return;if(b.dataset.cpPrev)obrePanellCopia(r);else baixaCopia(r);return}
+  const tr=e.target.closest("tr[data-copia-id]");if(tr&&!e.target.closest("button,a,input")){const r=COPIES.find(x=>+x.id===+tr.dataset.copiaId);if(r)obrePanellCopia(r)}};
+ $("#cpLlista").onkeydown=e=>{if(e.key!=="Enter")return;const tr=e.target.closest&&e.target.closest("tr[data-copia-id]");if(tr&&e.target===tr){const r=COPIES.find(x=>+x.id===+tr.dataset.copiaId);if(r)obrePanellCopia(r)}};
+}
 async function fesCopia(){if(DEMO){toast("No disponible en demo","avis");return}const b=$("#cpFes");if(b)b.disabled=true;
  try{const id=await rpcC("bn_admin_copia_fes");toast(`Còpia #${id} feta`);await carregaCopies()}
  catch(e){toast(e==="falta"?"Falta executar supabase/bn_copies.sql":`No s'ha pogut fer la còpia (${e})`,"err")}finally{const x=$("#cpFes");if(x)x.disabled=false}}
@@ -1728,11 +2121,11 @@ async function restauraCopia(r){if(DEMO)return;const f=r.files||{};
   <ul><li>registre d'activitat: ${esc(f.bn_log??"?")} registres;</li><li>perfils amb PIN: ${esc(f.perfils??"?")};</li><li>progrés al núvol: ${esc(f.progres??"?")};</li><li>els noms amagats i els reinicis d'aquell moment.</li></ul>
   <p>Tot el que s'hagi fet després desapareixerà de la base de dades. Els administradors no canvien.</p>`}))return;
  if(!await dialeg({titol:"Restaurar la còpia: última confirmació",ok:"Sí, restaura-la",icona:"reinicia",cos:`<p>Pas 2 de 2. Abans de restaurar, es farà automàticament una còpia de l'estat d'ara. Si t'hi repenses, podràs restaurar aquella còpia i tornar a com estava tot.</p>`}))return;
- try{const x=await rpcC("bn_admin_copia_restaura",{p_id:+r.id});await carrega();toast(`Còpia #${r.id} restaurada (${x.bn_log} registres). L'estat d'abans és a la còpia #${x.copia_abans}.`)}
+ try{const x=await rpcC("bn_admin_copia_restaura",{p_id:+r.id});tancaPanell();await carrega();toast(`Còpia #${r.id} restaurada (${x.bn_log} registres). L'estat d'abans és a la còpia #${x.copia_abans}.`)}
  catch(e){toast(`No s'ha pogut restaurar (${e})`,"err")}}
 async function esborraCopia(r){if(DEMO)return;
  if(!await dialeg({titol:`Esborrar la còpia #${r.id}?`,ok:"Sí, esborra-la",icona:"paperera",irreversible:true,cos:`<p>S'esborrarà la còpia del <b>${esc(dataC(r.ts))}</b> (${esc(contingut(r.files||{}))}).</p><p>Les dades actuals de Bona Nota no es toquen.</p>`}))return;
- try{await rpcC("bn_admin_copia_esborra",{p_id:+r.id});toast(`Còpia #${r.id} esborrada`);await carregaCopies()}catch(e){toast(`No s'ha pogut esborrar (${e})`,"err")}}
+ try{await rpcC("bn_admin_copia_esborra",{p_id:+r.id});tancaPanell();toast(`Còpia #${r.id} esborrada`);await carregaCopies()}catch(e){toast(`No s'ha pogut esborrar (${e})`,"err")}}
 // demo: una llista inventada (cap crida)
 function demoCopiesRpc(f){if(f!=="bn_admin_copies")throw "demo";const n=DEMO_L.length,files=k=>({bn_log:k,perfils:6,progres:17,amagats:1,config:0,reinicis:1}),L=[],d0=new Date();
  const a=(dies,h,m,motiu,k)=>{const d=new Date(d0);d.setDate(d.getDate()-dies);d.setHours(h,m,0,0);L.push({id:0,ts:d.toISOString(),motiu,files:files(k),mida:Math.round(k*330+14000)})};
@@ -1740,9 +2133,7 @@ function demoCopiesRpc(f){if(f!=="bn_admin_copies")throw "demo";const n=DEMO_L.l
  L.sort((x,y)=>y.ts.localeCompare(x.ts)).forEach((x,i)=>x.id=L.length-i);return L.filter(x=>Date.parse(x.ts)<=Date.now())}
 
 // ====================== XAT DE LA COLLA (supabase/bn_xat.sql) ======================
-// Moderació del xat de la portada: resum del dia, missatges (també els esborrats), silencis, configuració, catàleg i peça nova.
-// Del servidor només arriben números (frase, peça o company): el text es compon aquí amb el catàleg de bn_admin_xat_cataleg,
-// amb les mateixes regles que la portada. Tot el que ve del servidor passa per esc(). Les accions perilloses demanen confirmació.
+// Moderació del xat a Rànquing → Xat; configuració d'horaris/crèdits i catàleg a Configuració.
 let XNIV=["Aprenent","Explorador","Investigador","Savi","Expert","Mestre","Campió","Heroi","Llegenda","Llegenda d'or"];
 const XCAT={repte:["Repte","ev-oberta"],aura:["Aura","ev-test"],classe:["Classe","ev-joc"],colla:["Colla","ev-targetes"]};
 const XSLOT={P:"Paraula d'estudi",E:"Cosa de classe",J:"Cosa teva",C:"Company"};
@@ -1781,47 +2172,59 @@ async function rpcX(f,extra){if(DEMO)return demoXatRpc(f);const r=await fetch(AP
  body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,...(extra||{})})});if(r.status===404)throw "falta";
  if(!r.ok){let m=r.status;try{const j=await r.json();if(j&&j.message)m=j.message}catch(e){}throw m}return r.json()}
 const errX=(e,que)=>e==="falta"?"Cal executar supabase/bn_xat.sql al SQL Editor de Supabase":e==="demo"?"No disponible en demo":`No s'ha pogut ${que} (${e})`;
-// noms: els dels missatges i els del registre (per triar a qui se silencia); el nom «bonic» d'una clau en minúscules
 function xNoms(){const m=new Map();(X?X.msgs:[]).forEach(x=>{const k=kNom(x.nom);if(k&&!m.has(k))m.set(k,String(x.nom).trim())});LOGS.forEach(l=>{const k=clauNen(l);if(k&&!m.has(k))m.set(k,l.nom.trim())});
  Object.entries(NOMS_TOTS).forEach(([k,n])=>{if(k&&n&&!m.has(k))m.set(k,String(n).trim())});
  return [...m.values()].sort((a,b)=>a.localeCompare(b,"ca"))}
 function nomDe(k){const m=X&&X.msgs.find(x=>kNom(x.nom)===k);if(m)return String(m.nom).trim();const l=LOGS.find(x=>clauNen(x)===k);return l?l.nom.trim():NOMS_TOTS[k]||k}
-async function vistaXat(c){const tok=++XTOK;
- c.innerHTML=`<div class="esq esq-t" style="margin-top:0"></div>${esqKpis(5)}<div class="graella" style="margin-top:24px"><div class="esq esq-g c-12"></div></div>`;
- try{const [resum,msgs,sil,cfg,cat,mons]=await Promise.all([rpcX("bn_admin_xat_resum"),rpcX("bn_admin_xat_msgs",{p_dies:DIES}),rpcX("bn_admin_xat_silencis"),rpcX("bn_admin_xat_config"),rpcX("bn_admin_xat_cataleg"),monsLlista(),ctrlDe().catch(()=>null)]);
-  if(tok!==XTOK||VISTA!=="xat")return;
-  X={resum:resum&&typeof resum==="object"?resum:{},msgs:Array.isArray(msgs)?msgs:[],sil:Array.isArray(sil)?sil:[],cfg:Object.assign({},XCFG0,cfg&&typeof cfg==="object"?cfg:{}),cat:xCat(cat),mons:mons||[]}}
- catch(e){if(tok!==XTOK||VISTA!=="xat")return;
+async function vistaXatModeracio(c){
+ const tok=++XTOK;
+ c.innerHTML=`${esqKpis(4)}<div class="graella" style="margin-top:14px"><div class="esq esq-g c-8" style="height:260px"></div><div class="esq esq-g c-4" style="height:260px"></div></div>`;
+ try{const [resum,msgs,sil,cfg,cat]=await Promise.all([rpcX("bn_admin_xat_resum"),rpcX("bn_admin_xat_msgs",{p_dies:DIES}),rpcX("bn_admin_xat_silencis"),rpcX("bn_admin_xat_config"),rpcX("bn_admin_xat_cataleg"),ctrlDe().catch(()=>null)]);
+  if(tok!==XTOK||VISTA!=="ranquing"||TAB!=="xat")return;
+  X=Object.assign(X||{mons:[]},{resum:resum&&typeof resum==="object"?resum:{},msgs:Array.isArray(msgs)?msgs:[],sil:Array.isArray(sil)?sil:[],cfg:Object.assign({},XCFG0,cfg&&typeof cfg==="object"?cfg:{}),cat:xCat(cat)})}
+ catch(e){if(tok!==XTOK||VISTA!=="ranquing"||TAB!=="xat")return;
   c.innerHTML=e==="falta"?avisSQL("supabase/bn_xat.sql","Cal executar supabase/bn_xat.sql: el xat de la colla encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar les dades del xat (${e}).`);return}
- pintaXat(c)}
-function pintaXat(c){
- c.innerHTML=`${DEMO?`<div class="avis" style="margin-bottom:16px">${ic("info")}<div><p style="margin:0"><b>Mode demo:</b> missatges, silenci i catàleg de mostra, inventats. En demo les accions no estan disponibles.</p></div></div>`:""}
- <section class="seccio" aria-labelledby="xrT"><h2 class="seccio-t" id="xrT" style="font-size:17px">Avui al xat</h2><p class="muted" style="margin:0 0 12px">Des de mitjanit, hora de Madrid. Del servidor només arriben números: el text de cada missatge es compon aquí amb el catàleg.</p><div id="xRes"></div></section>
- <div class="graella" style="margin-top:24px">
- <section class="targeta c-12" aria-labelledby="xmT"><h2 id="xmT">${ic("xat")}Missatges</h2><p class="sub" id="xmSub"></p>
-  <div class="eines-t"><div class="seg" id="xFil" role="group" aria-label="Quins missatges es veuen"></div><span class="esp"></span><span class="muted" id="xN"></span></div><div id="xMsgs"></div></section>
- <section class="targeta c-4" aria-labelledby="xsT"><h2 id="xsT">${ic("silenci")}Silenciats</h2><p class="sub">Un nom silenciat pot llegir el xat, però no escriure ni votar. El silenci s'acaba sol quan passen els dies.</p><div id="xSil"></div></section>
- <section class="targeta c-4" aria-labelledby="xcT"><h2 id="xcT">${ic("ajust")}Configuració</h2><p class="sub">Els crèdits es calculen al servidor amb aquests valors, des del moment que els deses.</p><div id="xCfg"></div></section>
- <section class="targeta c-4" aria-labelledby="xnT"><h2 id="xnT">${ic("mes")}Peça nova</h2><p class="sub">Per exemple, una «paraula de la setmana». Surt de seguida a la portada per a qui la tingui desbloquejada.</p><div id="xNova"></div></section>
- <section class="targeta c-12" aria-labelledby="xkT"><h2 id="xkT">${ic("cataleg")}Catàleg${DEMO?` <span class="pill warn">Mostra de demo</span>`:""}</h2><p class="sub">${DEMO?"Només una mostra: el catàleg de veritat té 26 frases i 66 peces. ":""}Una frase o peça desactivada ja no es pot triar a la portada, i als missatges vells una peça desactivada es veu com «…». Aquí es veu igualment, marcada.</p><div id="xCat"></div></section>
+ pintaXatModeracio(c);
+}
+function pintaXatModeracio(c){
+ const nd=xND(),obert=X.cfg.actiu!==false;
+ c.innerHTML=`${DEMO?`<div class="avis" style="margin-bottom:12px">${ic("info")}<div><p style="margin:0"><b>Mode demo:</b> missatges i silencis de mostra. Les accions d'escriptura estan desactivades.</p></div></div>`:""}
+ <div id="xRes"></div>
+ ${barraFiltresLocals({assig:false,nen:true})}
+ <div class="graella">
+  ${card("xmCard","c-8","xat","Missatges","Del servidor només arriben números: el text es compon amb el catàleg. Pots filtrar tots, visibles o esborrats.",
+   `<p class="sub" id="xmSub" style="margin-bottom:8px"></p><div class="eines-t"><div class="seg" id="xFil" role="group" aria-label="Quins missatges es veuen"></div><span class="esp"></span><span class="muted" id="xN"></span></div><div id="xMsgs"></div>`,
+   `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="sw" type="button" role="switch" id="xatModSw" aria-checked="${obert}" aria-label="Xat obert"${nd}><i></i><span>${obert?"Xat obert":"Xat tancat"}</span></button><button class="btn sec petit" type="button" data-go-cfg="cataleg">${ic("cataleg")}<span>Catàleg</span></button><button class="btn sec petit" type="button" data-go-cfg="horaris">${ic("ajust")}<span>Horaris</span></button></div>`)}
+  ${card("xsCard","c-4","silenci","Silenciats","Un nom silenciat pot llegir el xat, però no escriure ni votar. El silenci s'acaba sol quan passen els dies.",`<div id="xSil"></div>`)}
  </div>`;
+ lligaFiltresLocals(()=>pintaXatModeracio(c));
+ const sw=$("#xatModSw");
+ if(sw)sw.onclick=async()=>{if(DEMO){toast("No disponible en demo","avis");return}const nou=X.cfg.actiu===false;
+  if(!nou&&!await dialeg({titol:"Tancar el xat?",ok:"Sí, tanca el xat",icona:"xat",cos:`<p>Mentre estigui tancat, tothom podrà llegir el xat, però <b>ningú podrà escriure ni votar</b>.</p>`}))return;
+  sw.disabled=true;
+  try{const r=await rpcX("bn_admin_xat_config",{p_cfg:Object.assign({},X.cfg,{actiu:nou})});X.cfg=Object.assign({},XCFG0,r&&typeof r==="object"?r:{});
+   try{const rc=await rpcCtrl({xat_actiu:nou});CTRL=Promise.resolve(rc);CTRL_D=rc}catch(er){}
+   pintaXatModeracio(c);toast(nou?"Xat obert":"Xat tancat")}
+  catch(e){sw.disabled=false;toast(errX(e,"canviar l'estat del xat"),"err")}};
  $("#xFil").onclick=e=>{const b=e.target.closest("button[data-f]");if(!b)return;XF=b.dataset.f;pintaXMsgs();xFocus(`#xFil [data-f="${XF}"]`)};
  $("#xMsgs").onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(b.dataset.xesb)xEsborra(b.dataset.xesb,true);else if(b.dataset.xrec)xEsborra(b.dataset.xrec,false);else if(b.dataset.xsil)xSilencia(b.dataset.xsil)};
  $("#xSil").onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(b.dataset.xtreu)xTreuSilenci(b.dataset.xtreu);else if(b.id==="xsBt"&&$("#xsNom").value)xSilencia($("#xsNom").value)};
- $("#xCat").onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(b.dataset.xsw)xActiu(b.dataset.xsw,b.dataset.id);else if(b.dataset.t&&b.closest("#xkTab")){XCT=b.dataset.t;pintaXCat();xFocus(`#xkTab [data-t="${XCT}"]`)}};
- $("#xCat").onchange=e=>{if(e.target.id==="xkTipus"){XTP=e.target.value;pintaXCat();xFocus("#xkTipus")}};
- pintaXRes();pintaXMsgs();pintaXSil();pintaXCfg();pintaXCat();pintaXNova()}
-function pintaXRes(){const el=$("#xRes");if(!el||!X)return;const r=X.resum,cf=X.cfg,n=v=>esc(v==null?"—":v),obert=cf.actiu!==false;
- const kp=(t,v,s,cls)=>`<div class="kpi${cls?" "+cls:""}"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
- el.innerHTML=`<div class="kpis">${kp("Han parlat",n(r.parlat),"nens diferents")}${kp("Frases dites",n(r.frases),"missatges enviats")}${kp("Han arribat al màxim",n(r.al_maxim),`han dit les ${n(cf.max_dia)} frases del dia`)}${kp("Vots «Ben dit»",n(r.vots),"posats avui")}
-  ${kp("Estat del xat",obert?"Obert":"Tancat",obert?`cada ${n(cf.est_credit)} ⭐ = 1 frase · espera ${n(cf.espera_s)} s`:"es pot llegir, però no escriure ni votar",obert?"xok":"avis")}</div>`}
+ pintaXRes();pintaXMsgs();pintaXSil();
+}
+function pintaXRes(){const el=$("#xRes");if(!el||!X)return;const r=X.resum,cf=X.cfg,n=v=>v==null?"—":String(Math.round(+v||0)),obert=cf.actiu!==false;
+ el.innerHTML=`<div style="margin-bottom:12px">${filaKpis([
+  {t:"Han parlat avui",v:n(r.parlat),p:`${pillEstat(obert?"be":"avis")} <span class="muted">${obert?"Xat obert":"Xat tancat"}</span>`},
+  {t:"Frases dites avui",v:n(r.frases)},
+  {t:`Al màxim (${esc(cf.max_dia)}/dia)`,v:n(r.al_maxim)},
+  {t:"Vots «Ben dit»",v:n(r.vots)}
+ ],4)}</div>`}
 function pintaXMsgs(){const el=$("#xMsgs");if(!el||!X)return;const nd=xND(),FR=xMapa(X.cat.frases),PC=xMapa(X.cat.peces),ara=Date.now(),k0=kNom(TF.nom),sil={};
  X.sil.forEach(s=>{if(tsMs(s.fins)>ara)sil[s.k]=s});
  const tots=X.msgs.filter(m=>!k0||kNom(m.nom)===k0).sort((a,b)=>tsMs(b.ts)-tsMs(a.ts)||b.id-a.id),nE=tots.filter(m=>m.esborrat).length;
  const ms=tots.filter(m=>XF==="tots"||(XF==="esb"?!!m.esborrat:xVis(m))),per=(PERIODES.find(([d])=>d===DIES)||[0,""])[1];
- $("#xFil").innerHTML=[["tots","Tots",tots.length],["vis","Visibles",tots.filter(xVis).length],["esb","Esborrats",nE]].map(([f,t,n])=>`<button type="button" data-f="${f}" aria-pressed="${XF===f}">${t} <span class="muted">${n}</span></button>`).join("");
- $("#xmSub").innerHTML=`Del període de dalt (<b>${esc(per)}</b>), del més nou al més vell, també els esborrats (fins a 500).${k0?` Només els de <b>${esc(TF.nom)}</b>.`:""}`;
- $("#xN").textContent=pl(ms.length,"missatge","missatges");
+ const xf=$("#xFil");if(xf)xf.innerHTML=[["tots","Tots",tots.length],["vis","Visibles",tots.filter(xVis).length],["esb","Esborrats",nE]].map(([f,t,n])=>`<button type="button" data-f="${f}" aria-pressed="${XF===f}">${t} <span class="muted">${n}</span></button>`).join("");
+ const xs=$("#xmSub");if(xs)xs.innerHTML=`Període <b>${esc(per)}</b> · fins a 500 missatges (inclosos esborrats).${k0?` Filtrat per <b>${esc(TF.nom)}</b>.`:""}`;
+ const xn=$("#xN");if(xn)xn.textContent=pl(ms.length,"missatge","missatges");
  if(!ms.length){el.innerHTML=buit("xat",tots.length?"Cap missatge amb aquest filtre.":"Encara no hi ha cap missatge en aquest període.",tots.length?"":"Prova amb un període més llarg, a dalt.");return}
  const avui=diaL(ara),ahir=diaL(ara-864e5),g=[];
  ms.forEach(m=>{const t=tsMs(m.ts),d=diaL(t);let x=g[g.length-1];if(!x||x.d!==d)g.push(x={d,t,L:[]});x.L.push(m)});
@@ -1843,7 +2246,6 @@ function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.c
   <div class="xcfg-g"><label for="xcTancaH">Tanca / Obre<small>Per exemple: 21:30 a 07:00.</small></label><span style="display:inline-flex;gap:6px;align-items:center"><input id="xcTancaH" type="time" value="${minAHora(tM)}" style="width:98px"${nd}><span class="muted">→</span><input id="xcObreH" type="time" value="${minAHora(oM)}" style="width:98px"${nd}></span></div>
   <p class="xcfg-calc" id="xcCalc"></p>
   <div class="xcfg-p"><p class="xerr" id="xcErr" role="alert"></p><button class="btn" type="submit" id="xcDesa"${nd}>Desa la configuració</button></div></form>`;
- // a quants minuts d'estudi surt cada frase (l'estudi d'estrelles diu que un nen actiu en guanya unes 2 per minut)
  const calc=()=>{const e=+$("#xcEst").value,mx=+$("#xcMax").value;$("#xcCalc").textContent=e>0&&mx>0?`Un nen actiu guanya unes 2 ⭐ per minut: cada frase li costa uns ${fmtD(Math.round(e*5)/10)} minuts d'estudi, i les ${mx} del dia, uns ${fmtD(Math.round(e*mx/2))}.`:""};
  ["#xcEst","#xcMax"].forEach(s=>{$(s).oninput=calc});calc();
  $("#xcAct").onclick=()=>{obert=!obert;const b=$("#xcAct");b.setAttribute("aria-checked",obert);b.querySelector("span").textContent=obert?"Obert":"Tancat"};
@@ -1865,11 +2267,15 @@ function pintaXCat(){const el=$("#xCat");if(!el||!X)return;const F=X.cat.frases,
   <span class="esp"></span><span class="muted">${nOff?pl(nOff,"desactivada","desactivades"):"Totes actives"}</span></div><div id="xkTaula"></div>`;
  const sw=(r,t)=>`<button class="sw" type="button" role="switch" aria-checked="${r.actiu!==false}" data-xsw="${t}" data-id="${esc(r.id)}"${xND()} aria-label="${t==="frase"?"Frase":"Peça"} «${esc(r.text)}»"><i></i><span>${r.actiu!==false?"Sí":"No"}</span></button>`;
  const id=fr?"tXFr":"tXPc",prev=TAULES[id],fila=r=>r.actiu===false?' class="xoff"':"";
+ // Màxim 5 columnes (§4.6): Activa, #, Frase/Peça, Tipus i Es desbloqueja
  const cols=fr?[{k:"actiu",t:"Activa",v:r=>r.actiu===false?0:1,h:r=>sw(r,"frase")},{k:"id",t:"#",num:true},{k:"text",t:"Frase",cls:"xtx",h:r=>`<span class="xct">${esc(r.text).replace("___",`<span class="xforat">___</span>`)}</span>`},
-   {k:"cat",t:"Categoria",h:r=>{const c=XCAT[r.cat]||[r.cat,"ev-temps"];return `<span class="ev ${c[1]}">${esc(c[0])}</span>`}},{k:"slot",t:"Forat",cls:"nw",h:r=>esc(XSLOT[r.slot]||r.slot)},{k:"nivell",t:"Es desbloqueja",cls:"nw",v:r=>+r.nivell||0,h:r=>esc(xNiv(+r.nivell))}]
+   {k:"cat",t:"Tipus",cls:"nw",v:r=>(r.cat||"")+" "+(r.slot||""),h:r=>{const c=XCAT[r.cat]||[r.cat,"ev-temps"];return `<span class="ev ${c[1]}">${esc(c[0])}</span> <span class="muted">· ${esc(XSLOT[r.slot]||r.slot)}</span>`}},{k:"nivell",t:"Es desbloqueja",cls:"nw",v:r=>+r.nivell||0,h:r=>esc(xNiv(+r.nivell))}]
   :[{k:"actiu",t:"Activa",v:r=>r.actiu===false?0:1,h:r=>sw(r,"peca")},{k:"id",t:"#",num:true},{k:"text",t:"Peça",cls:"xtx",h:r=>`<span class="xct xt ${esc(r.tipus)}">${esc(r.text)}</span>`},
    {k:"tipus",t:"Tipus",cls:"nw",h:r=>esc(XSLOT[r.tipus]||r.tipus)},{k:"desb",t:"Es desbloqueja",cls:"nw",v:r=>r.mon?"m "+xDesb(r):"n "+String(r.nivell).padStart(2,"0"),h:r=>esc(xDesb(r))}];
- $("#xkTaula").innerHTML=L.length?taula(id,cols,L,{k:prev?prev.k:"id",desc:prev?prev.desc:false,etiqueta:fr?"Frases del xat":"Peces del xat",fila}):buit("cataleg","No hi ha res al catàleg.","Comprova que s'ha executat supabase/bn_xat.sql sencer.")}
+ $("#xkTaula").innerHTML=L.length?taula(id,cols,L,{k:prev?prev.k:"id",desc:prev?prev.desc:false,manteQ:true,etiqueta:fr?"Frases del xat":"Peces del xat",csvNom:fr?"bona-nota-xat-frases":"bona-nota-xat-peces",fila}):buit("cataleg","No hi ha res al catàleg.","Comprova que s'ha executat supabase/bn_xat.sql sencer.");
+ el.onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(b.dataset.xsw)xActiu(b.dataset.xsw,b.dataset.id);else if(b.dataset.t&&b.closest("#xkTab")){XCT=b.dataset.t;pintaXCat();xFocus(`#xkTab [data-t="${XCT}"]`)}};
+ el.onchange=e=>{if(e.target.id==="xkTipus"){XTP=e.target.value;pintaXCat();xFocus("#xkTipus")}};
+}
 function pintaXNova(){const el=$("#xNova");if(!el||!X)return;const nd=xND();let q="n";
  el.innerHTML=`<form class="xn" id="xnF" novalidate>
   <label for="xnText">Text</label><input id="xnText" maxlength="60" autocomplete="off" placeholder="Per exemple: el volcà">
@@ -1882,7 +2288,6 @@ function pintaXNova(){const el=$("#xNova");if(!el||!X)return;const nd=xND();let 
   <p class="xerr" id="xnErr" role="alert"></p>
   <button class="btn ample" type="submit" id="xnBt"${nd}>${ic("mes")}Afegeix la peça</button></form>`;
  const txt=()=>$("#xnText").value.trim().replace(/\s+/g," ");
- // exemple amb la primera frase activa d'aquest tipus: així es veu de seguida si la contracció (pel, als…) queda bé
  const prev=()=>{const t=txt(),tp=$("#xnTipus").value,f=X.cat.frases.find(x=>x.slot===tp&&x.actiu!==false)||X.cat.frases.find(x=>x.slot===tp);
   $("#xnPrev").innerHTML=!t?`<span class="muted">Escriu el text de la peça.</span>`:f?xatCompon({f:f.id,p:-1},xMapa([f]),{"-1":{text:t,tipus:tp,actiu:true}}).html:`<span class="muted">Cap frase del catàleg fa servir aquest tipus.</span>`};
  $("#xnText").oninput=prev;$("#xnTipus").onchange=prev;prev();
@@ -1891,14 +2296,13 @@ function pintaXNova(){const el=$("#xNova");if(!el||!X)return;const nd=xND();let 
   const mal=!t?["#xnText","Escriu el text de la peça."]:t.length>60?["#xnText","El text no pot passar de 60 caràcters."]:q==="m"&&!$("#xnMon").value?["#xnMon","Tria el món."]:null;
   if(mal){err.textContent=mal[1];$(mal[0]).focus();return}err.textContent="";const b=$("#xnBt");b.disabled=true;
   try{const id=await rpcX("bn_admin_xat_peca_nova",{p_tipus:tp,p_text:t,p_nivell:q==="n"?+$("#xnNiv").value:null,p_mon:q==="m"?$("#xnMon").value:null});
-   X.cat=xCat(await rpcX("bn_admin_xat_cataleg"));XCT="peces";XTP="";pintaXCat();pintaXNova();toast(`Peça #${id} afegida: «${t}»`)}
+   X.cat=xCat(await rpcX("bn_admin_xat_cataleg"));XCT="peces";XTP="";tancaPanell();pintaXCat();toast(`Peça #${id} afegida: «${t}»`)}
   catch(x){toast(errX(x,"afegir la peça"),"err");const y=$("#xnBt");if(y)y.disabled=false}}}
 // ---- accions (en demo no arriben aquí: els botons estan desactivats) ----
 async function xEsborra(id,esb){if(DEMO){toast("No disponible en demo","avis");return}const m=X.msgs.find(x=>String(x.id)===String(id));if(!m)return;
  if(esb){const t=xatCompon(m,xMapa(X.cat.frases),xMapa(X.cat.peces));
   if(!await dialeg({titol:`Esborrar el missatge de ${m.nom}?`,ok:"Sí, esborra'l",icona:"paperera",cos:`<p>«${esc(t.text)}» · ${esc(dataC(tsMs(m.ts)))}</p><ul><li>Deixarà de sortir al xat, a les bafarades del podi i a la cinta.</li><li>El crèdit que va gastar no es torna.</li><li>El pots recuperar des d'aquí mateix.</li></ul>`}))return}
  try{await rpcX("bn_admin_xat_esborra",{p_msg:m.id,p_esborrat:esb});m.esborrat=esb;
-  // esborrat segur que no surt; recuperat, surt si l'autor i el company encara hi poden sortir: es torna a preguntar al servidor
   if("vis" in m){m.vis=esb?false:undefined;if(!esb)rpcX("bn_admin_xat_msgs",{p_dies:DIES}).then(r=>{const n=Array.isArray(r)&&r.find(x=>String(x.id)===String(m.id));
    if(X&&n&&typeof n.vis==="boolean"&&!m.esborrat){m.vis=n.vis;if(!n.vis){const q=`#xMsgs [data-xesb="${esc(m.id)}"]`,f=document.activeElement===document.querySelector(q);pintaXMsgs();if(f)xFocus(q)}}}).catch(()=>{})}
   pintaXMsgs();xFocus(`#xMsgs [data-${esb?"xrec":"xesb"}="${esc(m.id)}"]`);
@@ -1908,12 +2312,10 @@ async function xSilencia(k){if(DEMO){toast("No disponible en demo","avis");retur
  const si=dialeg({titol:`Silenciar ${nom}?`,ok:"Sí, silencia'l",icona:"silenci",cos:`<p>Mentre duri el silenci, <b>${esc(nom)}</b> podrà llegir el xat, però no escriure ni votar. Els missatges que ja ha escrit es queden: si cal, esborra'ls a part.</p>
   <label for="xsDies">Quant de temps</label><select id="xsDies"><option value="1">1 dia</option><option value="3">3 dies</option><option value="7">7 dies</option></select>
   <label for="xsMotiu">Motiu <span class="muted" style="font-weight:400">(només el veus tu, aquí)</span></label><input id="xsMotiu" maxlength="200" autocomplete="off" placeholder="Per exemple: repeteix el mateix missatge">`});
- // Retorn al motiu confirma, com el botó (sense això, el formulari faria servir el primer botó, «Cancel·la», i el silenci es perdria)
  $("#xsMotiu").onkeydown=e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();$("#dlgOk").click()}};
  if(!await si)return;
  const dies=+$("#xsDies").value,motiu=($("#xsMotiu").value||"").trim().slice(0,200);
  try{await rpcX("bn_admin_xat_silencia",{p_nom:k,p_dies:dies,p_motiu:motiu});
-  // la data de fi la decideix el servidor: es torna a llegir; si no es pot, se n'escriu una d'aproximada
   const s=await rpcX("bn_admin_xat_silencis").catch(()=>null);X.sil=Array.isArray(s)?s:X.sil.filter(x=>x.k!==k).concat([{k,fins:Date.now()+dies*864e5,motiu}]);
   pintaXSil();pintaXMsgs();toast(`${nom} silenciat ${pl(dies,"dia","dies")}`)}
  catch(e){toast(errX(e,"silenciar"),"err")}}
@@ -1921,7 +2323,7 @@ async function xTreuSilenci(k){if(DEMO){toast("No disponible en demo","avis");re
  try{await rpcX("bn_admin_xat_silencia",{p_nom:k,p_dies:0,p_motiu:""});X.sil=X.sil.filter(s=>s.k!==k);pintaXSil();pintaXMsgs();toast(`${nomDe(k)} ja pot tornar a parlar`)}
  catch(e){toast(errX(e,"treure el silenci"),"err")}}
 async function xActiu(t,id){if(DEMO){toast("No disponible en demo","avis");return}const r=(t==="frase"?X.cat.frases:X.cat.peces).find(x=>String(x.id)===String(id));if(!r)return;const nou=r.actiu===false;
- try{await rpcX("bn_admin_xat_actiu",{p_taula:t,p_id:+r.id,p_actiu:nou});r.actiu=nou;pintaXCat();pintaXMsgs();pintaXNova();xFocus(`#xCat [data-xsw="${t}"][data-id="${esc(r.id)}"]`);
+ try{await rpcX("bn_admin_xat_actiu",{p_taula:t,p_id:+r.id,p_actiu:nou});r.actiu=nou;pintaXCat();if($("#xMsgs"))pintaXMsgs();if($("#xNova"))pintaXNova();xFocus(`#xCat [data-xsw="${t}"][data-id="${esc(r.id)}"]`);
   toast(`${t==="frase"?"Frase":"Peça"} «${r.text}» ${nou?"activada":"desactivada"}`)}
  catch(e){toast(errX(e,nou?"activar-la":"desactivar-la"),"err")}}
 // demo: un xat inventat amb un catàleg de mostra petit (ids i textos del de veritat) i cap crida al núvol

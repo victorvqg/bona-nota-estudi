@@ -1,13 +1,7 @@
 #!/usr/bin/env node
-// Bona Nota · prova automàtica de la pestanya «Xat» del panell d'admin (admin/index.html) amb Playwright (Chromium).
+// Bona Nota · prova automàtica del xat al panell d'admin (Rànquing → Xat i Configuració → Horaris / Catàleg)
+// amb Playwright (Chromium).
 // Ús (des de l'arrel del repo o des de motor/):   node motor/prova-admin-xat.js
-// Engega un servidor estàtic local sobre l'arrel del repo i simula Supabase amb page.route (un estat petit en memòria): no toca res de debò.
-// Casos: 0) composició del text (la funció pura de l'admin, sense navegador: forat, contraccions, majúscula, desactivat, «…»)
-//        1) ?demo: la pestanya es pinta sense errors, amb dades de mostra, accions desactivades i cap crida al núvol
-//        2) amb credencials: totes les crides porten p_email i p_pass; text compost; «vis» («No surt a la portada» i el filtre Visibles);
-//           esborrar, recuperar, silenciar (i cancel·lar, i Retorn al motiu confirma), treure el silenci, desar la configuració
-//           (i un valor fora de límits), tancar el xat, desactivar una peça i peça nova
-//        3) el SQL encara no hi és (404) → avís de supabase/bn_xat.sql · SQL d'abans sense «vis» · 4) mòbil (390 px): res no surt per la dreta.
 const http = require("http"), fs = require("fs"), path = require("path");
 const { chromium } = require("playwright");
 const ARREL = path.resolve(__dirname, "..");
@@ -26,7 +20,6 @@ function servidor() {
   s.listen(0, "127.0.0.1", () => res(s)) });
 }
 
-// estat simulat del servidor (el contracte de .nucli/pla-n2528.md); els temps en mil·lisegons d'època
 function estatNou() {
  const ara = Date.now(), fa = min => ara - min * 6e4;
  return {
@@ -46,12 +39,19 @@ function estatNou() {
    { id: 7, nom: "Hugo", f: 13, p: 43, c: null, ts: fa(40), esborrat: true, v: 0 },
    { id: 5, nom: "Gina", f: 1, p: 2, c: null, ts: fa(50), esborrat: false, v: 0 },
    { id: 6, nom: "Ona", f: 1, p: 999, c: null, ts: fa(60), esborrat: false, v: 1 }],
-  ocults: [5], // el servidor diu vis:false (nom amagat, prohibit o nen esborrat) encara que no estigui esborrat
+  ocults: [5],
   sil: [{ k: "hugo", fins: ara + 2 * 864e5, motiu: "Repeteix el mateix missatge" }] };
 }
 function respon(st, f, cos) {
  if (f === "bn_admin_logs") return [{ id: 1, ts: new Date().toISOString(), assig: "socials", nom: "Biel", sessio: "s1", aparell: "a1", event: "entra", detall: { punts: 0 } }];
- if (f === "bn_admin_ids" || f === "bn_aspectes") return [];
+ if (f === "bn_admin_ids") return [{ k: "biel", nom: "Biel", id: 1 }];
+ if (f === "bn_aspectes" || f === "bn_ranking_mons" || f === "bn_admin_altes" || f === "bn_admin_alertes") return [];
+ if (f === "bn_admin_resum") return { periode: cos.p_periode || "7d", ara: { nens: 1, minuts: 10, tests: 1, nota: 80, encert: 80 }, abans: null };
+ if (f === "bn_admin_fonts_dia") return { periode: cos.p_periode || "7d", dies: [], total: {} };
+ if (f === "bn_admin_control") {
+  if (cos.p_cfg && typeof cos.p_cfg.xat_actiu === "boolean") st.cfg.actiu = cos.p_cfg.xat_actiu;
+  return { xat_actiu: st.cfg.actiu, xat_obert_ara: st.cfg.actiu, horari: { actiu: true, tanca_min: 1290, obre_min: 420 }, mons_tancats: [] };
+ }
  if (!st.sql || !f.startsWith("bn_admin_xat_")) return undefined;
  if (f === "bn_admin_xat_resum") return st.resum;
  if (f === "bn_admin_xat_msgs") return st.sinVis ? st.msgs : st.msgs.map(m => Object.assign({}, m, { vis: !m.esborrat && !st.ocults.includes(m.id) }));
@@ -70,7 +70,6 @@ function respon(st, f, cos) {
  console.log("0) composició del text (funció pura de l'admin)");
  { const src = fs.readFileSync(path.join(ARREL, "admin", "index.html"), "utf8"), m = src.match(/\/\/ \[xat-pures\][^\n]*\n([\s\S]*?)\/\/ \[\/xat-pures\]/);
   ok(!!m, "l'admin té el bloc // [xat-pures]");
-  // el codi avaluat és el del mateix repo (admin/index.html), com a prova-admin-fonts.js: no hi entra res de fora
   const xatCompon = new Function((m ? m[1] : "") + ";return xatCompon")();
   const FR = { 1: { text: "Vaig a per ___!", actiu: true }, 2: { text: "Revenja a ___?", actiu: true }, 3: { text: "___? Bufar i fer ampolles!", actiu: true }, 4: { text: "Que algú m'expliqui ___", actiu: true },
    5: { text: "Pista: repassa ___", actiu: true }, 6: { text: "Ningú m'atura de ___", actiu: false }, 7: { text: "Compte, ___, que vinc!", actiu: true }, 8: { text: "___, et toca moure fitxa!", actiu: true }, 9: { text: "Respecte per a ___", actiu: true } };
@@ -95,7 +94,6 @@ function respon(st, f, cos) {
 
  const srv = await servidor(), BASE = `http://127.0.0.1:${srv.address().port}`;
  const nav = await chromium.launch();
- // obre l'admin amb (o sense) credencials, amb l'estat simulat del servidor; torna les crides fetes a Supabase
  async function obre(url, opcions) {
   const o = opcions || {}, st = Object.assign(estatNou(), { sql: o.sql !== false, sinVis: !!o.sinVis });
   const ctx = await nav.newContext({ viewport: o.viewport || { width: 1280, height: 900 } }), p = await ctx.newPage(), crides = [];
@@ -108,46 +106,63 @@ function respon(st, f, cos) {
   if (o.cred) await p.addInitScript(c => sessionStorage.setItem("bn_admin", JSON.stringify(c)), o.cred);
   const errors = []; p.on("pageerror", e => errors.push(e.message));
   await p.goto(BASE + url); await p.waitForSelector("#shell:not([hidden])");
-  if (await p.isVisible("#obreMenu")) await p.click("#obreMenu"); // al mòbil, el menú és plegat
-  await p.click('#nav [data-v="xat"]');
-  // espera que hi hagi una crida a f (n vegades) i torna l'última
+  const vesXat = async () => {
+   if (await p.isVisible("#navInf")) await p.click('#navInf [data-v="ranquing"]');
+   else await p.click('#nav [data-v="ranquing"]');
+   await p.waitForSelector('[data-vtab="xat"]');
+   await p.click('[data-vtab="xat"]');
+  };
+  if (o.obreXat !== false) await vesXat();
   const crida = async (f, n) => { for (let i = 0; i < 60; i++) { const c = crides.filter(x => x.f === f); if (c.length >= (n || 1)) { await p.waitForTimeout(120); return c[c.length - 1] } await p.waitForTimeout(50) } return null };
   const txt = s => p.evaluate(s => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, " ").trim() : null }, s);
   const errG = () => p.evaluate(() => getComputedStyle(document.getElementById("errG")).display !== "none");
-  return { p, ctx, st, crides, errors, crida, txt, errG };
+  return { p, ctx, st, crides, errors, crida, txt, errG, vesXat };
  }
 
- console.log("1) ?demo: la pestanya es pinta amb dades de mostra i sense cap crida");
+ console.log("1) ?demo: Rànquing → Xat i Configuració → Catàleg amb dades de mostra i sense cap crida");
  { const { p, ctx, crides, errors, txt, errG } = await obre("/admin/?demo");
   await p.waitForSelector("#xMsgs .xm");
-  ok((await txt("#titol")) === "Xat de la colla", "títol «Xat de la colla»");
-  ok((await p.getAttribute('#nav [data-v="xat"]', "aria-current")) === "page" && (await p.$('#nav [data-v="xat"] svg.ic path')) !== null, "entrada «Xat» al menú, marcada i amb icona");
+  ok((await txt("#titol")) === "Rànquing", "títol «Rànquing» amb la sub-pestanya Xat");
+  ok((await p.getAttribute('#nav [data-v="ranquing"]', "aria-current")) === "page" && (await p.getAttribute('[data-vtab="xat"]', "aria-selected")) === "true", "entrada «Rànquing» marcada i sub-pestanya «Xat» seleccionada");
   ok((await txt("#contingut .avis")).includes("Mode demo"), "avís de mode demo");
-  ok((await p.$$("#xRes .kpi")).length === 5, "resum del dia amb 5 xifres");
+  ok((await p.$$("#xRes .kpi")).length === 4, "resum del dia amb 4 KPIs compactes");
   ok((await txt('#xMsgs .xm[data-xid="12"] .xm-t')) === "Vaig a pel teu lloc!", "text compost amb contracció: «Vaig a pel teu lloc!»");
   ok((await txt('#xMsgs .xm[data-xid="7"]')).includes("Peça desactivada") && (await txt('#xMsgs .xm[data-xid="1"] .xm-t')) === "Vaig a per …!", "peça desactivada marcada i peça que no existeix com «…»");
   ok((await p.$$("#xMsgs .xm.esb")).length === 2, "els missatges esborrats també surten");
-  ok((await p.$('#xMsgs .xm[data-xid="13"]:not(.esb) .pill[title^="Nom amagat"]')) !== null && (await txt('#xMsgs .xm[data-xid="13"]')).includes("No surt a la portada") && !(await txt('#xMsgs .xm[data-xid="12"]')).includes("No surt a la portada"), "un missatge de mostra que no surt a la portada, marcat (i el perquè al title)");
+  ok((await p.$('#xMsgs .xm[data-xid="13"]:not(.esb) .pill[title^="Nom amagat"]')) !== null && (await txt('#xMsgs .xm[data-xid="13"]')).includes("No surt a la portada") && !(await txt('#xMsgs .xm[data-xid="12"]')).includes("No surt a la portada"), "un missatge de mostra que no surt a la portada, marcat");
   await p.click('#xFil [data-f="vis"]'); await p.waitForTimeout(50);
   const vd = await p.$$eval("#xMsgs .xm", xs => xs.map(x => x.dataset.xid));
-  ok(vd.length > 3 && !vd.includes("13") && !vd.includes("6") && !vd.includes("5") && (await txt('#xFil [data-f="vis"]')) === "Visibles " + vd.length, "«Visibles» fa servir vis: ni els esborrats ni el que no surt a la portada (" + vd.join(",") + ")");
+  ok(vd.length > 3 && !vd.includes("13") && !vd.includes("6") && !vd.includes("5") && (await txt('#xFil [data-f="vis"]')) === "Visibles " + vd.length, "«Visibles» fa servir vis (" + vd.join(",") + ")");
   await p.click('#xFil [data-f="tots"]');
-  ok((await txt("#xSil")).includes("Hugo") && (await txt("#xkT")).includes("Mostra de demo"), "un silenci i el catàleg marcat com a mostra");
-  const actives = await p.$$eval("#xMsgs button, #xSil button, #xcDesa, #xcAct, #xnBt, #xCat button.sw", bs => bs.filter(b => !b.disabled).length);
-  ok(actives === 0, "totes les accions desactivades en demo");
+  ok((await txt("#xSil")).includes("Hugo"), "un silenci actiu en demo");
+  const activesMod = await p.$$eval("#xatModSw, #xMsgs button, #xSil button", bs => bs.filter(b => !b.disabled).length);
+  ok(activesMod === 0, "totes les accions de moderació desactivades en demo");
   ok((await p.getAttribute("[data-xesb]", "title")) === "No disponible en demo", "«No disponible en demo» als botons");
+  // enllaç ràpid cap a Configuració → Catàleg
+  await p.click('[data-go-cfg="cataleg"]');
+  await p.waitForSelector("#xkTaula tbody tr");
+  ok((await txt("#xkDemo")) === "Mostra de demo", "el catàleg en demo surt marcat com a mostra");
+  const nColsCat = await p.$$eval("#xkTaula thead th", ths => ths.length);
+  ok(nColsCat === 5, `taula del catàleg compactada a 5 columnes (obtingut: ${nColsCat})`);
   await p.click('#xkTab [data-t="peces"]'); await p.waitForTimeout(100);
   ok((await p.$$("#xkTaula tbody tr")).length === 10 && (await p.$$("#xkTaula tr.xoff")).length === 1, "el catàleg de mostra (peces) es pot mirar, amb la desactivada marcada");
+  await p.click("#btNovaPeca"); await p.waitForSelector("#panell:not([hidden]) #xnBt");
+  const activesCat = await p.$$eval("#xCat button.sw, #xnBt", bs => bs.filter(b => !b.disabled).length);
+  ok(activesCat === 0, "interruptors del catàleg i #xnBt al drawer desactivats en demo");
+  await p.click("#panellTanca");
+  await p.click('[data-vtab="horaris"]'); await p.waitForSelector("#xcDesa");
+  const activesHor = await p.$$eval("#xcDesa, #xcAct, #xcHorari", bs => bs.filter(b => !b.disabled).length);
+  ok(activesHor === 0, "accions d'horaris i crèdits desactivades en demo");
   ok(crides.length === 0, "cap crida a Supabase en demo (" + crides.map(c => c.f).join(", ") + ")");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("2) amb credencials: crides, text compost i accions");
- { const { p, ctx, st, crides, errors, crida, txt, errG } = await obre("/admin/", { cred: CRED });
+ console.log("2) amb credencials: moderació (Rànquing → Xat) + Horaris i Catàleg (Configuració)");
+ { const { p, ctx, st, crides, errors, crida, txt, errG, vesXat } = await obre("/admin/", { cred: CRED });
   await p.waitForSelector("#xMsgs .xm");
   const fs5 = ["bn_admin_xat_resum", "bn_admin_xat_msgs", "bn_admin_xat_silencis", "bn_admin_xat_config", "bn_admin_xat_cataleg"];
-  ok(fs5.every(f => crides.some(c => c.f === f)), "en obrir la pestanya es demanen resum, missatges, silencis, configuració i catàleg");
+  ok(fs5.every(f => crides.some(c => c.f === f)), "en obrir Rànquing → Xat es demanen resum, missatges, silencis, configuració i catàleg");
   ok((crides.find(c => c.f === "bn_admin_xat_msgs") || { cos: {} }).cos.p_dies === 7, "els missatges es demanen per al període de dalt (p_dies 7)");
-  ok((await txt("#xRes")).includes("9") && (await txt("#xRes")).includes("Obert"), "el resum mostra les xifres del servidor i l'estat");
+  ok((await txt("#xRes")).includes("9") && (await txt("#xRes")).includes("Xat obert"), "el resum mostra les xifres del servidor i l'estat");
   ok((await txt('.xm[data-xid="11"] .xm-t')) === "Vaig a pel teu lloc!", "«Vaig a per ___!» + «el teu lloc» → «Vaig a pel teu lloc!»");
   ok((await txt('.xm[data-xid="9"] .xm-t')) === "El test? Bufar i fer ampolles!", "majúscula si la frase comença pel forat");
   ok((await txt('.xm[data-xid="8"] .xm-t')) === "Ningú m'atura als jocs", "a + els → als");
@@ -156,7 +171,7 @@ function respon(st, f, cos) {
   ok((await txt('.xm[data-xid="7"]')).includes("Esborrat") && (await txt('.xm[data-xid="7"]')).includes("Frase desactivada") && (await txt('.xm[data-xid="7"] .xm-t')) === "El wifi de l'institut: -1000 d'aura", "missatge esborrat amb frase desactivada: es veu, marcat");
   ok((await txt('.xm[data-xid="7"]')).includes("Silenciat fins"), "l'autor silenciat surt marcat");
   ok((await txt('.xm[data-xid="11"] .xm-v')).endsWith("2"), "vots «Ben dit» de cada missatge");
-  ok((await p.$('.xm[data-xid="5"]:not(.esb) .pill[title^="Nom amagat"]')) !== null && !(await txt('.xm[data-xid="7"]')).includes("No surt a la portada") && !(await txt('.xm[data-xid="11"]')).includes("No surt a la portada"), "vis false sense esborrar → «No surt a la portada» (ni als esborrats ni als que surten)");
+  ok((await p.$('.xm[data-xid="5"]:not(.esb) .pill[title^="Nom amagat"]')) !== null && !(await txt('.xm[data-xid="7"]')).includes("No surt a la portada") && !(await txt('.xm[data-xid="11"]')).includes("No surt a la portada"), "vis false sense esborrar → «No surt a la portada»");
   await p.click('#xFil [data-f="vis"]'); await p.waitForTimeout(50);
   ok(JSON.stringify(await p.$$eval("#xMsgs .xm", xs => xs.map(x => x.dataset.xid))) === '["11","10","9","8","6"]' && (await txt('#xFil [data-f="vis"]')) === "Visibles 5", "«Visibles» fa servir el vis del servidor");
   await p.click('#xFil [data-f="tots"]');
@@ -173,8 +188,8 @@ function respon(st, f, cos) {
   await p.waitForTimeout(150);
   ok((await txt('#xFil [data-f="vis"]')) === "Visibles 5" && (await txt('#xFil [data-f="esb"]')) === "Esborrats 1" && !(await txt('.xm[data-xid="7"]')).includes("No surt a la portada"), "comptadors: l'esborrat ja no surt i el recuperat sí");
 
-  // silenciar des de la targeta (amb el nom del registre a la llista) i des d'un missatge; cancel·lar no fa res
-  ok((await p.$$eval("#xsNom option", os => os.map(o => o.textContent))).includes("Biel"), "per silenciar es pot triar també un nom del registre");
+  // silenciar des de la targeta (amb el nom de NOMS_TOTS a la llista) i des d'un missatge; cancel·lar no fa res
+  ok((await p.$$eval("#xsNom option", os => os.map(o => o.textContent))).includes("Biel"), "per silenciar es pot triar també un nom conegut de l'admin");
   await p.selectOption("#xsNom", "pau"); await p.click("#xsBt"); await p.waitForSelector("#dlg[open]");
   await p.selectOption("#xsDies", "3"); await p.fill("#xsMotiu", "Prova de silenci"); await p.click("#dlgOk");
   c = await crida("bn_admin_xat_silencia");
@@ -190,12 +205,14 @@ function respon(st, f, cos) {
   ok(c && c.cos.p_nom === "hugo" && c.cos.p_dies === 0, "treure el silenci → p_dies 0");
   await p.waitForTimeout(150);
   ok((await p.$('#xSil [data-xtreu="hugo"]')) === null && !(await txt("#xSil .xs-l")).includes("Hugo"), "en Hugo ja no surt a la llista");
-  // Retorn al camp «Motiu»: el primer botó del formulari és «Cancel·la», i abans tancava el diàleg sense silenciar ni avisar
   await p.click('[data-xsil="laia"]'); await p.waitForSelector("#dlg[open]"); await p.fill("#xsMotiu", "Amb Retorn"); await p.press("#xsMotiu", "Enter");
   c = await crida("bn_admin_xat_silencia", 4);
-  ok(c && c.cos.p_nom === "laia" && c.cos.p_dies === 1 && c.cos.p_motiu === "Amb Retorn" && (await p.$("#dlg[open]")) === null, "Retorn al camp «Motiu» confirma el silenci (no el cancel·la)");
+  ok(c && c.cos.p_nom === "laia" && c.cos.p_dies === 1 && c.cos.p_motiu === "Amb Retorn" && (await p.$("#dlg[open]")) === null, "Retorn al camp «Motiu» confirma el silenci");
 
-  // configuració: un valor fora de límits no s'envia; després es desa; tancar el xat demana confirmació
+  // Configuració → Horaris i crèdits
+  await p.click('[data-go-cfg="horaris"]');
+  await p.waitForSelector("#xcF");
+  ok(await p.evaluate(() => document.getElementById("periodeWrap").hidden), "a Configuració s'amaga el selector global de període");
   await p.fill("#xcMax", "50"); await p.click("#xcDesa"); await p.waitForTimeout(200);
   ok(!crides.some(x => x.f === "bn_admin_xat_config" && x.cos.p_cfg) && (await txt("#xcErr")).includes("1 a 20"), "un màxim de 50 no s'envia i surt l'avís");
   await p.fill("#xcMax", "5"); await p.fill("#xcEst", "12"); await p.click("#xcDesa");
@@ -209,28 +226,35 @@ function respon(st, f, cos) {
   for (let i = 0; i < 40 && !crides.some(x => x.f === "bn_admin_xat_config" && x.cos.p_cfg && x.cos.p_cfg.actiu === false); i++) await p.waitForTimeout(50);
   ok(crides.some(x => x.f === "bn_admin_xat_config" && x.cos.p_cfg && x.cos.p_cfg.actiu === false && x.cos.p_cfg.est_credit === 12), "tancar → p_cfg.actiu false");
   await p.waitForTimeout(150);
-  ok((await txt("#xRes")).includes("Tancat") && (await p.getAttribute("#xcAct", "aria-checked")) === "false", "el resum diu «Tancat»");
+  ok((await p.getAttribute("#xcAct", "aria-checked")) === "false", "l'interruptor #xcAct queda apagat");
 
-  // catàleg: desactivar una peça (el missatge vell es veu igual, marcat)
+  // Configuració → Catàleg del xat: desactivar una peça i crear-ne dues des del panell lateral (#panell)
+  await p.click('[data-vtab="cataleg"]'); await p.waitForSelector("#xkTaula tbody tr");
   await p.click('#xkTab [data-t="peces"]'); await p.waitForTimeout(100);
   await p.click('#xCat [data-xsw="peca"][data-id="1"]'); c = await crida("bn_admin_xat_actiu");
   ok(c && c.cos.p_taula === "peca" && c.cos.p_id === 1 && c.cos.p_actiu === false, "desactivar → bn_admin_xat_actiu {p_taula:'peca', p_id:1, p_actiu:false}");
   await p.waitForTimeout(100);
-  ok((await p.getAttribute('#xCat [data-xsw="peca"][data-id="1"]', "aria-checked")) === "false" && (await txt('.xm[data-xid="11"]')).includes("Peça desactivada") && (await txt('.xm[data-xid="11"] .xm-t')) === "Vaig a pel teu lloc!", "l'interruptor queda apagat i el missatge surt marcat");
+  ok((await p.getAttribute('#xCat [data-xsw="peca"][data-id="1"]', "aria-checked")) === "false", "l'interruptor de la peça queda apagat");
   await p.click('#xkTab [data-t="frases"]'); await p.waitForTimeout(100);
   await p.click('#xCat [data-xsw="frase"][data-id="13"]'); c = await crida("bn_admin_xat_actiu", 2);
   ok(c && c.cos.p_taula === "frase" && c.cos.p_id === 13 && c.cos.p_actiu === true, "activar una frase → p_taula 'frase', p_actiu true");
 
-  // peça nova: per nivell (amb la previsualització) i per món
+  // peça nova al drawer lateral (#panell): per nivell (amb previsualització) i per món
+  await p.click("#btNovaPeca"); await p.waitForSelector("#panell:not([hidden]) #xnText");
   await p.fill("#xnText", "el volcà"); await p.selectOption("#xnTipus", "P"); await p.selectOption("#xnNiv", "3");
-  ok((await txt("#xnPrev")) === "Vaig a pel volcà!", "previsualització de la peça nova amb la contracció");
+  ok((await txt("#xnPrev")) === "Vaig a pel volcà!", "previsualització de la peça nova amb la contracció dins del panell lateral");
   await p.click("#xnBt"); c = await crida("bn_admin_xat_peca_nova");
   ok(c && c.cos.p_tipus === "P" && c.cos.p_text === "el volcà" && c.cos.p_nivell === 3 && c.cos.p_mon === null, "peça nova → bn_admin_xat_peca_nova {p_tipus:'P', p_text, p_nivell:3, p_mon:null}");
   await p.waitForTimeout(150);
-  ok((await txt("#xkTaula")).includes("1001") && (await txt("#xkTaula")).includes("el volcà"), "la peça nova surt al catàleg");
+  ok((await p.evaluate(() => document.getElementById("panell").hidden)) && (await txt("#xkTaula")).includes("1001") && (await txt("#xkTaula")).includes("el volcà"), "el panell lateral es tanca i la peça nova surt al catàleg");
+  await p.click("#btNovaPeca"); await p.waitForSelector("#panell:not([hidden]) #xnText");
   await p.click('#xnQue [data-q="m"]'); await p.fill("#xnText", "la boira"); await p.selectOption("#xnMon", "socials"); await p.click("#xnBt");
   c = await crida("bn_admin_xat_peca_nova", 2);
   ok(c && c.cos.p_nivell === null && c.cos.p_mon === "socials" && c.cos.p_text === "la boira", "peça nova per món → p_mon 'socials', p_nivell null");
+
+  // tornem a Rànquing → Xat per comprovar que veu el xat tancat i la peça #1 desactivada
+  await vesXat(); await p.waitForSelector("#xMsgs .xm");
+  ok((await txt("#xRes")).includes("Xat tancat") && (await txt('.xm[data-xid="10"] .xm-t')).includes("Jana"), "Rànquing → Xat mostra «Xat tancat»");
 
   const xat = crides.filter(x => x.f.startsWith("bn_admin_xat_"));
   ok(xat.length > 10 && xat.every(x => x.cos.p_email === CRED.e && x.cos.p_pass === CRED.p), `les ${xat.length} crides bn_admin_xat_* porten p_email i p_pass`);
@@ -246,19 +270,25 @@ function respon(st, f, cos) {
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
  { const { p, ctx, errors, txt } = await obre("/admin/", { cred: CRED, sinVis: true });
   await p.waitForSelector("#xMsgs .xm");
-  ok((await txt('#xFil [data-f="vis"]')) === "Visibles 6" && !(await txt("#xMsgs")).includes("No surt a la portada"), "SQL d'abans (sense «vis»): visibles = no esborrats, com abans, i cap «No surt a la portada»");
+  ok((await txt('#xFil [data-f="vis"]')) === "Visibles 6" && !(await txt("#xMsgs")).includes("No surt a la portada"), "SQL d'abans (sense «vis»): visibles = no esborrats");
   ok(errors.length === 0, "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("4) mòbil (390 px), tema fosc");
- { const { p, ctx, errors, txt } = await obre("/admin/?demo", { viewport: { width: 390, height: 844 } });
-  await p.waitForSelector("#xMsgs .xm"); await p.evaluate(() => document.getElementById("tema").click()); await p.waitForSelector("#xMsgs .xm");
-  ok((await p.evaluate(() => document.documentElement.dataset.tema)) === "fosc", "tema fosc");
+ console.log("4) mòbil (360, 390 i 430 px), tema fosc");
+ for (const wPx of [360, 390, 430]) {
+  const { p, ctx, errors, txt } = await obre("/admin/?demo", { viewport: { width: wPx, height: 844 } });
+  await p.waitForSelector("#xMsgs .xm");
+  await p.evaluate(() => document.getElementById("tema").click());
+  await p.waitForSelector("#xMsgs .xm");
+  if (wPx === 390) ok((await p.evaluate(() => document.documentElement.dataset.tema)) === "fosc", "390 px: tema fosc");
   const ample = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
-  ok(ample <= 390, "res no surt per la dreta (ample " + ample + ")");
-  const fora = await p.$$eval("#xMsgs .xm-a button, #xcDesa, #xnBt, #xsBt", bs => bs.filter(b => { const r = b.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
-  ok(fora === 0, "els botons es veuen sencers");
-  ok((await txt("#titol")) === "Xat de la colla", "la pestanya es veu al mòbil");
-  ok(errors.length === 0, "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
+  const fora = await p.$$eval("#xMsgs .xm-a button, #xsBt", bs => bs.filter(b => { const r = b.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
+  ok(ample <= wPx && fora === 0, `${wPx} px · Rànquing → Xat: res no surt per la dreta (ample ${ample}) i botons sencers`);
+  await p.click("#btConfig"); await p.waitForSelector("#xcDesa");
+  const ampleCfg = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  ok(ampleCfg <= wPx && (await txt("#titol")) === "Configuració", `${wPx} px · Configuració → Horaris: res no surt per la dreta (ample ${ampleCfg})`);
+  ok(errors.length === 0, `${wPx} px: cap error de JavaScript` + (errors[0] ? ": " + errors[0] : ""));
+  await ctx.close();
+ }
 
  await nav.close(); srv.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : "\n✓ Totes les comprovacions de la pestanya Xat de l'admin passen");
