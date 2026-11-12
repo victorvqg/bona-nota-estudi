@@ -87,6 +87,39 @@ Date.now = () => REAL() + DESPL;
   ok(/mon no valid/.test(await falla("select public.bn_vigilia('món amb espais')") || ""), "bn_vigilia rebutja assig no vàlid");
   await db.exec("reset role"); }
 
+ console.log("5) bn_ranking_remuntada: errors recuperats al repàs (+1 per encert de test/ext, +2 extra per error après)");
+ { await db.exec(fitxer("supabase/bn_ranking_remuntada.sql"));
+  await db.exec(fitxer("supabase/bn_ranking_remuntada.sql")); // idempotent
+  await db.exec("set session_replication_role = replica");
+  const insRep = (ts, nom, det) => db.query(
+   "insert into public.bn_log(ts, assig, nom, sessio, aparell, event, detall) values ($1::timestamp at time zone 'Europe/Madrid', 'angles', $2, 's', 'a', 'joc', $3::jsonb)",
+   [ts, nom, JSON.stringify(Object.assign({ joc: "repas" }, det))]
+  );
+  // Biel: 4 bones de test + ext 'frase:5/5,mapa:1/2' (10) + una altra amb 2 bones i 1 après (2 + 2*1 = 4) → 14
+  await insRep("2026-11-17 18:00", "Biel", { bones: 4, n: 5, ext: "frase:5/5,mapa:1/2", pc: 83 });
+  await insRep("2026-11-18 09:00", "Biel", { bones: 2, n: 2, apr: 1, pc: 100 });
+  // Berta: només extensió (sense camp bones) 'frase:3/4' → 3; i un repàs fallat (0/2) → +0; i un de fa 9 dies → fora de finestra
+  await insRep("2026-11-16 17:00", "Berta", { ext: "frase:3/4", pc: 75 });
+  await insRep("2026-11-16 17:10", "Berta", { bones: 0, n: 2, ext: "frase:0/2", pc: 0 });
+  await insRep("2026-11-08 17:00", "Berta", { bones: 9, n: 9, apr: 3, pc: 100 });
+  // Sam: intent d'inflar des del navegador (bones: 999, apr: 999) → retallat a 20 + 2*20 = 60
+  await insRep("2026-11-18 10:00", "Sam", { bones: 999, apr: 999, pc: 100 });
+  // Amagat: no ha de sortir
+  await insRep("2026-11-18 10:00", "Amagat", { bones: 5, n: 5, pc: 100 });
+  await db.query("insert into bn_priv.amagats(k) values ('amagat')");
+  // Cap sessió amb 0 punts no ha d'aparèixer
+  await insRep("2026-11-18 10:00", "Zero", { bones: 0, n: 3, pc: 0 });
+  await db.exec("set session_replication_role = origin");
+
+  await db.exec("set role anon");
+  const rk = await q("select nom, apr from public.bn_ranking_remuntada()");
+  await db.exec("reset role");
+  ok(JSON.stringify(rk) === JSON.stringify([
+   { nom: "Sam", apr: 60 },
+   { nom: "Biel", apr: 14 },
+   { nom: "Berta", apr: 3 }
+  ]), "suma test + ext + 2×apr en 7 dies, filtra 0/amagats/antics i aplica topall (" + JSON.stringify(rk) + ")"); }
+
  await db.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : `\n✓ Tot correcte (${((REAL() - t0) / 1000).toFixed(1)} s)`);
  process.exit(fallades ? 1 : 0);

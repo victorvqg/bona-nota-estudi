@@ -532,10 +532,21 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 .ll-num{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .ll-in{width:58px;min-height:28px;padding:2px 6px;font-size:12.5px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
 .ll-peu{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.rkcfg-f .xcfg-g{flex-wrap:wrap}
+.rkcfg-f select{width:auto;max-width:100%;min-width:150px}
+.rkcfg-presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.rkcfg-presets .btn[aria-pressed="true"]{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+.rkcfg-tabs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-top:8px}
+.rkcfg-tab{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r1);min-width:0}
+.rkcfg-tab.off{opacity:.6}
+.rkcfg-tab>div{display:flex;flex-direction:column;min-width:0}
+.rkcfg-tab b{font-size:13px}
+.rkcfg-tab small{font-size:11.5px;color:var(--muted)}
 @media (max-width:767px){
  .xcfg-g input{width:80px}
  .al-fil select{max-width:100%;flex:1 1 130px}
  .ll-sel{min-width:126px;font-size:12px;padding:3px 6px}
+ .rkcfg-tabs{grid-template-columns:minmax(0,1fr)}
 }
 /* login */
 .login-fons{min-height:100vh;display:grid;place-items:center;padding:24px}
@@ -656,7 +667,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.37.0";
+const VERSIO_ADMIN="2.38.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -2168,7 +2179,7 @@ async function rpcCtrl(cfg){if(DEMO)return demoControlRpc(cfg);
  const r=await fetch(API.replace("bn_admin_logs","bn_admin_control"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_cfg:cfg||null})});
  if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
 function ctrlDe(){if(!CTRL){CTRL=rpcCtrl(null).then(d=>{CTRL_NOMES_XAT=false;return CTRL_D=d}).catch(e=>{
-  if(e==="falta"){CTRL_NOMES_XAT=true;const act=X&&X.cfg?X.cfg.actiu!==false:true;return CTRL_D={xat_actiu:act,xat_obert_ara:act,xat_en_horari_tancat:false,horari:{actiu:false,tanca_min:1290,obre_min:420},mons_tancats:[]}}
+  if(e==="falta"){CTRL_NOMES_XAT=true;const act=X&&X.cfg?X.cfg.actiu!==false:true;return CTRL_D={xat_actiu:act,xat_obert_ara:act,xat_en_horari_tancat:false,horari:{actiu:false,tanca_min:1290,obre_min:420},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)}}
   throw e})}return CTRL}
 function estatXatCtrl(d){d=oB(d);const xatAct=d.xat_actiu!==false,hor=oB(d.horari),hAct=hor.actiu===true,tancaM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,obreM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
  const tancatH=typeof d.xat_en_horari_tancat==="boolean"?d.xat_en_horari_tancat:enHorariTancat(hAct,tancaM,obreM);
@@ -2283,6 +2294,32 @@ function llindarsNorm(raw){
    xat:{nivell:nv(oB(be.xat).nivell,"groc"),frases:cl(oB(be.xat).frases,10,2,50),min_estudi_max:cl(oB(be.xat).min_estudi_max,60,10,240)},
    inactiu:{nivell:nv(oB(be.inactiu).nivell,"groc"),dies:cl(oB(be.inactiu).dies,3,1,30)}
   }
+ };
+}
+const RK_CFG_TABS=[
+ ["punts","⭐ Estrelles","Total acumulat en 120 dies"],
+ ["setmana","📈 Setmana","Estrelles noves dels últims 7 dies"],
+ ["remuntada","🧠 Remuntada","Errors recuperats al repàs (7 dies)"],
+ ["dies","⏳ Dies","Dies actius d'estudi (120 dies)"],
+ ["nivell","🏅 Nivell","Màxim d'estrelles en un sol món"]
+];
+function rkCfgNorm(raw){
+ const j=oB(raw),pt=oB(j.pestanyes),b=(v,d)=>typeof v==="boolean"?v:d,cl=(v,d,lo,hi)=>{const n=Math.round(+v);return Number.isFinite(n)?Math.min(hi,Math.max(lo,n)):d};
+ const pestanyes={punts:b(pt.punts,true),dies:b(pt.dies,true),nivell:b(pt.nivell,true),setmana:b(pt.setmana,true),remuntada:b(pt.remuntada,true)};
+ if(!Object.values(pestanyes).some(Boolean))pestanyes.punts=true;
+ const ord=["punts","dies","nivell","setmana","remuntada"];
+ let ini=typeof j.pestanya_inicial==="string"&&ord.includes(j.pestanya_inicial)?j.pestanya_inicial:"punts";
+ if(!pestanyes[ini])ini=ord.find(k=>pestanyes[k])||"punts";
+ return {
+  actiu:b(j.actiu,true),
+  top:cl(j.top,10,3,100),
+  mostrar_propia:b(j.mostrar_propia,true),
+  pestanya_inicial:ini,
+  pestanyes,
+  mostra_premis:b(j.mostra_premis,true),
+  mostra_meta:b(j.mostra_meta,true),
+  meta_estrelles:cl(j.meta_estrelles,30,5,200),
+  meta_pct:cl(j.meta_pct,75,25,100)
  };
 }
 function cartaAlertesInici(){
@@ -2761,8 +2798,10 @@ async function vistaClassificacio(cos,tk){
   if(TAULES.tRk)TAULES.tRk._v=RK_VISTA+":"+RK_MON;
   const amH=amagats.length?`<div class="rk-am-l" id="rkAmagats">${amagats.map(a=>`<div class="rk-am" data-amagat="${esc(a.k)}"><span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(a.k)}">${avatar(a.nom,"p")}<span>${esc(a.nom)}</span></button>${idDe(a.k)}${a.punts!=null?`<span class="muted" style="font-size:12px">· ${a.punts} ⭐</span>`:""}</span><button class="sw" type="button" role="switch" data-rk-mostra="${esc(a.k)}" data-rk-nom="${esc(a.nom)}" aria-checked="false" aria-label="Torna a fer visible ${esc(a.nom)}"${nd}><i></i><span>Amagat</span></button></div>`).join("")}</div>`
    :`<p class="muted" id="rkAmagats" style="margin:0;font-size:13px">Cap nen amagat del rànquing ara mateix.</p>`;
+  const rkCfg=rkCfgNorm(ctrl&&ctrl.ranquing||(CTRL_D&&CTRL_D.ranquing));
+  const rkAcc=`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="pill ${rkCfg.actiu?"info":"warn"}" id="rkTopPill">${rkCfg.actiu?(rkCfg.top>=100?"Tots visibles":`Top ${rkCfg.top}`):"En pausa"}</span><button class="btn sec petit" type="button" id="btRkAjusta" data-go-cfg="ranquing">${ic("ajust")}<span>Configura</span></button></div>`;
   cos.innerHTML=`<div class="pila">${kpis}
-   ${card("rkCard","c-12","trofeu","Classificació pública","Classificació dels últims 120 dies calculada amb bn_ranking_mons. Desactiva «Visible» per amagar un nom de la portada i del xat en un clic.",eines+taulaH)}
+   ${card("rkCard","c-12","trofeu","Classificació pública","Classificació dels últims 120 dies calculada amb bn_ranking_mons. Desactiva «Visible» per amagar un nom de la portada i del xat en un clic.",eines+taulaH,rkAcc)}
    ${card("rkAmagatsCard","c-12","ullno","Nens amagats del rànquing","No surten a la classificació pública ni al xat de la portada, però conserven el progrés i el registre d'admin. Activa l'interruptor per tornar-los a mostrar.",amH)}
   </div>`;
   const seg=$("#rkVista");if(seg)seg.onclick=e=>{const b=e.target.closest("button[data-rkv]");if(!b||b.dataset.rkv===RK_VISTA)return;RK_VISTA=b.dataset.rkv;pintaTot();xFocus(`#rkVista [data-rkv="${RK_VISTA}"]`)};
@@ -3275,7 +3314,7 @@ const contingut=f=>[[f.bn_log,"registre","registres"],[f.perfils,"perfil","perfi
 const kb=b=>b>=1048576?fmtD((b/1048576).toFixed(1))+" MB":Math.max(1,Math.round((b||0)/1024))+" KB";
 
 async function vistaConfig(c){
- const ll=[["horaris","Horaris i crèdits"],["cataleg","Catàleg del xat"],["llindars","Llindars"],["copies","Còpies"]],tab=ll.some(x=>x[0]===TAB)?TAB:"horaris";
+ const ll=[["horaris","Horaris i crèdits"],["ranquing","Rànquing"],["cataleg","Catàleg del xat"],["llindars","Llindars"],["copies","Còpies"]],tab=ll.some(x=>x[0]===TAB)?TAB:"horaris";
  TAB=tab;escriuUrl(false);
  const tk=++TOK;
  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Configuració")+`<div id="cfgCos">${esqTaula()}</div>`;
@@ -3289,6 +3328,10 @@ async function vistaConfig(c){
     card("cfgHoraris","c-12","rellotge","Horaris i crèdits del xat","Els crèdits i l'horari d'obertura i tancament es calculen al servidor des del moment que deses. Les dates d'examen de cada món es configuren a Nens → Benestar.",`<div id="xCfg"></div>`);
    pintaXCfg()}
   catch(e){if(tk!==TOK||!$("#cfgCos"))return;cos.innerHTML=e==="falta"?avisSQL("supabase/bn_xat.sql","Cal executar supabase/bn_xat.sql: el xat de la colla encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar la configuració (${e}).`)}
+ }else if(tab==="ranquing"){
+  const ctrl=await ctrlDe().catch(()=>null);
+  if(tk!==TOK||VISTA!=="config"||TAB!=="ranquing"||!$("#cfgCos"))return;
+  pintaRanquingCfg(cos,ctrl);
  }else if(tab==="cataleg"){
   try{const [cat,mons]=await Promise.all([rpcX("bn_admin_xat_cataleg"),monsLlista()]);
    if(tk!==TOK||VISTA!=="config"||TAB!=="cataleg")return;
@@ -3308,6 +3351,103 @@ async function vistaConfig(c){
    `${DEMO?`<p class="muted" style="margin:0 0 10px;font-size:12px">En demo les accions d'escriptura i descàrrega estan desactivades.</p>`:""}<div id="cpLlista">${Array(4).fill('<div class="esq esq-f"></div>').join("")}</div>`,
    `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="muted" id="cpN" style="font-size:12px"></span><a class="btn sec petit" href="https://supabase.com/dashboard/project/agippwtqvhpxdockuigl/database/backups/scheduled" target="_blank" rel="noopener">${ic("extern")}<span>Còpies de Supabase</span></a><button class="btn petit" type="button" id="cpFes"${nd}>${ic("copies")}<span>Fes una còpia ara</span></button></div>`);
   $("#cpFes").onclick=fesCopia;carregaCopies();
+ }
+}
+function pintaRanquingCfg(cos,ctrl){
+ const R=rkCfgNorm(ctrl&&ctrl.ranquing||(CTRL_D&&CTRL_D.ranquing));
+ const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ let actiu=R.actiu,propia=R.mostrar_propia,premis=R.mostra_premis,meta=R.mostra_meta,pest=Object.assign({},R.pestanyes);
+ const presets=[[3,"Top 3"],[5,"Top 5"],[10,"Top 10"],[15,"Top 15"],[25,"Top 25"],[100,"Tots (100)"]];
+ const accBar=`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn sec petit" type="button" id="btResetRkCfg"${nd}>${ic("reinicia")}<span>Restaura per defecte</span></button><button class="btn petit" type="button" id="btDesaRkCfg"${nd}>${ic("ok")}<span>Desa la configuració</span></button></div>`;
+ const visH=`<div class="rkcfg-f">
+  <div class="xcfg-g"><span id="rkCfgActL">Rànquing públic obert<small>En pausa: la taula de punts descansa a la portada sense perdre les estrelles ni tancar el xat.</small></span><button class="sw" type="button" role="switch" id="rkCfgActiu" aria-labelledby="rkCfgActL" aria-checked="${actiu}"${nd}><i></i><span>${actiu?"Obert":"En pausa"}</span></button></div>
+  <div class="xcfg-g"><div><label for="rkCfgTop" style="font-weight:600;font-size:13.5px">Jugadors visibles (XX primers)</label><small style="display:block;color:var(--muted);font-size:12.5px">De 3 a 100. Mostra només els primers de cada classificació per no exposar la cua.</small><div class="rkcfg-presets" role="group" aria-label="Talls ràpids del rànquing">${presets.map(([v,t])=>`<button class="btn sec petit" type="button" data-rk-preset="${v}" aria-pressed="${R.top===v}"${nd}>${esc(t)}</button>`).join("")}</div></div><input id="rkCfgTop" type="number" inputmode="numeric" min="3" max="100" step="1" value="${esc(R.top)}"${nd}></div>
+  <div class="xcfg-g"><span id="rkCfgPropL">Mostra la pròpia fila si quedes fora<small>Si un nen connectat és per sota dels XX primers, veu només la seva fila després de «···».</small></span><button class="sw" type="button" role="switch" id="rkCfgPropia" aria-labelledby="rkCfgPropL" aria-checked="${propia}"${nd}><i></i><span>${propia?"Sí":"No"}</span></button></div>
+  <div class="xcfg-g"><label for="rkCfgIni">Pestanya inicial<small>Quina classificació s'obre primer quan entren a «High Scores».</small></label><select id="rkCfgIni"${nd}>${RK_CFG_TABS.map(([k,t])=>`<option value="${k}"${R.pestanya_inicial===k?" selected":""}${pest[k]?"":" disabled"}>${esc(t)}</option>`).join("")}</select></div>
+  <div style="padding-top:10px;border-top:1px solid var(--border)"><b style="font-size:13.5px">Pestanyes visibles a «High Scores»</b><small style="display:block;color:var(--muted);font-size:12.5px">Pots amagar qualsevol classificació (sempre n'ha de quedar almenys una d'activa).</small><div class="rkcfg-tabs">${RK_CFG_TABS.map(([k,t,sub])=>`<div class="rkcfg-tab${pest[k]?"":" off"}" data-rk-box="${k}"><div><b>${esc(t)}</b><small>${esc(sub)}</small></div><button class="sw" type="button" role="switch" data-rk-tab="${k}" aria-label="Pestanya ${esc(t)}" aria-checked="${pest[k]}"${nd}><i></i><span>${pest[k]?"Visible":"Amagada"}</span></button></div>`).join("")}</div></div>
+  <p class="xcfg-calc" id="rkCfgResum"></p>
+ </div>`;
+ const extH=`<div class="rkcfg-f">
+  <div class="xcfg-g"><span id="rkCfgMetaL">Meta col·lectiva («🌍 Meta de la colla»)<small>Barra cooperativa al costat del rànquing on tota la classe suma junta en 7 dies.</small></span><button class="sw" type="button" role="switch" id="rkCfgMeta" aria-labelledby="rkCfgMetaL" aria-checked="${meta}"${nd}><i></i><span>${meta?"Visible":"Amagada"}</span></button></div>
+  <div class="xcfg-g"><label for="rkCfgMetaEst">Estrelles per nen a la meta (7 dies)<small>De 5 a 200 ⭐ setmanals perquè un nen compti dins l'objectiu.</small></label><input id="rkCfgMetaEst" type="number" inputmode="numeric" min="5" max="200" step="1" value="${esc(R.meta_estrelles)}"${nd}></div>
+  <div class="xcfg-g"><label for="rkCfgMetaPct">Percentatge de la colla requerit<small>De 25 a 100 % dels jugadors actius perquè s'encengui la meta.</small></label><input id="rkCfgMetaPct" type="number" inputmode="numeric" min="25" max="100" step="5" value="${esc(R.meta_pct)}"${nd}></div>
+  <div class="xcfg-g"><span id="rkCfgPremL">Premis setmanals («🏆 Premis de la colla»)<small>Targetes de Constància, Remuntada, Explorador i Companyia sota la classificació.</small></span><button class="sw" type="button" role="switch" id="rkCfgPremis" aria-labelledby="rkCfgPremL" aria-checked="${premis}"${nd}><i></i><span>${premis?"Visibles":"Amagats"}</span></button></div>
+  <p class="xerr" id="rkCfgErr" role="alert"></p>
+  <div class="ll-peu"><button type="button" class="linkb" id="btVeureRk">${ic("trofeu")}Veure Rànquing → Classificació ${ic("endavant")}</button><button class="btn petit" type="button" id="btDesaRkCfg2"${nd}>${ic("ok")}<span>Desa la configuració</span></button></div>
+ </div>`;
+ cos.innerHTML=(DEMO?`<div class="avis" style="margin-bottom:12px">${ic("info")}<div><p style="margin:0"><b>Mode demo:</b> configuració de mostra. Les accions d'escriptura estan desactivades.</p></div></div>`:"")+
+  `<div class="pila">
+   ${card("cfgRanquingVis","","trofeu","Classificació pública i XX primers","Tria quants jugadors surten a la taula pública de la portada, quines pestanyes hi ha obertes i quina s'ensenya primer. Es desa a Supabase per a mòbil i ordinador.",visH,accBar)}
+   ${card("cfgRanquingExtres","","estrella","Meta col·lectiva i premis de la colla","Ajusta l'objectiu setmanal compartit per la colla i les insígnies de reconeixement no competitives.",extH)}
+  </div>`;
+ const syncUi=()=>{
+  const topV=Math.round(+$("#rkCfgTop").value||0);
+  cos.querySelectorAll("[data-rk-preset]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.rkPreset===topV)));
+  const sel=$("#rkCfgIni");
+  if(sel){
+   [...sel.options].forEach(o=>{o.disabled=!pest[o.value]});
+   if(!pest[sel.value]){const p=RK_CFG_TABS.find(([k])=>pest[k]);if(p)sel.value=p[0]}
+  }
+  const nAct=RK_CFG_TABS.filter(([k])=>pest[k]).length,iniNom=(RK_CFG_TABS.find(([k])=>k===(sel&&sel.value))||[])[1]||"⭐ Estrelles";
+  const res=$("#rkCfgResum");
+  if(res)res.textContent=actiu?`Es mostraran els ${topV>=100?"100 (tots)":`Top ${topV>0?topV:R.top}`} primers jugadors · ${nAct} de 5 pestanyes actives · obre a «${iniNom}» · pròpia fila ${propia?"visible":"amagada"} fora del tall.`:"El rànquing públic està en pausa a la portada (les estrelles i el xat continuen actius).";
+ };
+ const lligaSw=(sel,llegeix,escriu,tOn,tOff)=>{const b=$(sel);if(!b)return;b.onclick=()=>{const v=!llegeix();escriu(v);b.setAttribute("aria-checked",String(v));b.querySelector("span").textContent=v?tOn:tOff;syncUi()}};
+ lligaSw("#rkCfgActiu",()=>actiu,v=>{actiu=v},"Obert","En pausa");
+ lligaSw("#rkCfgPropia",()=>propia,v=>{propia=v},"Sí","No");
+ lligaSw("#rkCfgMeta",()=>meta,v=>{meta=v},"Visible","Amagada");
+ lligaSw("#rkCfgPremis",()=>premis,v=>{premis=v},"Visibles","Amagats");
+ cos.querySelectorAll("[data-rk-preset]").forEach(b=>{b.onclick=()=>{$("#rkCfgTop").value=b.dataset.rkPreset;syncUi()}});
+ $("#rkCfgTop").oninput=syncUi;
+ $("#rkCfgIni").onchange=syncUi;
+ cos.querySelectorAll("[data-rk-tab]").forEach(b=>{b.onclick=()=>{
+  const k=b.dataset.rkTab,nou=!pest[k];
+  if(!nou&&RK_CFG_TABS.filter(([x])=>pest[x]).length<=1){toast("Ha de quedar almenys una pestanya visible al rànquing.","avis");return}
+  pest[k]=nou;b.setAttribute("aria-checked",String(nou));b.querySelector("span").textContent=nou?"Visible":"Amagada";
+  const box=b.closest("[data-rk-box]");if(box)box.classList.toggle("off",!nou);
+  syncUi();
+ }});
+ const vr=$("#btVeureRk");if(vr)vr.onclick=()=>navega("ranquing",{tab:"classificacio"});
+ const llegeix=()=>({actiu,top:$("#rkCfgTop").value.trim(),mostrar_propia:propia,pestanya_inicial:$("#rkCfgIni").value,pestanyes:Object.assign({},pest),mostra_premis:premis,mostra_meta:meta,meta_estrelles:$("#rkCfgMetaEst").value.trim(),meta_pct:$("#rkCfgMetaPct").value.trim()});
+ const b1=$("#btDesaRkCfg"),b2=$("#btDesaRkCfg2"),br=$("#btResetRkCfg");
+ if(b1)b1.onclick=()=>desaRanquingCfg(cos,llegeix());
+ if(b2)b2.onclick=()=>desaRanquingCfg(cos,llegeix());
+ if(br)br.onclick=()=>restauraRanquingCfg(cos);
+ syncUi();
+}
+async function desaRanquingCfg(cos,f){
+ if(DEMO){toast("No disponible en demo","avis");return}
+ const valInt=(s,lo,hi)=>/^\d+$/.test(s)&&+s>=lo&&+s<=hi?+s:null;
+ const top=valInt(f.top,3,100),mEst=valInt(f.meta_estrelles,5,200),mPct=valInt(f.meta_pct,25,100),err=$("#rkCfgErr");
+ const mal=top==null?["#rkCfgTop","Els jugadors visibles (XX primers) han de ser un número de 3 a 100."]:mEst==null?["#rkCfgMetaEst","Les estrelles de la meta han de ser un número de 5 a 200."]:mPct==null?["#rkCfgMetaPct","El percentatge de la colla ha de ser un número de 25 a 100."]:null;
+ if(mal){if(err)err.textContent=mal[1];toast(mal[1],"avis");const el=$(mal[0]);if(el)el.focus();return}
+ if(err)err.textContent="";
+ const ranquing=rkCfgNorm(Object.assign({},f,{top,meta_estrelles:mEst,meta_pct:mPct}));
+ const bts=[$("#btDesaRkCfg"),$("#btDesaRkCfg2"),$("#btResetRkCfg")].filter(Boolean);
+ bts.forEach(b=>{b.disabled=true});
+ try{
+  const d=await rpcCtrl({ranquing});
+  CTRL_D=d;CTRL=Promise.resolve(d);
+  pintaRanquingCfg(cos,d);
+  toast(ranquing.actiu?`Configuració del rànquing desada (Top ${ranquing.top})`:"Rànquing públic posat en pausa");
+ }catch(e){
+  bts.forEach(b=>{b.disabled=false});
+  toast(e==="falta"?"Cal actualitzar supabase/bn_control.sql a Supabase":`No s'ha pogut desar el rànquing (${e})`,"err");
+ }
+}
+async function restauraRanquingCfg(cos){
+ if(DEMO){toast("No disponible en demo","avis");return}
+ if(!await dialeg({titol:"Restaurar el rànquing per defecte?",ok:"Sí, restaura'l",icona:"reinicia",cos:`<p>Es restauraran els valors inicials del rànquing públic: <b>Top 10</b>, totes les pestanyes visibles, obrir a <b>Estrelles</b>, meta de <b>30 ⭐</b> al <b>75 %</b> i premis actius.</p>`}))return;
+ const bts=[$("#btDesaRkCfg"),$("#btDesaRkCfg2"),$("#btResetRkCfg")].filter(Boolean);
+ bts.forEach(b=>{b.disabled=true});
+ try{
+  const d=await rpcCtrl({reset_ranquing:true});
+  CTRL_D=d;CTRL=Promise.resolve(d);
+  pintaRanquingCfg(cos,d);
+  toast("Rànquing restaurat als valors inicials");
+ }catch(e){
+  bts.forEach(b=>{b.disabled=false});
+  toast(`No s'ha pogut restaurar el rànquing (${e})`,"err");
  }
 }
 const clsGravAl=g=>+g===3?"est-malament":+g===2?"est-avis":+g===1?"est-be":"est-off";
@@ -3785,16 +3925,21 @@ function demoMon(k,a){const L=DEMO_L.filter(l=>clauNen(l)===k&&l.assig===a),net=
  return {assig:a,mod:ts,ts,reinici:null,punts,temps,dies:dies.size,dia_ult:[...dies].sort().pop()||null,ultim:null,temes,rep,rep_n:rep.length,rep_avui:rep.filter(r=>r.prox<=av).length,
   ob,examens:examens.slice(-20),boss:boss.v?boss:null,apresos,jocs,fonts,ftema,fjoc,est:null}}
 let DEMO_CTRL=null;
-function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{actiu:true,tanca_min:1290,obre_min:420},mons_tancats:[],llindars:llindarsNorm(null)};
+function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{actiu:true,tanca_min:1290,obre_min:420},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)};
  if(cfg&&typeof cfg==="object"){if(typeof cfg.xat_actiu==="boolean")DEMO_CTRL.xat_actiu=cfg.xat_actiu;
   if(typeof cfg.horari_actiu==="boolean")DEMO_CTRL.horari.actiu=cfg.horari_actiu;
   if(typeof cfg.tanca_min==="number")DEMO_CTRL.horari.tanca_min=cfg.tanca_min;
   if(typeof cfg.obre_min==="number")DEMO_CTRL.horari.obre_min=cfg.obre_min;
   if(Array.isArray(cfg.mons_tancats))DEMO_CTRL.mons_tancats=cfg.mons_tancats.slice();
   if(cfg.reset_llindars===true)DEMO_CTRL.llindars=llindarsNorm(null);
-  if(cfg.llindars&&typeof cfg.llindars==="object")DEMO_CTRL.llindars=llindarsNorm(cfg.llindars)}
+  if(cfg.llindars&&typeof cfg.llindars==="object")DEMO_CTRL.llindars=llindarsNorm(cfg.llindars);
+  if(cfg.reset_ranquing===true)DEMO_CTRL.ranquing=rkCfgNorm(null);
+  if(cfg.ranquing&&typeof cfg.ranquing==="object"){
+   const cur=rkCfgNorm(DEMO_CTRL.ranquing);
+   DEMO_CTRL.ranquing=rkCfgNorm(Object.assign({},cur,cfg.ranquing,{pestanyes:Object.assign({},cur.pestanyes,oB(cfg.ranquing.pestanyes))}));
+  }}
  const tH=enHorariTancat(DEMO_CTRL.horari.actiu,DEMO_CTRL.horari.tanca_min,DEMO_CTRL.horari.obre_min);
- return Object.assign({},JSON.parse(JSON.stringify(DEMO_CTRL)),{llindars:llindarsNorm(DEMO_CTRL.llindars),xat_en_horari_tancat:tH,xat_obert_ara:DEMO_CTRL.xat_actiu&&!tH})}
+ return Object.assign({},JSON.parse(JSON.stringify(DEMO_CTRL)),{llindars:llindarsNorm(DEMO_CTRL.llindars),ranquing:rkCfgNorm(DEMO_CTRL.ranquing),xat_en_horari_tancat:tH,xat_obert_ara:DEMO_CTRL.xat_actiu&&!tH})}
 function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
  if(f==="bn_admin_fitxa"){const ls=DEMO_L.filter(l=>clauNen(l)===k0),pf=demoPerfil(k0,ls.length?Date.parse(ls[0].ts):null),P=DEMO_PERF[k0]||{};
   let as=[...new Set(ls.map(l=>l.assig))].sort();if(!pf||P.res)as=[];if(P.mons)as=as.slice(0,P.mons);

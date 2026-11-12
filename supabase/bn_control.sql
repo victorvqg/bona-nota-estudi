@@ -292,7 +292,131 @@ revoke all on function bn_priv.ll_niv(jsonb, text, boolean) from public, anon, a
 revoke all on function bn_priv.llindars_normalitza(jsonb, boolean) from public, anon, authenticated;
 revoke all on function bn_priv.llindars_cfg() from public, anon, authenticated;
 
--- 5. RPC pública: estat de la web (mons tancats i estat del xat/horari, sense PIN)
+-- 4ter. Configuració pública del rànquing (bn_priv.config, clau 'ranquing' · g22)
+create or replace function bn_priv.rk_bool(p_v jsonb, p_def boolean, p_estricte boolean default false)
+returns boolean language plpgsql immutable set search_path = '' as $$
+begin
+  if p_v is null or jsonb_typeof(p_v) = 'null' then return p_def; end if;
+  if jsonb_typeof(p_v) <> 'boolean' then
+    if p_estricte then raise exception 'valor boolea no valid' using errcode = '22023'; end if;
+    return p_def;
+  end if;
+  return (p_v #>> '{}')::boolean;
+end $$;
+
+create or replace function bn_priv.ranquing_normalitza(p_raw jsonb, p_estricte boolean default false)
+returns jsonb language plpgsql immutable set search_path = '' as $$
+declare
+  j jsonb := case when jsonb_typeof(p_raw) = 'object' then p_raw else '{}'::jsonb end;
+  ps jsonb;
+  ps_out jsonb;
+  ini text;
+  k text;
+  b_punts boolean;
+  b_dies boolean;
+  b_nivell boolean;
+  b_setmana boolean;
+  b_remuntada boolean;
+begin
+  if p_estricte and p_raw is not null and jsonb_typeof(p_raw) <> 'object' then
+    raise exception 'ranquing ha de ser un objecte' using errcode = '22023';
+  end if;
+  if p_estricte then
+    for k in select jsonb_object_keys(j) loop
+      if k not in ('actiu','top','mostrar_propia','pestanya_inicial','pestanyes','mostra_premis','mostra_meta','meta_estrelles','meta_pct') then
+        raise exception 'clau de ranquing desconeguda' using errcode = '22023';
+      end if;
+    end loop;
+    if (j ? 'pestanyes') and jsonb_typeof(j->'pestanyes') <> 'object' then
+      raise exception 'pestanyes ha de ser un objecte' using errcode = '22023';
+    end if;
+  end if;
+
+  ps := case when jsonb_typeof(j->'pestanyes') = 'object' then j->'pestanyes' else '{}'::jsonb end;
+  if p_estricte then
+    for k in select jsonb_object_keys(ps) loop
+      if k not in ('punts','dies','nivell','setmana','remuntada') then
+        raise exception 'pestanya de ranquing desconeguda' using errcode = '22023';
+      end if;
+    end loop;
+  end if;
+
+  b_punts     := bn_priv.rk_bool(ps->'punts',     true, p_estricte);
+  b_dies      := bn_priv.rk_bool(ps->'dies',      true, p_estricte);
+  b_nivell    := bn_priv.rk_bool(ps->'nivell',    true, p_estricte);
+  b_setmana   := bn_priv.rk_bool(ps->'setmana',   true, p_estricte);
+  b_remuntada := bn_priv.rk_bool(ps->'remuntada', true, p_estricte);
+
+  if not (b_punts or b_dies or b_nivell or b_setmana or b_remuntada) then
+    if p_estricte then raise exception 'cal almenys una pestanya activa al ranquing' using errcode = '22023'; end if;
+    b_punts := true;
+  end if;
+
+  ps_out := jsonb_build_object(
+    'punts', b_punts,
+    'dies', b_dies,
+    'nivell', b_nivell,
+    'setmana', b_setmana,
+    'remuntada', b_remuntada
+  );
+
+  if j ? 'pestanya_inicial' and jsonb_typeof(j->'pestanya_inicial') <> 'null' then
+    if jsonb_typeof(j->'pestanya_inicial') <> 'string' then
+      if p_estricte then raise exception 'pestanya_inicial no valida' using errcode = '22023'; end if;
+      ini := 'punts';
+    else
+      ini := lower(trim(j->>'pestanya_inicial'));
+      if ini not in ('punts','dies','nivell','setmana','remuntada') then
+        if p_estricte then raise exception 'pestanya_inicial no valida' using errcode = '22023'; end if;
+        ini := 'punts';
+      end if;
+    end if;
+  else
+    ini := 'punts';
+  end if;
+
+  if not (ps_out->>ini)::boolean then
+    if p_estricte and (j ? 'pestanya_inicial') then
+      raise exception 'pestanya_inicial ha d''estar activa' using errcode = '22023';
+    end if;
+    ini := case
+      when b_punts then 'punts'
+      when b_dies then 'dies'
+      when b_nivell then 'nivell'
+      when b_setmana then 'setmana'
+      else 'remuntada'
+    end;
+  end if;
+
+  return jsonb_build_object(
+    'actiu',            bn_priv.rk_bool(j->'actiu', true, p_estricte),
+    'top',              bn_priv.ll_int(j->'top', 10, 3, 100, p_estricte),
+    'mostrar_propia',   bn_priv.rk_bool(j->'mostrar_propia', true, p_estricte),
+    'pestanya_inicial', ini,
+    'pestanyes',        ps_out,
+    'mostra_premis',    bn_priv.rk_bool(j->'mostra_premis', true, p_estricte),
+    'mostra_meta',      bn_priv.rk_bool(j->'mostra_meta', true, p_estricte),
+    'meta_estrelles',   bn_priv.ll_int(j->'meta_estrelles', 30, 5, 200, p_estricte),
+    'meta_pct',         bn_priv.ll_int(j->'meta_pct', 75, 25, 100, p_estricte)
+  );
+end $$;
+
+create or replace function bn_priv.ranquing_cfg() returns jsonb
+language plpgsql stable set search_path = '' as $$
+declare
+  t text;
+  j jsonb;
+begin
+  select c.valor into t from bn_priv.config c where c.clau = 'ranquing';
+  begin j := t::jsonb; exception when others then j := null; end;
+  return bn_priv.ranquing_normalitza(j, false);
+end $$;
+
+revoke all on function bn_priv.rk_bool(jsonb, boolean, boolean) from public, anon, authenticated;
+revoke all on function bn_priv.ranquing_normalitza(jsonb, boolean) from public, anon, authenticated;
+revoke all on function bn_priv.ranquing_cfg() from public, anon, authenticated;
+
+-- 5. RPC pública: estat de la web (mons tancats, estat del xat/horari i rànquing, sense PIN)
 create or replace function public.bn_estat_web() returns jsonb
 language plpgsql stable security definer set search_path = '' as $$
 declare
@@ -315,14 +439,15 @@ begin
       'tanca_h',       h->>'tanca_h',
       'obre_h',        h->>'obre_h'
     ),
-    'mons_tancats', bn_priv.mons_tancats()
+    'mons_tancats', bn_priv.mons_tancats(),
+    'ranquing', bn_priv.ranquing_cfg()
   );
 end $$;
 
 revoke all on function public.bn_estat_web() from public;
 grant execute on function public.bn_estat_web() to anon, authenticated;
 
--- 6. RPC Admin per al panell de Control ràpid (Xat, Horari automàtic i Mons)
+-- 6. RPC Admin per al panell de Control ràpid (Xat, Horari automàtic, Mons, Llindars i Rànquing)
 create or replace function public.bn_admin_control(
   p_email text,
   p_pass text,
@@ -337,6 +462,9 @@ declare
   ll_in jsonb;
   ll_al jsonb;
   ll_be jsonb;
+  rk jsonb;
+  rk_in jsonb;
+  rk_ps jsonb;
   t text;
   m int;
   mon_id text;
@@ -350,6 +478,7 @@ begin
   h := bn_priv.xat_horari_cfg();
   tancats := bn_priv.mons_tancats();
   ll := bn_priv.llindars_cfg();
+  rk := bn_priv.ranquing_cfg();
 
   if p_cfg is not null then
     if jsonb_typeof(p_cfg) <> 'object' then
@@ -512,6 +641,38 @@ begin
       values ('llindars', ll::text)
       on conflict (clau) do update set valor = excluded.valor;
     end if;
+
+    -- G) Restaurar la configuració del rànquing als valors inicials
+    if p_cfg ? 'reset_ranquing' then
+      t := p_cfg->>'reset_ranquing';
+      if t is null or t not in ('true', 'false') then
+        raise exception 'reset_ranquing ha de ser true o false' using errcode = '22023';
+      end if;
+      if t = 'true' then
+        delete from bn_priv.config where clau = 'ranquing';
+        rk := bn_priv.ranquing_cfg();
+      end if;
+    end if;
+
+    -- H) Desar la configuració pública del rànquing (accepta objecte complet o parcial)
+    if p_cfg ? 'ranquing' then
+      rk_in := p_cfg->'ranquing';
+      if rk_in is null or jsonb_typeof(rk_in) <> 'object' then
+        raise exception 'ranquing ha de ser un objecte' using errcode = '22023';
+      end if;
+      if (rk_in ? 'pestanyes') and jsonb_typeof(rk_in->'pestanyes') <> 'object' then
+        raise exception 'pestanyes ha de ser un objecte' using errcode = '22023';
+      end if;
+      rk_ps := coalesce(rk->'pestanyes', '{}'::jsonb) || case when jsonb_typeof(rk_in->'pestanyes') = 'object' then rk_in->'pestanyes' else '{}'::jsonb end;
+      rk_in := (rk || rk_in) || jsonb_build_object('pestanyes', rk_ps);
+      if not (p_cfg->'ranquing' ? 'pestanya_inicial') and coalesce((rk_ps->>(rk_in->>'pestanya_inicial'))::boolean, false) = false then
+        rk_in := rk_in - 'pestanya_inicial';
+      end if;
+      rk := bn_priv.ranquing_normalitza(rk_in, true);
+      insert into bn_priv.config(clau, valor)
+      values ('ranquing', rk::text)
+      on conflict (clau) do update set valor = excluded.valor;
+    end if;
   end if;
 
   en_horari := bn_priv.xat_en_horari_tancat((h->>'actiu')::boolean, h->>'tanca_h', h->>'obre_h', now());
@@ -535,7 +696,8 @@ begin
       'espera_s',      (c->>'espera_s')::int
     ),
     'mons_tancats', tancats,
-    'llindars', ll
+    'llindars', ll,
+    'ranquing', rk
   );
 end $$;
 

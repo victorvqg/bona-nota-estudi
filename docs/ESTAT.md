@@ -3,7 +3,7 @@
 Data: 2026-11-12
 
 ## Què funciona
-- **Versió actual: 2.37.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.38.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`), tots 7 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 130 en total) i 3 peces del xat per món.
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
@@ -102,6 +102,11 @@ Data: 2026-11-12
   - `Inici → Alertes` (`#alertes`) plegable amb resum de pastilles (`malament`, `avís`, `informatiu`), auto-plegat quan no hi ha cap alerta urgent, 3 desplegables de filtre (`#fAlGrav`, `#fAlTipus`, `#fAlAssig`), enunciat real de `admin/preguntes.json` i drecera `⚙ Ajusta`.
   - `⚙ Configuració → Llindars` (`?v=config&tab=llindars`) editable amb desat i restauració a Supabase (`bn_priv.config` clau `'llindars'`, desplegat a `agippwtqvhpxdockuigl`), aplicable en directe a `bn_admin_alertes` (6 regles) i `bn_admin_benestar` (11 senyals de vigilància).
   - Ordre dels mons invertit a la portada (`index.html`), als mons (`MONS`) i a l'admin (`ASSIGS` i `monsLlista()`): surten primer els més nous (`MÓN 7` → `MÓN 1`).
+
+- **Bloc `g22` (`2.38.0`, Pestanya «🧠 Remuntada» per errors recuperats al repàs i Configuració del rànquing `XX primers` a l'admin)**:
+  - `public.bn_ranking_remuntada()` (`supabase/bn_ranking_remuntada.sql`, desplegada a `agippwtqvhpxdockuigl`) suma **+1 🧠** per cada error encertat al repàs (`bones` + numeradors d'`ext`, topall 20 per sessió) i **+2 🧠 extra** per cada error que arriba al 3r repàs i queda après per sempre (`apr`), en els últims 7 dies i conservant les capses `[0, 3, 7]`.
+  - Etiquetes de la pestanya `Remuntada` i del premi *Remuntada de la setmana* a `index.html` ajustades a `errors recuperats` / `Repàs`, amb proves PGlite (`motor/prova-bon-us-sql.js`) i Playwright (`motor/prova-xat.js`).
+  - `⚙ Configuració → Rànquing` (`?v=config&tab=ranquing`, desat a `bn_priv.config` clau `'ranquing'` via `bn_control.sql` i servit a `bn_estat_web().ranquing`): permet ajustar quants primers jugadors es mostren (`top`: `3..100`, per defecte `Top 10`), si qui queda fora del tall veu la seva pròpia fila (`mostrar_propia`), si el rànquing està obert o en pausa (`actiu`), la pestanya inicial, les pestanyes visibles, els premis i els llindars de la «Meta de la colla».
 
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i 130 difícils a `motor/dificultat.json`); #16 dificultat calculada: el SQL (`bn_admin_dificultat`) i `dificultat.py --proposa` ja són actius, pendent d'acumular prou respostes (l'11/11/2026: 362 preguntes vistes, 95 amb ≥ 5 respostes i 40 amb ≥ 8, de 625 totals). Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.

@@ -74,6 +74,8 @@ function dadesAdmin() {
    if (f === "bn_admin_benestar") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", mons: [], nens: [] }) });
    if (f === "bn_admin_fonts_dia") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", dies: [], total: {} }) });
    if (f === "bn_admin_dificultat") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ min_respostes: 8, dies: 365, assig: null, resum: { preguntes_vistes: 0, amb_dades: 0, dificils: 0, normals: 0, facils: 0 }, preguntes: [] }) });
+   if (f === "bn_ranking_mons") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([{ nom: "Pau", punts: 160, punts_max: 120, setmana: 35, temps_s: 1800, mons: { socials: 120, biogeo: 40 } }]) });
+   if (f === "bn_admin_xat_resum") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ parlat: 1, frases: 2, al_maxim: 0, vots: 1 }) });
    if (f === "bn_admin_xat_config") {
     if (cos.p_cfg && typeof cos.p_cfg.actiu === "boolean") d.ctrl.xat_actiu = cos.p_cfg.actiu;
     return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ est_credit: 10, max_dia: 5, espera_s: 10, actiu: d.ctrl.xat_actiu }) });
@@ -90,6 +92,8 @@ function dadesAdmin() {
      if (Array.isArray(cos.p_cfg.mons_tancats)) d.ctrl.mons_tancats = cos.p_cfg.mons_tancats.slice();
      if (cos.p_cfg.llindars && typeof cos.p_cfg.llindars === "object") d.ctrl.llindars = JSON.parse(JSON.stringify(cos.p_cfg.llindars));
      if (cos.p_cfg.reset_llindars) delete d.ctrl.llindars;
+     if (cos.p_cfg.ranquing && typeof cos.p_cfg.ranquing === "object") d.ctrl.ranquing = JSON.parse(JSON.stringify(cos.p_cfg.ranquing));
+     if (cos.p_cfg.reset_ranquing) delete d.ctrl.ranquing;
      d.ctrl.xat_obert_ara = d.ctrl.xat_actiu;
     }
     return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.ctrl) });
@@ -159,7 +163,11 @@ function dadesAdmin() {
      (await p.$$("#tLlindarsPed th")).length === 4 && (await p.isDisabled("#btDesaLlindars")) === true,
    "Configuració → Llindars mostra les 6 regles d'Alertes (3 cols), els 11 senyals editables de Benestar (3 cols) i les regles pedagògiques (4 cols), desactivades en ?demo");
 
-  // Enllaç ràpid a Configuració -> Horaris, i comprovació de les 4 subseccions (Horaris, Catàleg, Llindars, Còpies)
+  // Enllaç ràpid a Configuració -> Horaris, Rànquing i Còpies
+  await p.click('[data-vtab="ranquing"]');
+  await p.waitForSelector("#cfgRanquingVis");
+  ok((await p.inputValue("#rkCfgTop")) === "10" && (await p.isDisabled("#btDesaRkCfg")) === true && (await p.$$("[data-rk-tab]")).length === 5,
+   "Configuració → Rànquing mostra el tall XX primers per defecte (Top 10), les 5 pestanyes i els controls desactivats en ?demo");
   await p.click('[data-vtab="horaris"]');
   await p.waitForSelector("#xcF");
   ok((await txt("#titol")) === "Configuració" && (await p.isHidden("#periodeWrap")) === true && p.url().includes("v=config"),
@@ -371,7 +379,33 @@ function dadesAdmin() {
   ok(!!cRst && (await cr.p.inputValue('[data-ll-al-grav="encallat"]')) === "3",
    "Restaura per defecte demana confirmació (#dlg), envia { reset_llindars: true } a bn_admin_control i recupera els valors inicials");
 
-  ok(cr.errors.length === 0, "cap error de JS a Mons + autorefresc + Llindars");
+  // Configuració del Rànquing des de Rànquing → Classificació (#btRkAjusta → ?v=config&tab=ranquing) (g22)
+  await cr.p.goto(BASE + "/admin/?v=ranquing");
+  await cr.p.waitForSelector("#btRkAjusta");
+  ok((await cr.txt("#rkTopPill")) === "Top 10", "Rànquing → Classificació mostra la pastilla activa «Top 10»");
+  await cr.p.click("#btRkAjusta");
+  await cr.p.waitForSelector("#cfgRanquingVis");
+  ok(cr.p.url().includes("v=config") && cr.p.url().includes("tab=ranquing"),
+   "el botó «Configura» de Classificació porta directament a Configuració → Rànquing (?v=config&tab=ranquing)");
+  await cr.p.click('[data-rk-preset="5"]');
+  await cr.p.click('[data-rk-tab="nivell"]');
+  await cr.p.selectOption("#rkCfgIni", "remuntada");
+  await cr.p.fill("#rkCfgMetaEst", "25");
+  await cr.p.click("#btDesaRkCfg");
+  await cr.p.waitForFunction(() => (document.querySelector("#toasts")?.textContent || "").includes("Top 5"));
+  const cRk = cr.crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg && x.cos.p_cfg.ranquing).pop();
+  ok(cRk && cRk.cos.p_cfg.ranquing.top === 5 && cRk.cos.p_cfg.ranquing.pestanya_inicial === "remuntada" &&
+     cRk.cos.p_cfg.ranquing.pestanyes.nivell === false && cRk.cos.p_cfg.ranquing.meta_estrelles === 25,
+   "Desa la configuració del rànquing envia p_cfg.ranquing amb top=5, pestanya_inicial='remuntada', nivell=false i meta_estrelles=25");
+  await cr.p.click("#btResetRkCfg");
+  await cr.p.waitForSelector("#dlg[open] #dlgOk");
+  await cr.p.click("#dlgOk");
+  await cr.p.waitForFunction(() => (document.querySelector("#toasts")?.textContent || "").includes("inicials"));
+  const cRkRst = cr.crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg && x.cos.p_cfg.reset_ranquing === true).pop();
+  ok(!!cRkRst && (await cr.p.inputValue("#rkCfgTop")) === "10",
+   "Restaura per defecte al rànquing envia { reset_ranquing: true } i recupera Top 10");
+
+  ok(cr.errors.length === 0, "cap error de JS a Mons + autorefresc + Llindars + Rànquing");
   await cr.ctx.close();
  }
 
@@ -385,6 +419,9 @@ function dadesAdmin() {
   await p.click("#btConfig");
   await p.waitForSelector("#xcF");
   const sw2 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc2 = await maxCols();
+  await p.click('[data-vtab="ranquing"]');
+  await p.waitForSelector("#cfgRanquingVis");
+  const sw2r = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc2r = await maxCols();
   await p.click('[data-vtab="llindars"]');
   await p.waitForSelector("#tLlindarsAl table");
   const sw2l = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc2l = await maxCols();
@@ -399,8 +436,8 @@ function dadesAdmin() {
   await p.click("#tSes tbody tr:first-child");
   await p.waitForSelector("#panell:not([hidden])");
   const sw5 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc5 = await maxCols();
-  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && sw2l <= w && sw3 <= w && sw4 <= w && sw5 <= w && Math.max(mc1, mc2, mc2l, mc3, mc4, mc5) <= 8 && errors.length === 0,
-   `${w} px: barra inferior #navInf activa, ≤ 8 columnes i zero desbordament (Inici ${sw1}px, Config ${sw2}px, Llindars ${sw2l}px, Mons ${sw3}px, Fitxa món ${sw4}px, Sessions+panell ${sw5}px)`);
+  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && sw2r <= w && sw2l <= w && sw3 <= w && sw4 <= w && sw5 <= w && Math.max(mc1, mc2, mc2r, mc2l, mc3, mc4, mc5) <= 8 && errors.length === 0,
+   `${w} px: barra inferior #navInf activa, ≤ 8 columnes i zero desbordament (Inici ${sw1}px, Config ${sw2}px, Rànquing ${sw2r}px, Llindars ${sw2l}px, Mons ${sw3}px, Fitxa món ${sw4}px, Sessions+panell ${sw5}px)`);
   await ctx.close();
  }
 

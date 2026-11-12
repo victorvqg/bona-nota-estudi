@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="8f01220a99",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a0139f9cee",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -834,7 +834,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.37.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.38.0</small></footer>
 
 <script src="sprites.js?v=0be9e885"></script>
 <script>
@@ -1036,6 +1036,7 @@ function iniciEntrada(){
    if(Array.isArray(r.mons_tancats))aplicaMonsTancats(r.mons_tancats);
    if(r.horari&&typeof r.horari==='object'){HOR_PORTADA=r.horari;if(!tastActiu())try{localStorage.setItem('bn_horari_web',JSON.stringify(r.horari))}catch(e){}}
    if(r.xat&&typeof r.xat.actiu==='boolean'&&typeof XAT==='object')XAT.actiu=r.xat.actiu;
+   if(r.ranquing&&typeof r.ranquing==='object'&&typeof aplicaRkEstat==='function')aplicaRkEstat(r.ranquing,true);
    pintaAvisNitPortada();
   }).catch(()=>{});
  };
@@ -1057,7 +1058,7 @@ function iniciEntrada(){
 (function(){const bi=document.getElementById("btInfo"),it=document.getElementById("intro"),pop=document.getElementById("hsPop"),np=document.getElementById("npPop");
  let prevFocus=null;
  bi.onclick=()=>{const o=it.hidden;it.hidden=!o;bi.setAttribute("aria-expanded",o)};
- const obreHs=()=>{prevFocus=document.activeElement;pop.hidden=false;document.body.classList.add("modal-obert");carregaHs();setTimeout(()=>document.getElementById("hsTanca").focus(),30)};
+ const obreHs=()=>{prevFocus=document.activeElement;HS_USUARI_TAB=false;aplicaRkUi(true);pop.hidden=false;document.body.classList.add("modal-obert");carregaHs();setTimeout(()=>document.getElementById("hsTanca").focus(),30)};
  const tanca=()=>{if(pop.hidden)return;pop.hidden=true;document.body.classList.remove("modal-obert");fiFesta(true);tickerStop();netejaFxTab();xatPara(1);if(prevFocus&&prevFocus.focus)prevFocus.focus()};
  document.getElementById("btHs").onclick=obreHs;
  if(/[?&]demo\b/.test(location.search))setTimeout(obreHs,300);
@@ -1076,7 +1077,41 @@ function iniciEntrada(){
  });
 })();
 // rànquing arcade (Supabase · funció bn_ranking): podi amb avatars + llista
-let HSD=null,HST=0,HSTAB="punts";
+let HSD=null,HST=0,HSTAB="punts",HS_USUARI_TAB=false;
+const RK_TABS_ORD=["punts","dies","nivell","setmana","remuntada"];
+function rkNorm(raw){
+ const r=raw&&typeof raw==="object"?raw:{},ps=r.pestanyes&&typeof r.pestanyes==="object"?r.pestanyes:{},out={
+  actiu:typeof r.actiu==="boolean"?r.actiu:true,
+  top:Math.max(3,Math.min(100,Math.round(+r.top||10))),
+  mostrar_propia:typeof r.mostrar_propia==="boolean"?r.mostrar_propia:true,
+  pestanya_inicial:RK_TABS_ORD.includes(r.pestanya_inicial)?r.pestanya_inicial:"punts",
+  pestanyes:{},
+  mostra_premis:typeof r.mostra_premis==="boolean"?r.mostra_premis:true,
+  mostra_meta:typeof r.mostra_meta==="boolean"?r.mostra_meta:true,
+  meta_estrelles:Math.max(5,Math.min(200,Math.round(+r.meta_estrelles||30))),
+  meta_pct:Math.max(25,Math.min(100,Math.round(+r.meta_pct||75)))
+ };
+ RK_TABS_ORD.forEach(t=>{out.pestanyes[t]=typeof ps[t]==="boolean"?ps[t]:true});
+ if(!RK_TABS_ORD.some(t=>out.pestanyes[t]))out.pestanyes.punts=true;
+ if(!out.pestanyes[out.pestanya_inicial])out.pestanya_inicial=RK_TABS_ORD.find(t=>out.pestanyes[t])||"punts";
+ return out;
+}
+let RK_CFG=rkNorm((()=>{try{return /[?&]demo\b/.test(location.search)?null:JSON.parse(localStorage.getItem("bn_ranquing_cfg")||"null")}catch(e){return null}})());
+function aplicaRkUi(forcaIni){
+ const bar=document.getElementById("hsTabs");if(!bar)return;
+ RK_TABS_ORD.forEach(t=>{const b=bar.querySelector(`.hs-tab[data-t="${t}"]`);if(b)b.hidden=!RK_CFG.actiu||!RK_CFG.pestanyes[t]});
+ if(RK_CFG.actiu&&(forcaIni||(HSTAB!=="xat"&&!RK_CFG.pestanyes[HSTAB])))HSTAB=RK_CFG.pestanya_inicial;
+ bar.querySelectorAll(".hs-tab").forEach(x=>{const on=x.dataset.t===HSTAB&&!x.hidden;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false");x.tabIndex=on?0:-1});
+}
+function aplicaRkEstat(raw,repinta){
+ if(!raw||typeof raw!=="object")return;
+ RK_CFG=rkNorm(raw);
+ if(!/[?&]demo\b/.test(location.search)&&!tastActiu())try{localStorage.setItem("bn_ranquing_cfg",JSON.stringify(RK_CFG))}catch(e){}
+ aplicaRkUi(!HS_USUARI_TAB);
+ const pop=document.getElementById("hsPop");
+ if(repinta&&pop&&!pop.hidden&&(HSD||!RK_CFG.actiu))pintaHs();
+}
+aplicaRkUi(true);
 const NIV=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","🔍"],[45,"Savi","📜"],[70,"Expert","🎓"],[100,"Mestre","🧠"],[140,"Campió","🏅"],[190,"Heroi","🦸"],[250,"Llegenda","👑"],[330,"Llegenda d'or","🌟"]];
 const niv=p=>{let i=0;while(i<NIV.length-1&&p>=NIV[i+1][0])i++;return i};
 /* XAT-CATALEG:inici · xat de la colla (n2528): el MATEIX catàleg que supabase/bn_xat.sql (motor/prova-xat-sql.js comprova que coincideixen).
@@ -1210,17 +1245,19 @@ const MONS_IC=(()=>{const xs=[...document.querySelectorAll('.as[data-id]')].map(
  return xs.sort((a,b)=>ord.indexOf(a.mat)-ord.indexOf(b.mat)||a.i-b.i).map(x=>[x.id,rajola(x.id,x.ic,x.t,x.mat),x.t,x.mat,x.h])})();
 const MONS_GR=MONS_IC.reduce((g,m)=>{const u=g[g.length-1];if(u&&u.mat===m[3])u.n++;else g.push(Object.assign({mat:m[3],n:1},matDe(m[3])));return g},[]);
 const monsHtml=r=>{const m=r.mons||{};const xs=MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<i>${ic} ${m[id]}</i>`);return xs.join("")};
-const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ${ST()}`,m:monsHtml(r)})},dies:{k:"dies",v:r=>({v:`${r.dies||0} ${r.dies===1?"DIA":"DIES"}`})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${nivIc(n)} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ${ST()}`,s:"últims 7 dies"})},remuntada:{k:"apr",v:r=>({v:`${r.apr} ${BR()}`,s:"errors apresos · 7 dies"})}};
+const HSCFG={punts:{k:"punts",v:r=>({v:`${r.punts} ${ST()}`,m:monsHtml(r)})},dies:{k:"dies",v:r=>({v:`${r.dies||0} ${r.dies===1?"DIA":"DIES"}`})},nivell:{k:"punts_max",v:r=>{const n=niv(r.punts_max);return {v:`${nivIc(n)} ${n+1}`,s:NIV[n][1]}}},setmana:{k:"setmana",v:r=>({v:`+${r.setmana} ${ST()}`,s:"últims 7 dies"})},remuntada:{k:"apr",v:r=>({v:`${r.apr} ${BR()}`,s:"errors recuperats · 7 dies"})}};
 function carregaHs(){const hs=document.getElementById("hs");
  // xat de la colla (n2528): es llegeix (i l'estat del nen) cada cop que s'obre el rànquing, en paral·lel; el rànquing l'espera com a molt 1,5 s
  if(DEMO){HSD=DEMO_D;HST=Date.now();xatCarrega().then(()=>{pintaHs();redoble()});return}
- if(HSD&&Date.now()-HST<60000){pintaHs();xatCarrega().then(xatRefresca);return}
- hs.innerHTML=`<div class="hs-buit">CARREGANT…</div>`;
  const rk=f=>fetch("https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/"+f,{method:"POST",headers:{"apikey":"sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p","Content-Type":"application/json"},body:"{}"}).then(r=>r.ok?r.json():Promise.reject());
+ if(HSD&&Date.now()-HST<60000){pintaHs();rk("bn_estat_web").then(ew=>{if(ew&&ew.ranquing)aplicaRkEstat(ew.ranquing,true)}).catch(()=>{});xatCarrega().then(xatRefresca);return}
+ hs.innerHTML=`<div class="hs-buit">CARREGANT…</div>`;
  const xc=xatCarrega();
- Promise.all([rk("bn_ranking_mons").catch(()=>rk("bn_ranking")),rk("bn_ranking_remuntada").catch(()=>[]),rk("bn_aspectes").catch(()=>[]),Promise.race([xc,new Promise(r=>setTimeout(r,1500))])]).then(([d,ap,asp])=>{HSD=Array.isArray(d)?d:[];desaAspectes(asp);
+ Promise.all([rk("bn_ranking_mons").catch(()=>rk("bn_ranking")),rk("bn_ranking_remuntada").catch(()=>[]),rk("bn_aspectes").catch(()=>[]),rk("bn_estat_web").catch(()=>null),Promise.race([xc,new Promise(r=>setTimeout(r,1500))])]).then(([d,ap,asp,ew])=>{
+  if(ew&&ew.ranquing)aplicaRkEstat(ew.ranquing,false);
+  HSD=Array.isArray(d)?d:[];desaAspectes(asp);
   const ma={};(Array.isArray(ap)?ap:[]).forEach(x=>{if(x&&x.nom)ma[x.nom.trim().toLowerCase()]=+x.apr||0});HSD.forEach(r=>{r.apr=ma[r.nom.trim().toLowerCase()]||0;r.dies=+r.dies||(r.punts>0||r.temps_s>0?1:0)});
-  HST=Date.now();pintaHs();redoble();xc.then(xatRefresca)})
+  HST=Date.now();pintaHs();if(RK_CFG.actiu)redoble();xc.then(xatRefresca)})
   .catch(()=>{hs.innerHTML=`<div class="hs-buit">EL RÀNQUING ARRIBA AVIAT…<br>MENTRESTANT, JUGA I SUMA ${ST()}!</div>`});
 }
 // demo: portada amb «?demo» → rànquing ple amb nens inventats (no surt de Supabase)
@@ -1230,14 +1267,18 @@ const DEMO_D=[["Pau",263,9400,150,71,{socials:150,biogeo:36,castellano:40,comarq
  ["Èric",83,2600,83,18,{socials:83}],["Martina",66,3100,30,12,{socials:30,biogeo:21,castellano:15}],["Leo",48,1500,48,48,{comarques:48}],["Júlia",31,2000,20,5,{biogeo:20,castellano:3,divisibilitat:8}],["Max",12,700,12,12,{socials:12}]]
  .map(([nom,punts,temps_s,punts_max,setmana,mons],i)=>({nom,punts,temps_s,punts_max,setmana,mons,dies:[14,11,12,9,13,7,8,5,6,3,4,2][i]||1,apr:[3,0,6,1,8,2,4,0,5,1,2,0][i]||0}));
 const DEMO_PREV={pau:2,jana:1,àlex:5,nora:3,laia:4,hugo:8,ona:6,èric:7,martina:9,júlia:10};
-// HS_TOP: quants jugadors surten a la classificació; si tu quedes més avall, la teva fila surt a sota, després de «···»
-const SUPER=50,HS_TOP=25,ordinal=n=>n===1?"1r":n===2?"2n":n===3?"3r":n===4?"4t":n+"è";
+// RK_CFG.top (abans HS_TOP): quants jugadors surten a la classificació; si tu quedes més avall i mostrar_propia=true, la teva fila surt a sota, després de «···»
+const SUPER=50,ordinal=n=>n===1?"1r":n===2?"2n":n===3?"3r":n===4?"4t":n+"è";
 const nMons=r=>Object.values(r.mons||{}).filter(x=>x>0).length;
 function movHtml(m){const t=x=>` title="${x}" aria-label="${x}"`;return m==null?"":m==="nou"?`<span class="mov nou"${t("nou al rànquing")}>NOU</span>`:m>0?`<span class="mov up"${t(`ha pujat ${m} ${m===1?"lloc":"llocs"}`)}>${spr("up")}${m}</span>`:m<0?`<span class="mov dn"${t(`ha baixat ${-m} ${m===-1?"lloc":"llocs"}`)}>${spr("down")}${-m}</span>`:`<span class="mov eq"${t("igual que l'última vegada")}>${spr("eq")}</span>`}
 const fTc=s=>{const m=Math.round((s||0)/60);return m<1?"<1m":m>=60?`${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`:`${m}m`};
 function pintaHs(){
+ aplicaRkUi(false);
  // pestanya Xat (n2528): el podi és el d'Estrelles (TB), però no desa cap moviment (ni bn_hs_prev_xat ni trepitja bn_hs_prev_punts)
  const XV=HSTAB==="xat",TB=XV?"punts":HSTAB;
+ if(!RK_CFG.actiu&&!XV){tickerStop();xatPara();document.getElementById("hs").innerHTML=`<div class="hs-buit hs-pausa">EL RÀNQUING ESTÀ EN PAUSA ARA MATEIX.<br>CONTINUA ESTUDIANT I SUMANT ${ST()}!</div>`;xatBadge();return}
+ if(!RK_CFG.actiu&&XV){tickerStop();document.getElementById("hs").innerHTML=`<div class="hs-cos xat-on"><div class="a-podi"><div class="hs-buit hs-pausa">EL RÀNQUING ESTÀ EN PAUSA ARA MATEIX.<br>CONTINUA ESTUDIANT I SUMANT ${ST()}!</div></div><div class="hs-col dre"><div class="a-xat"></div></div></div>`;xatBadge();xatPintaVista();xatLectura();return}
+ const hsTop=RK_CFG.top;
  const c=HSCFG[TB],rows=HSD.filter(r=>(r[c.k]||0)>0).sort((a,b)=>(b[c.k]||0)-(a[c.k]||0)||(b.punts||0)-(a.punts||0));
  const meu=DEMO?"laia":tastActiu()?"":((document.querySelector("#hola em")||{}).textContent||"").trim().toLowerCase();
  const k=r=>r.nom.trim().toLowerCase(),esJo=r=>meu&&k(r)===meu;
@@ -1247,7 +1288,7 @@ function pintaHs(){
  if(!DEMO&&!XV&&!tastActiu())try{const nou={};rows.forEach((r,i)=>nou[k(r)]=i+1);localStorage.setItem("bn_hs_prev_"+TB,JSON.stringify(nou))}catch(e){}
  const unit=TB==="dies"?" d'estudi":" "+(TB==="remuntada"?BR():ST()),fmt=v=>TB==="dies"?`${v} ${v===1?"dia":"dies"}`:v;
  // ---- 1) podi: només avatar, nom, valor i moviment ----
- const vPodi=r=>TB==="punts"?`<span class="cnt" data-n="${r.punts}">${r.punts}</span> ${ST()}`:TB==="setmana"?`+<span class="cnt" data-n="${r.setmana}">${r.setmana}</span> ${ST()}`:TB==="remuntada"?`<span class="cnt" data-n="${r.apr}">${r.apr}</span> ${BR()}<small>errors apresos</small>`:TB==="dies"?`<span class="cnt" data-n="${r.dies}">${r.dies}</span><small>${r.dies===1?"dia d'estudi":"dies d'estudi"}</small>`:(()=>{const n=niv(r.punts_max);return `${nivIc(n)} ${n+1}<small>${NIV[n][1]}</small>`})();
+ const vPodi=r=>TB==="punts"?`<span class="cnt" data-n="${r.punts}">${r.punts}</span> ${ST()}`:TB==="setmana"?`+<span class="cnt" data-n="${r.setmana}">${r.setmana}</span> ${ST()}`:TB==="remuntada"?`<span class="cnt" data-n="${r.apr}">${r.apr}</span> ${BR()}<small>${r.apr===1?"error recuperat":"errors recuperats"}</small>`:TB==="dies"?`<span class="cnt" data-n="${r.dies}">${r.dies}</span><small>${r.dies===1?"dia d'estudi":"dies d'estudi"}</small>`:(()=>{const n=niv(r.punts_max);return `${nivIc(n)} ${n+1}<small>${NIV[n][1]}</small>`})();
  const pd=(r,pos)=>{if(!r)return `<div class="pd p${pos} lliure"><span class="pd-av" style="--av:#1e1b4b"><span class="av-cl">${spr("ghost")}</span></span><span class="pd-nom">Lliure</span><span class="pd-val"><small>Pot ser teu!</small></span><div class="pd-bloc">${pos}</div></div>`;
   return `<div class="pd p${pos} ${esJo(r)?"jo":""}">${avHtml(r.nom,"pd-av",pos===1?`<span class="corona">${spr("crown")}</span>`:"")}<span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="pd-val">${vPodi(r)}</span><span class="pd-mv">${movHtml(mov(r,pos))}</span><div class="pd-bloc">${pos}</div></div>`};
  // ---- 2) taula de classificació: columnes alineades, la de la pestanya activa ressaltada ----
@@ -1258,7 +1299,7 @@ function pintaHs(){
  const fsMat=g=>{const w=mcv.measureText(g.curt).width,lloc=g.n*42+(g.n-1)*6+6;return w<=lloc?"":`;font-size:${Math.max(6,8*lloc/w).toFixed(2)}px`};
  const mats=`<div class="ht-fila ht-mat" aria-hidden="true"><span class="ht-fix"></span>${MONS_GR.map(g=>`<span class="ht-matg" style="grid-column:span ${g.n};--mc:${g.color};--mt:${g.tint}" title="${esc(g.mat)}"><b style="${fsMat(g).slice(1)}">${esc(g.curt)}</b></span>`).join("")}<span class="ht-mat1"></span></div>`;
  const tt=x=>` title="${x}" aria-label="${x}"`;
- const cap=`<div class="ht-fila ht-cap" role="row"><span class="ht-fix"><span class="pos">#</span><span class="mv"></span><span class="nom">Nom</span></span>${MONS_IC.map(([id,ic])=>`<span class="w">${ic}</span>`).join("")}<span class="num c-punts"${tt("Estrelles de tots els mons")}>${spr("star")} Total</span>${TB==="dies"?`<span class="num c-x"${tt("Dies d'estudi (últims 120 dies)")}>${spr("hourglass")} Dies</span>`:TB==="remuntada"?`<span class="num c-x"${tt("Errors apresos al repàs els últims 7 dies")}>${spr("brain")} Apresos</span>`:`<span class="num c-x"${tt("Estrelles dels últims 7 dies")}>${spr("fire")} 7 dies</span>`}</div>`;
+ const cap=`<div class="ht-fila ht-cap" role="row"><span class="ht-fix"><span class="pos">#</span><span class="mv"></span><span class="nom">Nom</span></span>${MONS_IC.map(([id,ic])=>`<span class="w">${ic}</span>`).join("")}<span class="num c-punts"${tt("Estrelles de tots els mons")}>${spr("star")} Total</span>${TB==="dies"?`<span class="num c-x"${tt("Dies d'estudi (últims 120 dies)")}>${spr("hourglass")} Dies</span>`:TB==="remuntada"?`<span class="num c-x"${tt("Errors recuperats al repàs els últims 7 dies (+2 extra quan queda après)")}>${spr("brain")} Repàs</span>`:`<span class="num c-x"${tt("Estrelles dels últims 7 dies")}>${spr("fire")} 7 dies</span>`}</div>`;
  const fila=(r,pos,i,extra)=>{const m=r.mons||{},n=niv(r.punts_max||0),sup=Math.floor((r.punts||0)/SUPER);
   return `<div class="ht-fila ${pos<=3?"top":""} ${esJo(r)?"jo":""} ${extra||""}" role="row" style="animation-delay:${(.8+i*.06).toFixed(2)}s">
   <span class="ht-fix"><span class="pos"${pos<=3?tt(`${ordinal(pos)} lloc`):""}>${pos<=3?MED[pos-1]:pos}</span><span class="mv">${movHtml(mov(r,pos))}</span>
@@ -1267,15 +1308,15 @@ function pintaHs(){
   ${MONS_IC.map(([id])=>`<span class="w${m[id]>0?"":" buit"}">${m[id]>0?m[id]:"·"}</span>`).join("")}
   <span class="num c-punts">${r.punts||0}</span><span class="num c-x">${TB==="dies"?(r.dies>0?r.dies:"·"):TB==="remuntada"?(r.apr>0?r.apr:"·"):(r.setmana>0?"+"+r.setmana:"·")}</span></div>`};
  let podi="",taula="";
- if(!rows.length)podi=TB==="remuntada"?`<div class="hs-buit">AQUESTA SETMANA ENCARA NINGÚ<br>HA APRÈS UN ERROR DEL TOT.<br>REPASSA ELS TEUS ERRORS I SURT AQUÍ! ${spr("brain")}</div>`:`<div class="hs-buit">ENCARA NO HI HA NINGÚ AL PODI<br>JUGA I SERÀS EL PRIMER! ${spr("rocket")}</div>`;
+ if(!rows.length)podi=TB==="remuntada"?`<div class="hs-buit">AQUESTA SETMANA ENCARA NINGÚ<br>HA REPASSAT CAP ERROR.<br>REPASSA ELS TEUS ERRORS I SURT AQUÍ! ${spr("brain")}</div>`:`<div class="hs-buit">ENCARA NO HI HA NINGÚ AL PODI<br>JUGA I SERÀS EL PRIMER! ${spr("rocket")}</div>`;
  else{
   podi=`<div class="podi">${pd(rows[0],1)}${pd(rows[1],2)}${pd(rows[2],3)}</div>`;
   const ij=rows.findIndex(esJo);
-  taula=`<h3 class="hs-sec"><span>${spr("clipboard")} CLASSIFICACIÓ</span> <small>${rows.length} jugador${rows.length===1?"":"s"}</small></h3><div class="ht-scroll"><div class="hs-taula act-${TB}" role="table" style="--nw:${nw}">${mats}${cap}${rows.slice(0,HS_TOP).map((r,i)=>fila(r,i+1,i)).join("")}${ij>=HS_TOP?`<div class="ht-salt">···</div>${fila(rows[ij],ij+1,HS_TOP,"mes")}`:""}</div></div>`;
+  taula=`<h3 class="hs-sec"><span>${spr("clipboard")} CLASSIFICACIÓ</span> <small>${rows.length>hsTop?`Top ${hsTop} de ${rows.length} jugadors`:`${rows.length} jugador${rows.length===1?"":"s"}`}</small></h3><div class="ht-scroll"><div class="hs-taula act-${TB}" role="table" style="--nw:${nw}">${mats}${cap}${rows.slice(0,hsTop).map((r,i)=>fila(r,i+1,i)).join("")}${RK_CFG.mostrar_propia&&ij>=hsTop?`<div class="ht-salt">···</div>${fila(rows[ij],ij+1,hsTop,"mes")}`:""}</div></div>`;
  }
  // ---- 3) la teva posició ----
  let tu="";const ij=rows.findIndex(esJo);XAT.davant=meu&&ij>0?rows[ij-1]:null; // qui tens just al davant («Digues-li…»; xatEncaixa)
- if(meu){if(ij<0)tu=`<div class="hs-tu"><div class="t">ENCARA NO HI ETS!</div><p>Fes un test o un joc i entraràs al rànquing. ${spr("rocket")}</p></div>`;
+ if(meu){if(ij<0)tu=`<div class="hs-tu"><div class="t">ENCARA NO HI ETS!</div><p>${TB==="remuntada"?`Repassa els teus errors i sortiràs a la remuntada! ${spr("brain")}`:`Fes un test o un joc i entraràs al rànquing. ${spr("rocket")}`}</p></div>`;
   else{const r=rows[ij],ant=rows[ij-1],seg=rows[ij+1];
    if(ij===0){const av=r[c.k]-(seg?seg[c.k]:0);tu=`<div class="hs-tu"><div class="t">${spr("crown")} ETS EL 1r!</div><p>${av>0?`Tens <b>${fmt(av)}${unit}</b> d'avantatge${seg?` sobre <b>${esc(seg.nom)}</b> ${avHtml(seg.nom,"av-mini")}`:""}.`:`Empatat${seg?` amb <b>${esc(seg.nom)}</b> ${avHtml(seg.nom,"av-mini")}`:""} i davant per estrelles!`} Que no t'atrapin!</p></div>`}
    else{const falta=Math.max(1,ant[c.k]-r[c.k]+1),pc=Math.min(100,Math.round(r[c.k]*100/Math.max(1,ant[c.k])));
@@ -1286,27 +1327,27 @@ function pintaHs(){
   ["rocket","Cohet","#db2777",millor(r=>r.temps_s>=600?Math.round(r.punts*600/r.temps_s):0,v=>v>0),v=>`${v} ${ST()} cada 10 min`],
   ["globe","Explorador de mons","#0891b2",millor(nMons,v=>v>1),v=>`${v} mons amb ${ST()}`],
   ["hourglass","Més constant","#7c3aed",millor(r=>r.dies||0,v=>v>0),v=>`${v} ${v===1?"dia":"dies"} d'estudi`],
-  ["brain","Remuntada de la setmana","#16a34a",millor(r=>r.apr||0,v=>v>0),v=>`${v} error${v===1?"":"s"} après${v===1?"":"os"} en 7 dies`]].filter(x=>x[3]);
- const premis=P.length?`<div class="hs-caixeta"><h3 class="hs-sec"><span>${spr("trophy")} PREMIS DE LA COLLA</span></h3><div class="g">${P.map(([ic,nm,col,m,tx],i)=>`<div class="premi" style="--pc:${col};animation-delay:${(1.1+i*.15).toFixed(2)}s"><span class="ic">${spr(ic)}</span><span class="nm2">${nm}</span><span class="qui">${avHtml(m.r.nom,"av-pr")}<span>${esc(m.r.nom)}</span></span><small>${tx(m.v)}</small></div>`).join("")}</div></div>`:"";
+  ["brain","Remuntada de la setmana","#16a34a",millor(r=>r.apr||0,v=>v>0),v=>`${v} ${BR()} al repàs en 7 dies`]].filter(x=>x[3]);
+ const premis=RK_CFG.mostra_premis&&P.length?`<div class="hs-caixeta"><h3 class="hs-sec"><span>${spr("trophy")} PREMIS DE LA COLLA</span></h3><div class="g">${P.map(([ic,nm,col,m,tx],i)=>`<div class="premi" style="--pc:${col};animation-delay:${(1.1+i*.15).toFixed(2)}s"><span class="ic">${spr(ic)}</span><span class="nm2">${nm}</span><span class="qui">${avHtml(m.r.nom,"av-pr")}<span>${esc(m.r.nom)}</span></span><small>${tx(m.v)}</small></div>`).join("")}</div></div>`:"";
   // composició: ordinador → a dalt podi | (meta + la teva posició), a sota els premis i la classificació a tota l'amplada; mòbil → podi, meta, tu, premis, classificació
  // ---- 5) meta de la colla (Bona Nota 2.0): compta qui hi participa, no qui en fa més ----
  const M=metaColla();
- const meta=M.n<2?"":`<div class="hs-meta${M.feta?" feta":""}"><div class="t">${spr(M.feta?"trophy":"globe")} META DE LA COLLA</div><p>${M.feta?`<b>Aconseguida!</b> ${M.fet} de ${M.n} heu fet ${M.llindar} ${ST()} o més aquesta setmana. Festa per a tothom! 🎉`:`Que <b>${M.obj} de ${M.n}</b> fem ${M.llindar} ${ST()} o més en 7 dies. Ara: <b>${M.fet}</b>. ${M.obj-M.fet===1?"Només en falta 1!":`En falten ${M.obj-M.fet}.`}`}</p><div class="falta"><i style="width:${Math.min(100,Math.round(M.fet*100/M.obj))}%"></i></div><div class="qui">${M.qui.map(r=>avHtml(r.nom,"av-mini")).join("")}</div></div>`;
+ const meta=!RK_CFG.mostra_meta||M.n<2?"":`<div class="hs-meta${M.feta?" feta":""}"><div class="t">${spr(M.feta?"trophy":"globe")} META DE LA COLLA</div><p>${M.feta?`<b>Aconseguida!</b> ${M.fet} de ${M.n} heu fet ${M.llindar} ${ST()} o més aquesta setmana. Festa per a tothom! 🎉`:`Que <b>${M.obj} de ${M.n}</b> fem ${M.llindar} ${ST()} o més en 7 dies. Ara: <b>${M.fet}</b>. ${M.obj-M.fet===1?"Només en falta 1!":`En falten ${M.obj-M.fet}.`}`}</p><div class="falta"><i style="width:${Math.min(100,Math.round(M.fet*100/M.obj))}%"></i></div><div class="qui">${M.qui.map(r=>avHtml(r.nom,"av-mini")).join("")}</div></div>`;
  // ---- 6) xat de la colla (n2528): a les pestanyes normals, la targeta a dalt de la columna dreta (només si el xat respon);
  //         a la pestanya Xat, el xat a la dreta i «Com es guanya parlar» sota el podi (els omple xatPintaVista), sense premis ni classificació
  const dre=XV?`<div class="a-xat"></div>`:`${XAT.ok?`<div class="a-peek">${xatPeekHtml()}</div>`:""}${meta?`<div class="a-meta">${meta}</div>`:""}${tu?`<div class="a-tu">${tu}</div>`:""}`;
  document.getElementById("hs").innerHTML=`<div class="hs-cos${dre?"":" sol"}${XV?" xat-on":""}"><div class="a-podi">${podi}</div>${dre?`<div class="hs-col dre">${dre}</div>`:""}${XV?"":`${premis?`<div class="a-premis">${premis}</div>`:""}<div class="a-taula">${taula}</div>`}</div>`;
  xatBafs();xatBadge();if(XV)xatPintaVista();
- if(M.feta)festaMeta();
+ if(RK_CFG.mostra_meta&&M.feta)festaMeta();
  // quan la classificació es desplaça de costat, el bloc enganxat (posició + nom) fa ombra i la capçalera tapa el que passa per sota
  const sc=document.querySelector("#hs .ht-scroll");if(sc)sc.addEventListener("scroll",()=>sc.classList.toggle("desp",sc.scrollLeft>0),{passive:true});
  // ---- rètol de notícies que passa ----
  const nt=[];const r0=rows[0];
  if(r0&&rows[1]&&r0[c.k]>rows[1][c.k])nt.push(`${spr("crown")} <b>${esc(r0.nom)}</b> lidera amb ${fmt(r0[c.k]-rows[1][c.k])}${unit} d'avantatge`);
- P.forEach(([ic,nm,,m,tx])=>nt.push(`${spr(ic)} <b>${esc(m.r.nom)}</b>: ${tx(m.v)}`));
+ if(RK_CFG.mostra_premis)P.forEach(([ic,nm,,m,tx])=>nt.push(`${spr(ic)} <b>${esc(m.r.nom)}</b>: ${tx(m.v)}`));
  tots.filter(r=>r.punts>=SUPER).sort((a,b)=>b.punts-a.punts).slice(0,4).forEach(r=>nt.push(`${spr("superstar")} <b>${esc(r.nom)}</b> té ${Math.floor(r.punts/SUPER)} superestrell${Math.floor(r.punts/SUPER)===1?"a":"es"}`));
- if(hiHavia)rows.slice(0,HS_TOP).forEach((r,i)=>{const m=mov(r,i+1);if(m==="nou")nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> entra al rànquing!`);else if(m>=2)nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> puja ${m} llocs!`)});
- if(M.n>=2)nt.push(`${spr("globe")} Meta de la colla: <b>${M.fet} de ${M.obj}</b> a ${M.llindar} ${ST()} aquesta setmana${M.feta?" · aconseguida! 🎉":""}`);
+ if(hiHavia)rows.slice(0,hsTop).forEach((r,i)=>{const m=mov(r,i+1);if(m==="nou")nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> entra al rànquing!`);else if(m>=2)nt.push(`${spr("chart")} <b>${esc(r.nom)}</b> puja ${m} llocs!`)});
+ if(RK_CFG.mostra_meta&&M.n>=2)nt.push(`${spr("globe")} Meta de la colla: <b>${M.fet} de ${M.obj}</b> a ${M.llindar} ${ST()} aquesta setmana${M.feta?" · aconseguida! 🎉":""}`);
  nt.push(`${spr("star")} ${tots.length} jugadors · ${tots.reduce((a,r)=>a+r.punts,0)} estrelles entre tots`);
  XAT.nt=nt;XAT.tk=null;xatCinta(); // els tres últims missatges del xat passen davant de les notícies (si el xat arriba tard o canvia, xatRefresca la refà)
  // ---- comptadors del podi que pugen ----
@@ -1337,8 +1378,8 @@ function tickerHs(nt){const el=document.getElementById("hsTicker");tickerStop();
 // Premia que hi participi tothom: un nen sol no la pot fer. Quan s'aconsegueix, la festa del rànquing salta sola
 // a cada aparell, un cop per setmana (de dilluns a diumenge).
 const META_LLINDAR=30;
-function metaColla(){const tots=(HSD||[]).filter(r=>r.punts>0),n=tots.length,obj=Math.max(3,Math.ceil(n*.75)),qui=tots.filter(r=>(r.setmana||0)>=META_LLINDAR);
- return {n,obj,llindar:META_LLINDAR,fet:qui.length,qui,feta:n>=2&&qui.length>=obj}}
+function metaColla(){const ll=RK_CFG.meta_estrelles||META_LLINDAR,pct=(RK_CFG.meta_pct||75)/100,tots=(HSD||[]).filter(r=>r.punts>0),n=tots.length,obj=Math.min(Math.max(n,3),Math.max(3,Math.ceil(n*pct))),qui=tots.filter(r=>(r.setmana||0)>=ll);
+ return {n,obj,llindar:ll,fet:qui.length,qui,feta:n>=2&&qui.length>=obj}}
 function setmanaClau(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.toISOString().slice(0,10)}
 function festaMeta(){if(tastActiu())return;const k="bn_meta_festa",w=setmanaClau();try{if(localStorage.getItem(k)===w)return;localStorage.setItem(k,w)}catch(e){return}
  setTimeout(()=>{if(typeof festa==="function"&&!FESTA&&document.querySelector(".hs-caixa"))festa()},1800)}
@@ -1411,13 +1452,13 @@ function efecteTab(b){const box=document.querySelector(".hs-caixa"),fx=FXT[b.dat
 }
 // tocar la pestanya que ja està triada també torna a fer l'efecte (abans no passava res)
 let TAB_T=0;
-const activaTabHs=(b,focus)=>{if(!b)return;const ara=performance.now(),mateixa=b.dataset.t===HSTAB;
+const activaTabHs=(b,focus)=>{if(!b||b.hidden)return;HS_USUARI_TAB=true;const ara=performance.now(),mateixa=b.dataset.t===HSTAB;
  if(!mateixa||ara-TAB_T>350){TAB_T=ara;efecteTab(b)}
  HSTAB=b.dataset.t;
  document.querySelectorAll(".hs-tab").forEach(x=>{const on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false");x.tabIndex=on?0:-1});
  if(focus)b.focus();if(HSD&&!mateixa)pintaHs();xatLectura()};
 document.getElementById("hsTabs").onclick=e=>{const b=e.target.closest(".hs-tab");if(b)activaTabHs(b,false)};
-document.getElementById("hsTabs").onkeydown=e=>{const ts=[...document.querySelectorAll(".hs-tab")],i=ts.indexOf(e.target.closest(".hs-tab"));if(i<0)return;
+document.getElementById("hsTabs").onkeydown=e=>{const ts=[...document.querySelectorAll(".hs-tab:not([hidden])")],i=ts.indexOf(e.target.closest(".hs-tab"));if(i<0)return;
  let n=-1;if(e.key==="ArrowRight")n=(i+1)%ts.length;else if(e.key==="ArrowLeft")n=(i-1+ts.length)%ts.length;else if(e.key==="Home")n=0;else if(e.key==="End")n=ts.length-1;
  if(n>=0){e.preventDefault();activaTabHs(ts[n],true)}};
 // ---- 💬 XAT DE LA COLLA (n2528) ----

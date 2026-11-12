@@ -116,7 +116,8 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
     const ePriv1 = await falla("select bn_priv.mons_tancats()");
     const ePriv2 = await falla("select bn_priv.xat_obert_ara()");
     const ePriv3 = await falla("select bn_priv.llindars_cfg()");
-    ok(ePriv1 !== null && ePriv2 !== null && ePriv3 !== null, "anon no pot cridar bn_priv.mons_tancats(), bn_priv.xat_obert_ara() ni bn_priv.llindars_cfg()");
+    const ePriv4 = await falla("select bn_priv.ranquing_cfg()");
+    ok(ePriv1 !== null && ePriv2 !== null && ePriv3 !== null && ePriv4 !== null, "anon no pot cridar bn_priv.mons_tancats(), bn_priv.xat_obert_ara(), bn_priv.llindars_cfg() ni bn_priv.ranquing_cfg()");
     await db.exec("reset role;");
   }
 
@@ -164,6 +165,47 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
     const dReset = await ctrl({ reset_llindars: true });
     ok(dReset.llindars.alertes.inactiu.grav === 2 && dReset.llindars.alertes.encallat.vegades === 3 && dReset.llindars.benestar.pressa.nivell === "groc",
       "reset_llindars=true restaura tots els valors inicials");
+  }
+
+  console.log("8) configuració pública del rànquing (top XX primers, pestanyes, meta i premis · g22)");
+  {
+    const d0 = await ctrl(null);
+    ok(d0.ranquing && d0.ranquing.actiu === true && d0.ranquing.top === 10 && d0.ranquing.mostrar_propia === true &&
+       d0.ranquing.pestanya_inicial === "punts" && d0.ranquing.meta_estrelles === 30 && d0.ranquing.meta_pct === 75,
+      "per defecte bn_admin_control retorna ranquing inicial complet (top=10, actiu=true, meta=30⭐/75%)");
+
+    const w0 = await val("select public.bn_estat_web()");
+    ok(w0.ranquing && w0.ranquing.top === 10 && w0.ranquing.pestanyes.remuntada === true,
+      "bn_estat_web exposa ranquing per defecte a la portada");
+
+    // Rebutja valors invàlids
+    ok(await falla("select public.bn_admin_control($1, $2, '{\"ranquing\":{\"top\":2}}'::jsonb)", ADM) !== null,
+      "top < 3 és rebutjat");
+    ok(await falla("select public.bn_admin_control($1, $2, '{\"ranquing\":{\"top\":150}}'::jsonb)", ADM) !== null,
+      "top > 100 és rebutjat");
+    ok(await falla("select public.bn_admin_control($1, $2, '{\"ranquing\":{\"pestanyes\":{\"punts\":false,\"dies\":false,\"nivell\":false,\"setmana\":false,\"remuntada\":false}}}'::jsonb)", ADM) !== null,
+      "desactivar totes les pestanyes és rebutjat");
+    ok(await falla("select public.bn_admin_control($1, $2, '{\"ranquing\":{\"pestanyes\":{\"dies\":false},\"pestanya_inicial\":\"dies\"}}'::jsonb)", ADM) !== null,
+      "pestanya_inicial inactiva explícita és rebutjada");
+
+    // Actualització parcial i reflex immediat a bn_estat_web
+    const d1 = await ctrl({ ranquing: { top: 5, mostrar_propia: false, pestanya_inicial: "remuntada", pestanyes: { nivell: false }, meta_estrelles: 20, meta_pct: 80, mostra_premis: false } });
+    ok(d1.ranquing.top === 5 && d1.ranquing.mostrar_propia === false && d1.ranquing.pestanya_inicial === "remuntada" &&
+       d1.ranquing.pestanyes.nivell === false && d1.ranquing.pestanyes.punts === true && d1.ranquing.meta_estrelles === 20 && d1.ranquing.mostra_premis === false,
+      "bn_admin_control desa i fusiona parcialment la configuració del rànquing");
+
+    const w1 = await val("select public.bn_estat_web()");
+    ok(w1.ranquing.top === 5 && w1.ranquing.pestanya_inicial === "remuntada" && w1.ranquing.pestanyes.nivell === false,
+      "bn_estat_web reflecteix de seguida top=5 i pestanya_inicial='remuntada'");
+
+    // Si desactivem la pestanya que era inicial sense passar pestanya_inicial nova, salta sola a la primera activa
+    const d2 = await ctrl({ ranquing: { pestanyes: { remuntada: false } } });
+    ok(d2.ranquing.pestanya_inicial === "punts", "si es desactiva la pestanya inicial actual, passa sola a la primera activa");
+
+    // Restaura valors inicials
+    const dReset = await ctrl({ reset_ranquing: true });
+    ok(dReset.ranquing.top === 10 && dReset.ranquing.pestanya_inicial === "punts" && dReset.ranquing.pestanyes.nivell === true && dReset.ranquing.mostra_premis === true,
+      "reset_ranquing=true restaura tots els valors inicials");
   }
 
   if (fallades) {
