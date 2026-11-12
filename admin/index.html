@@ -94,6 +94,7 @@ input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:var
 .seg button{all:unset;cursor:pointer;padding:5px 12px;border-radius:6px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--card);color:var(--text);box-shadow:var(--sh1)}
 .seg button:focus-visible{outline:2px solid var(--primary)}
+#difModes{flex-wrap:wrap;max-width:100%}
 .cerca{display:flex;align-items:center;gap:8px;border:1px solid var(--border2);border-radius:var(--r1);background:var(--card);padding:0 10px;min-height:36px;flex:1;min-width:180px;max-width:360px}
 .cerca:focus-within{border-color:var(--primary);box-shadow:var(--focus)}
 .cerca input{border:0;box-shadow:none!important;padding:7px 0;min-height:34px;flex:1;min-width:0;background:transparent}
@@ -550,7 +551,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.26.0";
+const VERSIO_ADMIN="2.27.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -693,7 +694,7 @@ function login(msg){$("#shell").hidden=true;const w=$("#loginWrap");w.hidden=fal
 let IDS={},NOMS_TOTS={};const idDe=k=>IDS[k]?`<span class="xip" title="Número d'identificació">#${IDS[k]}</span>`:`<span class="xip" title="Encara sense PIN">sense PIN</span>`;
 function mostraApp(){$("#loginWrap").hidden=true;$("#loginWrap").innerHTML="";$("#shell").hidden=false;document.body.classList.toggle("demo",DEMO);$("#demoBar").hidden=!DEMO}
 async function carrega(){
- ESTATS={};NUV=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;
+ ESTATS={};NUV=null;ALTES=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;
  if(!$("#shell").hidden&&VISTA!=="tauler")$("#contingut").innerHTML=esqTaula();
  await carregaRegles();
  if(DEMO){await preguntes();demoInit();LOGS=demoLogsDies(DIES);IDS=demoIds();NOMS_TOTS=demoNoms();mostraApp();ACT=new Date();pinta();return true}
@@ -713,7 +714,7 @@ async function carrega(){
 
 // ====================== MENÚ, CAPÇALERA I FILTRES ======================
 const MENU=[["tauler","Tauler"],["nens","Nens"],["sessions","Sessions"],["log","Log complet"],["xat","Xat"],["copies","Còpies de seguretat"]];
-const SECCIONS=[["control","Control i horari"],["resum","Resum"],["alertes","Alertes"],["benestar","Benestar"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["combos","Combos i repàs"],["pendents","Errors pendents de la colla"],["obertes","Obertes"],["domini","Domini"],["fallades","Fallades"],["taller","Taller de mates"]];
+const SECCIONS=[["control","Control i horari"],["resum","Resum"],["alertes","Alertes"],["benestar","Benestar"],["activitat","Activitat"],["notes","Notes"],["constancia","Constància"],["motivacio","Repàs i boss"],["combos","Combos i repàs"],["pendents","Errors pendents de la colla"],["obertes","Obertes"],["domini","Domini"],["fallades","Fallades"],["dificultat","Dificultat real"],["taller","Taller de mates"]];
 const PERIODES=[[1,"Avui"],[7,"7 dies"],[30,"30 dies"],[365,"Curs"]];
 function muntaShell(){
  $("#logoMenu").innerHTML=`${LOGO}<span class="logo-t">Bona Nota <span>· Admin</span></span>`;$("#logoMobil").outerHTML=`<span style="display:inline-flex;align-items:center;gap:8px">${LOGO}Bona Nota · Admin</span>`;
@@ -1178,7 +1179,7 @@ async function pintaTauler(){const tok=++TOK;
  const c=$("#contingut");c.innerHTML=esqTauler();
  ctrlDe().catch(()=>{}); // control ràpid (xat, horari i mons): es demana alhora i va a part
  benestarDe(); // el benestar es demana alhora que la resta, però va a part (tBenestar): si falla, només ho diu el seu apartat
- fontsDiaDe();repPendentsDe(); // el mateix amb «Combos i repàs» (tCombos) i «Errors pendents de la colla» (tPendents)
+ fontsDiaDe();repPendentsDe();dificultatDe(); // el mateix amb «Combos i repàs» (tCombos), «Errors pendents de la colla» (tPendents) i «Dificultat real» (tDificultat)
  let dades;try{const [resum,act,calor,domini,fall,evo,alert]=await Promise.all(["bn_admin_resum","bn_admin_activitat","bn_admin_calor","bn_admin_domini","bn_admin_fallades","bn_admin_evolucio","bn_admin_alertes"].map(rpcT));
   dades={resum,act,calor,domini,fall,evo,alert};await preguntes()}
  catch(e){console.error(e);if(tok!==TOK)return;c.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El tauler encara no està activat a la base de dades. Mentrestant, tens les altres pantalles."):avisErr(`No s'han pogut carregar les dades del tauler (${e}).`);return}
@@ -1212,13 +1213,14 @@ async function pintaTauler(){const tok=++TOK;
   ${TF.nom?targeta("temps","c-12","rellotge",`En què passa el temps ${esc(TF.nom)}`,"Segons registrats per tipus d'activitat (dades del període)",`<div class="cv"><canvas id="gTip" aria-label="Gràfic del temps per tipus d'activitat" role="img"></canvas></div>`):""}
   ${targeta("domini","c-12","diana","Domini per tema","Per a cada assignatura: quants temes té aprovats cada nen (barra) i la millor nota de test a cada tema. Passa el ratolí per una nota per veure intents i última nota.",`<div id="tDom"></div>`)}
   ${targeta("fallades","c-12","creu","Preguntes més fallades","Top 20 per assignatura, amb l'opció equivocada que més trien (el «parany»). Compta des del 4-11-2026, quan es va començar a registrar cada pregunta.",`<div id="tFal"></div>`)}
+  ${targeta("dificultat","c-12","llamp","Dificultat real de les preguntes","Encert real de cada pregunta en tests i exàmens dels últims 365 dies (sense comptar el repàs), comparat amb motor/dificultat.json (⚡ difícil < 55 % · fàcil > 90 % a partir de 8 respostes · issue #16).",`<div id="tDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   ${targeta("taller","c-12","llapis","Taller de mates: on s'equivoquen","Els errors que més es repeteixen als exercicis del Taller de mates (jocs i examen simulat): exercici, pas i error típic. Top 30. Els registres antics no ho porten.",`<div id="tErr"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
  </div>`;
  // cada apartat per separat: si un falla, la resta es veu igual i l'error surt escrit al seu lloc
  const prova=(id,f)=>{try{f()}catch(e){const el=$(id);if(el)(el.closest(".cv")||el).innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`);console.error(e)}};
  prova("#tAl",()=>tAlertes(alert));prova("#gAct",()=>gActivitat(act));prova("#tCal",()=>tCalor(calor));prova("#gEvo",()=>gEvolucio(evo));
  prova("#tCst",()=>tConstancia(act));prova("#tDom",()=>tDomini(domini));prova("#tFal",()=>tFallades(fall));prova("#tMot",()=>tMotivacio());prova("#tObe",()=>tObertes());if(TF.nom)prova("#gTip",()=>gTipus());
- tControl();tErrorsTaller();tBenestar();tCombos();tPendents();
+ tControl();tErrorsTaller();tBenestar();tCombos();tPendents();tDificultat();
 }
 function tAlertes(al){const e=$("#tAl");if(!al.length){e.innerHTML=buit("ok","Cap alerta. Tot en ordre.");return}
  const icT={inactiu:"son",baixa:"baixa",encallat:"mur",rapid:"llamp",pregunta:"pregunta",pendent:"safata"};
@@ -1507,7 +1509,7 @@ function gTipus(){const k=TF.nom.trim().toLowerCase(),t={"Fitxes":0,"Targetes":0
 // ---- Combos i repàs (M3) i errors pendents de la colla (M4) · supabase/bn_admin_fonts_rep.sql (n2537 fase B pas 2) ----
 // Cada apartat té la seva crida i es carrega a part de la resta, com el Taller i el Benestar: si la funció encara no és a la base de dades
 // o falla, només ho diu el seu apartat. Tot el que ve del servidor passa per esc(); els números, per nN(); els dies, per esDia().
-let FDIA=null,REPP=null,COM_OBERT=false; // crides en memòria fins a tornar a carregar ({p,a,n,prom} i {a,prom}) i si «Les altres fonts» és desplegat
+let FDIA=null,REPP=null,DIFR=null,DIF_D=null,QDIF_ADM=null,DIF_VISTA="dades",COM_OBERT=false; // crides en memòria fins a tornar a carregar i estat de les vistes plegables/modes
 const FONTS_M3=["combo","triple","super","repas"],CURT_M3={combo:"Combo",triple:"Triple",super:"Super",repas:"Repàs"};
 // un color per font, el mateix al gràfic i a les xifres (en tema fosc, més clar)
 const COL_F={combo:["#ea580c","#fb923c"],triple:["#9333ea","#c084fc"],super:["#ca8a04","#facc15"],repas:["#0891b2","#22d3ee"],temes:["#2563eb","#60a5fa"],jocs:["#db2777","#f472b6"],
@@ -1523,6 +1525,9 @@ function fontsDiaDe(){const p=PERIODE[DIES]||"7d",a=TF.assig||null,n=TF.nom.trim
  if(!FDIA||FDIA.p!==p||FDIA.a!==a||FDIA.n!==n){const o={p,a,n};o.prom=rpcR("bn_admin_fonts_dia",{p_periode:p,p_assig:a,p_nom:n});o.prom.catch(()=>{if(FDIA===o)FDIA=null});FDIA=o}return FDIA.prom}
 function repPendentsDe(){const a=TF.assig||null;
  if(!REPP||REPP.a!==a){const o={a};o.prom=rpcR("bn_admin_rep_pendents",{p_assig:a});o.prom.catch(()=>{if(REPP===o)REPP=null});REPP=o}return REPP.prom}
+async function carregaDifActual(){if(QDIF_ADM)return QDIF_ADM;try{const r=await fetch("../motor/dificultat.json",{cache:"no-cache"});QDIF_ADM=r.ok?await r.json():{}}catch(e){QDIF_ADM={}}return QDIF_ADM}
+function dificultatDe(){const a=TF.assig||null;
+ if(!DIFR||DIFR.a!==a){const o={a};o.prom=rpcR("bn_admin_dificultat",{p_assig:a});o.prom.catch(()=>{if(DIFR===o)DIFR=null});DIFR=o}return DIFR.prom}
 async function tCombos(){const el=$("#tCom");if(!el)return;const tok=TOK;let d;
  try{d=await fontsDiaDe()}
  catch(e){console.error(e);const x=$("#tCom");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
@@ -1608,6 +1613,75 @@ function htmlPendents(d){const fa=TF.assig;
    taula("tRepT-"+i,cols(mx),rs,{k:"n",etiqueta:`Errors pendents de la colla · ${nomAssig(a)}`}))}).join("");
  const lleg=`<div class="llegenda"><span><b>×3</b>: la tenen pendent 3 nens.</span><span><b>Toquen avui</b>: el repàs del joc ja els demana (data de repàs d'avui o d'abans).</span><span><b>Sense tema</b>: errors que el joc no lliga a cap tema, com els de «Troba l'error».</span></div>`;
  return {h:nota+kpis+PL.eines()+h+lleg,PL}}
+// ---- Dificultat real de les preguntes (supabase/bn_admin_dificultat.sql, issue #16) ----
+async function tDificultat(){const el=$("#tDif");if(!el)return;const tok=TOK;let d;
+ try{d=(await Promise.all([dificultatDe(),preguntes(),carregaDifActual()]))[0]}
+ catch(e){console.error(e);const x=$("#tDif");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
+  x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_dificultat.sql","El càlcul de dificultat real encara no està activat a la base de dades. La resta del tauler funciona igual."):avisErr(`No s'ha pogut carregar la dificultat real de les preguntes (${e&&e.message||e}).`);return}
+ const x=$("#tDif");if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");DIF_D=d;pintaDificultat()}
+function pintaDificultat(){const x=$("#tDif");if(!x||!DIF_D)return;
+ try{const r=htmlDificultat(DIF_D);x.innerHTML=r.h;if(r.PL)r.PL.lliga(x);
+  x.querySelectorAll("[data-dif-v]").forEach(b=>b.onclick=()=>{if(DIF_VISTA===b.dataset.difV)return;DIF_VISTA=b.dataset.difV;pintaDificultat()});
+  const bj=x.querySelector("#btDifJson");if(bj&&!DEMO)bj.onclick=()=>{const b=new Blob([JSON.stringify(DIF_D,null,2)+"\n"],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");
+   a.href=u;a.download=`bn-dificultat-${diaMad()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1e3)}}
+ catch(e){console.error(e);x.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
+function htmlDificultat(d){d=oB(d);const fa=TF.assig,minR=nN(d.min_respostes)||8,dies=nN(d.dies)||365,net=t=>String(t||"").replace(/<[^>]+>/g,"");
+ // total de preguntes de test del catàleg (sense j-*) per món
+ const catTot=new Map();Object.keys(oB(PREG)).forEach(k=>{const p=k.split("/");if(p.length>=3&&!p[1].startsWith("j-")&&(!fa||p[0]===fa))catTot.set(p[0],(catTot.get(p[0])||0)+1)});
+ const totBanc=[...catTot.values()].reduce((s,v)=>s+v,0);
+ const L=aR(d.preguntes).filter(r=>r&&typeof r==="object"&&!Array.isArray(r)).map(r=>{
+  const a=r.assig==null||r.assig===""?"?":String(r.assig),qid=r.qid==null||r.qid===""?"?":String(r.qid);
+  const q=oB(PREG)[a+"/"+qid]||null,act=nN(oB(oB(QDIF_ADM)[a])[qid])||2,n=nN(r.n)||0,bones=nN(r.bones)||0,nens=nN(r.nens)||0;
+  const enc=nN(r.encert)??0,enc1=nN(r.encert_1a),seg=nN(r.seg_mig),suf=!!r.suficient&&n>=minR,dif=suf?(nN(r.dificultat)||(enc<55?3:enc>90?1:2)):null;
+  // mateixa regla que motor/dificultat.py --proposa: afegir si < 55 % i no és 3; revisar si és 3 i encert >= 75 %
+  const estat=!suf?"pendent":dif===3&&act!==3?"afegir":act===3&&enc>=75?"revisar":act===3?"confirmada":dif===1?"facil":"normal";
+  const ordE={afegir:1,revisar:2,confirmada:3,normal:4,facil:5,pendent:6}[estat]||9;
+  return {assig:a,qid,text:q?net(q.t):`Pregunta ${qid}`,tema:q?String(q.tema||""):"",bona:q&&Array.isArray(q.o)&&q.o[q.c]!=null?net(q.o[q.c]):null,n,bones,nens,enc,enc1,seg,suf,dif,act,estat,ordE}
+ }).filter(r=>!fa||r.assig===fa);
+ const nota=TF.nom.trim()?`<p class="fr-nota">${ic("info")}<span>És de tota la colla (últims ${dies} dies, sense comptar el repàs): el filtre de nen i el període curt no s'hi apliquen.</span></p>`:"";
+ if(!L.length)return {h:nota+buit("llamp",fa?"Encara no hi ha respostes de test o examen en aquest món.":"Encara no hi ha respostes registrades per calcular la dificultat.",`Calen almenys ${minR} respostes per pregunta en tests o exàmens.`)};
+ const sufL=L.filter(r=>r.suf),afegir=sufL.filter(r=>r.estat==="afegir"),revisar=sufL.filter(r=>r.estat==="revisar"),dificils=sufL.filter(r=>r.dif===3),facils=sufL.filter(r=>r.dif===1);
+ const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
+ const kpis=`<div class="kpis" style="margin-bottom:14px">
+  ${kp(`Amb ≥ ${minR} respostes`,totBanc?`${sufL.length} / ${totBanc}`:String(sufL.length),`${L.length} vistes al registre${totBanc?` (${Math.round(sufL.length*100/totBanc)} % amb prou dades)`:""}`)}
+  ${kp("Difícils reals (< 55 %)",dificils.length,afegir.length?`+${afegir.length} noves fora de dificultat.json`:"totes ja marcades ⚡")}
+  ${kp("Fàcils reals (> 90 %)",facils.length,revisar.length?`${revisar.length} marcades ⚡ amb ≥ 75 % d'encert`:"cap ⚡ amb encert alt")}
+  ${kp("Proposta de canvis (#16)",`+${afegir.length} / −${revisar.length}`,afegir.length||revisar.length?"per revisar amb dificultat.py --proposa":"cap canvi proposat ara mateix")}
+ </div>`;
+ const fil=DIF_VISTA==="proposta"?sufL.filter(r=>r.estat==="afegir"||r.estat==="revisar"):DIF_VISTA==="totes"?L:sufL;
+ const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
+ const eines=`<div class="eines-t"><div class="seg" id="difModes" role="group" aria-label="Preguntes a mostrar">
+  <button type="button" data-dif-v="dades" aria-pressed="${DIF_VISTA==="dades"}">≥ ${minR} resp. (${sufL.length})</button>
+  <button type="button" data-dif-v="proposta" aria-pressed="${DIF_VISTA==="proposta"}">Canvis (${afegir.length+revisar.length})</button>
+  <button type="button" data-dif-v="totes" aria-pressed="${DIF_VISTA==="totes"}">Totes (${L.length})</button>
+ </div><span class="esp"></span><button class="btn sec petit" type="button" id="btDifJson"${nd}>${ic("baixar")}<span>Baixa JSON</span></button></div>`;
+ if(!fil.length){const msg=DIF_VISTA==="proposta"?(sufL.length?"Cap canvi proposat en les preguntes que ja tenen prou respostes.":"Encara cap pregunta arriba al mínim de respostes per proposar canvis."):`Encara cap pregunta arriba a ${minR} respostes (n'hi ha ${L.length} de vistes).`;
+  return {h:nota+kpis+eines+buit("llamp",msg,"Pots prémer «Totes» per veure les preguntes amb menys respostes.")}}
+ const pillE=r=>({
+  afegir:`<span class="pill bad" title="Encert < 55 % i encara no és a dificultat.json">➕ Proposa ⚡</span>`,
+  revisar:`<span class="pill info" title="Marcada ⚡ a dificultat.json però amb ≥ 75 % d'encert">➖ Revisa ⚡</span>`,
+  confirmada:`<span class="pill warn" title="Ja marcada ⚡ a dificultat.json i encert < 75 %">⚡ Confirmada</span>`,
+  facil:`<span class="pill ok" title="Encert > 90 %">Fàcil (&gt; 90 %)</span>`,
+  normal:`<span class="pill neutre">Normal</span>`,
+  pendent:`<span class="pill neutre" title="Encara no arriba a ${minR} respostes">${r.act===3?"⚡ ":""}&lt; ${minR} resp.</span>`
+ })[r.estat]||`<span class="pill neutre">—</span>`;
+ const cols=[
+  {k:"text",t:"Pregunta",cls:"cur",h:r=>`<span class="q-t">${r.act===3?"⚡ ":""}${esc(r.text)}</span><span class="q-s">${r.tema?esc(r.tema)+" · ":""}${r.bona?`bona: <span class="ok">${esc(r.bona)}</span> · `:""}id ${esc(r.qid)}</span>`},
+  {k:"ordE",t:"Estat ⚡",cls:"nw",v:r=>r.ordE,h:pillE},
+  {k:"enc",t:"Encert",num:true,v:r=>r.enc,h:r=>mini(Math.round(r.enc),100,r.enc<55?"bad":"primary",`${fmtD(r.enc)}%`)+` <span class="muted">(${r.bones}/${r.n})</span>`},
+  {k:"enc1",t:"1a resp.",num:true,v:r=>r.enc1??-1,h:r=>r.enc1==null?"—":`${fmtD(r.enc1)}%`},
+  {k:"nens",t:"Nens",num:true},{k:"seg",t:"Segons",num:true,v:r=>r.seg??-1,h:r=>r.seg==null?"—":fmtD(r.seg)}];
+ const canvisA=a=>fil.filter(r=>r.assig===a&&(r.estat==="afegir"||r.estat==="revisar")).length;
+ const assigs=[...new Set(fil.map(r=>r.assig))].sort((x,y)=>canvisA(y)-canvisA(x)||fil.filter(r=>r.assig===y).length-fil.filter(r=>r.assig===x).length||nomAssig(x).localeCompare(nomAssig(y),"ca")),PL=plegables("bn_admin_dif",assigs);
+ const blocs=assigs.map((a,i)=>{const rs=fil.filter(r=>r.assig===a),totM=catTot.get(a)||0,sufM=sufL.filter(r=>r.assig===a).length,
+   afM=rs.filter(r=>r.estat==="afegir").length,rvM=rs.filter(r=>r.estat==="revisar").length,dfM=rs.filter(r=>r.dif===3).length,
+   pitjor=[...rs].sort((x,y)=>x.enc-y.enc||y.n-x.n)[0],mig=afM||rvM?`<span class="pill ${afM?"bad":"info"}">${afM?`+${afM} ⚡`:""}${afM&&rvM?" · ":""}${rvM?`−${rvM} ⚡`:""}</span>`:"";
+  return PL.bloc(a,`${totM?`${sufM}/${totM} amb ≥ ${minR} resp.`:`${pl(rs.length,"pregunta","preguntes")}`}${dfM?` · ${pl(dfM,"difícil real","difícils reals")}`:""}`,mig,
+   `<span class="dm-bar" aria-hidden="true"><i style="width:${Math.max(4,Math.round(100-pitjor.enc))}%;background:${pitjor.enc<55?"var(--bad)":"var(--primary)"}"></i></span>
+    <small><span class="dm-pit" title="${esc(pitjor.text)}">Més baixa: <b>${esc(pitjor.text)}</b></span><span>${fmtD(pitjor.enc)}%</span></small>`,
+   taula("tDifT-"+i,cols,rs,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(a)}`}))}).join("");
+ const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen, sense l'efecte de repetir.</span></div>`;
+ return {h:nota+kpis+eines+PL.eines()+blocs+lleg,PL}}
 
 // ====================== CÒPIES DE SEGURETAT (supabase/bn_copies.sql) ======================
 // Còpies de les dades de Bona Nota dins de la mateixa base de dades: automàtiques cada nit, abans d'esborrar o canviar res
@@ -1971,7 +2045,7 @@ function demoBenestarRpc(f,x){if(f!=="bn_admin_benestar")throw "demo";const avui
 // Les estrelles de cada sessió es compten amb el que hi va passar: repàs = 2 per error après (els de «Repàs, boss i missions»), boss = 10 si el guanya,
 // combo i super pels tests gairebé perfectes, triple per les obertes bones. El triple i el super només surten als últims 6 dies (la 2.9.0 i la 2.10.0 són noves).
 // Els errors pendents són els de «Al núvol» (demoMon) de tots els nens amb PIN i estat desat.
-function demoFontsRepRpc(f,x){
+async function demoFontsRepRpc(f,x){
  if(f==="bn_admin_fonts_dia"){const p=x.p_periode||"30d",des=diaMad(demoDesde(p)),k0=String(x.p_nom||"").trim().toLowerCase(),a0=x.p_assig||"",nou=Date.now()-6*864e5,ses=new Map(),millor={};
   DEMO_L.forEach(l=>{const d=l.detall||{},k=clauNen(l);let s=ses.get(l.sessio);if(!s){s={k,nom:l.nom,assig:l.assig,dia:diaMad(l.ts),f:{}};ses.set(l.sessio,s)}
    const add=(c,v)=>{if(v>0)s.f[c]=(s.f[c]||0)+v},recent=Date.parse(l.ts)>=nou;
@@ -1991,6 +2065,17 @@ function demoFontsRepRpc(f,x){
    as.filter(a=>!a0||a===a0).forEach(a=>demoMon(k,a).rep.forEach(r=>{const key=a+"|"+(r.tid==null?"":r.tid);let g=G.get(key);if(!g){g={assig:a,tid:r.tid==null?null:r.tid,n:0,ks:new Set(),avui:0,q:new Map()};G.set(key,g)}
     g.n++;g.ks.add(k);if(r.prox<=av)g.avui++;g.q.set(r.q,(g.q.get(r.q)||0)+1)}))});
   return [...G.values()].map(g=>({assig:g.assig,tid:g.tid,n:g.n,nens:g.ks.size,avui:g.avui,preguntes:[...g.q].sort((p,q)=>q[1]-p[1]).slice(0,5).map(([q,n])=>({q,n}))})).sort((p,q)=>q.n-p.n||p.assig.localeCompare(q.assig)).slice(0,300)}
+ if(f==="bn_admin_dificultat"){await Promise.all([preguntes(),carregaDifActual()]);const a0=x.p_assig||null,minR=x.p_min||8,dies=x.p_dies||365,out=[];
+  const R=rndD(20261116),perMon=new Map();
+  Object.keys(oB(PREG)).forEach(k=>{const p=k.split("/");if(p.length<3||p[1].startsWith("j-"))return;const a=p[0];if(a0&&a!==a0)return;if(!perMon.has(a))perMon.set(a,[]);perMon.get(a).push(p[1]+"/"+p[2])});
+  perMon.forEach((qids,a)=>{const difM=oB(oB(QDIF_ADM)[a]);
+   qids.slice(0,10).forEach((qid,i)=>{const es3=difM[qid]===3;
+    // generem casos variats i deterministes: proposa ⚡ (<55% sense marca), confirmada ⚡, revisa ⚡ (>=75% amb marca), fàcil (>90%), normal i <8 resp.
+    const pat=i===0?[11,4,7,33.3,10.4]:i===1&&es3?[10,8,6,80.0,6.8]:es3?[12,5,7,42.9,11.2]:i===2?[10,10,6,100.0,5.1]:i<6?[9,7,5,71.4,7.5]:[4,2,3,50.0,8.0];
+    const [n,bones,nens,enc1,seg]=pat,enc=Math.round(bones*1000/n)/10,suf=n>=minR,dif=!suf?null:enc<55?3:enc>90?1:2;
+    out.push({assig:a,qid,n,bones,nens,encert:enc,encert_1a:enc1,seg_mig:seg+Math.round(R()*10)/10,suficient:suf,dificultat:dif})})});
+  const suf=out.filter(r=>r.suficient);
+  return {min_respostes:minR,dies,assig:a0,resum:{preguntes_vistes:out.length,amb_dades:suf.length,dificils:suf.filter(r=>r.dificultat===3).length,normals:suf.filter(r=>r.dificultat===2).length,facils:suf.filter(r=>r.dificultat===1).length},preguntes:out}}
  throw "demo"}
 function demoDesde(p){const n=new Date();if(p==="avui"){n.setHours(0,0,0,0);return n.getTime()}if(p==="30d")return Date.now()-30*864e5;if(p==="curs"){const y=n.getMonth()<8?n.getFullYear()-1:n.getFullYear();return new Date(y,8,1).getTime()}return Date.now()-7*864e5}
 const demoLogs=(des,fins)=>{const k=TF.nom.trim().toLowerCase();return DEMO_L.filter(l=>{const t=Date.parse(l.ts);return t>=des&&t<fins&&(!TF.assig||l.assig===TF.assig)&&(!k||clauNen(l)===k)})};

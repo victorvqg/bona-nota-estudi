@@ -60,6 +60,10 @@ Data: 2026-11-11
   - Tres portes d'entrada sense compte ni PIN (`/?tast=1`, `/<mon>/?tast=1` i `#btParesTast` a `/pares/`), mostra del Tema 1 (`fitxa` + `targetes` + 5 preguntes explicades), del primer joc (`ASSIG.jocs[0]`) i de l'enunciat `OB[0]` en mode lectura; la resta obre `convidaPin()`.
   - 100 % anònim: zero crides d'escriptura a `bn_log` ni RPC d'usuari, zero estrelles ni rànquing, xat en mode lectura, memòria efímera a `sessionStorage` que no toca `localStorage` dels germans, noms reservats (`nomProhibit` + `bn_priv.nom_prohibit` aplicat a Supabase) i prova E2E `motor/prova-tast.js`.
 
+- **Bloc `g11` (`2.27.0`, Dificultat real de les preguntes al tauler i neteja de branques)**:
+  - Apartat «⚡ Dificultat real de les preguntes» (`#dificultat` / `#tDif`) al Tauler d'`admin/index.html` (amb `motor/prova-admin-dificultat.js`), que llegeix `bn_admin_dificultat`, compara en directe amb `motor/dificultat.json` (`➕ Proposa ⚡`, `➖ Revisa ⚡`, `⚡ Confirmada`, `Fàcil`) i permet baixar el JSON per a `motor/dificultat.py --proposa`.
+  - Netejades les 20 branques remotes antigues ja fusionades i la nota local obsoleta `.nucli/atura-n2537.md`.
+
 ## En curs
 - **Estrelles (`n2505` estudi, `n2506` pla)**: decisions aprovades el 9/11/2026. Implementació en 3 PR: #13 mesurar i tapar forats (v2.8.0, fet: combo net, repàs que paga, barra de ratxa, targeta amb totes les fonts, `est` al registre i orígens fiables al tauler), #14 triple combo a les obertes (v2.9.0, fet: ratxa d'obertes bones, resposta de 10 i filtre de frases) i #15 super combo de preguntes difícils (v2.10.0, fet: marca ⚡, super combo i 130 difícils a `motor/dificultat.json`); #16 dificultat calculada: el SQL (`bn_admin_dificultat`) i `dificultat.py --proposa` ja són actius, pendent d'acumular prou respostes (l'11/11/2026: 362 preguntes vistes, 95 amb ≥ 5 respostes i 40 amb ≥ 8, de 625 totals). Estudi: `docs/superpowers/specs/2026-11-09-estrelles-estudi.md` · pla: `docs/superpowers/plans/2026-11-09-estrelles-combos.md`.
 - Preguntes obertes: la fase 2, correcció amb IA, queda per decidir quan hi hagi dades del tauler.

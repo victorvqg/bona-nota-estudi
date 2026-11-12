@@ -72,6 +72,7 @@ function dadesAdmin() {
    }
    if (f === "bn_admin_benestar") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", mons: [], nens: [] }) });
    if (f === "bn_admin_fonts_dia") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", dies: [], total: {} }) });
+   if (f === "bn_admin_dificultat") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ min_respostes: 8, dies: 365, assig: null, resum: { preguntes_vistes: 0, amb_dades: 0, dificils: 0, normals: 0, facils: 0 }, preguntes: [] }) });
    if (f === "bn_admin_control") {
     if (cos.p_cfg && typeof cos.p_cfg === "object") {
      if (typeof cos.p_cfg.xat_actiu === "boolean") d.ctrl.xat_actiu = cos.p_cfg.xat_actiu;
