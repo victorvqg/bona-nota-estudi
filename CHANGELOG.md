@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.34.0 · 2026-11-12
+
+### Afegit
+- **Informe complet descarregable a la Fitxa del nen i Log complet per dia a Sessions (`/admin`)** (`admin/index.html`, `motor/prova-admin-fitxa.js`, `motor/prova-admin-alta.js` · g18):
+  - **Informe complet de la Fitxa del nen (`?v=nens&id=<nen>`)**: nous botons `Informe HTML / PDF` (`#btInfHtml`, document visual autònom amb barra d'impressió/PDF `window.print()` i estils `@media print`) i `Informe .md` (`#btInfMd`, Markdown estructurat amb taules i cites) que carreguen automàticament sota demanda totes les dades de les 4 pestanyes (`Resum i estrelles`, `Aprenentatge` amb domini per tema, preguntes fallades, combos/repàs/boss, errors del Taller de mates i respostes obertes amb el text íntegre escrit, `Sessions i benestar` amb cronologia detallada i `Al núvol` amb tots els mons desats).
+  - **Log complet per dia i filtre per data a `Sessions` (`?v=sessions` i `?v=sessions&tab=registre`)**: nova vista `Log complet per dia` agrupada per data on a cada dia es veu qui ha entrat (amb xips clicables per filtrar al vol), el temps i les accions totals, seguit del detall hora per hora de tot el que ha fet cadascú, amb filtres compartits per **Món (`#fAssig`)**, **Nen (`#fNen`)**, **Data (`#fDia` de dies actius + `#fDiaCal` de calendari)**, **Tipus d'acció (`#fEvent`)** i cerca lliure (`#fLogQ`), més selector cap a la vista `Taula` (`#tLog`) i `CSV complet`.
+
 ## 2.33.0 · 2026-11-12
 
 ### Corregit
