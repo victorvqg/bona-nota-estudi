@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.35.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.36.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -647,46 +647,41 @@ A la barra superior hi ha només el selector global de període (`Avui`, `7 dies
 
 ### 🎛️ Control ràpid: xat, horari i mons
 
-A dalt de tot del Tauler (`#control`; l'horari també surt a la pestanya Xat). Des de la versió 2.17.0 permet:
+A **Inici** (`#control`, amb interruptors d'1 clic) i a **⚙ Configuració → Horaris i crèdits**:
 
-- **Obrir o tancar el xat** amb un clic.
-- **Programar l'horari del xat**: una hora de tancament i una d'obertura, en hora de Madrid (per exemple `21:30` → `07:00`).
-- **Activar o desactivar cada món.** Un món desactivat surt en gris a la portada amb «🔒 TANCAT» i no deixa entrar-hi, tampoc per enllaç directe. Les estrelles es conserven al rànquing.
+- **Obrir o tancar el xat** amb un clic (també des de `Rànquing → Xat`).
+- **Programar l'horari automàtic** (`Configuració → Horaris i crèdits`): una hora de tancament i una d'obertura, en hora de Catalunya/Madrid (per exemple `21:30` → `07:00`), que tanca el xat de nit i mostra l'avís amable d'anar a descansar als mons i a la portada.
+- **Activar o desactivar cada món** (des d'`Inici` o des de `Mons → Llista`). Un món desactivat surt en gris a la portada amb «🔒 TANCAT» i no deixa entrar-hi, tampoc per enllaç directe. Les estrelles es conserven al rànquing.
 
 El SQL és a `supabase/bn_control.sql`. La llista de mons vàlids hi és escrita a mà: en afegir un món, cal afegir-hi el seu id.
 
-### 📊 Tauler
+### 📊 Inici, Mons i Sessions
 
-Pestanya 📊 Tauler. Xifres amb comparació amb el període anterior, alertes, activitat per
-dia, mapa de calor hora × dia, evolució de les notes, constància i ratxa, domini nen × tema, preguntes més
-fallades amb el parany més triat i, filtrant per un nen, en què passa el temps. Les dades arriben ja agregades
-del servidor amb les funcions de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`,
-`_domini`, `_fallades`, `_evolucio`, `_alertes`), que demanen el correu i la contrasenya d'admin.
-El domini per tema i les preguntes més fallades surten plegats per món.
-L'apartat **Repàs, boss i missions** (`tMotivacio()`) no necessita cap funció a Supabase: es calcula al navegador amb el registre que el tauler ja ha carregat i respecta el període i els filtres. Les missions no es registren una per una: la xifra surt de `fonts.missio`, el total d'estrelles de missions de cada nen.
-L'apartat **✏️ Taller de mates: on s'equivoquen** (exercici · pas · error · vegades · nens) surt de `bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql` (s'executa una vegada, després de `bn_admin_tauler.sql`), i llegeix el camp `ep` (`"exercici|pas|error"`, un per cada resposta fallada) que el Taller afegeix als events `joc` i `examen`.
+Les vistes s'alimenten amb les funcions agregades de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`, `_domini`, `_fallades`, `_evolucio`, `_alertes`) carregades sota demanda:
+- **Inici (`?v=inici`):** 6 xifres clau amb comparació amb el període anterior, control ràpid d'1 clic, alertes (`bn_admin_alertes`), nens nous (`bn_admin_altes`) i resum d'estrelles per origen (`bn_admin_fonts_dia`).
+- **Mons (`?v=mons`) i Fitxa del món (`?v=mons&id=<mon>`):** llista dels 7 mons amb interruptor directe, matriu de domini nen × tema (`bn_admin_domini`), preguntes més fallades amb el parany més triat (`bn_admin_fallades`), errors pendents (`bn_admin_rep_pendents`), dificultat real (`bn_admin_dificultat`), preguntes obertes al panell lateral i, a matemàtiques, **✏️ Taller de mates: on s'equivoquen** (`bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql`).
+- **Sessions (`?v=sessions`):** cronologia de sessions (detall al panell lateral), **Log complet per dia** filtrable per món, nen i data, **Activitat** (mapa de calor hora × dia, evolució diària i estrelles per origen) i **Registre** complet amb exportació CSV.
+- **Rànquing (`?v=ranquing`):** `Classificació` pública (`Total`, `Per món`, `Setmana` via `bn_ranking_mons`) amb interruptor `Visible` i bloc inferior d'amagats, `Reptes` (`Combos i repàs` i `Repàs, boss i missions` de `tMotivacio()`) i `Xat` (moderació en 5 columnes i silenciats).
 
 ### 💚 Benestar
 
-Pestanya 📊 Tauler. Mostra l'ús sa de cada nen segons [`docs/BON-US.md`](docs/BON-US.md) (apartats 2 i 5), amb `bn_admin_benestar` (`supabase/bn_admin_benestar.sql`). Una fila per nen amb el semàfor i els motius. Per món, la fase (novetat, aprendre, vigília, després) i la vigília d'examen: la data que posa l'admin (`bn_admin_examen_desa`, taula `bn_priv.examens`) o, si no n'hi ha, el pic del grup (5 nens o la meitat, el triple de minuts d'un dia normal, només del dia 3 al 12 del món). Els llindars són els inicials de BON-US.md. El temps es compta per aparell: amb dos aparells alhora, els minuts poden sortir doblats (el tauler ho avisa).
+A **Nens → Benestar** (`?v=nens&tab=benestar`) i a la pestanya **Sessions i benestar** de cada Fitxa del nen. Mostra l'ús sa de cada nen segons [`docs/BON-US.md`](docs/BON-US.md) (apartats 2 i 5), amb `bn_admin_benestar` (`supabase/bn_admin_benestar.sql`). Una fila per nen amb el semàfor i els motius. Per món, la fase (novetat, aprendre, vigília, després) i la vigília d'examen: la data que posa l'admin (`bn_admin_examen_desa`, taula `bn_priv.examens`) o, si no n'hi ha, el pic del grup (5 nens o la meitat, el triple de minuts d'un dia normal, només del dia 3 al 12 del món). Els llindars es poden consultar a `Configuració → Llindars`. El temps es compta per aparell: amb dos aparells alhora, els minuts poden sortir doblats (el tauler ho avisa).
 
 ### 🔥 Combos i repàs, i errors pendents de la colla
 
-Pestanya 📊 Tauler (`supabase/bn_admin_fonts_rep.sql`). `bn_admin_fonts_dia` treu les estrelles de cada font per dia de les diferències del camp `fonts` entre registres del mateix nen i món: el porten `entra` i `temps` i, des de la 2.8.2, també `test`, `joc`, `examen` i `oberta`. Cada increment es compta contra el màxim anterior, de manera que un aparell vell que envia valors baixos no fa comptar dues vegades el mateix. El primer registre de cada nen i món, i el primer després d'un reinici, només serveixen de base, i un valor que baixa compta 0. `bn_admin_rep_pendents` agrega els errors pendents de repàs (`estat.rep` de `bn_priv.progres`) per món i tema, sense noms.
+A **Rànquing → Reptes** i **Mons → Fitxa del món → Domini i errors** (`supabase/bn_admin_fonts_rep.sql`). `bn_admin_fonts_dia` treu les estrelles de cada font per dia de les diferències del camp `fonts` entre registres del mateix nen i món: el porten `entra` i `temps` i, des de la 2.8.2, també `test`, `joc`, `examen` i `oberta`. Cada increment es compta contra el màxim anterior, de manera que un aparell vell que envia valors baixos no fa comptar dues vegades el mateix. El primer registre de cada nen i món, i el primer després d'un reinici, només serveixen de base, i un valor que baixa compta 0. `bn_admin_rep_pendents` agrega els errors pendents de repàs (`estat.rep` de `bn_priv.progres`) per món i tema, sense noms.
 
 ### ⚡ Dificultat real de les preguntes
 
-Pestanya 📊 Tauler (`supabase/bn_admin_dificultat.sql`, issue `#16`). Llegeix `bn_admin_dificultat` (respostes de `test` i `examen` dels últims 365 dies, excloent el repàs espaiat) i la compara directament al navegador amb `motor/dificultat.json` i `admin/preguntes.json`: marca `➕ Proposa ⚡` les preguntes amb `< 55 %` d'encert (i `≥ 8` respostes) que encara no són difícils, `➖ Revisa ⚡` les marcades difícils amb `≥ 75 %` d'encert, `⚡ Confirmada` i `Fàcil (> 90 %)`, i permet descarregar el JSON per passar-lo a `python3 motor/dificultat.py --proposa`.
+A **Mons → Dificultat real** (`?v=mons&tab=dificultat`, i per món a `?v=mons&id=<mon>&tab=domini`, `supabase/bn_admin_dificultat.sql`, issue `#16`). Mostra sempre els 7 mons, llegeix `bn_admin_dificultat` (respostes de `test` i `examen` dels últims 365 dies, excloent el repàs espaiat) i la compara directament al navegador amb `motor/dificultat.json` i `admin/preguntes.json`: marca `➕ Proposa ⚡` les preguntes amb `< 55 %` d'encert (i `≥ 8` respostes) que encara no són difícils, `➖ Revisa ⚡` les marcades difícils amb `≥ 75 %` d'encert, `⚡ Confirmada` i `Fàcil (> 90 %)`, indica també els mons que encara tenen `< 8` respostes per pregunta o sense dades, i permet descarregar el JSON per passar-lo a `python3 motor/dificultat.py --proposa`.
 
-### 👤 Nens
+### 👤 Nens i Fitxa del nen
 
-**Nens nous** (pestanya 👤 Nens, a dalt): les altes del període de dalt, amb `bn_admin_altes` (`supabase/bn_admin_fitxa.sql`). La data d'alta és la primera vegada que es veu el nen: el primer registre o `perfils.creat` (quan crea el perfil amb el PIN; els perfils d'abans del 10-11-2026 no la tenen), el que sigui abans. No es fa servir `nou` de l'event `entra`, que vol dir «nou en aquell aparell».
+**Nens nous** (a **Inici**): les altes del període de dalt, amb `bn_admin_altes` (`supabase/bn_admin_fitxa.sql`). La data d'alta és la primera vegada que es veu el nen: el primer registre o `perfils.creat` (quan crea el perfil amb el PIN; els perfils d'abans del 10-11-2026 no la tenen), el que sigui abans. No es fa servir `nou` de l'event `entra`, que vol dir «nou en aquell aparell».
 
-**Nivells al tauler** (des de la 2.16.0): el tauler llegeix `admin/regles.json` (generat per `tot.py` des de la plantilla) i mostra el nivell de cada nen i de cada món —amb les estrelles que falten per al següent— a la taula de Nens, a la capçalera i els KPIs de la fitxa, a cada assignatura i a la pestanya «Al núvol».
+**Nivells al tauler** (des de la 2.16.0): el tauler llegeix `admin/regles.json` (generat per `tot.py` des de la plantilla) i mostra el nivell de cada nen i de cada món —amb les estrelles que falten per al següent— a la taula de Nens, a `Rànquing → Classificació`, a la capçalera i els KPIs de la fitxa, a cada assignatura i a la pestanya «Núvol i gestió».
 
-**Fitxa de cada nen → Al núvol:** l'estat que el nen ha desat al núvol a cada món (`bn_priv.progres`, amb `bn_admin_fitxa`): temes, preguntes que falla, errors pendents de repàs, obertes, exàmens, boss i fonts de les estrelles. Només hi són els nens que han jugat amb el PIN (si l'admin li treu el PIN, el progrés es continua veient); dels altres, només hi ha el registre. L'aprovat (70) és el mateix número que fa servir el tauler.
-
-**Fitxa de cada nen** (pestanya 👤 Nens → toca un nom): canviar el nom (conserva el registre, el perfil, el progrés i també els missatges, vots i silencis del xat; `supabase/bn_pin_nou.sql`), amagar-lo del rànquing, treure el PIN i:
+**Fitxa de cada nen** (`?v=nens&id=<nen>`, amb selector ràpid `#selFitxaNen` i descàrrega d'**Informe HTML / PDF** o **Informe .md**): agrupa 4 pestanyes (`Resum i estrelles`, `Aprenentatge`, `Sessions i benestar` i `Núvol i gestió`). A **Núvol i gestió** es mostra l'estat que el nen ha desat al núvol a cada món (`bn_priv.progres`, amb `bn_admin_fitxa`), l'accés directe a còpies i les accions del compte: canviar el nom (conserva el registre, el perfil, el progrés i també els missatges, vots i silencis del xat; `supabase/bn_pin_nou.sql`), amagar-lo del rànquing, treure el PIN i:
 - **♻️ Esborrar el progrés:** tries «Tots els mons» o un món concret i confirmes (surten el nom del nen i el món, i «No es pot desfer»).
   S'esborren les estrelles, els tests, els jocs i el temps d'aquell món (o de tots), també del rànquing. **El nen es queda amb el nom i el PIN.**
   Als seus dispositius, el progrés d'abans s'esborra sol la propera vegada que hi entra (un dispositiu vell no el pot fer tornar).
@@ -697,7 +692,7 @@ Dins dels mons ja no hi ha cap botó per esborrar el progrés: només es pot fer
 
 ### 💾 Còpies de seguretat
 
-`admin/` → Còpies de seguretat (`supabase/bn_copies.sql`, ja executat al projecte «bonanota»):
+`admin/` → **⚙ Configuració → Còpies** (`?v=config&tab=copies`, `supabase/bn_copies.sql`, ja executat al projecte «bonanota»):
 - Cada còpia guarda el registre, els perfils (PIN xifrat), el progrés al núvol, els noms amagats, la configuració, els reinicis i les taules del xat (`xat_frases`, `xat_peces`, `xat_msg`, `xat_vots` i `xat_silenci`). **No** guarda els administradors.
 - Es fan soles **cada nit a les 3:00** (pg_cron `bn-copia-diaria`) i **just abans d'esborrar o canviar** dades des de l'admin (triggers `bn_copia_abans`); també amb el botó «Fes una còpia ara».
 - Les automàtiques es guarden 30 dies; la resta, 90. Des de l'admin es poden **descarregar** (JSON), **restaurar** (dues confirmacions; abans es fa una còpia de l'estat d'ara) i **esborrar**.

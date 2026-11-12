@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.36.0 · 2026-11-12
+
+### Canviat
+- **Panell d'administració — Fase 5: neteja final, 7 mons sempre visibles a Dificultat/Domini i documentació** (`admin/index.html`, `docs/ARQUITECTURA.md`, `README.md`, `docs/XAT.md`, `docs/BENESTAR.md`, `motor/prova-admin-dificultat.js`, `motor/prova-admin-alta.js` · g20):
+  - **7 mons sempre visibles a `Mons → Dificultat real` i `Mons → Domini global`**: abans `htmlDificultat()` i `tDomini()` amagaven els mons que encara no tenien cap pregunta amb `≥ 8` respostes (o sense activitat en el període curt), de manera que a producció només sortien `Comarques`, `Català` i `Socials`; ara surten sempre els 7 mons de `ASSIGS`, mostrant a la capçalera i en desplegar si el món té preguntes vistes amb `< 8` respostes (amb botó d'1 clic cap a `Totes`) o si encara no té respostes de test/examen (indicant a `divisibilitat` que els exercicis generats són a `Fitxa del món → Taller`).
+  - **Neteja final d'`admin/index.html`**: eliminats els últims estils i funcions heretats de l'antic Tauler que havien quedat sense ús (`gTipus`, `esqTauler`, `dataH`, `.seccio-t`, `.kpi.xok`, `.ctrl-hores*` i regles mòbils antigues `.xm-l`), mantenint intactes les 35 funcions RPC d'admin i afegint a `prova-admin-alta.js` la verificació automàtica de `≤ 8` columnes per taula i de zero desbordament mòbil a `Sessions + #panell`.
+  - **Documentació actualitzada**: `docs/ARQUITECTURA.md`, `README.md`, `docs/XAT.md`, `docs/BENESTAR.md` i `docs/ESTAT.md` reflecteixen l'estructura definitiva dels 5 eixos + `Configuració` del panell d'administració.
+
 ## 2.35.0 · 2026-11-12
 
 ### Canviat
