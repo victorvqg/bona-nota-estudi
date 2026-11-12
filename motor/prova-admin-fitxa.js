@@ -88,13 +88,13 @@ function respon(st, f, cos) {
   if (o.cred) await p.addInitScript(c => sessionStorage.setItem("bn_admin", JSON.stringify(c)), o.cred);
   const errors = []; p.on("pageerror", e => errors.push(e.message));
   await p.goto(BASE + url); await p.waitForSelector("#shell:not([hidden])");
-  const menu = async v => { if (await p.isVisible("#obreMenu")) await p.click("#obreMenu"); await p.click(`#nav [data-v="${v}"]`) }; // al mòbil, el menú és plegat
+  const menu = async v => { const sel = await p.isVisible("#navInf") ? "#navInf" : "#nav"; await p.click(`${sel} [data-v="${v}"]`) };
   const crida = async (f, n) => { for (let i = 0; i < 60; i++) { const c = crides.filter(x => x.f === f); if (c.length >= (n || 1)) { await p.waitForTimeout(80); return c[c.length - 1] } await p.waitForTimeout(50) } return null };
   const txt = s => p.evaluate(s => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, " ").trim() : null }, s);
   const errG = () => p.evaluate(() => getComputedStyle(document.getElementById("errG")).display !== "none");
   // valor i subtítol d'una xifra (kpi) pel títol, dins d'un apartat
   const kpi = (dins, t) => p.evaluate(([dins, t]) => { const k = [...document.querySelectorAll(dins + " .kpi")].find(x => x.querySelector(".kpi-t").textContent.trim() === t);
-   return k ? { v: k.querySelector(".kpi-v").textContent.trim(), s: (k.querySelector(".kpi-s") || { textContent: "" }).textContent.trim() } : null }, [dins, t]);
+   return k ? { v: k.querySelector(".kpi-v").textContent.trim(), s: (k.querySelector(".kpi-s") || k.querySelector(".kpi-p") || { textContent: "" }).textContent.trim() } : null }, [dins, t]);
   // obre la fitxa d'un nen des de la taula de Nens i, si cal, la pestanya «Al núvol»
   const fitxa = async (k, nuvol) => { await menu("nens"); await p.waitForSelector(`#tNens [data-obre-nen="${k}"]`); await p.click(`#tNens [data-obre-nen="${k}"]`); await p.waitForSelector("#tb-nuv");
    if (nuvol) { await p.click("#tb-nuv"); await p.waitForSelector('#nuv[data-estat="fet"], #nuv .avis') } };
@@ -217,17 +217,18 @@ function respon(st, f, cos) {
   ok(crides.some(x => x.f === "bn_admin_fitxa"), "s'ha intentat la crida");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("5) mòbil (390 px), tema fosc");
- { const { p, ctx, errors, menu, txt, fitxa } = await obre("/admin/?demo", { viewport: { width: 390, height: 844 }, fosc: true });
+ console.log("5) mòbil (360, 390 i 430 px), tema fosc");
+ for (const mw of [360, 390, 430]) {
+  const { p, ctx, errors, menu, txt, fitxa } = await obre("/admin/?demo", { viewport: { width: mw, height: 844 }, fosc: true });
   await menu("nens"); await p.waitForSelector("#altesCos table");
-  ok((await p.evaluate(() => document.documentElement.dataset.tema)) === "fosc", "tema fosc");
+  if (mw === 390) ok((await p.evaluate(() => document.documentElement.dataset.tema)) === "fosc", "tema fosc");
   const ample = () => p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
-  let w = await ample(); ok(w <= 390, "Nens amb les altes: res no surt per la dreta (ample " + w + ")");
+  let w = await ample(); ok(w <= mw, `${mw} px · Nens amb les altes: res no surt per la dreta (ample ${w})`);
   await fitxa("àlex", true); await p.click("#nuv .dm-as summary"); await p.waitForTimeout(150);
-  w = await ample(); ok(w <= 390, "«Al núvol» desplegat: res no surt per la dreta (ample " + w + ")");
+  w = await ample(); ok(w <= mw, `${mw} px · «Al núvol» desplegat: res no surt per la dreta (ample ${w})`);
   const fora = await p.$$eval("#nuv .kpi, #nuv .dm-cap, .pestanyes", es => es.filter(e => { const r = e.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
-  ok(fora === 0, "xifres, capçaleres dels mons i pestanyes es veuen senceres");
-  ok((await txt("#tb-nuv")) === "Al núvol", "la pestanya es veu al mòbil");
+  ok(fora === 0, `${mw} px · xifres, capçaleres dels mons i pestanyes es veuen senceres`);
+  if (mw === 390) ok((await txt("#tb-nuv")) === "Al núvol", "la pestanya es veu al mòbil");
   ok(errors.length === 0, "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  await nav.close(); srv.close();

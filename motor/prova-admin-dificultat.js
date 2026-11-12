@@ -80,7 +80,7 @@ function dadesDif(assig, xss) {
    return r.fulfill({ status: 404, contentType: "application/json", body: '{"message":"no existeix"}' });
   });
   if (o.cred) await p.addInitScript(c => sessionStorage.setItem("bn_admin", JSON.stringify(c)), o.cred);
-  await p.goto(BASE + url);
+  await p.goto(BASE + url + (url.includes("?") ? "&" : "?") + "v=mons&tab=dificultat");
   await p.waitForSelector("#shell:not([hidden])");
   await p.waitForFunction(() => { const e = document.querySelector("#tDif"); return e && !e.hasAttribute("aria-busy") });
   const txt = s => p.evaluate(s => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, " ").trim() : "" }, s);
@@ -98,11 +98,13 @@ function dadesDif(assig, xss) {
   await ctx.close();
  }
 
- console.log("2) Credencials: contracte RPC, estats (Proposa ⚡, Revisa ⚡, Confirmada, Fàcil), modes, filtres i JSON");
+ console.log("2) Credencials: càrrega sota demanda, contracte RPC, estats (Proposa ⚡, Revisa ⚡, Confirmada, Fàcil), modes, filtres i JSON");
  {
   const { p, ctx, crides, errors, txt } = await obre("/admin/", { cred: CRED });
   const c0 = crides.find(x => x.f === "bn_admin_dificultat");
   ok(c0 && Object.keys(c0.cos).sort().join(",") === "p_assig,p_email,p_pass" && c0.cos.p_assig === null, "crida bn_admin_dificultat {p_email, p_pass, p_assig:null}");
+  ok(["bn_admin_resum", "bn_admin_domini", "bn_admin_fallades", "bn_admin_benestar"].every(f => !crides.some(x => x.f === f)),
+   "càrrega sota demanda: obrir Mons → Dificultat no demana el resum, domini, fallades ni benestar");
   await p.click('#tDif [data-dm="obre"]');
   const tSoc = await txt('#tDif details[data-a="socials"]');
   ok(tSoc.includes("➕ Proposa ⚡") && tSoc.includes("➖ Revisa ⚡") && tSoc.includes("⚡ Confirmada") && tSoc.includes("Fàcil (> 90 %)"),
@@ -149,14 +151,12 @@ function dadesDif(assig, xss) {
   await ctx.close();
  }
 
- console.log("4) Escapament XSS i disseny mòbil (390 px)");
- {
-  const { p, ctx, errors } = await obre("/admin/", { cred: CRED, xss: true, viewport: { width: 390, height: 844 } });
+ console.log("4) Escapament XSS i disseny mòbil (360, 390 i 430 px)");
+ for (const mw of [360, 390, 430]) {
+  const { p, ctx, errors } = await obre("/admin/", { cred: CRED, xss: true, viewport: { width: mw, height: 844 } });
   const xssExec = await p.evaluate(() => !!window.__xss);
   const desborda = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
-  ok(!xssExec, "cap injecció XSS s'executa a #tDif");
-  ok(!desborda, "a 390 px no hi ha desbordament horitzontal");
-  ok(errors.length === 0, "sense errors en mòbil");
+  ok(!xssExec && !desborda && errors.length === 0, `${mw} px: cap injecció XSS, zero desbordament i zero errors`);
   await ctx.close();
  }
 

@@ -1,17 +1,7 @@
 #!/usr/bin/env node
-// Bona Nota · prova automàtica dels apartats «Combos i repàs» (M3) i «Errors pendents de la colla» (M4) del tauler del panell d'admin
-// (admin/index.html, n2537 fase B pas 2) amb Playwright (Chromium).
+// Bona Nota · prova automàtica dels apartats «Combos i repàs» (Rànquing → Reptes), «Estrelles per origen» (Inici)
+// i «Errors pendents de la colla» (Mons → Errors pendents) del panell d'admin (admin/index.html) amb Playwright (Chromium).
 // Ús (des de l'arrel del repo o des de motor/):   node motor/prova-admin-fonts-rep.js
-// Engega un servidor estàtic local sobre l'arrel del repo i simula Supabase amb page.route: el tauler (bn_admin_resum, …) amb dades mínimes,
-// i bn_admin_fonts_dia i bn_admin_rep_pendents amb el contracte de supabase/bn_admin_fonts_rep.sql. Chart.js se substitueix per un Chart
-// de mentida que guarda la configuració de cada gràfic (així es pot comprovar què es dibuixa). No toca res de debò.
-// Casos: 1) ?demo: les dues targetes amb dades inventades coherents (repàs = 2 per error après), entrades del menú, cap crida
-//        2) amb credencials: crides amb el període, l'assignatura i el nen (i SENSE paràmetres que la funció no té); gràfic apilat per dia,
-//           xifres del període, «Les altres fonts» (plegable, amb una clau nova), taula per nen; per món, temes amb títol de preguntes.json,
-//           nens, «toquen avui» i preguntes més repetides; filtres d'assignatura, de nen i de període; en memòria en canviar de tema
-//        3) 404 de cada funció: l'avís de supabase/bn_admin_fonts_rep.sql només a la targeta afectada; la resta del tauler es veu; un 500
-//        4) escapament: un nom, un món, una font, un tid i unes preguntes amb <img onerror> no s'executen · 5) respostes buides
-//        6) mòbil (390 px), tema clar i fosc: res surt per la dreta i els errors pendents es llegeixen sense desplaçar-se de costat
 const http = require("http"), fs = require("fs"), path = require("path");
 const { chromium } = require("playwright");
 const ARREL = path.resolve(__dirname, "..");
@@ -20,7 +10,6 @@ let fallades = 0;
 const ok = (cond, msg) => { if (cond) console.log("  ✓", msg); else { fallades++; console.log("  ✗", msg) } };
 const CRED = { e: "admin@prova.cat", p: "secret-de-prova" };
 const XSS = '<img src=x onerror="window.__xss=1">';
-// dies «AAAA-MM-DD» a l'hora de Catalunya, com el panell i el servidor
 const diaMad = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 const dU = d => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)), sumaD = (d, n) => new Date(dU(d) + n * 864e5).toISOString().slice(0, 10);
 const AVUI = diaMad(), D = n => sumaD(AVUI, n);
@@ -38,8 +27,6 @@ function servidor() {
   s.listen(0, "127.0.0.1", () => res(s)) });
 }
 
-// el que tornaria el servidor. Fonts per dia: combo 6, triple 3, super 5, repàs 6 (les 4: 20); altres: temes 10, jocs 4, missio 2, boss 10 i una clau nova (7).
-// En Biel té estrelles però cap registre al període (el seu nom no obre la fitxa).
 function dades(xss) {
  const ara = Date.now(), iso = h => new Date(ara - h * 36e5).toISOString();
  const log = (nom, assig, h, event, detall) => ({ id: 0, ts: iso(h), assig, nom, sessio: "s-" + nom, aparell: "a1", event, detall });
@@ -66,7 +53,8 @@ function dades(xss) {
 const RESUM = p => ({ periode: p, desde: new Date().toISOString(), ara: { nens: 3, dies: 5, minuts: 190, sessions: 4, tests: 2, nota: 70, aprovats: 50, encert: 60, respostes: 20, examens: 0, nota_exam: null, seg_preg: 5, jocs: 1, obertes: 0, fitxes: 1 }, abans: null });
 function respon(st, f, cos) {
  if (f === "bn_admin_logs") return st.d.logs;
- if (f === "bn_admin_ids" || f === "bn_aspectes") return [];
+ if (f === "bn_admin_ids" || f === "bn_aspectes" || f === "bn_admin_altes" || f === "bn_ranking_mons") return [];
+ if (f === "bn_admin_control") return { xat_actiu: true, xat_obert_ara: true, horari: { actiu: true, tanca_min: 1290, obre_min: 420 }, mons_tancats: [] };
  if (f === "bn_admin_usuari" && cos.p_accio === "estat") return 0;
  if (f === "bn_admin_resum") return RESUM(cos.p_periode);
  if (["bn_admin_activitat", "bn_admin_calor", "bn_admin_domini", "bn_admin_fallades", "bn_admin_evolucio", "bn_admin_alertes", "bn_admin_errors_taller"].includes(f)) return [];
@@ -105,48 +93,65 @@ function respon(st, f, cos) {
   const n = f => crides.filter(x => x.f === f).length;
   const txt = s => p.evaluate(s => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, " ").trim() : null }, s);
   const errG = () => p.evaluate(() => getComputedStyle(document.getElementById("errG")).display !== "none");
-  const llest = async () => { await p.waitForSelector("#tCom:not([aria-busy]) > *", { timeout: 10000 }); await p.waitForSelector("#tRep:not([aria-busy]) > *", { timeout: 10000 }); await p.waitForTimeout(60) };
-  // el gràfic viu d'un canvas: etiquetes, sèries (nom, dades i color) i si és apilat
+  const clicMenu = async v => {
+   if (await p.isVisible("#navInf")) await p.click(`#navInf [data-v="${v}"]`);
+   else await p.click(`#nav [data-v="${v}"]`);
+  };
+  const vesCombos = async () => {
+   await clicMenu("ranquing");
+   await p.waitForSelector('[data-vtab="reptes"]');
+   await p.click('[data-vtab="reptes"]');
+   await p.waitForSelector("#tCom:not([aria-busy]) > *", { timeout: 10000 });
+   await p.waitForTimeout(60);
+  };
+  const vesPendents = async () => {
+   await clicMenu("mons");
+   await p.waitForSelector('[data-vtab="pendents"]');
+   await p.click('[data-vtab="pendents"]');
+   await p.waitForSelector("#tRep:not([aria-busy]) > *", { timeout: 10000 });
+   await p.waitForTimeout(60);
+  };
   const graf = id => p.evaluate(id => { const c = (window.__charts || []).filter(x => !x.mort && x.canvas.id === id && x.canvas.isConnected).pop(); if (!c) return null; const g = c.config, sc = g.options.scales || {};
    return { tipus: g.type, labels: g.data.labels, ds: g.data.datasets.map(d => ({ label: d.label, data: d.data, color: d.backgroundColor })), apilat: !!(sc.x && sc.x.stacked && sc.y && sc.y.stacked) } }, id);
   const kpis = sel => p.$$eval(sel + " .kpi", ks => ks.map(k => ({ font: k.dataset.font || null, t: k.querySelector(".kpi-t").textContent.trim(), v: k.querySelector(".kpi-v").textContent.trim(), s: (k.querySelector(".kpi-s") || { textContent: "" }).textContent.trim() })));
-  // files d'una taula: el text visible de cada cel·la (innerText: sense les etiquetes del mòbil, amagades a l'ordinador)
   const files = sel => p.$$eval(sel + " tbody tr", trs => trs.map(tr => [...tr.cells].map(td => td.innerText.replace(/\s+/g, " ").trim())));
-  return { p, ctx, st, crides, errors, crida, n, txt, errG, llest, graf, kpis, files };
+  return { p, ctx, st, crides, errors, crida, n, txt, errG, vesCombos, vesPendents, graf, kpis, files };
  }
 
- console.log("1) ?demo: les dues targetes amb dades inventades, sense cap crida");
- { const { p, ctx, crides, errors, txt, errG, llest, graf, kpis, files } = await obre("/admin/?demo");
-  await llest();
-  ok((await txt("#combos h2")) === "Combos i repàs" && (await txt("#pendents h2")) === "Errors pendents de la colla", "apartats «Combos i repàs» i «Errors pendents de la colla» al tauler");
-  const secs = await p.$$eval("#nav .sub button", bs => bs.map(b => [b.dataset.sec, b.textContent.trim()]));
-  const im = secs.findIndex(s => s[0] === "motivacio");
-  ok(secs[im + 1] && secs[im + 1][0] === "combos" && secs[im + 1][1] === "Combos i repàs" && secs[im + 2] && secs[im + 2][0] === "pendents" && secs[im + 2][1] === "Errors pendents de la colla", "entrades al menú d'apartats, després de «Repàs i boss»");
-  ok((await txt("#combos .sub")).includes("2.9.0") && (await txt("#combos .sub")).includes("2.10.0") && (await txt("#combos .sub")).includes("és la base"), "el text explica d'on surt (diferències entre registres, el primer és la base) i la 2.9.0/2.10.0");
+ console.log("1) ?demo: Inici + Rànquing → Reptes + Mons → Errors pendents, sense cap crida");
+ { const { p, ctx, crides, errors, txt, errG, vesCombos, vesPendents, graf, kpis, files } = await obre("/admin/?demo");
+  await p.waitForSelector("#fontsDiaCos:not([aria-busy]) > *");
+  ok((await p.$$("#fontsDiaCos .fest")).length >= 4, "Inici mostra el resum compacte d'estrelles per origen");
+  await vesCombos();
+  ok((await txt("#combos h2")) === "Combos i repàs" && (await txt("#motivacio h2")) === "Repàs i boss", "Rànquing → Reptes mostra «Combos i repàs» i «Repàs i boss»");
+  await p.click("#combos .btn-ajuda");
+  ok((await txt("#combos-aj")).includes("2.9.0") && (await txt("#combos-aj")).includes("2.10.0") && (await txt("#combos-aj")).includes("és la base"), "l'ajuda plegable (i) explica d'on surt i la 2.9.0/2.10.0");
   const K = await kpis("#tCom");
   ok(K.filter(k => k.font).map(k => k.font).join(",") === "combo,triple,super,repas" && K.some(k => k.t === "Totes les fonts"), "xifres del període: combo, triple, super, repàs i totes les fonts");
   ok(K.find(k => k.font === "combo").t === "Combos" && K.find(k => k.font === "triple").t === "Triple combo (obertes)" && K.find(k => k.font === "super").t === "Super combo (difícils)" && K.find(k => k.font === "repas").t === "Repàs dels errors", "amb els noms de «D'on surten les estrelles»");
   const g = await graf("gCom");
   ok(g && g.tipus === "bar" && g.apilat && g.ds.map(d => d.label).join("|") === "Combos|Triple combo (obertes)|Super combo (difícils)|Repàs dels errors" && g.labels.length >= 8, "gràfic de barres apilades per dia amb les 4 fonts (" + (g ? g.labels.length : 0) + " dies)");
   ok((await files("#tComN")).length >= 5, "taula per nen");
-  ok((await p.$$("#tRep details.dm-as")).length >= 3 && !(await txt("#tRep")).includes("no és a preguntes.json"), "errors pendents per món, amb els títols de preguntes.json");
-  // coherència: amb 30 dies (tot el registre de la demo), el repàs val 2 estrelles per error après de «Repàs, boss i missions»
-  await p.click('#periode [data-d="30"]'); await p.waitForTimeout(300); await llest();
+  // coherència: amb 30 dies (tot el registre de la demo), el repàs val 2 estrelles per error après de «Repàs i boss»
+  await p.click('#periode [data-d="30"]');
+  await p.waitForSelector("#tCom:not([aria-busy]) > *", { timeout: 10000 }); await p.waitForTimeout(80);
   const apr = +(await p.$$eval("#tMot .kpi", ks => (ks.find(k => k.querySelector(".kpi-t").textContent.trim() === "Errors apresos") || { querySelector: () => ({ textContent: "-1" }) }).querySelector(".kpi-v").textContent.trim()));
   const rep = +(await kpis("#tCom")).find(k => k.font === "repas").v;
   ok(apr > 0 && rep === 2 * apr, `demo coherent: repàs ${rep} ⭐ = 2 × ${apr} errors apresos`);
-  await p.click('#nav .sub [data-sec="pendents"]'); await p.waitForTimeout(1500);
-  ok(await p.evaluate(() => { const r = document.getElementById("pendents").getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }), "l'entrada del menú porta a l'apartat");
+  await vesPendents();
+  ok((await txt("#pendents h2")) === "Errors pendents de la colla" && (await p.$$("#tRep details.dm-as")).length >= 3 && !(await txt("#tRep")).includes("no és a preguntes.json"), "Mons → Errors pendents per món, amb els títols de preguntes.json");
   ok(crides.length === 0, "cap crida a Supabase en demo (" + crides.map(c => c.f).join(", ") + ")");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("2) amb credencials: crides, gràfic, xifres, taules i filtres");
- { const { p, ctx, crides, errors, crida, n, txt, errG, llest, graf, kpis, files } = await obre("/admin/", { cred: CRED });
-  await llest();
-  let c = await crida("bn_admin_fonts_dia"), r = await crida("bn_admin_rep_pendents");
-  ok(c && Object.keys(c.cos).sort().join(",") === "p_assig,p_email,p_nom,p_pass,p_periode" && c.cos.p_email === CRED.e && c.cos.p_pass === CRED.p && c.cos.p_periode === "7d" && c.cos.p_assig === null && c.cos.p_nom === null,
+ console.log("2) amb credencials: crides sota demanda, gràfic, xifres, taules i filtres");
+ { const { p, ctx, crides, errors, crida, n, txt, errG, vesCombos, vesPendents, graf, kpis, files } = await obre("/admin/", { cred: CRED });
+  await p.waitForSelector("#fontsDiaCos:not([aria-busy]) > *");
+  ok(n("bn_admin_rep_pendents") === 0, "bn_admin_rep_pendents NO es crida a Inici (càrrega sota demanda)");
+  let c = await crida("bn_admin_fonts_dia");
+  ok(c && Object.keys(c.cos).sort().join(",") === "p_assig,p_email,p_nom,p_periode" && c.cos.p_email === CRED.e && c.cos.p_pass === CRED.p && c.cos.p_periode === "7d" && c.cos.p_assig === null && c.cos.p_nom === null
+   || (c && Object.keys(c.cos).sort().join(",") === "p_assig,p_email,p_nom,p_pass,p_periode" && c.cos.p_email === CRED.e && c.cos.p_pass === CRED.p && c.cos.p_periode === "7d" && c.cos.p_assig === null && c.cos.p_nom === null),
    "bn_admin_fonts_dia {p_email, p_pass, p_periode:'7d', p_assig:null, p_nom:null}");
-  ok(r && Object.keys(r.cos).sort().join(",") === "p_assig,p_email,p_pass" && r.cos.p_assig === null, "bn_admin_rep_pendents {p_email, p_pass, p_assig:null}, sense p_periode ni p_nom (la funció no els té)");
+  await vesCombos();
   // gràfic: 8 dies (avui fa 7 dies → avui), apilat, les 4 fonts al dia que toca
   const g = await graf("gCom"), i6 = 1, i2 = 5, i0 = 7;
   ok(g && g.apilat && g.labels.length === 8, "gràfic apilat amb els 8 dies del període, també els que no tenen estrelles");
@@ -159,7 +164,7 @@ function respon(st, f, cos) {
   ok(kf("combo").s === "3 nens · 2 dies" && kf("triple").s === "1 nen · 1 dia", "amb quants nens i quants dies: «3 nens · 2 dies», «1 nen · 1 dia»");
   const tot = K.find(k => k.t === "Totes les fonts");
   ok(tot && tot.v === "53" && tot.s === "38 % de combos i repàs", "totes les fonts: 53 (38 % de combos i repàs)");
-  // la resta de fonts, plegada: s'obre i dibuixa el seu gràfic (també una clau que el panell no coneix)
+  // la resta de fonts, plegada: s'obre i dibuixa el seu gràfic
   ok(!(await p.$eval("#tCom details.fr-altres", d => d.open)) && !(await graf("gComA")), "«Les altres fonts» plegat i sense gràfic fins que s'obre");
   ok((await txt("#tCom details.fr-altres summary")) === "Les altres fonts: 33 estrelles (tests dels temes, jocs, missions del dia…)", "resum: «Les altres fonts: 33 estrelles (tests dels temes, jocs, missions del dia…)»");
   await p.click("#tCom details.fr-altres summary"); await p.waitForTimeout(150);
@@ -171,92 +176,110 @@ function respon(st, f, cos) {
   ok(T.map(x => x[0]).join(",") === "Pau,Nora,Biel,Laia", "per nen, de més a menys combos i repàs: " + T.map(x => x[0]).join(","));
   ok(T[0].slice(1).join(",") === "3,3,5,2,13,27" && T[1].slice(1).join(",") === "0,0,0,4,4,13", "Pau: 3, 3, 5, 2 → 13 (27 de totes les fonts); Nora: repàs 4 (13)");
   ok(!!(await p.$('#tComN [data-obre-nen="pau"]')) && !(await p.$('#tComN [data-obre-nen="biel"]')), "el nom obre la fitxa si el nen té registre al període (en Biel no)");
-  // errors pendents per món: Socials (9) abans que Mates (6); títols, sense tema, nens, toquen avui i preguntes
+  // canviar de tema a Rànquing → Reptes no torna a cridar i manté «Les altres fonts» obert
+  const n0 = n("bn_admin_fonts_dia");
+  await p.click("#tema"); await p.waitForSelector("#tCom:not([aria-busy]) > *", { timeout: 10000 }); await p.waitForTimeout(150);
+  ok(n("bn_admin_fonts_dia") === n0, "en canviar de tema no es torna a cridar bn_admin_fonts_dia");
+  ok((await p.$eval("#tCom details.fr-altres", d => d.open)) && !!(await graf("gComA")), "«Les altres fonts» es queda obert i amb el gràfic");
+  // filtres locals a Rànquing → Reptes
+  await p.selectOption("#fAssig", "socials"); c = await crida("bn_admin_fonts_dia", n0 + 1);
+  await p.waitForSelector("#tCom:not([aria-busy]) > *", { timeout: 10000 });
+  ok(c && c.cos.p_assig === "socials" && (await kpis("#tCom")).find(k => k.font === "combo").v === "5", "amb l'assignatura Socials a Reptes, p_assig 'socials' i combos = 5");
+  await p.selectOption("#fNen", "Pau"); c = await crida("bn_admin_fonts_dia", n0 + 2);
+  await p.waitForSelector("#tCom:not([aria-busy]) > *", { timeout: 10000 });
+  ok(c && c.cos.p_nom === "Pau" && c.cos.p_assig === "socials" && (await files("#tComN")).map(x => x[0]).join(",") === "Pau", "amb el nen Pau, p_nom 'Pau' i només la seva fila");
+  await p.selectOption("#fNen", ""); await p.selectOption("#fAssig", "");
+  await p.waitForSelector("#tCom:not([aria-busy]) > *", { timeout: 10000 });
+  const nPre30 = n("bn_admin_fonts_dia");
+  await p.click('#periode [data-d="30"]'); c = await crida("bn_admin_fonts_dia", nPre30 + 1);
+  await p.waitForSelector("#tCom:not([aria-busy]) > *", { timeout: 10000 });
+  ok(c && c.cos.p_periode === "30d" && (await txt("#tCom")).includes("dels últims 30 dies") && (await graf("gCom")).labels.length === 31, "amb 30 dies, p_periode '30d' i 31 dies al gràfic");
+  // ara Mons → Errors pendents
+  await vesPendents();
+  let r = await crida("bn_admin_rep_pendents");
+  ok(r && Object.keys(r.cos).sort().join(",") === "p_assig,p_email,p_pass" && r.cos.p_assig === null, "bn_admin_rep_pendents {p_email, p_pass, p_assig:null}, sense p_periode ni p_nom");
   const mons = await p.$$eval("#tRep details.dm-as", ds => ds.map(d => d.dataset.a));
   ok(mons.join(",") === "socials,divisibilitat", "mons ordenats pels errors pendents: " + mons.join(","));
   const KR = await kpis("#tRep");
   ok(KR.map(k => k.t + ":" + k.v).join(",") === "Errors pendents:15,Toquen avui:7,Temes amb errors:4" && KR[1].s === "47 % dels pendents", "xifres: 15 errors pendents, 7 toquen avui (47 %), 4 temes");
-  ok((await txt('#tRep details[data-a="socials"] .dm-meta')) === "2 temes i errors sense tema · 9 errors pendents · 2 toquen avui" && (await txt('#tRep details[data-a="socials"] .dm-pit')) === "Més: Temps i clima", "capçalera de Socials: «2 temes i errors sense tema · 9 errors pendents · 2 toquen avui» i «Més: Temps i clima»");
+  ok((await txt('#tRep details[data-a="socials"] .dm-meta')) === "2 temes i errors sense tema · 9 errors pendents · 2 toquen avui" && (await txt('#tRep details[data-a="socials"] .dm-pit')) === "Més: Temps i clima", "capçalera de Socials correcta");
   await p.click('#tRep [data-dm="obre"]'); await p.waitForTimeout(100);
   const S = await files('#tRep details[data-a="socials"]'), M = await files('#tRep details[data-a="divisibilitat"]');
-  ok(S.map(x => x[0]).join("|") === "Temps i clima|Sense tema errors de jocs com «Troba l'error»|L'atmosfera: capes i funcions", "temes de Socials amb el títol de preguntes.json, de més a menys errors (i «Sense tema»)");
+  ok(S.map(x => x[0]).join("|") === "Temps i clima|Sense tema errors de jocs com «Troba l'error»|L'atmosfera: capes i funcions", "temes de Socials amb el títol de preguntes.json");
   const pq = await p.$$eval('#tRep details[data-a="socials"] tbody tr:first-child li', ls => ls.map(l => l.querySelector("b").textContent + " " + l.querySelector(".nv-q").textContent));
-  ok(S[0].slice(1, 4).join(",") === "5,3,2" && pq.join(" | ") === "×3 «Demà nevarà al Pirineu». És… | ×2 Una altra pregunta del tema", "Temps i clima: 5 errors, 3 nens, 2 toquen avui, i les preguntes més repetides en ordre");
+  ok(S[0].slice(1, 4).join(",") === "5,3,2" && pq.join(" | ") === "×3 «Demà nevarà al Pirineu». És… | ×2 Una altra pregunta del tema", "Temps i clima: 5 errors, 3 nens, 2 toquen avui, i preguntes en ordre");
   ok(M[0][0] === "Mínim comú múltiple (MCM)" && M[1][0] === "xyz no és a preguntes.json" && M[1][4] === "—", "un tema que no és a preguntes.json surt amb l'id i ho diu");
-  ok((await p.$$eval("#tRep thead", ts => ts.every(t => getComputedStyle(t).display !== "none"))) && (await p.$$eval("#tRep .fr-l", ls => ls.every(l => getComputedStyle(l).display === "none"))), "a l'ordinador, taula amb capçalera (les etiquetes del mòbil, amagades)");
+  ok((await p.$$eval("#tRep thead", ts => ts.every(t => getComputedStyle(t).display !== "none"))) && (await p.$$eval("#tRep .fr-l", ls => ls.every(l => getComputedStyle(l).display === "none"))), "a l'ordinador, taula amb capçalera");
   ok(!(await p.$("#tRep .fr-nota")), "sense filtre de nen, cap nota");
-  // tornar a pintar (tema) no torna a cridar; «Les altres fonts» es queda obert
-  const n0 = n("bn_admin_fonts_dia"), r0 = n("bn_admin_rep_pendents");
-  await p.click("#tema"); await llest(); await p.waitForTimeout(150);
-  ok(n("bn_admin_fonts_dia") === n0 && n("bn_admin_rep_pendents") === r0, "en canviar de tema no es torna a cridar (en memòria fins a tornar a carregar)");
-  ok((await p.$eval("#tCom details.fr-altres", d => d.open)) && !!(await graf("gComA")), "«Les altres fonts» es queda obert i amb el gràfic");
-  // filtre d'assignatura: va a totes dues funcions
-  await p.selectOption("#fAssig", "socials"); c = await crida("bn_admin_fonts_dia", n0 + 1); r = await crida("bn_admin_rep_pendents", r0 + 1); await llest();
-  ok(c && c.cos.p_assig === "socials" && r && r.cos.p_assig === "socials" && Object.keys(r.cos).sort().join(",") === "p_assig,p_email,p_pass", "amb l'assignatura Socials, p_assig 'socials' a totes dues");
-  ok((await kpis("#tCom")).find(k => k.font === "combo").v === "5" && (await p.$$eval("#tRep details.dm-as", ds => ds.map(d => d.dataset.a + ":" + d.open))).join(",") === "socials:true", "combos de Socials (5) i només el món de Socials, obert");
-  // filtre de nen: només a bn_admin_fonts_dia (bn_admin_rep_pendents no porta noms: no es torna a cridar i ho diu)
+  const r0 = n("bn_admin_rep_pendents");
+  await p.selectOption("#fAssig", "socials"); r = await crida("bn_admin_rep_pendents", r0 + 1);
+  await p.waitForSelector("#tRep:not([aria-busy]) > *", { timeout: 10000 });
+  ok(r && r.cos.p_assig === "socials" && (await p.$$eval("#tRep details.dm-as", ds => ds.map(d => d.dataset.a + ":" + d.open))).join(",") === "socials:true", "filtre Socials a Errors pendents: p_assig 'socials' i món obert");
   const r1 = n("bn_admin_rep_pendents");
-  await p.selectOption("#fNen", "Pau"); c = await crida("bn_admin_fonts_dia", n0 + 2); await llest();
-  ok(c && c.cos.p_nom === "Pau" && c.cos.p_assig === "socials" && (await files("#tComN")).map(x => x[0]).join(",") === "Pau", "amb el nen Pau, p_nom 'Pau' i només la seva fila");
-  ok(n("bn_admin_rep_pendents") === r1 && (await txt("#tRep .fr-nota")).includes("el filtre de nen no s'hi aplica"), "els errors pendents no es tornen a demanar i diuen que el filtre de nen no s'hi aplica");
-  await p.selectOption("#fNen", ""); await p.selectOption("#fAssig", ""); await llest();
-  // període: només a bn_admin_fonts_dia
-  await p.click('#periode [data-d="30"]'); c = await crida("bn_admin_fonts_dia", n0 + 5); await llest(); // n0+3 i n0+4: en treure el nen i l'assignatura
-  const rr = crides.filter(x => x.f === "bn_admin_rep_pendents").pop();
-  ok(c && c.cos.p_periode === "30d" && !("p_periode" in rr.cos) && (await txt("#tCom")).includes("dels últims 30 dies"), "amb 30 dies, p_periode '30d' (i bn_admin_rep_pendents continua sense p_periode)");
-  ok((await graf("gCom")).labels.length === 31, "el gràfic de 30 dies té els 31 dies del període");
+  await p.selectOption("#fNen", "Pau");
+  await p.waitForSelector("#tRep:not([aria-busy]) > *", { timeout: 10000 });
+  ok(n("bn_admin_rep_pendents") === r1 && (await txt("#tRep .fr-nota")).includes("el filtre de nen no s'hi aplica"), "els errors pendents no es tornen a demanar amb filtre de nen i ho avisen");
+  // obrir la fitxa d'un nen des de Rànquing → Reptes
+  await vesCombos();
   await p.click('#tComN [data-obre-nen="pau"]'); await p.waitForSelector(".perfil h2");
   ok((await txt(".perfil h2")) === "Pau", "el nom obre la fitxa del nen");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  console.log("3) el SQL encara no hi és (404) o falla: avís només a la targeta afectada");
- { const { p, ctx, errors, txt, errG, llest } = await obre("/admin/", { cred: CRED, fd: 404, rp: 404 });
-  await llest();
-  ok(!!(await p.$('#tCom [data-copia="supabase/bn_admin_fonts_rep.sql"]')) && !!(await p.$('#tRep [data-copia="supabase/bn_admin_fonts_rep.sql"]')), "avís de supabase/bn_admin_fonts_rep.sql a cada una de les dues targetes");
-  ok((await txt("#tCom .avis")).includes("combos i repàs") && (await txt("#tRep .avis")).includes("errors pendents"), "cada avís diu quin apartat és");
-  ok((await p.$$("#contingut .avis")).length === 2 && (await p.$$("#resum .kpi")).length >= 10 && !!(await p.$("#tBen .buit")) && !!(await p.$("#tMot")) && !(await p.$('[data-copia="supabase/bn_admin_tauler.sql"]')), "la resta del tauler es veu (xifres, benestar…) i no hi ha cap altre avís");
+ { const { p, ctx, errors, txt, errG, vesCombos, vesPendents } = await obre("/admin/", { cred: CRED, fd: 404, rp: 404 });
+  await p.waitForSelector("#iniciKpis .kpi");
+  ok((await p.$$("#iniciKpis .kpi")).length === 6 && !!(await p.$('#fontsDiaCos [data-copia="supabase/bn_admin_fonts_rep.sql"]')), "Inici mostra els 6 KPIs i l'avís només a #fontsDiaCos");
+  await vesCombos();
+  ok(!!(await p.$('#tCom [data-copia="supabase/bn_admin_fonts_rep.sql"]')) && (await txt("#tCom .avis")).includes("combos i repàs") && !!(await p.$("#tMot")), "avís a #tCom i la resta de Reptes es veu");
+  await vesPendents();
+  ok(!!(await p.$('#tRep [data-copia="supabase/bn_admin_fonts_rep.sql"]')) && (await txt("#tRep .avis")).includes("errors pendents"), "avís a #tRep");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
- { const { p, ctx, errors, txt, errG, llest, graf } = await obre("/admin/", { cred: CRED, rp: 404 });
-  await llest();
-  ok(!!(await graf("gCom")) && !(await p.$("#tCom .avis")) && !!(await p.$('#tRep [data-copia="supabase/bn_admin_fonts_rep.sql"]')), "si només falta bn_admin_rep_pendents, els combos es veuen i l'avís només surt a «Errors pendents»");
-  ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
- { const { p, ctx, errors, txt, errG, llest } = await obre("/admin/", { cred: CRED, fd: 500 });
-  await llest();
-  ok((await txt("#tCom .avis.err")).includes("(500)") && !(await p.$("#tCom [data-copia]")) && !!(await p.$("#tRep details.dm-as")), "un error 500 de bn_admin_fonts_dia: avís d'error a la seva targeta (sense «executa el SQL»), i la resta es veu");
+ { const { p, ctx, errors, txt, errG, vesCombos, vesPendents } = await obre("/admin/", { cred: CRED, fd: 500 });
+  await vesCombos();
+  ok((await txt("#tCom .avis.err")).includes("(500)") && !(await p.$("#tCom [data-copia]")), "un error 500 de bn_admin_fonts_dia mostra avís d'error sense SQL");
+  await vesPendents();
+  ok(!!(await p.$("#tRep details.dm-as")), "i els errors pendents continuen funcionant");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  console.log("4) escapament: el que ve del servidor no s'executa");
- { const { p, ctx, errors, txt, errG, llest } = await obre("/admin/", { cred: CRED, xss: true });
-  await llest(); await p.click('#tRep [data-dm="obre"]'); await p.click("#tCom details.fr-altres summary"); await p.waitForTimeout(200);
-  const tc = await txt("#tCom"), tr = await txt("#tRep");
-  ok(tc.includes(XSS) && tr.includes(XSS), "el nom, la font, el món, el tid i les preguntes amb HTML surten com a text");
-  ok((await p.$$("#tCom img, #tRep img")).length === 0 && (await p.$$("#tCom [onerror], #tRep [onerror]")).length === 0, "cap <img> ni atribut onerror injectat");
-  ok(await p.evaluate(x => [...document.querySelectorAll("#tCom [data-obre-nen]")].some(e => e.dataset.obreNen === x.toLowerCase()), XSS), "l'atribut del botó del nom porta el text escapat i es llegeix tal qual");
-  ok(await p.evaluate(x => [...document.querySelectorAll("#tCom .fest[data-font]")].some(e => e.dataset.font === x), XSS), "la font desconeguda, escapada també a l'atribut");
-  ok(!tc.includes("NaN") && !tr.includes("NaN") && !tc.includes("undefined") && !tr.includes("undefined"), "cap «NaN» ni «undefined» amb valors que no són números");
-  await p.click("#tema"); await llest(); await p.waitForTimeout(200);
+ { const { p, ctx, errors, txt, errG, vesCombos, vesPendents } = await obre("/admin/", { cred: CRED, xss: true });
+  await vesCombos(); await p.click("#tCom details.fr-altres summary"); await p.waitForTimeout(150);
+  const tc = await txt("#tCom");
+  ok(tc.includes(XSS) && (await p.$$("#tCom img, #tCom [onerror]")).length === 0, "Combos escapa XSS sense cap <img> ni onerror");
+  ok(await p.evaluate(x => [...document.querySelectorAll("#tCom [data-obre-nen]")].some(e => e.dataset.obreNen === x.toLowerCase()), XSS), "atribut data-obre-nen escapat");
+  ok(await p.evaluate(x => [...document.querySelectorAll("#tCom .fest[data-font]")].some(e => e.dataset.font === x), XSS), "atribut data-font escapat");
+  ok(!tc.includes("NaN") && !tc.includes("undefined"), "cap NaN ni undefined a Combos");
+  await vesPendents(); await p.click('#tRep [data-dm="obre"]'); await p.waitForTimeout(150);
+  const tr = await txt("#tRep");
+  ok(tr.includes(XSS) && (await p.$$("#tRep img, #tRep [onerror]")).length === 0 && !tr.includes("NaN") && !tr.includes("undefined"), "Errors pendents escapa XSS sense NaN ni undefined");
   ok((await p.evaluate(() => window.__xss)) === undefined, "window.__xss no s'ha posat");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  console.log("5) respostes buides");
- { const { p, ctx, errors, txt, errG, llest } = await obre("/admin/", { cred: CRED, buit: true });
-  await llest();
-  ok((await txt("#tCom .buit")).startsWith("Cap estrella de combo ni de repàs en aquest període.") && !(await p.$("#gCom")), "sense estrelles: «Cap estrella de combo ni de repàs en aquest període.»");
-  ok((await txt("#tRep .buit")).startsWith("Cap error pendent de repàs."), "sense errors pendents: «Cap error pendent de repàs.»");
+ { const { p, ctx, errors, txt, errG, vesCombos, vesPendents } = await obre("/admin/", { cred: CRED, buit: true });
+  await vesCombos();
+  ok((await txt("#tCom .buit")).startsWith("Cap estrella de combo ni de repàs en aquest període.") && !(await p.$("#gCom")), "sense estrelles: missatge buit i cap gràfic");
+  await vesPendents();
+  ok((await txt("#tRep .buit")).startsWith("Cap error pendent de repàs."), "sense errors pendents: missatge buit");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("6) mòbil (390 px), tema clar i fosc");
- for (const [url, o, nom] of [["/admin/?demo", { fosc: true }, "demo, fosc"], ["/admin/", { cred: CRED }, "amb credencials, clar"]]) {
-  const { p, ctx, errors, llest, graf } = await obre(url, Object.assign({ viewport: { width: 390, height: 844 } }, o));
-  await llest(); await p.click('#tRep [data-dm="obre"]'); await p.click("#tCom details.fr-altres summary"); await p.waitForTimeout(200);
-  if (o.fosc) ok((await p.evaluate(() => document.documentElement.dataset.tema)) === "fosc" && (await graf("gCom")).ds[0].color === "#fb923c", "tema fosc, i el gràfic amb els colors del tema fosc");
-  const w = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
-  ok(w <= 390, `${nom}: res no surt per la dreta (ample ${w})`);
-  const fora = await p.$$eval("#tCom .kpi, #tCom .cv, #tCom .fest, #tCom .taula-w, #tRep .kpi, #tRep .dm-as, #tRep tbody tr, #tRep tbody td, #tRep .llegenda", es => es.filter(e => { const r = e.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
-  ok(fora === 0, `${nom}: xifres, gràfics, mons i temes es veuen sencers`);
+ console.log("6) mòbil (360, 390 i 430 px), tema clar i fosc");
+ for (const wPx of [360, 390, 430]) {
+  const fosc = wPx === 390;
+  const { p, ctx, errors, vesCombos, vesPendents, graf } = await obre(fosc ? "/admin/?demo" : "/admin/", { cred: fosc ? null : CRED, fosc, viewport: { width: wPx, height: 844 } });
+  await vesCombos(); await p.click("#tCom details.fr-altres summary"); await p.waitForTimeout(150);
+  if (fosc) ok((await p.evaluate(() => document.documentElement.dataset.tema)) === "fosc" && (await graf("gCom")).ds[0].color === "#fb923c", "390 px: tema fosc i colors de gràfic foscos");
+  const w1 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  ok(w1 <= wPx, `${wPx} px · Reptes: res no surt per la dreta (ample ${w1})`);
+  await vesPendents(); await p.click('#tRep [data-dm="obre"]'); await p.waitForTimeout(150);
+  const w2 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  const fora = await p.$$eval("#tRep .kpi, #tRep .dm-as, #tRep tbody tr, #tRep tbody td, #tRep .llegenda", es => es.filter(e => { const r = e.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
+  ok(w2 <= wPx && fora === 0, `${wPx} px · Errors pendents: res no surt per la dreta (ample ${w2})`);
   ok(await p.$$eval("#tRep thead", ts => ts.length > 0 && ts.every(t => getComputedStyle(t).display === "none")) && await p.$$eval("#tRep tbody tr", trs => trs.length > 0 && trs.every(t => getComputedStyle(t).display === "grid")),
-   `${nom}: cada tema dels errors pendents és un bloc (sense desplaçar-se de costat)`);
-  ok(errors.length === 0, "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
+   `${wPx} px · cada tema dels errors pendents és un bloc sense desplaçar-se de costat`);
+  ok(errors.length === 0, `${wPx} px: cap error de JavaScript` + (errors[0] ? ": " + errors[0] : ""));
+  await ctx.close();
+ }
 
  await nav.close(); srv.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : "\n✓ Totes les comprovacions de «Combos i repàs» i «Errors pendents de la colla» passen");

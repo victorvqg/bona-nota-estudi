@@ -92,7 +92,8 @@ function respon(st, f, cos) {
   await p.route("https://cdn.jsdelivr.net/**", r => r.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
   if (o.cred) await p.addInitScript(c => sessionStorage.setItem("bn_admin", JSON.stringify(c)), o.cred);
   const errors = []; p.on("pageerror", e => errors.push(e.message));
-  await p.goto(BASE + url); await p.waitForSelector("#shell:not([hidden])");
+  await p.goto(BASE + url + (url.includes("?") ? "&" : "?") + "v=nens&tab=benestar"); await p.waitForSelector("#shell:not([hidden])");
+  const menu = async v => { const sel = await p.isVisible("#navInf") ? "#navInf" : "#nav"; await p.click(`${sel} [data-v="${v}"]`) };
   const crida = async (f, n) => { for (let i = 0; i < 80; i++) { const c = crides.filter(x => x.f === f); if (c.length >= (n || 1)) { await p.waitForTimeout(80); return c[c.length - 1] } await p.waitForTimeout(50) } return null };
   const txt = s => p.evaluate(s => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, " ").trim() : null }, s);
   const errG = () => p.evaluate(() => getComputedStyle(document.getElementById("errG")).display !== "none");
@@ -101,15 +102,15 @@ function respon(st, f, cos) {
   const files = () => p.$$eval("#tBen .bs-f", fs => fs.map(f => ({ k: f.dataset.k, sem: f.dataset.sem, nom: f.querySelector(".bs-n").textContent.trim(), boto: !!f.querySelector("[data-obre-nen]"),
    motius: [...f.querySelectorAll(".bs-x")].map(x => ({ nivell: [...x.classList].find(c => c !== "bs-x"), text: x.textContent.replace(/^(Vermell|Groc|Blau|Bo|Context): /, "").replace(/\s+/g, " ").trim() })) })));
   const mon = a => p.$(`#tBen .bs-mon[data-a="${a}"]`);
-  return { p, ctx, st, crides, errors, crida, txt, errG, llest, files, mon };
+  return { p, ctx, st, crides, errors, menu, crida, txt, errG, llest, files, mon };
  }
 
  console.log("1) ?demo: semàfors, vigília en blau, dos aparells i una data d'examen, sense cap crida");
- { const { p, ctx, crides, errors, txt, errG, llest, files } = await obre("/admin/?demo");
+ { const { p, ctx, crides, errors, menu, txt, errG, llest, files } = await obre("/admin/?demo");
   await llest();
-  ok((await txt("#benestar h2")) === "Benestar", "apartat «Benestar» al tauler");
-  const secs = await p.$$eval("#nav .sub button", bs => bs.map(b => b.dataset.sec));
-  ok(secs.includes("benestar") && secs.indexOf("benestar") === secs.indexOf("alertes") + 1, "entrada «Benestar» a la llista d'apartats de dalt, després d'Alertes");
+  ok((await txt("#benestar h2")) === "Benestar", "apartat «Benestar» dins de Nens");
+  const tabs = await p.$$eval(".pestanyes [data-vtab]", bs => bs.map(b => b.dataset.vtab));
+  ok(tabs.includes("benestar") && (await p.getAttribute('[data-vtab="benestar"]', "aria-selected")) === "true", "pestanya «Benestar» activa a Nens (?v=nens&tab=benestar)");
   const F = await files(), sems = F.map(f => f.sem), nivs = F.flatMap(f => f.motius.map(m => m.nivell));
   ok(sems.includes("vermell") && sems.includes("groc") && sems.includes("verd"), "un nen de cada color (vermell, groc, verd)");
   ok(sems.join(",") === [...sems].sort((a, b) => ["vermell", "groc", "verd"].indexOf(a) - ["vermell", "groc", "verd"].indexOf(b)).join(","), "ordenat de pitjor a millor: " + sems.join(", "));
@@ -123,8 +124,8 @@ function respon(st, f, cos) {
   ok((await p.$$eval("#tBen .bs-ex button", bs => bs.every(b => b.disabled))), "botons de desar i esborrar desactivats en demo");
   const fases = await p.$$eval("#tBen [data-fase]", es => es.map(e => e.dataset.fase));
   ok(["vigilia", "aprendre", "novetat", "despres"].every(f => fases.includes(f)), "fase de cada món (vigília, aprendre, novetat, després): " + fases.join(", "));
-  await p.click('#nav .sub [data-sec="benestar"]'); await p.waitForTimeout(700);
-  ok(await p.evaluate(() => { const r = document.getElementById("benestar").getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }), "l'entrada del menú porta a l'apartat");
+  await menu("inici"); await menu("nens"); await p.click('[data-vtab="benestar"]'); await llest();
+  ok(await p.evaluate(() => { const r = document.getElementById("benestar").getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }), "navegar pel menú Nens → Benestar porta a l'apartat");
   await p.click("#tema"); await llest();
   ok((await files()).length === F.length, "en canviar de tema es torna a pintar igual");
   ok(crides.length === 0, "cap crida a Supabase en demo (" + crides.map(c => c.f).join(", ") + ")");
@@ -168,8 +169,8 @@ function respon(st, f, cos) {
   ok(!!(await mon("biogeo")) && !!(await mon("catala")) && (await txt('#tBen .bs-mon[data-a="biogeo"]')).includes("Sense activitat en aquest període") && !(await p.$eval('#tBen .bs-mon[data-a="biogeo"] input[type=date]', i => i.disabled)), "els mons sense activitat al període també hi són, per posar-los la data");
   await p.click('#tBen [data-obre-nen="pau"]'); await p.waitForSelector(".perfil h2");
   ok((await txt("#titol")) === "Fitxa del nen" && (await txt(".perfil h2")) === "Pau", "el nom obre la fitxa del nen");
-  await p.click('#nav [data-v="tauler"]'); await llest();
-  ok(crides.filter(x => x.f === "bn_admin_benestar").length === 1, "tornar al tauler no torna a cridar (en memòria fins a tornar a carregar)");
+  await p.click('#nav [data-v="nens"]'); await p.click('[data-vtab="benestar"]'); await llest();
+  ok(crides.filter(x => x.f === "bn_admin_benestar").length === 1, "tornar a Benestar no torna a cridar (en memòria fins a tornar a carregar)");
   // filtre d'assignatura: només aquell món i els seus senyals (i els generals), sense cap crida nova
   await p.selectOption("#fAssig", "comarques"); await llest(); await p.waitForTimeout(150);
   const FA = await files();
@@ -214,11 +215,12 @@ function respon(st, f, cos) {
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  console.log("4) el SQL encara no hi és (404): avís només en aquest apartat");
- { const { p, ctx, crides, errors, txt, errG, llest } = await obre("/admin/", { cred: CRED, sql: false });
+ { const { p, ctx, crides, errors, menu, txt, errG, llest } = await obre("/admin/", { cred: CRED, sql: false });
   await llest();
   ok((await txt("#tBen .avis")).includes("supabase/bn_admin_benestar.sql") && !!(await p.$('#tBen [data-copia="supabase/bn_admin_benestar.sql"]')), "avís de supabase/bn_admin_benestar.sql a l'apartat");
-  ok((await p.$$("#resum .kpi")).length >= 10 && (await txt("#tAl")).includes("Cap alerta") && !!(await p.$("#tDom .buit")) && !!(await p.$("#tMot")), "la resta del tauler es veu (xifres, alertes, domini…)");
-  ok((await p.$$("#contingut .avis")).length === 1 && !(await p.$('[data-copia="supabase/bn_admin_tauler.sql"]')), "cap altre avís al tauler");
+  ok((await p.$$("#contingut .avis")).length === 1 && !(await p.$('[data-copia="supabase/bn_admin_tauler.sql"]')), "cap altre avís a la vista");
+  await menu("inici"); await p.waitForSelector("#iniciKpis .kpi");
+  ok((await p.$$("#iniciKpis .kpi")).length === 6 && (await txt("#tAl")).includes("Cap alerta"), "la resta del panell (Inici: 6 KPIs i alertes) funciona intacta");
   ok(crides.some(x => x.f === "bn_admin_benestar"), "s'ha intentat la crida");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
@@ -237,13 +239,13 @@ function respon(st, f, cos) {
   ok((await p.evaluate(() => window.__xss)) === undefined, "window.__xss no s'ha posat");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("6) mòbil (390 px), tema fosc i clar");
- for (const [url, o, nom] of [["/admin/?demo", { fosc: true }, "demo, fosc"], ["/admin/", { cred: CRED }, "amb credencials, clar"]]) {
-  const { p, ctx, errors, llest } = await obre(url, Object.assign({ viewport: { width: 390, height: 844 } }, o));
+ console.log("6) mòbil (360, 390 i 430 px), tema fosc i clar");
+ for (const [url, o, nom, mw] of [["/admin/?demo", { fosc: true }, "demo, fosc, 360px", 360], ["/admin/?demo", { fosc: true }, "demo, fosc, 390px", 390], ["/admin/", { cred: CRED }, "credencials, clar, 430px", 430]]) {
+  const { p, ctx, errors, llest } = await obre(url, Object.assign({ viewport: { width: mw, height: 844 } }, o));
   await llest(); await p.waitForTimeout(200);
   if (o.fosc) ok((await p.evaluate(() => document.documentElement.dataset.tema)) === "fosc", "tema fosc");
   const w = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
-  ok(w <= 390, `${nom}: res no surt per la dreta (ample ${w})`);
+  ok(w <= mw, `${nom}: res no surt per la dreta (ample ${w})`);
   const fora = await p.$$eval("#tBen .bs-f, #tBen .bs-x, #tBen .bs-mon, #tBen .bs-ex input, #tBen .bs-avis", es => es.filter(e => { const r = e.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
   ok(fora === 0, `${nom}: files, motius, mons i caselles es veuen senceres`);
   ok(errors.length === 0, "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }

@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.30.0 · 2026-11-12
+
+### Canviat
+- **Panell d'administració — Fase 1: base, navegació, Inici i Configuració** (`admin/index.html`, `motor/prova-admin-*.js` · g14):
+  - **Base visual compacta i components comuns**: tipografia numèrica `tabular-nums`, files de taula d'unes ~36 px, component únic `taula()` (màxim 8 columnes, ordenació, cerca local ràpida i exportació CSV), ajudes plegables `(i)` (`.btn-ajuda` + `.ajuda-box`), píndoles semàfor unificades (`bé`, `avís`, `malament`), colors fixos per món i panell lateral superposat (`#panell`) per als detalls llargs.
+  - **Navegació reorganitzada per 5 eixos + Configuració (⚙)**: barra lateral a escriptori i barra inferior fixa de 5 icones al mòbil (`≤ 767 px`: `Inici`, `Nens`, `Mons`, `Sessions`, `Rànquing`) amb accés `Configuració` a la capçalera, gestor d'estat a l'URL (`?v=…&id=…&tab=…&p=…` amb `pushState`/`popstate`) i càrrega **sota demanda** (cada vista demana només les seves pròpies funcions RPC).
+  - **Inici i Configuració complets**: `Inici` amb 6 KPIs clau, `Control ràpid` d'1 clic (xat i 7 mons), taula compacta d'`Alertes` (4 columnes) i resum de `Nens nous` + `Estrelles per origen`; `Configuració` amb 4 pestanyes (`Horaris i crèdits`, `Catàleg del xat` de 5 columnes amb alta de peça al panell lateral, `Llindars` informatius i `Còpies` de 4 columnes amb desglossament i accions al panell lateral).
+
 ## 2.29.0 · 2026-11-12
 
 ### Afegit
