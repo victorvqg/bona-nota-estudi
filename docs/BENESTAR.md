@@ -88,7 +88,7 @@ Els dies de vigília, la marató surt en **blau** amb el llindar de 120 minuts, 
 ## 6. Què cal tenir present
 
 - **El temps es compta per aparell.** Cada aparell envia els seus minuts. Si un nen fa servir el mòbil i l'ordinador alhora, els minuts poden sortir doblats: el tauler ho avisa amb el senyal gris «dos aparells».
-- **Els llindars són inicials.** Són els de [`BON-US.md`](BON-US.md), apartat 5, i les decisions de l'apartat 7 encara estan pendents. Es canvien al SQL.
+- **Els llindars són ajustables des del tauler.** Els valors inicials són els de [`BON-US.md`](BON-US.md), apartat 5, i des de la `2.37.0` tant la gravetat (`Malament`, `Avís`, `Informatiu` o `Desactivat`) com els números es poden ajustar i desar a Supabase des de **⚙ Configuració → Llindars** (`bn_priv.config`, clau `'llindars'`, llegida per `bn_admin_benestar` i `bn_admin_alertes`), o restaurar als valors per defecte amb un clic.
 - **No és un diagnòstic.** Un vermell vol dir «parlem-ne», no «hi ha un problema». Una marató la vigília d'un examen és normal (blau).
 - **Hores de Catalunya.** Els dies, les nits i els caps de setmana es compten a l'hora de Catalunya.
 - **Període en dies sencers.** «7 dies» vol dir avui i els 6 dies d'abans, des de la mitjanit.

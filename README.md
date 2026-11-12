@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.36.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.37.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -658,14 +658,14 @@ El SQL és a `supabase/bn_control.sql`. La llista de mons vàlids hi és escrita
 ### 📊 Inici, Mons i Sessions
 
 Les vistes s'alimenten amb les funcions agregades de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`, `_domini`, `_fallades`, `_evolucio`, `_alertes`) carregades sota demanda:
-- **Inici (`?v=inici`):** 6 xifres clau amb comparació amb el període anterior, control ràpid d'1 clic, alertes (`bn_admin_alertes`), nens nous (`bn_admin_altes`) i resum d'estrelles per origen (`bn_admin_fonts_dia`).
+- **Inici (`?v=inici`):** 6 xifres clau amb comparació amb el període anterior, control ràpid d'1 clic, **alertes plegables** (`bn_admin_alertes`, amb resum de pastilles, filtres per gravetat/tipus/món, enunciat real de les preguntes i drecera `⚙ Ajusta`), nens nous (`bn_admin_altes`) i resum d'estrelles per origen (`bn_admin_fonts_dia`).
 - **Mons (`?v=mons`) i Fitxa del món (`?v=mons&id=<mon>`):** llista dels 7 mons amb interruptor directe, matriu de domini nen × tema (`bn_admin_domini`), preguntes més fallades amb el parany més triat (`bn_admin_fallades`), errors pendents (`bn_admin_rep_pendents`), dificultat real (`bn_admin_dificultat`), preguntes obertes al panell lateral i, a matemàtiques, **✏️ Taller de mates: on s'equivoquen** (`bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql`).
 - **Sessions (`?v=sessions`):** cronologia de sessions (detall al panell lateral), **Log complet per dia** filtrable per món, nen i data, **Activitat** (mapa de calor hora × dia, evolució diària i estrelles per origen) i **Registre** complet amb exportació CSV.
 - **Rànquing (`?v=ranquing`):** `Classificació` pública (`Total`, `Per món`, `Setmana` via `bn_ranking_mons`) amb interruptor `Visible` i bloc inferior d'amagats, `Reptes` (`Combos i repàs` i `Repàs, boss i missions` de `tMotivacio()`) i `Xat` (moderació en 5 columnes i silenciats).
 
 ### 💚 Benestar
 
-A **Nens → Benestar** (`?v=nens&tab=benestar`) i a la pestanya **Sessions i benestar** de cada Fitxa del nen. Mostra l'ús sa de cada nen segons [`docs/BON-US.md`](docs/BON-US.md) (apartats 2 i 5), amb `bn_admin_benestar` (`supabase/bn_admin_benestar.sql`). Una fila per nen amb el semàfor i els motius. Per món, la fase (novetat, aprendre, vigília, després) i la vigília d'examen: la data que posa l'admin (`bn_admin_examen_desa`, taula `bn_priv.examens`) o, si no n'hi ha, el pic del grup (5 nens o la meitat, el triple de minuts d'un dia normal, només del dia 3 al 12 del món). Els llindars es poden consultar a `Configuració → Llindars`. El temps es compta per aparell: amb dos aparells alhora, els minuts poden sortir doblats (el tauler ho avisa).
+A **Nens → Benestar** (`?v=nens&tab=benestar`) i a la pestanya **Sessions i benestar** de cada Fitxa del nen. Mostra l'ús sa de cada nen segons [`docs/BON-US.md`](docs/BON-US.md) (apartats 2 i 5), amb `bn_admin_benestar` (`supabase/bn_admin_benestar.sql`). Una fila per nen amb el semàfor i els motius. Per món, la fase (novetat, aprendre, vigília, després) i la vigília d'examen: la data que posa l'admin (`bn_admin_examen_desa`, taula `bn_priv.examens`) o, si no n'hi ha, el pic del grup (5 nens o la meitat, el triple de minuts d'un dia normal, només del dia 3 al 12 del món). Els llindars i la gravetat (`Malament`, `Avís`, `Informatiu` o `Desactivat`) tant de les 6 regles d'`Alertes d'Inici` com dels 11 senyals de vigilància de `Benestar` es poden ajustar i desar a Supabase des de `⚙ Configuració → Llindars` (`bn_priv.config`, clau `'llindars'`). El temps es compta per aparell: amb dos aparells alhora, els minuts poden sortir doblats (el tauler ho avisa).
 
 ### 🔥 Combos i repàs, i errors pendents de la colla
 

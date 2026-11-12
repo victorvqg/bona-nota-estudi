@@ -14,10 +14,10 @@ nom = re.search(r'nom:"([^"]+)"', dades).group(1)
 curs = re.search(r'curs:"([^"]+)"', dades).group(1)
 mt = re.search(r'tema:"([^"]+)"', dades.split("blocs:")[0])
 tema = f" — {mt.group(1)}" if mt else ""
-# llista de tots els mons (per sumar estrelles i enllaçar-los des de qualsevol món)
+# llista de tots els mons (per sumar estrelles i enllaçar-los des de qualsevol món, dels més nous als més antics)
 import json
 mons = []
-for m in json.loads((d / "mons.json").read_text()):
+for m in reversed(json.loads((d / "mons.json").read_text())):
     src = (d / "dades" / f"{m['dades']}.js").read_text().split("const T=")[0]
     mid = re.search(r'\bid:"([^"]+)"', src).group(1)
     mc = re.search(r'\bclau:"([^"]+)"', src)

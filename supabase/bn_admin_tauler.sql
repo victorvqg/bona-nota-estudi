@@ -177,57 +177,98 @@ begin
 end $$;
 
 -- ---------- 7) alertes ----------
--- gravetat: 3 = atenció ara · 2 = cal mirar-ho · 1 = per saber-ho
+-- gravetat: 3 = atenció ara · 2 = cal mirar-ho · 1 = per saber-ho (configurables des de bn_priv.config clau 'llindars')
 create or replace function public.bn_admin_alertes(p_email text, p_pass text, p_periode text default '30d', p_assig text default null, p_nom text default null)
 returns jsonb language plpgsql security definer set search_path = '' as $$
-declare d timestamptz;
+declare
+  d timestamptz;
+  v_cfg_t text;
+  v_al jsonb;
+  v_inact_g int := 2;
+  v_inact_da int := 3;
+  v_inact_dm int := 7;
+  v_baixa_g int := 2;
+  v_baixa_pc int := 70;
+  v_enc_g int := 3;
+  v_enc_n int := 3;
+  v_rap_g int := 2;
+  v_rap_seg int := 3;
+  v_rap_tests int := 2;
+  v_preg_g int := 1;
+  v_preg_pct int := 50;
+  v_preg_nens int := 3;
+  v_pend_g int := 1;
+  v_pend_min int := 1;
 begin
   perform bn_priv.admin_ok(p_email, p_pass);
   d := bn_priv.desde(p_periode);
+  if to_regclass('bn_priv.config') is not null then
+    execute 'select c.valor from bn_priv.config c where c.clau = ''llindars''' into v_cfg_t;
+    begin v_al := (v_cfg_t::jsonb)->'alertes'; exception when others then v_al := null; end;
+    if jsonb_typeof(v_al) = 'object' then
+      if (v_al #>> '{inactiu,grav}') in ('0','1','2','3') then v_inact_g := (v_al #>> '{inactiu,grav}')::int; end if;
+      if (v_al #>> '{inactiu,dies_avis}') ~ '^[0-9]{1,3}$' then v_inact_da := least(30, greatest(1, (v_al #>> '{inactiu,dies_avis}')::int)); end if;
+      if (v_al #>> '{inactiu,dies_malament}') ~ '^[0-9]{1,3}$' then v_inact_dm := least(60, greatest(v_inact_da, (v_al #>> '{inactiu,dies_malament}')::int)); else v_inact_dm := greatest(v_inact_da, v_inact_dm); end if;
+      if (v_al #>> '{baixa,grav}') in ('0','1','2','3') then v_baixa_g := (v_al #>> '{baixa,grav}')::int; end if;
+      if (v_al #>> '{baixa,nota_max}') ~ '^[0-9]{1,3}$' then v_baixa_pc := least(100, greatest(30, (v_al #>> '{baixa,nota_max}')::int)); end if;
+      if (v_al #>> '{encallat,grav}') in ('0','1','2','3') then v_enc_g := (v_al #>> '{encallat,grav}')::int; end if;
+      if (v_al #>> '{encallat,vegades}') ~ '^[0-9]{1,3}$' then v_enc_n := least(15, greatest(2, (v_al #>> '{encallat,vegades}')::int)); end if;
+      if (v_al #>> '{rapid,grav}') in ('0','1','2','3') then v_rap_g := (v_al #>> '{rapid,grav}')::int; end if;
+      if (v_al #>> '{rapid,seg_max}') ~ '^[0-9]{1,3}$' then v_rap_seg := least(10, greatest(1, (v_al #>> '{rapid,seg_max}')::int)); end if;
+      if (v_al #>> '{rapid,tests_min}') ~ '^[0-9]{1,3}$' then v_rap_tests := least(10, greatest(1, (v_al #>> '{rapid,tests_min}')::int)); end if;
+      if (v_al #>> '{pregunta,grav}') in ('0','1','2','3') then v_preg_g := (v_al #>> '{pregunta,grav}')::int; end if;
+      if (v_al #>> '{pregunta,pct_error}') ~ '^[0-9]{1,3}$' then v_preg_pct := least(95, greatest(20, (v_al #>> '{pregunta,pct_error}')::int)); end if;
+      if (v_al #>> '{pregunta,nens_min}') ~ '^[0-9]{1,3}$' then v_preg_nens := least(30, greatest(2, (v_al #>> '{pregunta,nens_min}')::int)); end if;
+      if (v_al #>> '{pendent,grav}') in ('0','1','2','3') then v_pend_g := (v_al #>> '{pendent,grav}')::int; end if;
+      if (v_al #>> '{pendent,temes_min}') ~ '^[0-9]{1,3}$' then v_pend_min := least(20, greatest(1, (v_al #>> '{pendent,temes_min}')::int)); end if;
+    end if;
+  end if;
   return coalesce((select jsonb_agg(a order by a.gravetat desc, a.nom) from (
-    -- a) fa 3 dies o més que no entra (entre els que han estudiat els últims 30 dies)
-    select 'inactiu' as tipus, case when max(l.ts) < now() - interval '7 days' then 3 else 2 end as gravetat, max(l.nom) as nom, null::text as assig,
+    -- a) fa N dies o més que no entra (entre els que han estudiat els últims 30 dies)
+    select 'inactiu' as tipus,
+           case when v_inact_g = 2 and max(l.ts) < now() - make_interval(days => v_inact_dm) then 3 else v_inact_g end as gravetat,
+           max(l.nom) as nom, null::text as assig,
            format('Fa %s dies que no estudia', (now()::date - max(l.ts)::date)) as text
     from bn_priv.logs(now() - interval '30 days', now() + interval '1 minute', p_assig, p_nom) l
-    group by lower(trim(l.nom)) having max(l.ts) < now() - interval '3 days'
+    group by lower(trim(l.nom)) having v_inact_g > 0 and max(l.ts) < now() - make_interval(days => v_inact_da)
     union all
     -- b) les tres últimes notes de test baixen
-    select 'baixa', 2, z.nom, z.assig, format('Les notes de test baixen: %s → %s → %s %%', z.p[3], z.p[2], z.p[1])
+    select 'baixa', v_baixa_g, z.nom, z.assig, format('Les notes de test baixen: %s → %s → %s %%', z.p[3], z.p[2], z.p[1])
     from (select max(l.nom) as nom, l.assig, (array_agg((l.detall->>'pc')::int order by l.ts desc))[1:3] as p
           from bn_priv.logs(d, now() + interval '1 minute', p_assig, p_nom) l
           where l.event = 'test' and l.detall->>'pc' ~ '^[0-9]{1,7}$' group by lower(trim(l.nom)), l.assig) z
-    where cardinality(z.p) = 3 and z.p[1] < z.p[2] and z.p[2] < z.p[3] and z.p[1] < 70
+    where v_baixa_g > 0 and cardinality(z.p) = 3 and z.p[1] < z.p[2] and z.p[2] < z.p[3] and z.p[1] < coalesce(v_baixa_pc, 70)
     union all
-    -- c) un tema suspès 3 vegades o més sense aprovar-lo mai
-    select 'encallat', 3, max(l.nom), l.assig,
+    -- c) un tema suspès N vegades o més sense aprovar-lo mai
+    select 'encallat', v_enc_g, max(l.nom), l.assig,
            format('Ha suspès «%s» %s vegades (millor nota %s %%)', max(l.detall->>'titol'), count(*), max((l.detall->>'pc')::int))
     from bn_priv.logs(d, now() + interval '1 minute', p_assig, p_nom) l
     where l.event = 'test' and l.detall->>'pc' ~ '^[0-9]{1,7}$' and coalesce(l.detall->>'mode', 'tema') = 'tema'
     group by lower(trim(l.nom)), l.assig, l.detall->>'tema'
-    having count(*) >= 3 and max((l.detall->>'pc')::int) < 70
+    having v_enc_g > 0 and count(*) >= coalesce(v_enc_n, 3) and max((l.detall->>'pc')::int) < 70
     union all
-    -- d) respon massa ràpid (menys de 3 s per pregunta de mitjana en 2 tests o més): potser endevina
-    select 'rapid', 2, max(t.nom), t.assig, format('Respon massa ràpid: %s s per pregunta de mitjana en %s tests (potser endevina)', round(avg(t.sp), 1), count(*))
+    -- d) respon massa ràpid (menys de N s per pregunta de mitjana en M tests o més): potser endevina
+    select 'rapid', v_rap_g, max(t.nom), t.assig, format('Respon massa ràpid: %s s per pregunta de mitjana en %s tests (potser endevina)', round(avg(t.sp), 1), count(*))
     from (select r.nom, r.k, r.assig, r.ts, avg(r.segons) as sp
           from bn_priv.respostes(d, now() + interval '1 minute', p_assig, p_nom) r where r.segons is not null
           group by r.nom, r.k, r.assig, r.ts having count(*) >= 4) t
-    where t.sp < 3 group by t.k, t.assig having count(*) >= 2
+    where v_rap_g > 0 and t.sp < v_rap_seg group by t.k, t.assig having count(*) >= v_rap_tests
     union all
-    -- e) pregunta que falla més de la meitat dels nens que l'han contestada (mínim 3 nens)
-    select 'pregunta', 1, null, q.assig, format('La pregunta %s la falla el %s %% dels nens (%s de %s)', q.qid, round(100.0 * q.f / q.n), q.f, q.n)
+    -- e) pregunta que falla més del % indicat dels nens que l'han contestada (mínim M nens)
+    select 'pregunta', v_preg_g, null, q.assig, format('La pregunta %s la falla el %s %% dels nens (%s de %s)', q.qid, round(100.0 * q.f / q.n), q.f, q.n)
     from (select r.assig, r.qid, count(distinct r.k) as n, count(distinct r.k) filter (where not r.ok) as f
           from bn_priv.respostes(d, now() + interval '1 minute', p_assig, p_nom) r where r.qid <> '?' group by r.assig, r.qid) q
-    where q.n >= 3 and q.f * 2 > q.n
+    where v_preg_g > 0 and q.n >= v_preg_nens and q.f * 100 > q.n * v_preg_pct
     union all
     -- f) temes que altres nens ja han treballat i ell encara no ha obert (dins de les assignatures que fa)
-    select 'pendent', 1, k.nom, k.assig, format('No ha obert %s temes que altres ja han fet', count(*))
+    select 'pendent', v_pend_g, k.nom, k.assig, format('No ha obert %s temes que altres ja han fet', count(*))
     from (select distinct lower(trim(l.nom)) as k, max(l.nom) over (partition by lower(trim(l.nom))) as nom, l.assig
           from bn_priv.logs(d, now() + interval '1 minute', p_assig, p_nom) l) k
     join (select distinct l.assig, l.detall->>'tema' as tema from public.bn_log l
           where l.event in ('fitxa', 'test') and l.ts >= d and coalesce(l.detall->>'tema', '') <> '') t on t.assig = k.assig
-    where not exists (select 1 from public.bn_log l2 where lower(trim(l2.nom)) = k.k and l2.assig = k.assig
+    where v_pend_g > 0 and not exists (select 1 from public.bn_log l2 where lower(trim(l2.nom)) = k.k and l2.assig = k.assig
                       and l2.event in ('fitxa', 'test', 'targetes') and l2.detall->>'tema' = t.tema)
-    group by k.k, k.nom, k.assig
+    group by k.k, k.nom, k.assig having count(*) >= v_pend_min
   ) a), '[]'::jsonb);
 end $$;
 

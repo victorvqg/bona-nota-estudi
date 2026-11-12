@@ -67,7 +67,8 @@ function dadesAdmin() {
    if (f === "bn_admin_fitxa") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.fitxa[String(cos.p_nom || "").trim().toLowerCase()] || { k: "?", perfil: null, amagat: false, mons: [] }) });
    if (f === "bn_admin_altes") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.altes) });
    if (f === "bn_admin_resum") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", ara: { nens: 2, dies: 3, minuts: 15, sessions: 3, tests: 4, nota: 80, aprovats: 75, encert: 80, respostes: 24 }, abans: null }) });
-   if (["bn_admin_activitat", "bn_admin_calor", "bn_admin_domini", "bn_admin_fallades", "bn_admin_evolucio", "bn_admin_alertes", "bn_admin_errors_taller", "bn_admin_rep_pendents"].includes(f)) {
+   if (f === "bn_admin_alertes") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.alertes || []) });
+   if (["bn_admin_activitat", "bn_admin_calor", "bn_admin_domini", "bn_admin_fallades", "bn_admin_evolucio", "bn_admin_errors_taller", "bn_admin_rep_pendents"].includes(f)) {
     return r.fulfill({ status: 200, contentType: "application/json", body: "[]" });
    }
    if (f === "bn_admin_benestar") return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ periode: "7d", mons: [], nens: [] }) });
@@ -87,6 +88,8 @@ function dadesAdmin() {
      if (typeof cos.p_cfg.tanca_min === "number") d.ctrl.horari.tanca_min = cos.p_cfg.tanca_min;
      if (typeof cos.p_cfg.obre_min === "number") d.ctrl.horari.obre_min = cos.p_cfg.obre_min;
      if (Array.isArray(cos.p_cfg.mons_tancats)) d.ctrl.mons_tancats = cos.p_cfg.mons_tancats.slice();
+     if (cos.p_cfg.llindars && typeof cos.p_cfg.llindars === "object") d.ctrl.llindars = JSON.parse(JSON.stringify(cos.p_cfg.llindars));
+     if (cos.p_cfg.reset_llindars) delete d.ctrl.llindars;
      d.ctrl.xat_obert_ara = d.ctrl.xat_actiu;
     }
     return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(d.ctrl) });
@@ -115,23 +118,52 @@ function dadesAdmin() {
   ok((await p.$$("#iniciKpis .kpi")).length === 6 && (await p.$$("#iniciKpis .kpi-s")).length === 0,
    "Inici mostra exactament 6 KPIs compactes i cap subtítol sota les xifres");
   const ctrlTxt = await txt("#control");
-  ok(ctrlTxt.includes("Control ràpid") && (await p.$$("#control [data-ctrl-mon]")).length === 7,
-   "targeta «Control ràpid» a Inici amb interruptor del xat i dels 7 mons");
+  const idsCtrl = await p.$$eval("#control [data-ctrl-mon]", bs => bs.map(b => b.dataset.ctrlMon));
+  ok(ctrlTxt.includes("Control ràpid") && idsCtrl.length === 7 && idsCtrl[0] === "angles" && idsCtrl[6] === "socials",
+   "targeta «Control ràpid» a Inici amb interruptor del xat i dels 7 mons ordenats del més nou ('angles') al més antic ('socials')");
   // Ajuda plegable (i)
   const btAj = "#control .btn-ajuda", boxAj = "#control .ajuda-box";
   ok((await p.isHidden(boxAj)) === true, "l'explicació secundària (i) està plegada per defecte");
   await p.click(btAj);
   ok((await p.isHidden(boxAj)) === false && (await p.getAttribute(btAj, "aria-expanded")) === "true", "clicar el botó (i) desplega l'ajuda");
 
+  // Alertes plegables amb filtres i drecera ⚙ Ajusta (g21)
+  await p.waitForSelector("#tAlertes table");
+  const alResTxt = await txt("#alResum");
+  ok((await p.getAttribute("#alertes", "data-plegat")) === "0" && !(await p.isHidden("#alCos")) && alResTxt.includes("malament") && alResTxt.includes("avís"),
+   "Inici → Alertes s'obre desplegada quan hi ha malament/avís i mostra el resum de pastilles a la capçalera");
+  await p.click("#btAlPlega");
+  ok((await p.getAttribute("#alertes", "data-plegat")) === "1" && (await p.isHidden("#alCos")) === true && (await p.getAttribute("#btAlPlega", "aria-expanded")) === "false",
+   "clicar #btAlPlega plega el cos d'Alertes mantenint visible la capçalera amb el recompte");
+  await p.click("#btAlPlega");
+  ok((await p.isHidden("#alCos")) === false && (await p.inputValue("#fAlGrav")) === "rellevants",
+   "tornar a clicar #btAlPlega el desplega i el filtre per defecte és «Malament + Avís»");
+  const nRel = (await p.$$("#tAlertes tbody tr")).length;
+  await p.selectOption("#fAlGrav", "totes");
+  const nTot = (await p.$$("#tAlertes tbody tr")).length;
+  await p.selectOption("#fAlGrav", "malament");
+  const nMal = (await p.$$("#tAlertes tbody tr")).length;
+  ok(nTot > nRel && nRel > nMal && nMal >= 1,
+   `el desplegable de gravetat filtra les alertes (totes: ${nTot}, rellevants: ${nRel}, malament: ${nMal})`);
+  await p.selectOption("#fAlGrav", "totes");
+  await p.selectOption("#fAlTipus", "pendent");
+  ok((await p.$$("#tAlertes tbody tr")).length >= 1 && (await txt("#tAlertes")).includes("pendent"),
+   "el desplegable de tipus filtra les alertes informatives («Temes pendents»)");
+  await p.selectOption("#fAlTipus", "");
+  await p.click("#btAlAjusta");
+  await p.waitForSelector("#tLlindarsAl table");
+  ok(p.url().includes("v=config") && p.url().includes("tab=llindars"),
+   "el botó «Ajusta» d'Alertes porta directament a Configuració → Llindars (?v=config&tab=llindars)");
+  ok((await p.$$("#tLlindarsAl th")).length === 3 && (await p.$$("#tLlindarsAl [data-ll-al-grav]")).length === 6 &&
+     (await p.$$("#tLlindarsBen th")).length === 3 && (await p.$$("#tLlindarsBen [data-ll-be-niv]")).length === 11 &&
+     (await p.$$("#tLlindarsPed th")).length === 4 && (await p.isDisabled("#btDesaLlindars")) === true,
+   "Configuració → Llindars mostra les 6 regles d'Alertes (3 cols), els 11 senyals editables de Benestar (3 cols) i les regles pedagògiques (4 cols), desactivades en ?demo");
+
   // Enllaç ràpid a Configuració -> Horaris, i comprovació de les 4 subseccions (Horaris, Catàleg, Llindars, Còpies)
-  await p.click('#control [data-go-cfg="horaris"]');
+  await p.click('[data-vtab="horaris"]');
   await p.waitForSelector("#xcF");
   ok((await txt("#titol")) === "Configuració" && (await p.isHidden("#periodeWrap")) === true && p.url().includes("v=config"),
    "Configuració amaga el selector de període i sincronitza ?v=config a l'URL");
-  await p.click('[data-vtab="llindars"]');
-  await p.waitForSelector("#tLlindarsPed table");
-  ok((await p.$$("#tLlindarsPed th")).length === 4 && (await p.$$("#tLlindarsBen th")).length === 3,
-   "Configuració → Llindars mostra les taules compactes de regles pedagògiques i de benestar");
   await p.click('[data-vtab="copies"]');
   await p.waitForSelector("#tCop table");
   ok((await p.$$("#tCop th")).length === 4, "Configuració → Còpies té exactament 4 columnes (Data, Abast, Mida o detall, Acció)");
@@ -309,7 +341,37 @@ function dadesAdmin() {
   await cr.p.waitForFunction(() => (document.querySelector("#tSes")?.textContent || "").includes("Biel"));
   ok((await cr.p.inputValue("#tSes input.tb-q")) === "Biel" && (await cr.txt("#tSes")).includes("Biel"),
    "autorefresc a ?v=sessions&p=curs incorpora la nova sessió d'en Biel sense perdre la cerca activa");
-  ok(cr.errors.length === 0, "cap error de JS a Mons + autorefresc");
+  // Alertes auto-plegada quan no hi ha cap malament/avís, resolució d'enunciat de preguntes.json i desat/restauració de Llindars (g21)
+  cr.d.alertes = [{ tipus: "pregunta", gravetat: 1, nom: null, assig: "socials", text: "La pregunta temps/3 la falla el 75 % dels nens (3 de 4)" }];
+  await cr.p.goto(BASE + "/admin/");
+  await cr.p.waitForSelector('#alertes[data-plegat="1"]');
+  ok((await cr.p.isHidden("#alCos")) === true && (await cr.txt("#alResum")).includes("1 informatiu"),
+   "quan només hi ha alertes informatives (cap malament ni avís), Inici → Alertes arrenca plegada automàticament amb «1 informatiu»");
+  await cr.p.click("#btAlPlega");
+  await cr.p.selectOption("#fAlGrav", "totes");
+  ok((await cr.txt("#tAlertes")).includes("Quants anys de dades calen per parlar de clima?"),
+   "les alertes de «Pregunta fallada» resolen i mostren l'enunciat real de preguntes.json");
+  await cr.p.click("#btAlAjusta");
+  await cr.p.waitForSelector("#tLlindarsAl table");
+  await cr.p.selectOption('[data-ll-al-grav="encallat"]', "2");
+  await cr.p.fill('input.ll-in[data-ll-grp="al"][data-ll-k="encallat"][data-ll-f="vegades"]', "4");
+  await cr.p.selectOption('[data-ll-be-niv="xat"]', "off");
+  await cr.p.fill('input.ll-in[data-ll-grp="be"][data-ll-k="nit"][data-ll-f="nits_malament"]', "3");
+  await cr.p.click("#btDesaLlindars");
+  await cr.p.waitForFunction(() => (document.querySelector("#toasts")?.textContent || "").includes("desats"));
+  const cLl = cr.crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg && x.cos.p_cfg.llindars).pop();
+  ok(cLl && cLl.cos.p_cfg.llindars.alertes.encallat.grav === 2 && cLl.cos.p_cfg.llindars.alertes.encallat.vegades === 4 &&
+     cLl.cos.p_cfg.llindars.benestar.xat.nivell === "off" && cLl.cos.p_cfg.llindars.benestar.nit.nits_malament === 3,
+   "Desa els llindars envia p_cfg.llindars a bn_admin_control amb la gravetat i els números ajustats");
+  await cr.p.click("#btResetLlindars");
+  await cr.p.waitForSelector("#dlg[open] #dlgOk");
+  await cr.p.click("#dlgOk");
+  await cr.p.waitForFunction(() => (document.querySelector("#toasts")?.textContent || "").includes("inicials"));
+  const cRst = cr.crides.filter(x => x.f === "bn_admin_control" && x.cos.p_cfg && x.cos.p_cfg.reset_llindars === true).pop();
+  ok(!!cRst && (await cr.p.inputValue('[data-ll-al-grav="encallat"]')) === "3",
+   "Restaura per defecte demana confirmació (#dlg), envia { reset_llindars: true } a bn_admin_control i recupera els valors inicials");
+
+  ok(cr.errors.length === 0, "cap error de JS a Mons + autorefresc + Llindars");
   await cr.ctx.close();
  }
 
@@ -323,6 +385,9 @@ function dadesAdmin() {
   await p.click("#btConfig");
   await p.waitForSelector("#xcF");
   const sw2 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc2 = await maxCols();
+  await p.click('[data-vtab="llindars"]');
+  await p.waitForSelector("#tLlindarsAl table");
+  const sw2l = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc2l = await maxCols();
   await p.click('#navInf [data-v="mons"]');
   await p.waitForSelector('#tMons tr[data-mon="socials"]');
   const sw3 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc3 = await maxCols();
@@ -334,8 +399,8 @@ function dadesAdmin() {
   await p.click("#tSes tbody tr:first-child");
   await p.waitForSelector("#panell:not([hidden])");
   const sw5 = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)), mc5 = await maxCols();
-  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && sw3 <= w && sw4 <= w && sw5 <= w && Math.max(mc1, mc2, mc3, mc4, mc5) <= 8 && errors.length === 0,
-   `${w} px: barra inferior #navInf activa, ≤ 8 columnes i zero desbordament (Inici ${sw1}px, Config ${sw2}px, Mons ${sw3}px, Fitxa món ${sw4}px, Sessions+panell ${sw5}px)`);
+  ok(navInfVis && !navLatVis && sw1 <= w && sw2 <= w && sw2l <= w && sw3 <= w && sw4 <= w && sw5 <= w && Math.max(mc1, mc2, mc2l, mc3, mc4, mc5) <= 8 && errors.length === 0,
+   `${w} px: barra inferior #navInf activa, ≤ 8 columnes i zero desbordament (Inici ${sw1}px, Config ${sw2}px, Llindars ${sw2l}px, Mons ${sw3}px, Fitxa món ${sw4}px, Sessions+panell ${sw5}px)`);
   await ctx.close();
  }
 
@@ -361,6 +426,9 @@ function dadesAdmin() {
   const errors = []; p.on("pageerror", e => errors.push(e.message));
   await p.goto(BASE + "/");
   await p.waitForSelector('.as[data-id="socials"].mon-tancat');
+  const idsPort = await p.$$eval("main .as[data-id]", as => as.map(a => a.dataset.id));
+  ok(idsPort[0] === "angles" && idsPort[idsPort.length - 1] === "socials",
+   `la portada mostra primer els mons més nous (${idsPort.join(" → ")})`);
   const txtSoc = await p.textContent('.as[data-id="socials"] .juga span');
   ok(txtSoc.includes("TANCAT"), "a la portada el món tancat ('socials') mostra «🔒 TANCAT»");
 
