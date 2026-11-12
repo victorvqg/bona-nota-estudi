@@ -67,6 +67,7 @@ function respon(st, f, cos) {
  if (f === "bn_admin_ids" || f === "bn_aspectes") return [];
  if (f === "bn_admin_usuari" && cos.p_accio === "estat") return { pau: 6, laia: 2, rita: 7 }[String(cos.p_nom).trim().toLowerCase()] || 0;
  if (f === "bn_admin_resum") return { periode: cos.p_periode || "7d", ara: { nens: 4, sessions: 5, minuts: 5, nota: 80, encert: 80 }, abans: null };
+ if (f === "bn_admin_fallades" && String(cos.p_nom || "").trim().toLowerCase() === "rita") return [{ assig: "socials", qid: XSS, intents: 2, errors: 2, pct_error: 100 }];
  if (["bn_admin_alertes", "bn_admin_domini", "bn_admin_fallades"].includes(f)) return [];
  if (f === "bn_admin_benestar") return { periode: cos.p_periode || "7d", mons: [], nens: [{ k: "pau", nom: "Pau", semafor: "verd", dies_estudi: 2, descansos_fets: 1, descansos_saltats: 0, senyals: [] }] };
  if (f === "bn_admin_fonts_dia") return { periode: cos.p_periode || "7d", dies: [], total: {} };
@@ -188,7 +189,15 @@ function respon(st, f, cos) {
   ok(/^informe-alex-curs-\d{4}-\d{2}-\d{2}\.md$/.test(dlMd.suggestedFilename()), "fitxer Markdown amb nom net: " + dlMd.suggestedFilename());
   ok(fMd.includes("# Informe complet · Àlex (#1)") && fMd.includes("## 1. Resum i estrelles (Tot el curs)") && fMd.includes("## 2. Aprenentatge (Tot el curs)") && fMd.includes("## 3. Sessions i benestar (Tot el curs)") && fMd.includes("## 4. Al núvol") && fMd.includes("Cronologia detallada de sessions"),
    "l'informe .md conté totes les taules, cronologia de sessions i progrés al núvol");
-  ok(crides.length === 0 && errors.length === 0 && !(await errG()), "cap crida ni error de JS en descarregar els informes en demo");
+  await p.click("#btFullExamen");
+  await p.waitForSelector("#dlg[open] #feMon");
+  await p.selectOption("#feMon", "socials");
+  const [dlFe] = await Promise.all([p.waitForEvent("download"), p.click("#dlgOk")]);
+  const fFe = fs.readFileSync(await dlFe.path(), "utf8");
+  ok(/^full-examen-alex-socials-\d{4}-\d{2}-\d{2}\.html$/.test(dlFe.suggestedFilename()), "Full d'examen A4 amb nom net: " + dlFe.suggestedFilename());
+  ok(fFe.includes("@page{size:A4 portrait") && fFe.includes("🎯 Preguntes on has d'anar amb compte") && fFe.includes("✅ Resposta correcta:") && fFe.includes("📚 Temes per repassar") && fFe.includes("💡 3 passos tranquils abans de l'examen") && !fFe.includes("Benestar i bon ús"),
+   "el Full d'examen d'1 pàgina A4 mostra preguntes fallades + resposta bona, temes pendents i pla tranquil, sense argot d'admin/benestar");
+  ok(crides.length === 0 && errors.length === 0 && !(await errG()), "cap crida ni error de JS en descarregar els informes i el full d'examen en demo");
   await ctx.close() }
 
  console.log("2) amb credencials: «Núvol i gestió» sota demanda i «Nens nous» a Inici");
@@ -259,6 +268,12 @@ function respon(st, f, cos) {
   const htmlXss = fs.readFileSync(await dlXss.path(), "utf8");
   ok(!htmlXss.includes(XSS) && htmlXss.includes("&lt;img src=x onerror=&quot;window.__xss=1&quot;&gt;"),
    "a l'informe HTML descarregat, tot el contingut del nen/núvol va escapat sense cap etiqueta executable");
+  await p.click("#btFullExamen");
+  await p.waitForSelector("#dlg[open] #feMon");
+  const [dlFeXss] = await Promise.all([p.waitForEvent("download"), p.click("#dlgOk")]);
+  const feXss = fs.readFileSync(await dlFeXss.path(), "utf8");
+  ok(!feXss.includes(XSS) && feXss.includes("&lt;img src=x onerror=&quot;window.__xss=1&quot;&gt;"),
+   "al Full d'examen A4 descarregat, el nom i totes les dades del nen també van escapats sense cap etiqueta executable");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  console.log("4) el SQL encara no hi és (404)");

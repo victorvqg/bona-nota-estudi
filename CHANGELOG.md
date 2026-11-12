@@ -5,6 +5,18 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.40.0 · 2026-11-12
+
+### Afegit
+- **Full d'examen d'1 pàgina A4 per a l'alumne des de la Fitxa del nen** (`admin/index.html`, `motor/prova-admin-fitxa.js` · g24):
+  - Nou botó `Full d'examen (1 pàg.)` (`#btFullExamen`) a la capçalera de `?v=nens&id=<nen>` (operatiu també en `?demo` sense cap crida a Supabase): obre el selector de món `#feMon` (preseleccionant el món amb data d'examen propera o amb més activitat) i descarrega `full-examen-<nen>-<món>-<data>.html` maquetat en **1 sola pàgina A4** (`@page { size: A4 portrait }`) amb to amable per a l'alumne i zero dades d'admin/benestar: 🎯 preguntes fallades (amb la resposta correcta en verd i avís d'opció parany), 📚 temes per repassar, ✍️ idees clau d'obertes / Taller de mates i 💡 3 passos tranquils abans de l'examen.
+- **Agregació d'avisos «🤔 Pregunta confusa?» (`dubte`) i filtre específic al tauler d'administració** (`supabase/bn_admin_dificultat.sql`, `admin/index.html`, `motor/prova-dificultat-sql.js`, `motor/prova-admin-dificultat.js` · g24):
+  - `public.bn_admin_dificultat(...)` (desplegada a `agippwtqvhpxdockuigl`) agrega els events `'dubte'` per `(assig, qid)` amb el recompte per motiu (`enunciat`, `resposta`, `pista`), el nombre de nens diferents (`dubtes_nens`), `'amb_dubtes'` al resum i `full outer join` perquè també hi surtin preguntes marcades confuses amb `< 8` o `0` respostes de test.
+  - Nou filtre `🤔 Dubtes` a `Mons → Dificultat real` i `Fitxa del món → Domini i errors`, pastilla `🤔 N` amb desglossament dels motius al `title` (mantenint 6 columnes `≤ 8`), i visualització + filtre `Preguntes confuses` a `Sessions` i `Log complet per dia`.
+- **Comparativa `fitxer vs real` i descàrrega d'1 clic de `motor/dificultat.json` proposat** (`admin/index.html`, `motor/prova-admin-dificultat.js` · g24):
+  - Cada fila de `Dificultat real` mostra explícitament el contrast entre `motor/dificultat.json` i les dades reals (`fitxer: ⚡ difícil / normal · real: ⚡ difícil / normal / fàcil / pendent`).
+  - Nou botó `⚡ Proposa dificultat.json` (`#btProposaDif`) que genera i descarrega en 1 clic el fitxer `dificultat.json` actualitzat aplicant les propostes `+afegir` (`< 55 %`) i `−revisar` (`≥ 75 %`).
+
 ## 2.39.0 · 2026-11-12
 
 ### Afegit

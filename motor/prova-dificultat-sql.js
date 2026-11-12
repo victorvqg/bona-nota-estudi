@@ -17,7 +17,7 @@ const ADM = ["admin@prova.cat", "secret-prova"], DOLENTA = [ADM[0], "incorrecta"
  const t0 = Date.now();
  const db = await PGlite.create({ extensions: { pgcrypto } });
  await db.exec("create role anon; create role authenticated; create schema extensions; create extension pgcrypto with schema extensions;");
- for (const f of ["supabase/bn_log.sql", "supabase/bn_ranking_net.sql", "supabase/bn_admin_tauler.sql"]) await db.exec(fitxer(f));
+ for (const f of ["supabase/bn_log.sql", "supabase/bn_ranking_net.sql", "supabase/bn_bon_us.sql", "supabase/bn_admin_tauler.sql"]) await db.exec(fitxer(f));
  await db.query("insert into bn_priv.admin(email, hash) values ($1, extensions.crypt($2, extensions.gen_salt('bf')))", ADM);
 
  const q = async (sql, p) => (await db.query(sql, p || [])).rows;
@@ -61,12 +61,33 @@ const ADM = ["admin@prova.cat", "secret-prova"], DOLENTA = [ADM[0], "incorrecta"
   await ins("_alta", "socials", "test", ["temps/3:0:5:0"]);           // _alta → ignorat
   await ins("Nen" + i, "socials", "test", ["j-climo/1:0:5:0", "brut", "temps/3:x:abc:0"]); // j-* i mal formades → ignorades
  }
+ // dubtes dels nens («🤔 Pregunta confusa?», g24): compten en preguntes amb respostes i també en preguntes encara amb 0 respostes (temps/9)
+ const insDub = (nom, assig, qid, motiu) => db.query(
+  `insert into public.bn_log(ts, assig, nom, sessio, aparell, event, detall)
+   values (now() - interval '2 hours', $2, $1, 's', 'a', 'dubte', $3::jsonb)`,
+  [nom, assig, JSON.stringify({ qid, motiu, ok: 0 })]
+ );
+ await insDub("Nen0", "socials", "temps/1", "enunciat");
+ await insDub("Nen1", "socials", "temps/1", "resposta");
+ await insDub("Nen0", "socials", "temps/1", "enunciat");
+ await insDub("Nen2", "socials", "temps/9", "pista"); // 0 respostes de test, però té dubte → ha d'aparèixer amb n=0
+ await insDub("amagat1", "socials", "temps/1", "pista"); // amagat → ignorat
+ await insDub("tonto", "socials", "temps/1", "pista");   // nom prohibit → ignorat
+ await insDub("_alta", "socials", "temps/1", "pista");   // _alta → ignorat
+ await insDub("Nen0", "socials", "j-climo/1", "pista");  // joc → ignorat
+ await insDub("Nen0", "socials", "temps/1", "inventat"); // motiu invàlid → ignorat
  await db.exec("set session_replication_role = origin");
 
  const r = await val("select public.bn_admin_dificultat($1, $2) r", ADM);
  const preg = (a, qid) => r.preguntes.find(x => x.assig === a && x.qid === qid);
- ok(r.min_respostes === 8 && r.resum.preguntes_vistes === 6 && r.resum.amb_dades === 5,
-  "resum: 6 preguntes vàlides vistes i 5 amb >= 8 respostes");
+ ok(r.min_respostes === 8 && r.resum.preguntes_vistes === 7 && r.resum.amb_dades === 5 && r.resum.amb_dubtes === 2,
+  "resum: 7 preguntes vàlides vistes (inclosa temps/9 amb dubte i 0 resp.), 5 amb >= 8 respostes i 2 amb dubtes");
+ ok(preg("socials", "temps/1").dubtes === 3 && preg("socials", "temps/1").dubtes_nens === 2
+  && preg("socials", "temps/1").dubtes_motius.enunciat === 2 && preg("socials", "temps/1").dubtes_motius.resposta === 1 && preg("socials", "temps/1").dubtes_motius.pista === 0,
+  "temps/1 agrega 3 dubtes de 2 nens (2 enunciat, 1 resposta), excloent amagats, prohibits, _alta i motius invàlids");
+ ok(preg("socials", "temps/9").n === 0 && preg("socials", "temps/9").encert === null && preg("socials", "temps/9").suficient === false
+  && preg("socials", "temps/9").dubtes === 1 && preg("socials", "temps/9").dubtes_motius.pista === 1,
+  "temps/9 sense respostes de test però amb 1 dubte apareix amb n=0, encert=null i dubtes=1");
  ok(preg("socials", "temps/1").dificultat === 3 && preg("socials", "temps/1").encert === 40,
   "temps/1 amb 40 % d'encert (< 55 %) → dificultat 3 (difícil)");
  ok(preg("socials", "temps/2").dificultat === 2 && preg("socials", "temps/2").encert === 80,

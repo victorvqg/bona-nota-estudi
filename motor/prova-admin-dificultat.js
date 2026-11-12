@@ -31,11 +31,12 @@ const RESUM = p => ({ periode: p || "7d", desde: new Date().toISOString(), ara: 
 
 function dadesDif(assig, xss) {
  const totes = [
-  { assig: "socials", qid: "temps/1", n: 10, bones: 4, nens: 6, encert: 40.0, encert_1a: 33.3, seg_mig: 9.4, suficient: true, dificultat: 3 },      // no és a dificultat.json → ➕ Proposa ⚡
+  { assig: "socials", qid: "temps/1", n: 10, bones: 4, nens: 6, encert: 40.0, encert_1a: 33.3, seg_mig: 9.4, suficient: true, dificultat: 3, dubtes: 2, dubtes_nens: 2, dubtes_motius: { enunciat: 1, resposta: 1, pista: 0 } },      // no és a dificultat.json → ➕ Proposa ⚡ + 🤔 2
   { assig: "socials", qid: "atmos/9", n: 10, bones: 8, nens: 6, encert: 80.0, encert_1a: 75.0, seg_mig: 6.2, suficient: true, dificultat: 2 },      // és 3 a dificultat.json i >= 75 % → ➖ Revisa ⚡
   { assig: "socials", qid: "atmos/4", n: 11, bones: 5, nens: 7, encert: 45.5, encert_1a: 42.9, seg_mig: 11.1, suficient: true, dificultat: 3 },     // és 3 a dificultat.json i < 75 % → ⚡ Confirmada
   { assig: "socials", qid: "temps/5", n: 12, bones: 11, nens: 7, encert: 91.7, encert_1a: 90.0, seg_mig: 5.0, suficient: true, dificultat: 1 },     // > 90 % i no marcada ⚡ → Fàcil
   { assig: "socials", qid: "temps/3", n: 4, bones: 2, nens: 3, encert: 50.0, encert_1a: 50.0, seg_mig: 8.0, suficient: false, dificultat: null },   // < 8 resp.
+  { assig: "socials", qid: "temps/9", n: 0, bones: 0, nens: 0, encert: null, encert_1a: null, seg_mig: null, suficient: false, dificultat: null, dubtes: 1, dubtes_nens: 1, dubtes_motius: { enunciat: 0, resposta: 0, pista: 1 } },  // 0 resp. però amb dubte 🤔 1
   { assig: "angles", qid: "adjectius/1", n: 9, bones: 3, nens: 5, encert: 33.3, encert_1a: 25.0, seg_mig: 10.0, suficient: true, dificultat: 3 },
   { assig: "biogeo", qid: "terra/1", n: 3, bones: 2, nens: 2, encert: 66.7, encert_1a: 50.0, seg_mig: 7.5, suficient: false, dificultat: null }       // món amb només < 8 resp.
  ];
@@ -44,7 +45,7 @@ function dadesDif(assig, xss) {
  const suf = pr.filter(r => r.suficient);
  return {
   min_respostes: 8, dies: 365, assig: assig || null,
-  resum: { preguntes_vistes: pr.length, amb_dades: suf.length, dificils: suf.filter(r => r.dificultat === 3).length, normals: suf.filter(r => r.dificultat === 2).length, facils: suf.filter(r => r.dificultat === 1).length },
+  resum: { preguntes_vistes: pr.length, amb_dades: suf.length, dificils: suf.filter(r => r.dificultat === 3).length, normals: suf.filter(r => r.dificultat === 2).length, facils: suf.filter(r => r.dificultat === 1).length, amb_dubtes: pr.filter(r => (r.dubtes || 0) > 0).length },
   preguntes: pr
  };
 }
@@ -94,7 +95,7 @@ function dadesDif(assig, xss) {
   ok(crides.length === 0, "cap crida de xarxa a Supabase en mode ?demo");
   ok((await p.$$("#tDif .kpi")).length === 4, "es pinten els 4 KPIs de dificultat real");
   ok((await p.$$("#tDif details.dm-as")).length >= 6, "hi ha blocs plegables per als mons en ?demo");
-  ok(await p.locator("#btDifJson").isDisabled(), "el botó Baixa JSON està desactivat en ?demo");
+  ok(await p.locator("#btDifJson").isDisabled() && await p.locator("#btProposaDif").isDisabled(), "els botons de descàrrega JSON i dificultat.json estan desactivats en ?demo");
   ok(errors.length === 0, "sense errors de consola en ?demo");
   await ctx.close();
  }
@@ -111,9 +112,9 @@ function dadesDif(assig, xss) {
   const tSoc = await txt('#tDif details[data-a="socials"]');
   const tBio = await txt('#tDif details[data-a="biogeo"]');
   const tDiv = await txt('#tDif details[data-a="divisibilitat"]');
-  ok(tSoc.includes("➕ Proposa ⚡") && tSoc.includes("➖ Revisa ⚡") && tSoc.includes("⚡ Confirmada") && tSoc.includes("Fàcil (> 90 %)"),
-   "compara bé amb motor/dificultat.json: Proposa ⚡, Revisa ⚡, Confirmada i Fàcil");
-  ok(!tSoc.includes("temps/3"), "per defecte (≥ 8 resp.) no mostra les preguntes amb menys de 8 respostes");
+  ok(tSoc.includes("➕ Proposa ⚡") && tSoc.includes("➖ Revisa ⚡") && tSoc.includes("⚡ Confirmada") && tSoc.includes("Fàcil (> 90 %)") && tSoc.includes("🤔 2") && tSoc.includes("fitxer: normal · real: ⚡ difícil"),
+   "compara bé amb motor/dificultat.json (fitxer vs real) i mostra la pastilla 🤔 2 de preguntes confuses");
+  ok(!tSoc.includes("temps/3") && !tSoc.includes("temps/9"), "per defecte (≥ 8 resp.) no mostra les preguntes amb menys de 8 o 0 respostes");
   ok(tBio.includes("< 8 resp. (1)") && tDiv.includes("Sense dades") && tDiv.includes("Taller"),
    "els mons amb < 8 respostes o sense dades expliquen clarament per què encara no tenen taula a ≥ 8 resp.");
 
@@ -123,12 +124,22 @@ function dadesDif(assig, xss) {
   ok(tCanvis.includes("➕ Proposa ⚡") && tCanvis.includes("➖ Revisa ⚡") && !tCanvis.includes("Fàcil (> 90 %)"),
    "el mode «Canvis» mostra només les propostes d'afegir o revisar");
 
+  // Mode «🤔 Dubtes»: mostra temps/1 (amb prou respostes) i temps/9 (0 respostes però marcada confusa, sense NaN)
+  await p.click('#difModes [data-dif-v="dubtes"]');
+  const tDubtes = await txt('#tDif details[data-a="socials"]');
+  ok(tDubtes.includes("temps/1") && tDubtes.includes("temps/9") && tDubtes.includes("0 resp.") && !tDubtes.includes("NaN") && !tDubtes.includes("temps/5"),
+   "el mode «🤔 Dubtes» mostra les preguntes marcades confuses (inclosa temps/9 amb 0 respostes i sense NaN)");
+
   // Mode «Totes»: inclou temps/3 (< 8 resp.) i terra/1 de biogeo
   await p.click('#difModes [data-dif-v="totes"]');
   ok((await txt('#tDif details[data-a="socials"]')).includes("temps/3") && (await txt('#tDif details[data-a="socials"]')).includes("< 8 resp.") && (await txt('#tDif details[data-a="biogeo"]')).includes("terra/1"),
    "el mode «Totes» inclou també les preguntes amb < 8 respostes de qualsevol món");
 
-  // Descàrrega JSON per a dificultat.py --proposa
+  // Descàrrega 1 clic de dificultat.json proposat i descàrrega crua bn-dificultat
+  const [dlProp] = await Promise.all([p.waitForEvent("download"), p.click("#btProposaDif")]);
+  const propJson = JSON.parse(fs.readFileSync(await dlProp.path(), "utf8"));
+  ok(dlProp.suggestedFilename() === "dificultat.json" && propJson.socials["temps/1"] === 3 && propJson.socials["atmos/9"] === undefined && propJson.socials["atmos/4"] === 3 && propJson.angles["adjectius/1"] === 3,
+   "⚡ Proposa dificultat.json descarrega dificultat.json amb +afegir (temps/1, adjectius/1), −revisar (atmos/9) i mantenint confirmades (atmos/4)");
   const [dl] = await Promise.all([p.waitForEvent("download"), p.click("#btDifJson")]);
   ok(dl.suggestedFilename().startsWith("bn-dificultat-") && dl.suggestedFilename().endsWith(".json"), "Baixa JSON descarrega bn-dificultat-AAAA-MM-DD.json");
 

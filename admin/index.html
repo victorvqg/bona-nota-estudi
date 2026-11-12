@@ -94,7 +94,7 @@ input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:var
 .seg button{all:unset;cursor:pointer;padding:5px 12px;border-radius:6px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--card);color:var(--text);box-shadow:var(--sh1)}
 .seg button:focus-visible{outline:2px solid var(--primary)}
-#difModes{flex-wrap:wrap;max-width:100%}
+#difModes,#difModesMon{flex-wrap:wrap;max-width:100%}
 .cerca{display:flex;align-items:center;gap:8px;border:1px solid var(--border2);border-radius:var(--r1);background:var(--card);padding:0 10px;min-height:36px;flex:1;min-width:180px;max-width:360px}
 .cerca:focus-within{border-color:var(--primary);box-shadow:var(--focus)}
 .cerca input{border:0;box-shadow:none!important;padding:7px 0;min-height:34px;flex:1;min-width:0;background:transparent}
@@ -146,10 +146,10 @@ input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:var
 .ev{display:inline-flex;align-items:center;border-radius:6px;padding:1px 7px;font-size:11.5px;font-weight:600;white-space:nowrap}
 .ev-entra{background:#e0e7ff;color:#3730a3}.ev-fitxa{background:#e0f2fe;color:#075985}.ev-targetes{background:#cffafe;color:#155e75}
 .ev-test{background:#ede9fe;color:#5b21b6}.ev-joc{background:#fce7f3;color:#9d174d}.ev-examen{background:#fee2e2;color:#991b1b}
-.ev-oberta{background:#ffedd5;color:#9a3412}.ev-valora{background:#dcfce7;color:#166534}.ev-temps{background:#f1f5f9;color:#334155}
+.ev-oberta{background:#ffedd5;color:#9a3412}.ev-valora{background:#dcfce7;color:#166534}.ev-dubte{background:#fef3c7;color:#92400e}.ev-temps{background:#f1f5f9;color:#334155}
 [data-tema="fosc"] .ev-entra{background:#1e1b4b;color:#c7d2fe}[data-tema="fosc"] .ev-fitxa{background:#082f49;color:#bae6fd}[data-tema="fosc"] .ev-targetes{background:#083344;color:#a5f3fc}
 [data-tema="fosc"] .ev-test{background:#2e1065;color:#ddd6fe}[data-tema="fosc"] .ev-joc{background:#500724;color:#fbcfe8}[data-tema="fosc"] .ev-examen{background:#450a0a;color:#fecaca}
-[data-tema="fosc"] .ev-oberta{background:#431407;color:#fed7aa}[data-tema="fosc"] .ev-valora{background:#052e16;color:#bbf7d0}[data-tema="fosc"] .ev-temps{background:#1e293b;color:#cbd5e1}
+[data-tema="fosc"] .ev-oberta{background:#431407;color:#fed7aa}[data-tema="fosc"] .ev-valora{background:#052e16;color:#bbf7d0}[data-tema="fosc"] .ev-dubte{background:#451a03;color:#fde68a}[data-tema="fosc"] .ev-temps{background:#1e293b;color:#cbd5e1}
 /* taules compactes (~36 px d'alçada de fila, màx 8 cols, cerca local i CSV) */
 .tb-bloc{display:flex;flex-direction:column;gap:8px;min-width:0}
 .tb-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
@@ -667,7 +667,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.39.0";
+const VERSIO_ADMIN="2.40.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -1017,7 +1017,7 @@ function nomsTots(){const m=new Map();
  Object.entries(NOMS_TOTS).forEach(([k,n])=>{if(k&&k!=="_alta"&&n)m.set(k,n)});
  LOGS.forEach(l=>{const k=clauNen(l);if(k&&k!=="_alta"&&l.nom)m.set(k,l.nom)});
  return [...m.values()].sort((a,b)=>a.localeCompare(b,"ca"))}
-const LOG_EVENTS=[["entra","Entrades"],["fitxa","Fitxes"],["targetes","Targetes"],["test","Tests"],["joc","Jocs / Repàs / Boss"],["examen","Exàmens"],["oberta","Preguntes obertes"],["valora","Valoracions"],["temps","Temps estudiat"]];
+const LOG_EVENTS=[["entra","Entrades"],["fitxa","Fitxes"],["targetes","Targetes"],["test","Tests"],["joc","Jocs / Repàs / Boss"],["examen","Exàmens"],["oberta","Preguntes obertes"],["valora","Valoracions"],["dubte","Preguntes confuses"],["temps","Temps estudiat"]];
 function barraFiltresLocals({assig=true,nen=true,dia=false,ev=false,cerca=false}={}){
  const as=[...new Set([...Object.keys(ASSIGS),...LOGS.map(l=>l.assig)])].filter(Boolean),noms=nomsTots();
  let diaH="";
@@ -1075,6 +1075,7 @@ async function pinta(){
 const pcExam=d=>d.pc!=null?d.pc:d.nota!=null?Math.round(d.nota*10):null;
 const REP_EXT={mx:"Taller",mapa:"MAPA",err:"Troba l'error",err_gen:"Troba l'error"};
 const extRepas=x=>String(x).split(",").map(p=>{const [t,v]=p.split(":");return `${REP_EXT[t]||t} ${v||""}`.trim()}).join(", ");
+const MOTIU_DUBTE={enunciat:"no s'entén l'enunciat",resposta:"la resposta no em quadra",pista:"hi falta una dada"};
 function descriu(l){const d=l.detall||{};switch(l.event){
  case"entra":return d.nou?"Perfil nou creat":`Entra · ${d.punts??0} estrelles · ${d.aprovats??0}/${d.temes??"?"} temes aprovats`;
  case"fitxa":return `Llegeix la fitxa: <b>${esc(d.titol||d.tema)}</b>${d.s?` · ${fmtT(d.s)}${d.fi?" · fins al final":""}`:""}`;
@@ -1088,6 +1089,8 @@ function descriu(l){const d=l.detall||{};switch(l.event){
    if(d.mode==="foto")return `Foto del quadern (${esc(d.tema||"")}): ${d.ok?(d.correcte?"tot correcte":"hi ha trobat un error"):`no s'ha pogut corregir (${esc(d.error||"?")})`}`;
    return `Pregunta oberta (${esc(d.tema||"")})${d.mode==="practica"?" · pràctica":""}: ${cpc(d.pc)} de les idees clau${d.rebutjat?` · ${pl(d.rebutjat,"intent rebutjat","intents rebutjats")}`:""}${d.enganxat?` · ha intentat enganxar`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"valora":return `Valora <b>${esc(d.titol||d.tema)}</b>: ${esc(d.v)}`;
+ case"dubte":{const q=PREG&&d.qid?PREG[l.assig+"/"+d.qid]:null,tx=q?String(q.t||"").replace(/<[^>]+>/g,""):d.qid||"?";
+   return `🤔 Pregunta confusa (${esc(MOTIU_DUBTE[d.motiu]||d.motiu||"sense motiu")}): <b>${esc(tx)}</b>${d.qid?` <span class="muted">(${esc(d.qid)})</span>`:""}`}
  case"temps":return `${fmtT(d.s)} estudiant`;
  default:return esc(JSON.stringify(d))}}
 // [estrelles-pures] orígens de les estrelles (issue #13). Les fonts són comptadors que només pugen dins d'un món (un reinici
@@ -1246,7 +1249,7 @@ function detall(k,manté){k=String(k||"").trim().toLowerCase();
  c.innerHTML=`<div class="fitxa-bar"><button class="btn sec petit" type="button" id="torna">${ic("enrere")} Tots els nens</button>
   <div class="fitxa-sel"><label for="selFitxaNen">${ic("nens")}<span>Canvia de nen:</span></label><select id="selFitxaNen" aria-label="Canvia de nen">${opcNens}</select></div></div>
  <section class="targeta perfil">${avatar(n.nom,"g")}<div class="perfil-info"><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}${pillNivell(estMax)}<span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin">${pillPin(null)}</span><span id="xAmagat"></span></div></div>
-  <div class="perfil-acc" role="group" aria-label="Descarrega l'informe complet"><button class="btn petit" type="button" id="btInfHtml" title="Descarrega un informe complet visual llest per llegir o imprimir com a PDF">${ic("baixar")}<span>Informe HTML / PDF</span></button><button class="btn sec petit" type="button" id="btInfMd" title="Descarrega l'informe complet en format Markdown (.md)">${ic("baixar")}<span>Informe .md</span></button></div></section>
+  <div class="perfil-acc" role="group" aria-label="Descarrega informes i full d'examen"><button class="btn sec petit" type="button" id="btFullExamen" title="Descarrega un full de repàs d'1 pàgina A4 per a l'alumne abans de l'examen">${ic("diana")}<span>Full d'examen (1 pàg.)</span></button><button class="btn petit" type="button" id="btInfHtml" title="Descarrega un informe complet visual llest per llegir o imprimir com a PDF">${ic("baixar")}<span>Informe HTML / PDF</span></button><button class="btn sec petit" type="button" id="btInfMd" title="Descarrega l'informe complet en format Markdown (.md)">${ic("baixar")}<span>Informe .md</span></button></div></section>
  <div class="pestanyes" role="tablist" aria-label="Seccions de la fitxa">
   <button role="tab" type="button" id="tb-resum" aria-controls="tp-resum" aria-selected="true">Resum i estrelles</button>
   <button role="tab" type="button" id="tb-apr" aria-controls="tp-apr" aria-selected="false" tabindex="-1">Aprenentatge</button>
@@ -1272,7 +1275,8 @@ function detall(k,manté){k=String(k||"").trim().toLowerCase();
    <div id="gest" aria-live="polite"></div></section></div></section>`;
  $("#torna").onclick=()=>navega("nens");
  $("#selFitxaNen").onchange=e=>{const nk=e.target.value;if(!nk||nk===k)return;tancaPanell();ELEM=nk;FITXA=nk;escriuUrl(true);detall(nk,true)};
- const bIH=$("#btInfHtml"),bIM=$("#btInfMd");
+ const bFE=$("#btFullExamen"),bIH=$("#btInfHtml"),bIM=$("#btInfMd");
+ if(bFE)bFE.onclick=()=>obreFullExamenNen(n,ls,bFE);
  if(bIH)bIH.onclick=()=>baixaInformeNen(n,ls,"html",bIH);
  if(bIM)bIM.onclick=()=>baixaInformeNen(n,ls,"md",bIM);
  const fcf=$("#fCopFes");if(fcf)fcf.onclick=fesCopia;
@@ -1547,6 +1551,7 @@ async function recullInformeNen(n,ls){
    text:d.text||d.resposta||d.resp||null,det:Array.isArray(d.det)?d.det.map(String):[],falten:Array.isArray(d.falten)?d.falten.map(String):[]}});
  // 3. Sessions i benestar (període)
  const benErr=benRes&&benRes.__err?String(benRes.__err):null;
+ const monsExam=!benErr?Object.fromEntries(aR(oB(benRes).mons).filter(m=>m&&m.assig&&esDia(m.examen)).map(m=>[String(m.assig),m.examen])):{};
  let benSem="verd",benSemTxt="Verd (res a vigilar)",benMotius=[];
  if(!benErr){
   const rec=aR(oB(benRes).nens).find(x=>x&&String(x.k||"").trim().toLowerCase()===n.k);
@@ -1601,7 +1606,8 @@ async function recullInformeNen(n,ls){
    registres:ls.length,monsAct,estMons,tempsAct},
   apr:{domErr,domMons,fallErr,fallades,combos:{est:combosEst,delPeriode:!!Dfd,errApr,repFets,bossWin,bossInt,missioEst,fontsPeriode},talErr,taller,obertes},
   ses:{benErr,benSem,benSemTxt,benMotius,sessions},
-  nuvol:{err:nuvErr,tePerfil:!!pf,mons:nuvMons}
+  nuvol:{err:nuvErr,tePerfil:!!pf,mons:nuvMons},
+  monsExam
  };
 }
 function generaInformeNenHtml(D){
@@ -1886,6 +1892,161 @@ async function baixaInformeNen(n,ls,fmt,bt){
   toast(`No s'ha pogut generar l'informe (${e&&e.message||e})`,"err");
  }finally{
   if(bt){bt.disabled=false;bt.innerHTML=h0}
+ }
+}
+// ---- Full d'examen d'1 pàgina A4 per a l'alumne (g24) ----
+function generaFullExamenHtml(D,assig,monMeta){
+ const net=t=>String(t||"").replace(/<[^>]+>/g,"").trim();
+ const nomM=(monMeta&&monMeta.nom)||nomAssig(assig),titolM=(monMeta&&monMeta.titol)||nomM,icM=(monMeta&&monMeta.ic)||"🎯";
+ const examDia=D.monsExam&&esDia(D.monsExam[assig])?D.monsExam[assig]:null;
+ const domM=D.apr.domMons.find(m=>m.assig===assig)||null;
+ const nuvM=D.nuvol.mons.find(m=>m.assig===assig&&!m.error)||null;
+ const pregTxt=new Map();
+ Object.entries(oB(PREG)).forEach(([k,q])=>{if(!k.startsWith(assig+"/")||!q)return;const tx=net(q.t);
+  if(tx&&!pregTxt.has(tx.toLowerCase()))pregTxt.set(tx.toLowerCase(),{tema:net(q.tema),bona:Array.isArray(q.o)&&q.o[q.c]!=null?net(q.o[q.c]):null})});
+ const vistesQ=new Set(),pregTrampa=[];
+ const pushQ=o=>{const cl=String(o.text||"").trim().toLowerCase();if(!cl||vistesQ.has(cl)||pregTrampa.length>=6)return;vistesQ.add(cl);pregTrampa.push(o)};
+ D.apr.fallades.filter(f=>f.assig===assig).sort((a,b)=>b.errors-a.errors||b.pct-a.pct).forEach(f=>pushQ({text:f.text,bona:f.bona&&f.bona!=="?"?f.bona:null,parany:f.parany||null,tema:f.tema||"",n:f.errors}));
+ if(nuvM){
+  const flN=[];nuvM.temes.forEach(t=>(t.fall||[]).forEach(([qt,v])=>flN.push({qt:String(qt||""),v:+v||1,tit:t.tit})));
+  flN.sort((a,b)=>b.v-a.v).forEach(x=>{const m=pregTxt.get(x.qt.trim().toLowerCase());pushQ({text:x.qt,bona:m?m.bona:null,parany:null,tema:(m&&m.tema)||x.tit||"",n:x.v})});
+  (nuvM.rep||[]).forEach(r=>{const m=pregTxt.get(String(r.q||"").trim().toLowerCase());pushQ({text:r.q,bona:m?m.bona:null,parany:null,tema:(m&&m.tema)||r.tit||"",n:1})});
+ }
+ const temesR=[],vistT=new Set();
+ const ordEst=e=>e==="suspes"||e==="Per millorar"?1:e==="fitxa"||e==="Només estudiat"||e==="Només ha estudiat"?2:e==="no"||e==="Sense obrir"||e==="Obert"?3:4;
+ if(domM)domM.rows.slice().sort((a,b)=>ordEst(a.est)-ordEst(b.est)||(a.millor??101)-(b.millor??101)).forEach(r=>{
+  if(ordEst(r.est)<4&&temesR.length<6&&!vistT.has(r.tit)){vistT.add(r.tit);temesR.push({tit:r.tit,est:r.estTxt,nota:r.millor})}});
+ if(nuvM)nuvM.temes.filter(t=>!t.fora).slice().sort((a,b)=>ordEst(a.estTxt)-ordEst(b.estTxt)||(a.max??101)-(b.max??101)).forEach(t=>{
+  if(ordEst(t.estTxt)<4&&temesR.length<6&&!vistT.has(t.tit)){vistT.add(t.tit);temesR.push({tit:t.tit,est:t.estTxt,nota:t.max})}});
+ const apCnt=nuvM?`${nuvM.aprovats}/${nuvM.totalTemes}`:domM?`${domM.aprovats}/${domM.total}`:null;
+ const idees=[],vistI=new Set();
+ D.apr.obertes.filter(o=>o.assig===assig).forEach(o=>(o.falten||[]).forEach(id=>{const tx=String(id||"").trim();if(tx&&!vistI.has(tx.toLowerCase())&&idees.length<5){vistI.add(tx.toLowerCase());idees.push({tit:o.tit,tx})}}));
+ if(assig==="divisibilitat")D.apr.taller.slice(0,4).forEach(t=>{const tx=`${t.gen} (${t.pas}): vigila «${t.err}»`;if(!vistI.has(tx.toLowerCase())&&idees.length<5){vistI.add(tx.toLowerCase());idees.push({tit:"Taller de mates",tx})}});
+ const hPreg=pregTrampa.length?`<ol class="ll-q">${pregTrampa.map(q=>`<li><div class="qt">${esc(q.text)}${q.tema?` <span class="tm">(${esc(q.tema)})</span>`:""}</div><div class="qr">${q.bona?`<span class="bo">✅ Resposta correcta: <b>${esc(q.bona)}</b></span>`:`<span class="muted">Revisa-la a la fitxa del tema</span>`}${q.parany?` <span class="pa">· ⚠️ No la confonguis amb: ${esc(q.parany)}</span>`:""}</div></li>`).join("")}</ol>`
+  :`<p class="buit">Encara no hi ha preguntes fallades registrades en aquest món. Fes un parell de tests o l'Examen sorpresa i torna a treure el full si vols veure els teus punts clau!</p>`;
+ const hTemes=temesR.length?`<ul class="ll-t">${temesR.map(t=>`<li><b>${esc(t.tit)}</b> <span class="et">${esc(t.est)}${t.nota!=null?` · millor ${esc(t.nota)}%`:""}</span></li>`).join("")}</ul>`
+  :`<p class="ok-p">🌟 Tens tots els temes aprovats! Fes una passada ràpida als resums per anar ben segur/a.</p>`;
+ const hIdees=idees.length?`<ul class="ll-i">${idees.map(x=>`<li><b>${esc(x.tit)}:</b> no et deixis <span>${esc(x.tx)}</span></li>`).join("")}</ul>`
+  :`<ul class="ll-i"><li>Llegeix bé què demana cada pregunta abans de començar a escriure.</li><li>Fes servir les paraules clau de la fitxa i posa un exemple curt si ajuda.</li><li>Repassa majúscules, signes o unitats abans de donar-la per bona.</li></ul>`;
+ return `<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Full d'examen · ${esc(D.nom)} · ${esc(nomM)}</title>
+<style>
+*{box-sizing:border-box}
+@page{size:A4 portrait;margin:9mm 10mm}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#0f172a;background:#f1f5f9;font-size:12.5px;line-height:1.38}
+.barra-imp{position:sticky;top:0;z-index:10;background:#1e1b4b;color:#fff;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.barra-imp b{font-size:14px}
+.btn-imp{cursor:pointer;border:0;border-radius:8px;padding:8px 14px;font:inherit;font-weight:700;font-size:13px;background:#facc15;color:#1e1b4b}
+.a4{max-width:210mm;margin:14px auto;background:#fff;border:1px solid #cbd5e1;border-radius:12px;padding:11mm 12mm;box-shadow:0 4px 18px rgba(15,23,42,.08)}
+.cap{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:2px solid #1e1b4b;padding-bottom:8px;margin-bottom:10px}
+.cap h1{margin:0;font-size:19px;line-height:1.2;color:#1e1b4b}
+.cap p{margin:3px 0 0;color:#475569;font-size:12px}
+.xips{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.xip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:#eef2ff;color:#312e81;border:1px solid #c7d2fe;white-space:nowrap}
+.xip.ex{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+.bloc{border:1px solid #cbd5e1;border-radius:9px;padding:8px 11px;margin-bottom:9px;break-inside:avoid}
+.bloc h2{margin:0 0 6px;font-size:13.5px;color:#1e1b4b;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bloc h2 small{font-weight:600;color:#64748b;font-size:11.5px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ll-q{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.ll-q li{padding-bottom:4px;border-bottom:1px dashed #e2e8f0}
+.ll-q li:last-child{border-bottom:0;padding-bottom:0}
+.qt{font-weight:600;color:#0f172a}
+.tm{font-weight:500;color:#64748b;font-size:11px}
+.qr{margin-top:2px;font-size:12px}
+.bo{color:#15803d}
+.pa{color:#b91c1c}
+.ll-t,.ll-i{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:4px}
+.et{color:#64748b;font-size:11.5px}
+.ok-p,.buit{margin:2px 0;color:#334155;font-size:12px}
+.pla{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:2px}
+.pas{border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;background:#f8fafc;font-size:11.5px;display:flex;gap:6px;align-items:flex-start}
+.cas{display:inline-block;width:13px;height:13px;border:1.6px solid #334155;border-radius:3px;flex:none;margin-top:1px;background:#fff}
+.peu{margin-top:6px;text-align:right;color:#64748b;font-size:10.5px}
+@media (max-width:680px){.dos,.pla{grid-template-columns:1fr}}
+@media print{
+ body{background:#fff;font-size:11.5px}
+ .barra-imp{display:none!important}
+ .a4{margin:0;max-width:none;border:0;border-radius:0;padding:0;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<div class="barra-imp">
+ <b>⭐ Bona Nota · Full d'examen d'1 pàgina per a ${esc(D.nom)} (${esc(nomM)})</b>
+ <button type="button" class="btn-imp" onclick="window.print()">🖨️ Imprimeix en 1 full A4 / Desa PDF</button>
+</div>
+<main class="a4">
+ <header class="cap">
+  <div>
+   <h1>${esc(icM)} Full d'examen · ${esc(nomM)}</h1>
+   <p>Per a <b>${esc(D.nom)}</b> — llegeix-lo amb calma per portar ben lligats els punts clau!</p>
+  </div>
+  <div class="xips">
+   ${examDia?`<span class="xip ex">📅 Examen: ${esc(diaC(examDia+"T12:00"))}</span>`:""}
+   ${apCnt?`<span class="xip">📚 Temes aprovats: ${esc(apCnt)}</span>`:""}
+  </div>
+ </header>
+ <section class="bloc">
+  <h2><span>🎯 Preguntes on has d'anar amb compte</span><small>Fixa't bé en la resposta bona en verd</small></h2>
+  ${hPreg}
+ </section>
+ <div class="dos">
+  <section class="bloc" style="margin-bottom:9px">
+   <h2><span>📚 Temes per repassar</span></h2>
+   ${hTemes}
+  </section>
+  <section class="bloc" style="margin-bottom:9px">
+   <h2><span>✍️ Idees clau i exercicis</span></h2>
+   ${hIdees}
+  </section>
+ </div>
+ <section class="bloc" style="margin-bottom:0">
+  <h2><span>💡 3 passos tranquils abans de l'examen</span></h2>
+  <div class="pla">
+   <div class="pas"><span class="cas" aria-hidden="true"></span><span>Llegir en veu baixa les respostes en verd i els temes d'aquest full.</span></div>
+   <div class="pas"><span class="cas" aria-hidden="true"></span><span>Fer una última passada al Repàs d'errors o a l'Examen de veritat sense mirar.</span></div>
+   <div class="pas"><span class="cas" aria-hidden="true"></span><span>Tancar la pantalla d'hora i dormir bé: el cervell fixa el que has estudiat!</span></div>
+  </div>
+ </section>
+ <footer class="peu">Bona Nota (bonanota.net) · ${esc(titolM)} · Generat el ${esc(D.generat)}</footer>
+</main>
+</body>
+</html>`;
+}
+async function obreFullExamenNen(n,ls,bt){
+ if(bt&&bt.disabled)return;
+ const h0=bt?bt.innerHTML:"";
+ if(bt){bt.disabled=true;bt.innerHTML=`${ic("rellotge")}<span>Preparant…</span>`}
+ let D,ms;
+ try{[D,ms]=await Promise.all([recullInformeNen(n,ls),monsLlista()])}
+ catch(e){console.error(e);if(bt){bt.disabled=false;bt.innerHTML=h0}toast(`No s'ha pogut preparar el full d'examen (${e&&e.message||e})`,"err");return}
+ if(bt){bt.disabled=false;bt.innerHTML=h0}
+ const avM=diaMad();
+ const actMap=new Map(D.resum.monsAct.map(m=>[m.assig,m.accions]));
+ const nuvSet=new Set(D.nuvol.mons.filter(m=>!m.error).map(m=>m.assig));
+ let def=ms.find(m=>D.monsExam[m.id]>=avM&&(actMap.has(m.id)||nuvSet.has(m.id)))||ms.find(m=>D.monsExam[m.id]>=avM);
+ if(!def&&D.resum.monsAct.length){const top=[...D.resum.monsAct].sort((a,b)=>b.accions-a.accions)[0];def=ms.find(m=>m.id===top.assig)}
+ if(!def&&nuvSet.size)def=ms.find(m=>nuvSet.has(m.id));
+ const triatDef=(def||ms[0]||{id:"angles"}).id;
+ const descarrega=assig=>{
+  const mm=ms.find(m=>m.id===assig)||null;
+  const slug=senseAccents(n.nom||n.k).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"nen";
+  const slugM=senseAccents(assig).replace(/[^a-z0-9]+/g,"-")||"mon";
+  baixaFitxer(`full-examen-${slug}-${slugM}-${D.generatIso}.html`,generaFullExamenHtml(D,assig,mm),"text/html;charset=utf-8");
+  toast(`Full d'examen de ${n.nom} descarregat (${nomAssig(assig)})`);
+ };
+ if(ms.length<=1){descarrega(triatDef);return}
+ const opc=ms.map(m=>{const ex=D.monsExam[m.id],ac=actMap.get(m.id)||0,nv=D.nuvol.mons.find(x=>x.assig===m.id&&!x.error);
+  const det=[ex?`📅 Examen ${diaC(ex+"T12:00")}`:"",ac?pl(ac,"acció","accions"):nv?`${nv.punts} ⭐ al núvol`:"sense activitat al període"].filter(Boolean).join(" · ");
+  return `<option value="${esc(m.id)}"${m.id===triatDef?" selected":""}>${esc(m.nom)} (${esc(det)})</option>`}).join("");
+ if(await dialeg({titol:`Full d'examen d'1 pàgina · ${n.nom}`,ok:"Descarrega A4",perill:false,icona:"diana",
+  cos:`<p>Es generarà una sola pàgina A4 pensada per a <b>${esc(n.nom)}</b>, amb les seves preguntes fallades (i la resposta bona en verd), els temes pendents i les idees clau.</p><label for="feMon">De quin món és l'examen?</label><select id="feMon">${opc}</select>`})){
+  const sel=$("#feMon");descarrega(sel&&sel.value?sel.value:triatDef);
  }
 }
 // ====================== AL NÚVOL I ALTES (supabase/bn_admin_fitxa.sql) ======================
@@ -3222,9 +3383,30 @@ async function tDificultat(assigFix="",elId="tDif"){const el=$("#"+elId);if(!el)
  const x=$("#"+elId);if(tok!==TOK||!x)return;x.removeAttribute("aria-busy");
  if(assigFix)x._difD=d;else DIF_D=d;
  pintaDificultat(elId,assigFix)}
+function construeixDificultatProposada(d){
+ const minR=nN(oB(d).min_respostes)||8,src=oB(QDIF_ADM),m={};
+ Object.keys(src).forEach(a=>{m[a]=Object.assign({},oB(src[a]))});
+ aR(oB(d).preguntes).forEach(r=>{
+  if(!r||typeof r!=="object"||Array.isArray(r))return;
+  const a=r.assig==null||r.assig===""?"":String(r.assig),qid=r.qid==null||r.qid===""?"":String(r.qid);
+  if(!a||!qid)return;
+  const n=nN(r.n)||0,enc=n>0?(nN(r.encert)??0):null,suf=!!r.suficient&&n>=minR&&enc!=null;
+  if(!suf)return;
+  const dif=nN(r.dificultat)||(enc<55?3:enc>90?1:2),act=nN(oB(m[a])[qid])||2;
+  if(dif===3&&act!==3){if(!m[a])m[a]={};m[a][qid]=3}
+  else if(act===3&&enc>=75&&m[a])delete m[a][qid];
+ });
+ const out={};
+ Object.keys(m).sort().forEach(a=>{
+  const qs=Object.keys(m[a]).sort((x,y)=>{const [tx,nx]=x.split("/"),[ty,ny]=y.split("/");return tx.localeCompare(ty)||((+nx||0)-(+ny||0))||x.localeCompare(y)});
+  out[a]={};qs.forEach(q=>{out[a][q]=m[a][q]});
+ });
+ return JSON.stringify(out,null,1)+"\n";
+}
 function pintaDificultat(elId="tDif",assigFix=""){const x=$("#"+elId),d=assigFix?x&&x._difD:DIF_D;if(!x||!d)return;
  try{const r=htmlDificultat(d,assigFix,elId);x.innerHTML=r.h;if(r.PL)r.PL.lliga(x);
   x.querySelectorAll("[data-dif-v]").forEach(b=>b.onclick=()=>{if(DIF_VISTA===b.dataset.difV)return;DIF_VISTA=b.dataset.difV;pintaDificultat(elId,assigFix)});
+  const bp=x.querySelector("#btProposaDif");if(bp&&!DEMO)bp.onclick=()=>{baixaFitxer("dificultat.json",construeixDificultatProposada(d),"application/json;charset=utf-8");toast("Proposta de dificultat.json descarregada")};
   const bj=x.querySelector("#btDifJson");if(bj&&!DEMO)bj.onclick=()=>{const b=new Blob([JSON.stringify(d,null,2)+"\n"],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");
    a.href=u;a.download=`bn-dificultat-${assigFix?assigFix+"-":""}${diaMad()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1e3)}}
  catch(e){console.error(e);x.innerHTML=avisErr(`Aquest apartat no s'ha pogut dibuixar: ${e&&e.message||e}`)}}
@@ -3235,30 +3417,34 @@ function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix
  const L=aR(d.preguntes).filter(r=>r&&typeof r==="object"&&!Array.isArray(r)).map(r=>{
   const a=r.assig==null||r.assig===""?"?":String(r.assig),qid=r.qid==null||r.qid===""?"?":String(r.qid);
   const q=oB(PREG)[a+"/"+qid]||null,act=nN(oB(oB(QDIF_ADM)[a])[qid])||2,n=nN(r.n)||0,bones=nN(r.bones)||0,nens=nN(r.nens)||0;
-  const enc=nN(r.encert)??0,enc1=nN(r.encert_1a),seg=nN(r.seg_mig),suf=!!r.suficient&&n>=minR,dif=suf?(nN(r.dificultat)||(enc<55?3:enc>90?1:2)):null;
+  const enc=n>0?(nN(r.encert)??0):null,enc1=n>0?nN(r.encert_1a):null,seg=n>0?nN(r.seg_mig):null,suf=!!r.suficient&&n>=minR&&enc!=null,dif=suf?(nN(r.dificultat)||(enc<55?3:enc>90?1:2)):null;
+  const dubtes=nN(r.dubtes)||0,dubNens=nN(r.dubtes_nens)||0,dm=oB(r.dubtes_motius);
+  const dubMotius={enunciat:nN(dm.enunciat)||0,resposta:nN(dm.resposta)||0,pista:nN(dm.pista)||0};
+  const dubTip=dubtes?`${pl(dubtes,"avís de pregunta confusa","avisos de pregunta confusa")} (${pl(dubNens,"nen","nens")}): `+[dubMotius.enunciat?`no s'entén ${dubMotius.enunciat}`:"",dubMotius.resposta?`resposta ${dubMotius.resposta}`:"",dubMotius.pista?`falta dada ${dubMotius.pista}`:""].filter(Boolean).join(" · "):"";
   // mateixa regla que motor/dificultat.py --proposa: afegir si < 55 % i no és 3; revisar si és 3 i encert >= 75 %
   const estat=!suf?"pendent":dif===3&&act!==3?"afegir":act===3&&enc>=75?"revisar":act===3?"confirmada":dif===1?"facil":"normal";
   const ordE={afegir:1,revisar:2,confirmada:3,normal:4,facil:5,pendent:6}[estat]||9;
-  return {assig:a,qid,text:q?net(q.t):`Pregunta ${qid}`,tema:q?String(q.tema||""):"",bona:q&&Array.isArray(q.o)&&q.o[q.c]!=null?net(q.o[q.c]):null,n,bones,nens,enc,enc1,seg,suf,dif,act,estat,ordE}
+  return {assig:a,qid,text:q?net(q.t):`Pregunta ${qid}`,tema:q?String(q.tema||""):"",bona:q&&Array.isArray(q.o)&&q.o[q.c]!=null?net(q.o[q.c]):null,n,bones,nens,enc,enc1,seg,suf,dif,act,estat,ordE,dubtes,dubNens,dubMotius,dubTip}
  }).filter(r=>!fa||r.assig===fa);
  const nota=!unSol&&TF.nom.trim()?`<p class="fr-nota">${ic("info")}<span>És de tota la colla (últims ${dies} dies, sense comptar el repàs): el filtre de nen i el període curt no s'hi apliquen.</span></p>`:"";
  if(!L.length)return {h:nota+buit("llamp",fa?"Encara no hi ha respostes de test o examen en aquest món.":"Encara no hi ha respostes registrades per calcular la dificultat.",`Calen almenys ${minR} respostes per pregunta en tests o exàmens.`)};
- const sufL=L.filter(r=>r.suf),afegir=sufL.filter(r=>r.estat==="afegir"),revisar=sufL.filter(r=>r.estat==="revisar"),dificils=sufL.filter(r=>r.dif===3),facils=sufL.filter(r=>r.dif===1);
+ const sufL=L.filter(r=>r.suf),afegir=sufL.filter(r=>r.estat==="afegir"),revisar=sufL.filter(r=>r.estat==="revisar"),dificils=sufL.filter(r=>r.dif===3),facils=sufL.filter(r=>r.dif===1),ambDub=L.filter(r=>r.dubtes>0);
  const kp=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${t}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:""}</div>`;
  const kpis=unSol?"":`<div class="kpis" style="margin-bottom:14px">
-  ${kp(`Amb ≥ ${minR} respostes`,totBanc?`${sufL.length} / ${totBanc}`:String(sufL.length),`${L.length} vistes al registre${totBanc?` (${Math.round(sufL.length*100/totBanc)} % amb prou dades)`:""}`)}
+  ${kp(`Amb ≥ ${minR} respostes`,totBanc?`${sufL.length} / ${totBanc}`:String(sufL.length),`${L.length} vistes al registre${ambDub.length?` · ${pl(ambDub.length,"amb dubte 🤔","amb dubtes 🤔")}`:totBanc?` (${Math.round(sufL.length*100/totBanc)} % amb prou dades)`:""}`)}
   ${kp("Difícils reals (< 55 %)",dificils.length,afegir.length?`+${afegir.length} noves fora de dificultat.json`:"totes ja marcades ⚡")}
   ${kp("Fàcils reals (> 90 %)",facils.length,revisar.length?`${revisar.length} marcades ⚡ amb ≥ 75 % d'encert`:"cap ⚡ amb encert alt")}
-  ${kp("Proposta de canvis (#16)",`+${afegir.length} / −${revisar.length}`,afegir.length||revisar.length?"per revisar amb dificultat.py --proposa":"cap canvi proposat ara mateix")}
+  ${kp("Proposta de canvis (#16)",`+${afegir.length} / −${revisar.length}`,afegir.length||revisar.length?"descarrega dificultat.json en 1 clic":"cap canvi proposat ara mateix")}
  </div>`;
- const fil=DIF_VISTA==="proposta"?sufL.filter(r=>r.estat==="afegir"||r.estat==="revisar"):DIF_VISTA==="totes"?L:sufL;
+ const fil=DIF_VISTA==="proposta"?sufL.filter(r=>r.estat==="afegir"||r.estat==="revisar"):DIF_VISTA==="dubtes"?ambDub:DIF_VISTA==="totes"?L:sufL;
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
  const eines=`<div class="eines-t"><div class="seg" id="${unSol?"difModesMon":"difModes"}" role="group" aria-label="Preguntes a mostrar">
   <button type="button" data-dif-v="dades" aria-pressed="${DIF_VISTA==="dades"}">≥ ${minR} resp. (${sufL.length})</button>
   <button type="button" data-dif-v="proposta" aria-pressed="${DIF_VISTA==="proposta"}">Canvis (${afegir.length+revisar.length})</button>
+  <button type="button" data-dif-v="dubtes" aria-pressed="${DIF_VISTA==="dubtes"}">🤔 Dubtes (${ambDub.length})</button>
   <button type="button" data-dif-v="totes" aria-pressed="${DIF_VISTA==="totes"}">Totes (${L.length})</button>
- </div><span class="esp"></span>${unSol?"":`<button class="btn sec petit" type="button" id="btDifJson"${nd}>${ic("baixar")}<span>Baixa JSON</span></button>`}</div>`;
- if(!fil.length&&unSol){const msg=DIF_VISTA==="proposta"?(sufL.length?"Cap canvi proposat en les preguntes que ja tenen prou respostes.":"Encara cap pregunta arriba al mínim de respostes per proposar canvis."):`Encara cap pregunta arriba a ${minR} respostes (n'hi ha ${L.length} de vistes).`;
+ </div><span class="esp"></span>${unSol?"":`<button class="btn petit" type="button" id="btProposaDif"${nd} title="Descarrega motor/dificultat.json actualitzat amb les propostes (+${afegir.length} / −${revisar.length})">${ic("baixar")}<span>⚡ Proposa dificultat.json</span></button><button class="btn sec petit" type="button" id="btDifJson"${nd}>${ic("baixar")}<span>Baixa JSON</span></button>`}</div>`;
+ if(!fil.length&&unSol){const msg=DIF_VISTA==="proposta"?(sufL.length?"Cap canvi proposat en les preguntes que ja tenen prou respostes.":"Encara cap pregunta arriba al mínim de respostes per proposar canvis."):DIF_VISTA==="dubtes"?"Cap alumne ha marcat cap pregunta confusa en aquest món.":`Encara cap pregunta arriba a ${minR} respostes (n'hi ha ${L.length} de vistes).`;
   return {h:nota+kpis+eines+buit("llamp",msg,"Pots prémer «Totes» per veure les preguntes amb menys respostes.")}}
  const pillE=r=>({
   afegir:`<span class="pill bad" title="Encert < 55 % i encara no és a dificultat.json">➕ Proposa ⚡</span>`,
@@ -3268,14 +3454,16 @@ function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix
   normal:`<span class="pill neutre">Normal</span>`,
   pendent:`<span class="pill neutre" title="Encara no arriba a ${minR} respostes">${r.act===3?"⚡ ":""}&lt; ${minR} resp.</span>`
  })[r.estat]||`<span class="pill neutre">—</span>`;
+ const txtReal=r=>r.dif===3?"⚡ difícil":r.dif===1?"fàcil":r.dif===2?"normal":"pendent";
  const cols=[
-  {k:"text",t:"Pregunta",cls:"cur",h:r=>`<span class="q-t">${r.act===3?"⚡ ":""}${esc(r.text)}</span><span class="q-s">${r.tema?esc(r.tema)+" · ":""}${r.bona?`bona: <span class="ok">${esc(r.bona)}</span> · `:""}id ${esc(r.qid)}</span>`},
-  {k:"ordE",t:"Estat ⚡",cls:"nw",v:r=>r.ordE,h:pillE},
-  {k:"enc",t:"Encert",num:true,v:r=>r.enc,h:r=>mini(Math.round(r.enc),100,r.enc<55?"bad":"primary",`${fmtD(r.enc)}%`)+` <span class="muted">(${r.bones}/${r.n})</span>`},
+  {k:"text",t:"Pregunta",cls:"cur",h:r=>`<span class="q-t">${r.act===3?"⚡ ":""}${esc(r.text)}</span><span class="q-s">${r.tema?esc(r.tema)+" · ":""}${r.bona?`bona: <span class="ok">${esc(r.bona)}</span> · `:""}fitxer: <b>${r.act===3?"⚡ difícil":"normal"}</b> · real: <b>${txtReal(r)}</b> · id ${esc(r.qid)}</span>`},
+  {k:"ordE",t:"Estat ⚡",cls:"nw",v:r=>r.ordE*100-Math.min(99,r.dubtes),q:r=>`${r.estat} ${r.dubtes?`dubte confusa ${r.dubTip}`:""}`,h:r=>pillE(r)+(r.dubtes?` <span class="pill warn" title="${esc(r.dubTip)}">🤔 ${r.dubtes}</span>`:"")},
+  {k:"enc",t:"Encert",num:true,v:r=>r.enc??-1,h:r=>r.enc==null?`<span class="muted">0 resp.</span>`:mini(Math.round(r.enc),100,r.enc<55?"bad":"primary",`${fmtD(r.enc)}%`)+` <span class="muted">(${r.bones}/${r.n})</span>`},
   {k:"enc1",t:"1a resp.",num:true,v:r=>r.enc1??-1,h:r=>r.enc1==null?"—":`${fmtD(r.enc1)}%`},
-  {k:"nens",t:"Nens",num:true},{k:"seg",t:"Segons",num:true,v:r=>r.seg??-1,h:r=>r.seg==null?"—":fmtD(r.seg)}];
+  {k:"nens",t:"Nens",num:true,v:r=>r.nens||r.dubNens,h:r=>r.n>0?String(r.nens):r.dubNens?`<span class="muted" title="Nens que han marcat dubte">${r.dubNens} 🤔</span>`:"0"},
+  {k:"seg",t:"Segons",num:true,v:r=>r.seg??-1,h:r=>r.seg==null?"—":fmtD(r.seg)}];
  if(unSol){
-  const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen, sense l'efecte de repetir.</span></div>`;
+  const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>🤔 N</b>: avisos de «Pregunta confusa?» marcats pels alumnes.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen.</span></div>`;
   return {h:nota+eines+taula(idPrefix+"T-0",cols,fil,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(fa)}`})+lleg,PL:null}}
  const canvisA=a=>fil.filter(r=>r.assig===a&&(r.estat==="afegir"||r.estat==="revisar")).length;
  const filesA=a=>fil.filter(r=>r.assig===a).length,vistesA=a=>L.filter(r=>r.assig===a).length;
@@ -3284,24 +3472,28 @@ function htmlDificultat(d,assigFix="",idPrefix="tDif"){d=oB(d);const fa=assigFix
  const blocs=assigs.map((a,i)=>{const rs=fil.filter(r=>r.assig===a),vs=L.filter(r=>r.assig===a),totM=catTot.get(a)||0,sufM=sufL.filter(r=>r.assig===a).length;
   if(!rs.length){
    const maxN=vs.length?Math.max(...vs.map(r=>r.n)):0;
-   const esCanvis=DIF_VISTA==="proposta"&&sufM>0;
-   const metaE=esCanvis?`${totM?`${sufM}/${totM}`:`${sufM}`} amb ≥ ${minR} resp. · sense canvis proposats`:vs.length?`${totM?`0/${totM}`:"0"} amb ≥ ${minR} resp. · ${pl(vs.length,"pregunta vista","preguntes vistes")} (màx. ${maxN}/${minR} resp.)`:`${totM?`0/${totM} preguntes`:"0 preguntes"} · cap resposta de test o examen encara`;
-   const migE=esCanvis?`<span class="pill ok">Sense canvis</span>`:vs.length?`<span class="pill neutre">&lt; ${minR} resp. (${vs.length})</span>`:`<span class="pill neutre">Sense dades</span>`;
-   const dretaE=esCanvis?`<span class="dm-bar" aria-hidden="true"><i style="width:100%;background:var(--ok)"></i></span><small><span class="dm-pit">Cap canvi proposat en les ${sufM} preguntes amb ≥ ${minR} respostes</span><span>0 ⚡</span></small>`:
+   const esCanvis=DIF_VISTA==="proposta"&&sufM>0,esDubtes=DIF_VISTA==="dubtes";
+   const metaE=esDubtes?`${pl(vs.length,"pregunta vista","preguntes vistes")} · cap avís de pregunta confusa`:esCanvis?`${totM?`${sufM}/${totM}`:`${sufM}`} amb ≥ ${minR} resp. · sense canvis proposats`:vs.length?`${totM?`0/${totM}`:"0"} amb ≥ ${minR} resp. · ${pl(vs.length,"pregunta vista","preguntes vistes")} (màx. ${maxN}/${minR} resp.)`:`${totM?`0/${totM} preguntes`:"0 preguntes"} · cap resposta de test o examen encara`;
+   const migE=esDubtes?`<span class="pill ok">0 dubtes</span>`:esCanvis?`<span class="pill ok">Sense canvis</span>`:vs.length?`<span class="pill neutre">&lt; ${minR} resp. (${vs.length})</span>`:`<span class="pill neutre">Sense dades</span>`;
+   const dretaE=esDubtes?`<span class="dm-bar" aria-hidden="true"><i style="width:100%;background:var(--ok)"></i></span><small><span class="dm-pit">Cap alumne ha marcat cap pregunta confusa en aquest món</span><span>0 🤔</span></small>`:
+    esCanvis?`<span class="dm-bar" aria-hidden="true"><i style="width:100%;background:var(--ok)"></i></span><small><span class="dm-pit">Cap canvi proposat en les ${sufM} preguntes amb ≥ ${minR} respostes</span><span>0 ⚡</span></small>`:
     vs.length?`<span class="dm-bar" aria-hidden="true"><i style="width:${Math.max(4,Math.min(100,Math.round(maxN*100/minR)))}%;background:var(--soft)"></i></span><small><span class="dm-pit">Encara cap pregunta arriba a ${minR} respostes (màx. ${maxN}/${minR})</span><span>${vs.length} vistes</span></small>`:
     `<span class="dm-bar" aria-hidden="true"></span><small><span class="dm-pit">Encara no hi ha respostes de test ni d'examen registrades</span><span>0/${totM}</span></small>`;
-   const cosE=esCanvis?buit("ok","Cap canvi proposat en aquest món.",`Les ${sufM} preguntes que ja tenen ≥ ${minR} respostes quadren amb motor/dificultat.json.`):
+   const cosE=esDubtes?buit("ok","Cap pregunta marcada com a confusa en aquest món.","Quan un alumne premi «🤔 Pregunta confusa?» després de respondre, sortirà aquí amb el motiu."):
+    esCanvis?buit("ok","Cap canvi proposat en aquest món.",`Les ${sufM} preguntes que ja tenen ≥ ${minR} respostes quadren amb motor/dificultat.json.`):
     vs.length?`<div class="buit">${ic("llamp")}<b>Encara cap pregunta d'aquest món arriba a ${minR} respostes.</b><span>S'han respost ${pl(vs.length,"pregunta diferent","preguntes diferents")} (fins a ${maxN} respostes en una mateixa pregunta). Pots prémer «Totes» per veure-les ara mateix.</span><div style="margin-top:8px"><button class="btn sec petit" type="button" data-dif-v="totes">Mostra totes les preguntes vistes (${L.length})</button></div></div>`:
     buit("llamp","Encara no hi ha respostes de test o examen en aquest món.",a==="divisibilitat"?"Quan els nens facin els tests dels temes o l'examen apareixeran aquí (els exercicis generats del Taller es mostren a Fitxa del món → Taller).":`Calen respostes als tests dels temes o a l'examen sorpresa (mínim ${minR} per pregunta per calcular la dificultat).`);
    return PL.bloc(a,metaE,migE,dretaE,cosE);
   }
-  const afM=rs.filter(r=>r.estat==="afegir").length,rvM=rs.filter(r=>r.estat==="revisar").length,dfM=rs.filter(r=>r.dif===3).length,
-    pitjor=[...rs].sort((x,y)=>x.enc-y.enc||y.n-x.n)[0],mig=afM||rvM?`<span class="pill ${afM?"bad":"info"}">${afM?`+${afM} ⚡`:""}${afM&&rvM?" · ":""}${rvM?`−${rvM} ⚡`:""}</span>`:"";
-  return PL.bloc(a,`${totM?`${sufM}/${totM} amb ≥ ${minR} resp.`:`${pl(rs.length,"pregunta","preguntes")}`}${dfM?` · ${pl(dfM,"difícil real","difícils reals")}`:""}`,mig,
-   `<span class="dm-bar" aria-hidden="true"><i style="width:${Math.max(4,Math.round(100-pitjor.enc))}%;background:${pitjor.enc<55?"var(--bad)":"var(--primary)"}"></i></span>
-    <small><span class="dm-pit" title="${esc(pitjor.text)}">Més baixa: <b>${esc(pitjor.text)}</b></span><span>${fmtD(pitjor.enc)}%</span></small>`,
+  const afM=rs.filter(r=>r.estat==="afegir").length,rvM=rs.filter(r=>r.estat==="revisar").length,dfM=rs.filter(r=>r.dif===3).length,dbM=rs.filter(r=>r.dubtes>0).length,
+    ambN=rs.filter(r=>r.enc!=null),pitjor=(ambN.length?ambN:rs).slice().sort((x,y)=>(x.enc??101)-(y.enc??101)||y.dubtes-x.dubtes||y.n-x.n)[0],
+    mig=(afM||rvM?`<span class="pill ${afM?"bad":"info"}">${afM?`+${afM} ⚡`:""}${afM&&rvM?" · ":""}${rvM?`−${rvM} ⚡`:""}</span>`:"")+(dbM?` <span class="pill warn">🤔 ${dbM}</span>`:"");
+  const pEnc=pitjor.enc;
+  return PL.bloc(a,`${totM?`${sufM}/${totM} amb ≥ ${minR} resp.`:`${pl(rs.length,"pregunta","preguntes")}`}${dfM?` · ${pl(dfM,"difícil real","difícils reals")}`:""}`,mig.trim(),
+   `<span class="dm-bar" aria-hidden="true"><i style="width:${pEnc==null?50:Math.max(4,Math.round(100-pEnc))}%;background:${pEnc==null?"var(--warn)":pEnc<55?"var(--bad)":"var(--primary)"}"></i></span>
+    <small><span class="dm-pit" title="${esc(pitjor.text)}">Més baixa: <b>${esc(pitjor.text)}</b></span><span>${pEnc==null?`🤔 ${pitjor.dubtes}`:`${fmtD(pEnc)}%`}</span></small>`,
    taula(idPrefix+"T-"+i,cols,rs,{k:"enc",desc:false,alta:true,etiqueta:`Dificultat real · ${nomAssig(a)}`}))}).join("");
- const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen, sense l'efecte de repetir.</span></div>`;
+ const lleg=`<div class="llegenda"><span><b>➕ Proposa ⚡</b>: menys del 55 % d'encert (amb ≥ ${minR} respostes) i encara no és a <code>motor/dificultat.json</code>.</span><span><b>➖ Revisa ⚡</b>: marcada ⚡ però amb ≥ 75 % d'encert.</span><span><b>🤔 N</b>: avisos de «Pregunta confusa?» marcats pels alumnes.</span><span><b>1a resp.</b>: encert comptant només el primer intent de cada nen.</span></div>`;
  return {h:nota+kpis+eines+PL.eines()+blocs+lleg,PL}}
 
 // ====================== CONFIGURACIÓ (§4.6: Horaris i crèdits, Catàleg, Llindars, Còpies) ======================
@@ -3894,6 +4086,10 @@ function demoInit(){if(DEMO_L)return;const R=rndD(20261105),tria=a=>a[Math.floor
     if(R()<.15){const dubtos=R()>n.hab;ev("oberta",Object.assign({tema:tema.t,pc:ent(40,100),s:ent(60,300)},dubtos?{rebutjat:ent(1,3)}:{},dubtos&&R()<.5?{enganxat:1}:{}))}
     if(R()<.2)ev("valora",{tema:tema.t,titol:tema.titol,v:tria(["Costa","Bé","Fàcil"])});
     ev("temps",{s:segs+ent(30,200),punts:punts[as],fonts:{temes:Math.round(punts[as]*.5),jocs:Math.round(punts[as]*.25),combo:Math.round(punts[as]*.05),record:Math.round(punts[as]*.05),repas:Math.round(punts[as]*.05),missio:Math.round(punts[as]*.05),boss:Math.round(punts[as]*.05)}})}}});
+ // un parell d'avisos «🤔 Pregunta confusa?» (g24) a sessions ja existents sense alterar el generador aleatori
+ const ultJ=L.slice().reverse().find(l=>l.nom==="Jana"&&l.event==="test"),ultP=L.slice().reverse().find(l=>l.nom==="Pau"&&l.event==="test");
+ if(ultJ&&Array.isArray(ultJ.detall.q)&&ultJ.detall.q[0])L.push({id:L.length+1,ts:ultJ.ts,assig:ultJ.assig,nom:ultJ.nom,sessio:ultJ.sessio,aparell:ultJ.aparell,event:"dubte",detall:{qid:ultJ.detall.q[0].split(":")[0],motiu:"enunciat",ok:0}});
+ if(ultP&&Array.isArray(ultP.detall.q)&&ultP.detall.q[0])L.push({id:L.length+1,ts:ultP.ts,assig:ultP.assig,nom:ultP.nom,sessio:ultP.sessio,aparell:ultP.aparell,event:"dubte",detall:{qid:ultP.detall.q[0].split(":")[0],motiu:"resposta",ok:0}});
  DEMO_L=L.sort((a,b)=>a.ts.localeCompare(b.ts))}
 const demoLogsDies=d=>{const des=Date.now()-d*864e5;return DEMO_L.filter(l=>Date.parse(l.ts)>=des).slice().reverse()};
 const demoIds=()=>({"àlex":1,"jana":2,"pau":3,"laia":4,"nora":5,"gina":6});
@@ -3998,9 +4194,11 @@ async function demoFontsRepRpc(f,x){
     // generem casos variats i deterministes: proposa ⚡ (<55% sense marca), confirmada ⚡, revisa ⚡ (>=75% amb marca), fàcil (>90%), normal i <8 resp.
     const pat=i===0?[11,4,7,33.3,10.4]:i===1&&es3?[10,8,6,80.0,6.8]:es3?[12,5,7,42.9,11.2]:i===2?[10,10,6,100.0,5.1]:i<6?[9,7,5,71.4,7.5]:[4,2,3,50.0,8.0];
     const [n,bones,nens,enc1,seg]=pat,enc=Math.round(bones*1000/n)/10,suf=n>=minR,dif=!suf?null:enc<55?3:enc>90?1:2;
-    out.push({assig:a,qid,n,bones,nens,encert:enc,encert_1a:enc1,seg_mig:seg+Math.round(R()*10)/10,suficient:suf,dificultat:dif})})});
+    const dubtes=i===0&&(a==="socials"||a==="angles")?2:i===6&&a==="socials"?1:0;
+    const dubMot=dubtes===2?{enunciat:1,resposta:1,pista:0}:dubtes===1?{enunciat:0,resposta:0,pista:1}:{enunciat:0,resposta:0,pista:0};
+    out.push({assig:a,qid,n,bones,nens,encert:enc,encert_1a:enc1,seg_mig:seg+Math.round(R()*10)/10,suficient:suf,dificultat:dif,dubtes,dubtes_nens:dubtes,dubtes_motius:dubMot})})});
   const suf=out.filter(r=>r.suficient);
-  return {min_respostes:minR,dies,assig:a0,resum:{preguntes_vistes:out.length,amb_dades:suf.length,dificils:suf.filter(r=>r.dificultat===3).length,normals:suf.filter(r=>r.dificultat===2).length,facils:suf.filter(r=>r.dificultat===1).length},preguntes:out}}
+  return {min_respostes:minR,dies,assig:a0,resum:{preguntes_vistes:out.length,amb_dades:suf.length,dificils:suf.filter(r=>r.dificultat===3).length,normals:suf.filter(r=>r.dificultat===2).length,facils:suf.filter(r=>r.dificultat===1).length,amb_dubtes:out.filter(r=>r.dubtes>0).length},preguntes:out}}
  throw "demo"}
 function demoDesde(p){const n=new Date();if(p==="avui"){n.setHours(0,0,0,0);return n.getTime()}if(p==="30d")return Date.now()-30*864e5;if(p==="curs"){const y=n.getMonth()<8?n.getFullYear()-1:n.getFullYear();return new Date(y,8,1).getTime()}return Date.now()-7*864e5}
 const demoLogs=(des,fins,fa=TF.assig,fn=TF.nom)=>{const k=String(fn||"").trim().toLowerCase();return DEMO_L.filter(l=>{const t=Date.parse(l.ts);return t>=des&&t<fins&&(!fa||l.assig===fa)&&(!k||clauNen(l)===k)})};
