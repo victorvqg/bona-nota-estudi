@@ -232,12 +232,15 @@ dialog::backdrop{background:rgba(15,23,42,.55)}
 .fitxa-sel label{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
 .fitxa-sel select{min-width:165px;max-width:250px}
 .perfil{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.perfil-info{flex:1 1 220px;min-width:0}
+.perfil-acc{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-left:auto}
 .perfil h2{font-size:21px;margin:0;font-weight:700}
 .mon-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:var(--card2);border:2px solid var(--mc,#94a3b8);flex:none}
 .xips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .pestanyes{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:16px 0 14px;overflow-x:auto;max-width:100%}
 .pestanyes.compacta{margin:0 0 14px}
 .filtres-loc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+.filtres-loc select,.filtres-loc input[type="date"]{max-width:100%;min-width:0}
 .cp-det{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 16px}
 .cp-det div,.cp-det dd,.cp-det dt{min-width:0}
 .cp-det div{padding:8px 10px;border-radius:var(--r1);background:var(--card2);border:1px solid var(--border);font-size:12.5px}
@@ -264,6 +267,21 @@ dialog::backdrop{background:rgba(15,23,42,.55)}
 .ses h3 small{color:var(--muted);font-weight:500}
 .lin{display:flex;gap:12px;font-size:13.5px;padding:3px 0}
 .lin time{color:var(--muted);min-width:44px;flex:none}
+.log-dia{border:1px solid var(--border);border-radius:var(--r2);background:var(--card);overflow:hidden}
+.log-dia+.log-dia{margin-top:12px}
+.log-dia-cap{padding:10px 14px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.log-dia-t{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 12px}
+.log-dia-t h3{margin:0;font-size:14.5px;font-weight:700;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.log-dia-qui{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px}
+.log-nen-xip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:2px 9px 2px 4px;border-radius:999px;background:var(--card);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text)}
+.log-nen-xip:hover{border-color:var(--primary);background:var(--primary-soft)}
+.log-nen-xip.actiu{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.log-nen-xip small{color:var(--muted);font-weight:500}
+.log-llista{padding:0 14px}
+.log-lin{display:grid;grid-template-columns:46px minmax(105px,150px) auto auto minmax(0,1fr);gap:6px 10px;align-items:center;padding:7px 0;border-top:1px solid var(--border);font-size:13px}
+.log-lin:first-child{border-top:0}
+.log-lin time{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12.5px}
+.log-lin .log-d{min-width:0;overflow-wrap:anywhere;line-height:1.45}
 .fest{display:grid;grid-template-columns:minmax(140px,210px) minmax(60px,1fr) 52px;gap:10px;align-items:center;margin:6px 0;font-size:13.5px}
 .fest span{display:flex;align-items:center;gap:8px}
 .fest b{text-align:right}
@@ -545,6 +563,8 @@ td.xtx{min-width:190px}
  .fitxa-sel{flex:1 1 auto;justify-content:flex-end}
  .fitxa-sel label span{display:none}
  .fitxa-sel select{min-width:0;flex:1 1 135px;max-width:210px}
+ .perfil-acc{width:100%;margin-left:0}.perfil-acc .btn{flex:1 1 auto;justify-content:center}
+ .log-lin{display:flex;flex-wrap:wrap;gap:5px 8px;padding:8px 0}.log-lin .log-d{flex:1 1 100%}
  .pestanyes button{padding:8px 10px;font-size:13px}
  .calor{min-width:0;grid-template-columns:22px repeat(24,minmax(0,1fr));gap:2px}.calor .h3{visibility:hidden}
  .nav-inf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);border-top:1px solid var(--border);padding:4px 2px calc(4px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 10px rgba(15,23,42,.06)}
@@ -606,7 +626,7 @@ td.xtx{min-width:190px}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.33.0";
+const VERSIO_ADMIN="2.34.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -838,8 +858,9 @@ async function refrescaAuto(forcat=false){
  if(!CRED||DEMO||$("#shell").hidden||VISTA==="config"||AUTO_CURS)return false;
  if(!forcat&&(document.visibilityState==="hidden"||($("#dlg")&&$("#dlg").open)||!$("#panell").hidden))return false;
  const ae=document.activeElement;
- if(!forcat&&ae&&ae.matches&&ae.matches("#contingut input:not(.tb-q),#contingut textarea,#contingut select"))return false;
+ if(!forcat&&ae&&ae.matches&&ae.matches("#contingut input:not(.tb-q):not(#fLogQ),#contingut textarea,#contingut select"))return false;
  const sy=window.scrollY,fTq=ae&&ae.matches&&ae.matches("input.tb-q[data-tq]")?{id:ae.dataset.tq,s0:ae.selectionStart,s1:ae.selectionEnd}:null;
+ const fLq=ae&&ae.id==="fLogQ"?{s0:ae.selectionStart,s1:ae.selectionEnd}:null;
  AUTO_CURS=true;
  try{
   const d=DIES,calLogs=VISTA==="nens"||VISTA==="mons"||VISTA==="sessions"||VISTA==="fitxa"||(VISTA==="ranquing"&&TAB==="reptes");
@@ -852,6 +873,7 @@ async function refrescaAuto(forcat=false){
   scrollTo(0,sy);
   if(fTq){const inp=document.querySelector(`input.tb-q[data-tq="${CSS&&CSS.escape?CSS.escape(fTq.id):fTq.id}"]`);
    if(inp){inp.focus({preventScroll:true});try{if(fTq.s0!=null)inp.setSelectionRange(fTq.s0,fTq.s1)}catch(e){}}}
+  else if(fLq){const inp=$("#fLogQ");if(inp){inp.focus({preventScroll:true});try{if(fLq.s0!=null)inp.setSelectionRange(fLq.s0,fLq.s1)}catch(e){}}}
   return true;
  }catch(e){return false}
  finally{AUTO_CURS=false}
@@ -900,10 +922,11 @@ function escriuUrl(push){
  const qs=sp.toString(),url=location.pathname+(qs?"?"+qs:"");
  if(url!==location.pathname+location.search){try{history[push?"pushState":"replaceState"](null,"",url)}catch(e){}}
 }
+function netejaTF(){TF.assig="";TF.nom="";TF.dia="";TF.ev="";TF.q="";LOG_TOT=false}
 function navega(v,o={}){
  if(!VISTES_OK.has(v))v="inici";
  const canviSeccio=v!==VISTA;
- if(canviSeccio){TF.assig="";TF.nom=""}
+ if(canviSeccio)netejaTF();
  if(CRED&&!DEMO&&v!=="config"&&ACT&&Date.now()-ACT.getTime()>=10000){invalidarDades({logs:true});ACT=new Date()}
  tancaPanell();
  const id=o.id?(v==="mons"?normMonId(o.id):o.id):null;
@@ -955,21 +978,41 @@ function nomsTots(){const m=new Map();
  Object.entries(NOMS_TOTS).forEach(([k,n])=>{if(k&&k!=="_alta"&&n)m.set(k,n)});
  LOGS.forEach(l=>{const k=clauNen(l);if(k&&k!=="_alta"&&l.nom)m.set(k,l.nom)});
  return [...m.values()].sort((a,b)=>a.localeCompare(b,"ca"))}
-function barraFiltresLocals({assig=true,nen=true}={}){
+const LOG_EVENTS=[["entra","Entrades"],["fitxa","Fitxes"],["targetes","Targetes"],["test","Tests"],["joc","Jocs / Repàs / Boss"],["examen","Exàmens"],["oberta","Preguntes obertes"],["valora","Valoracions"],["temps","Temps estudiat"]];
+function barraFiltresLocals({assig=true,nen=true,dia=false,ev=false,cerca=false}={}){
  const as=[...new Set([...Object.keys(ASSIGS),...LOGS.map(l=>l.assig)])].filter(Boolean),noms=nomsTots();
- return `<div class="filtres-loc" role="group" aria-label="Filtres locals">${assig?`<label class="sr" for="fAssig">Món</label><select id="fAssig"><option value="">Tots els mons</option>${as.map(a=>`<option value="${esc(a)}" ${TF.assig===a?"selected":""}>${esc(nomAssig(a))}</option>`).join("")}</select>`:""}${nen?`<label class="sr" for="fNen">Nen</label><select id="fNen"><option value="">Tots els nens</option>${noms.map(n=>`<option ${TF.nom.toLowerCase()===n.toLowerCase()?"selected":""}>${esc(n)}</option>`).join("")}</select>`:""}${(TF.assig||TF.nom)?`<button class="btn sec petit" type="button" id="fNeteja">Neteja filtres</button>`:""}</div>`}
-function lligaFiltresLocals(rerender){
- const fa=$("#fAssig"),fn=$("#fNen"),bt=$("#fNeteja");
- if(fa)fa.onchange=e=>{TF.assig=e.target.value;FDIA=null;REPP=null;DIFR=null;rerender()};
- if(fn)fn.onchange=e=>{TF.nom=e.target.value;BEN=null;FDIA=null;rerender()};
- if(bt)bt.onclick=()=>{TF.assig="";TF.nom="";BEN=null;FDIA=null;REPP=null;DIFR=null;rerender()};
+ let diaH="";
+ if(dia){
+  const compta=new Map(),k0=TF.nom.trim().toLowerCase();
+  LOGS.filter(l=>(!TF.assig||l.assig===TF.assig)&&(!k0||clauNen(l)===k0)&&(!TF.ev||l.event===TF.ev)).forEach(l=>{const d=diaMad(l.ts);compta.set(d,(compta.get(d)||0)+1)});
+  if(TF.dia&&!compta.has(TF.dia))compta.set(TF.dia,0);
+  const avM=diaMad(),ahM=sumaD(avM,-1),ds=[...compta.keys()].sort((a,b)=>b.localeCompare(a));
+  const et=d=>`${d===avM?"Avui · ":d===ahM?"Ahir · ":""}${diaC(d+"T12:00")} (${compta.get(d)||0})`;
+  diaH=`<label class="sr" for="fDia">Dia</label><select id="fDia"><option value="">Tots els dies</option>${ds.map(d=>`<option value="${esc(d)}"${TF.dia===d?" selected":""}>${esc(et(d))}</option>`).join("")}</select><label class="sr" for="fDiaCal">Data concreta</label><input type="date" id="fDiaCal" value="${esc(TF.dia)}" aria-label="Data concreta" title="Filtra per una data concreta">`;
+ }
+ const evH=ev?`<label class="sr" for="fEvent">Tipus d'acció</label><select id="fEvent"><option value="">Totes les accions</option>${LOG_EVENTS.map(([k,t])=>`<option value="${esc(k)}"${TF.ev===k?" selected":""}>${esc(t)}</option>`).join("")}</select>`:"";
+ const qH=cerca?`<label class="cerca" style="min-height:36px;max-width:240px;min-width:150px">${ic("cerca")}<span class="sr">Cerca al log</span><input type="search" id="fLogQ" placeholder="Cerca tema, detall…" value="${esc(TF.q)}"></label>`:"";
+ const act=!!(TF.assig||TF.nom||(dia&&TF.dia)||(ev&&TF.ev)||(cerca&&TF.q));
+ return `<div class="filtres-loc" role="group" aria-label="Filtres locals">${assig?`<label class="sr" for="fAssig">Món</label><select id="fAssig"><option value="">Tots els mons</option>${as.map(a=>`<option value="${esc(a)}" ${TF.assig===a?"selected":""}>${esc(nomAssig(a))}</option>`).join("")}</select>`:""}${nen?`<label class="sr" for="fNen">Nen</label><select id="fNen"><option value="">Tots els nens</option>${noms.map(n=>`<option ${TF.nom.toLowerCase()===n.toLowerCase()?"selected":""}>${esc(n)}</option>`).join("")}</select>`:""}${diaH}${evH}${qH}${act?`<button class="btn sec petit" type="button" id="fNeteja">Neteja filtres</button>`:""}</div>`}
+function lligaFiltresLocals(rerender,renderCos){
+ const fa=$("#fAssig"),fn=$("#fNen"),fd=$("#fDia"),fc=$("#fDiaCal"),fe=$("#fEvent"),fq=$("#fLogQ"),bt=$("#fNeteja");
+ if(fa)fa.onchange=e=>{TF.assig=e.target.value;LOG_TOT=false;FDIA=null;REPP=null;DIFR=null;rerender()};
+ if(fn)fn.onchange=e=>{TF.nom=e.target.value;LOG_TOT=false;BEN=null;FDIA=null;rerender()};
+ if(fd)fd.onchange=e=>{TF.dia=e.target.value;LOG_TOT=false;rerender()};
+ if(fc)fc.onchange=e=>{TF.dia=e.target.value;LOG_TOT=false;rerender()};
+ if(fe)fe.onchange=e=>{TF.ev=e.target.value;LOG_TOT=false;rerender()};
+ if(fq)fq.oninput=e=>{TF.q=e.target.value;LOG_TOT=false;if(renderCos)renderCos();else rerender()};
+ if(bt)bt.onclick=()=>{netejaTF();BEN=null;FDIA=null;REPP=null;DIFR=null;rerender()};
 }
 function htmlPestanyes(llista,actual,label="Apartats"){
  return `<div class="pestanyes compacta" role="tablist" aria-label="${esc(label)}">${llista.map(([id,tit])=>`<button role="tab" type="button" data-vtab="${esc(id)}" aria-selected="${id===actual}" tabindex="${id===actual?0:-1}">${esc(tit)}</button>`).join("")}</div>`}
 function lligaPestanyes(el,llista){if(!el)return;const bs=[...el.querySelectorAll("[data-vtab]")];
  bs.forEach((b,i)=>{b.onclick=()=>navega(VISTA,{tab:b.dataset.vtab,scroll:false});
   b.onkeydown=e=>{const m={ArrowRight:1,ArrowLeft:-1}[e.key];if(m){e.preventDefault();const nx=bs[(i+m+bs.length)%bs.length];nx.focus();navega(VISTA,{tab:nx.dataset.vtab,scroll:false})}}})}
-const LF=()=>LOGS.filter(l=>(!TF.assig||l.assig===TF.assig)&&(!TF.nom||clauNen(l)===TF.nom.trim().toLowerCase()));
+const cercaLog=(l,q)=>{q=q.trim().toLowerCase();if(!q)return true;
+ const txt=`${l.nom||""} ${nomAssig(l.assig)} ${l.assig||""} ${l.event||""} ${netTxt(descriu(l))} ${JSON.stringify(l.detall||{})} ${l.aparell||""}`.toLowerCase();
+ return txt.includes(q)};
+const LF=()=>LOGS.filter(l=>(!TF.assig||l.assig===TF.assig)&&(!TF.nom||clauNen(l)===TF.nom.trim().toLowerCase())&&(!TF.dia||diaMad(l.ts)===TF.dia)&&(!TF.ev||l.event===TF.ev)&&(!TF.q||cercaLog(l,TF.q)));
 
 async function pinta(){
  GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
@@ -1163,7 +1206,8 @@ function detall(k,manté){k=String(k||"").trim().toLowerCase();
  ],4);
  c.innerHTML=`<div class="fitxa-bar"><button class="btn sec petit" type="button" id="torna">${ic("enrere")} Tots els nens</button>
   <div class="fitxa-sel"><label for="selFitxaNen">${ic("nens")}<span>Canvia de nen:</span></label><select id="selFitxaNen" aria-label="Canvia de nen">${opcNens}</select></div></div>
- <section class="targeta perfil">${avatar(n.nom,"g")}<div><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}${pillNivell(estMax)}<span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin">${pillPin(null)}</span><span id="xAmagat"></span></div></div></section>
+ <section class="targeta perfil">${avatar(n.nom,"g")}<div class="perfil-info"><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}${pillNivell(estMax)}<span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin">${pillPin(null)}</span><span id="xAmagat"></span></div></div>
+  <div class="perfil-acc" role="group" aria-label="Descarrega l'informe complet"><button class="btn petit" type="button" id="btInfHtml" title="Descarrega un informe complet visual llest per llegir o imprimir com a PDF">${ic("baixar")}<span>Informe HTML / PDF</span></button><button class="btn sec petit" type="button" id="btInfMd" title="Descarrega l'informe complet en format Markdown (.md)">${ic("baixar")}<span>Informe .md</span></button></div></section>
  <div class="pestanyes" role="tablist" aria-label="Seccions de la fitxa">
   <button role="tab" type="button" id="tb-resum" aria-controls="tp-resum" aria-selected="true">Resum i estrelles</button>
   <button role="tab" type="button" id="tb-apr" aria-controls="tp-apr" aria-selected="false" tabindex="-1">Aprenentatge</button>
@@ -1189,6 +1233,9 @@ function detall(k,manté){k=String(k||"").trim().toLowerCase();
    <div id="gest" aria-live="polite"></div></section></div></section>`;
  $("#torna").onclick=()=>navega("nens");
  $("#selFitxaNen").onchange=e=>{const nk=e.target.value;if(!nk||nk===k)return;tancaPanell();ELEM=nk;FITXA=nk;escriuUrl(true);detall(nk,true)};
+ const bIH=$("#btInfHtml"),bIM=$("#btInfMd");
+ if(bIH)bIH.onclick=()=>baixaInformeNen(n,ls,"html",bIH);
+ if(bIM)bIM.onclick=()=>baixaInformeNen(n,ls,"md",bIM);
  const fcf=$("#fCopFes");if(fcf)fcf.onclick=fesCopia;
  const tabs=$$("#contingut .pestanyes [role=tab]"),obre=(t,focus)=>{tabs.forEach(x=>{const s=x===t;x.setAttribute("aria-selected",s);x.tabIndex=s?0:-1;$("#"+x.getAttribute("aria-controls")).hidden=!s});
   PEST={k,id:t.id};TAB=t.id;escriuUrl(false);if(focus!==false)t.focus();
@@ -1384,6 +1431,424 @@ async function pintaFitxaSes(n,ls){
   fb.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_benestar.sql","L'apartat de benestar encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el benestar (${e&&e.message||e}).`);
  }
 }
+// ---- Informe complet de la Fitxa del nen (HTML imprimible/PDF + Markdown estructurat) ----
+function baixaFitxer(nomFitxer,contingut,mime){
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([contingut],{type:mime}));
+ a.download=nomFitxer;
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+}
+async function recullInformeNen(n,ls){
+ await Promise.all([preguntes(),carregaRegles()]);
+ const [estBit,aprRes,benRes,nuvRes,talRes]=await Promise.all([
+  estatDe(n.nom).catch(()=>null),
+  faprDe(n),
+  benestarNenDe(n.nom).catch(e=>({__err:e})),
+  nuvolDe(n).catch(e=>{if(NUV&&NUV.k===n.k)NUV=null;return {__err:e}}),
+  rpcT("bn_admin_errors_taller",{p_assig:null,p_nom:n.nom}).catch(e=>({__err:e}))
+ ]);
+ const pCod=PERIODE[DIES]||"7d",pNom={avui:"Avui","7d":"Últims 7 dies","30d":"Últims 30 dies",curs:"Tot el curs"}[pCod]||pCod;
+ const ara=new Date(),diaTxt=d=>esDia(d)?diaC(d+"T12:00"):d==null||d===""?"—":String(d),net=t=>String(t||"").replace(/<[^>]+>/g,"");
+ const nuvErr=nuvRes&&nuvRes.__err?String(nuvRes.__err):null,nuv=!nuvErr?oB(nuvRes):null;
+ const pf=nuv&&nuv.perfil&&typeof nuv.perfil==="object"&&!Array.isArray(nuv.perfil)?nuv.perfil:null;
+ const idNum=IDS[n.k]??nN(pf&&pf.id);
+ const pinTxt=pf?(nN(pf.pin_v)===2?"PIN nou (4 números i 1 lletra)":"PIN antic (4 números)"):txtPin(estBit);
+ const amagat=!!((nuv&&nuv.amagat===true)||(estBit!=null&&(estBit&1)));
+ const altaTxt=pf?(msS(pf.creat)||"d'abans"):"—",pinDataTxt=pf&&msS(pf.pin_ts)?msL(pf.pin_ts):null;
+ const asp=ASPECTES[n.k]||{};
+ const aspTxt=[asp.av||null,typeof BN_SKILL_INFO!=="undefined"&&BN_SKILL_INFO[asp.sk]?BN_SKILL_INFO[asp.sk].n:null,pf&&msS(pf.aspecte_ts)?`triat ${msS(pf.aspecte_ts)}`:null].filter(Boolean).join(" · ")||(pf?"Encara no triat":"—");
+ // 1. Resum i estrelles (període)
+ const vals=Object.values(n.punts),est=vals.reduce((a,b)=>a+b,0),estMax=vals.length?Math.max(0,...vals):0,nv=nivellDe(estMax);
+ const notaMitj=n.tests.length?mitj(n.tests):null,examMillor=n.exam.length?Math.max(...n.exam):null,examMitj=n.exam.length?mitj(n.exam):null;
+ const monsAct=[...n.assigs].map(a=>({assig:a,nom:nomAssig(a),accions:ls.filter(l=>l.assig===a).length,punts:n.punts[a]??null,nivell:n.punts[a]!=null?nivellDe(n.punts[a]):null}));
+ const estMons=[...n.assigs].filter(a=>n.punts[a]!=null).map(a=>{const fo=(n.fonts[a]||{}).f||{},p=n.punts[a]||0,tot=FONTS_EST.reduce((s,[k])=>s+(fo[k]||0),0),ab=Math.max(0,p-tot);
+  const files=FONTS_EST.filter(([k])=>fo[k]).map(([k,_,nom])=>({k,nom,v:fo[k]}));if(ab)files.push({k:"abans",nom:"D'abans (sense detall)",v:ab});
+  return {assig:a,nom:nomAssig(a),punts:p,nivell:nivellDe(p),files}});
+ const ORD_T=[["fitxa","Fitxes"],["targetes","Targetes"],["test","Tests"],["joc","Jocs"],["examen","Exàmens"],["oberta","Preguntes obertes"]],totT={};
+ ls.forEach(l=>{const s=+(l.detall&&l.detall.s)||0;if(s>0)totT[l.event]=(totT[l.event]||0)+s});
+ const sumT=ORD_T.reduce((s,[k])=>s+(totT[k]||0),0);
+ const tempsAct=sumT?ORD_T.filter(([k])=>totT[k]>0).map(([k,nom])=>({k,nom,s:totT[k],temps:fmtT(totT[k]),pct:Math.round(totT[k]*100/sumT)})):[];
+ // 2. Aprenentatge (període)
+ const [,domRaw,fallRaw,fdRaw]=aprRes||[];
+ const domErr=domRaw&&domRaw.__err?String(domRaw.__err):null,domArr=!domErr&&Array.isArray(domRaw)?domRaw:[];
+ const temesDe=a=>{const m=new Map();Object.entries(PREG||{}).forEach(([k,v])=>{const [as,t]=k.split("/");if(as===a&&!t.startsWith("j-")&&!m.has(t))m.set(t,v.tema)});
+  domArr.filter(x=>x.assig===a).forEach(x=>{if(!m.has(x.tema))m.set(x.tema,x.titol||x.tema)});return [...m.entries()]};
+ const domMons=[...new Set(domArr.map(x=>x.assig))].map(a=>{
+  const ds=domArr.filter(x=>x.assig===a),temes=temesDe(a),tot={aprovat:0,suspes:0,fitxa:0,no:0};
+  const rows=temes.map(([t,tit])=>{const c=ds.find(x=>x.tema===t),e=!c?"no":c.millor==null?"fitxa":c.millor>=APROVAT?"aprovat":"suspes";tot[e]++;
+   const estTxt=e==="aprovat"?"Aprovat":e==="suspes"?"Per millorar":e==="fitxa"?"Només estudiat":"Sense obrir";
+   const seg=c?+c.segons_estudi||0:0;
+   return {tit:String(tit||t),est:e,estTxt,millor:c&&c.millor!=null?+c.millor:null,ultima:c&&c.ultima!=null?+c.ultima:null,intents:c?+c.intents||0:0,minEstudi:seg?Math.max(1,Math.round(seg/60)):0,val:c&&c.valoracio?String(c.valoracio):null}});
+  const TT=Math.max(1,temes.length);
+  return {assig:a,nom:nomAssig(a),aprovats:tot.aprovat,suspesos:tot.suspes,fitxes:tot.fitxa,total:temes.length,pct:Math.round(tot.aprovat*100/TT),rows}});
+ const fallErr=fallRaw&&fallRaw.__err?String(fallRaw.__err):null;
+ const fallades=(!fallErr&&Array.isArray(fallRaw)?fallRaw:[]).map(f=>{const q=PREG[f.assig+"/"+f.qid]||null,parany=q&&f.opcio_parany!=null&&q.o[+f.opcio_parany]!=null?net(q.o[+f.opcio_parany]):null;
+  return {assig:f.assig,nomMon:nomAssig(f.assig),qid:String(f.qid||"?"),text:q?net(q.t):`Pregunta ${f.qid}`,tema:q?String(q.tema||""):"",bona:q?net(q.o[q.c]):"?",parany,pct:+f.pct_error||0,errors:+f.errors||0,intents:+f.intents||0,seg:f.segons!=null?+f.segons:null}});
+ let repFets=0,errApr=0,bossInt=0,bossWin=0;
+ ls.filter(l=>l.event==="joc").forEach(l=>{const d=l.detall||{};if(d.joc==="repas"){repFets++;errApr+=+d.apr||0}else if(d.joc==="boss"){bossInt++;if(d.guanya)bossWin++}});
+ const misAcum=Object.values(n.fonts).reduce((a,x)=>a+(+(x.f||{}).missio||0),0);
+ const Dfd=fdRaw&&!fdRaw.__err?dadesCombos(fdRaw):null;
+ const combosEst=Dfd?Dfd.m3:FONTS_M3.reduce((s,k)=>s+Object.values(n.fonts).reduce((a,x)=>a+(+(x.f||{})[k]||0),0),0);
+ const missioEst=Dfd?(Dfd.tot.missio||0):misAcum;
+ const fontsPeriode=Dfd?Object.keys(Dfd.tot).sort((a,b)=>Dfd.tot[b]-Dfd.tot[a]).map(k=>({k,nom:nomF(k),v:Dfd.tot[k]})):[];
+ const talErr=talRes&&talRes.__err?String(talRes.__err):null;
+ const taller=(!talErr&&Array.isArray(talRes)?talRes:[]).map(r=>({gen:TALLER_GEN[r.gen]||String(r.gen||"?"),pas:String(r.pas||"—"),err:TALLER_ERR[r.codi]||String(r.codi||"?"),n:+r.n||0}));
+ const obertes=ls.filter(l=>l.event==="oberta").sort((a,b)=>b.ts.localeCompare(a.ts)).map(l=>{
+  const d=l.detall||{},reb=+d.rebutjat||0,eng=!!(+d.enganxat||0),mode=d.mode||"oberta";
+  const tit=d.tema?titolTema(l.assig,String(d.tema)):"Pregunta oberta";
+  const modeTxt=mode==="control"?"Quadern (control)":mode==="foto"?"Foto quadern":mode==="practica"?"Pràctica":"Oberta";
+  const resTxt=mode==="foto"?(d.ok?(d.correcte?"Correcte":"Amb error"):"Error"):d.pc!=null?`${+d.pc}%`:"—";
+  const estTxt=eng?"Ha enganxat":reb?pl(reb,"intent rebutjat","intents rebutjats"):"Bé";
+  return {data:dataC(l.ts),assig:l.assig,nomMon:nomAssig(l.assig),tit:String(tit),modeTxt,resTxt,estTxt,eng,reb,
+   resum:netTxt(descriu(l)),pc:d.pc!=null?+d.pc:null,idees:d.idees!=null&&d.de!=null?`${d.idees} de ${d.de}`:null,
+   temps:d.s?fmtT(d.s):null,est:d.est!=null?+d.est:null,pasos:d.pasos?String(d.pasos):null,
+   text:d.text||d.resposta||d.resp||null,det:Array.isArray(d.det)?d.det.map(String):[],falten:Array.isArray(d.falten)?d.falten.map(String):[]}});
+ // 3. Sessions i benestar (període)
+ const benErr=benRes&&benRes.__err?String(benRes.__err):null;
+ let benSem="verd",benSemTxt="Verd (res a vigilar)",benMotius=[];
+ if(!benErr){
+  const rec=aR(oB(benRes).nens).find(x=>x&&String(x.k||"").trim().toLowerCase()===n.k);
+  const ss=rec?aR(rec.senyals).filter(s=>s&&typeof s==="object"&&NIV[s.nivell]):[];
+  benSem=rec?(SEM[rec.semafor]?rec.semafor:semDe(ss)):"verd";
+  benSemTxt=benSem==="vermell"?"Vermell (cal parlar-ne)":benSem==="groc"?"Groc (per vigilar)":"Verd (ús saludable)";
+  benMotius=motiusB(ss).map(m=>({nivell:m.nivell,nivTxt:NIV[m.nivell].t,text:String(m.text||""),tt:m.tt?String(m.tt):""}));
+ }
+ const gSes={};ls.forEach(l=>(gSes[l.sessio]=gSes[l.sessio]||[]).push(l));
+ const sessions=Object.entries(gSes).map(([id,a])=>{a.sort((x,y)=>x.ts.localeCompare(y.ts));
+  const durS=a.filter(l=>l.event==="temps").reduce((s,l)=>s+(+(l.detall&&l.detall.s)||0),0);
+  const evs=[...new Set(a.map(l=>l.event))].filter(e=>e!=="temps"&&e!=="entra");
+  return {id,assig:a[0].assig,nomMon:nomAssig(a[0].assig),iniTs:a[0].ts,ini:dataC(a[0].ts),fi:hora(a[a.length-1].ts),durS,durada:fmtT(durS),n:a.length,evs,
+   accions:a.map(l=>({hora:hora(l.ts),event:String(l.event||""),desc:netTxt(descriu(l))}))}}).sort((a,b)=>b.iniTs.localeCompare(a.iniTs));
+ // 4. Al núvol (estat acumulat sempre vigent)
+ const avuiU=avuiUTC(),nuvMons=nuv?aR(nuv.mons).filter(m=>m&&typeof m==="object"&&!Array.isArray(m)).map(m=>{
+  const a=String(m.assig??"?"),nomM=nomAssig(a);
+  if(m.error===true)return {assig:a,nomMon:nomM,error:true};
+  const punts=nN(m.punts)||0,nvM=nivellDe(punts),temps=nN(m.temps),dies=Array.isArray(m.dies)?m.dies.length:nN(m.dies);
+  const diaU=esDia(m.dia_ult)?m.dia_ult:Array.isArray(m.dies)?m.dies.filter(esDia).sort().pop():null;
+  const ts=nN(m.ts),rein=nN(m.reinici);
+  const TS=oB(m.temes),T=titols().get(a)||new Map(),ids=[...T.keys()];Object.keys(TS).forEach(t=>{if(!T.has(t))ids.push(t)});
+  const temes=ids.map(t=>{const x=oB(TS[t]),fall=Object.entries(oB(x.fallades)).map(([q,v])=>[String(q),nN(v)]).filter(y=>y[1]>0).sort((p,q)=>q[1]-p[1]);
+   const nI=nN(x.n)||0,mxI=nN(x.max),ulI=nN(x.ult),fit=x.fitxa===true,fc=nN(x.fc)||0,obT=Object.prototype.hasOwnProperty.call(TS,t);
+   const estT=nI?(mxI!=null&&mxI>=APROVAT?"Aprovat":"Per millorar"):fit||fc?"Només ha estudiat":obT?"Obert":"Sense obrir";
+   const detE=[fit?"fitxa llegida":"",fc?pl(fc,"targeta","targetes"):""].filter(Boolean).join(" · ");
+   return {t:String(t),tit:String(titolTema(a,t)),fora:ids.includes(t)&&!T.has(t),n:nI,max:mxI,ult:ulI,dUlt:diaTxt(x.d_ult),estTxt:estT,detE,fall}});
+  const delMon=T.size?temes.filter(r=>T.has(r.t)):temes,ap=delMon.filter(r=>r.n&&r.max!=null&&r.max>=APROVAT).length,tot=delMon.length;
+  const rep=aR(m.rep).filter(r=>r&&typeof r==="object").map(r=>{const pr=esDia(r.prox)?r.prox:null;
+   const tocaTxt=pr==null?"—":pr<=avuiU?`Avui${pr<avuiU?` (des de ${diaTxt(pr)})`:""}`:diaTxt(pr);
+   return {q:r.q==null||r.q===""?"—":String(r.q),tit:r.tid==null||r.tid===""?"—":String(titolTema(a,String(r.tid))),tocaTxt,avui:!!(pr&&pr<=avuiU),caixa:nN(r.c)}});
+  const repN=nN(m.rep_n)??rep.length,repAvui=nN(m.rep_avui)??0;
+  const ob=Object.entries(oB(m.ob)).map(([k,v])=>[String(k),nN(v)]).filter(x=>x[1]!=null).sort((p,q)=>(nN(p[0])??1e9)-(nN(q[0])??1e9)||p[0].localeCompare(q[0]));
+  const obM=ob.length?Math.round(ob.reduce((s,x)=>s+x[1],0)/ob.length):null;
+  const ex=aR(m.examens).filter(e=>e&&typeof e==="object"&&nN(e.pc)!=null).map(e=>({dia:diaTxt(e.d),pc:nN(e.pc),real:e.real===1||e.real===true}));
+  const exM=ex.length?Math.max(...ex.map(e=>e.pc)):null;
+  const boss=oB(m.boss),bv=nN(boss.v)||0,bc=nN(boss.cors),aprM=nN(m.apresos)||0;
+  const jocs=Object.entries(oB(m.jocs)).map(([j,x])=>{x=oB(x);return {j:String(j),n:nN(x.n)||0,max:nN(x.max),ult:nN(x.ult),est:nN(oB(m.fjoc)[j])}}).filter(r=>r.n);
+  const fo=oB(m.fonts),fK=Object.entries(fo).map(([k,v])=>[String(k),nN(v)]).filter(x=>x[1]>0),fT=fK.reduce((s,x)=>s+x[1],0),abans=Math.max(0,punts-fT);
+  const coneg=new Set(FONTS_EST.map(x=>x[0]));
+  const fonts=[...FONTS_EST.filter(([k])=>nN(fo[k])>0).map(([k,_,nom])=>({nom,v:nN(fo[k])})),...fK.filter(([k])=>!coneg.has(k)).map(([k,v])=>({nom:k,v})),...(abans&&fT?[{nom:"D'abans (sense detall)",v:abans}]:[])];
+  const ftema=Object.entries(oB(m.ftema)).map(([t,v])=>({tit:String(titolTema(a,t)),v:nN(v)})).filter(x=>x.v>0).sort((p,q)=>q.v-p.v);
+  return {assig:a,nomMon:nomM,error:false,punts,nivell:nvM,temps:temps!=null?fmtT(temps):null,dies,diaUlt:diaU?diaTxt(diaU):null,
+   desat:ts&&ts>0?dataC(ts):"—",reinici:rein&&rein>0?diaC(rein):null,aprovats:ap,totalTemes:tot,repN,repAvui,apresos:aprM,
+   bossVictories:bv,bossCors:bc,bossDia:esDia(boss.d)?diaTxt(boss.d):null,temes,rep,examens:ex,examMillor:exM,ob,obMitj:obM,jocs,fonts,ftema};
+ }):[];
+ return {
+  k:n.k,nom:String(n.nom||n.k),id:idNum,pCod,pNom,generat:dataC(ara),generatIso:ara.toISOString().slice(0,10),versio:VERSIO_ADMIN, demo:DEMO,
+  pinTxt,pinDataTxt,altaTxt,amagat,aspTxt,tePerfilNuvol:!!pf, avatarHtml:avatar(n.nom,"g"),
+  resum:{est,estMax,nivell:nv,temps:fmtT(n.temps),tempsS:n.temps,sessions:n.ses.size,dies:n.dies,ratxa:n.ratxa,aparells:n.ap.size,
+   tests:n.tests.length,notaMitj,examens:n.exam.length,examMillor,examMitj,jocs:n.jocs,ult:n.ult?dataC(n.ult):"—",
+   registres:ls.length,monsAct,estMons,tempsAct},
+  apr:{domErr,domMons,fallErr,fallades,combos:{est:combosEst,delPeriode:!!Dfd,errApr,repFets,bossWin,bossInt,missioEst,fontsPeriode},talErr,taller,obertes},
+  ses:{benErr,benSem,benSemTxt,benMotius,sessions},
+  nuvol:{err:nuvErr,tePerfil:!!pf,mons:nuvMons}
+ };
+}
+function generaInformeNenHtml(D){
+ const R=D.resum,A=D.apr,S=D.ses,N=D.nuvol;
+ const bdg=(cls,txt)=>`<span class="pill ${cls}">${esc(txt)}</span>`;
+ const semCls=s=>s==="vermell"||s==="bad"?"bad":s==="groc"||s==="warn"?"warn":"ok";
+ const pcH=v=>v==null?`<span class="muted">—</span>`:`<span class="pc ${v>=APROVAT?"ok":v>=50?"warn":"bad"}">${esc(v)}%</span>`;
+ const tbl=(caps,rows)=>rows.length?`<div class="tw"><table><thead><tr>${caps.map(([t,num])=>`<th${num?' class="num"':""}>${esc(t)}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${caps[i]&&caps[i][1]?' class="num"':""}>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`:`<p class="buit">Sense dades en aquest apartat.</p>`;
+ const kpi=(t,v,s)=>`<div class="kpi"><div class="kpi-t">${esc(t)}</div><div class="kpi-v">${esc(v)}</div>${s?`<div class="kpi-s">${esc(s)}</div>`:""}</div>`;
+ // 1. Resum
+ const hMons=tbl([["Món",0],["Accions al període",1],["Estrelles al món",1],["Nivell",0]],
+  R.monsAct.map(m=>[`<b>${esc(m.nom)}</b>`,esc(m.accions),m.punts!=null?`${esc(m.punts)} ⭐`:"—",m.nivell?`${esc(m.nivell.ic)} ${esc(m.nivell.n)} · ${esc(m.nivell.nom)}`:"—"]));
+ const hEst=R.estMons.length?R.estMons.map(m=>`<div class="subcard"><h4>${esc(m.nom)} · ${esc(m.punts)} ⭐ (${esc(m.nivell.ic)} ${esc(m.nivell.n)} · ${esc(m.nivell.nom)})</h4>${tbl([["Origen de les estrelles",0],["Estrelles",1]],m.files.map(f=>[esc(f.nom),esc(f.v)]))}</div>`).join(""):`<p class="buit">Encara no hi ha estrelles registrades en aquest període.</p>`;
+ const hTemps=R.tempsAct.length?tbl([["Activitat",0],["Temps dedicat",1],["Proporció",1]],R.tempsAct.map(x=>[esc(x.nom),esc(x.temps),`${esc(x.pct)}%`])):`<p class="buit">Sense temps per activitat registrat en aquest període.</p>`;
+ // 2. Aprenentatge
+ const hDom=A.domErr?`<p class="avis">No s'ha pogut carregar el domini per tema (${esc(A.domErr)}).</p>`:A.domMons.length?A.domMons.map(m=>`<div class="subcard"><h4>${esc(m.nom)} — ${esc(m.aprovats)}/${esc(m.total)} temes aprovats (${esc(m.pct)}%)${m.suspesos?` · ${esc(m.suspesos)} per millorar`:""}</h4>${tbl([["Tema",0],["Estat",0],["Millor",1],["Intents",1],["Estudi i valoració",0]],
+  m.rows.map(r=>{const det=[r.ultima!=null&&r.intents>1?`última ${r.ultima}%`:"",r.minEstudi?`${r.minEstudi} min estudi`:"",r.val?`diu «${r.val}»`:""].filter(Boolean).join(" · ")||"—";
+   const cl=r.est==="aprovat"?"ok":r.est==="suspes"?"bad":"neutre";
+   return [`<b>${esc(r.tit)}</b>`,bdg(cl,r.estTxt),pcH(r.millor),esc(r.intents),esc(det)]}))}</div>`).join(""):`<p class="buit">Cap activitat de temes en aquest període.</p>`;
+ const hFal=A.fallErr?`<p class="avis">No s'han pogut carregar les preguntes fallades (${esc(A.fallErr)}).</p>`:tbl([["Món · Tema",0],["Pregunta",0],["% error",1],["Errors",1],["Resposta bona / Parany",0],["Seg.",1]],
+  A.fallades.map(f=>[`<b>${esc(f.nomMon)}</b>${f.tema?`<br><small class="muted">${esc(f.tema)}</small>`:""}`,`${esc(f.text)} <small class="muted">(${esc(f.qid)})</small>`,`<b class="pc bad">${esc(f.pct)}%</b>`,`${esc(f.errors)}/${esc(f.intents)}`,`Bona: <b class="pc ok">${esc(f.bona)}</b>${f.parany?`<br>Parany: <span class="pc bad">${esc(f.parany)}</span>`:""}`,f.seg!=null?esc(fmtD(f.seg)):"—"]));
+ const C=A.combos;
+ const hCombos=`<div class="kpis">${kpi("Combos i repàs",`${C.est} ⭐`,C.delPeriode?"del període":"acumulat")}${kpi("Errors apresos",C.errApr,pl(C.repFets,"repàs","repassos"))}${kpi("Boss guanyats",C.bossWin,pl(C.bossInt,"intent","intents"))}${kpi("Missions",`${C.missioEst} ⭐`,C.delPeriode?"del període":"acumulat")}</div>`
+  +(C.fontsPeriode.length?`<div style="margin-top:10px">${tbl([["Origen (estrelles noves del període)",0],["Estrelles",1]],C.fontsPeriode.map(f=>[esc(f.nom),`${esc(f.v)} ⭐`]))}</div>`:"");
+ const hTaller=A.taller.length?`<div class="subcard"><h3>Errors al Taller de mates</h3>${tbl([["Exercici",0],["Pas",0],["Error",0],["Vegades",1]],A.taller.map(t=>[`<b>${esc(t.gen)}</b>`,esc(t.pas),esc(t.err),esc(t.n)]))}</div>`:"";
+ const hObe=A.obertes.length?A.obertes.map((o,i)=>`<div class="obe-card"><div class="obe-cap"><b>#${i+1} · ${esc(o.nomMon)} — ${esc(o.tit)}</b><span>${bdg("neutre",o.modeTxt)} ${bdg(o.eng?"bad":o.reb?"warn":"ok",o.estTxt)} <small class="muted">${esc(o.data)}</small></span></div>
+  <p class="obe-resum">${esc(o.resum)}${[o.idees?`Idees: ${o.idees}`:"",o.temps?`Temps: ${o.temps}`:"",o.est!=null?`${o.est} ⭐`:"",o.pasos?`Passos: ${o.pasos}`:""].filter(Boolean).map(x=>` · ${esc(x)}`).join("")}</p>
+  ${o.text?`<div class="obe-resposta"><b>Resposta escrita pel nen:</b><div>${esc(o.text)}</div></div>`:""}
+  ${o.det.length?`<p class="obe-llista"><b class="pc ok">Idees trobades:</b> ${o.det.map(x=>esc(x)).join(" · ")}</p>`:""}
+  ${o.falten.length?`<p class="obe-llista"><b class="pc bad">Idees que han faltat:</b> ${o.falten.map(x=>esc(x)).join(" · ")}</p>`:""}</div>`).join(""):`<p class="buit">Cap resposta oberta en aquest període.</p>`;
+ // 3. Sessions i benestar
+ const hBen=S.benErr?`<p class="avis">No s'ha pogut carregar el benestar (${esc(S.benErr)}).</p>`:`<div class="subcard"><p style="margin:0 0 8px">Semàfor del període: ${bdg(semCls(S.benSem),S.benSemTxt)}</p>${S.benMotius.length?`<ul class="llista">${S.benMotius.map(m=>`<li><b>[${esc(m.nivTxt)}]</b> ${esc(m.text)}${m.tt?` <span class="muted">(${esc(m.tt)})</span>`:""}</li>`).join("")}</ul>`:`<p class="muted" style="margin:0">Cap senyal d'alerta en aquest període.</p>`}</div>`;
+ const hSesTaula=tbl([["Inici",0],["Fi",0],["Món",0],["Durada",1],["Accions",1],["Activitats",0]],
+  S.sessions.map(s=>[esc(s.ini),esc(s.fi),`<b>${esc(s.nomMon)}</b>`,esc(s.durada),esc(s.n),esc(s.evs.join(", ")||"—")]));
+ const hSesDet=S.sessions.length?`<div style="margin-top:12px"><h4 style="margin:0 0 8px">Cronologia detallada de cada sessió (${esc(S.sessions.length)})</h4>${S.sessions.map((s,idx)=>`<details class="ses-det"${S.sessions.length<=15||idx<5?" open":""}><summary><b>${esc(s.ini)} → ${esc(s.fi)}</b> · ${esc(s.nomMon)} · ${esc(s.durada)} · ${esc(pl(s.n,"acció","accions"))}</summary>
+  <div class="ses-lins">${s.accions.map(a=>`<div class="ses-lin"><time>${esc(a.hora)}</time><span class="pill neutre">${esc(a.event)}</span><span>${esc(a.desc)}</span></div>`).join("")}</div></details>`).join("")}</div>`:"";
+ // 4. Al núvol
+ const hNuvol=N.err?`<p class="avis">No s'ha pogut carregar el progrés al núvol (${esc(N.err)}).</p>`:!N.mons.length?`<p class="buit">${esc(N.tePerfil?"Té PIN, però encara no ha desat progrés al núvol.":"No té PIN: sense PIN el progrés es queda només al dispositiu (vegeu les seccions anteriors del registre).")}</p>`
+  :N.mons.map(m=>{
+   if(m.error)return `<div class="subcard"><h3>${esc(m.nomMon)}</h3><p class="avis">L'estat desat d'aquest món és mal format i no s'ha pogut llegir.</p></div>`;
+   const kpM=`<div class="kpis">${kpi("Estrelles",`${m.punts} ⭐`,m.temps?`${m.temps} jugant`:"")}${kpi("Nivell",`${m.nivell.ic} ${m.nivell.n} · ${m.nivell.nom}`,m.nivell.seg!=null?`falten ${m.nivell.falten} ⭐ per a ${m.nivell.segNom}`:"nivell màxim")}${kpi("Dies d'estudi",m.dies??"—",m.diaUlt?`últim: ${m.diaUlt}`:"")}${kpi("Temes aprovats",`${m.aprovats}/${m.totalTemes}`,`aprovat ≥ ${APROVAT}%`)}${kpi("Errors per repassar",m.repN,`${pl(m.repAvui,"toca","toquen")} avui · ${pl(m.apresos,"après","apresos")}`)}${kpi("Boss",m.bossVictories?pl(m.bossVictories,"victòria","victòries"):"—",m.bossVictories&&m.bossCors!=null?`millor: ${pl(m.bossCors,"cor","cors")}${m.bossDia?` · ${m.bossDia}`:""}`:"encara no guanyat")}</div>`;
+   const tbT=tbl([["Tema",0],["Estat",0],["Millor",1],["Intents",1],["Última",0],["Preguntes que més falla",0]],
+    m.temes.map(t=>[`<b>${esc(t.tit)}</b>${t.fora?` <small class="muted">(id antic)</small>`:""}`,`${bdg(t.estTxt==="Aprovat"?"ok":t.estTxt==="Per millorar"?"bad":"neutre",t.estTxt)}${t.detE?`<br><small class="muted">${esc(t.detE)}</small>`:""}`,pcH(t.max),esc(t.n),t.ult!=null?`${pcH(t.ult)} <small class="muted">${esc(t.dUlt)}</small>`:"—",t.fall.length?t.fall.map(([q,v])=>`<b>×${esc(v)}</b> ${esc(q)}`).join("<br>"):"—"]));
+   const tbR=m.rep.length?`<h4>Errors pendents de repàs (${esc(m.repN)})</h4>`+tbl([["Pregunta",0],["Tema",0],["Quan toca",0],["Caixa",1]],m.rep.map(r=>[esc(r.q),esc(r.tit),r.avui?bdg("warn",r.tocaTxt):esc(r.tocaTxt),r.caixa==null?"—":esc(r.caixa)])):`<p class="muted">Cap error pendent de repàs en aquest món.</p>`;
+   const tbJ=m.jocs.length?`<h4>Jocs jugats (${esc(m.jocs.length)})</h4>`+tbl([["Joc",0],["Partides",1],["Millor",1],["Última",1],["Estrelles",1]],m.jocs.map(j=>[`<b>${esc(j.j)}</b>`,esc(j.n),pcH(j.max),pcH(j.ult),j.est==null?"—":`${esc(j.est)} ⭐`])):"";
+   const tbF=m.fonts.length?`<h4>Fonts d'estrelles al núvol</h4>`+tbl([["Origen",0],["Estrelles",1]],m.fonts.map(f=>[esc(f.nom),`${esc(f.v)} ⭐`]))+(m.ftema.length?`<p class="muted"><b>Temes amb més estrelles:</b> ${m.ftema.map(x=>`${esc(x.tit)} (${esc(x.v)} ⭐)`).join(" · ")}</p>`:""):"";
+   const exH=m.examens.length?`<p><b>Exàmens (${esc(m.examens.length)}, millor ${esc(m.examMillor)}%):</b> ${m.examens.map(e=>`${esc(e.dia)}: ${esc(e.pc)}%${e.real?" (de veritat)":""}`).join(" · ")}</p>`:"";
+   const obH=m.ob.length?`<p><b>Preguntes obertes al núvol (${esc(m.ob.length)}, mitjana ${esc(m.obMitj)}%):</b> ${m.ob.map(([k,v])=>`#${esc(k)}: ${esc(v)}%`).join(" · ")}</p>`:"";
+   return `<div class="subcard"><h3>${esc(m.nomMon)} <small class="muted" style="font-weight:500">· Desat: ${esc(m.desat)}${m.reinici?` · Reiniciat: ${esc(m.reinici)}`:""}</small></h3>${kpM}<h4>Temes del món</h4>${tbT}${tbR}${exH}${obH}${tbJ}${tbF}</div>`;
+  }).join("");
+ return `<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Informe · ${esc(D.nom)} (${esc(D.pNom)}) · Bona Nota</title>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--card2:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--muted:#475569;--primary:#4338ca;--ok:#15803d;--ok-bg:#dcfce7;--warn:#b45309;--warn-bg:#fef3c7;--bad:#b91c1c;--bad-bg:#fee2e2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:13.5px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.barra-imp{position:sticky;top:0;z-index:20;background:#1e1b4b;color:#fff;padding:10px 18px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 2px 8px rgba(15,23,42,.2)}
+.barra-imp nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12.5px}
+.barra-imp a{color:#e0e7ff;text-decoration:none;font-weight:600}
+.barra-imp a:hover{color:#fff;text-decoration:underline}
+.btn-imp{cursor:pointer;border:0;border-radius:8px;background:#facc15;color:#1e1b4b;font:600 13px/1 inherit;padding:9px 14px}
+.btn-imp:hover{background:#fde047}
+.full{max-width:980px;margin:20px auto 48px;padding:0 16px}
+.cap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-bottom:16px}
+.cap h1{margin:0;font-size:22px;line-height:1.2}
+.cap-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.av{position:relative;display:inline-block;flex:none;width:58px;height:58px;border-radius:50%;background:var(--av,#64748b);box-shadow:0 0 0 1px rgba(15,23,42,.18)}
+.av-cl{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;background:var(--av,#64748b)}
+.av-cl .spr{display:block;width:84%;height:auto;shape-rendering:crispEdges}
+.av .av-sk{position:absolute;right:-5px;bottom:-3px;width:16px;height:16px;border-radius:5px;background:#1d1631;border:1px solid #facc15;display:grid;place-items:center}
+.av .av-sk .spr{width:11px;display:block;shape-rendering:crispEdges}
+.sec{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:16px}
+.sec>h2{margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid var(--card2);font-size:17px;color:#1e1b4b}
+.sec h3{margin:16px 0 8px;font-size:14.5px}
+.sec h4{margin:12px 0 6px;font-size:13.5px}
+.subcard{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px;background:#fcfdff}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:12px}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--card2);break-inside:avoid}
+.kpi-t{font-size:11.5px;color:var(--muted);font-weight:600}
+.kpi-v{font-size:20px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
+.kpi-s{font-size:11.5px;color:var(--muted);margin-top:2px}
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:8px;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+th{background:var(--card2);color:var(--muted);text-align:left;padding:6px 9px;border-bottom:1px solid var(--border);font-weight:600}
+td{padding:6px 9px;border-bottom:1px solid var(--border);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+th.num,td.num{text-align:right;white-space:nowrap}
+.pill{display:inline-block;border-radius:999px;padding:1px 8px;font-size:11px;font-weight:600}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.neutre{background:var(--card2);color:var(--muted);border:1px solid var(--border)}
+.pc.ok{color:var(--ok);font-weight:700}.pc.warn{color:var(--warn);font-weight:700}.pc.bad{color:var(--bad);font-weight:700}
+.muted{color:var(--muted)}.buit{color:var(--muted);font-style:italic;margin:8px 0}.avis{padding:10px 12px;border-radius:8px;background:var(--warn-bg);color:var(--warn);margin:8px 0}
+.obe-card{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;break-inside:avoid}
+.obe-cap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;align-items:center}
+.obe-resum{margin:6px 0;font-size:12.5px;color:var(--muted)}
+.obe-resposta{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin:6px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.obe-llista{margin:4px 0;font-size:12.5px}
+.llista{margin:6px 0 0;padding-left:18px}
+.ses-det{border:1px solid var(--border);border-radius:8px;padding:6px 10px;margin-top:6px}
+.ses-det summary{cursor:pointer;font-size:12.5px}
+.ses-lins{margin-top:6px;border-top:1px solid var(--border);padding-top:6px}
+.ses-lin{display:flex;flex-wrap:wrap;gap:6px 10px;padding:3px 0;font-size:12px;align-items:baseline}
+.ses-lin time{color:var(--muted);min-width:40px;font-variant-numeric:tabular-nums}
+.peu{text-align:center;color:var(--muted);font-size:11.5px;margin-top:18px}
+@media print{
+ @page{margin:12mm}
+ body{background:#fff;font-size:11.5px}
+ .barra-imp{display:none!important}
+ .full{max-width:none;margin:0;padding:0}
+ .cap,.sec{border-radius:8px;margin-bottom:12px;padding:12px 14px}
+}
+</style>
+</head>
+<body>
+<div class="barra-imp">
+ <nav><b>⭐ Bona Nota · Informe de ${esc(D.nom)}</b><a href="#s-resum">1. Resum</a><a href="#s-apr">2. Aprenentatge</a><a href="#s-ses">3. Sessions i benestar</a><a href="#s-nuv">4. Al núvol</a></nav>
+ <button type="button" class="btn-imp" onclick="document.querySelectorAll('details').forEach(function(d){d.open=true});window.print()">🖨️ Imprimeix / Desa com a PDF</button>
+</div>
+<main class="full">
+ <header class="cap">
+  ${D.avatarHtml}
+  <div style="flex:1;min-width:220px">
+   <h1>${esc(D.nom)} ${D.id!=null?`<span class="muted" style="font-size:16px;font-weight:500">#${esc(D.id)}</span>`:""}</h1>
+   <div class="cap-meta">
+    ${bdg("neutre",`Període: ${D.pNom}`)}
+    ${bdg("neutre",`Generat: ${D.generat}`)}
+    ${bdg(D.tePerfilNuvol?"ok":"neutre",D.pinTxt)}
+    ${D.altaTxt!=="—"?bdg("neutre",`Alta: ${D.altaTxt}`):""}
+    ${D.amagat?bdg("warn","Amagat del rànquing"):bdg("ok","Visible al rànquing")}
+    ${D.aspTxt!=="—"?bdg("neutre",`Perfil: ${D.aspTxt}`):""}
+    ${D.demo?bdg("warn","Mode demo"):""}
+   </div>
+  </div>
+ </header>
+ <section class="sec" id="s-resum">
+  <h2>1. Resum i estrelles (${esc(D.pNom)})</h2>
+  <div class="kpis">
+   ${kpi("Estrelles (període)",`${R.est} ⭐`,`${R.nivell.ic} Nivell ${R.nivell.n} · ${R.nivell.nom}`)}
+   ${kpi("Temps d'estudi",R.temps,`${pl(R.sessions,"sessió","sessions")} · ${pl(R.dies,"dia actiu","dies actius")}${R.ratxa>1?` (ratxa ${R.ratxa})`:""}`)}
+   ${kpi("Nota mitjana de tests",R.notaMitj!=null?`${R.notaMitj}%`:"—",pl(R.tests,"test fet","tests fets"))}
+   ${kpi("Última activitat",R.ult,R.examens?`${pl(R.examens,"examen","exàmens")} (millor ${R.examMillor}%) · ${pl(R.jocs,"joc","jocs")}`:`${pl(R.jocs,"joc","jocs")} · ${pl(R.registres,"registre","registres")}`)}
+  </div>
+  <h3>Mons treballats al període</h3>${hMons}
+  <h3>D'on surten les estrelles</h3>${hEst}
+  <h3>Temps per tipus d'activitat</h3>${hTemps}
+ </section>
+ <section class="sec" id="s-apr">
+  <h2>2. Aprenentatge (${esc(D.pNom)})</h2>
+  <h3>Domini per tema</h3>${hDom}
+  <h3>Preguntes més fallades</h3>${hFal}
+  <h3>Combos, repàs, boss i missions</h3>${hCombos}
+  ${hTaller}
+  <h3>Respostes obertes, quadern i fotos (${esc(A.obertes.length)})</h3>${hObe}
+ </section>
+ <section class="sec" id="s-ses">
+  <h2>3. Sessions i benestar (${esc(D.pNom)})</h2>
+  <h3>Benestar i bon ús</h3>${hBen}
+  <h3>Historial de sessions (${esc(S.sessions.length)})</h3>${hSesTaula}${hSesDet}
+ </section>
+ <section class="sec" id="s-nuv">
+  <h2>4. Al núvol (progrés acumulat desat)</h2>
+  ${hNuvol}
+ </section>
+ <footer class="peu">Bona Nota (bonanota.net) · Versió ${esc(D.versio)} · Informe generat el ${esc(D.generat)}</footer>
+</main>
+<script>window.addEventListener("beforeprint",function(){document.querySelectorAll("details").forEach(function(d){d.open=true})});<\/script>
+</body>
+</html>`;
+}
+function generaInformeNenMd(D){
+ const R=D.resum,A=D.apr,S=D.ses,N=D.nuvol;
+ const mc=v=>{const s=String(v??"—").replace(/\r?\n+/g," ").replace(/\|/g,"\\|").trim();return s||"—"};
+ const mdTbl=(caps,rows)=>!rows.length?"_Sense dades en aquest apartat._\n":[`| ${caps.map(mc).join(" | ")} |`,`| ${caps.map(()=>"---").join(" | ")} |`,...rows.map(r=>`| ${r.map(mc).join(" | ")} |`)].join("\n")+"\n";
+ const L=[];
+ L.push(`# Informe complet · ${D.nom}${D.id!=null?` (#${D.id})`:""}`);
+ L.push("");
+ L.push(`- **Període de les pestanyes 1–3:** ${D.pNom}`);
+ L.push(`- **Data de generació:** ${D.generat} · Bona Nota v${D.versio}${D.demo?" _(mode demo)_":""}`);
+ L.push(`- **PIN i compte:** ${D.pinTxt}${D.pinDataTxt?` (${D.pinDataTxt})`:""} · Alta: ${D.altaTxt} · Rànquing: ${D.amagat?"Amagat":"Visible"} · Perfil arcade: ${D.aspTxt}`);
+ L.push("");
+ // 1. Resum i estrelles
+ L.push(`## 1. Resum i estrelles (${D.pNom})`);
+ L.push("");
+ L.push(`- **Estrelles registrades:** ${R.est} ⭐ (màxim en un món: ${R.estMax} ⭐ · ${R.nivell.ic} Nivell ${R.nivell.n} ${R.nivell.nom}${R.nivell.seg!=null?`, en falten ${R.nivell.falten} per a ${R.nivell.segNom}`:", nivell màxim"})`);
+ L.push(`- **Temps d'estudi:** ${R.temps} en ${pl(R.sessions,"sessió","sessions")} · **Dies actius:** ${R.dies}${R.ratxa>1?` (ratxa actual: ${R.ratxa} dies)`:""} · **Dispositius:** ${R.aparells}`);
+ L.push(`- **Tests:** ${R.tests}${R.notaMitj!=null?` (nota mitjana: ${R.notaMitj}%)`:""} · **Exàmens:** ${R.examens}${R.examMillor!=null?` (millor: ${R.examMillor}%, mitjana: ${R.examMitj}%)`:""} · **Jocs:** ${R.jocs}`);
+ L.push(`- **Última activitat:** ${R.ult} · **Registres al període:** ${R.registres}`);
+ L.push("");
+ L.push(`### Mons treballats`);
+ L.push(mdTbl(["Món","Accions","Estrelles","Nivell"],R.monsAct.map(m=>[m.nom,m.accions,m.punts!=null?`${m.punts} ⭐`:"—",m.nivell?`${m.nivell.ic} ${m.nivell.n} · ${m.nivell.nom}`:"—"])));
+ L.push(`### D'on surten les estrelles`);
+ if(!R.estMons.length)L.push("_Encara no hi ha estrelles registrades en aquest període._\n");
+ else R.estMons.forEach(m=>{L.push(`#### ${m.nom} (${m.punts} ⭐ · ${m.nivell.ic} ${m.nivell.n} ${m.nivell.nom})`);L.push(mdTbl(["Origen","Estrelles"],m.files.map(f=>[f.nom,f.v])))});
+ L.push(`### Temps per tipus d'activitat`);
+ L.push(mdTbl(["Activitat","Temps","%"],R.tempsAct.map(x=>[x.nom,x.temps,`${x.pct}%`])));
+ // 2. Aprenentatge
+ L.push(`## 2. Aprenentatge (${D.pNom})`);
+ L.push("");
+ L.push(`### Domini per tema`);
+ if(A.domErr)L.push(`_No s'ha pogut carregar el domini per tema (${A.domErr})._\n`);
+ else if(!A.domMons.length)L.push(`_Cap activitat de temes en aquest període._\n`);
+ else A.domMons.forEach(m=>{
+  L.push(`#### ${m.nom} — ${m.aprovats}/${m.total} temes aprovats (${m.pct}%)${m.suspesos?` · ${m.suspesos} per millorar`:""}`);
+  L.push(mdTbl(["Tema","Estat","Millor","Intents","Última","Estudi","Valoració"],m.rows.map(r=>[r.tit,r.estTxt,r.millor!=null?`${r.millor}%`:"—",r.intents,r.ultima!=null?`${r.ultima}%`:"—",r.minEstudi?`${r.minEstudi} min`:"—",r.val||"—"])));
+ });
+ L.push(`### Preguntes més fallades`);
+ if(A.fallErr)L.push(`_No s'han pogut carregar les preguntes fallades (${A.fallErr})._\n`);
+ else L.push(mdTbl(["Món","Tema","Pregunta","% error","Errors","Resposta bona","Opció parany","Seg."],A.fallades.map(f=>[f.nomMon,f.tema||"—",`${f.text} (${f.qid})`,`${f.pct}%`,`${f.errors}/${f.intents}`,f.bona,f.parany||"—",f.seg!=null?fmtD(f.seg):"—"])));
+ const C=A.combos;
+ L.push(`### Combos, repàs, boss i missions`);
+ L.push(`- **Combos i repàs:** ${C.est} ⭐ (${C.delPeriode?"del període":"acumulat"}) · **Errors apresos:** ${C.errApr} (${pl(C.repFets,"repàs","repassos")}) · **Boss guanyats:** ${C.bossWin}/${C.bossInt} · **Missions:** ${C.missioEst} ⭐`);
+ if(C.fontsPeriode.length){L.push("");L.push(mdTbl(["Origen (estrelles noves del període)","Estrelles"],C.fontsPeriode.map(f=>[f.nom,`${f.v} ⭐`])))}else L.push("");
+ if(A.taller.length){L.push(`### Errors al Taller de mates`);L.push(mdTbl(["Exercici","Pas","Error","Vegades"],A.taller.map(t=>[t.gen,t.pas,t.err,t.n])))}
+ L.push(`### Respostes obertes, quadern i fotos (${A.obertes.length})`);
+ if(!A.obertes.length)L.push(`_Cap resposta oberta en aquest període._\n`);
+ else A.obertes.forEach((o,i)=>{
+  L.push(`#### ${i+1}. ${o.nomMon} — ${o.tit} (${o.modeTxt} · ${o.data})`);
+  L.push(`- **Resultat:** ${o.resTxt} · **Estat:** ${o.estTxt} · **Detall:** ${o.resum}${o.idees?` · Idees: ${o.idees}`:""}${o.temps?` · Temps: ${o.temps}`:""}${o.est!=null?` · ${o.est} ⭐`:""}`);
+  if(o.text){L.push(`- **Resposta escrita:**`);String(o.text).split(/\r?\n/).forEach(lin=>L.push(`  > ${lin}`))}
+  if(o.det.length)L.push(`- **Idees trobades:** ${o.det.join(", ")}`);
+  if(o.falten.length)L.push(`- **Idees que han faltat:** ${o.falten.join(", ")}`);
+  L.push("");
+ });
+ // 3. Sessions i benestar
+ L.push(`## 3. Sessions i benestar (${D.pNom})`);
+ L.push("");
+ L.push(`### Benestar i bon ús`);
+ if(S.benErr)L.push(`_No s'ha pogut carregar el benestar (${S.benErr})._\n`);
+ else{
+  L.push(`- **Semàfor:** ${S.benSemTxt}`);
+  if(S.benMotius.length)S.benMotius.forEach(m=>L.push(`  - **[${m.nivTxt}]** ${m.text}${m.tt?` _(${m.tt})_`:""}`));
+  else L.push(`  - Cap senyal d'alerta en aquest període.`);
+  L.push("");
+ }
+ L.push(`### Historial de sessions (${S.sessions.length})`);
+ L.push(mdTbl(["Inici","Fi","Món","Durada","Accions","Activitats"],S.sessions.map(s=>[s.ini,s.fi,s.nomMon,s.durada,s.n,s.evs.join(", ")||"—"])));
+ if(S.sessions.length){
+  L.push(`### Cronologia detallada de sessions`);
+  S.sessions.forEach(s=>{
+   L.push(`#### ${s.ini} → ${s.fi} · ${s.nomMon} (${s.durada} · ${pl(s.n,"acció","accions")})`);
+   s.accions.forEach(a=>L.push(`- \`${a.hora}\` **[${a.event}]** ${a.desc}`));
+   L.push("");
+  });
+ }
+ // 4. Al núvol
+ L.push(`## 4. Al núvol (progrés acumulat desat)`);
+ L.push("");
+ if(N.err)L.push(`_No s'ha pogut carregar el progrés al núvol (${N.err})._\n`);
+ else if(!N.mons.length)L.push(`_${N.tePerfil?"Té PIN, però encara no ha desat progrés al núvol.":"No té PIN: el progrés es queda només al dispositiu."}_\n`);
+ else N.mons.forEach(m=>{
+  L.push(`### ${m.nomMon}`);
+  if(m.error){L.push(`_L'estat desat d'aquest món és mal format._\n`);return}
+  L.push(`- **Desat:** ${m.desat}${m.reinici?` · **Reiniciat:** ${m.reinici}`:""} · **Estrelles:** ${m.punts} ⭐ (${m.nivell.ic} Nivell ${m.nivell.n} ${m.nivell.nom}) · **Temps acumulat:** ${m.temps||"—"} · **Dies d'estudi:** ${m.dies??"—"}${m.diaUlt?` (últim: ${m.diaUlt})`:""}`);
+  L.push(`- **Temes aprovats:** ${m.aprovats}/${m.totalTemes} · **Errors per repassar:** ${m.repN} (${pl(m.repAvui,"toca","toquen")} avui · ${pl(m.apresos,"après","apresos")}) · **Boss:** ${m.bossVictories?`${pl(m.bossVictories,"victòria","victòries")}${m.bossCors!=null?` (millor ${pl(m.bossCors,"cor","cors")})`:""}`:"encara no guanyat"}`);
+  L.push("");
+  L.push(`#### Temes al núvol (${m.nomMon})`);
+  L.push(mdTbl(["Tema","Estat","Millor","Intents","Última","Estudi","Preguntes fallades"],m.temes.map(t=>[t.tit+(t.fora?" (id antic)":""),t.estTxt,t.max!=null?`${t.max}%`:"—",t.n,t.ult!=null?`${t.ult}% (${t.dUlt})`:"—",t.detE||"—",t.fall.length?t.fall.map(([q,v])=>`×${v} ${q}`).join("; "):"—"])));
+  if(m.rep.length){L.push(`#### Errors pendents de repàs (${m.nomMon})`);L.push(mdTbl(["Pregunta","Tema","Quan toca","Caixa"],m.rep.map(r=>[r.q,r.tit,r.tocaTxt,r.caixa??"—"])))}
+  if(m.examens.length)L.push(`- **Exàmens (${m.examens.length}, millor ${m.examMillor}%):** ${m.examens.map(e=>`${e.dia}: ${e.pc}%${e.real?" (de veritat)":""}`).join(" · ")}\n`);
+  if(m.ob.length)L.push(`- **Preguntes obertes al núvol (${m.ob.length}, mitjana ${m.obMitj}%):** ${m.ob.map(([k,v])=>`#${k}: ${v}%`).join(" · ")}\n`);
+  if(m.jocs.length){L.push(`#### Jocs al núvol (${m.nomMon})`);L.push(mdTbl(["Joc","Partides","Millor","Última","Estrelles"],m.jocs.map(j=>[j.j,j.n,j.max!=null?`${j.max}%`:"—",j.ult!=null?`${j.ult}%`:"—",j.est!=null?`${j.est} ⭐`:"—"])))}
+  if(m.fonts.length){L.push(`#### Fonts d'estrelles al núvol (${m.nomMon})`);L.push(mdTbl(["Origen","Estrelles"],m.fonts.map(f=>[f.nom,`${f.v} ⭐`])));if(m.ftema.length)L.push(`- **Temes amb més estrelles:** ${m.ftema.map(x=>`${x.tit} (${x.v} ⭐)`).join(" · ")}\n`)}
+ });
+ return L.join("\n");
+}
+async function baixaInformeNen(n,ls,fmt,bt){
+ if(bt&&bt.disabled)return;
+ const h0=bt?bt.innerHTML:"";
+ if(bt){bt.disabled=true;bt.innerHTML=`${ic("rellotge")}<span>Generant…</span>`}
+ try{
+  const D=await recullInformeNen(n,ls);
+  const slug=senseAccents(n.nom||n.k).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"nen";
+  const base=`informe-${slug}-${D.pCod}-${D.generatIso}`;
+  if(fmt==="md")baixaFitxer(`${base}.md`,generaInformeNenMd(D),"text/markdown;charset=utf-8");
+  else baixaFitxer(`${base}.html`,generaInformeNenHtml(D),"text/html;charset=utf-8");
+  toast(`Informe de ${n.nom} descarregat (${fmt==="md"?".md":"HTML / PDF"})`);
+ }catch(e){
+  console.error(e);
+  toast(`No s'ha pogut generar l'informe (${e&&e.message||e})`,"err");
+ }finally{
+  if(bt){bt.disabled=false;bt.innerHTML=h0}
+ }
+}
 // ====================== AL NÚVOL I ALTES (supabase/bn_admin_fitxa.sql) ======================
 // L'estat de bn_priv.progres el va escriure el navegador d'un nen: no és de fiar. Tot el que en surt (preguntes, ids de tema,
 // claus de jocs i de fonts, dates…) passa per esc(), també als atributs; els números es comproven amb nN() abans de pintar-los.
@@ -1573,7 +2038,8 @@ function vistaSessions(c){const ls=LF(),g={};ls.forEach(l=>(g[l.sessio]=g[l.sess
   {k:"evs",t:"Què ha fet",ord:false,cls:"nw",q:r=>r.evs.join(" ")+" "+r.a.map(l=>JSON.stringify(l.detall)).join(" "),h:r=>r.evs.filter(e=>e!=="temps"&&e!=="entra").map(xipEv).join(" ")||`<span class="muted">—</span>`}
  ];
  const prev=TAULES.tSes;
- c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="sesCard">${S.length?taula("tSes",cols,S,{k:prev?prev.k:"ini",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Sessions",csvNom:"bona-nota-sessions",fila:r=>` class="clic" data-ses="${esc(r.id)}" tabindex="0"`}):buit("sessions","Cap sessió amb aquests filtres.")}</div></div>`;
+ c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="sesCard"><div class="eines-t"><span class="muted">${TF.dia?`Filtrat pel dia ${diaLl(TF.dia)}`:`Agrupat per sessió · clica una fila per veure'n el detall`}</span><span class="esp"></span><button class="btn sec petit" type="button" id="btVeureLog">${ic("log")}Log complet per dia ${ic("endavant")}</button></div>${S.length?taula("tSes",cols,S,{k:prev?prev.k:"ini",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Sessions",csvNom:"bona-nota-sessions",fila:r=>` class="clic" data-ses="${esc(r.id)}" tabindex="0"`}):buit("sessions","Cap sessió amb aquests filtres.")}</div></div>`;
+ const bLog=$("#btVeureLog");if(bLog)bLog.onclick=()=>navega("sessions",{tab:"registre",scroll:false});
  const obreSes=id=>{const s=S.find(x=>x.id===id);if(!s)return;
   obrePanell({titol:`Sessió de ${s.nom}`,cos:`<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px">${pillMon(s.assig)}<span class="xip">${dataC(s.ini)} → ${hora(s.fi)}</span><span class="xip">${fmtT(s.durada)} · ${pl(s.n,"acció","accions")}</span></div>
    <div style="margin-bottom:12px"><button class="btn sec petit" type="button" data-obre-nen="${esc(s.k)}">Obre la fitxa de ${esc(s.nom)} ${ic("endavant")}</button></div>
@@ -1581,22 +2047,71 @@ function vistaSessions(c){const ls=LF(),g={};ls.forEach(l=>(g[l.sessio]=g[l.sess
  const tc=$("#sesCard");
  if(tc){tc.onclick=e=>{const tr=e.target.closest("tr[data-ses]");if(tr&&!e.target.closest("button,a,input"))obreSes(tr.dataset.ses)};
   tc.onkeydown=e=>{if(e.key==="Enter"){const tr=e.target.closest&&e.target.closest("tr[data-ses]");if(tr&&e.target===tr)obreSes(tr.dataset.ses)}}}}
-function vistaLog(c){const ls=LF().slice().sort((a,b)=>b.ts.localeCompare(a.ts));
- const lim=ls.slice(0,1500),prev=TAULES.tLog;
- const cols=[
-  {k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},
-  {k:"nom",t:"Nen",cls:"nw",h:r=>nenH(r.nom)},
-  {k:"assig",t:"Món",cls:"nw",h:r=>pillMon(r.assig)},
-  {k:"event",t:"Tipus",cls:"nw",h:r=>xipEv(r.event)},
-  {k:"det",t:"Què ha fet",ord:false,cls:"cur",q:r=>JSON.stringify(r.detall||{}),h:r=>descriu(r)},
-  {k:"aparell",t:"Dispositiu",cls:"nw",h:r=>`<span class="muted">${esc((r.aparell||"").slice(0,6))}</span>`}
- ];
- c.innerHTML=`<div class="targeta"><div class="eines-t"><span class="muted">${ls.length>1500?`Es mostren 1.500 de ${ls.length} registres`:pl(ls.length,"registre","registres")}</span><span class="esp"></span><button class="btn sec petit" type="button" id="flcsv">${ic("baixar")}CSV complet (${ls.length})</button></div>${lim.length?taula("tLog",cols,lim,{k:prev?prev.k:"ts",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Registre complet",csvNom:"bona-nota-registre"}):buit("log","Cap registre amb aquests filtres.")}</div>`;
- const bCsv=$("#flcsv");if(bCsv)bCsv.onclick=()=>baixaCSV("bona-nota-log",[["data","nom","assignatura","tipus","detall","sessio","aparell"],...ls.map(l=>[l.ts,l.nom,l.assig,l.event,JSON.stringify(l.detall),l.sessio,l.aparell])])}
+function vistaLog(c,rerender){
+ const ls=LF().slice().sort((a,b)=>b.ts.localeCompare(a.ts));
+ const diesMap=new Map(),nensUnics=new Set();let tempsTot=0;
+ ls.forEach(l=>{
+  const d=diaMad(l.ts),k=clauNen(l),s=l.event==="temps"?+((l.detall||{}).s)||0:0;
+  tempsTot+=s;nensUnics.add(k);
+  let info=diesMap.get(d);if(!info){info={d,n:0,temps:0,nens:new Map(),mons:new Set()};diesMap.set(d,info)}
+  info.n++;info.temps+=s;info.mons.add(l.assig);
+  let ni=info.nens.get(k);if(!ni){ni={k,nom:l.nom,n:0,temps:0};info.nens.set(k,ni)}
+  ni.n++;ni.temps+=s;
+ });
+ const kpis=filaKpis([
+  {t:"Dies amb activitat",v:diesMap.size},
+  {t:"Nens que han entrat",v:nensUnics.size},
+  {t:"Accions al log",v:ls.length},
+  {t:"Temps d'estudi",v:fmtT(tempsTot)}
+ ],4);
+ const teFiltre=!!(TF.assig||TF.nom||TF.dia||TF.ev||TF.q);
+ const lim=(LOG_TOT||teFiltre)?ls:ls.slice(0,500);
+ const comptaTxt=ls.length>lim.length?`Es mostren ${lim.length} de ${ls.length} accions (${pl(diesMap.size,"dia","dies")})`:`${pl(ls.length,"acció","accions")} en ${pl(diesMap.size,"dia","dies")}`;
+ let cosH="";
+ if(!ls.length){
+  cosH=buit("log","Cap registre amb aquests filtres.","Prova de canviar el dia, el nen, el món o d'ampliar el període a dalt.");
+ }else if(LOG_VISTA==="taula"){
+  const limT=ls.slice(0,1500),prev=TAULES.tLog;
+  const cols=[
+   {k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},
+   {k:"nom",t:"Nen",cls:"nw",h:r=>`<button type="button" class="nen-b" data-obre-nen="${esc(clauNen(r))}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`},
+   {k:"assig",t:"Món",cls:"nw",h:r=>pillMon(r.assig)},
+   {k:"event",t:"Tipus",cls:"nw",h:r=>xipEv(r.event)},
+   {k:"det",t:"Què ha fet",ord:false,cls:"cur",q:r=>JSON.stringify(r.detall||{}),h:r=>descriu(r)},
+   {k:"aparell",t:"Dispositiu",cls:"nw",h:r=>`<span class="muted">${esc((r.aparell||"").slice(0,6))}</span>`}
+  ];
+  cosH=taula("tLog",cols,limT,{k:prev?prev.k:"ts",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Registre complet",csvNom:"bona-nota-registre"});
+ }else{
+  const avM=diaMad(),ahM=sumaD(avM,-1),grups=[];
+  lim.forEach((l,idx)=>{const d=diaMad(l.ts);let g=grups[grups.length-1];if(!g||g.d!==d)grups.push(g={d,L:[]});g.L.push({l,idx})});
+  const titDia=d=>{const ds=DS[new Date(dU(d)).getUTCDay()];return `${d===avM?"Avui · ":d===ahM?"Ahir · ":""}${ds} ${diaLl(d)}`};
+  const kAct=TF.nom.trim().toLowerCase();
+  cosH=`<div id="logDies">${grups.map(g=>{
+   const info=diesMap.get(g.d),nensD=[...info.nens.values()].sort((a,b)=>b.temps-a.temps||b.n-a.n);
+   const quiH=nensD.map(x=>`<button type="button" class="log-nen-xip${kAct===x.k?" actiu":""}" data-filtra-nen="${esc(x.nom)}" title="${kAct===x.k?"Treu el filtre de nen":`Filtra el log per ${x.nom}`}">${avatar(x.nom,"p")}<span>${esc(x.nom)}</span><small>${x.temps?fmtT(x.temps)+" · ":""}${x.n}</small></button>`).join("");
+   const filesH=g.L.map(({l,idx})=>{const k=clauNen(l);
+    return `<div class="log-lin"><time title="${esc(dataC(l.ts))}">${hora(l.ts)}</time><button type="button" class="nen-b" data-obre-nen="${esc(k)}">${avatar(l.nom,"p")}<span>${esc(l.nom)}</span></button>${pillMon(l.assig)}${xipEv(l.event)}<div class="log-d">${descriu(l)}${l.event==="oberta"?` <button type="button" class="btn sec petit" style="margin-left:6px;padding:2px 8px;min-height:24px;font-size:11.5px" data-log-obe="${idx}">Llegeix</button>`:""}</div></div>`}).join("");
+   return `<section class="log-dia" data-dia="${esc(g.d)}"><div class="log-dia-cap"><div class="log-dia-t"><h3>${ic("calendari")}<span>${esc(titDia(g.d))}</span><span class="pill neutre">${pl(nensD.length,"nen","nens")}</span>${info.temps?`<span class="pill neutre">${fmtT(info.temps)}</span>`:""}<span class="pill neutre">${pl(info.n,"acció","accions")}</span></h3><button type="button" class="btn sec petit" data-log-dia="${esc(g.d)}">${TF.dia===g.d?"Tots els dies":"Només aquest dia"}</button></div><div class="log-dia-qui"><span class="muted">Qui ha entrat:</span>${quiH}</div></div><div class="log-llista">${filesH}</div></section>`;
+  }).join("")}</div>${ls.length>lim.length?`<div style="margin-top:12px;text-align:center"><button class="btn sec" type="button" id="btLogTot">Mostra les ${ls.length} accions completes del període</button></div>`:""}`;
+ }
+ c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="logCard"><div class="eines-t"><div class="seg" id="logVistaSeg" role="group" aria-label="Format del log"><button type="button" data-lv="dies" aria-pressed="${LOG_VISTA!=="taula"}">Per dia (qui entra i què fa)</button><button type="button" data-lv="taula" aria-pressed="${LOG_VISTA==="taula"}">Taula</button></div><span class="muted">${esc(comptaTxt)}</span><span class="esp"></span><button class="btn sec petit" type="button" id="flcsv">${ic("baixar")}CSV complet (${ls.length})</button></div>${cosH}</div></div>`;
+ const bCsv=$("#flcsv");if(bCsv)bCsv.onclick=()=>baixaCSV("bona-nota-log",[["data","nom","assignatura","tipus","que_ha_fet","detall","sessio","aparell"],...ls.map(l=>[l.ts,l.nom,l.assig,l.event,netTxt(descriu(l)),JSON.stringify(l.detall),l.sessio,l.aparell])]);
+ const seg=$("#logVistaSeg");if(seg)seg.onclick=e=>{const b=e.target.closest("button[data-lv]");if(!b||b.dataset.lv===LOG_VISTA)return;LOG_VISTA=b.dataset.lv;vistaLog(c,rerender)};
+ const bTot=$("#btLogTot");if(bTot)bTot.onclick=()=>{LOG_TOT=true;vistaLog(c,rerender)};
+ const lc=$("#logCard");
+ if(lc)lc.onclick=e=>{
+  const bd=e.target.closest("button[data-log-dia]");
+  if(bd){TF.dia=TF.dia===bd.dataset.logDia?"":bd.dataset.logDia;LOG_TOT=false;if(rerender)rerender();else vistaLog(c);return}
+  const bn=e.target.closest("button[data-filtra-nen]");
+  if(bn){const nm=bn.dataset.filtraNen;TF.nom=TF.nom.trim().toLowerCase()===nm.trim().toLowerCase()?"":nm;LOG_TOT=false;if(rerender)rerender();else vistaLog(c);return}
+  const bo=e.target.closest("button[data-log-obe]");
+  if(bo){const x=lim[+bo.dataset.logObe];if(x)obrePanellOberta(x,({k:clauNen(x),nom:x.nom}))}
+ };
+}
 
 // ====================== DADES AGREGADES, INICI I VISTES SOTA DEMANDA ======================
 const PERIODE={1:"avui",7:"7d",30:"30d",365:"curs"};
-const TF={assig:"",nom:""};let TD=null,GRAF=[],TOK=0;
+const TF={assig:"",nom:"",dia:"",ev:"",q:""};let LOG_VISTA="dies",LOG_TOT=false,TD=null,GRAF=[],TOK=0;
 // 8 colors que es distingeixen bé (un per nen, el mateix a tots els gràfics); en tema fosc, més clars
 const PAL_C=["#2563eb","#ea580c","#16a34a","#db2777","#9333ea","#0891b2","#ca8a04","#475569"],PAL_F=["#60a5fa","#fb923c","#4ade80","#f472b6","#c084fc","#22d3ee","#facc15","#94a3b8"];
 const PAL=()=>TEMA==="fosc"?PAL_F:PAL_C;
@@ -1957,19 +2472,28 @@ function pintaMonTaller(monId){
  tErrorsTaller(monId);
 }
 async function vistaSessionsSeccio(c){
- const ll=[["sessions","Sessions"],["activitat","Activitat"],["registre","Registre"]],tab=ll.some(x=>x[0]===TAB)?TAB:"sessions";
+ const tIn=TAB==="log"?"registre":TAB;
+ const ll=[["sessions","Sessions"],["registre","Log complet per dia"],["activitat","Activitat"]],tab=ll.some(x=>x[0]===tIn)?tIn:"sessions";
  TAB=tab;escriuUrl(false);
  const renderTab=async()=>{
   const tk=++TOK;
   GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
-  if(tab!=="sessions"){TF.assig="";TF.nom=""}
+  if(tab==="activitat")netejaTF();
+  else if(tab==="sessions"){TF.ev="";TF.q=""}
   if(tab==="sessions"||tab==="registre"){try{await asseguraLogs()}catch(e){c.innerHTML=avisErr(`No s'han pogut carregar els registres (${e}).`);return}}
   if(tk!==TOK||VISTA!=="sessions")return;
-  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Sessions")+(tab==="sessions"?barraFiltresLocals({assig:true,nen:true}):"")+`<div id="sesCos">${tab==="activitat"?esqTaula():""}</div>`;
-  lligaPestanyes(c,ll);if(tab==="sessions")lligaFiltresLocals(renderTab);
+  const fOpts=tab==="registre"?{assig:true,nen:true,dia:true,ev:true,cerca:true}:{assig:true,nen:true,dia:true};
+  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Sessions")+(tab!=="activitat"?`<div id="sesFiltres">${barraFiltresLocals(fOpts)}</div>`:"")+`<div id="sesCos">${tab==="activitat"?esqTaula():""}</div>`;
+  lligaPestanyes(c,ll);
   const cos=$("#sesCos");if(!cos)return;
+  if(tab!=="activitat")lligaFiltresLocals(renderTab,()=>{
+   const bNet=$("#fNeteja"),act=!!(TF.assig||TF.nom||TF.dia||TF.ev||TF.q);
+   if(act&&!bNet){const fl=$("#sesFiltres .filtres-loc");if(fl){const b=document.createElement("button");b.className="btn sec petit";b.type="button";b.id="fNeteja";b.textContent="Neteja filtres";b.onclick=()=>{netejaTF();BEN=null;FDIA=null;REPP=null;DIFR=null;renderTab()};fl.appendChild(b)}}
+   else if(!act&&bNet)bNet.remove();
+   if(tab==="registre")vistaLog(cos,renderTab);else vistaSessions(cos);
+  });
   if(tab==="sessions")vistaSessions(cos);
-  else if(tab==="registre")vistaLog(cos);
+  else if(tab==="registre")vistaLog(cos,renderTab);
   else{
    cos.innerHTML=`<div class="pila"><div class="graella" id="actGrafs">
     ${card("activitat","c-6","calendari","Activitat per dia","Minuts d'estudi de cada nen per dia.",`<div class="cv"><canvas id="gAct" aria-label="Gràfic de minuts d'estudi per dia i nen" role="img"></canvas></div>`)}

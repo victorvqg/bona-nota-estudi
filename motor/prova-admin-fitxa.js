@@ -173,6 +173,24 @@ function respon(st, f, cos) {
   ok(crides.length === 0, "cap crida a Supabase en demo (" + crides.map(c => c.f).join(", ") + ")");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
+ console.log("1b) ?demo: descàrrega d'informe complet (.html / PDF i .md) directament des de ?v=nens&id=àlex&p=curs sense obrir abans altres pestanyes");
+ { const { p, ctx, crides, errors, errG } = await obre("/admin/?demo&v=nens&id=àlex&p=curs");
+  await p.waitForSelector("#btInfHtml");
+  ok((await p.getAttribute("#tb-resum", "aria-selected")) === "true" && (await p.isHidden("#tp-apr")) && (await p.isHidden("#tp-nuv")),
+   "s'obre directament a Resum i estrelles sense haver obert Aprenentatge, Sessions ni Núvol");
+  const [dlHtml] = await Promise.all([p.waitForEvent("download"), p.click("#btInfHtml")]);
+  const fHtml = fs.readFileSync(await dlHtml.path(), "utf8");
+  ok(/^informe-alex-curs-\d{4}-\d{2}-\d{2}\.html$/.test(dlHtml.suggestedFilename()), "fitxer HTML amb nom net: " + dlHtml.suggestedFilename());
+  ok(fHtml.includes("1. Resum i estrelles (Tot el curs)") && fHtml.includes("2. Aprenentatge (Tot el curs)") && fHtml.includes("3. Sessions i benestar (Tot el curs)") && fHtml.includes("4. Al núvol") && fHtml.includes("Què és la ciència") && fHtml.includes("window.print()"),
+   "l'informe HTML inclou les 4 seccions completes (inclòs Domini, Sessions i Al núvol carregats sota demanda) i el botó d'imprimir/PDF");
+  const [dlMd] = await Promise.all([p.waitForEvent("download"), p.click("#btInfMd")]);
+  const fMd = fs.readFileSync(await dlMd.path(), "utf8");
+  ok(/^informe-alex-curs-\d{4}-\d{2}-\d{2}\.md$/.test(dlMd.suggestedFilename()), "fitxer Markdown amb nom net: " + dlMd.suggestedFilename());
+  ok(fMd.includes("# Informe complet · Àlex (#1)") && fMd.includes("## 1. Resum i estrelles (Tot el curs)") && fMd.includes("## 2. Aprenentatge (Tot el curs)") && fMd.includes("## 3. Sessions i benestar (Tot el curs)") && fMd.includes("## 4. Al núvol") && fMd.includes("Cronologia detallada de sessions"),
+   "l'informe .md conté totes les taules, cronologia de sessions i progrés al núvol");
+  ok(crides.length === 0 && errors.length === 0 && !(await errG()), "cap crida ni error de JS en descarregar els informes en demo");
+  await ctx.close() }
+
  console.log("2) amb credencials: «Núvol i gestió» sota demanda i «Nens nous» a Inici");
  { const { p, ctx, crides, errors, menu, crida, txt, errG, kpi, fitxa } = await obre("/admin/", { cred: CRED });
   await p.waitForSelector("#altesCos table");
@@ -237,6 +255,10 @@ function respon(st, f, cos) {
   ok((await txt("#nuv .nv-perfil")).includes("Amagat del rànquing") && kE && kE.v === "0" && kD && kD.v === "—", "un número que no ho és (punts i dies amb HTML) surt com a 0 o «—»");
   await p.click("#nuv .dm-as summary"); await p.waitForTimeout(300);
   ok((await p.evaluate(() => window.__xss)) === undefined, "window.__xss no s'ha posat");
+  const [dlXss] = await Promise.all([p.waitForEvent("download"), p.click("#btInfHtml")]);
+  const htmlXss = fs.readFileSync(await dlXss.path(), "utf8");
+  ok(!htmlXss.includes(XSS) && htmlXss.includes("&lt;img src=x onerror=&quot;window.__xss=1&quot;&gt;"),
+   "a l'informe HTML descarregat, tot el contingut del nen/núvol va escapat sense cap etiqueta executable");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
  console.log("4) el SQL encara no hi és (404)");

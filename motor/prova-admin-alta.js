@@ -157,18 +157,38 @@ function dadesAdmin() {
   await p.click("#tb-nuv");
   await p.waitForSelector('#nuv[data-estat="fet"]');
   ok((await p.$$("#nuv .niv-p")).length >= 1, "pestanya «Núvol i gestió» mostra el nivell del nen");
-  // Sessions: 3 pestanyes (Sessions amb filtres locals, Activitat amb Evolució d'estrelles per origen sense filtres, Registre sense filtres)
+  // Sessions: 3 pestanyes (Sessions amb filtres per món/nen/data, Log complet per dia amb filtres compartits i Activitat sense filtres)
   await menu("sessions");
   await p.waitForSelector("#tSes table");
-  ok((await p.$("#fAssig")) !== null && (await p.$("#fNen")) !== null && (await p.$$("#tSes th")).length === 6, "Sessions → Sessions té filtres locals (#fAssig, #fNen) i 6 columnes");
+  ok((await p.$("#fAssig")) !== null && (await p.$("#fNen")) !== null && (await p.$("#fDia")) !== null && (await p.$("#fDiaCal")) !== null && (await p.$$("#tSes th")).length === 6,
+   "Sessions → Sessions té filtres locals per món (#fAssig), nen (#fNen) i data (#fDia + #fDiaCal) i 6 columnes");
   await p.click('[data-vtab="activitat"]');
   await p.waitForSelector("#actFontsCos .fest");
   ok((await p.$("#fAssig")) === null && (await p.$("#fNen")) === null && (await txt("#actFonts")).includes("Evolució d'estrelles per origen"),
    "Sessions → Activitat mostra l'evolució diària d'estrelles per origen sense barra de filtres locals");
   await p.click('[data-vtab="registre"]');
+  await p.waitForSelector("#logDies .log-dia");
+  ok((await p.$("#fAssig")) !== null && (await p.$("#fNen")) !== null && (await p.$("#fDia")) !== null && (await p.$("#fDiaCal")) !== null && (await p.$("#fEvent")) !== null && (await p.$("#fLogQ")) !== null && (await p.$("#flcsv")) !== null,
+   "Sessions → Log complet per dia mostra la cronologia agrupada per dia («Qui ha entrat» i què fa) amb filtres per món, nen, data, tipus i cerca");
+  // Filtrar per un nen i un dia concret a Log complet per dia
+  await p.selectOption("#fNen", "Àlex");
+  const diesOpc = await p.$$eval("#fDia option", os => os.map(o => o.value).filter(Boolean));
+  ok(diesOpc.length >= 1, "en triar l'Àlex a #fNen, #fDia mostra els dies en què l'Àlex ha entrat");
+  await p.selectOption("#fDia", diesOpc[0]);
+  const diesVis = await p.$$eval("#logDies .log-dia", ds => ds.map(d => d.dataset.dia));
+  const nensLin = await p.$$eval("#logDies .log-lin .nen-b", bs => [...new Set(bs.map(b => b.textContent.trim()))]);
+  ok(diesVis.length === 1 && diesVis[0] === diesOpc[0] && nensLin.length === 1 && nensLin[0] === "Àlex",
+   "filtrar per nen ('Àlex') i data mostra només el bloc d'aquell dia i les accions de l'Àlex");
+  await p.click("#fNeteja");
+  // Alternar al mode Taula (#tLog)
+  await p.click('#logVistaSeg [data-lv="taula"]');
   await p.waitForSelector("#tLog table");
-  ok((await p.$("#fAssig")) === null && (await p.$("#flcsv")) !== null && (await p.$$("#tLog th")).length === 6,
-   "Sessions → Registre mostra el registre acotat amb cerca i CSV complet sense filtres locals");
+  ok((await p.$$("#tLog th")).length === 6, "el selector de format a Log complet per dia permet veure també la Taula ordenable de 6 columnes");
+  await p.click('#logVistaSeg [data-lv="dies"]');
+  // Comprovació ràpida d'amplada mòbil 360px al Log complet per dia
+  await p.setViewportSize({ width: 360, height: 800 });
+  const swLog = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
+  ok(swLog <= 360, `Log complet per dia no desborda a 360 px (${swLog}px)`);
   ok(crides.length === 0 && errors.length === 0, "cap crida a Supabase ni error de JS en mode demo");
   await ctx.close();
  }
