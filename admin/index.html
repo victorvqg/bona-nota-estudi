@@ -315,6 +315,24 @@ td.tfa .nv-f{max-width:340px}td.trq .nv-q{max-width:460px}
 .al .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px}
 details.mes summary{cursor:pointer;color:var(--muted);font-weight:600;padding:10px 0 4px}
 .cv{position:relative;height:280px}
+.cv.cv-evo{height:360px}
+.evo-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.evo-filts{display:inline-flex;flex-wrap:wrap;gap:3px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r1);padding:3px;max-width:100%}
+.evo-f{all:unset;box-sizing:border-box;cursor:pointer;padding:4px 10px;border-radius:6px;font-weight:600;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.evo-f:hover{color:var(--text)}
+.evo-f[aria-pressed="true"]{background:var(--card);color:var(--text);box-shadow:var(--sh1)}
+.evo-f:focus-visible{outline:2px solid var(--primary)}
+.evo-res{font-size:12px;font-weight:500;color:var(--muted)}
+.evo-buit[hidden]{display:none}
+.evo-dlg{width:min(96vw,1240px);max-width:none;height:min(90vh,820px);margin:auto;padding:0;overflow:hidden}
+.evo-dlg[open]{display:flex;flex-direction:column}
+.evo-dlg-cap{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);background:var(--card2);flex:none}
+.evo-dlg-cap h2{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:16px;font-weight:700;min-width:0}
+.evo-dlg-cap h2 .ic{color:var(--soft)}
+.evo-dlg-cos{padding:14px 18px 18px;display:flex;flex-direction:column;flex:1;min-height:0}
+#gEvoModalBox{display:flex;flex-direction:column;flex:1;min-height:0}
+.cv.cv-evo[hidden],.evo-buit[hidden]{display:none!important}
+.evo-dlg .cv.cv-evo{flex:1;min-height:360px;height:auto}
 .calor-w{overflow-x:auto}
 .calor{display:grid;grid-template-columns:28px repeat(24,minmax(12px,1fr));gap:3px;font-size:11px;color:var(--muted);min-width:520px}
 .calor i{display:block;aspect-ratio:1;border-radius:3px;background:var(--grid)}
@@ -655,6 +673,13 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
  .nav-inf button[aria-current="page"]{color:var(--primary);background:var(--primary-soft)}
  .nav-inf button:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
  .toasts{bottom:76px}
+ .cv.cv-evo{height:300px}
+ .evo-filts{width:100%}
+ .evo-f{flex:1 1 auto;text-align:center;padding:5px 7px;font-size:12px}
+ .evo-dlg{width:calc(100vw - 12px);height:min(92vh,760px);border-radius:var(--r1)}
+ .evo-dlg-cap{padding:10px 12px}
+ .evo-dlg-cos{padding:10px 12px 14px}
+ .evo-dlg .cv.cv-evo{min-height:260px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -702,12 +727,13 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 </aside>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 <dialog id="dlg" aria-labelledby="dlgT"></dialog>
+<dialog id="evoDlg" class="evo-dlg" aria-labelledby="evoDlgT"></dialog>
 <div id="errG" class="avis err" role="alert"></div>
 
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.44.0";
+const VERSIO_ADMIN="2.45.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -778,7 +804,8 @@ const IC={
  ajust:'<path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-9"/><path d="M8 12H3"/><path d="M21 20h-5"/><path d="M12 20H3"/><path d="M14 2v4"/><path d="M8 10v4"/><path d="M16 18v4"/>',
  cataleg:'<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
  mes:'<path d="M5 12h14"/><path d="M12 5v14"/>',
- cor:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>'};
+ cor:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+ amplia:'<path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/>'};
 const ic=(n,cls)=>`<svg class="ic${cls?" "+cls:""}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${IC[n]||""}</svg>`;
 const LOGO=`<svg class="logo-m" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#facc15"/><path d="m16 6 3 6.2 6.8 1-4.9 4.8 1.2 6.8L16 21.6l-6.1 3.2 1.2-6.8L6.2 13.2l6.8-1z" fill="#1e1b4b"/></svg>`;
 
@@ -935,7 +962,7 @@ async function carrega(){
 // Actualització silenciosa automàtica (cada 30 s, en tornar a la pestanya i en canviar de secció), sense esborrar filtres ni moure l'scroll
 async function refrescaAuto(forcat=false){
  if(!CRED||DEMO||$("#shell").hidden||VISTA==="config"||AUTO_CURS)return false;
- if(!forcat&&(document.visibilityState==="hidden"||($("#dlg")&&$("#dlg").open)||!$("#panell").hidden))return false;
+ if(!forcat&&(document.visibilityState==="hidden"||($("#dlg")&&$("#dlg").open)||($("#evoDlg")&&$("#evoDlg").open)||!$("#panell").hidden))return false;
  const ae=document.activeElement;
  if(!forcat&&ae&&ae.matches&&ae.matches("#contingut input:not(.tb-q):not(#fLogQ),#contingut textarea,#contingut select"))return false;
  const sy=window.scrollY,fTq=ae&&ae.matches&&ae.matches("input.tb-q[data-tq]")?{id:ae.dataset.tq,s0:ae.selectionStart,s1:ae.selectionEnd}:null;
@@ -2369,8 +2396,15 @@ function temaGrafics(){if(!window.Chart)return;const C=Chart.defaults;C.animatio
  Object.assign(C.plugins.tooltip,{backgroundColor:cssV("--card"),titleColor:cssV("--text"),bodyColor:cssV("--text"),borderColor:cssV("--border2"),borderWidth:1,padding:10,cornerRadius:8,boxPadding:4,usePointStyle:true})}
 const eixos=()=>({x:{grid:{color:cssV("--grid")},ticks:{color:cssV("--muted")}},y:{grid:{color:cssV("--grid")},ticks:{color:cssV("--muted")},beginAtZero:true}});
 const GOPC=()=>({responsive:true,maintainAspectRatio:false,scales:eixos()});
-const nouG=(id,cfg)=>{const c=document.getElementById(id);if(!c)return;if(!window.Chart){c.parentNode.innerHTML=buit("resum","No s'ha pogut carregar el gràfic.","Comprova la connexió i torna-ho a provar.");return}GRAF.push(new Chart(c,cfg))};
+function destrueixG(c){const el=typeof c==="string"?document.getElementById(c):c;if(!el||!window.Chart||typeof Chart.getChart!=="function")return;
+ const ant=Chart.getChart(el);if(ant){ant.destroy();GRAF=GRAF.filter(g=>g!==ant)}}
+const nouG=(id,cfg)=>{const c=document.getElementById(id);if(!c)return;if(!window.Chart){c.parentNode.innerHTML=buit("resum","No s'ha pogut carregar el gràfic.","Comprova la connexió i torna-ho a provar.");return}
+ destrueixG(c);const g=new Chart(c,cfg);GRAF.push(g);return g};
 const targeta=(id,col,icona,titol,sub,cos)=>card(id,col,icona,titol,sub,cos);
+function cardEvo(idCard,col,idCanvas,ajudaTxt){
+ const extra=`<button class="btn sec petit evo-amp" type="button" data-evo-amp="${esc(idCanvas)}" hidden title="Amplia a pantalla completa" aria-label="Amplia el gràfic a pantalla completa">${ic("amplia")}<span>Pantalla completa</span></button>`;
+ return card(idCard,col,"puja","Evolució de les notes",ajudaTxt,`<div id="${esc(idCanvas)}Box"><div class="cv cv-evo"><canvas id="${esc(idCanvas)}" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div></div>`,extra);
+}
 // ---- Control ràpid (1 clic): Xat i Mons a la web (supabase/bn_control.sql) ----
 let CTRL=null,CTRL_D=null,CTRL_NOMES_XAT=false;
 const minAHora=m=>{m=Math.max(0,Math.min(1439,Math.round(+m||0)));return `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`};
@@ -2844,7 +2878,7 @@ async function pintaMonResum(monId,tok){
  tp.dataset.estat="carrega";
  tp.innerHTML=`<div class="pila"><div id="monKpis">${esqKpis(4)}</div>
   <div class="graella">
-   ${card("monEvoCard","c-6","puja","Evolució de les notes","Cada punt és un test o examen d'aquest món; una línia per nen.",`<div class="cv"><canvas id="gMonEvo" aria-label="Gràfic de l'evolució de les notes del món" role="img"></canvas></div>`)}
+   ${cardEvo("monEvoCard","c-6","gMonEvo","Cada punt és un test o examen d'aquest món; una línia per nen.")}
    ${card("monFontsCard","c-6","estrella","D'on surten les estrelles","Repartiment de les estrelles noves guanyades en aquest món durant el període.",`<div id="monFontsCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
    ${card("monTemesCard","c-12","llibre","Notes i estudi per tema","Resum d'activitat, aprovats i nota mitjana a cada tema del món en el període.",`<div id="tMonTemes" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   </div></div>`;
@@ -2862,8 +2896,8 @@ async function pintaMonResum(monId,tok){
    {t:"Encert preguntes",v:pcVal(A.encert),p:deltaKpi(A,B,"encert")}
   ],4);
  }).catch(e=>{if(tok!==TOK||ELEM!==monId||!$("#monKpis"))return;$("#monKpis").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El resum encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el resum (${e}).`)});
- pEvo.then(evo=>{if(tok!==TOK||ELEM!==monId||!$("#gMonEvo"))return;gEvolucio(Array.isArray(evo)?evo:[],"gMonEvo")})
-  .catch(e=>{if(tok!==TOK||ELEM!==monId)return;const cv=$("#gMonEvo");if(cv&&cv.parentNode)cv.parentNode.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","L'evolució de notes encara no està activada a la base de dades."):avisErr(`No s'ha pogut carregar l'evolució (${e}).`)});
+ pEvo.then(evo=>{if(tok!==TOK||ELEM!==monId||!$("#gMonEvo"))return;gEvolucio(Array.isArray(evo)?evo:[],"gMonEvo",{titol:`Evolució de les notes · ${nomAssig(monId)}`})})
+  .catch(e=>{if(tok!==TOK||ELEM!==monId)return;const box=$("#gMonEvoBox")||($("#gMonEvo")&&$("#gMonEvo").parentNode);if(box)box.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","L'evolució de notes encara no està activada a la base de dades."):avisErr(`No s'ha pogut carregar l'evolució (${e}).`)});
  pFonts.then(d=>{
   const x=$("#monFontsCos");if(tok!==TOK||ELEM!==monId||!x)return;x.removeAttribute("aria-busy");
   const D=dadesCombos(d);if(!D.totAll){x.innerHTML=buit("estrella","Cap estrella nova amb origen registrat en aquest món durant el període.");return}
@@ -2985,7 +3019,7 @@ async function vistaSessionsSeccio(c){
    cos.innerHTML=`<div class="pila"><div class="graella" id="actGrafs">
     ${card("activitat","c-6","calendari","Activitat per dia","Minuts d'estudi de cada nen per dia.",`<div class="cv"><canvas id="gAct" aria-label="Gràfic de minuts d'estudi per dia i nen" role="img"></canvas></div>`)}
     ${card("calor","c-6","graella","Quan estudien","Activitat per hora i dia de la setmana.",`<div id="tCal"></div>`)}
-    ${card("notes","c-6","puja","Evolució de les notes","Cada punt és un test o examen; una línia per nen.",`<div class="cv"><canvas id="gEvo" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>`)}
+    ${cardEvo("notes","c-6","gEvo","Cada punt és un test o examen; una línia per nen.")}
     ${card("constancia","c-6","foc","Constància","Dies d'estudi en el període i ratxa actual.",`<div id="tCst"></div>`)}
    </div>
    ${card("actFonts","c-12","estrella","Evolució d'estrelles per origen","Detall diari i acumulat de les estrelles noves guanyades durant el període segons l'origen.",`<div id="actFontsCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}</div>`;
@@ -3129,12 +3163,58 @@ function tCalor(cal){const mx=Math.max(1,...cal.map(c=>(+c.minuts)+c.accions)),D
  for(let dw=1;dw<=7;dw++){h+=`<span class="dw">${D[dw-1]}</span>`;for(let hh=0;hh<24;hh++){const c=cal.find(x=>x.dw===dw&&x.h===hh),v=c?(+c.minuts)+c.accions:0;
   h+=`<i title="${D[dw-1]} ${hh} h · ${c?`${c.minuts} min · ${c.accions} accions · ${c.nens} nens`:"res"}" style="${v?`background:rgba(var(--heat),${(.12+.88*v/mx).toFixed(2)})`:""}"></i>`}}
  $("#tCal").innerHTML=h+`</div></div><div class="llegenda"><span>0</span><span class="esc" aria-hidden="true"></span><span>${fmtD(Math.round(mx))} (minuts + accions en una hora)</span></div>`}
-function gEvolucio(evo,id="gEvo"){const noms=[...new Set(evo.map(e=>e.nom.trim()))].sort((a,b)=>a.localeCompare(b,"ca"));
- if(!evo.length){const c=$("#"+id);if(c)c.parentNode.innerHTML=buit("puja","Encara no hi ha tests en aquest període.");return}
- const o=GOPC();o.parsing=false;o.scales.x=Object.assign(o.scales.x,{type:"linear",ticks:{color:cssV("--muted"),maxTicksLimit:7,callback:v=>diaC(v)}});o.scales.y=Object.assign(o.scales.y,{min:0,max:100,ticks:{color:cssV("--muted"),callback:v=>v+"%"}});
- o.plugins={tooltip:{callbacks:{title:it=>dataC(it[0].raw.x),label:it=>`${it.dataset.label}: ${it.raw.y}% · ${it.raw.ev==="examen"?"examen":"test"} ${it.raw.t||""}`}}};
- nouG(id,{type:"line",data:{datasets:noms.map(n=>({label:n,borderColor:colorNen(n),backgroundColor:colorNen(n),cubicInterpolationMode:"monotone",clip:8,pointRadius:3,pointHoverRadius:5,borderWidth:2,
-  data:evo.filter(e=>e.nom.trim()===n).map(e=>({x:new Date(e.ts).getTime(),y:e.pc,t:e.tema,ev:e.event}))}))},options:o})}
+const EVO_STAT={};let EVO_ORIG=null,EVO_FO=null;
+const EVO_FILTS=[
+ {k:"totes",t:"Totes",fn:()=>true},
+ {k:"bones",t:"Bones (≥ 70%)",fn:e=>+e.pc>=70},
+ {k:"fluixes",t:"Fluixes (< 70%)",fn:e=>+e.pc<70},
+ {k:"dolentes",t:"Dolentes (< 50%)",fn:e=>+e.pc<50}
+];
+const evoLlindars={id:"evoLlindars",afterDatasetsDraw(ch,_,op){if(!op||!Array.isArray(op.linies))return;
+ const {ctx,chartArea:a,scales:{y}}=ch;if(!a||!y)return;
+ op.linies.forEach(l=>{const py=y.getPixelForValue(l.v);if(py<a.top||py>a.bottom)return;
+  ctx.save();ctx.beginPath();ctx.setLineDash([6,4]);ctx.lineWidth=1.5;ctx.strokeStyle=l.c;
+  ctx.moveTo(a.left,py);ctx.lineTo(a.right,py);ctx.stroke();ctx.setLineDash([]);
+  ctx.font="600 11px Inter, system-ui, sans-serif";const pad=5,tw=ctx.measureText(l.t).width,bw=tw+pad*2,bh=16,bx=a.right-bw-4,by=Math.max(a.top+2,py-bh-3);
+  ctx.fillStyle=cssV("--card")||"#ffffff";ctx.globalAlpha=.92;ctx.fillRect(bx,by,bw,bh);ctx.globalAlpha=1;
+  ctx.strokeStyle=l.c;ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
+  ctx.fillStyle=l.c;ctx.textBaseline="middle";ctx.fillText(l.t,bx+pad,by+bh/2+.5);ctx.restore()})}};
+function tancaEvoModal(){const d=$("#evoDlg");if(d&&d.open)d.close()}
+function obreEvoModal(origId){const st=EVO_STAT[origId],d=$("#evoDlg");if(!st||!d)return;
+ EVO_ORIG=origId;EVO_FO=document.activeElement;
+ d.innerHTML=`<div class="evo-dlg-cap"><h2 id="evoDlgT">${ic("puja")}<span>${esc(st.titol||"Evolució de les notes")}</span></h2><button class="btn sec petit" type="button" id="evoDlgTanca" aria-label="Tanca la pantalla completa">${ic("x")}<span>Tanca</span></button></div>
+  <div class="evo-dlg-cos"><div id="gEvoModalBox"><div class="cv cv-evo"><canvas id="gEvoModal" aria-label="Gràfic ampliat de l'evolució de les notes" role="img"></canvas></div></div></div>`;
+ EVO_STAT.gEvoModal={evo:st.evo,filtre:st.filtre,titol:st.titol};
+ $("#evoDlgTanca").onclick=tancaEvoModal;
+ d.onclick=e=>{if(e.target===d)tancaEvoModal()};
+ d.onclose=()=>{destrueixG("gEvoModal");delete EVO_STAT.gEvoModal;if(EVO_FO&&EVO_FO.isConnected)EVO_FO.focus();EVO_ORIG=null;EVO_FO=null};
+ d.showModal();pintaEvo("gEvoModal");$("#evoDlgTanca").focus()}
+function pintaEvo(id){const st=EVO_STAT[id],box=$("#"+id+"Box");if(!st||!box)return;
+ destrueixG(id);
+ const f=EVO_FILTS.find(x=>x.k===st.filtre)||EVO_FILTS[0];st.filtre=f.k;
+ const ll=st.evo.filter(e=>e&&e.pc!=null&&Number.isFinite(+e.pc)&&f.fn(e));
+ const noms=[...new Set(ll.map(e=>String(e.nom||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ca"));
+ box.innerHTML=`<div class="evo-bar"><div class="evo-filts" role="group" aria-label="Filtra per nota">${EVO_FILTS.map(x=>`<button type="button" class="evo-f" data-ef="${x.k}" aria-pressed="${x.k===f.k}">${esc(x.t)}</button>`).join("")}</div>
+  <span class="evo-res">${ll.length?`${pl(noms.length,"nen","nens")} · ${pl(ll.length,"nota","notes")}`:"Cap nota en aquest filtre"}</span></div>
+  <div class="cv cv-evo"${ll.length?"":" hidden"}><canvas id="${esc(id)}" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>
+  <div class="evo-buit"${ll.length?" hidden":""}>${buit("puja",`Cap nota compleix el filtre «${f.t}».`)}</div>`;
+ box.querySelectorAll("[data-ef]").forEach(b=>{b.onclick=()=>{const nf=b.dataset.ef;st.filtre=nf;pintaEvo(id);
+  if(id==="gEvoModal"&&EVO_ORIG&&EVO_STAT[EVO_ORIG]){EVO_STAT[EVO_ORIG].filtre=nf;pintaEvo(EVO_ORIG)}}});
+ if(!ll.length)return;
+ const o=GOPC();o.parsing=false;
+ o.scales.x=Object.assign(o.scales.x,{type:"linear",ticks:{color:cssV("--muted"),maxTicksLimit:7,callback:v=>diaC(v)}});
+ o.scales.y=Object.assign(o.scales.y,{min:0,max:100,ticks:{color:cssV("--muted"),callback:v=>v+"%"}});
+ o.plugins={
+  tooltip:{callbacks:{title:it=>dataC(it[0].raw.x),label:it=>`${it.dataset.label}: ${it.raw.y}% · ${it.raw.ev==="examen"?"examen":"test"} ${it.raw.t||""}`}},
+  evoLlindars:{linies:[{v:50,c:cssV("--warn")||"#d97706",t:"50%"},{v:70,c:cssV("--ok")||"#16a34a",t:"70% aprovat"}]}};
+ nouG(id,{type:"line",plugins:[evoLlindars],data:{datasets:noms.map(n=>({label:n,borderColor:colorNen(n),backgroundColor:colorNen(n),cubicInterpolationMode:"monotone",clip:8,pointRadius:3,pointHoverRadius:5,borderWidth:2,
+  data:ll.filter(e=>String(e.nom||"").trim()===n).map(e=>({x:new Date(e.ts).getTime(),y:+e.pc,t:e.tema,ev:e.event}))}))},options:o})}
+function gEvolucio(evo,id="gEvo",opts={}){const dades=Array.isArray(evo)?evo:[],box=$("#"+id+"Box"),bt=document.querySelector(`[data-evo-amp="${id}"]`);
+ if(!dades.length){delete EVO_STAT[id];if(bt)bt.hidden=true;if(box)box.innerHTML=buit("puja","Encara no hi ha tests en aquest període.");else{const c=$("#"+id);if(c)c.parentNode.innerHTML=buit("puja","Encara no hi ha tests en aquest període.")}return}
+ const prev=EVO_STAT[id];
+ EVO_STAT[id]={evo:dades,filtre:opts.filtre||(prev&&prev.filtre)||"totes",titol:opts.titol||(prev&&prev.titol)||"Evolució de les notes"};
+ if(bt){bt.hidden=false;bt.onclick=()=>obreEvoModal(id)}
+ pintaEvo(id)}
 function tConstancia(act){const per={};act.forEach(a=>{const k=a.nom.trim().toLowerCase();(per[k]=per[k]||{nom:a.nom,dies:new Set(),min:0}).dies.add(a.dia);per[k].min+=+a.minuts});
  const avui=new Date();const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
  const ratxa=s=>{let n=0,d=new Date(avui);if(!s.has(iso(d)))d.setDate(d.getDate()-1);while(s.has(iso(d))){n++;d.setDate(d.getDate()-1)}return n};
