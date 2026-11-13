@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.44.0 · 2026-11-13
+
+### Afegit
+- **Horari diferent de cap de setmana (dissabtes i diumenges) per tancar i obrir els mons** (`supabase/bn_control.sql`, `admin/index.html`, `index.html`, `motor/plantilla-estudi-interactiu.html`, `motor/prova-control-sql.js`, `motor/prova-admin-xat.js`, `motor/prova-xat.js` · g29):
+  - A `Configuració → Horaris` s'afegeix l'interruptor **«Horari diferent el cap de setmana (ds i dg)»** (`#xcMonsCap`) i les hores editables `#xcMonsCapTancaH` → `#xcMonsCapObreH` (per defecte `23:00 → 09:00`), amb etiqueta clara `dl–dv` per a l'horari d'entre setmana.
+  - `bn_priv.xat_horari_cfg()`, `bn_priv.mons_en_horari_tancat()`, `public.bn_estat_web()` i `public.bn_admin_control()` guarden i avaluen `mons_cap_actiu`, `mons_cap_tanca_h` i `mons_cap_obre_h` (hora de Madrid, `isodow` 6 i 7), i tant la portada (`horariMonsPortada()`) com els 7 mons (`horariMonsSrv()`) i el tauler (`monsHorariEfectiu()`) apliquen l'horari corresponent cada dia automàticament.
+
 ## 2.43.0 · 2026-11-12
 
 ### Afegit

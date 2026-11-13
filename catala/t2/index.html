@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="9a46fff66d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="cbf4c57d91",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -656,7 +656,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.43.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.44.0</small></div>
 
 <script src="../../sprites.js?v=0be9e885"></script>
 <script>
@@ -2009,10 +2009,12 @@ function esHoraNit(){
  if(!nit&&(NIT_ULTIM_AVIS||AVIS_NIT_TANCAT)){NIT_ULTIM_AVIS=0;AVIS_NIT_TANCAT=false}
  return nit}
 function horariMonsSrv(){
- const actiu=!!(HOR_SRV&&HOR_SRV.tanca_mons===true);
- const tanca=normHoraStr(HOR_SRV&&HOR_SRV.mons_tanca_h,HOR_SRV&&HOR_SRV.mons_tanca_min)||"22:00";
- const obre=normHoraStr(HOR_SRV&&HOR_SRV.mons_obre_h,HOR_SRV&&HOR_SRV.mons_obre_min)||"08:00";
- return {actiu,tanca,obre}}
+ const actiu=!!(HOR_SRV&&HOR_SRV.tanca_mons===true),dia=araMadrid().dia;
+ const wd=/^\d{4}-\d{2}-\d{2}$/.test(dia)?new Date(dia+"T12:00:00Z").getUTCDay():new Date().getDay();
+ const cap=!!(HOR_SRV&&HOR_SRV.mons_cap_actiu===true)&&(wd===0||wd===6);
+ const tanca=cap?(normHoraStr(HOR_SRV&&HOR_SRV.mons_cap_tanca_h,HOR_SRV&&HOR_SRV.mons_cap_tanca_min)||"23:00"):(normHoraStr(HOR_SRV&&HOR_SRV.mons_tanca_h,HOR_SRV&&HOR_SRV.mons_tanca_min)||"22:00");
+ const obre=cap?(normHoraStr(HOR_SRV&&HOR_SRV.mons_cap_obre_h,HOR_SRV&&HOR_SRV.mons_cap_obre_min)||"09:00"):(normHoraStr(HOR_SRV&&HOR_SRV.mons_obre_h,HOR_SRV&&HOR_SRV.mons_obre_min)||"08:00");
+ return {actiu,tanca,obre,cap}}
 function esMonsTancatsNit(){
  if(!HORA_PROVA&&SENSE_NUVOL())return false;
  const {actiu,tanca,obre}=horariMonsSrv();if(!actiu)return false;
@@ -2468,15 +2470,19 @@ async function bnProvaBonUs(){
   pintaTema();if(!document.getElementById("avisNit"))return "canviar de pantalla dins d'un tema NO ha d'esborrar la barra global #avisNit";
   if(comprovaAvisNit(true,10000+5*60*1000))return "als 5 min encara no ha de tornar a saltar #modalNit";
   if(!comprovaAvisNit(true,10000+RECORDATORI_NIT_MS+1000)||!/Encara per aquí/.test(document.getElementById("nitTit").textContent))return "als 15 min d'estudiar de nit ha de tornar a sortir el recordatori #modalNit";
-  // 7) Horari nocturn propi dels mons (tanca_mons: 22:00 → 08:00, independent de l'horari del xat)
+  // 7) Horari nocturn propi dels mons (dl-dv 22:00 → 08:00 i cap de setmana 23:00 → 09:30)
   document.getElementById("modalNit")?.remove();
-  HOR_SRV={actiu:false,tanca_h:"21:30",obre_h:"07:00",tanca_mons:true,mons_tanca_h:"22:00",mons_obre_h:"08:00"};
+  HOR_SRV={actiu:false,tanca_h:"21:30",obre_h:"07:00",tanca_mons:true,mons_tanca_h:"22:00",mons_obre_h:"08:00",mons_cap_actiu:true,mons_cap_tanca_h:"23:00",mons_cap_obre_h:"09:30"};
   HORA_PROVA={dia:"2026-11-13",hm:"21:50",min:1310};
-  if(esMonsTancatsNit())return "amb horari de mons 22:00–08:00, a les 21:50 encara han d'estar oberts";
+  if(esMonsTancatsNit())return "amb horari de mons 22:00–08:00, divendres a les 21:50 encara han d'estar oberts";
   HORA_PROVA={dia:"2026-11-13",hm:"22:10",min:1330};
-  if(!actualitzaTancamentMon()||!MON_TANCAT||!document.getElementById("monTancatBox")||!/22:00/.test(app.textContent)||!/08:00/.test(app.textContent))return "a les 22:10 amb tanca_mons actiu s'ha de tancar el món mostrant 22:00 i 08:00";
+  if(!actualitzaTancamentMon()||!MON_TANCAT||!document.getElementById("monTancatBox")||!/22:00/.test(app.textContent)||!/08:00/.test(app.textContent))return "divendres a les 22:10 amb tanca_mons actiu s'ha de tancar el món mostrant 22:00 i 08:00";
   HORA_PROVA={dia:"2026-11-14",hm:"08:05",min:485};
-  if(!actualitzaTancamentMon()||MON_TANCAT||document.getElementById("monTancatBox"))return "a les 08:05 el món s'ha de tornar a obrir sol";
+  if(actualitzaTancamentMon()||!MON_TANCAT||!/09:30/.test(app.textContent))return "dissabte a les 08:05 amb cap de setmana fins a 09:30 ha de seguir tancat mostrant 09:30";
+  HORA_PROVA={dia:"2026-11-14",hm:"09:35",min:575};
+  if(!actualitzaTancamentMon()||MON_TANCAT||document.getElementById("monTancatBox"))return "dissabte a les 09:35 el món s'ha de tornar a obrir sol";
+  HORA_PROVA={dia:"2026-11-14",hm:"22:30",min:1350};
+  if(esMonsTancatsNit())return "dissabte a les 22:30 amb tancament a les 23:00 ha de seguir obert";
   return true
  }finally{
   document.querySelectorAll(".descans,#avisTemps,#avisNit,#modalNit").forEach(e=>e.remove());
