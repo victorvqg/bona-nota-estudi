@@ -10,6 +10,7 @@ Aquest README explica **com està feta la web i com s'hi treballa**. El que no �
 | Si vols saber… | Llegeix |
 |---|---|
 | Quins mons hi ha i com es juga | [`docs/MONS.md`](docs/MONS.md) |
+| Com construir un món nou pas a pas | [`docs/NOU-MON.md`](docs/NOU-MON.md) |
 | Com es construeix un món d'Anglès (frases amb buits) | [`docs/MON-ANGLES.md`](docs/MON-ANGLES.md) |
 | Com funcionen els Bosses, els efectes musicals i les variants per a nous mons | [`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md) |
 | Com es posen les notes | [`docs/AVALUACIO.md`](docs/AVALUACIO.md) |
@@ -446,7 +447,7 @@ El motor els desa a `S.rep`, els mou de capsa i dona el +2 ⭐ quan queden apres
 
 ### Boss, missions i preguntes obertes
 
-- **Boss:** `bossEstat()` l'obre amb el 70 % dels temes aprovats (`BOSS_DESBLOQ`) o amb un examen de 70 o més. Les rondes es construeixen amb el contingut que el món ja té, i guanyar dona `BOSS_ESTRELLES` = 10 un cop al dia.
+- **Boss i celebracions (`bossFesta`, `BOSS_FX_CFG`, `BOSS_MUS`):** `bossEstat()` obre el Boss amb el 70 % dels temes aprovats (`BOSS_DESBLOQ`) o amb un examen de 70 o més. Les 10 rondes surten del contingut que el món ja té, i guanyar dona `BOSS_ESTRELLES` = 10 un cop al dia, medalla `🏆` i una **celebració audiovisual (~4,3 s)** amb sprite 16×16 (`BOSS_SPR`, tenyit amb els colors del món), motion CSS (`explosio`, `orbites`, `tempesta`, `blocs`, `espiral`, `esborra`, `focus`), partícules i fanfara WebAudio exclusiva (`epica`, `cosmos`, `primavera`, `chiptune`, `alegria`, `toreador`, `estrena`). En tocar la pantalla es tanca a l'instant i `#bossFi` deixa el botó `🎬 Celebració`; es pot provar directe amb `?demoBoss=1`, definir `pix`/`notes` a mida per a nous mons ([`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md)) i es verifica automàticament amb `bnProvaBossFesta`. Amb `Mode suau` (`SUAU`), la celebració passa a banda estàtica tranquil·la (`.boss-festa.quiet`).
 - **Missions:** `missionsAvui()` tria 3 missions a partir del dia i del món, de manera que són les mateixes tot el dia. `missio(k, v)` compta el progrés amb el que el motor ja sap.
 - **Obertes:** el nen escriu la resposta i el motor hi busca les idees clau. Ho fa en dos passos:
   - **És una resposta de veritat?** `validaOberta(text, o)` demana un mínim de paraules (`OB_MIN`), paraules reals comparades amb el vocabulari del món, i que no sigui una còpia de l'enunciat, la resposta model o les idees (seqüències de 4 paraules). Les caselles de resposta no accepten enganxar (`obProtegeix`), i el boss fa servir el mateix validador.
@@ -498,10 +499,10 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
 
 ### So, veu i ritme
 
-- **So:** tot es sintetitza amb WebAudio, sense fitxers. Les veus passen per un bus d'efectes o de música, un volum general i un compressor. La música de fons té la tonalitat i el tempo que surten de l'id del món.
+- **So:** tot es sintetitza amb WebAudio, sense fitxers. Les veus passen per un bus d'efectes (`SB`) o de música (`BG`/`MB`), un volum general i un compressor, amb reverberació (`REV`) i eco suau (`ECO`). Tant la música de fons com les **fanfares dels Bosses** (`BOSS_MUS` o `notes` a mida) i les **festes del rànquing** es generen en directe.
 - **Escolta:** `speechSynthesis`, amb la veu del mateix dispositiu.
 - **Descans i bon ús:** cada 25 minuts de pàgina visible (`DESCANS_S`) proposa una pausa de 5 minuts, la registra (`descans`: `fet` o `salta`) i deixa saltar-la com a màxim 2 vegades seguides els dies normals (3 a la vigília). A l'inici del món hi ha el pla de 10 dies (`#plaDia`), el botó «Demà tinc examen» (`examen_dema`, màx. 2 dies/món), l'avís amable als 60/120 minuts i la franja de nit (`21:30`/`22:00`, amb mode suau automàtic). Totes les regles i el filtre per a mecàniques noves són a [`docs/BON-US.md`](docs/BON-US.md).
-- **Mode suau:** la classe `suau` del `body` treu les animacions fortes (també s'activa sola a la franja de nit sense alterar la preferència manual `bn_suau`).
+- **Animacions i Mode suau:** tant els mons (combos, superestrelles cada 50 ⭐ i celebracions de Boss) com el rànquing (`FESTES`) fan servir animacions CSS temàtiques. La classe `suau` del `body` (activada manualment al perfil, via `prefers-reduced-motion` o sola a la franja nocturna sense alterar `bn_suau`) elimina les animacions fortes i els parpelleigs mantenint els missatges estàtics.
 - **Teclat:** un únic `keydown` reparteix les tecles segons la pantalla. No interfereix amb camps de text, la pissarra ni el teclat del Taller.
 
 ### Registre d'activitat
@@ -516,7 +517,7 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
 
 És una pàgina a part, que no surt de la plantilla. S'edita a mà, excepte els blocs marcats que escriu `tot.py`: `MONS`, `SO-MOBIL`, `ACTUALITZA`, l'adreça de `sprites.js` i la versió del peu.
 
-- **Rànquing:** combina les RPC `bn_ranking_mons` (total, estrelles per món i dies diferents d'estudi `dies`; amb `bn_ranking` de reserva) i `bn_ranking_remuntada`, amb les pestanyes `Estrelles`, `Dies` («Dies d'estudi»), `Nivell`, `Setmana`, `Remuntada` i `Xat`. Sense la segona RPC, la pestanya Remuntada surt buida. La classificació mostra els `HS_TOP` = 25 primers i, si el nen queda més avall, la seva fila a sota. `?demo` el mostra amb nens inventats.
+- **Rànquing i festes animades (`FESTES`):** combina les RPC `bn_ranking_mons` (total, estrelles per món i dies diferents d'estudi `dies`; amb `bn_ranking` de reserva) i `bn_ranking_remuntada`, amb les pestanyes `Estrelles`, `Dies` («Dies d'estudi»), `Nivell`, `Setmana`, `Remuntada` i `Xat`. Sense la segona RPC, la pestanya Remuntada surt buida. La classificació mostra els `HS_TOP` = 25 primers i, si el nen queda més avall, la seva fila a sota. `?demo` el mostra amb nens inventats. Tocar **5 vegades seguides** dins del rànquing (o assolir la meta setmanal de la colla) dispara en rotació una de les **5 festes musicals amb animació** (`🌋 TERRATRÈMOL!`, `🥁 LA GRAN DESFILADA!`, `🐝 ATAC D'ABELLOTS!`, `🚀 GRAVETAT ZERO!` i `🐉 FOC DE DRAC!`; detall a [`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md)).
 - **Icones:** `sprites.js` dibuixa el pixel art com a SVG a partir de graelles de 16×16, de manera que es veu igual a tots els aparells.
 - **Afegir un món al rànquing:** surt sol de la seva targeta (`data-id`, `.mat`, `h2`). Per donar-li dibuix i color, a `sprites.js` afegeix-lo a `BN_MON`
   (`id: {ic: "un dibuix de BN_SPR", mat: "Assignatura"}`). Si l'assignatura és nova, afegeix-la també a `BN_MAT` (`curt`, `color`, `tint`).
