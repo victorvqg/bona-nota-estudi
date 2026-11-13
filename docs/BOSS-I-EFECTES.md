@@ -1,6 +1,6 @@
 # 👾 Bosses, celebracions i variants per a nous mons
 
-Com funcionen els **efectes especials amb moviment i música WebAudio** de Bona Nota (tant en vèncer el **Boss de cada món** com a les **5 festes del rànquing**) i **com configurar-los o inventar variants noves** en crear qualsevol món futur sense tocar el motor.
+Com funcionen els **efectes especials amb moviment i música WebAudio** de Bona Nota (tant en vèncer el **Boss de cada món** com a les **5 festes del rànquing**) i **com configurar-los o inventar variants noves** en crear qualsevol món futur sense tocar el motor. Per a la llista de comprovació completa d'un món sencer, vegeu [`NOU-MON.md`](NOU-MON.md).
 
 ---
 
