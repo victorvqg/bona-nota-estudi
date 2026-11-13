@@ -707,7 +707,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.43.0";
+const VERSIO_ADMIN="2.44.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -2377,28 +2377,37 @@ const minAHora=m=>{m=Math.max(0,Math.min(1439,Math.round(+m||0)));return `${Stri
 const horaAMin=h=>{const m=String(h||"").trim().match(/^([01]\d|2[0-3]):([0-5]\d)$/);return m?(+m[1])*60+(+m[2]):null};
 const enHorariTancat=(actiu,tancaM,obreM)=>{if(!actiu)return false;let ara=0;try{const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Madrid",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date()).split(":");ara=(+p[0]||0)*60+(+p[1]||0)}catch(e){const d=new Date();ara=d.getHours()*60+d.getMinutes()}
  return tancaM===obreM?true:tancaM>obreM?(ara>=tancaM||ara<obreM):(ara>=tancaM&&ara<obreM)};
+const esCapSetmanaMadrid=()=>{if(typeof window.__bnDiaProva==="number")return window.__bnDiaProva===0||window.__bnDiaProva===6;
+ if(typeof window.__bnDiaProva==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(window.__bnDiaProva)){const d=new Date(window.__bnDiaProva+"T12:00:00Z").getUTCDay();return d===0||d===6}
+ try{const w=new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Madrid",weekday:"short"}).format(new Date());return w==="Sat"||w==="Sun"}catch(e){const d=new Date().getDay();return d===0||d===6}};
+const monsHorariEfectiu=hor=>{hor=oB(hor);
+ const mTM=nN(hor.mons_tanca_min)??horaAMin(hor.mons_tanca_h)??1320,mOM=nN(hor.mons_obre_min)??horaAMin(hor.mons_obre_h)??480;
+ const capActiu=hor.mons_cap_actiu===true,capTM=nN(hor.mons_cap_tanca_min)??horaAMin(hor.mons_cap_tanca_h)??1380,capOM=nN(hor.mons_cap_obre_min)??horaAMin(hor.mons_cap_obre_h)??540;
+ const enCap=capActiu&&esCapSetmanaMadrid();
+ return {mTM,mOM,capActiu,capTM,capOM,enCap,efTM:enCap?capTM:mTM,efOM:enCap?capOM:mOM}};
 async function rpcCtrl(cfg){if(DEMO)return demoControlRpc(cfg);
  const r=await fetch(API.replace("bn_admin_logs","bn_admin_control"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_cfg:cfg||null})});
  if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
 function ctrlDe(){if(!CTRL){CTRL=rpcCtrl(null).then(d=>{CTRL_NOMES_XAT=false;return CTRL_D=d}).catch(e=>{
-  if(e==="falta"){CTRL_NOMES_XAT=true;const act=X&&X.cfg?X.cfg.actiu!==false:true;return CTRL_D={xat_actiu:act,xat_obert_ara:act,xat_en_horari_tancat:false,mons_tancats_nit:false,horari:{actiu:false,tanca_mons:false,tanca_min:1290,obre_min:420,mons_tanca_min:1320,mons_obre_min:480,mons_tanca_h:"22:00",mons_obre_h:"08:00"},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)}}
+  if(e==="falta"){CTRL_NOMES_XAT=true;const act=X&&X.cfg?X.cfg.actiu!==false:true;return CTRL_D={xat_actiu:act,xat_obert_ara:act,xat_en_horari_tancat:false,mons_tancats_nit:false,horari:{actiu:false,tanca_mons:false,mons_cap_actiu:false,tanca_min:1290,obre_min:420,mons_tanca_min:1320,mons_obre_min:480,mons_tanca_h:"22:00",mons_obre_h:"08:00",mons_cap_tanca_min:1380,mons_cap_obre_min:540,mons_cap_tanca_h:"23:00",mons_cap_obre_h:"09:00"},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)}}
   throw e})}return CTRL}
 function estatXatCtrl(d){d=oB(d);const xatAct=d.xat_actiu!==false,hor=oB(d.horari),hAct=hor.actiu===true,tancaMons=hor.tanca_mons===true,tancaM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,obreM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
- const monsTancaM=nN(hor.mons_tanca_min)??horaAMin(hor.mons_tanca_h)??1320,monsObreM=nN(hor.mons_obre_min)??horaAMin(hor.mons_obre_h)??480;
+ const {efTM:monsTancaM,efOM:monsObreM,capActiu:monsCapActiu,enCap:monsEnCap}=monsHorariEfectiu(hor);
  const tancatH=typeof d.xat_en_horari_tancat==="boolean"?d.xat_en_horari_tancat:enHorariTancat(hAct,tancaM,obreM);
  const obertAra=typeof d.xat_obert_ara==="boolean"?d.xat_obert_ara:(xatAct&&!tancatH);
  const monsNit=typeof d.mons_tancats_nit==="boolean"?d.mons_tancats_nit:enHorariTancat(tancaMons,monsTancaM,monsObreM);
- return {xatAct,hAct,tancaMons,monsNit,tancaM,obreM,monsTancaM,monsObreM,tancatH,obertAra}}
+ return {xatAct,hAct,tancaMons,monsNit,monsCapActiu,monsEnCap,tancaM,obreM,monsTancaM,monsObreM,tancatH,obertAra}}
 async function tControl(){const el=$("#tCtrl");if(!el)return;const tok=TOK;
  let d;try{d=await ctrlDe();await monsLlista()}catch(e){CTRL=null;if(tok!==TOK||!$("#tCtrl"))return;
   $("#tCtrl").removeAttribute("aria-busy");$("#tCtrl").innerHTML=avisErr(`No s'ha pogut carregar el control (${e&&e.message||e}).`);return}
  if(tok!==TOK||!$("#tCtrl"))return;pintaControl(d)}
 function pintaControl(d){const el=$("#tCtrl");if(!el)return;el.removeAttribute("aria-busy");d=oB(d);CTRL_D=d;
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
- const {xatAct,hAct,tancaMons,monsNit,tancaM,obreM,monsTancaM,monsObreM,tancatH}=estatXatCtrl(d);
+ const {xatAct,hAct,tancaMons,monsNit,monsEnCap,tancaM,obreM,monsTancaM,monsObreM,tancatH}=estatXatCtrl(d);
  const tancats=new Set(aR(d.mons_tancats).map(x=>String(x).trim().toLowerCase()));
  const ms=(MONSL&&MONSL.length?MONSL:Object.entries(ASSIGS).map(([id,nom])=>({id,nom}))),nOb=ms.filter(m=>!tancats.has(m.id)).length;
  const pillX=!xatAct?`<span class="pill bad" id="ctrlXatEstat">malament · Tancat manualment</span>`:tancatH?`<span class="pill warn" id="ctrlXatEstat">avís · Tancat per horari (${minAHora(tancaM)}–${minAHora(obreM)})</span>`:`<span class="pill ok" id="ctrlXatEstat">bé · Obert ara${hAct?` (${minAHora(tancaM)})`:""}</span>`;
+ const capEt=monsEnCap?" · ds/dg":"";
  el.innerHTML=`<div class="ctrl-grid">
   <div class="ctrl-box">
    <div class="ctrl-cap"><h3>${ic("xat")}Xat de la colla</h3>${pillX}</div>
@@ -2408,7 +2417,7 @@ function pintaControl(d){const el=$("#tCtrl");if(!el)return;el.removeAttribute("
   </div>
   <div class="ctrl-box">
    <div class="ctrl-cap"><h3>${ic("llibre")}Mons a la web</h3>
-    <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">${monsNit?`<span class="pill warn">🌙 Tancats de nit (${minAHora(monsTancaM)}–${minAHora(monsObreM)})</span>`:tancaMons?`<span class="pill info">🌙 Nit: ${minAHora(monsTancaM)}–${minAHora(monsObreM)}</span>`:""}<span class="pill ${nOb===ms.length?"ok":nOb===0?"bad":"warn"}" id="ctrlMonsEstat">${nOb} de ${ms.length} oberts</span>
+    <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">${monsNit?`<span class="pill warn">🌙 Tancats de nit (${minAHora(monsTancaM)}–${minAHora(monsObreM)}${capEt})</span>`:tancaMons?`<span class="pill info">🌙 Nit: ${minAHora(monsTancaM)}–${minAHora(monsObreM)}${capEt}</span>`:""}<span class="pill ${nOb===ms.length?"ok":nOb===0?"bad":"warn"}" id="ctrlMonsEstat">${nOb} de ${ms.length} oberts</span>
      <button class="btn sec petit" type="button" id="ctrlMonsObre"${nd||tancats.size===0?" disabled":""}>Activa'ls tots</button>
      <button class="btn sec petit" type="button" id="ctrlMonsTanca"${nd||tancats.size===ms.length?" disabled":""}>Tanca'ls tots</button></div></div>
    <div class="ctrl-mons">${ms.map(m=>{const ob=!tancats.has(m.id);return `<div class="ctrl-mon${ob?"":" tancat"}" style="--mc:${colAssig(m.id)}">
@@ -2676,8 +2685,8 @@ async function vistaMissatgesNen(cos,tok){
  if(tok!==TOK||VISTA!=="nens"||TAB!=="missatges"||!$("#nensCos"))return;
  const hor=oB(ctrl&&ctrl.horari),hAct=hor.actiu===true,hMons=hor.tanca_mons===true;
  const tM=hAct?(nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290):1290,oM=hAct?(nN(hor.obre_min)??horaAMin(hor.obre_h)??360):360;
- const mTM=nN(hor.mons_tanca_min)??horaAMin(hor.mons_tanca_h)??1320,mOM=nN(hor.mons_obre_min)??horaAMin(hor.mons_obre_h)??480;
- const tH=minAHora(tM),oH=minAHora(oM),mTH=minAHora(mTM),mOH=minAHora(mOM),tVigH=tM>=1080&&tM<=1409?minAHora(tM+30):"22:00";
+ const {mTM,mOM,capActiu:hCap,capTM,capOM}=monsHorariEfectiu(hor);
+ const tH=minAHora(tM),oH=minAHora(oM),mTH=minAHora(mTM),mOH=minAHora(mOM),cTH=minAHora(capTM),cOH=minAHora(capOM),tVigH=tM>=1080&&tM<=1409?minAHora(tM+30):"22:00";
  const estCred=nN(xc&&xc.est_credit)||10,maxDia=nN(xc&&xc.max_dia)||5;
  const CATS=[["tots","Tots"],["nit","🌙 Nit i horari"],["pauses","⏳ Pauses i temps"],["pla","📅 Pla i vigília"],["anims","💛 Ànims i ajuda"],["xat","💬 Xat i privacitat"]];
  const EF={
@@ -2696,8 +2705,8 @@ async function vistaMissatgesNen(cos,tok){
    quan:`Dins de qualsevol món a partir de les <b>${esc(tH)}</b> (o de les <b>${esc(tVigH)}</b> si el món està en vigília d'examen demà). Si prem «Acabo el que estic fent», no li talla el test però li torna a recordar cada <b>15 minuts</b> i manté la banda fixa a dalt.`,
    perque:`Abaixar els estímuls visuals i sonors a la nit (activa sol el Mode suau) i convidar a plegar sense tallar en sec una pregunta a mitges.`},
   {cat:"nit",on:"Portada i mons",ef:"bloqueja",tit:"🔒 Món tancat (manual o per horari nocturn)",cls:"p-nit",
-   prev:`<b>🔒 Aquest món està tancat ara mateix</b>${hMons?` <small>(o 🌙 Descans nocturn de ${esc(mTH)} a ${esc(mOH)})</small>`:""}<br>Les teves estrelles continuen guardades al rànquing! Tria un altre món a la portada.<div class="mn-bts"><span class="mn-bt">🚪 Tots els mons</span></div>`,
-   quan:`Quan tanques un món a <b>Mons → Llista</b>, o de <b>${esc(mTH)} a ${esc(mOH)}</b> si actives <b>«Tanca els mons a la nit»</b> a Configuració → Horaris (ara mateix: <b>${hMons?`ACTIU (${esc(mTH)}–${esc(mOH)})`:"desactivat"}</b>).`,
+   prev:`<b>🔒 Aquest món està tancat ara mateix</b>${hMons?` <small>(o 🌙 Descans nocturn de ${esc(mTH)} a ${esc(mOH)}${hCap?` · ds/dg de ${esc(cTH)} a ${esc(cOH)}`:""})</small>`:""}<br>Les teves estrelles continuen guardades al rànquing! Tria un altre món a la portada.<div class="mn-bts"><span class="mn-bt">🚪 Tots els mons</span></div>`,
+   quan:`Quan tanques un món a <b>Mons → Llista</b>, o de <b>${esc(mTH)} a ${esc(mOH)}</b>${hCap?` (i els dissabtes i diumenges de <b>${esc(cTH)} a ${esc(cOH)}</b>)`:""} si actives <b>«Tanca els mons a la nit»</b> a Configuració → Horaris (ara mateix: <b>${hMons?`ACTIU (${esc(mTH)}–${esc(mOH)}${hCap?` · ds/dg ${esc(cTH)}–${esc(cOH)}`:""})`:"desactivat"}</b>).`,
    perque:`Permetre als adults tancar l'accés del tot quan calgui descans obligatori, tranquil·litzant sempre el nen que no ha perdut cap punt.`},
   {cat:"pauses",on:"Dins dels mons",ef:"pausa",tit:"🧠 Pausa activa cada 25 minuts seguits",cls:"p-desc",
    prev:`<b>🧠 Ja portes 25 minuts, Pau! Toca descans</b><br>El cervell guarda millor el que has après si fas una pausa curta: 🚰 Beu un got d'aigua · 🤸 Estira braços i esquena · 👀 Mira lluny per la finestra · <b>5:00</b><div class="mn-bts"><span class="mn-bt sec">Torno a estudiar ▶ (als 5:00)</span><span class="mn-bt sec">Ara no, continuo</span></div>`,
@@ -4123,7 +4132,8 @@ function pintaXMsgs(){const el=$("#xMsgs");if(!el||!X)return;const nd=xND(),FR=x
 function pintaXSil(){const el=$("#xSil");if(!el||!X)return;const nd=xND(),ara=Date.now(),L=X.sil.filter(s=>tsMs(s.fins)>ara).sort((a,b)=>tsMs(a.fins)-tsMs(b.fins)),noms=xNoms();
  el.innerHTML=(L.length?`<div class="xs-l">${L.map(s=>{const n=nomDe(s.k);return `<div class="xs">${nenH(n)}<div class="xs-c"><span>Fins <b>${esc(dataC(tsMs(s.fins)))}</b></span>${s.motiu?`<small>${esc(s.motiu)}</small>`:""}</div><button class="btn sec petit" type="button" data-xtreu="${esc(s.k)}"${nd}>${ic("desfes")}Treu el silenci</button></div>`}).join("")}</div>`:buit("ok","Ningú silenciat ara mateix."))
   +`<div class="xs-nou"><label for="xsNom">Silencia un nom</label><div class="xs-f"><select id="xsNom"${noms.length?"":" disabled"}>${noms.length?noms.map(n=>`<option value="${esc(kNom(n))}">${esc(n)}</option>`).join(""):`<option value="">Encara no hi ha cap nom</option>`}</select><button class="btn perill-sec" type="button" id="xsBt"${nd||(noms.length?"":" disabled")}>${ic("silenci")}Silencia…</button></div><p class="sub" style="margin:8px 0 0">Després triaràs 1, 3 o 7 dies i el motiu.</p></div>`}
-function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.cfg,hor=oB(CTRL_D&&CTRL_D.horari);let obert=cf.actiu!==false,hAct=hor.actiu===true,hMons=hor.tanca_mons===true,tM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,oM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420,mTM=nN(hor.mons_tanca_min)??horaAMin(hor.mons_tanca_h)??1320,mOM=nN(hor.mons_obre_min)??horaAMin(hor.mons_obre_h)??480;
+function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.cfg,hor=oB(CTRL_D&&CTRL_D.horari);let obert=cf.actiu!==false,hAct=hor.actiu===true,hMons=hor.tanca_mons===true,tM=nN(hor.tanca_min)??horaAMin(hor.tanca_h)??1290,oM=nN(hor.obre_min)??horaAMin(hor.obre_h)??420;
+ const {mTM,mOM,capActiu,capTM,capOM}=monsHorariEfectiu(hor);let hMonsCap=capActiu;
  el.innerHTML=`<form id="xcF" novalidate>
   <div class="xcfg-g"><label for="xcEst">Estrelles per crèdit<small>De 1 a 100. Cada crèdit és una frase.</small></label><input id="xcEst" type="number" inputmode="numeric" min="1" max="100" step="1" value="${esc(cf.est_credit)}"></div>
   <div class="xcfg-g"><label for="xcMax">Màxim de frases al dia<small>De 1 a 20, encara que guanyi més estrelles.</small></label><input id="xcMax" type="number" inputmode="numeric" min="1" max="20" step="1" value="${esc(cf.max_dia)}"></div>
@@ -4132,7 +4142,9 @@ function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.c
   <div class="xcfg-g"><span id="xcHorL">Horari automàtic del xat<small>Tanca el xat sol i avisa als mons quan toca descansar (hora de Madrid).</small></span><button class="sw" type="button" role="switch" id="xcHorari" aria-labelledby="xcHorL" aria-checked="${hAct}"${nd}><i></i><span>${hAct?"Actiu":"Desactivat"}</span></button></div>
   <div class="xcfg-g"><label for="xcTancaH">Tanca / Obre del xat<small>Per exemple: 21:30 a 07:00.</small></label><div class="xcfg-hores"><input id="xcTancaH" type="time" value="${minAHora(tM)}"${nd}><span class="muted">→</span><input id="xcObreH" type="time" value="${minAHora(oM)}"${nd}></div></div>
   <div class="xcfg-g"><span id="xcHorMonsL">Tanca els mons a la nit<small>A l'hora de tancar s'apaguen tots els mons i a l'hora d'obrir tornen a obrir sols (hora de Madrid).</small></span><button class="sw" type="button" role="switch" id="xcTancaMons" aria-labelledby="xcHorMonsL" aria-checked="${hMons}"${nd}><i></i><span>${hMons?"Sí":"No"}</span></button></div>
-  <div class="xcfg-g"><label for="xcMonsTancaH">Tanca / Obre dels mons<small>Per exemple: 22:00 a 08:00. S'aplica a tots els mons.</small></label><div class="xcfg-hores"><input id="xcMonsTancaH" type="time" value="${minAHora(mTM)}" aria-label="Hora de tancar tots els mons"${nd}><span class="muted">→</span><input id="xcMonsObreH" type="time" value="${minAHora(mOM)}" aria-label="Hora d'obrir tots els mons"${nd}></div></div>
+  <div class="xcfg-g"><label for="xcMonsTancaH">Tanca / Obre dels mons (dl–dv)<small>De dilluns a divendres. Per exemple: 22:00 a 08:00.</small></label><div class="xcfg-hores"><input id="xcMonsTancaH" type="time" value="${minAHora(mTM)}" aria-label="Hora de tancar tots els mons entre setmana"${nd}><span class="muted">→</span><input id="xcMonsObreH" type="time" value="${minAHora(mOM)}" aria-label="Hora d'obrir tots els mons entre setmana"${nd}></div></div>
+  <div class="xcfg-g"><span id="xcHorMonsCapL">Horari diferent el cap de setmana (ds i dg)<small>Dissabtes i diumenges fa servir un horari propi (si no, s'aplica el de dl–dv).</small></span><button class="sw" type="button" role="switch" id="xcMonsCap" aria-labelledby="xcHorMonsCapL" aria-checked="${hMonsCap}"${nd}><i></i><span>${hMonsCap?"Sí":"No"}</span></button></div>
+  <div class="xcfg-g" id="xcMonsCapBox" style="${hMonsCap?"":"opacity:.55"}"><label for="xcMonsCapTancaH">Tanca / Obre cap de setmana (ds i dg)<small>Dissabtes i diumenges. Per exemple: 23:00 a 09:00.</small></label><div class="xcfg-hores"><input id="xcMonsCapTancaH" type="time" value="${minAHora(capTM)}" aria-label="Hora de tancar tots els mons el cap de setmana"${nd||(!hMonsCap?" disabled":"")}><span class="muted">→</span><input id="xcMonsCapObreH" type="time" value="${minAHora(capOM)}" aria-label="Hora d'obrir tots els mons el cap de setmana"${nd||(!hMonsCap?" disabled":"")}></div></div>
   <p class="xcfg-calc" id="xcCalc"></p>
   <div class="xcfg-p"><button class="linkb" type="button" data-go-msgs="1">${ic("cor")}Què veu el nen ${ic("endavant")}</button><span class="esp"></span><p class="xerr" id="xcErr" role="alert"></p><button class="btn" type="submit" id="xcDesa"${nd}>Desa la configuració</button></div></form>`;
  const calc=()=>{const e=+$("#xcEst").value,mx=+$("#xcMax").value;$("#xcCalc").textContent=e>0&&mx>0?`Un nen actiu guanya unes 2 ⭐ per minut: cada frase li costa uns ${fmtD(Math.round(e*5)/10)} minuts d'estudi, i les ${mx} del dia, uns ${fmtD(Math.round(e*mx/2))}.`:""};
@@ -4140,14 +4152,17 @@ function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.c
  $("#xcAct").onclick=()=>{obert=!obert;const b=$("#xcAct");b.setAttribute("aria-checked",obert);b.querySelector("span").textContent=obert?"Obert":"Tancat"};
  $("#xcHorari").onclick=()=>{hAct=!hAct;const b=$("#xcHorari");b.setAttribute("aria-checked",hAct);b.querySelector("span").textContent=hAct?"Actiu":"Desactivat"};
  $("#xcTancaMons").onclick=()=>{hMons=!hMons;const b=$("#xcTancaMons");b.setAttribute("aria-checked",hMons);b.querySelector("span").textContent=hMons?"Sí":"No"};
+ $("#xcMonsCap").onclick=()=>{hMonsCap=!hMonsCap;const b=$("#xcMonsCap");b.setAttribute("aria-checked",hMonsCap);b.querySelector("span").textContent=hMonsCap?"Sí":"No";
+  const bx=$("#xcMonsCapBox");if(bx)bx.style.opacity=hMonsCap?"":"0.55";
+  if(!DEMO){$("#xcMonsCapTancaH").disabled=!hMonsCap;$("#xcMonsCapObreH").disabled=!hMonsCap}};
  $("#xcF").onsubmit=async e=>{e.preventDefault();if(DEMO){toast("No disponible en demo","avis");return}
-  const v=(s,a,b)=>{const x=$(s).value.trim();return /^\d+$/.test(x)&&+x>=a&&+x<=b?+x:null},est=v("#xcEst",1,100),mx=v("#xcMax",1,20),esp=v("#xcEsp",0,600),tH=horaAMin($("#xcTancaH").value),oH=horaAMin($("#xcObreH").value),mTH=horaAMin($("#xcMonsTancaH").value),mOH=horaAMin($("#xcMonsObreH").value),err=$("#xcErr");
-  const mal=est==null?["#xcEst","Les estrelles per crèdit han de ser un número de 1 a 100."]:mx==null?["#xcMax","El màxim de frases ha de ser un número de 1 a 20."]:esp==null?["#xcEsp","Els segons d'espera han de ser un número de 0 a 600."]:tH==null?["#xcTancaH","Escriu una hora de tancament vàlida."]:oH==null?["#xcObreH","Escriu una hora d'obertura vàlida."]:mTH==null?["#xcMonsTancaH","Escriu una hora vàlida per tancar els mons."]:mOH==null?["#xcMonsObreH","Escriu una hora vàlida per obrir els mons."]:null;
+  const v=(s,a,b)=>{const x=$(s).value.trim();return /^\d+$/.test(x)&&+x>=a&&+x<=b?+x:null},est=v("#xcEst",1,100),mx=v("#xcMax",1,20),esp=v("#xcEsp",0,600),tH=horaAMin($("#xcTancaH").value),oH=horaAMin($("#xcObreH").value),mTH=horaAMin($("#xcMonsTancaH").value),mOH=horaAMin($("#xcMonsObreH").value),mCapTH=horaAMin($("#xcMonsCapTancaH").value),mCapOH=horaAMin($("#xcMonsCapObreH").value),err=$("#xcErr");
+  const mal=est==null?["#xcEst","Les estrelles per crèdit han de ser un número de 1 a 100."]:mx==null?["#xcMax","El màxim de frases ha de ser un número de 1 a 20."]:esp==null?["#xcEsp","Els segons d'espera han de ser un número de 0 a 600."]:tH==null?["#xcTancaH","Escriu una hora de tancament vàlida."]:oH==null?["#xcObreH","Escriu una hora d'obertura vàlida."]:mTH==null?["#xcMonsTancaH","Escriu una hora vàlida per tancar els mons."]:mOH==null?["#xcMonsObreH","Escriu una hora vàlida per obrir els mons."]:mCapTH==null?["#xcMonsCapTancaH","Escriu una hora vàlida per tancar els mons el cap de setmana."]:mCapOH==null?["#xcMonsCapObreH","Escriu una hora vàlida per obrir els mons el cap de setmana."]:null;
   if(mal){err.textContent=mal[1];$(mal[0]).focus();return}err.textContent="";
   if(!obert&&X.cfg.actiu!==false&&!await dialeg({titol:"Tancar el xat?",ok:"Sí, tanca el xat",icona:"xat",cos:`<p>Mentre estigui tancat, tothom podrà llegir el xat, però <b>ningú podrà escriure ni votar</b>.</p><p>El pots tornar a obrir quan vulguis des d'aquí.</p>`}))return;
   const b=$("#xcDesa");b.disabled=true;
   try{const r=await rpcX("bn_admin_xat_config",{p_cfg:{est_credit:est,max_dia:mx,espera_s:esp,actiu:obert}});X.cfg=Object.assign({},XCFG0,r&&typeof r==="object"?r:{});
-   try{const rc=await rpcCtrl({xat_actiu:obert,horari_actiu:hAct,horari_tanca_mons:hMons,tanca_min:tH,obre_min:oH,tanca_h:minAHora(tH),obre_h:minAHora(oH),mons_tanca_min:mTH,mons_obre_min:mOH,mons_tanca_h:minAHora(mTH),mons_obre_h:minAHora(mOH)});CTRL=Promise.resolve(rc);CTRL_D=rc}catch(er){}
+   try{const rc=await rpcCtrl({xat_actiu:obert,horari_actiu:hAct,horari_tanca_mons:hMons,mons_cap_actiu:hMonsCap,tanca_min:tH,obre_min:oH,tanca_h:minAHora(tH),obre_h:minAHora(oH),mons_tanca_min:mTH,mons_obre_min:mOH,mons_tanca_h:minAHora(mTH),mons_obre_h:minAHora(mOH),mons_cap_tanca_min:mCapTH,mons_cap_obre_min:mCapOH,mons_cap_tanca_h:minAHora(mCapTH),mons_cap_obre_h:minAHora(mCapOH)});CTRL=Promise.resolve(rc);CTRL_D=rc}catch(er){}
    pintaXCfg();pintaXRes();
    toast(X.cfg.actiu===false?"Configuració desada: el xat està tancat":"Configuració desada")}
   catch(x){toast(errX(x,"desar la configuració"),"err");const y=$("#xcDesa");if(y)y.disabled=false}}}
@@ -4303,14 +4318,17 @@ function demoMon(k,a){const L=DEMO_L.filter(l=>clauNen(l)===k&&l.assig===a),net=
  return {assig:a,mod:ts,ts,reinici:null,punts,temps,dies:dies.size,dia_ult:[...dies].sort().pop()||null,ultim:null,temes,rep,rep_n:rep.length,rep_avui:rep.filter(r=>r.prox<=av).length,
   ob,examens:examens.slice(-20),boss:boss.v?boss:null,apresos,jocs,fonts,ftema,fjoc,est:null}}
 let DEMO_CTRL=null;
-function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{actiu:true,tanca_mons:false,tanca_min:1290,obre_min:420,mons_tanca_min:1320,mons_obre_min:480,mons_tanca_h:"22:00",mons_obre_h:"08:00"},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)};
+function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{actiu:true,tanca_mons:false,mons_cap_actiu:false,tanca_min:1290,obre_min:420,mons_tanca_min:1320,mons_obre_min:480,mons_tanca_h:"22:00",mons_obre_h:"08:00",mons_cap_tanca_min:1380,mons_cap_obre_min:540,mons_cap_tanca_h:"23:00",mons_cap_obre_h:"09:00"},mons_tancats:[],llindars:llindarsNorm(null),ranquing:rkCfgNorm(null)};
  if(cfg&&typeof cfg==="object"){if(typeof cfg.xat_actiu==="boolean")DEMO_CTRL.xat_actiu=cfg.xat_actiu;
   if(typeof cfg.horari_actiu==="boolean")DEMO_CTRL.horari.actiu=cfg.horari_actiu;
   if(typeof cfg.horari_tanca_mons==="boolean")DEMO_CTRL.horari.tanca_mons=cfg.horari_tanca_mons;
+  if(typeof cfg.mons_cap_actiu==="boolean")DEMO_CTRL.horari.mons_cap_actiu=cfg.mons_cap_actiu;
   if(typeof cfg.tanca_min==="number")DEMO_CTRL.horari.tanca_min=cfg.tanca_min;
   if(typeof cfg.obre_min==="number")DEMO_CTRL.horari.obre_min=cfg.obre_min;
   if(typeof cfg.mons_tanca_min==="number"){DEMO_CTRL.horari.mons_tanca_min=cfg.mons_tanca_min;DEMO_CTRL.horari.mons_tanca_h=minAHora(cfg.mons_tanca_min)}
   if(typeof cfg.mons_obre_min==="number"){DEMO_CTRL.horari.mons_obre_min=cfg.mons_obre_min;DEMO_CTRL.horari.mons_obre_h=minAHora(cfg.mons_obre_min)}
+  if(typeof cfg.mons_cap_tanca_min==="number"){DEMO_CTRL.horari.mons_cap_tanca_min=cfg.mons_cap_tanca_min;DEMO_CTRL.horari.mons_cap_tanca_h=minAHora(cfg.mons_cap_tanca_min)}
+  if(typeof cfg.mons_cap_obre_min==="number"){DEMO_CTRL.horari.mons_cap_obre_min=cfg.mons_cap_obre_min;DEMO_CTRL.horari.mons_cap_obre_h=minAHora(cfg.mons_cap_obre_min)}
   if(Array.isArray(cfg.mons_tancats))DEMO_CTRL.mons_tancats=cfg.mons_tancats.slice();
   if(cfg.reset_llindars===true)DEMO_CTRL.llindars=llindarsNorm(null);
   if(cfg.llindars&&typeof cfg.llindars==="object")DEMO_CTRL.llindars=llindarsNorm(cfg.llindars);
@@ -4320,7 +4338,8 @@ function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{act
    DEMO_CTRL.ranquing=rkCfgNorm(Object.assign({},cur,cfg.ranquing,{pestanyes:Object.assign({},cur.pestanyes,oB(cfg.ranquing.pestanyes))}));
   }}
  const tH=enHorariTancat(DEMO_CTRL.horari.actiu,DEMO_CTRL.horari.tanca_min,DEMO_CTRL.horari.obre_min);
- const mNit=enHorariTancat(DEMO_CTRL.horari.tanca_mons===true,DEMO_CTRL.horari.mons_tanca_min,DEMO_CTRL.horari.mons_obre_min);
+ const {efTM,efOM}=monsHorariEfectiu(DEMO_CTRL.horari);
+ const mNit=enHorariTancat(DEMO_CTRL.horari.tanca_mons===true,efTM,efOM);
  return Object.assign({},JSON.parse(JSON.stringify(DEMO_CTRL)),{llindars:llindarsNorm(DEMO_CTRL.llindars),ranquing:rkCfgNorm(DEMO_CTRL.ranquing),xat_en_horari_tancat:tH,xat_obert_ara:DEMO_CTRL.xat_actiu&&!tH,mons_tancats_nit:mNit})}
 function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
  if(f==="bn_admin_fitxa"){const ls=DEMO_L.filter(l=>clauNen(l)===k0),pf=demoPerfil(k0,ls.length?Date.parse(ls[0].ts):null),P=DEMO_PERF[k0]||{};

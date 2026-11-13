@@ -99,12 +99,21 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
     const webNit = await val("select public.bn_estat_web()");
     ok(dhMons.horari.actiu === false && dhMons.horari.tanca_mons === true && dhMons.mons_tancats_nit === true && webNit.horari.tanca_mons === true && webNit.mons_tancats_nit === true,
       "horari_tanca_mons=true funciona amb horari propi (mons_tanca_h/mons_obre_h) fins i tot si l'horari del xat està desactivat");
-    const dhMonsH = await ctrl({ horari_actiu: true, mons_tanca_h: "22:15", mons_obre_h: "08:30" });
-    ok(dhMonsH.horari.mons_tanca_h === "22:15" && dhMonsH.horari.mons_obre_h === "08:30" && dhMonsH.horari.mons_tanca_min === 1335 && dhMonsH.horari.mons_obre_min === 510,
-      "mons_tanca_h i mons_obre_h es desen i retornen mons_tanca_min/mons_obre_min");
+    const dhMonsH = await ctrl({ horari_actiu: true, mons_tanca_h: "22:15", mons_obre_h: "08:30", mons_cap_actiu: true, mons_cap_tanca_h: "23:15", mons_cap_obre_h: "09:45" });
+    ok(dhMonsH.horari.mons_tanca_h === "22:15" && dhMonsH.horari.mons_obre_h === "08:30" && dhMonsH.horari.mons_tanca_min === 1335 && dhMonsH.horari.mons_obre_min === 510
+      && dhMonsH.horari.mons_cap_actiu === true && dhMonsH.horari.mons_cap_tanca_h === "23:15" && dhMonsH.horari.mons_cap_obre_h === "09:45" && dhMonsH.horari.mons_cap_tanca_min === 1395 && dhMonsH.horari.mons_cap_obre_min === 585,
+      "mons_tanca_h/mons_obre_h i l'horari de cap de setmana (mons_cap_*) es desen i retornen minuts");
+    const capDiv = await val("select bn_priv.mons_en_horari_tancat(bn_priv.xat_horari_cfg(), '2026-11-13 22:30:00+01'::timestamptz)");
+    const capDisNit = await val("select bn_priv.mons_en_horari_tancat(bn_priv.xat_horari_cfg(), '2026-11-14 22:30:00+01'::timestamptz)");
+    const capDiuMati = await val("select bn_priv.mons_en_horari_tancat(bn_priv.xat_horari_cfg(), '2026-11-15 09:15:00+01'::timestamptz)");
+    const capDiuDia = await val("select bn_priv.mons_en_horari_tancat(bn_priv.xat_horari_cfg(), '2026-11-15 10:00:00+01'::timestamptz)");
+    ok(capDiv === true && capDisNit === false && capDiuMati === true && capDiuDia === false,
+      "mons_en_horari_tancat aplica dl–dv divendres 22:30 (tancat) i ds/dg dissabte 22:30 (obert), diumenge 09:15 (tancat) i 10:00 (obert)");
     ok(await falla("select public.bn_admin_control($1, $2, '{\"horari_tanca_mons\":\"si\"}'::jsonb)", ADM) !== null &&
-       await falla("select public.bn_admin_control($1, $2, '{\"mons_tanca_h\":\"25:00\"}'::jsonb)", ADM) !== null,
-      "horari_tanca_mons no booleà i mons_tanca_h invàlid són rebutjats");
+       await falla("select public.bn_admin_control($1, $2, '{\"mons_tanca_h\":\"25:00\"}'::jsonb)", ADM) !== null &&
+       await falla("select public.bn_admin_control($1, $2, '{\"mons_cap_actiu\":\"si\"}'::jsonb)", ADM) !== null &&
+       await falla("select public.bn_admin_control($1, $2, '{\"mons_cap_tanca_h\":\"25:00\"}'::jsonb)", ADM) !== null,
+      "horari_tanca_mons/mons_cap_actiu no booleans i mons_*_h invàlids són rebutjats");
 
     const ll = await val("select public.bn_xat_llegeix()");
     ok(ll.actiu === false, "bn_xat_llegeix retorna actiu=false quan l'horari tanca el xat");

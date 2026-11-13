@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="9a46fff66d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="cbf4c57d91",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -842,7 +842,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.43.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.44.0</small></footer>
 
 <script src="sprites.js?v=0be9e885"></script>
 <script>
@@ -974,8 +974,19 @@ function estrellesTotals(nom){let tot=0;if(!nom)return 0;try{document.querySelec
 function normHoraPortada(h,m){if(typeof h==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(h))return h;if(typeof m==='number'&&Number.isFinite(m)&&m>=0&&m<1440)return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(Math.floor(m%60)).padStart(2,'0')}`;return null}
 function araHmMadrid(){if(typeof window.__bnHoraProva==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(window.__bnHoraProva))return window.__bnHoraProva;
  try{const p={};new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Madrid',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()).forEach(x=>{p[x.type]=x.value});return `${String((+p.hour||0)%24).padStart(2,'0')}:${String(+p.minute||0).padStart(2,'0')}`}catch(e){const d=new Date();return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}}
+function esCapSetmanaMadrid(){
+ if(typeof window.__bnDiaProva==='number')return window.__bnDiaProva===0||window.__bnDiaProva===6;
+ if(typeof window.__bnDiaProva==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(window.__bnDiaProva)){const d=new Date(window.__bnDiaProva+'T12:00:00Z').getUTCDay();return d===0||d===6}
+ try{const w=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Madrid',weekday:'short'}).format(new Date());return w==='Sat'||w==='Sun'}
+ catch(e){const d=new Date().getDay();return d===0||d===6}
+}
 function horariNitPortada(){const act=!!(HOR_PORTADA&&HOR_PORTADA.actiu===true),t=act?normHoraPortada(HOR_PORTADA.tanca_h,HOR_PORTADA.tanca_min):null,o=act?normHoraPortada(HOR_PORTADA.obre_h,HOR_PORTADA.obre_min):null;return act&&t&&o?{tanca:t,obre:o}:{tanca:'21:30',obre:'06:00'}}
-function horariMonsPortada(){const act=!!(HOR_PORTADA&&HOR_PORTADA.tanca_mons===true),t=normHoraPortada(HOR_PORTADA&&HOR_PORTADA.mons_tanca_h,HOR_PORTADA&&HOR_PORTADA.mons_tanca_min)||'22:00',o=normHoraPortada(HOR_PORTADA&&HOR_PORTADA.mons_obre_h,HOR_PORTADA&&HOR_PORTADA.mons_obre_min)||'08:00';return {actiu:act,tanca:t,obre:o}}
+function horariMonsPortada(){
+ const act=!!(HOR_PORTADA&&HOR_PORTADA.tanca_mons===true),cap=!!(HOR_PORTADA&&HOR_PORTADA.mons_cap_actiu===true)&&esCapSetmanaMadrid();
+ const t=cap?(normHoraPortada(HOR_PORTADA&&HOR_PORTADA.mons_cap_tanca_h,HOR_PORTADA&&HOR_PORTADA.mons_cap_tanca_min)||'23:00'):(normHoraPortada(HOR_PORTADA&&HOR_PORTADA.mons_tanca_h,HOR_PORTADA&&HOR_PORTADA.mons_tanca_min)||'22:00');
+ const o=cap?(normHoraPortada(HOR_PORTADA&&HOR_PORTADA.mons_cap_obre_h,HOR_PORTADA&&HOR_PORTADA.mons_cap_obre_min)||'09:00'):(normHoraPortada(HOR_PORTADA&&HOR_PORTADA.mons_obre_h,HOR_PORTADA&&HOR_PORTADA.mons_obre_min)||'08:00');
+ return {actiu:act,tanca:t,obre:o,cap}
+}
 function esMonsTancatsNitPortada(){const perm=(!window.BN_NO_LOG&&!/[?&]demo\b/.test(location.search)&&!/^file:/.test(location.protocol))||!!window.__bnHoraProva;if(!perm)return false;const {actiu,tanca,obre}=horariMonsPortada();if(!actiu)return false;const hm=araHmMadrid();return tanca===obre?true:tanca<obre?(hm>=tanca&&hm<obre):(hm>=tanca||hm<obre)}
 function refrescaMonsTancatsPortada(){
  const perNit=esMonsTancatsNitPortada(),{obre:mObre}=horariMonsPortada();
