@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.45.0 · 2026-11-13
+
+### Afegit
+- **Gràfic «Evolució de les notes» ampliat, amb pantalla completa, línies d'aprovat i filtres de notes** (`admin/index.html`, `motor/prova-admin-evolucio.js` · g31):
+  - Mida en línia més gran (`.cv.cv-evo`, `360 px` en escriptori / `300 px` al mòbil) tant a `Sessions → Activitat` (`#gEvo`) com a `Mons → Fitxa del món → Resum` (`#gMonEvo`).
+  - Botó **«Pantalla completa»** que obre `<dialog id="evoDlg">` gran (~`96vw × 90vh`) tancable amb `Esc`, clic a fora o botó `Tanca`, amb els filtres sincronitzats en temps real amb la targeta.
+  - Línies horitzontals discontínues de referència dibuixades al gràfic (`evoLlindars`): **50%** i **70% aprovat**.
+  - Filtres ràpids per concentrar el gràfic en un sol tipus de notes (`Totes`, `Bones (≥ 70%)`, `Fluixes (< 70%)` i `Dolentes (< 50%)`) amagant automàticament els alumnes sense coincidències i mostrant un comptador de nens i notes.
+
 ## 2.44.0 · 2026-11-13
 
 ### Afegit
