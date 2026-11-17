@@ -3,8 +3,9 @@
 Data: 2026-11-17
 
 ## Què funciona
-- **Versió actual: 2.51.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.52.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **8 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`, `bio-i-geo/geosfera`), tots 8 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 147 en total) i 3 peces del xat per món.
+- **Món de Castellano millorat (`2.52.0`, pla `docs/superpowers/specs/2026-11-17-mon-castellano-pla-mestre.md`)**: activitats en castellà (`motor/eines/ui-es.js`), interferències del català, 4 jocs de pintar, escoltar i puntuar ¿¡, fragments, diccionari, «¿Qué falla?», b/v, clickbait, polisèmia i esquemes.
 - **Món de Català millorat (`2.51.0`, pla `docs/superpowers/specs/2026-11-17-mon-catala-pla-mestre.md`, guia `docs/MON-LLENGUA.md`)**: joc «Pinta les paraules» (`motor/eines/marca-llengua.js`), textos per puntuar, «Escolta i puntua» (`escoltaAbans`), fragments literaris, esquemes a la teoria i `per`/`clau` a les frases.
 - **Tauler: Log complet per dia plegable (`2.50.0`)**: només el dia més recent obert per defecte, i «Desplega-ho tot» / «Plega-ho tot».
 - **Capçalera dels mons (`2.49.0`, pla `docs/superpowers/specs/2026-11-17-capcalera-menu-pla-mestre.md`)**: menú centrat amb banda fosca (contrast ≥ 4,5), títol i nom més grans, curs en etiqueta, avatar arcade, so en un sol botó amb panell i estrelles compactes al mòbil. Ho comprova `prova-visual.js`.

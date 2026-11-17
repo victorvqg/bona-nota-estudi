@@ -5,6 +5,24 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.52.0 · 2026-11-17
+
+### Afegit
+- **Castellano · activitats en castellà** (`motor/eines/ui-es.js`, nou): dins del món, els textos del motor passen al castellà a les activitats, els jocs, el test, l'inici i «Com vaig». Per exemple: «Toca la palabra que falta», «❌ No es esta», «Exámenes». El menú i la capçalera es queden iguals a tots els mons. Prova nova `motor/prova-ui-es.js` (també a la CI).
+- **Castellano · «¿Catalán o castellano?»:** 12 frases amb les interferències típiques (el diente, la costumbre, el postre, la señal, el olor, el calor, Marta sin artículo, los lápices, cumplir años, aprobado…), cadascuna amb el perquè.
+- **Castellano · «Pinta las palabras»:** determinantes, concreto o abstracto, masculino o femenino, i «Las 5 W» d'una entradilla.
+- **Castellano · jocs nous:**
+  - «Escucha y puntúa» (¿…? ¡…! amb la veu castellana) i «Puntúa el texto» (cartes i textos amb comes, ; i :);
+  - «¿Qué género es este texto?» (8 fragments) i «Busca en el diccionario» (forma d'entrada i acepcions);
+  - «¿Qué falla en el texto?» (adecuación, coherencia, cohesión) i «¿Con b o con v?»;
+  - «¿Fiable o clickbait?» i «Una palabra, dos significados» (polisèmia).
+- **Revisor (`motor/revisa-mon.js`):** avisa si dos jocs tenen el mateix id.
+- **Castellano · esquemes a la teoria** a 8 temes, i «Practícalo como en clase» als 14 temes que tenen un joc per practicar.
+- **Castellano · el perquè de cada error** (`per`) a les frases de triar, `clau` i 4 frases de regla convertides en frases d'ús (mantenen el repàs).
+
+### Corregit
+- «Pinta les paraules»: «mal pintades» (abans sortia «mal pintadas» en català).
+
 ## 2.51.0 · 2026-11-17
 
 ### Afegit

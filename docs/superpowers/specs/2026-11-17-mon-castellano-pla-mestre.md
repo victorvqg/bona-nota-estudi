@@ -2,6 +2,12 @@
 
 17/11/2026 · Revisió del món de Lengua Castellana (Temas 2 y 3; `motor/dades/castellano.js`, publicat a `castellano/t2-t3`). He comptat el contingut i he fet captures a 390 px de l'inici, la llista de jocs, una frase amb buits (fallada), la fitxa dels articles i el joc «¿B o V?».
 
+**Estat:** executat a la versió 2.52.0 amb les recomanacions de la secció 4. Diferències amb el pla:
+- La interfície en castellà no és un diccionari `TXT.es` dins del motor. És `motor/eines/ui-es.js`, que tradueix els textos del motor que apareixen a #app, i inclou també l'inici i «Com vaig».
+- He passat a ús 4 frases de regla, no 10.
+- «¿Fiable o clickbait?» és un joc de classificar i la polisèmia, un de parelles.
+- El joc de pintar encara no envia els errors al repàs espaiat.
+
 **En poques línies.** És el món amb més temes (15) i té un bon test (120 preguntes), però és el que **menys es practica fent**:
 - **Pocs jocs:** només 5 jocs clàssics per a 15 temes. Els **determinants** (4 temes) no en tenen cap, i tampoc **el diccionari, les fake news, la polisèmia ni la coma**.
 - **Frases amb buits:** les 72 frases encara no expliquen per què una opció està malament (0 `per` i 0 `clau`), i moltes demanen la regla («El punto y coma indica una pausa mayor que la ___»).

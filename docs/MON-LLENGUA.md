@@ -50,7 +50,11 @@ esquema:{titol:"Gènere i nombre",html:"<table>…</table>"}                    
 
 Posa també `practica:"id-del-joc"` al tema perquè surti «✏️ Practica-ho com a classe».
 
-## 5. Llista de comprovació
+## 5. Mons en castellà: les activitats en castellà
+
+Afegeix `//@inclou eines/ui-es.js` al final de les dades. Els textos del motor que surten dins del contingut (#app) passen al castellà, i la capçalera i el menú es queden en català, iguals a tots els mons. Si veus un text del motor encara en català, afegeix-lo a `UIES` (una entrada `["català","castellano"]` o una regex) i un cas a `motor/prova-ui-es.js`. Una paraula sola només es canvia si és tot el text del node, perquè no toqui el contingut («tú temes»).
+
+## 6. Llista de comprovació
 
 1. Frases d'ús, `per` a les opcions falses i `clau` on calgui.
 2. Un joc de pintar per a la gramàtica del tema, amb `esquema` i `practica` al tema.
