@@ -45,6 +45,8 @@ jobs:
         run: node motor/prova-admin-fonts.js
       - name: mons.json és l'única font (admin, sprites i peces del xat generats)
         run: node motor/prova-mons.js
+      - name: Revisor de contingut dels mons (preguntes, jocs, figures i boss)
+        run: node motor/prova-revisa-mon.js && node motor/revisa-mon.js
       - name: Llista dinàmica de mons (motor/mons.json)
         id: llista
         run: |
@@ -154,6 +156,16 @@ jobs:
         run: npx playwright install chromium
       - name: Prova estricta de ${{ matrix.mon }}
         run: cd motor && ESTRICTE=1 node prova.js "$PWD/../${{ matrix.mon }}/index.html"
+      - name: Prova visual de ${{ matrix.mon }} (360, 390 i 430 px)
+        run: node motor/prova-visual.js "${{ matrix.mon }}"
+      - name: Captures de la prova visual
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: captures-${{ strategy.job-index }}
+          path: motor/.captures/
+          retention-days: 7
+          if-no-files-found: ignore
 
   # 5) un sol check de nom fix perquè el ruleset de main el pugui exigir (els jobs de la matriu tenen noms variables).
   #    Amb if: always() s'executa encara que un job falli o es cancel·li, i falla si algun no ha acabat en «success».
