@@ -40,6 +40,28 @@ function mesura(ambit) {
   return prob;
 }
 
+// Capçalera d'un món (pàgina ja carregada): el títol, el nom i el curs s'han de veure; a l'ordinador, el menú centrat;
+// i el text blanc del menú ha de tenir prou contrast (≥ 4,5) sobre la banda fosca damunt dels 3 colors del degradat.
+function capcalera(ordinador) {
+  const prob = [], r = s => { const e = document.querySelector(s); return e ? e.getBoundingClientRect() : null; };
+  S.nom = "Mireia Puigdollers"; S.id = 8; pintaCap();
+  const h = r("#hola"), c = r("#curs"), q = r("#qui");
+  if (!h || h.width < 140) prob.push(`capçalera: el títol només té ${h ? Math.round(h.width) : 0} px d'ample (mínim 140)`);
+  if (ASSIG.curs && (!c || c.width < 20)) prob.push("capçalera: no es veu el curs");
+  if (!q || q.width < 40) prob.push("capçalera: no es veu el nom");
+  if (ordinador) {
+    const bs = [...document.querySelectorAll("#nav > a, #nav > button")].map(e => e.getBoundingClientRect()), W = document.documentElement.clientWidth;
+    const esq = bs[0].left, dre = W - bs[bs.length - 1].right;
+    if (Math.abs(esq - dre) > 8) prob.push(`menú no centrat: ${Math.round(esq)} px a l'esquerra i ${Math.round(dre)} px a la dreta`);
+    const fons = getComputedStyle(document.getElementById("nav")).backgroundColor.match(/[\d.]+/g).map(Number), al = fons[3] === undefined ? 1 : fons[3];
+    const hex = v => { const m = getComputedStyle(document.documentElement).getPropertyValue(v).trim().match(/^#([0-9a-f]{6})$/i); return m ? [0, 2, 4].map(i => parseInt(m[1].substr(i, 2), 16)) : null; };
+    const lum = c => { const x = c.map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126 * x[0] + .7152 * x[1] + .0722 * x[2]; };
+    for (const v of ["--g1", "--g2", "--g3"]) { const g = hex(v); if (!g) continue; const bg = g.map((x, i) => x * (1 - al) + fons[i] * al), cr = 1.05 / (lum(bg) + .05);
+      if (cr < 4.5) prob.push(`menú: contrast ${cr.toFixed(1)} del text blanc sobre ${v} (mínim 4,5)`); }
+  }
+  return prob;
+}
+
 (async () => {
   const nav = await chromium.launch();
   let mal = 0;
@@ -56,12 +78,21 @@ function mesura(ambit) {
         await p.waitForTimeout(espera);
         if (nom === "portada") await p.evaluate(i => { const c = document.querySelector(`.as[data-id="${i}"]`); if (c) c.scrollIntoView({ block: "center" }); }, id);
         const prob = await p.evaluate(mesura, nom === "portada" ? `.as[data-id="${id}"]` : null);
+        if (nom === "tema0") prob.push(...await p.evaluate(capcalera, false));
         if (nom === "portada" && !(await p.$(`.as[data-id="${id}"]`))) prob.push("la targeta del món no és a la portada");
         await p.screenshot({ path: path.join(dir, `${w}-${nom}.png`) });
         const unics = [...new Set(prob)];
         if (unics.length) { mal += unics.length; console.log(`✗ ${id} · ${w}px · ${nom}`); unics.forEach(x => console.log("    " + x)); }
       }
       if (errs.length) { mal += errs.length; console.log(`✗ ${id} · ${w}px · errors de JavaScript: ${[...new Set(errs)].join(" | ")}`); }
+      await p.close();
+    }
+    { // ordinador: la capçalera a 1400 px (menú centrat i contrast)
+      const p = await nav.newPage({ viewport: { width: 1400, height: 800 } });
+      await p.goto("file://" + path.join(arrel, carpeta, "index.html") + "?tema=0"); await p.waitForTimeout(800);
+      const prob = await p.evaluate(capcalera, true);
+      await p.screenshot({ path: path.join(dir, `1400-capcalera.png`), clip: { x: 0, y: 0, width: 1400, height: 160 } });
+      if (prob.length) { mal += prob.length; console.log(`✗ ${id} · 1400px · capçalera`); prob.forEach(x => console.log("    " + x)); }
       await p.close();
     }
     console.log(`${mal > mal0 ? "✗" : "✓"} ${id}: ${vistes.length} vistes × ${AMPLADES.length} amplades revisades (captures a motor/.captures/${id}/)`);

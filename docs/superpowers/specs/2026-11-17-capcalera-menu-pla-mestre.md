@@ -2,6 +2,8 @@
 
 17/11/2026 · Revisió de la capçalera i del menú de tots els mons (`motor/plantilla-estudi-interactiu.html`: `header`, `.hd`, `.logo`, `#hola`, `#qui`, `.vol`, `#punts`, `#nav`), a partir de la captura de `bonanota.net/matematiques/divisibilitat/` amb la Mireia i de mesures fetes amb Playwright a 1400, 1000, 700, 390 i 360 px.
 
+**Estat:** executat a la versió 2.49.0 amb les recomanacions de la secció 4. Al mòbil, el títol té 149 px a 360 px: el mínim que comprova la prova és 140, i no 150. La banda del menú és una mica més fosca del que deia el pla (opacitat 0,5), perquè amb 0,28 no s'arribava a 4,5 de contrast.
+
 **En poques línies.** A l'ordinador, el menú (Mons, Inici, Temes, Jocs, Obertes, Com vaig) queda **arraconat a l'esquerra**, el nom del món i el de la nena són **petits** (19 px i 13 px) i el so (música, altaveu i barra de volum) ocupa 207 px de la primera fila. Al mòbil és pitjor: el comptador d'estrelles (178 px) i el so (108 px) es mengen la fila i **el títol i el nom gairebé no es veuen**: a 390 px hi queden 37 px («Ma…-») i a 360 px, **9 px**. A més, el text del menú (blau clar) sobre el verd llima de Mates es llegeix malament. Proposo: el **menú centrat**, el **so dins d'un sol botó** amb un panell, **el nom i el curs grans i clars** (amb el curs en una etiqueta) i, al mòbil, una capçalera on el títol té tota l'amplada que cal. Són 4 fases petites, i al final hi ha 5 decisions.
 
 ---

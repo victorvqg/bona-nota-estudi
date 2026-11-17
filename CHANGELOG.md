@@ -5,6 +5,19 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.49.0 · 2026-11-17
+
+### Canviat
+- **Capçalera dels mons més clara** (`motor/plantilla-estudi-interactiu.html`, a tots els mons):
+  - A l'ordinador, el menú (⟵ Mons │ Inici · Temes · Jocs · Obertes · Com vaig) va centrat.
+  - El títol puja a 22 px i el nom a 16 px, amb l'avatar arcade si el nen n'ha triat un.
+  - El curs surt en una etiqueta (**1r ESO**).
+- **Al mòbil, el títol i el nom tornen a veure's:** abans, a 360 px, hi havia 9 px per al títol i ara n'hi ha 149. Les estrelles queden en «⭐ 666»: el nivell i les superestrelles surten en tocar-les.
+- **El so en un sol botó 🔊**, amb un panell per a la música, el silenci i el volum, que es tanca tocant fora o amb Escape.
+- **Contrast del menú:** el text és blanc, sobre una banda fosca translúcida. Abans, el text blau clar quedava entre 1,4 i 2,2 de contrast sobre la punta clara dels degradats; ara arriba a 4,5 o més als 8 mons.
+- A l'ordinador, en baixar la pàgina, la capçalera s'encongeix.
+- `motor/prova-visual.js` comprova ara que el títol, el nom i el curs es veuen a 360, 390 i 430 px, i que a 1400 px el menú està centrat i té prou contrast.
+
 ## 2.48.0 · 2026-11-17
 
 ### Afegit
