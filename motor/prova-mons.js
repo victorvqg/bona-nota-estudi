@@ -24,6 +24,9 @@ for (const m of mons) {
 }
 ok(new Set(totsXat).size === totsXat.length, "els ids de les peces de món són únics");
 ok(totsXat.every(id => id > 0 && id < 1001), "els ids de les peces de món són < 1001 (les de l'admin comencen a 1001)");
+{ const h = llegeix("index.html"), a = h.indexOf("const XAT_PC_BASE=["), b = h.indexOf("];", a);
+  const base = new Set([...h.slice(a, b).matchAll(/\{id:(\d+),/g)].map(x => +x[1]));
+  ok(base.size > 0 && totsXat.every(id => !base.has(id)), "cap peça de món repeteix l'id d'una peça general (XAT_PC_BASE)"); }
 
 console.log("2) admin/index.html · bloc MONS-ADMIN");
 const adm = bloc(llegeix("admin/index.html"), "/* MONS-ADMIN:inici (generat per motor/tot.py, no editar a mà) */", "/* MONS-ADMIN:fi */");

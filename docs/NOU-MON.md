@@ -52,9 +52,79 @@ Les marques `MONS-ADMIN`, `BN-MON` i `XAT-MONS` diuen «no editar a mà». `moto
 - `node motor/revisa-mon.js <id>`: preguntes, opcions, jocs, figures, «Troba l'error», sprite del boss i la regla del 15–40 %.
 - `ESTRICTE=1 node motor/prova.js $PWD/<carpeta>/index.html`: el món sencer al navegador.
 - `node motor/prova-visual.js <carpeta>`: res surt de la pantalla ni dels dibuixos a 360, 390 i 430 px (captures a `motor/.captures/<id>/`).
-- `node motor/prova-tot.js` passa en local el mateix que l'Action; `publica.py` ja passa les tres primeres per als mons canviats.
+- `node motor/prova-tot.js` passa en local el mateix que l'Action (també comprova que `tot.py` no canviï res); `node motor/prova-tot.js motor/prova-xat.js` en passa una sola. `publica.py` ja passa el revisor i, per als mons canviats, la visual i l'estricta.
 - **Filtre de Bon Ús ([`BON-US.md`](BON-US.md) §6)** si el món porta alguna mecànica nova.
 
 ## 4. Versió i publicació
 
 Un món nou puja el número **MENOR**: entrada a `CHANGELOG.md`, capçalera del `README.md` i `docs/ESTAT.md`, i fila i apartat a `docs/MONS.md`. Després, `python3 motor/publica.py --id gN --missatge "…"` obre el PR i el deixa en **fusió automàtica**: GitHub el fusiona quan «Revisa Bona Nota · tot» surt en verd, l'Action «Etiqueta la versió» posa `vX.Y.Z` i bonanota.net s'actualitza en 1-2 minuts.
+
+## 5. Permisos de Claude Code (sense finestres)
+
+Perquè la skill `nou-mon` i `publica.py` vagin d'una tirada, `.claude/settings.local.json` (personal, fora de git) porta aquest bloc. `gh` i `git push` no funcionen dins la sandbox, i les proves amb navegador tampoc: per això surten de la sandbox només aquestes ordres, i sempre soles (sense `&&` ni `|`). Les escriptures de `gh api` demanen confirmació, i fusionar amb `--admin` o empènyer cap a `main` està prohibit. Substitueix `<connector-de-…>` pels identificadors dels teus connectors (surten als noms de les eines `mcp__…`).
+
+```json
+{
+  "sandbox": {
+    "excludedCommands": [
+      "gh *",
+      "git push *",
+      "git fetch *",
+      "git pull *",
+      "node motor/prova-tot.js",
+      "node motor/prova-tot.js *",
+      "node motor/prova-visual.js *",
+      "python3 motor/publica.py *"
+    ],
+    "network": {
+      "allowedDomains": [
+        "bonanota.net",
+        "github.com",
+        "api.github.com"
+      ],
+      "allowLocalBinding": true
+    }
+  },
+  "permissions": {
+    "allow": [
+      "mcp__<connector-de-Supabase>__execute_sql",
+      "mcp__<connector-de-Supabase>__apply_migration",
+      "mcp__<connector-de-Google-Drive>__search_files",
+      "mcp__<connector-de-Google-Drive>__read_file_content",
+      "mcp__<connector-de-Google-Drive>__get_file_metadata",
+      "Bash(gh pr *)",
+      "Bash(gh run *)",
+      "Bash(gh api repos/victorvqg/bona-nota-estudi*)",
+      "Bash(git push origin g*)",
+      "Bash(git push origin issue/*)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(node motor/prova-tot.js)",
+      "Bash(node motor/prova-tot.js *)",
+      "Bash(node motor/prova-visual.js *)",
+      "Bash(python3 motor/*)",
+      "Bash(curl -s* https://bonanota.net*)"
+    ],
+    "ask": [
+      "Bash(gh api * -X *)",
+      "Bash(gh api * --method *)",
+      "Bash(gh api * -f *)",
+      "Bash(gh api * -F *)",
+      "Bash(gh api * --field *)",
+      "Bash(gh api * --raw-field *)",
+      "Bash(gh api * --input *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push *--force*)",
+      "Bash(git push * -f*)",
+      "Bash(git push origin main*)",
+      "Bash(git push -u origin main*)",
+      "Bash(git push *:main*)",
+      "Bash(gh pr merge *--admin*)"
+    ]
+  }
+}
+```
+

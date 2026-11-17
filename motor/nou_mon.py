@@ -43,10 +43,19 @@ def arguments(argv):
     return p.parse_args(argv)
 
 
-def crea(argv, motor: Path) -> dict:
+RESERVADES = {"admin", "perfil", "pares", "motor", "docs", "supabase", "icones", "skills", "node_modules"}
+
+
+def crea(argv, motor: Path, arrel: Path = None) -> dict:
     a = arguments(argv)
+    arrel = arrel or motor.parent
     if not re.fullmatch(r"[a-z0-9_-]{1,40}", a.id):
         sys.exit(f"ERROR: l'id «{a.id}» ha de ser minúscules, xifres, - o _ (fins a 40)")
+    if not re.fullmatch(r"[a-z0-9_-]+/[a-z0-9_-]+", a.carpeta) or a.carpeta.split("/")[0] in RESERVADES:
+        sys.exit(f"ERROR: la carpeta «{a.carpeta}» ha de ser «assignatura/tema» (minúscules, xifres, - o _) i no pot ser "
+                 f"dins de {', '.join(sorted(RESERVADES))}")
+    if (arrel / a.carpeta).exists():
+        sys.exit(f"ERROR: la carpeta «{a.carpeta}» ja existeix al disc")
     colors = [c.strip() for c in a.colors.split(",")]
     if len(colors) != 3 or not all(re.fullmatch(r"#[0-9a-fA-F]{6}", c) for c in colors):
         sys.exit("ERROR: --colors han de ser 3 colors #rrggbb separats per comes")
@@ -61,7 +70,7 @@ def crea(argv, motor: Path) -> dict:
     if dades.exists():
         sys.exit(f"ERROR: {dades.name} ja existeix")
     seg = max([p[0] for m in mons for p in m.get("xat", [])] + [0]) + 1
-    nou = {"dades": a.id, "carpeta": a.carpeta, "mon": str(len(mons) + 1), "neix": datetime.date.today().isoformat(),
+    nou = {"dades": a.id, "carpeta": a.carpeta, "mon": str(max([int(m["mon"]) for m in mons if str(m.get("mon", "")).isdigit()] + [0]) + 1), "neix": datetime.date.today().isoformat(),
            "materia": a.materia, "titol": a.titol, "desc": a.desc, "colors": colors, "ic": a.ic,
            "curt": a.curt, "spr": a.spr, "xat": [[seg + i, t] for i, t in enumerate(peces)]}
     if a.llengua:
