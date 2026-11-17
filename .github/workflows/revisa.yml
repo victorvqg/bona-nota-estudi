@@ -47,8 +47,11 @@ jobs:
         run: node motor/prova-mons.js
       - name: Revisor de contingut dels mons (preguntes, jocs, figures i boss)
         run: node motor/prova-revisa-mon.js && node motor/revisa-mon.js
+<<<<<<< HEAD
       - name: Eines per crear i publicar mons (nou_mon.py i publica.py)
         run: python3 motor/prova_nou_mon.py && python3 motor/prova_publica.py
+=======
+>>>>>>> origin/main
       - name: Llista dinàmica de mons (motor/mons.json)
         id: llista
         run: |
