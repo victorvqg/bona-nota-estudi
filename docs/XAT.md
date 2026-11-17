@@ -88,7 +88,7 @@ Tot passa dins de la finestra del **rànquing**, a la portada:
 
 ## 6. Desbloquejos
 
-El catàleg inicial té **26 frases** i **66 peces** (en total, 92 elements). Es troba tant a la portada (`index.html`, bloc `XAT-CATALEG`) com a la base de dades (`supabase/bn_xat.sql`).
+El catàleg inicial té **26 frases** i **69 peces** (en total, 95 elements). Es troba tant a la portada (`index.html`, bloc `XAT-CATALEG`) com a la base de dades (`supabase/bn_xat.sql`).
 
 Cada frase i cada peça s'obre segons el **nivell del rànquing** del nen (de l'1 🐣 Aprenent al 10 🌟 Llegenda d'or, calculat amb les estrelles del seu millor món dels últims 120 dies) o bé en **acabar un món**, que al xat vol dir tenir **25 ⭐ o més** en aquell món (també dins dels últims 120 dies).
 
@@ -98,8 +98,8 @@ Cada frase i cada peça s'obre segons el **nivell del rànquing** del nen (de l'
 | | Aura (2 de company, 2 de paraula, 1 de classe, 1 teva) | 6 | Pel nivell del rànquing: 4 al nivell 1, 1 al nivell 2 i 1 al nivell 7 |
 | | Classe (4 de cosa de classe, 1 de cosa teva) | 5 | Pel nivell del rànquing: 2 al nivell 1, i la resta als nivells 2, 3 i 4 |
 | | Colla (totes 5 amb forat de company) | 5 | Pel nivell del rànquing: 2 al nivell 1, 1 al nivell 2, 1 al nivell 4 i 1 al nivell 7 |
-| **Peces (66)** | Paraula d'estudi (general) | 24 | Pel nivell del rànquing: 6 al nivell 1, i 2 a cada nivell del 2 al 10 |
-| | Paraula d'estudi (dels 7 mons) | 21 | 3 per cada món, en arribar a **25 ⭐** en aquell món (Mates, Clima, Bio-Geo, Comarques, Castellano, Català i Anglès) |
+| **Peces (69)** | Paraula d'estudi (general) | 24 | Pel nivell del rànquing: 6 al nivell 1, i 2 a cada nivell del 2 al 10 |
+| | Paraula d'estudi (dels 8 mons) | 24 | 3 per cada món, en arribar a **25 ⭐** en aquell món (Mates, Clima, Bio-Geo, Comarques, Castellano, Català, Anglès i Geosfera) |
 | | Cosa de classe | 15 | Pel nivell del rànquing: 4 al nivell 1, 2 a cada nivell del 2 al 6, i 1 al nivell 7 |
 | | Cosa teva | 6 | Pel nivell del rànquing: 2 al nivell 1, i 1 a cada nivell del 2 al 5 |
 

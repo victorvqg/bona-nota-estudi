@@ -5,6 +5,20 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.46.0 · 2026-11-17
+
+### Afegit
+- **Món 8 · Biologia i Geologia: Geosfera** (`bio-i-geo/geosfera`, `motor/dades/geosfera.js` · g32), fet amb les diapositives, l'esquema de 4 fulls, l'examen i el full de respostes del tema:
+  - 16 temes en 4 blocs (la Terra per dins, roques i minerals, la força de dins i la força de fora), 129 preguntes de test (17 ⚡ difícils) i 16 preguntes obertes, entre elles la de l'examen sobre la força de dins i la de fora.
+  - 16 jocs: el viatge al centre de la Terra, el cicle de les roques, l'escala de Mohs, les quatre fases, propietats i minerals famosos, mineral o no, tipus de roques, mètodes directes o indirectes, límits de plaques, força de dins o de fora, meteorització, tres dibuixos per llegir (tall de la Terra, fletxes del cicle i límits de plaques) i «Troba l'error del geòleg».
+  - Boss **El Gegant de Magma** amb sprite i melodia propis i el rètol `MAGMA REFREDAT!`.
+  - Il·lustració animada a la portada (`motor/ilu/geosfera.svg`), sprite `volca` (`sprites.js`), color propi al tauler (`admin/index.html`) i 3 peces d'estudi al xat (`la geosfera`, `el cicle de les roques`, `l'escala de Mohs`).
+  - Les dades dubtoses de les diapositives (Kola, Lehmann i la diapositiva 6) no es pregunten i surten com a «pregunta-ho al profe».
+- **Icona central pròpia a la celebració del Boss** (`motor/plantilla-estudi-interactiu.html`): el camp opcional `ASSIG.boss.ic` canvia la icona de l'efecte (la rosa d'`explosio`, per exemple), també a la banda del mode suau.
+
+### Canviat
+- `supabase/bn_control.sql` accepta `geosfera` com a món vàlid per tancar-lo i obrir-lo des del tauler, i `supabase/bn_xat.sql` afegeix les peces `67`–`69`.
+
 ## 2.45.0 · 2026-11-13
 
 ### Afegit

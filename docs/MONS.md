@@ -17,6 +17,7 @@ Després, aquí es comprova si se sap de veritat.
 | 5 | Matemàtiques | Tema 2: Divisibilitat | 8 | 71 | 15 | 20 | El Gegant Primer | [obre'l](https://bonanota.net/matematiques/divisibilitat/) |
 | 6 | Català | Tema 2: La literatura, el nom i la puntuació | 12 | 109 | 15 | 16 | El Monstre dels Signes | [obre'l](https://bonanota.net/catala/t2/) |
 | 7 | Anglès | Tema 2: That's Entertainment | 8 | 85 | 12 | 15 | El Fantasma del Cinema | [obre'l](https://bonanota.net/angles/t2/) |
+| 8 | Biologia i Geologia | Geosfera | 16 | 129 | 16 | 16 | El Gegant de Magma | [obre'l](https://bonanota.net/bio-i-geo/geosfera/) |
 
 ---
 
@@ -55,7 +56,7 @@ Després, aquí es comprova si se sap de veritat.
   la resposta. Després es veu la frase sencera amb la traducció i el perquè, i es pot escoltar. Les frases fallades tornen al repàs.
   N'hi ha als tres mons de llengües: Anglès, Català i Lengua Castellana.
 - **🔍 Troba l'error:** un exercici resolt per un company amb una trampa. Cal tocar la línia dolenta i dir per què. A mates, també
-  s'ha de tornar a escriure bé, i al final surt la llibreta corregida. Els errors van al repàs. N'hi ha a mates i al món del clima (climograma).
+  s'ha de tornar a escriure bé, i al final surt la llibreta corregida. Els errors van al repàs. N'hi ha a mates, al món del clima (climograma) i a la Geosfera.
 - **Exàmens:** l'examen sorpresa (15 preguntes barrejades) i l'examen de veritat, amb nota sobre 10.
 - **Preguntes obertes:** el nen escriu la resposta i el programa hi busca les idees clau: per les paraules i també pels **números**
   (si la idea clau diu «MCM = 144» i el nen ha escrit 144, compta). Ha de ser una resposta de veritat: no es pot enganxar text ni copiar l'enunciat.
@@ -212,3 +213,32 @@ El contingut és en anglès i les explicacions, en català.
 - Falta la pàgina 39 del llibre (exercicis 12 i 13 de gramàtica i un listening). Els listenings i els vídeos no hi surten.
 - El botó 🔊 Escolta de les fitxes llegeix amb la veu en català (serveix per a les explicacions). A les frases amb buits, el botó
   «Escolta-la» llegeix la frase amb la veu en anglès de l'aparell.
+
+---
+
+## 🌋 Món 8 · Biologia i Geologia: Geosfera
+
+Fet a partir dels 4 fitxers de la carpeta «Geosfera»: les **diapositives del profe** («La Geosfera»), l'**esquema visual** de 4 fulls,
+l'**examen** i el **full de respostes**. Les dades són a `motor/dades/geosfera.js`.
+
+**16 temes en 4 blocs** (els 4 fulls de l'esquema):
+
+| Bloc | Temes |
+|---|---|
+| 🥚 La Terra per dins | La geosfera i les seves capes · L'escorça i el mantell · El nucli i les discontinuïtats · Com es van formar les capes · Com estudiem l'interior |
+| 💎 Roques i minerals | Els tres tipus de roques · El cicle de les roques · Què és un mineral · Les propietats dels minerals · La duresa i l'escala de Mohs |
+| 🌋 La força de dins | La litosfera i les plaques · Els límits entre plaques · Volcans, terratrèmols i serralades |
+| 🌊 La força de fora | Els agents externs i les quatre fases · La meteorització · Erosió, transport i sedimentació |
+
+- **129 preguntes de test.** Les respostes falses són els errors típics que avisa el full de respostes
+  (l'escorça oceànica «més gruixuda», el metamorfisme «fonent la roca», la perla «és un mineral», «ratlla la fluorita = més tou»,
+  el límit passiu «destructiu», el gel «meteorització química»…). 17 són ⚡ difícils (`motor/dificultat.json`).
+- **16 preguntes obertes**, una per tema, entre elles la pregunta 10 de l'examen (la força de dins i la força de fora).
+- **16 jocs:** ordenar (Viatge al centre de la Terra · El cicle de les roques · L'escala de Mohs · Les quatre fases) ·
+  parelles (Les propietats dels minerals · Minerals famosos) · classificar (És un mineral o no? · Quin tipus de roca? · Directe o indirecte? ·
+  Els límits de plaques · Força de dins o de fora? · Quina meteorització?) · llegir el dibuix (El tall de la Terra · Les fletxes del cicle ·
+  Llegeix els límits) · 🔍 Troba l'error del geòleg (6 exercicis amb trampa: Mohs, el quars, la perla, el nucli, el límit passiu i el gel).
+- 👾 Boss: **El Gegant de Magma** (sprite i melodia propis, rètol `MAGMA REFREDAT!`).
+- Les tres dades dubtoses de les diapositives no es pregunten i surten a la fitxa com a «pregunta-ho al profe»: la perforació de Kola
+  (la diapositiva diu 13 km i que encara es perfora), la profunditat de Lehmann (5.100 km al text i 5.150 km al dibuix) i la diapositiva 6,
+  que diu «mantell» quan parla del nucli.

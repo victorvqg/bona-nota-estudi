@@ -125,6 +125,25 @@
   "relacio/3": 3,
   "relacio/4": 3
  },
+ "geosfera": {
+  "agents/5": 3,
+  "cicle/5": 3,
+  "escorca/1": 3,
+  "escorca/7": 3,
+  "limits/6": 3,
+  "manifest/6": 3,
+  "meteo/3": 3,
+  "meteo/7": 3,
+  "metodes/7": 3,
+  "minerals/3": 3,
+  "mohs/4": 3,
+  "mohs/5": 3,
+  "nucli/5": 3,
+  "nucli/6": 3,
+  "origen/3": 3,
+  "propietats/2": 3,
+  "roques/2": 3
+ },
  "socials": {
   "atmos/4": 3,
   "atmos/9": 3,

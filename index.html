@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="0487e2365c",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1089068184",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -730,6 +730,18 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
 
 <main id="mons">
  <!-- MONS:inici (generat per motor/tot.py, no editar a mà) -->
+ <a class="as" href="bio-i-geo/geosfera/" data-clau="bn_geosfera" data-id="geosfera" data-ic="🌋" data-temes="16" style="--c1:#1c1917;--c2:#dc2626;--c3:#fb923c">
+  <div class="portada"><span class="tag">MÓN 8</span><span class="ic"><svg class="ilu" viewBox="0 0 200 130" aria-hidden="true"><style>.ge-l{transform-box:fill-box;transform-origin:center}.ge-l1{animation:geL1 2.4s ease-out infinite}.ge-l2{animation:geL2 2.4s ease-out infinite -.8s}.ge-l3{animation:geL3 2.4s ease-out infinite -1.6s}.ge-f{transform-box:fill-box;transform-origin:center;animation:geFum 4s ease-in-out infinite}.ge-f2{animation-delay:-2s}.ge-m{animation:geMag 1.6s ease-in-out infinite}@keyframes geL1{0%{transform:translate(0,8px) scale(.5);opacity:0}25%{opacity:1}100%{transform:translate(-16px,-18px) scale(1);opacity:0}}@keyframes geL2{0%{transform:translate(0,8px) scale(.5);opacity:0}25%{opacity:1}100%{transform:translate(3px,-24px) scale(1);opacity:0}}@keyframes geL3{0%{transform:translate(0,8px) scale(.5);opacity:0}25%{opacity:1}100%{transform:translate(17px,-16px) scale(1);opacity:0}}@keyframes geFum{0%{transform:translateY(5px) scale(.7);opacity:0}40%{opacity:.9}100%{transform:translateY(-10px) scale(1.25);opacity:0}}@keyframes geMag{50%{opacity:.5}}@media(prefers-reduced-motion:reduce){.ilu *{animation:none!important}}</style> <path d="M42 114A58 58 0 0 1 64 68.5L90 30h20l26 38.5A58 58 0 0 1 158 114z" fill="#0006" transform="translate(3 4)"/> <path d="M42 114A58 58 0 0 1 158 114Z" fill="#e7e5e4" stroke="#44403c" stroke-width="2"/><path d="M48 114A52 52 0 0 1 152 114Z" fill="#fb923c"/><path d="M68 114A32 32 0 0 1 132 114Z" fill="#fbbf24"/><path d="M85 114A15 15 0 0 1 115 114Z" fill="#fef9c3"/> <path class="ge-m" d="M98 112V34h4v78z" fill="#dc2626"/> <path d="M64 70L90 30h20l26 40z" fill="#a8a29e" stroke="#44403c" stroke-width="2" stroke-linejoin="round"/><path d="M101 31h9l25 38h-21z" fill="#78716c"/> <ellipse cx="100" cy="31" rx="10" ry="3.2" fill="#dc2626" stroke="#44403c" stroke-width="1.5"/><path d="M93 33q-3 10-11 23l4 1.5q7-11 10-23z" fill="#f97316"/> <circle class="ge-f" cx="92" cy="17" r="6" fill="#e7e5e4"/><circle class="ge-f ge-f2" cx="108" cy="13" r="5" fill="#f5f5f4"/> <circle class="ge-l ge-l1" cx="96" cy="27" r="3" fill="#fb923c"/><circle class="ge-l ge-l2" cx="100" cy="25" r="2.6" fill="#fde047"/><circle class="ge-l ge-l3" cx="104" cy="27" r="3" fill="#ef4444"/> </svg></span></div>
+  <div class="cos">
+   <small class="mat">Biologia i Geologia</small>
+   <h2>Geosfera</h2>
+   <p>La Terra per dins, roques i minerals, l'escala de Mohs, les plaques i la força de dins i de fora.</p>
+   <div class="xips"><span>📖 16 fitxes</span><span>🎮 16 jocs</span><span>📝 Examen</span></div>
+   <div class="avisos-mon" hidden></div>
+   <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
+   <div class="juga"><span>JUGA ▶</span></div>
+  </div>
+ </a>
  <a class="as" href="angles/t2/" data-clau="bn_angles" data-id="angles" data-ic="🎬" data-temes="8" style="--c1:#831843;--c2:#db2777;--c3:#fbbf24">
   <div class="portada"><span class="tag">MÓN 7</span><span class="ic"><svg class="ilu" viewBox="0 0 200 130" aria-hidden="true"><style>.an-s{animation:anPuja 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.an-s2{animation-delay:-1.3s}.an-s3{animation-delay:-2.6s}.an-cl{transform-origin:46px 54px;animation:anClap 3.4s cubic-bezier(.4,0,.2,1) infinite}.an-fl{transform-origin:120px 52px;animation:anFlash 3.4s ease-out infinite}.an-fo{transform-origin:175px 10px;animation:anFoc 5s ease-in-out infinite}@keyframes anPuja{0%{transform:translateY(8px) scale(.6);opacity:0}25%{opacity:1}100%{transform:translateY(-24px) scale(1.08) rotate(10deg);opacity:0}}@keyframes anClap{0%,18%{transform:rotate(-20deg)}26%,78%{transform:rotate(0deg)}92%,100%{transform:rotate(-20deg)}}@keyframes anFlash{0%,23%,42%,100%{opacity:0;transform:scale(.4)}27%{opacity:1;transform:scale(1.15)}}@keyframes anFoc{50%{transform:rotate(-7deg)}}@media(prefers-reduced-motion:reduce){.ilu *{animation:none!important}.an-cl{transform:rotate(-10deg)}}</style> <defs><linearGradient id="anL" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde68a" stop-opacity=".42"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></linearGradient></defs> <polygon class="an-fo" points="182,4 28,96 132,124" fill="url(#anL)"/> <path class="an-s" d="M54 32l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z" fill="#fde047"/> <text class="an-s an-s2" x="92" y="28" font-family="system-ui,sans-serif" font-weight="900" font-size="16" fill="#fff">-ing</text> <path class="an-s an-s3" d="M142 30l2 4 4.4.6-3.2 3.1.8 4.4-4-2.1-4 2.1.8-4.4-3.2-3.1 4.4-.6z" fill="#fbcfe8"/> <ellipse cx="104" cy="114" rx="68" ry="5.5" fill="#500724" opacity=".45"/> <rect x="44" y="54" width="84" height="54" rx="5" fill="#1e293b" stroke="#f8fafc" stroke-width="2"/> <path d="M50 64h72M50 98h44" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" opacity=".75"/> <polygon points="78,72 78,91 96,81.5" fill="#fbbf24"/> <g class="an-cl"><rect x="44" y="41" width="84" height="13" rx="3" fill="#0f172a" stroke="#f8fafc" stroke-width="1.8"/><g fill="#f8fafc"><polygon points="52,42 62,42 56,53 46,53"/><polygon points="72,42 82,42 76,53 66,53"/><polygon points="92,42 102,42 96,53 86,53"/><polygon points="112,42 122,42 116,53 106,53"/></g><circle cx="49" cy="50" r="2.2" fill="#fbbf24"/></g> <g class="an-fl" stroke="#fde047" stroke-width="2.4" stroke-linecap="round"><path d="M122 48l9-7M125 54h11M121 43l3-10"/></g> <g transform="translate(136 62)"><g fill="#fde047"><circle cx="10" cy="8" r="6"/><circle cx="19" cy="5" r="7"/><circle cx="28" cy="8" r="6"/><circle cx="14" cy="11" r="5.5" fill="#fef9c3"/><circle cx="24" cy="11" r="5.5" fill="#fef9c3"/></g><polygon points="4,12 34,12 29,46 9,46" fill="#fff" stroke="#9f1239" stroke-width="1.8" stroke-linejoin="round"/><polygon points="10,12 16,12 14,46 10.5,46" fill="#f43f5e"/><polygon points="22,12 28,12 27.5,46 24,46" fill="#f43f5e"/></g> </svg></span></div>
   <div class="cos">
@@ -842,9 +854,9 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.45.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.46.0</small></footer>
 
-<script src="sprites.js?v=0be9e885"></script>
+<script src="sprites.js?v=e6fb6430"></script>
 <script>
 /* SO-MOBIL:inici (copiat de motor/eines/so-mobil.js per motor/tot.py, no editar a mà) */
 // ===== SO ALS MÒBILS (motor/eines/so-mobil.js · el mateix codi als mons i a la portada; tot.py el copia a index.html) =====
@@ -1280,7 +1292,10 @@ const XAT_PC=[
  {id:63,s:"J",t:"he dit «present» quan no em cridaven",n:5},
  {id:64,s:"P",t:"el Present Continuous",m:"angles"},
  {id:65,s:"P",t:"els stative verbs",m:"angles"},
- {id:66,s:"P",t:"el tresor de Fenn",m:"angles"}];
+ {id:66,s:"P",t:"el tresor de Fenn",m:"angles"},
+ {id:67,s:"P",t:"la geosfera",m:"geosfera"},
+ {id:68,s:"P",t:"el cicle de les roques",m:"geosfera"},
+ {id:69,s:"P",t:"l'escala de Mohs",m:"geosfera"}];
 /* XAT-CATALEG:fi */
 const esc=t=>String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
 const fT=s=>{const m=Math.round(s/60);return m<1?"<1 MIN":m>=60?`${Math.floor(m/60)}H ${m%60}M`:`${m} MIN`};
