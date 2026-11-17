@@ -3,6 +3,7 @@
 # 2) sql: passa totes les proves de Supabase (supabase/*.sql) dins d'un Postgres de prova (PGlite, sense descarregar Chromium).
 # 3) interficie: passa les proves amb navegador (Playwright Chromium en memòria cau) de núvol, perfil/, pares/, xat i admin/.
 # 4) mons: passa en paral·lel la prova estricta (ESTRICTE=1 motor/prova.js) de cadascun dels mons de motor/mons.json.
+# 5) tot: «Revisa Bona Nota · tot» resumeix els quatre anteriors; és el check que exigeix el ruleset de main per fusionar sol.
 name: Revisa Bona Nota
 on:
   push:
@@ -151,3 +152,24 @@ jobs:
         run: npx playwright install chromium
       - name: Prova estricta de ${{ matrix.mon }}
         run: cd motor && ESTRICTE=1 node prova.js "$PWD/../${{ matrix.mon }}/index.html"
+
+  # 5) un sol check de nom fix perquè el ruleset de main el pugui exigir (els jobs de la matriu tenen noms variables).
+  #    Amb if: always() s'executa encara que un job falli o es cancel·li, i falla si algun no ha acabat en «success».
+  tot:
+    name: Revisa Bona Nota · tot
+    needs: [base, sql, interficie, mons]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Tots els jobs han passat
+        env:
+          BASE: ${{ needs.base.result }}
+          SQL: ${{ needs.sql.result }}
+          INTERFICIE: ${{ needs.interficie.result }}
+          MONS: ${{ needs.mons.result }}
+        run: |
+          echo "base=$BASE sql=$SQL interficie=$INTERFICIE mons=$MONS"
+          for r in "$BASE" "$SQL" "$INTERFICIE" "$MONS"; do
+            if [ "$r" != "success" ]; then echo "::error::Algun job de la revisió no ha passat ($r)"; exit 1; fi
+          done
