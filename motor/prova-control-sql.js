@@ -82,8 +82,15 @@ const ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dol
   {
     const eHora = await falla("select public.bn_admin_control($1, $2, '{\"tanca_min\":1500}'::jsonb)", ADM);
     ok(eHora && /tanca_min/i.test(eHora), "tanca_min fora de 0..1439 és rebutjat");
-    const eMon = await falla("select public.bn_admin_control($1, $2, '{\"mons_tancats\":[\"inventat\"]}'::jsonb)", ADM);
-    ok(eMon && /mon no valid/i.test(eMon), "món desconegut a mons_tancats és rebutjat");
+    const eMon = await falla("select public.bn_admin_control($1, $2, '{\"mons_tancats\":[\"Món inventat!\"]}'::jsonb)", ADM);
+    ok(eMon && /mon no valid/i.test(eMon), "un món que no és un id (majúscules, accents, espais) a mons_tancats és rebutjat");
+    const dNou = await ctrl({ mons_tancats: ["mon-nou_9"] }).catch(e => ({ error: String(e) }));
+    ok(JSON.stringify(dNou.mons_tancats) === JSON.stringify(["mon-nou_9"]), "un id de món nou ben format s'accepta sense tocar l'SQL (mons_tancats)");
+    const eMonSol = await falla("select public.bn_admin_control($1, $2, '{\"mon\":\"<b>x</b>\",\"mon_actiu\":false}'::jsonb)", ADM);
+    ok(eMonSol && /mon no valid/i.test(eMonSol), "un món mal format a mon/mon_actiu és rebutjat");
+    const dSol = await ctrl({ mon: "mon-nou_9", mon_actiu: true }).catch(e => ({ error: String(e) }));
+    ok(dSol && Array.isArray(dSol.mons_tancats) && !dSol.mons_tancats.includes("mon-nou_9"), "un id de món nou ben format s'accepta a mon/mon_actiu");
+    await ctrl({ mons_tancats: [] });
   }
 
   console.log("5) horari automàtic del xat i bloqueig d'enviament i vots quan està tancat per horari");
