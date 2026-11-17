@@ -125,6 +125,25 @@
   "relacio/3": "Múltiple i divisor es confonen; encert real 33 %",
   "relacio/4": "Múltiple o divisor; encert real 50 % (4 respostes)"
  },
+ "geosfera": {
+  "agents/5": "Ordre de les fases: molts posen l'erosió abans de la meteorització",
+  "cicle/5": "Metamorfisme i fusió es confonen: error típic de l'examen",
+  "escorca/1": "Parany: es creu que l'oceànica és la gruixuda perquè és sota el mar",
+  "escorca/7": "Cal relacionar l'astenosfera amb el moviment de les plaques",
+  "limits/6": "Parany: al límit passiu les plaques es freguen però no es destrueix escorça",
+  "manifest/6": "Terratrèmol i erupció es barregen; distractor molt plausible",
+  "meteo/3": "Parany: el gel és aigua però la meteorització és física, no química",
+  "meteo/7": "Meteorització i erosió: diferència d'un sol matís (la roca es mou o no)",
+  "metodes/7": "Pregunta en negatiu: el pou de petroli és directe",
+  "minerals/3": "Parany: la perla és dura i brillant, però la fa un ésser viu",
+  "mohs/4": "Raonament en dos passos amb l'escala de Mohs; error típic de l'examen",
+  "mohs/5": "Qui ratlla qui: molts ho giren",
+  "nucli/5": "Ordre de tres noms tècnics de discontinuïtats",
+  "nucli/6": "Nom tècnic; tres discontinuïtats possibles",
+  "origen/3": "Cal explicar la separació per densitat; distractors plausibles",
+  "propietats/2": "Ratlla i color es confonen; cal saber que la ratlla no canvia",
+  "roques/2": "Metamorfisme sense fondre's: es confon amb la fusió"
+ },
  "socials": {
   "atmos/4": "Meteor, estel fugaç i meteorit es confonen sovint",
   "atmos/9": "Cal saber la capa exacta; capes fàcils de confondre",

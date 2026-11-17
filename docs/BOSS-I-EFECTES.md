@@ -23,7 +23,7 @@ Quan l'alumne venç el Boss d'un món (`B.hp <= 0` a `bossFi()`, a `motor/planti
 
 ---
 
-## 2. Els 7 Bosses actuals
+## 2. Els 8 Bosses actuals
 
 Definits a l'última línia de cada `motor/dades/<mon>.js`:
 
@@ -36,6 +36,7 @@ Definits a l'última línia de cada `motor/dades/<mon>.js`:
 | Català | `catala.js` | El Monstre dels Signes | `signes` | `espiral` | `alegria` (*Himne a l'Alegria*, Beethoven) | `PUNT I FINAL!` | `📖 ✨ 🎭 🖋️` |
 | Castellano | `castellano.js` | El Monstruo de las Faltas | `faltas` | `esborra` | `toreador` (*Toreador*, Bizet) | `¡NI UNA FALTA!` | `✏️ ✨ 📚 🎯` |
 | Anglès | `angles.js` | El Fantasma del Cinema | `fantasma` | `focus` | `estrena` (claqueta + estrena Hollywood) | `THAT'S A WRAP!` | `🎬 🍿 🎥 🌟` |
+| Geosfera | `geosfera.js` | El Gegant de Magma | propi (`pix`: volcà amb cara) | `explosio` amb `ic:"🌋"` | pròpia (`notes`, `metall`, 118 bpm) | `MAGMA REFREDAT!` | `💎 🪨 🔥 ✨` |
 
 ---
 
@@ -45,7 +46,7 @@ Quan creïs un món nou a `motor/dades/<nou>.js`, tens **dues maneres** de defin
 
 ### Opció A · Combinar peces del catàleg en 1 sola línia (recomanat)
 
-Pots barrejar lliurement qualsevol `spr`, `fx` i `mus` existents amb el teu propi `nom`, `rotul` i `em`. A més, els colors `M` i `m` dels sprites s'adapten automàticament als colors `ASSIG.color` del nou món!
+Pots barrejar lliurement qualsevol `spr`, `fx` i `mus` existents amb el teu propi `nom`, `rotul` i `em`. Cada `fx` porta una icona al centre de la celebració (`explosio` 🌹, `orbites` 🪐, `tempesta` ☀️, `blocs` 💎, `espiral` 📖, `esborra` ✨, `focus` 🎬); si no lliga amb el teu món, canvia-la amb el camp opcional `ic` (per exemple, `ic:"🌋"` a la Geosfera). També surt a la banda tranquil·la del mode suau. A més, els colors `M` i `m` dels sprites s'adapten automàticament als colors `ASSIG.color` del nou món!
 
 ```js
 ASSIG.boss = {

@@ -114,7 +114,7 @@ function dadesDif(assig, xss) {
   ok(["bn_admin_resum", "bn_admin_domini", "bn_admin_fallades", "bn_admin_benestar"].every(f => !crides.some(x => x.f === f)),
    "càrrega sota demanda: obrir Mons → Dificultat no demana el resum, domini, fallades ni benestar");
   await p.click('#tDif [data-dm="obre"]');
-  ok((await p.$$("#tDif details.dm-as")).length === 7, "surten sempre els 7 mons encara que alguns encara no arribin a 8 respostes o no tinguin dades");
+  ok((await p.$$("#tDif details.dm-as")).length === 8, "surten sempre els 8 mons encara que alguns encara no arribin a 8 respostes o no tinguin dades");
   const tSoc = await txt('#tDif details[data-a="socials"]');
   const tBio = await txt('#tDif details[data-a="biogeo"]');
   const tDiv = await txt('#tDif details[data-a="divisibilitat"]');

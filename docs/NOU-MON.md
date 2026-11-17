@@ -12,7 +12,7 @@ Agafa com a referència un món existent (`motor/dades/biogeo.js`, `motor/dades/
    - Identitat: `id`, `nom`, `tema`, `curs`, `ic`, `color` (`[c1, c2, c3]`), `peu`, `blocs`.
    - `jocs`: minijocs (`ordena`, `parelles`, `classifica`, `figura`, etc.).
    - **`boss`**: segueix [`BOSS-I-EFECTES.md`](BOSS-I-EFECTES.md) §3:
-     - **Opció A (1 línia, recomanada):** tria qualsevol `spr`, `fx` i `mus` del catàleg i defineix `nom`, `rotul` i `em`. Els colors `M` i `m` de l'sprite s'adapten sols al món.
+     - **Opció A (1 línia, recomanada):** tria qualsevol `spr`, `fx` i `mus` del catàleg i defineix `nom`, `rotul` i `em`. Els colors `M` i `m` de l'sprite s'adapten sols al món. Si la icona central de l'`fx` no lliga amb el món (per exemple, la rosa de Sant Jordi d'`explosio`), canvia-la amb `ic`.
      - **Opció B (a mida):** escriu un sprite 16×16 propi (`pix`) i/o una melodia WebAudio (`notes`, `bpm`, `timbre`) directament dins `ASSIG.boss` sense tocar `motor/plantilla-estudi-interactiu.html`.
 2. **`T` (temes)**:
    - Cada tema amb `id`, `ic`, `col`, `titol`, `font`, `idea`, `pts`, `truc`, `compte`, `fc` (targetes) i `q` (preguntes).

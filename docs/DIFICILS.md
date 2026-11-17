@@ -166,3 +166,25 @@ Llista generada amb `python3 motor/dificultat.py` a partir de `motor/dificultat.
 | `museu/10` | A2 · Reading: Museum exhibits | Quina frase amb people és correcta? | People are dancing. | Plural irregular sense -s: people concorda amb are, no amb is |
 | `suggeriments/1` | C2 · Make suggestions | How about ___ a film? | watching | How about va seguit de verb en -ing, a diferència de Let's o Why don't we |
 | `suggeriments/10` | C2 · Make suggestions | Com es diu «Sona bé» en anglès? | Sounds good. | Verb de percepció (sound) seguit d'adjectiu (good), no d'adverbi (well) |
+
+## 🌋 Geosfera (`geosfera`) · 17 de 129
+
+| Id | Tema | Pregunta | Resposta correcta | Per què |
+|---|---|---|---|---|
+| `agents/5` | Els agents externs i les quatre fases | Quina fase va just després de la meteorització? | L'erosió | Ordre de les fases: molts posen l'erosió abans de la meteorització |
+| `cicle/5` | El cicle de les roques | Una roca enterrada molt endins rep molta pressió i calor, però no es fon. Què li passa? | Metamorfisme | Metamorfisme i fusió es confonen: error típic de l'examen |
+| `escorca/1` | L'escorça i el mantell | Quina escorça és més prima? | L'oceànica | Parany: es creu que l'oceànica és la gruixuda perquè és sota el mar |
+| `escorca/7` | L'escorça i el mantell | Per què és important l'astenosfera? | Perquè permet que les plaques es moguin | Cal relacionar l'astenosfera amb el moviment de les plaques |
+| `limits/6` | Els límits entre plaques | En un límit passiu, què passa amb l'escorça? | No es crea ni es destrueix | Parany: al límit passiu les plaques es freguen però no es destrueix escorça |
+| `manifest/6` | Volcans, terratrèmols i serralades | Un terratrèmol és el mateix que una erupció volcànica? | No, és un trencament de roques sense magma | Terratrèmol i erupció es barregen; distractor molt plausible |
+| `meteo/3` | La meteorització | L'aigua del gel s'expandeix dins una esquerda i la roca peta. Quina meteorització és? | Física (mecànica) | Parany: el gel és aigua però la meteorització és física, no química |
+| `meteo/7` | La meteorització | Quina diferència hi ha entre la meteorització i l'erosió? | A la meteorització la roca no es mou; a l'erosió els trossos marxen | Meteorització i erosió: diferència d'un sol matís (la roca es mou o no) |
+| `metodes/7` | Com estudiem l'interior | Quin d'aquests NO és un mètode indirecte? | Un pou de petroli | Pregunta en negatiu: el pou de petroli és directe |
+| `minerals/3` | Què és un mineral | Per què una perla NO és un mineral? | Perquè la fabrica un ésser viu | Parany: la perla és dura i brillant, però la fa un ésser viu |
+| `mohs/4` | La duresa i l'escala de Mohs | Un mineral ratlla la fluorita (4), però l'apatita (5) el ratlla a ell. Quina duresa té? | Entre 4 i 5 | Raonament en dos passos amb l'escala de Mohs; error típic de l'examen |
+| `mohs/5` | La duresa i l'escala de Mohs | El quars (7) i un mineral de duresa 4,5: qui ratlla qui? | El quars ratlla el mineral | Qui ratlla qui: molts ho giren |
+| `nucli/5` | El nucli i les discontinuïtats | Quin és l'ordre de les discontinuïtats, de fora cap a dins? | Mohorovicic, Gutenberg i Lehmann | Ordre de tres noms tècnics de discontinuïtats |
+| `nucli/6` | El nucli i les discontinuïtats | La discontinuïtat de Lehmann separa… | el nucli extern del nucli intern | Nom tècnic; tres discontinuïtats possibles |
+| `origen/3` | Com es van formar les capes | Per què el nucli és de ferro i níquel? | Perquè són els més densos i es van enfonsar | Cal explicar la separació per densitat; distractors plausibles |
+| `propietats/2` | Les propietats dels minerals | Per què la ratlla serveix més que el color per identificar un mineral? | Perquè no canvia encara que hi hagi impureses | Ratlla i color es confonen; cal saber que la ratlla no canvia |
+| `roques/2` | Els tres tipus de roques | Les roques metamòrfiques es formen… | per molta pressió i calor, sense fondre's | Metamorfisme sense fondre's: es confon amb la fusió |

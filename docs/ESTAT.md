@@ -1,10 +1,14 @@
 # Estat actual
 
-Data: 2026-11-13
+Data: 2026-11-17
 
 ## Què funciona
-- **Versió actual: 2.45.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
-- **7 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`), tots 7 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 130 en total) i 3 peces del xat per món.
+- **Versió actual: 2.46.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **8 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`, `bio-i-geo/geosfera`), tots 8 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 147 en total) i 3 peces del xat per món.
+- **Bloc `g32` (`2.46.0`, Món 8 · Biologia i Geologia: Geosfera)**:
+  - Fet amb les diapositives, l'esquema de 4 fulls, l'examen i el full de respostes de la carpeta de Drive «Geosfera»: 16 temes en 4 blocs, 129 preguntes de test (17 ⚡ difícils), 16 obertes i 16 jocs (3 figures noves i un «Troba l'error del geòleg»).
+  - Boss «El Gegant de Magma» amb sprite i melodia propis; la plantilla accepta `ASSIG.boss.ic` per canviar la icona central de la celebració.
+  - Alta a `motor/mons.json`, `sprites.js` (sprite `volca`), `admin/index.html`, `supabase/bn_control.sql` (llistes de mons vàlids) i peces `67`–`69` del xat (`supabase/bn_xat.sql`), aplicats a Supabase.
 - **Portada arcade (`index.html`)** amb entrada per nom + PIN (`4 números i 1 lletra`), rànquing amb 6 pestanyes (`punts`, `dies`, `nivell`, `setmana`, `remuntada` i `xat`), meta de la colla, insígnia d'estrelles totals clicable (`#enEst`) i accessibilitat WAI-ARIA completa.
 - **Tauler d'administració (`admin/index.html`)** a `https://bonanota.net/admin/` connectat a Supabase (`agippwtqvhpxdockuigl`).
 - **Bloc `g1` (Nucli)**: instal·lat i configurat amb les 3 portes de verificació (`generat`, `generadors`, `estricte`).
@@ -30,7 +34,7 @@ Data: 2026-11-13
   - Prova nova `motor/prova-perfil.js` a l'Action. Especificació: `docs/superpowers/specs/2026-11-09-perfil-arcade-design.md`.
 
 - **`n2528` — Xat de la colla amb crèdits (2.11.0, publicat i actiu)**:
-  - Pestanya «Xat» al rànquing: els nens es parlen amb frases del catàleg (26 frases i 66 peces, cap text lliure). Cada 10 ⭐ d'avui donen 1 frase, fins a 5 al dia. Hi ha bafarades al podi, la targeta «Xat de la colla», el botó «Digues-li…», la cinta, «Ben dit» i el missatge del dia (sense premi).
+  - Pestanya «Xat» al rànquing: els nens es parlen amb frases del catàleg (26 frases i 69 peces, cap text lliure). Cada 10 ⭐ d'avui donen 1 frase, fins a 5 al dia. Hi ha bafarades al podi, la targeta «Xat de la colla», el botó «Digues-li…», la cinta, «Ben dit» i el missatge del dia (sense premi).
   - Base de dades: `supabase/bn_xat.sql` i `supabase/bn_control.sql` (aplicats a Supabase: taules `bn_priv.xat_*`, horari automàtic del xat i obertura/tancament de mons per separat).
   - Admin: pestanya «Xat» (moderació, silencis, configuració, horari automàtic, catàleg i peça nova) i targeta «Control ràpid: Xat, Horari i Mons» al Tauler (`2.17.0`).
   - Proves a l'Action: `motor/prova-xat-sql.js`, `motor/prova-xat.js`, `motor/prova-admin-xat.js`, `motor/prova-control-sql.js` i `motor/prova-admin-alta.js`.

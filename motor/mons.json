@@ -104,5 +104,20 @@
    "#fbbf24"
   ],
   "ic": "🎬"
+ },
+ {
+  "dades": "geosfera",
+  "carpeta": "bio-i-geo/geosfera",
+  "mon": "8",
+  "neix": "2026-11-17",
+  "materia": "Biologia i Geologia",
+  "titol": "Geosfera",
+  "desc": "La Terra per dins, roques i minerals, l'escala de Mohs, les plaques i la força de dins i de fora.",
+  "colors": [
+   "#1c1917",
+   "#dc2626",
+   "#fb923c"
+  ],
+  "ic": "🌋"
  }
 ]

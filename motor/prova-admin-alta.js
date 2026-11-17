@@ -123,8 +123,8 @@ function dadesAdmin() {
    "Inici mostra exactament 6 KPIs compactes i cap subtítol sota les xifres");
   const ctrlTxt = await txt("#control");
   const idsCtrl = await p.$$eval("#control [data-ctrl-mon]", bs => bs.map(b => b.dataset.ctrlMon));
-  ok(ctrlTxt.includes("Control ràpid") && idsCtrl.length === 7 && idsCtrl[0] === "angles" && idsCtrl[6] === "socials",
-   "targeta «Control ràpid» a Inici amb interruptor del xat i dels 7 mons ordenats del més nou ('angles') al més antic ('socials')");
+  ok(ctrlTxt.includes("Control ràpid") && idsCtrl.length === 8 && idsCtrl[0] === "geosfera" && idsCtrl[7] === "socials",
+   "targeta «Control ràpid» a Inici amb interruptor del xat i dels 8 mons ordenats del més nou ('geosfera') al més antic ('socials')");
   // Ajuda plegable (i)
   const btAj = "#control .btn-ajuda", boxAj = "#control .ajuda-box";
   ok((await p.isHidden(boxAj)) === true, "l'explicació secundària (i) està plegada per defecte");
@@ -252,8 +252,8 @@ function dadesAdmin() {
   // Tanquem el món de Socials des d'Inici
   await p.click('#control [data-ctrl-mon="socials"]');
   await p.waitForTimeout(80);
-  ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes("6 de 7 oberts"),
-   "clicar l'interruptor d'un món el tanca i actualitza el comptador a «6 de 7 oberts»");
+  ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes("7 de 8 oberts"),
+   "clicar l'interruptor d'un món el tanca i actualitza el comptador a «7 de 8 oberts»");
 
   // Canviem l'horari i el desem des de Configuració → Horaris i crèdits
   await p.click("#btConfig");
@@ -464,7 +464,7 @@ function dadesAdmin() {
   await p.goto(BASE + "/");
   await p.waitForSelector('.as[data-id="socials"].mon-tancat');
   const idsPort = await p.$$eval("main .as[data-id]", as => as.map(a => a.dataset.id));
-  ok(idsPort[0] === "angles" && idsPort[idsPort.length - 1] === "socials",
+  ok(idsPort[0] === "geosfera" && idsPort[idsPort.length - 1] === "socials",
    `la portada mostra primer els mons més nous (${idsPort.join(" → ")})`);
   const txtSoc = await p.textContent('.as[data-id="socials"] .juga span');
   ok(txtSoc.includes("TANCAT"), "a la portada el món tancat ('socials') mostra «🔒 TANCAT»");
