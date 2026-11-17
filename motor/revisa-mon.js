@@ -17,6 +17,8 @@ function revisaFont(src) {
   let D;
   try { D = carrega(src); } catch (e) { return { errors: [`no es pot carregar el fitxer: ${e.message}`], avisos }; }
   const { ASSIG, T, OB } = D;
+  // ids de joc únics: dos jocs amb el mateix id es trepitgen el progrés i el repàs
+  { const vist = new Set(); for (const j of ASSIG.jocs || []) { if (vist.has(j.id)) errors.push(`joc ${j.id}: id repetit`); vist.add(j.id); } }
   // temes i preguntes de test
   let tot = 0, llarga = 0;
   for (const t of T) {

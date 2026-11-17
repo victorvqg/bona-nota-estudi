@@ -53,7 +53,7 @@ function mcComprova(){if(!MC||MC.fase==="fet")return;const E=MC.llista[MC.e],fb=
  mal.forEach(i=>{const b=document.querySelector(`#mcFrase .mc-w[data-i="${i}"]`);if(b)b.classList.add("ko")});
  if(MC.int>=2){E.m.split("").forEach((c,i)=>{if(c!=="-"){MC.v[i]=c;mcPintaParaula(i)}});return mcFet(false)}
  const w=mcParaules(E.t),i0=mal[0],bona=mcCat(MC.j,E.m[i0]);
- fb.innerHTML=`<div class="fb fr-ko">❌ ${mal.length===1?"Hi ha 1 paraula":`Hi ha ${mal.length} paraules`} mal pintada${mal.length>1?"s":""} (en vermell). ${E.pista?"💡 "+E.pista:`Mira «${w[i0]}» un altre cop: quin paper hi fa?`}</div>`}
+ fb.innerHTML=`<div class="fb fr-ko">❌ ${mal.length===1?"Hi ha 1 paraula":`Hi ha ${mal.length} paraules`} mal ${mal.length>1?"pintades":"pintada"} (en vermell). ${E.pista?"💡 "+E.pista:`Mira «${w[i0]}» un altre cop: quin paper hi fa?`}</div>`}
 function mcFet(bo){MC.fase="fet";const ult=MC.e+1>=MC.llista.length,E=MC.llista[MC.e];
  document.getElementById("mcFb").innerHTML=`<div class="fb ${bo?"ok":"fr-ko"}">${bo?(MC.int?"✅ Ara sí!":"✅ Molt bé! Bé a la primera."):"👉 Fixa-t'hi bé: així queda pintada."}</div>${E.ex?`<div class="fr-sol" style="margin-top:8px;padding:10px 12px;border-radius:14px;background:#fffef5;border:2px solid #fde68a">💡 ${E.ex}</div>`:""}`;
  document.getElementById("mcBts").innerHTML=`<button class="btn" id="mcSeg" onclick="${ult?"mcFi()":"mcSeg()"}">${ult?"Acaba 🏁":"Següent frase ▶"}</button>`;

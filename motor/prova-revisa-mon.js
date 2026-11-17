@@ -37,6 +37,7 @@ ok(troba(font({ t: VALID.t.replace('"Pregunta 3?"', '"Pregunta 2?"') }), /pregun
 ok(troba(font({ assig: VALID.assig.replace("n:1", "n:2") }), /blocs/), "els blocs no sumen els temes");
 ok(troba(font({ ob: VALID.ob.replace('p:["idea"],', '') }), /OB/), "una oberta sense idees clau");
 ok(troba(font({ assig: VALID.assig.replace('["B","",""]', '["A","",""]') }), /repetit/), "ítems repetits a ordena");
+ok(troba(font({ assig: VALID.assig.replace('{id:"cla",', '{id:"ord",') }), /id repetit/), "dos jocs amb el mateix id");
 ok(troba(font({ assig: VALID.assig.replace('["v","y"]', '["v","z"]') }), /caixa/), "classifica amb una caixa que no existeix");
 ok(troba(font({ assig: VALID.assig.replace('["b","2"]', '["b","1"]') }), /parelles repetides/), "parelles repetides");
 ok(troba(font({ assig: VALID.assig.replace('figura:"svgProva"', 'figura:"svgNoHiEs"') }), /figura/), "una figura que no és cap funció");
