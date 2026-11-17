@@ -17,6 +17,7 @@ De l'enllaç de Drive a bonanota.net sense cap pregunta ni finestra de permís. 
 
 ## Passos
 
+0. **Posa main al dia**: a la branca `main`, `git pull --ff-only origin main` (les fusions automàtiques es fan a GitHub; sense això el PR tindria conflictes i `publica.py` s'aturaria).
 1. **Llegeix la carpeta**: `search_files` amb `parentId = '<id de la carpeta>'` i `read_file_content` de cada fitxer (diapositives, esquema, examen, full de respostes).
 2. **Tria l'id i la tasca**: id en minúscules a partir del títol (`geosfera`), carpeta `<assignatura>/<id>` (p. ex. `bio-i-geo/geosfera`), número de tasca `gN` = el més alt de `git log --oneline -40` + 1.
 3. **Comença el món**:
