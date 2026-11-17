@@ -141,15 +141,18 @@ Tots els càlculs que surten al món s'han comprovat amb un programa (47 comprov
 
 ### ✏️ Taller de mates (exercicis com els de l'escola)
 
+- **Taller visual (2.48.0)**: el dibuix de la llibreta (l'escala, la divisió, la taula de potències alineada, les xifres del criteri) va al centre i **marca on cal mirar**. Si t'equivoques, també marca l'error (per exemple, el 4 en vermell a la tira de primers). Els passos fets es pleguen i hi ha una barra de passos. Com s'escriu una fitxa nova: `docs/MON-MATES.md`.
+- **💡 Pistes en 3 graons**: 1) una pregunta que fa pensar (no treu l'estrella), 2) el dibuix marca on mirar, 3) mig resultat. A partir de la 2a, el pas ja no dona estrella.
+- **Ponts**: des del MCM i el MCD es poden obrir les granotes o les rajoles amb els mateixos números, i de les granotes o les rajoles es passa a la fitxa amb aquells números.
+- **Teoria amb exemple dibuixat** als temes de múltiples i divisors, criteris, descomposició, MCM i MCD.
 - **S'escriu el resultat** amb un teclat numèric gran, en lloc de triar entre 3 opcions.
 - **Números nous cada vegada**: cada exercici surt d'un generador, amb 3 nivells (🟢 bàsic, 🟡 mitjà, 🔴 d'examen).
   Els enunciats i problemes surten dels apunts; els números per practicar els fa el programa i es comproven sols.
 - **Tres maneres de fer una fitxa** (primer «Com ho vols fer?», després el nivell):
-  👀 **Mira com es fa** (un exemple resolt, pas a pas, amb l'explicació de cada pas; no dona estrelles) ·
+  👀 **Mira com es fa** (un exemple resolt, pas a pas: primer el dibuix marcat i «pensa-hi tu», després la resposta; al final, «✍️ Fes aquest mateix tu»; no dona estrelles) ·
   ✍️ **Completa** (la primera meitat dels passos ja surt feta i el nen fa la resta) · 💪 **Tot sol**.
 - **Pas a pas com a la llibreta**: l'escala fila a fila, la taula de factors per al MCM i el MCD, el càlcul del criteri,
   i la **divisió llarga xifra a xifra** dibuixada com a la llibreta (la «caixa»).
-- **💡 Pista** a cada pas (abans de respondre). Aquell pas ja no dona estrella.
 - **🤔 Per què?** De vegades, després d'encertar, pregunta per què (3 opcions). No compta per a la nota.
 - **🤔 Abans de calcular**: al MCM i al MCD primer cal estimar si el resultat serà més gran o més petit.
 - **Problemes en 4 passos**: dades (n'hi ha una que no serveix) → MCM o MCD? → càlcul → frase de resposta amb la unitat.

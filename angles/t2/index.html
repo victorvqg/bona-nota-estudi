@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="8dab7dc8b6",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="c8f1c6e6e7",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -656,7 +656,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.47.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.48.0</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -1605,7 +1605,7 @@ function pintaTema(){
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
  const txtF=`${t.titol}. Idea clau: ${t.idea}. ${t.pts.join(". ")}. Truc: ${t.truc}. Compte: ${t.compte}`;
- document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div><ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
+ document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div>${t.vista&&typeof mxVistaTema==="function"?mxVistaTema(t.vista):""}<ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
  const cpt=document.querySelector("#zona .compte");if(cpt&&"IntersectionObserver" in window){const a=ACTV,ob=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){if(a)a.fi=1;ob.disconnect()}});ob.observe(cpt)}
 }
 function targetes(n){calla();
