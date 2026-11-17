@@ -48,7 +48,7 @@ jobs:
       - name: Revisor de contingut dels mons (preguntes, jocs, figures i boss)
         run: node motor/prova-revisa-mon.js && node motor/revisa-mon.js
       - name: Eines per crear i publicar mons (nou_mon.py i publica.py)
-        run: python3 motor/prova_nou_mon.py && python3 motor/prova_publica.py
+        run: python3 motor/prova_nou_mon.py && python3 motor/prova_publica.py && python3 motor/prova_registres.py
       - name: Llista dinàmica de mons (motor/mons.json)
         id: llista
         run: |
@@ -128,6 +128,8 @@ jobs:
         run: node motor/prova-admin-alta.js
       - name: Prova de la dificultat real de les preguntes al tauler (#16)
         run: node motor/prova-admin-dificultat.js
+      - name: Prova del gràfic «Evolució de les notes» del tauler
+        run: node motor/prova-admin-evolucio.js
 
   mons:
     name: Món (${{ matrix.mon }})
@@ -157,9 +159,13 @@ jobs:
         if: steps.pw-cache.outputs.cache-hit != 'true'
         run: npx playwright install chromium
       - name: Prova estricta de ${{ matrix.mon }}
-        run: cd motor && ESTRICTE=1 node prova.js "$PWD/../${{ matrix.mon }}/index.html"
+        env:
+          MON: ${{ matrix.mon }}
+        run: cd motor && ESTRICTE=1 node prova.js "$PWD/../$MON/index.html"
       - name: Prova visual de ${{ matrix.mon }} (360, 390 i 430 px)
-        run: node motor/prova-visual.js "${{ matrix.mon }}"
+        env:
+          MON: ${{ matrix.mon }}
+        run: node motor/prova-visual.js "$MON"
       - name: Captures de la prova visual
         if: always()
         uses: actions/upload-artifact@v4
@@ -168,6 +174,7 @@ jobs:
           path: motor/.captures/
           retention-days: 7
           if-no-files-found: ignore
+          overwrite: true
 
   # 5) un sol check de nom fix perquè el ruleset de main el pugui exigir (els jobs de la matriu tenen noms variables).
   #    Amb if: always() s'executa encara que un job falli o es cancel·li, i falla si algun no ha acabat en «success».

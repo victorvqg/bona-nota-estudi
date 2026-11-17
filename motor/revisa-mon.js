@@ -21,6 +21,7 @@ function revisaFont(src) {
   let tot = 0, llarga = 0;
   for (const t of T) {
     if (!t.font) avisos.push(`tema ${t.id}: sense «font»`);
+    if (!Array.isArray(t.q)) { errors.push(`tema ${t.id}: sense preguntes («q»)`); continue; }
     if (t.q.length < 8) errors.push(`tema ${t.id}: només ${t.q.length} preguntes (mínim 8)`);
     const vistes = new Set();
     t.q.forEach((q, i) => {

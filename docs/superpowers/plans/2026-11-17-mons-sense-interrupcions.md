@@ -67,11 +67,11 @@
       "Bash(gh pr *)", "Bash(gh run *)", "Bash(gh api repos/victorvqg/bona-nota-estudi*)",
       "Bash(git push origin g*)", "Bash(git push -u origin g*)", "Bash(git fetch *)", "Bash(git pull *)",
       "Bash(node motor/prova*.js)", "Bash(node motor/prova*.js *)", "Bash(python3 motor/*)", "Bash(curl -s* https://bonanota.net*)",
-      "mcp__cb571b72-86ef-4503-9ef6-6a2edb41d374__search_files",
-      "mcp__cb571b72-86ef-4503-9ef6-6a2edb41d374__read_file_content",
-      "mcp__cb571b72-86ef-4503-9ef6-6a2edb41d374__get_file_metadata",
-      "mcp__93acffd1-4a53-419c-8605-9779b8a5a5ab__execute_sql",
-      "mcp__93acffd1-4a53-419c-8605-9779b8a5a5ab__apply_migration"
+      "mcp__<connector-de-Google-Drive>__search_files",
+      "mcp__<connector-de-Google-Drive>__read_file_content",
+      "mcp__<connector-de-Google-Drive>__get_file_metadata",
+      "mcp__<connector-de-Supabase>__execute_sql",
+      "mcp__<connector-de-Supabase>__apply_migration"
     ],
     "deny": ["Bash(git push --force*)", "Bash(git push -f*)", "Bash(git push origin main*)", "Bash(gh pr merge --admin*)"]
   }

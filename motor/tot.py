@@ -41,7 +41,7 @@ info = json.loads(r.stdout)
 # 2b) el que surt de mons.json fora de les pàgines: admin (nom, colors, xat, demo), BN_MON de sprites.js i les peces
 #     de món del xat (index.html i supabase/bn_xat.sql). Va abans de l'empremta de sprites.js. Detall: motor/registres.py.
 import registres
-registres.valida(mons, (arrel / "sprites.js").read_text())
+registres.valida(mons, (arrel / "sprites.js").read_text(), registres.ids_xat_base((arrel / "index.html").read_text()))
 jocs_mon = {m["dades"]: info[str(d / "dades" / f"{m['dades']}.js")]["jocs"] for m in mons}
 registres.escriu_bloc(arrel / "admin" / "index.html", registres.ADM, registres.bloc_admin(mons, jocs_mon))
 registres.escriu_bloc(arrel / "sprites.js", registres.BN_MON, registres.bloc_bn_mon(mons))

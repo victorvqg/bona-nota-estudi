@@ -21,31 +21,50 @@ BN_MON = ("/* BN-MON:inici (generat per motor/tot.py des de motor/mons.json, no 
 XAT_JS = ("/* XAT-MONS:inici (generat per motor/tot.py des de motor/mons.json, no editar a mà) */", "/* XAT-MONS:fi */")
 XAT_SQL = ("-- XAT-MONS:inici (generat per motor/tot.py des de motor/mons.json, no editar a mà)", "-- XAT-MONS:fi")
 
-js = lambda v: json.dumps(v, ensure_ascii=False, separators=(",", ":"))
+# JSON per a JavaScript dins d'un <script>: «</» s'escriu «<\/» perquè cap text pugui tancar l'script.
+js = lambda v: json.dumps(v, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+COLOR = re.compile(r"#[0-9a-fA-F]{6}")
 
 
-def valida(mons: list, sprites: str) -> None:
+def ids_xat_base(index_html: str) -> set:
+    """Ids de les peces generals del xat (XAT_PC_BASE d'index.html), que una peça de món no pot repetir."""
+    a = index_html.find("const XAT_PC_BASE=[")
+    b = index_html.find("];", a)
+    return {int(x) for x in re.findall(r"\{id:(\d+),", index_html[a:b])} if a >= 0 and b > a else set()
+
+
+def valida(mons: list, sprites: str, base_ids: set = frozenset()) -> None:
     """Atura tot.py amb un missatge clar si a una entrada li falta un camp o té peces de xat que no valen."""
     vistos = {}
+    a = sprites.find("const BN_SPR={")
+    spr = sprites[a:sprites.find("\n};", a)] if a >= 0 else ""
     for m in mons:
         id_ = m.get("dades", "?")
         for camp in ("curt", "spr"):
             if not isinstance(m.get(camp), str) or not m[camp].strip():
                 sys.exit(f"ERROR: mons.json · {id_}: falta «{camp}»")
-        if not re.search(rf"^ {re.escape(m['spr'])}:\{{w:", sprites, re.M):
+        if not re.search(rf"^ {re.escape(m['spr'])}:\{{w:", spr, re.M):
             sys.exit(f"ERROR: mons.json · {id_}: l'sprite «{m['spr']}» no és a BN_SPR (sprites.js)")
         xat = m.get("xat")
         if not (isinstance(xat, list) and len(xat) == 3 and all(isinstance(p, list) and len(p) == 2 and isinstance(p[0], int)
                                                                and isinstance(p[1], str) and p[1].strip() for p in xat)):
             sys.exit(f"ERROR: mons.json · {id_}: «xat» han de ser 3 peces [id, \"text\"]")
+        if not (isinstance(m.get("colors"), list) and len(m["colors"]) == 3 and all(isinstance(c, str) and COLOR.fullmatch(c) for c in m["colors"])):
+            sys.exit(f"ERROR: mons.json · {id_}: «colors» han de ser 3 colors #rrggbb")
+        for text in [m["curt"], m.get("xmon") or ""] + [t for _, t in xat]:
+            if "<" in text or ">" in text:
+                sys.exit(f"ERROR: mons.json · {id_}: «{text}» no pot portar < ni >")
         for pid, _ in xat:
+            if pid in base_ids:
+                sys.exit(f"ERROR: mons.json · {id_}: la peça de xat {pid} té l'id d'una peça general del xat (XAT_PC_BASE)")
             if not 0 < pid < 1001:
                 sys.exit(f"ERROR: mons.json · {id_}: la peça de xat {pid} ha de tenir un id entre 1 i 1000")
             if pid in vistos:
                 sys.exit(f"ERROR: mons.json · {id_}: la peça de xat {pid} ja és de «{vistos[pid]}»")
             vistos[pid] = id_
-        if "col_admin" in m and not (isinstance(m["col_admin"], list) and len(m["col_admin"]) == 8):
-            sys.exit(f"ERROR: mons.json · {id_}: «col_admin» han de ser 8 colors")
+        if "col_admin" in m and not (isinstance(m["col_admin"], list) and len(m["col_admin"]) == 8
+                                     and all(isinstance(c, str) and COLOR.fullmatch(c) for c in m["col_admin"])):
+            sys.exit(f"ERROR: mons.json · {id_}: «col_admin» han de ser 8 colors #rrggbb")
 
 
 def _barreja(hex_: str, amb: str, t: float) -> str:
@@ -75,7 +94,7 @@ def bloc_admin(mons: list, jocs_per_mon: dict) -> str:
 
 
 def bloc_bn_mon(mons: list) -> str:
-    return "const BN_MON=" + js({m["dades"]: {"ic": m["spr"], "mat": m["materia"]} for m in mons}) + ";"
+    return "const BN_MON=" + js({m["dades"]: {"ic": m["spr"], "mat": m["materia"]} for m in reversed(mons)}) + ";"
 
 
 def bloc_xat(mons: list) -> tuple:

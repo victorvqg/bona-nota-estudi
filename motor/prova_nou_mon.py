@@ -54,6 +54,28 @@ class ProvaNouMon(unittest.TestCase):
             nou_mon.crea([("Volcans Nous!" if a == "volcans" else a) for a in ARGS], self.tmp)
         self.assertIn("id", str(e.exception))
 
+    def carpeta(self, valor):
+        return [(valor if a == "bio-i-geo/volcans" else a) for a in ARGS]
+
+    def test_rebutja_carpetes_reservades_o_estranyes(self):
+        for c in ("admin", "admin/volcans", "perfil/x", "motor/volcans", "../fora", "bio-i-geo/../admin", "Bio/Volcans"):
+            with self.assertRaises(SystemExit, msg=c) as e:
+                nou_mon.crea(self.carpeta(c), self.tmp)
+            self.assertIn("carpeta", str(e.exception), c)
+
+    def test_rebutja_una_carpeta_que_ja_existeix_al_disc(self):
+        arrel = self.tmp / "arrel"
+        (arrel / "bio-i-geo" / "volcans").mkdir(parents=True)
+        with self.assertRaises(SystemExit) as e:
+            nou_mon.crea(ARGS, self.tmp, arrel)
+        self.assertIn("ja existeix", str(e.exception))
+
+    def test_numero_de_mon_es_el_maxim_mes_u(self):
+        mons = json.loads((self.tmp / "mons.json").read_text())
+        mons[-1]["mon"] = "20"
+        (self.tmp / "mons.json").write_text(json.dumps(mons, ensure_ascii=False, indent=1) + "\n")
+        self.assertEqual(nou_mon.crea(ARGS, self.tmp)["mon"], "21")
+
     def test_rebutja_xat_sense_tres_peces(self):
         with self.assertRaises(SystemExit) as e:
             nou_mon.crea([("el magma|la lava" if a.startswith("el magma") else a) for a in ARGS], self.tmp)

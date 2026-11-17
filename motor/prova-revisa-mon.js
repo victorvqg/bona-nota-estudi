@@ -48,6 +48,13 @@ ok(troba(font({ boss: 'ASSIG.boss={nom:"B",fx:"explosio",pix:Array(16).fill("...
 ok(troba(font({ t: VALID.t.replace(/\["curta","opció llarga dos","opció tres"\]/g, '["opció bona llarga","opció dos","opció tres"]') }), /15 i el 40/), "la correcta és la més llarga massa sovint (100 %)");
 ok(troba(font({ t: VALID.t.replace(/\["opció bona llarga","opció dos","opció tres"\]/g, '["curta","opció llarga dos","opció tres"]') }), /15 i el 40/), "la correcta no és mai la més llarga (0 %)");
 
+ok(troba(font({ assig: VALID.assig.replace('op:["x","y"],r:1', 'op:["x","y"],r:2') }), /«r» fora de rang/), "un exercici «error» de triar amb la resposta fora de rang");
+ok(troba(font({ assig: VALID.assig.replace("ok:[1]", "ok:[4]") }), /«ok»/), "un exercici «error» amb «ok» fora de la llibreta");
+ok(troba(font({ assig: VALID.assig.replace('t:"tria",q:"Q",op:["x","y"],r:1', 't:"num",q:"Q",r:"quatre"') }), /número/), "un exercici «error» de número amb una resposta que no és un número");
+ok(troba(font({ t: 'const T=[{id:"t1",titol:"Tema u",font:"Esquema"}];' }), /sense preguntes/), "un tema sense «q» és un error, no un petament");
+{ const r = revisaFont(font({ t: VALID.t.replace('font:"Esquema",', "") })); ok(r.errors.length === 0 && r.avisos.some(a => /font/.test(a)), "un tema sense «font» és un avís, no un error"); }
+{ const r = revisaFont(font({ assig: VALID.assig.replace(',q:[["Q?",["a","b","c"],1,"e"]]', "") })); ok(r.avisos.some(a => /sense preguntes/.test(a)), "una figura sense preguntes és un avís"); }
+
 console.log("3) els mons de motor/mons.json no tenen errors");
 for (const m of JSON.parse(fs.readFileSync(path.join(__dirname, "mons.json"), "utf8"))) {
   const r = revisaMon(m.dades); ok(r.errors.length === 0, `${m.dades}: 0 errors` + (r.errors.length ? " · " + r.errors.slice(0, 3).join(" | ") : ""));

@@ -75,7 +75,7 @@ const BN_AV_BG={"fox":"#2563eb","frog":"#db2777","lion":"#7c3aed","panda":"#16a3
 const BN_NIV=["chick","compass","lupa","scroll","gradcap","brain","medal_tab","hero","crown","glowstar"];
 const BN_MAT={"Ciències socials":{"curt":"SOCIALS","color":"#ea580c","tint":"#fdba74"},"Biologia i Geologia":{"curt":"BIO-GEO","color":"#7c3aed","tint":"#c4b5fd"},"Lengua Castellana":{"curt":"CASTELLANO","color":"#dc2626","tint":"#fca5a5"},"Matemàtiques":{"curt":"MATES","color":"#0d9488","tint":"#5eead4"},"Català":{"curt":"CATALÀ","color":"#4338ca","tint":"#a5b4fc"},"Anglès":{"curt":"ANGLÈS","color":"#db2777","tint":"#f9a8d4"}};
 /* BN-MON:inici (generat per motor/tot.py des de motor/mons.json, no editar a mà) */
-const BN_MON={"socials":{"ic":"clima","mat":"Ciències socials"},"biogeo":{"ic":"telescope","mat":"Biologia i Geologia"},"castellano":{"ic":"llibre","mat":"Lengua Castellana"},"comarques":{"ic":"mapa","mat":"Ciències socials"},"divisibilitat":{"ic":"calcula","mat":"Matemàtiques"},"catala":{"ic":"ploma","mat":"Català"},"angles":{"ic":"cinema","mat":"Anglès"},"geosfera":{"ic":"volca","mat":"Biologia i Geologia"}};
+const BN_MON={"geosfera":{"ic":"volca","mat":"Biologia i Geologia"},"angles":{"ic":"cinema","mat":"Anglès"},"catala":{"ic":"ploma","mat":"Català"},"divisibilitat":{"ic":"calcula","mat":"Matemàtiques"},"comarques":{"ic":"mapa","mat":"Ciències socials"},"castellano":{"ic":"llibre","mat":"Lengua Castellana"},"biogeo":{"ic":"telescope","mat":"Biologia i Geologia"},"socials":{"ic":"clima","mat":"Ciències socials"}};
 /* BN-MON:fi */
 // ===== PERFILS ARCADE («skills», n2495-n2497): 50 insígnies de 16×16 que el nen tria a /perfil/ · mateix format que BN_SPR =====
 const BN_SKILLS={

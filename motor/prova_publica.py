@@ -65,6 +65,77 @@ class ProvaPublica(unittest.TestCase):
             g(t / "b", "pull", "-q", "--ff-only", "origin", "main")
             self.assertFalse(publica.base_desfasada(t / "b"), "després del pull, al dia")
 
+    def test_flux_d_issue(self):
+        self.assertEqual(publica.branca("#12", "fix(xat): arregla el vot (#12)"), "issue/12-arregla-el-vot")
+        publica.valida_missatge("#12", "fix(xat): arregla el vot (#12)")
+        with self.assertRaises(SystemExit):
+            publica.valida_missatge("#12", "fix(xat): arregla el vot (g12)")
+
+    def test_git_status_z(self):
+        sortida = " M motor/a.py\0?? docs/nou fitxer.md\0R  motor/nou.py\0motor/vell.py\0"
+        self.assertEqual(publica.porcelain_z(sortida), ["motor/a.py", "docs/nou fitxer.md", "motor/nou.py"])
+
+    def test_main_de_cap_a_cap_en_un_repo_temporal(self):
+        import os, subprocess, tempfile
+        g = lambda cwd, *a: subprocess.run(["git", *a], cwd=cwd, check=True, capture_output=True, text=True).stdout.strip()
+        with tempfile.TemporaryDirectory() as t:
+            t = Path(t)
+            g(t, "init", "-q", "--bare", "-b", "main", "origen.git")
+            g(t, "clone", "-q", str(t / "origen.git"), "repo")
+            r = t / "repo"
+            g(r, "config", "user.email", "prova@exemple.cat"); g(r, "config", "user.name", "Prova")
+            (r / "motor").mkdir()
+            (r / "motor" / "mons.json").write_text("[]\n")
+            (r / "motor" / "tot.py").write_text("print('tot ok')\n")
+            (r / "motor" / "revisa-mon.js").write_text("process.exit(0)\n")
+            (r / "README.md").write_text("prova\n")
+            g(r, "add", "-A"); g(r, "commit", "-q", "-m", "inici"); g(r, "push", "-q", "origin", "HEAD:main")
+            main0 = g(r, "rev-parse", "HEAD")
+            stubs = t / "stubs"; stubs.mkdir(); registre = t / "crides.txt"
+            (stubs / "gh").write_text(f'''#!/bin/sh
+echo "gh $*" >> "{registre}"
+case "$*" in
+  *"--json mergeable"*) echo MERGEABLE ;;
+  "pr view"*) exit 1 ;;
+  "pr create"*) echo https://github.com/x/y/pull/1 ;;
+esac
+exit 0
+''')
+            (stubs / "nucli").write_text(f'''#!/bin/sh
+echo "nucli $*" >> "{registre}"
+case "$*" in "ship plan --json") echo '{{"automatics":[{{"check":"generat"}}]}}' ;; esac
+exit 0
+''')
+            for f in ("gh", "nucli"):
+                (stubs / f).chmod(0o755)
+            arrel0, path0 = publica.ARREL, os.environ["PATH"]
+            branca_real = g(arrel0, "rev-parse", "--abbrev-ref", "HEAD")   # el repo de veritat no s'ha de tocar mai
+            publica.ARREL, os.environ["PATH"] = r, f"{stubs}:{path0}"
+            try:
+                # 1) un fitxer nou que no és de la feina atura abans de fer res
+                (r / "notes.txt").write_text("privat\n")
+                with self.assertRaises(SystemExit) as e:
+                    publica.main(["--id", "g99", "--missatge", "docs(prova): una prova (g99)"])
+                self.assertIn("no són de la feina", str(e.exception))
+                (r / "notes.txt").unlink()
+                # 2) de main: crea la branca, fa el commit, puja la branca (mai main) i activa la fusió automàtica
+                (r / "docs").mkdir(); (r / "docs" / "nou.md").write_text("doc\n")
+                publica.main(["--id", "g99", "--missatge", "docs(prova): una prova (g99)"])
+                self.assertEqual(g(r, "rev-parse", "--abbrev-ref", "HEAD"), "g99-una-prova")
+                self.assertIn("refs/heads/g99-una-prova", g(t / "origen.git", "for-each-ref", "--format=%(refname)"))
+                self.assertEqual(g(t / "origen.git", "rev-parse", "main"), main0, "main de l'origen no s'ha tocat")
+                crides = registre.read_text()
+                self.assertIn("nucli ship run generat", crides)
+                self.assertIn("gh pr merge https://github.com/x/y/pull/1 --auto --squash --delete-branch", crides)
+                # 3) en una branca d'una altra tasca s'atura
+                g(r, "checkout", "-q", "-b", "g98-una-altra")
+                with self.assertRaises(SystemExit) as e:
+                    publica.main(["--id", "g99", "--missatge", "docs(prova): una altra (g99)"])
+                self.assertIn("no és de g99", str(e.exception))
+            finally:
+                publica.ARREL, os.environ["PATH"] = arrel0, path0
+            self.assertEqual(g(arrel0, "rev-parse", "--abbrev-ref", "HEAD"), branca_real, "la prova ha canviat la branca del repo de veritat")
+
     def test_missatge_ha_de_portar_l_id(self):
         with self.assertRaises(SystemExit):
             publica.valida_missatge("g40", "feat(mons): afegeix un món")
