@@ -211,6 +211,17 @@ function dadesAdmin() {
   await p.waitForSelector("#logDies .log-dia");
   ok((await p.$("#fAssig")) !== null && (await p.$("#fNen")) !== null && (await p.$("#fDia")) !== null && (await p.$("#fDiaCal")) !== null && (await p.$("#fEvent")) !== null && (await p.$("#fLogQ")) !== null && (await p.$("#flcsv")) !== null,
    "Sessions → Log complet per dia mostra la cronologia agrupada per dia («Qui ha entrat» i què fa) amb filtres per món, nen, data, tipus i cerca");
+  // Dies plegables: per defecte només el dia més recent està obert; es pot desplegar un dia, desplegar-ho tot i plegar-ho tot
+  const plegats = () => p.$$eval("#logDies .log-dia", ds => ds.map(d => d.classList.contains("plegat")));
+  const pl0 = await plegats();
+  ok(pl0.length >= 2 && pl0[0] === false && pl0.slice(1).every(Boolean), `Log per dia: només el primer dia obert per defecte (${pl0.join(",")})`);
+  ok(await p.isHidden("#logDies .log-dia:nth-child(2) .log-llista") && await p.isVisible("#logDies .log-dia:nth-child(2) .log-dia-qui"), "un dia plegat amaga les accions però manté «Qui ha entrat»");
+  await p.click("#logDies .log-dia:nth-child(2) [data-log-pleg]");
+  ok((await plegats())[1] === false && (await p.getAttribute("#logDies .log-dia:nth-child(2) [data-log-pleg]", "aria-expanded")) === "true", "en tocar la capçalera d'un dia, es desplega");
+  await p.click("#btLogPlega");
+  ok((await plegats()).every(Boolean), "«Plega-ho tot» plega tots els dies");
+  await p.click("#btLogObre");
+  ok((await plegats()).every(x => !x), "«Desplega-ho tot» desplega tots els dies");
   // Filtrar per un nen i un dia concret a Log complet per dia
   await p.selectOption("#fNen", "Àlex");
   const diesOpc = await p.$$eval("#fDia option", os => os.map(o => o.value).filter(Boolean));

@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.50.0 · 2026-11-17
+
+### Afegit
+- **Tauler · Log complet per dia plegable** (`admin/index.html`):
+  - Cada dia es plega i es desplega tocant-ne la capçalera.
+  - Per defecte, només el dia més recent surt obert, i els altres ensenyen només el resum («Qui ha entrat», temps i accions).
+  - Botons «Desplega-ho tot» i «Plega-ho tot». Amb un dia filtrat, aquell dia surt sempre obert.
+  - Prova a `motor/prova-admin-alta.js`.
+
 ## 2.49.0 · 2026-11-17
 
 ### Canviat
