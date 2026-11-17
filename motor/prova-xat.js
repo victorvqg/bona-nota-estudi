@@ -14,6 +14,7 @@
 //   · xat que respon tard (> 1,5 s) · estat que es refresca a mitjanit, en tornar a la pestanya i en tornar d'un món · estat bo que es queda
 //   si falla la xarxa · espera del servidor que desbloqueja ENVIA sola · PIN dolent que s'esborra de l'aparell · silenci sense data.
 const http = require("http"), fs = require("fs"), path = require("path");
+const MONS = require("./eines/mons-prova");   // nombre de mons i ids des de motor/mons.json
 const { chromium } = require("playwright");
 const ARREL = path.resolve(__dirname, "..");
 const TIPUS = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json", ".css": "text/css", ".png": "image/png", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json" };
@@ -580,7 +581,7 @@ function servidorXat(o = {}) {
   await p.click("#hsTanca");
   await p.evaluate(() => { window.__bnDiaProva = 5; window.__bnHoraProva = "22:10"; window.bnRefrescaMonsPortada(); window.bnPintaAvisNitPortada(); });
   const nTancatsNit = await p.$$eval("main .as.mon-tancat[data-tancat-nit='08:00']", xs => xs.length);
-  ok(nTancatsNit === 8, `divendres a les 22:10 tots els 8 mons queden apagats per descans nocturn fins a les 08:00 (obtingut: ${nTancatsNit})`);
+  ok(nTancatsNit === MONS.N, `divendres a les 22:10 tots els ${MONS.N} mons queden apagats per descans nocturn fins a les 08:00 (obtingut: ${nTancatsNit})`);
   ok((await txt(p, 'main .as[data-id="biogeo"] .tag-tancat')) === "🌙 DESCANS" && (await txt(p, 'main .as[data-id="biogeo"] .juga span')) === "🌙 FINS 08:00", "les targetes mostren «🌙 DESCANS» i «🌙 FINS 08:00»");
   ok(await p.isVisible("#avisNitPortada") && (await txt(p, "#avisNitPortada")).includes("22:00") && (await txt(p, "#avisNitPortada")).includes("08:00"), "#avisNitPortada mostra la franja nocturna pròpia dels mons (22:00–08:00)");
   await p.click('main .as[data-id="biogeo"]', { force: true });
@@ -588,10 +589,10 @@ function servidorXat(o = {}) {
   await p.evaluate(() => { window.__bnDiaProva = 6; window.__bnHoraProva = "22:10"; window.bnRefrescaMonsPortada(); window.bnPintaAvisNitPortada(); });
   ok((await p.$$eval("main .as.mon-tancat", xs => xs.length)) === 0, "dissabte a les 22:10 amb cap de setmana (23:30–09:30) els mons segueixen oberts");
   await p.evaluate(() => { window.__bnDiaProva = 0; window.__bnHoraProva = "08:30"; window.bnRefrescaMonsPortada(); window.bnPintaAvisNitPortada(); });
-  ok((await p.$$eval("main .as.mon-tancat[data-tancat-nit='09:30']", xs => xs.length)) === 8 && (await txt(p, "#avisNitPortada")).includes("09:30"), "diumenge a les 08:30 continuen tancats fins a les 09:30");
+  ok((await p.$$eval("main .as.mon-tancat[data-tancat-nit='09:30']", xs => xs.length)) === MONS.N && (await txt(p, "#avisNitPortada")).includes("09:30"), "diumenge a les 08:30 continuen tancats fins a les 09:30");
   await p.evaluate(() => { window.__bnDiaProva = 1; window.__bnHoraProva = "08:05"; window.bnRefrescaMonsPortada(); window.bnPintaAvisNitPortada(); });
   const nTancatsDia = await p.$$eval("main .as.mon-tancat", xs => xs.length);
-  ok(nTancatsDia === 0 && await p.isHidden("#avisNitPortada"), "dilluns a les 08:05 tots els 8 mons es reobren sols i desapareix l'avís nocturn");
+  ok(nTancatsDia === 0 && await p.isHidden("#avisNitPortada"), `dilluns a les 08:05 tots els ${MONS.N} mons es reobren sols i desapareix l'avís nocturn`);
   sense(e); await e.ctx.close() }
 
  await nav.close(); srv.close();

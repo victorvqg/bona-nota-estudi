@@ -6,6 +6,7 @@
 //           3) 404 → avís de supabase/bn_admin_dificultat.sql només a #tDif; la resta del tauler es veu
 //           4) protecció XSS i vista mòbil (390 px) sense desbordament horitzontal.
 const http = require("http"), fs = require("fs"), path = require("path");
+const MONS = require("./eines/mons-prova");   // nombre de mons i ids des de motor/mons.json
 const { chromium } = require("playwright");
 const ARREL = path.resolve(__dirname, "..");
 const TIPUS = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json", ".css": "text/css", ".png": "image/png", ".svg": "image/svg+xml" };
@@ -114,7 +115,7 @@ function dadesDif(assig, xss) {
   ok(["bn_admin_resum", "bn_admin_domini", "bn_admin_fallades", "bn_admin_benestar"].every(f => !crides.some(x => x.f === f)),
    "càrrega sota demanda: obrir Mons → Dificultat no demana el resum, domini, fallades ni benestar");
   await p.click('#tDif [data-dm="obre"]');
-  ok((await p.$$("#tDif details.dm-as")).length === 8, "surten sempre els 8 mons encara que alguns encara no arribin a 8 respostes o no tinguin dades");
+  ok((await p.$$("#tDif details.dm-as")).length === MONS.N, "surten sempre tots els mons de mons.json encara que alguns encara no arribin a 8 respostes o no tinguin dades");
   const tSoc = await txt('#tDif details[data-a="socials"]');
   const tBio = await txt('#tDif details[data-a="biogeo"]');
   const tDiv = await txt('#tDif details[data-a="divisibilitat"]');

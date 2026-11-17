@@ -10,6 +10,7 @@
 //        4) el SQL encara no hi és (404) → avís de supabase/bn_admin_benestar.sql només en aquest apartat; la resta del tauler es veu
 //        5) escapament: un nom, un món, un codi i uns valors amb <img onerror> no s'executen · 6) mòbil (390 px), tema fosc: res surt per la dreta
 const http = require("http"), fs = require("fs"), path = require("path");
+const MONS = require("./eines/mons-prova");   // nombre de mons i ids des de motor/mons.json
 const { chromium } = require("playwright");
 const ARREL = path.resolve(__dirname, "..");
 const TIPUS = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json", ".css": "text/css", ".png": "image/png", ".webmanifest": "application/manifest+json" };
@@ -243,7 +244,7 @@ function respon(st, f, cos) {
   const F = await files(), x = F.find(f => f.nom === XSS);
   ok(x && x.sem === "vermell", "un semàfor que no és cap color es calcula amb els senyals (vermell)");
   ok(!t.includes("NaN") && !t.includes("undefined"), "cap «NaN» ni «undefined» amb valors que no són números");
-  ok((await p.$$("#tBen .bs-mon")).length === 9 && (await p.$$eval("#tBen .bs-mon h4", hs => hs.some(h => h.textContent.includes("<img")))), "el món amb HTML (i dates que no ho són) es pinta com a text, sense trencar res");
+  ok((await p.$$("#tBen .bs-mon")).length === MONS.N + 1 && (await p.$$eval("#tBen .bs-mon h4", hs => hs.some(h => h.textContent.includes("<img")))), "el món amb HTML (i dates que no ho són) es pinta com a text, sense trencar res");
   await p.click("#tema"); await llest(); await p.waitForTimeout(200);
   ok((await p.evaluate(() => window.__xss)) === undefined, "window.__xss no s'ha posat");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }

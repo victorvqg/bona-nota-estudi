@@ -12,7 +12,39 @@
    "#0284c7",
    "#22d3ee"
   ],
-  "ic": "🌍"
+  "ic": "🌍",
+  "curt": "Socials (clima)",
+  "spr": "clima",
+  "xat": [
+   [
+    28,
+    "la tramuntana"
+   ],
+   [
+    29,
+    "el climograma"
+   ],
+   [
+    30,
+    "l'anticicló"
+   ]
+  ],
+  "xmon": "Socials · El clima",
+  "col_admin": [
+   "#0891b2",
+   "#ecfeff",
+   "#155e75",
+   "#a5f3fc",
+   "#22d3ee",
+   "#083344",
+   "#a5f3fc",
+   "#155e75"
+  ],
+  "demo_jocs": [
+   "climo",
+   "capes",
+   "parelles"
+  ]
  },
  {
   "dades": "biogeo",
@@ -27,7 +59,39 @@
    "#7c3aed",
    "#c084fc"
   ],
-  "ic": "🔭"
+  "ic": "🔭",
+  "curt": "Bio i Geo",
+  "spr": "telescope",
+  "xat": [
+   [
+    31,
+    "la cèl·lula"
+   ],
+   [
+    32,
+    "el mantell"
+   ],
+   [
+    33,
+    "la Via Làctia"
+   ]
+  ],
+  "xmon": "Bio-Geo · Bloc 1",
+  "col_admin": [
+   "#16a34a",
+   "#f0fdf4",
+   "#166534",
+   "#bbf7d0",
+   "#4ade80",
+   "#052e1a",
+   "#bbf7d0",
+   "#14532d"
+  ],
+  "demo_jocs": [
+   "planetes",
+   "celules",
+   "cossos"
+  ]
  },
  {
   "dades": "castellano",
@@ -43,7 +107,39 @@
    "#f59e0b"
   ],
   "ic": "📝",
-  "llengua": "es"
+  "llengua": "es",
+  "curt": "Castellano",
+  "spr": "llibre",
+  "xat": [
+   [
+    37,
+    "los sustantivos"
+   ],
+   [
+    38,
+    "la noticia"
+   ],
+   [
+    39,
+    "los determinantes"
+   ]
+  ],
+  "xmon": "Castellano · Temas 2 y 3",
+  "col_admin": [
+   "#dc2626",
+   "#fef2f2",
+   "#991b1b",
+   "#fecaca",
+   "#f87171",
+   "#3b0d0d",
+   "#fecaca",
+   "#7f1d1d"
+  ],
+  "demo_jocs": [
+   "concretos",
+   "generos",
+   "byv"
+  ]
  },
  {
   "dades": "comarques",
@@ -58,7 +154,39 @@
    "#c2410c",
    "#f59e0b"
   ],
-  "ic": "🗺️"
+  "ic": "🗺️",
+  "curt": "Comarques",
+  "spr": "mapa",
+  "xat": [
+   [
+    34,
+    "les 43 comarques"
+   ],
+   [
+    35,
+    "l'Anoia"
+   ],
+   [
+    36,
+    "les capitals"
+   ]
+  ],
+  "xmon": "Socials · Comarques",
+  "col_admin": [
+   "#0d9488",
+   "#f0fdfa",
+   "#115e59",
+   "#99f6e4",
+   "#2dd4bf",
+   "#042f2e",
+   "#99f6e4",
+   "#115e59"
+  ],
+  "demo_jocs": [
+   "mapa43",
+   "capitals",
+   "ruta"
+  ]
  },
  {
   "dades": "divisibilitat",
@@ -73,7 +201,40 @@
    "#0d9488",
    "#84cc16"
   ],
-  "ic": "🔢"
+  "ic": "🔢",
+  "curt": "Mates (divisibilitat)",
+  "spr": "calcula",
+  "xat": [
+   [
+    25,
+    "els nombres primers"
+   ],
+   [
+    26,
+    "el MCD"
+   ],
+   [
+    27,
+    "el MCM"
+   ]
+  ],
+  "xmon": "Mates · Divisibilitat",
+  "col_admin": [
+   "#7c3aed",
+   "#f5f3ff",
+   "#5b21b6",
+   "#ddd6fe",
+   "#c084fc",
+   "#2e1065",
+   "#ddd6fe",
+   "#4c1d95"
+  ],
+  "demo_jocs": [
+   "fx-mcm",
+   "fx-criteris",
+   "fx-divisio",
+   "er-troba"
+  ]
  },
  {
   "dades": "catala",
@@ -88,7 +249,38 @@
    "#4338ca",
    "#fbbf24"
   ],
-  "ic": "📖"
+  "ic": "📖",
+  "curt": "Català (tema 2)",
+  "spr": "ploma",
+  "xat": [
+   [
+    40,
+    "la literatura oral"
+   ],
+   [
+    41,
+    "els signes de puntuació"
+   ],
+   [
+    42,
+    "el nom"
+   ]
+  ],
+  "xmon": "Català · Tema 2",
+  "col_admin": [
+   "#d97706",
+   "#fffbeb",
+   "#92400e",
+   "#fde68a",
+   "#fbbf24",
+   "#3a2905",
+   "#fde68a",
+   "#78350f"
+  ],
+  "demo_jocs": [
+   "subgeneres",
+   "oralescrit"
+  ]
  },
  {
   "dades": "angles",
@@ -103,7 +295,40 @@
    "#db2777",
    "#fbbf24"
   ],
-  "ic": "🎬"
+  "ic": "🎬",
+  "curt": "Anglès (tema 2)",
+  "spr": "cinema",
+  "xat": [
+   [
+    64,
+    "el Present Continuous"
+   ],
+   [
+    65,
+    "els stative verbs"
+   ],
+   [
+    66,
+    "el tresor de Fenn"
+   ]
+  ],
+  "xmon": "Anglès · Tema 2",
+  "col_admin": [
+   "#2563eb",
+   "#eff6ff",
+   "#1e40af",
+   "#bfdbfe",
+   "#60a5fa",
+   "#0c1d3a",
+   "#bfdbfe",
+   "#1e3a6e"
+  ],
+  "demo_jocs": [
+   "contraris",
+   "perdins",
+   "dospresents",
+   "fenn"
+  ]
  },
  {
   "dades": "geosfera",
@@ -118,6 +343,39 @@
    "#dc2626",
    "#fb923c"
   ],
-  "ic": "🌋"
+  "ic": "🌋",
+  "curt": "Geosfera",
+  "spr": "volca",
+  "xat": [
+   [
+    67,
+    "la geosfera"
+   ],
+   [
+    68,
+    "el cicle de les roques"
+   ],
+   [
+    69,
+    "l'escala de Mohs"
+   ]
+  ],
+  "xmon": "Bio-Geo · Geosfera",
+  "col_admin": [
+   "#ea580c",
+   "#fff7ed",
+   "#9a3412",
+   "#fed7aa",
+   "#fb923c",
+   "#431407",
+   "#fed7aa",
+   "#7c2d12"
+  ],
+  "demo_jocs": [
+   "capes",
+   "mohs",
+   "mineral",
+   "err-geo"
+  ]
  }
 ]

@@ -43,6 +43,8 @@ jobs:
         run: node motor/prova-regles.js
       - name: Prova dels orígens d'estrelles del tauler (admin/, funcions pures)
         run: node motor/prova-admin-fonts.js
+      - name: mons.json és l'única font (admin, sprites i peces del xat generats)
+        run: node motor/prova-mons.js
       - name: Llista dinàmica de mons (motor/mons.json)
         id: llista
         run: |

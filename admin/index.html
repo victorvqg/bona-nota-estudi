@@ -684,7 +684,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
-<script src="../sprites.js?v=e6fb6430"></script>
+<script src="../sprites.js?v=276240d0"></script>
 </head>
 <body>
 <a class="salta" href="#contingut">Salta al contingut</a>
@@ -739,7 +739,22 @@ window.addEventListener("unhandledrejection",e=>{const b=document.getElementById
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
 (function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 const API="https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/bn_admin_logs",KEY="sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p";
-const ASSIGS={geosfera:"Geosfera",angles:"Anglès (tema 2)",catala:"Català (tema 2)",divisibilitat:"Mates (divisibilitat)",comarques:"Comarques",castellano:"Castellano",biogeo:"Bio i Geo",socials:"Socials (clima)"};
+/* MONS-ADMIN:inici (generat per motor/tot.py, no editar a mà) */
+const ASSIGS={"geosfera":"Geosfera","angles":"Anglès (tema 2)","catala":"Català (tema 2)","divisibilitat":"Mates (divisibilitat)","comarques":"Comarques","castellano":"Castellano","biogeo":"Bio i Geo","socials":"Socials (clima)"};
+// Color fix per a cada món (clar: color, fons, text, vora · fosc: color, fons, text, vora)
+const COL_MON={
+ "geosfera":["#ea580c","#fff7ed","#9a3412","#fed7aa","#fb923c","#431407","#fed7aa","#7c2d12"],
+ "angles":["#2563eb","#eff6ff","#1e40af","#bfdbfe","#60a5fa","#0c1d3a","#bfdbfe","#1e3a6e"],
+ "catala":["#d97706","#fffbeb","#92400e","#fde68a","#fbbf24","#3a2905","#fde68a","#78350f"],
+ "divisibilitat":["#7c3aed","#f5f3ff","#5b21b6","#ddd6fe","#c084fc","#2e1065","#ddd6fe","#4c1d95"],
+ "comarques":["#0d9488","#f0fdfa","#115e59","#99f6e4","#2dd4bf","#042f2e","#99f6e4","#115e59"],
+ "castellano":["#dc2626","#fef2f2","#991b1b","#fecaca","#f87171","#3b0d0d","#fecaca","#7f1d1d"],
+ "biogeo":["#16a34a","#f0fdf4","#166534","#bbf7d0","#4ade80","#052e1a","#bbf7d0","#14532d"],
+ "socials":["#0891b2","#ecfeff","#155e75","#a5f3fc","#22d3ee","#083344","#a5f3fc","#155e75"]
+};
+const XMON={"geosfera":"Bio-Geo · Geosfera","angles":"Anglès · Tema 2","catala":"Català · Tema 2","divisibilitat":"Mates · Divisibilitat","comarques":"Socials · Comarques","castellano":"Castellano · Temas 2 y 3","biogeo":"Bio-Geo · Bloc 1","socials":"Socials · El clima"};
+const DEMO_JOCS={"geosfera":["capes","mohs","mineral","err-geo"],"angles":["contraris","perdins","dospresents","fenn"],"catala":["subgeneres","oralescrit"],"divisibilitat":["fx-mcm","fx-criteris","fx-divisio","er-troba"],"comarques":["mapa43","capitals","ruta"],"castellano":["concretos","generos","byv"],"biogeo":["planetes","celules","cossos"],"socials":["climo","capes","parelles"]};
+/* MONS-ADMIN:fi */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let CRED=null,LOGS=[],LOGS_DIES=null,LOGS_PROM=null,VISTA="inici",ELEM=null,TAB=null,FITXA=null,FILTRE={q:"",assig:"",event:""},FS={q:"",assig:"",event:""},FN={q:""},DIES=7,ACT=null,ESTATS={};
@@ -831,17 +846,6 @@ const nomAssig=a=>ASSIGS[a]||a;
 // Píndoles d'estat unificades en 3 nivells semàfor: bé, avís, malament
 const ESTAT_SEM={be:["ok","bé"],ok:["ok","bé"],verd:["ok","bé"],avis:["warn","avís"],warn:["warn","avís"],groc:["warn","avís"],malament:["bad","malament"],bad:["bad","malament"],vermell:["bad","malament"]};
 const pillEstat=(niv,tt)=>{const [c,t]=ESTAT_SEM[niv]||["neutre",String(niv||"—")];return `<span class="pill ${c}"${tt?` title="${esc(tt)}"`:""}>${esc(t)}</span>`};
-// Color fix per a cada món / matèria (clar i fosc)
-const COL_MON={
- geosfera:["#ea580c","#fff7ed","#9a3412","#fed7aa","#fb923c","#431407","#fed7aa","#7c2d12"],
- angles:["#2563eb","#eff6ff","#1e40af","#bfdbfe","#60a5fa","#0c1d3a","#bfdbfe","#1e3a6e"],
- biogeo:["#16a34a","#f0fdf4","#166534","#bbf7d0","#4ade80","#052e1a","#bbf7d0","#14532d"],
- castellano:["#dc2626","#fef2f2","#991b1b","#fecaca","#f87171","#3b0d0d","#fecaca","#7f1d1d"],
- catala:["#d97706","#fffbeb","#92400e","#fde68a","#fbbf24","#3a2905","#fde68a","#78350f"],
- divisibilitat:["#7c3aed","#f5f3ff","#5b21b6","#ddd6fe","#c084fc","#2e1065","#ddd6fe","#4c1d95"],
- socials:["#0891b2","#ecfeff","#155e75","#a5f3fc","#22d3ee","#083344","#a5f3fc","#155e75"],
- comarques:["#0d9488","#f0fdfa","#115e59","#99f6e4","#2dd4bf","#042f2e","#99f6e4","#115e59"]
-};
 const colAssig=a=>{const p=COL_MON[a];if(p)return p[TEMA==="fosc"?4:0];try{if(typeof BN_MON!=="undefined"&&BN_MON[a])return bnMat(BN_MON[a].mat).color}catch(e){}return "#64748b"};
 function pillMon(a){const p=COL_MON[a],f=TEMA==="fosc",mc=p?p[f?4:0]:colAssig(a),mb=p?p[f?5:1]:"var(--card2)",mt=p?p[f?6:2]:"var(--text)",mbd=p?p[f?7:3]:"var(--border)";
  return `<span class="pill-mon" data-mon="${esc(a||"")}" style="--mc:${mc};--mb:${mb};--mt:${mt};--mbd:${mbd}"><i></i>${esc(nomAssig(a))}</span>`}
@@ -4106,7 +4110,6 @@ function demoCopiesRpc(f){if(f!=="bn_admin_copies")throw "demo";const n=DEMO_L.l
 let XNIV=["Aprenent","Explorador","Investigador","Savi","Expert","Mestre","Campió","Heroi","Llegenda","Llegenda d'or"];
 const XCAT={repte:["Repte","ev-oberta"],aura:["Aura","ev-test"],classe:["Classe","ev-joc"],colla:["Colla","ev-targetes"]};
 const XSLOT={P:"Paraula d'estudi",E:"Cosa de classe",J:"Cosa teva",C:"Company"};
-const XMON={divisibilitat:"Mates · Divisibilitat",socials:"Socials · El clima",biogeo:"Bio-Geo · Bloc 1",comarques:"Socials · Comarques",castellano:"Castellano · Temas 2 y 3",catala:"Català · Tema 2",angles:"Anglès · Tema 2",geosfera:"Bio-Geo · Geosfera"};
 const XMARCA={frase_off:"Frase desactivada",peca_off:"Peça desactivada",peca_falta:"La peça ja no existeix",frase_falta:"La frase no existeix"};
 const XCFG0={est_credit:10,max_dia:5,espera_s:10,actiu:true};
 // [xat-pures] text d'un missatge (motor/prova-admin-xat.js l'avalua tal qual). Les MATEIXES regles que la portada: ___ és el forat;
@@ -4337,7 +4340,7 @@ function demoInit(){if(DEMO_L)return;const R=rndD(20261105),tria=a=>a[Math.floor
  // temes i preguntes de veritat (preguntes.json), perquè el domini i les preguntes fallades semblin reals
  const temes={};Object.entries(PREG||{}).forEach(([k,v])=>{const p=k.split("/");if(p.length<3||p[1].startsWith("j-"))return;const T=temes[p[0]]=temes[p[0]]||{};(T[p[1]]=T[p[1]]||{t:p[1],titol:v.tema,q:[]}).q.push({id:p[1]+"/"+p[2],c:v.c||0,no:(v.o||[]).length||4})});
  Object.keys(ASSIGS).forEach(a=>{if(!temes[a]||!Object.keys(temes[a]).length)temes[a]={t1:{t:"t1",titol:"Tema 1",q:[...Array(12)].map((_,i)=>({id:"t1/"+(i+1),c:0,no:4}))}}});
- const JOCS={socials:["climo","capes","parelles"],biogeo:["planetes","celules","cossos"],castellano:["concretos","generos","byv"],comarques:["mapa43","capitals","ruta"],divisibilitat:["fx-mcm","fx-criteris","fx-divisio","er-troba"],catala:["subgeneres","oralescrit"],angles:["contraris","perdins","dospresents","fenn"],geosfera:["capes","mohs","mineral","err-geo"]};
+ const JOCS=DEMO_JOCS;
  const EP=[["mcmmcd","exp","mcm_exp_petit"],["mcmmcd","factors","confon_mcm_mcd"],["escala","quocient","quocient"],["divisio","baixar","baixar"],["criteri","suma","suma_xifres"],["primer","tria","u_primer"],["problema","dades","dada_sobrant"],["error","divisio","linia"],["mcmmcd","exp","mcm_exp_petit"]];
  const NENS=[{nom:"Àlex",hab:.84,vel:9,act:.8,mons:["socials","biogeo","divisibilitat"]},{nom:"Jana",hab:.9,vel:11,act:.85,mons:["socials","castellano","comarques","catala"]},
   {nom:"Pau",hab:.72,vel:8,act:.75,mons:["socials","biogeo","castellano","comarques","divisibilitat"]},{nom:"Laia",hab:.64,vel:10,act:.6,mons:["biogeo","divisibilitat"]},

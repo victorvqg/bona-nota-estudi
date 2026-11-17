@@ -11,6 +11,8 @@
 //        11) l'autor i el company han d'existir (perfil o registre): «Treu el PIN» no amaga res · «vis» a bn_admin_xat_msgs.
 // Cal PGlite:  npm install --no-save @electric-sql/pglite@0.5   (l'Action «Revisa Bona Nota» ja l'instal·la)
 const fs = require("fs"), path = require("path"), vm = require("vm");
+const MONS = require("./eines/mons-prova");   // nombre de mons i ids des de motor/mons.json
+const NPECES = MONS.catalegXat().XAT_PC.length;   // peces del catàleg (generals + 3 per món)
 let PGlite, pgcrypto;
 try { ({ PGlite } = require("@electric-sql/pglite")); ({ pgcrypto } = require("@electric-sql/pglite/contrib/pgcrypto")) }
 catch (e) { console.error("✗ Falta PGlite (el Postgres de prova). Instal·la'l des de l'arrel del repo:\n    npm install --no-save @electric-sql/pglite@0.5"); process.exit(1) }
@@ -64,7 +66,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
  console.log("1) bn_xat.sql dues vegades: idempotent i respecta el que ha canviat l'admin");
  { const sql = fitxer("supabase/bn_xat.sql");
   let e = await executa(sql); ok(e === null, "primera execució sense errors" + (e ? ": " + e : ""));
-  ok((await val("select count(*)::int from bn_priv.xat_frases")) === 26 && (await val("select count(*)::int from bn_priv.xat_peces")) === 69, "26 frases i 69 peces");
+  ok((await val("select count(*)::int from bn_priv.xat_frases")) === 26 && (await val("select count(*)::int from bn_priv.xat_peces")) === NPECES, `26 frases i ${NPECES} peces`);
   ok(igual(await cfg(null), { est_credit: 10, max_dia: 5, espera_s: 10, actiu: true }), "configuració inicial 10 ⭐ · 5 al dia · 10 s · obert");
   ok((await adm("bn_admin_xat_actiu", ["frase", 13, false])) === 1 && (await adm("bn_admin_xat_actiu", ["peca", 44, false])) === 1, "l'admin desactiva la frase 13 i la peça 44");
   ok((await cfg({ est_credit: 12 })).est_credit === 12, "l'admin canvia les estrelles per crèdit a 12");
@@ -73,7 +75,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   e = await executa(sql); ok(e === null, "segona execució sense errors" + (e ? ": " + e : ""));
   ok((await val("select actiu from bn_priv.xat_frases where id = 13")) === false && (await val("select actiu from bn_priv.xat_peces where id = 44")) === false, "la frase i la peça desactivades continuen desactivades");
   ok((await cfg(null)).est_credit === 12 && JSON.parse(await val("select valor from bn_priv.config where clau = 'xat'")).est_credit === 12, "la configuració de l'admin sobreviu");
-  ok((await val("select text from bn_priv.xat_peces where id = 1001")) === "la paraula de la setmana" && (await val("select count(*)::int from bn_priv.xat_peces")) === 70, "la peça nova de l'admin sobreviu");
+  ok((await val("select text from bn_priv.xat_peces where id = 1001")) === "la paraula de la setmana" && (await val("select count(*)::int from bn_priv.xat_peces")) === NPECES + 1, "la peça nova de l'admin sobreviu");
   ok((await val("select text from bn_priv.xat_frases where id = 1")) === "Vaig a per ___!", "el text del catàleg torna a ser el del fitxer");
   await cfg({ est_credit: 10 }) }
 
@@ -85,7 +87,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   const pc = (await q("select id, tipus, text, nivell, mon from bn_priv.xat_peces where id < 1001 order by id")).map(r => ({ id: r.id, s: r.tipus, t: r.text, n: r.nivell, m: r.mon }));
   const frJ = XAT_FR.map(f => ({ id: f.id, c: f.c, t: f.t, s: f.s, n: f.n })), pcJ = XAT_PC.map(p => ({ id: p.id, s: p.s, t: p.t, n: p.n ?? null, m: p.m ?? null }));
   ok(frJ.length === 26 && igual(fr, frJ), "les 26 frases són idèntiques (text, categoria, forat i nivell)" + (igual(fr, frJ) ? "" : ": " + JSON.stringify(fr.find((x, i) => !igual(x, frJ[i])))));
-  ok(pcJ.length === 69 && igual(pc, pcJ), "les 69 peces són idèntiques (text, tipus i nivell o món)" + (igual(pc, pcJ) ? "" : ": " + JSON.stringify(pc.find((x, i) => !igual(x, pcJ[i])))));
+  ok(pcJ.length === NPECES && igual(pc, pcJ), "les peces de XAT-CATALEG són idèntiques (text, tipus i nivell o món)" + (igual(pc, pcJ) ? "" : ": " + JSON.stringify(pc.find((x, i) => !igual(x, pcJ[i])))));
   ok(XAT_FR.every(f => f.s !== "C" || ["aura", "colla"].includes(f.c)) && XAT_FR.filter(f => f.s === "C").every(f => !/-\d/.test(f.t)), "regla d'or: el nom d'un company només va en frases d'aura o de colla, cap de negativa");
   const cols = (await q("select column_name c, data_type t from information_schema.columns where table_schema = 'bn_priv' and table_name = 'xat_msg' order by ordinal_position")).map(r => r.c + ":" + r.t);
   ok(igual(cols, ["id:bigint", "k:text", "nom:text", "frase:integer", "peca:integer", "company:text", "ts:timestamp with time zone", "esborrat:boolean"]), "xat_msg només té ids, el nom del nen, el company, l'hora i «esborrat»: " + cols.join(" "));
@@ -321,7 +323,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok((await cfg(null)).max_dia === 3, "config: un valor dolent no desa res");
   await cfg({ max_dia: 5, espera_s: 10 });
   const ct = await adm("bn_admin_xat_cataleg");
-  ok(ct.frases.length === 26 && ct.peces.length === 70 && ct.frases.find(f => f.id === 13).actiu === false && igual(Object.keys(ct.peces[0]).sort(), ["actiu", "id", "mon", "nivell", "text", "tipus"]), "cataleg: tot, també el desactivat");
+  ok(ct.frases.length === 26 && ct.peces.length === NPECES + 1 && ct.frases.find(f => f.id === 13).actiu === false && igual(Object.keys(ct.peces[0]).sort(), ["actiu", "id", "mon", "nivell", "text", "tipus"]), "cataleg: tot, també el desactivat");
   ok((await adm("bn_admin_xat_actiu", ["frase", 2, false])) === 1 && (await llegeix()).off.f.includes(2) && (await adm("bn_admin_xat_actiu", ["frase", 2, true])) === 1, "actiu: desactiva i torna a activar");
   ok((await adm("bn_admin_xat_actiu", ["peca", 9999, true])) === 0 && /taula no valida/.test(await falla("select public.bn_admin_xat_actiu($1, $2, 'msg', 1, true)", ADM) || ""), "actiu: id que no hi és → 0 · taula que no existeix → error");
   ok((await adm("bn_admin_xat_peca_nova", ["e", " el timbre nou ", null, "Socials"])) === 1002, "peca_nova: la següent és la 1002 (tipus i món en minúscules o majúscules)");

@@ -4,6 +4,7 @@
 //   - Control ràpid (n2537): activar/desactivar xat, horari automàtic i mons per separat a l'admin i a la web (portada i món)
 // Ús (des de l'arrel del repo o des de motor/):   node motor/prova-admin-alta.js
 const http = require("http"), fs = require("fs"), path = require("path");
+const MONS = require("./eines/mons-prova");   // nombre de mons i ids des de motor/mons.json
 const { chromium } = require("playwright");
 const ARREL = path.resolve(__dirname, "..");
 const TIPUS = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json", ".css": "text/css", ".png": "image/png", ".webmanifest": "application/manifest+json" };
@@ -123,8 +124,8 @@ function dadesAdmin() {
    "Inici mostra exactament 6 KPIs compactes i cap subtítol sota les xifres");
   const ctrlTxt = await txt("#control");
   const idsCtrl = await p.$$eval("#control [data-ctrl-mon]", bs => bs.map(b => b.dataset.ctrlMon));
-  ok(ctrlTxt.includes("Control ràpid") && idsCtrl.length === 8 && idsCtrl[0] === "geosfera" && idsCtrl[7] === "socials",
-   "targeta «Control ràpid» a Inici amb interruptor del xat i dels 8 mons ordenats del més nou ('geosfera') al més antic ('socials')");
+  ok(ctrlTxt.includes("Control ràpid") && idsCtrl.length === MONS.N && idsCtrl[0] === MONS.nou && idsCtrl[MONS.N - 1] === MONS.vell,
+   `targeta «Control ràpid» a Inici amb interruptor del xat i dels ${MONS.N} mons ordenats del més nou ('${MONS.nou}') al més antic ('${MONS.vell}')`);
   // Ajuda plegable (i)
   const btAj = "#control .btn-ajuda", boxAj = "#control .ajuda-box";
   ok((await p.isHidden(boxAj)) === true, "l'explicació secundària (i) està plegada per defecte");
@@ -252,8 +253,8 @@ function dadesAdmin() {
   // Tanquem el món de Socials des d'Inici
   await p.click('#control [data-ctrl-mon="socials"]');
   await p.waitForTimeout(80);
-  ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes("7 de 8 oberts"),
-   "clicar l'interruptor d'un món el tanca i actualitza el comptador a «7 de 8 oberts»");
+  ok((await p.getAttribute('#control [data-ctrl-mon="socials"]', "aria-checked")) === "false" && (await txt("#ctrlMonsEstat")).includes(`${MONS.N - 1} de ${MONS.N} oberts`),
+   `clicar l'interruptor d'un món el tanca i actualitza el comptador a «${MONS.N - 1} de ${MONS.N} oberts»`);
 
   // Canviem l'horari i el desem des de Configuració → Horaris i crèdits
   await p.click("#btConfig");
@@ -464,7 +465,7 @@ function dadesAdmin() {
   await p.goto(BASE + "/");
   await p.waitForSelector('.as[data-id="socials"].mon-tancat');
   const idsPort = await p.$$eval("main .as[data-id]", as => as.map(a => a.dataset.id));
-  ok(idsPort[0] === "geosfera" && idsPort[idsPort.length - 1] === "socials",
+  ok(idsPort[0] === MONS.nou && idsPort[idsPort.length - 1] === MONS.vell,
    `la portada mostra primer els mons més nous (${idsPort.join(" → ")})`);
   const txtSoc = await p.textContent('.as[data-id="socials"] .juga span');
   ok(txtSoc.includes("TANCAT"), "a la portada el món tancat ('socials') mostra «🔒 TANCAT»");
