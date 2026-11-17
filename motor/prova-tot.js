@@ -10,7 +10,7 @@ const arrel = path.join(__dirname, "..");
 const GRUPS = {
   base: [["generat"], ["node", "prova-generadors.js", { cwd: "motor" }], ["node", "motor/prova-regles.js"],
     ["node", "motor/prova-admin-fonts.js"], ["node", "motor/prova-mons.js"],
-    ["node", "motor/prova-revisa-mon.js"], ["node", "motor/revisa-mon.js"],
+    ["node", "motor/prova-revisa-mon.js"], ["node", "motor/prova-veu.js"], ["node", "motor/revisa-mon.js"],
     ["python3", "motor/prova_nou_mon.py"], ["python3", "motor/prova_publica.py"], ["python3", "motor/prova_registres.py"]],
   sql: ["prova-xat-sql", "prova-admin-fitxa-sql", "prova-admin-benestar-sql", "prova-bon-us-sql", "prova-admin-fonts-rep-sql",
     "prova-control-sql", "prova-pin-intents-sql", "prova-fotos-sql", "prova-dificultat-sql"].map(p => ["node", `motor/${p}.js`]),
