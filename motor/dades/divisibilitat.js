@@ -84,7 +84,7 @@ const T=[
      ["Si 40 : 8 = 5, quin altre divisor de 40 tenim segur?",["El 5","El 48","El 32"],0,"Els divisors van per parelles: 8 · 5 = 40."],
      ["60 és divisible per 15?",["Sí, perquè 60 : 15 = 4 exacte","No, perquè 15 és senar","No, perquè 60 és més gran"],0,"La divisió és exacta, residu 0."],
      ["«a és múltiple de b» vol dir el mateix que…",["b és múltiple de a","b és divisor de a","a és divisor de b"],1,"Totes dues frases volen dir que a : b és exacta."]]},
- {id:"multdiv",practica:"fx-multdiv",ic:"✖️",col:"#0891b2",titol:"Múltiples i divisors d'un nombre",font:"Resum · secció 2",
+ {id:"multdiv",vista:{tipus:"parelles",n:36,titol:"els divisors de 36"},practica:"fx-multdiv",ic:"✖️",col:"#0891b2",titol:"Múltiples i divisors d'un nombre",font:"Resum · secció 2",
   idea:"Els múltiples d'un nombre són infinits; els divisors són pocs i sempre es poden comptar.",
   pts:["<b>Múltiples</b>: multiplica el nombre per 1, 2, 3… Múltiples de 20: 20, 40, 60, 80… No s'acaben mai.",
    "Tot nombre és múltiple d'ell mateix i de l'1. Un punt a sobre del nombre vol dir «múltiple de».",
@@ -102,7 +102,7 @@ const T=[
      ["Quina frase és certa?",["Els divisors d'un nombre són infinits","Els múltiples d'un nombre són infinits","Un nombre no és múltiple d'ell mateix"],1,"Els múltiples no s'acaben; els divisors es poden comptar."],
      ["Buscant els divisors de 18 per parelles, quan pares?",["Quan arribes al 18","Quan la parella es gira (6 amb 3)","Quan trobes el primer divisor"],1,"Si la parella es repeteix, ja els tens tots."],
      ["Quants divisors té el 90?",["12","6","10"],0,"1, 2, 3, 5, 6, 9, 10, 15, 18, 30, 45 i 90."]]},
- {id:"criteris",practica:"fx-criteris",ic:"🔎",col:"#4f46e5",titol:"Criteris de divisibilitat",font:"Resum · secció 3",
+ {id:"criteris",vista:{tipus:"xifres",n:741,d:3,titol:"741 i el criteri del 3"},practica:"fx-criteris",ic:"🔎",col:"#4f46e5",titol:"Criteris de divisibilitat",font:"Resum · secció 3",
   idea:"Els criteris són dreceres: et diuen si un nombre és divisible per 2, 3, 5, 9, 10 o 11 sense fer la divisió.",
   pts:["<b>Per 2</b>: acaba en xifra parella (0, 2, 4, 6, 8). 516 sí; 371 no.",
    "<b>Per 5</b>: acaba en 0 o en 5 (325 sí; 703 no). <b>Per 10</b>: acaba en 0 (560 sí, i també és divisible per 5).",
@@ -142,7 +142,7 @@ const T=[
      ["El 101 és primer o compost?",["Primer","Compost: 101 = 3 · 33","Compost, perquè acaba en 1"],0,"No és divisible per 2, 3, 5 ni 7, i 11 · 11 = 121 ja passa de 101."],
      ["El 247 és…",["primer, perquè és senar","compost: 247 = 13 · 19","primer, perquè no és divisible per 3"],1,"247 = 13 · 19."],
      ["Com funciona el garbell per trobar primers?",["Tatxes els múltiples de 2, 3, 5, 7… (menys ells mateixos)","Tatxes tots els nombres senars","Tatxes els nombres que acaben en 0"],0,"El que queda sense tatxar és primer."]]},
- {id:"factors",practica:"fx-escala",ic:"🌳",col:"#ca8a04",titol:"Descomposició en factors primers",font:"Resum · secció 5",
+ {id:"factors",vista:{tipus:"escala",n:60,titol:"l'escala de 60"},practica:"fx-escala",ic:"🌳",col:"#ca8a04",titol:"Descomposició en factors primers",font:"Resum · secció 5",
   idea:"Descompondre (factoritzar) un nombre és escriure'l com una multiplicació on tots els factors són primers.",
   pts:["Nombres petits, amb càlcul mental: 36 = 4 · 9 = 2 · 2 · 3 · 3 = 2² · 3².",
    "Nombres grans, amb l'<b>escala de divisions</b>: divideix per 2 tantes vegades com puguis, després per 3, per 5… fins que a l'esquerra quedi l'1.",
@@ -162,7 +162,7 @@ const T=[
      ["40 = 2³ · 5. Quin d'aquests és divisor de 40?",["10 = 2 · 5","15 = 3 · 5","12 = 2² · 3"],0,"Un divisor només té factors de 40: el 3 no hi és."],
      ["120 = 2³ · 3 · 5. És múltiple de 40 = 2³ · 5?",["Sí: conté tots els factors de 40","No, perquè té un 3","No, perquè 40 és més petit"],0,"Els múltiples hereten tots els factors (i en poden tenir més)."],
      ["Quina és la descomposició de 396?",["2² · 3² · 11","2 · 198","2 · 2 · 3 · 33"],0,"396 : 2 = 198 → 198 : 2 = 99 → 99 : 3 = 33 → 33 : 3 = 11 → 11 : 11 = 1. El 33 no és primer!"]]},
- {id:"mcm",practica:"fx-mcm",ic:"🔁",col:"#ea580c",titol:"Mínim comú múltiple (MCM)",font:"Resum · secció 6",
+ {id:"mcm",vista:{tipus:"potencies",a:12,b:18,quin:"MCM",titol:"MCM (12, 18) = 2² · 3² = 36"},practica:"fx-mcm",ic:"🔁",col:"#ea580c",titol:"Mínim comú múltiple (MCM)",font:"Resum · secció 6",
   idea:"El MCM de dos o més nombres és el més petit dels seus múltiples comuns. S'escriu MCM (a, b).",
   pts:["<b>Taxis</b>: es renten cada 4 dies i es revisen cada 6. Coincideixen els dies 12, 24, 36… → cada 12 dies.",
    "<b>Mètode artesanal</b>: múltiples de 4 → 4, 8, <b>12</b>, 16…; múltiples de 6 → 6, <b>12</b>, 18… Per tant, MCM (4, 6) = 12.",
@@ -182,7 +182,7 @@ const T=[
      ["MCM (10, 15, 25) = ?",["5","150","750"],1,"2 · 3 · 5² = 150."],
      ["Els trens surten cada 18 i cada 24 minuts. Coincideixen cada…",["72 minuts (1 h 12 min)","6 minuts","432 minuts"],0,"MCM (18, 24) = 2³ · 3² = 72."],
      ["Un MCM pot ser més petit que els nombres?",["Sí, de vegades","No, mai: és igual o més gran","Només si són primers"],1,"És un múltiple: igual o més gran."]]},
- {id:"mcd",practica:"fx-mcm",ic:"✂️",col:"#db2777",titol:"Màxim comú divisor (MCD)",font:"Resum · secció 7",
+ {id:"mcd",vista:{tipus:"potencies",a:12,b:18,quin:"MCD",titol:"MCD (12, 18) = 2 · 3 = 6"},practica:"fx-mcm",ic:"✂️",col:"#db2777",titol:"Màxim comú divisor (MCD)",font:"Resum · secció 7",
   idea:"El MCD de dos o més nombres és el més gran dels seus divisors comuns. S'escriu MCD (a, b).",
   pts:["<b>Pati de 8 × 12 m</b>: testos a la mateixa distància. Funciona a 1, 2 i 4 m (divisors comuns). El més gran és 4.",
    "<b>Mètode artesanal</b>: divisors de 8 → 1, 2, 4, 8; divisors de 12 → 1, 2, 3, 4, 6, 12. Per tant, MCD (8, 12) = 4.",
@@ -310,6 +310,7 @@ function provaGarbell(j){jocGarbell(j);document.querySelectorAll(".gb").forEach(
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
 ASSIG.boss={nom:"El Gegant Primer",spr:"gegant",fx:"blocs",mus:"chiptune",rotul:"FACTORITZAT!",em:["💎","🧱","🔢","⚡"]};
 
+//@inclou eines/vistes-mates.js
 //@inclou eines/exercicis-mates.js
 //@inclou eines/manipulatius-mates.js
 //@inclou eines/quadern.js

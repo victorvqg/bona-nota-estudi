@@ -2,6 +2,8 @@
 
 17/11/2026 · Revisió del món de Matemàtiques (`matematiques/divisibilitat`, dades a `motor/dades/divisibilitat.js`) i de les eines que fan servir tots els mons de mates: el taller (`motor/eines/exercicis-mates.js`), els manipulatius (`motor/eines/manipulatius-mates.js`), el full de brut (`pissarra.js`) i el quadern (`quadern.js`). He fet 48 captures a 390 px de totes les fitxes en els tres modes (👀 Mira, ✍️ Completa i 💪 Tot sol), a mig exercici i després d'una resposta dolenta.
 
+**Estat:** executat a la versió 2.48.0 amb les recomanacions de la secció 9. Queden fora: la prova automàtica d'alçada a la prova visual (la mesura es va fer a mà amb Playwright: a 360 px hi cap tot als nivells 🟢 i 🟡) i les vistes a les targetes.
+
 **En poques línies.** El taller ja fa molt: passos com a la llibreta, números nous, pistes i errors típics explicats. El que falla és **com es veu i com acompanya**:
 
 1. Quan s'han fet 4 o 5 passos, la pregunta i el teclat ja no hi caben a la pantalla. Cada pas fet surt dues vegades: en una llista de text i al dibuix.

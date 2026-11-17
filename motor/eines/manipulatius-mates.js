@@ -47,10 +47,15 @@ function mpCss(){if(document.getElementById("mpCss"))return;const s=document.cre
 const mpCap=(t)=>`<div class="mp-cap"><span>${t}</span><span>${MP.r+1} de ${MP.rondes.length}</span></div>`;
 function mpInici(j,rondes,pinta){mpCss();MP={j,rondes,r:0,bones:0,errs:0,pinta,fi:false};pinta()}
 function mpSeg(){if(MP.r+1<MP.rondes.length){MP.r++;MP.pinta();window.scrollTo(0,0);return}
- MP.fi=true;app.innerHTML=`<h2 class="sec">${MP.j.enunciat||MP.j.titol}</h2><div class="box"><p>Has fet les <b>${MP.rondes.length} rondes</b>.</p><div id="zona"></div></div>`;
+ MP.fi=true;if(MP.j.pont&&typeof mxTornaPont==="function")return mxTornaPont();
+ // pont de tornada: el mateix MCM o MCD, ara com a classe (Fitxa 5)
+ const R=MP.rondes[MP.r],fx=(ASSIG.jocs||[]).find(x=>x.fn==="mxFitxa"&&JSON.stringify((x.mx&&x.mx.tipus)||[]).includes("mcmmcd")),quin={mpGranotes:"MCM",mpRajoles:"MCD"}[MP.j.fn];
+ const tornada=fx&&quin&&typeof mxComençaAmb==="function"?`<div class="fila"><button class="btn sec" onclick="mxComençaAmb('${fx.id}',2,['mcmmcd','${quin}',${Math.min(R.a,R.b)},${Math.max(R.a,R.b)}])">✏️ Ara calcula el ${quin} (${Math.min(R.a,R.b)}, ${Math.max(R.a,R.b)}) com a classe</button></div>`:"";
+ app.innerHTML=`<h2 class="sec">${MP.j.enunciat||MP.j.titol}</h2><div class="box"><p>Has fet les <b>${MP.rondes.length} rondes</b>.</p>${tornada}<div id="zona"></div></div>`;
  fiJoc(MP.j,Math.max(1,MP.bones),MP.errs,{mode:"manipulatiu"})}
-const mpBotoSeg=(txt)=>`<div class="fila"><button class="btn" id="mpSeg" onclick="mpSeg()">${MP.r+1<MP.rondes.length?"Següent ▶":"Acaba 🏁"}</button></div>`;
-const mpEstrella=()=>{MP.bones++;if(typeof suma==="function"&&typeof JOCSTAR!=="undefined"&&JOCSTAR)suma(JOCSTAR)};
+const mpBotoSeg=(txt)=>`<div class="fila"><button class="btn" id="mpSeg" onclick="mpSeg()">${MP.r+1<MP.rondes.length?"Següent ▶":MP.j.pont?"↩ Torna a l'exercici":"Acaba 🏁"}</button></div>`;
+// des d'un pont del taller (MP.j.pont) no paga: és una ajuda dins d'un exercici
+const mpEstrella=()=>{MP.bones++;if(MP.j.pont)return;if(typeof suma==="function"&&typeof JOCSTAR!=="undefined"&&JOCSTAR)suma(JOCSTAR)};
 
 // ---------- 🟦 RECTANGLES DE QUADRADETS: un divisor és el costat d'un rectangle exacte ----------
 function mpRectangles(j){mpInici(j,j.mp.nombres.map(n=>({n,files:1,trobats:new Set()})),mpRectPinta)}
@@ -73,17 +78,18 @@ function mpRectFet(){const R=MP.rondes[MP.r];if(R.fet)return;const par=mpDiv(R.n
 
 // ---------- 🐸 LES GRANOTES: el MCM és el primer lloc on coincideixen ----------
 function mpGranotes(j){mpInici(j,j.mp.parells.map(([a,b])=>({a,b,va:0,vb:0,fet:false,int:0})),mpGranPinta)}
-function mpGranPinta(){const R=MP.rondes[MP.r],{a,b}=R,m=mpMCM(a,b),L=Math.min(80,Math.max(m+Math.max(a,b),Math.ceil(m*1.3))),W=380,x0=14,x1=W-14,X=v=>x0+(x1-x0)*v/L,y=78;
+function mpGranPinta(){const R=MP.rondes[MP.r],{a,b}=R,m=mpMCM(a,b),L=Math.min(80,Math.max(m+Math.max(a,b),Math.ceil(m*1.3))),W=Math.max(380,L*12),x0=14,x1=W-14,X=v=>x0+(x1-x0)*v/L,y=78;
  const salts=(p,v,amunt,col)=>{let s="";for(let k=1;k<=v;k++){const xa=X((k-1)*p),xb=X(k*p),h=Math.min(30,(xb-xa)*.45);s+=`<path d="M${xa} ${y} Q${(xa+xb)/2} ${amunt?y-h*1.6:y+h*1.6} ${xb} ${y}" fill="none" stroke="${col}" stroke-width="2.5" stroke-dasharray="5 4"/>`}
   for(let k=1;k<=v;k++)s+=`<circle cx="${X(k*p)}" cy="${amunt?y-7:y+7}" r="5" fill="${col}"/>`;return s};
- let tk="";const pas=L<=30?1:L<=60?2:5;for(let v=0;v<=L;v++){const g=v%pas===0;tk+=`<g class="tk" role="button" tabindex="0" aria-label="Tria el ${v}" onclick="mpGranTria(${v})"><rect x="${X(v)-(x1-x0)/L/2}" y="${y-22}" width="${(x1-x0)/L}" height="44" fill="transparent"/><line x1="${X(v)}" x2="${X(v)}" y1="${y-(g?8:4)}" y2="${y+(g?8:4)}" stroke="#334155" stroke-width="${g?2:1}"/>${g?`<text x="${X(v)}" y="${y+28}" font-size="${L>30?10:12}" font-weight="700" text-anchor="middle" fill="#334155">${v}</text>`:""}</g>`}
+ let tk="";const pas=L<=30?1:2;for(let v=0;v<=L;v++){const g=v%pas===0;tk+=`<g class="tk" role="button" tabindex="0" aria-label="Tria el ${v}" onclick="mpGranTria(${v})"><rect x="${X(v)-(x1-x0)/L/2}" y="${y-22}" width="${(x1-x0)/L}" height="44" fill="transparent"/><line x1="${X(v)}" x2="${X(v)}" y1="${y-(g?8:4)}" y2="${y+(g?8:4)}" stroke="#334155" stroke-width="${g?2:1}"/>${g?`<text x="${X(v)}" y="${y+28}" font-size="13" font-weight="800" text-anchor="middle" fill="#334155">${v}</text>`:""}</g>`}
  const gv=`<text x="${X(R.va*a)}" y="${y-44}" font-size="22" text-anchor="middle">🐸</text>`,gb=`<text x="${X(R.vb*b)}" y="${y+66}" font-size="22" text-anchor="middle" style="filter:hue-rotate(160deg)">🐸</text>`;
  app.innerHTML=`<h2 class="sec">${MP.j.enunciat||MP.j.titol}</h2><div class="box">${mpCap("🐸 Les granotes")}
  <p class="mp-big">La granota <b style="color:#16a34a">verda</b> salta de <b>${a} en ${a}</b> i la <b style="color:#2563eb">blava</b> de <b>${b} en ${b}</b>. Surten juntes del 0. <b>On tornaran a caure juntes per primer cop?</b> Fes-les saltar i després <b>toca aquell número</b> a la recta.</p>
- <svg class="mp-svg" viewBox="0 0 ${W} 160" role="img" aria-label="recta numèrica amb dues granotes"><line x1="${x0}" x2="${x1}" y1="${y}" y2="${y}" stroke="#334155" stroke-width="3"/>${salts(a,R.va,true,"#16a34a")}${salts(b,R.vb,false,"#2563eb")}${tk}${gv}${gb}</svg>
+ <div style="overflow-x:auto" id="mpGranScroll"><svg class="mp-svg" viewBox="0 0 ${W} 160" style="${W>380?`width:${W}px;max-width:none`:""}" role="img" aria-label="recta numèrica amb dues granotes"><line x1="${x0}" x2="${x1}" y1="${y}" y2="${y}" stroke="#334155" stroke-width="3"/>${salts(a,R.va,true,"#16a34a")}${salts(b,R.vb,false,"#2563eb")}${tk}${gv}${gb}</svg></div>${W>380?`<p class="prog" style="text-align:center;margin:2px 0">↔ Llisca la recta per veure-la sencera</p>`:""}
  <div class="mp-bts"><button class="btn" style="background:#16a34a" onclick="mpGranSalta('a')">Salta la verda (+${a})</button><button class="btn" onclick="mpGranSalta('b')">Salta la blava (+${b})</button></div>
  <p class="prog" style="text-align:center">Verda: ${[...Array(R.va+1)].map((_,k)=>k*a).join(", ")} · Blava: ${[...Array(R.vb+1)].map((_,k)=>k*b).join(", ")}</p>
- <div id="mpFb">${R.msg||""}</div><div id="zona"></div></div>`}
+ <div id="mpFb">${R.msg||""}</div><div id="zona"></div></div>`;
+ const sc=document.getElementById("mpGranScroll");if(sc&&W>380&&sc.clientWidth){const far=X(Math.max(R.va*a,R.vb*b))*sc.scrollWidth/W;sc.scrollLeft=Math.max(0,far-sc.clientWidth*.6)}}
 function mpGranSalta(q){const R=MP.rondes[MP.r];if(R.fet)return;const m=mpMCM(R.a,R.b),L=Math.min(80,Math.max(m+Math.max(R.a,R.b),Math.ceil(m*1.3)));
  if(q==="a"&&(R.va+1)*R.a<=L)R.va++;if(q==="b"&&(R.vb+1)*R.b<=L)R.vb++;if(typeof so==="function")so("clic");R.msg="";mpGranPinta()}
 function mpGranTria(v){const R=MP.rondes[MP.r];if(R.fet)return;const {a,b}=R,m=mpMCM(a,b);
@@ -95,7 +101,8 @@ function mpGranTria(v){const R=MP.rondes[MP.r];if(R.fet)return;const {a,b}=R,m=m
 // ---------- 🧱 LES RAJOLES: el MCD és la rajola quadrada més gran que encaixa justa ----------
 function mpRajoles(j){mpInici(j,j.mp.parells.map(([a,b])=>({a,b,s:null,prov:{},fet:false,int:0})),mpRajPinta)}
 function mpRajPinta(){const R=MP.rondes[MP.r],{a,b,s}=R,g=mpMCD(a,b),W=560,k=Math.min((W-20)/a,220/b),w=a*k,h=b*k,ox=(W-w)/2,oy=10;
- let rj="";if(s){const na=Math.floor(a/s),nb=Math.floor(b/s);for(let i=0;i<na;i++)for(let t=0;t<nb;t++)rj+=`<rect x="${ox+i*s*k+1}" y="${oy+t*s*k+1}" width="${s*k-2}" height="${s*k-2}" rx="3" fill="${a%s||b%s?"#93c5fd":"#86efac"}" stroke="${a%s||b%s?"#2563eb":"#16a34a"}" stroke-width="1.5"/>`;
+ let rj="";if(!s&&a<=40&&b<=40){for(let i=1;i<a;i++)rj+=`<line x1="${ox+i*k}" x2="${ox+i*k}" y1="${oy}" y2="${oy+h}" stroke="#cbd5e1"/>`;for(let t=1;t<b;t++)rj+=`<line x1="${ox}" x2="${ox+w}" y1="${oy+t*k}" y2="${oy+t*k}" stroke="#cbd5e1"/>`}
+ if(s){const na=Math.floor(a/s),nb=Math.floor(b/s);for(let i=0;i<na;i++)for(let t=0;t<nb;t++)rj+=`<rect x="${ox+i*s*k+1}" y="${oy+t*s*k+1}" width="${s*k-2}" height="${s*k-2}" rx="3" fill="${a%s||b%s?"#93c5fd":"#86efac"}" stroke="${a%s||b%s?"#2563eb":"#16a34a"}" stroke-width="1.5"/>`;
   if(a%s)rj+=`<rect x="${ox+na*s*k}" y="${oy}" width="${(a%s)*k}" height="${h}" fill="#fecaca" stroke="#ef4444" stroke-dasharray="5 3"/>`;
   if(b%s)rj+=`<rect x="${ox}" y="${oy+nb*s*k}" width="${w}" height="${(b%s)*k}" fill="#fecaca" stroke="#ef4444" stroke-dasharray="5 3"/>`}
  const max=Math.min(a,b),mides=[...Array(max)].map((_,i)=>i+1).filter(x=>max<=16||x<=8||a%x===0||b%x===0);

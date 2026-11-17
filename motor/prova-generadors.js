@@ -4,7 +4,8 @@
 // la resposta bona es dona per bona, les respostes dolentes no fan petar els missatges d'error,
 // els «per què?» i el «Troba l'error» estan ben fets, i els càlculs dels generadors nous quadren.
 const fs=require("fs"),path=require("path");
-const src=fs.readFileSync(path.join(__dirname,"eines/exercicis-mates.js"),"utf8");
+// les vistes (MXV) van abans del taller, com a les pàgines dels mons
+const src=fs.readFileSync(path.join(__dirname,"eines/vistes-mates.js"),"utf8")+"\n"+fs.readFileSync(path.join(__dirname,"eines/exercicis-mates.js"),"utf8");
 // el fitxer només toca el navegador dins de funcions: n'hi ha prou amb un parell d'objectes buits
 const ctx=new Function("document","window",src+";return {MXG,MXE,mxBo,mxMsg,mxFactors,mxMCD,mxMCM,mxVal,mxN}")({getElementById:()=>null},{});
 const {MXG,MXE,mxBo,mxMsg,mxMCD,mxN}=ctx;
@@ -24,7 +25,7 @@ for(const [g,arg] of variants)for(const nv of [1,2,3])for(let k=0;k<N;k++){
   if(P.t==="tria"&&!(P.r>=0&&P.r<P.op.length))err(g,nv,`pas ${i}: opció bona fora de rang`,E);
   if(P.t==="tria"&&new Set(P.op).size!==P.op.length)err(g,nv,`pas ${i}: opcions repetides (${P.op.join(" | ")})`,E);
   if(!mxBo(P,P.r))err(g,nv,`pas ${i}: la resposta bona no es dona per bona`,E);
-  try{if(P.ctx&&typeof P.ctx()!=="string")err(g,nv,`pas ${i}: ctx() no torna text`,E)}catch(e){err(g,nv,`pas ${i}: ctx() peta: ${e.message}`,E)}
+  for(const mk of [undefined,{pista:1},{mira:1},...dolentes(P).slice(0,2).map(v=>({v,err:1}))])try{if(P.ctx&&typeof P.ctx(mk)!=="string")err(g,nv,`pas ${i}: ctx() no torna text`,E)}catch(e){err(g,nv,`pas ${i}: ctx(${JSON.stringify(mk)}) peta: ${e.message}`,E)}
   for(const v of dolentes(P)){if(mxBo(P,v))continue;try{const m=mxMsg(P.err&&P.err(v));if(m&&typeof m.m!=="string")err(g,nv,`pas ${i}: missatge d'error sense text`,E)}catch(e){err(g,nv,`pas ${i}: err() peta amb ${JSON.stringify(v)}: ${e.message}`,E)}}
   if(P.perque){const q=P.perque;if(!Array.isArray(q.op)||q.op.length<2||!(q.r>=0&&q.r<q.op.length)||new Set(q.op).size!==q.op.length)err(g,nv,`pas ${i}: «per què?» mal fet`,E)}
  }

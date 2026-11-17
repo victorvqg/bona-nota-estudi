@@ -5,6 +5,26 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.48.0 · 2026-11-17
+
+### Afegit
+- **Taller de mates visual** (`motor/eines/vistes-mates.js`, nou; `motor/eines/exercicis-mates.js`): el dibuix de cada pas marca on cal mirar.
+  - A l'escala: la fila que toca, la tira de primers i com es prova el primer.
+  - A la divisió llarga: el nombre que es divideix, el que es resta, la xifra que baixa (↓) i el quocient.
+  - Al MCM i el MCD: una taula de potències alineada per columnes, amb les comunes en verd.
+  - Als criteris: les xifres que manen.
+  - En fallar, el dibuix també ho marca.
+- **💡 Pistes en 3 graons**: una pregunta (no treu l'estrella), la marca al dibuix i mig resultat.
+- **👀 Mira pas a pas** («pensa-hi tu» i després «mostra la resposta») i botó «✍️ Fes aquest mateix tu».
+- **Ponts** del taller a les granotes i les rajoles (amb els mateixos números, d'anada i tornada), i de les granotes i les rajoles a la Fitxa 5.
+- **Teoria amb un exemple dibuixat** (`T[i].vista`) a 5 temes de Divisibilitat.
+- Guia nova `docs/MON-MATES.md` i prova nova `motor/prova-vistes-mates.js` (també a la CI). La prova del món ara juga cada fitxa amb un error a cada pas.
+
+### Canviat
+- Pantalla compacta: passos fets plegats, barra de passos, «Comprova» dins del teclat, i a partir del 2n pas la pantalla es col·loca al dibuix. A 360 px hi cap tot als nivells 🟢 i 🟡.
+- Les potències només ofereixen els primers que hi surten (i el 2, el 3 i el 5).
+- Granotes: recta més ampla, que es pot lliscar, amb números més grans. Rajoles: el terra ja surt amb la quadrícula abans de triar.
+
 ## 2.47.0 · 2026-11-17
 
 ### Afegit
