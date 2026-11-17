@@ -14,7 +14,7 @@ Cada canvi va per una branca i un PR cap a `main`, i el fa l'agent de cap a cap:
 1. Branca nova des de `main` actualitzat (`issue/N-…` si hi ha issue; si no, `nN-…` o `gN-…` amb l'id de la tasca).
 2. `python3 motor/tot.py` i les proves; commit amb el format de sempre.
 3. Push de la branca i PR cap a `main` (el títol, igual que el commit).
-4. Quan l'Action «Revisa Bona Nota» del PR surt en verd, fusiona'l amb squash i esborra la branca. Fusionar és publicar: GitHub Pages ho posa a bonanota.net en 1-2 minuts.
+4. En obrir el PR, activa la fusió automàtica: `gh pr merge --auto --squash --delete-branch`. GitHub el fusiona sol i esborra la branca quan el check «Revisa Bona Nota · tot» surt en verd, i l'Action «Etiqueta la versió» posa `vX.Y.Z`. No cal esperar ni fusionar a mà. Fusionar és publicar: GitHub Pages ho posa a bonanota.net en 1-2 minuts.
 5. Si l'Action falla, no fusionis: arregla-ho a la mateixa branca.
 
 Mai: push directe a `main`, `push --force` a `main`, deploy manual ni `nucli finish` (el llança una persona). No editis `.nucli/rebuts/`, `nucli.json` ni `.claude/` per passar la porta.

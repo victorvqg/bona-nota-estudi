@@ -1,0 +1,29 @@
+# Bona Nota · posa l'etiqueta de versió (vX.Y.Z) quan un canvi arriba a main.
+# La versió és la de la capçalera del README («**Versió:** X.Y.Z»). Si l'etiqueta ja existeix (canvis que no pugen versió), no fa res.
+name: Etiqueta la versió
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: etiqueta-main
+  cancel-in-progress: false
+
+jobs:
+  etiqueta:
+    name: Etiqueta vX.Y.Z
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crea i puja l'etiqueta si no existeix
+        run: |
+          v=$(sed -n 's/.*\*\*Versió:\*\* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' README.md | head -1)
+          if [ -z "$v" ]; then echo "::error::No trobo «**Versió:** X.Y.Z» al README.md"; exit 1; fi
+          if [ -n "$(git ls-remote --tags origin "refs/tags/v$v")" ]; then echo "v$v ja existeix: res a fer"; exit 0; fi
+          git tag "v$v" "$GITHUB_SHA"
+          git push origin "v$v"
+          echo "Etiqueta v$v creada a $GITHUB_SHA"
