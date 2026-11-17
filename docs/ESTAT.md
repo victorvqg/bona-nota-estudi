@@ -5,6 +5,11 @@ Data: 2026-11-17
 ## Què funciona
 - **Versió actual: 2.46.1** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **8 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`, `bio-i-geo/geosfera`), tots 8 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 147 en total) i 3 peces del xat per món.
+- **Blocs `g34`–`g37` (pla `docs/superpowers/plans/2026-11-17-mons-sense-interrupcions.md`, sense canvi de versió): mons nous d'una tirada**:
+  - Fusió automàtica: job «Revisa Bona Nota · tot» (exigit pel ruleset «main protegida»), `allow_auto_merge` i branques esborrades soles; l'Action «Etiqueta la versió» posa `vX.Y.Z` en arribar a `main`.
+  - `motor/mons.json` és l'única font de cada món: `motor/registres.py` genera l'admin (`ASSIGS`, `COL_MON`, `XMON`, `DEMO_JOCS`), `BN_MON` i les peces de món del xat; `bn_control.sql` valida els mons pel format de l'id (aplicat a Supabase); les proves llegeixen el nombre de mons de `mons.json`.
+  - Revisions automàtiques a la CI: `motor/revisa-mon.js` (contingut) i `motor/prova-visual.js` (360/390/430 px, captures com a artefacte).
+  - Un sol camí: `motor/nou_mon.py`, `motor/publica.py`, `motor/prova-tot.js` i la skill `nou-mon`. Permisos locals a `.claude/settings.local.json` (sense finestres per a `gh`, `git push` i les proves).
 - **Bloc `g32` (`2.46.0`, Món 8 · Biologia i Geologia: Geosfera)**:
   - Fet amb les diapositives, l'esquema de 4 fulls, l'examen i el full de respostes de la carpeta de Drive «Geosfera»: 16 temes en 4 blocs, 129 preguntes de test (17 ⚡ difícils), 16 obertes i 16 jocs (3 figures noves i un «Troba l'error del geòleg»).
   - Boss «El Gegant de Magma» amb sprite i melodia propis; la plantilla accepta `ASSIG.boss.ic` per canviar la icona central de la celebració.
