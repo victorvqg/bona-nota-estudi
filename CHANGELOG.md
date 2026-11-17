@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.46.1 · 2026-11-17
+
+### Canviat
+- Al tauler (`admin/index.html` · g33), el món nou surt amb el nom **Geosfera** (abans «Bio i Geo (geosfera)», que es confonia amb el Bloc 1 de Bio i Geo) i amb una etiqueta taronja en lloc de grisa.
+
 ## 2.46.0 · 2026-11-17
 
 ### Afegit
