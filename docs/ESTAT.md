@@ -3,8 +3,9 @@
 Data: 2026-11-17
 
 ## Què funciona
-- **Versió actual: 2.48.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.49.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **8 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`, `bio-i-geo/geosfera`), tots 8 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 147 en total) i 3 peces del xat per món.
+- **Capçalera dels mons (`2.49.0`, pla `docs/superpowers/specs/2026-11-17-capcalera-menu-pla-mestre.md`)**: menú centrat amb banda fosca (contrast ≥ 4,5), títol i nom més grans, curs en etiqueta, avatar arcade, so en un sol botó amb panell i estrelles compactes al mòbil. Ho comprova `prova-visual.js`.
 - **Taller de mates visual (`2.48.0`, pla `docs/superpowers/specs/2026-11-17-mons-mates-pla-mestre.md`, guia `docs/MON-MATES.md`)**: vistes amb marca (`motor/eines/vistes-mates.js`), pistes en 3 graons, Mira pas a pas, ponts amb els manipulatius i teoria dibuixada.
 - **Món d'Anglès millorat (`2.47.0`, pla `docs/superpowers/specs/2026-11-17-mon-angles-pla-mestre.md`)**: veu bilingüe (`ASSIG.veuContingut`, `trossos()` i `motor/prova-veu.js`) i frases amb buits amb `per`, `clau`, `falta`, buits comptats, «Què vol dir?» i buit a triar.
 - **Blocs `g34`–`g40` (pla `docs/superpowers/plans/2026-11-17-mons-sense-interrupcions.md`, sense canvi de versió): mons nous d'una tirada**. `g38` i `g39` hi van afegir els arranjaments de les revisions, i `g40`, la documentació del motor nou al README (apartats 2, 4, 5, 6, 9, 10 i 11) i a `docs/ARQUITECTURA.md`:

@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="c8f1c6e6e7",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="8939d190e2",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -86,19 +86,40 @@ nav button:focus-visible,.so-btn:focus-visible,.logo:focus-visible,#punts:focus-
 /* capçalera */
 header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%,var(--g3,#0ea5e9));color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 14px #1e3a8a40}
 .hd{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
-.logo{font-weight:900;font-size:19px;letter-spacing:.2px;display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0}
+.logo{font-weight:900;font-size:22px;letter-spacing:.2px;display:flex;align-items:center;gap:10px;cursor:pointer;flex:1;min-width:0}
 .logo span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.logo .tt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
-.logo .tt small{font-size:13px;font-weight:700;opacity:.85}
-@media(max-width:520px){.logo{font-size:16px}.logo #hola{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
+#logoic{flex:none;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:#ffffff26;border:1px solid #ffffff40;font-size:22px}
+.logo .tt{display:flex;flex-direction:column;min-width:0;line-height:1.2;gap:2px}
+.qui-fila{display:flex;align-items:center;gap:8px;min-width:0}
+.logo .tt small{font-size:16px;font-weight:800;opacity:.95;display:inline-flex;align-items:center;gap:5px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.qui-num{opacity:.7;font-weight:700}
+.qui-av{flex:none;width:24px;height:24px;border-radius:7px;background:var(--av,#ffffff33);display:inline-flex;align-items:center;justify-content:center;overflow:hidden}
+.qui-av svg{width:22px;height:22px}
+.curs{flex:none;font-size:14px;font-weight:900;padding:1px 9px;border-radius:999px;background:#fff;color:var(--g1,#1e3a8a);line-height:1.5}
+.curs:empty{display:none}
+@media(max-width:400px){.qui-num{display:none}}
+@media(max-width:600px){.hd{padding:8px 10px;gap:6px}.logo{font-size:17px;gap:6px}#logoic{width:30px;height:30px;font-size:17px;border-radius:9px}.vol .so-btn{width:28px}.vol{gap:2px}.logo .tt small{font-size:14px}.curs{font-size:12.5px;padding:0 7px}.qui-av{width:20px;height:20px}.qui-av svg{width:18px;height:18px}}
 .benv .tema{margin:4px 0 0;font-weight:900;color:var(--blau2)}
-.pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap}
-nav{max-width:960px;margin:0 auto;padding:0 10px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap;flex:none}
+@media(max-width:600px){.pill .pt-ext{display:none}.pill{padding:5px 8px}}
+/* menú: centrat, sobre una banda fosca translúcida perquè el text blanc es llegeixi sobre qualsevol degradat */
+nav{max-width:none;margin:0;padding:6px 10px 7px;display:flex;justify-content:center;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;background:rgba(15,23,42,.5)}
 nav::-webkit-scrollbar{display:none}
-nav button{border:0;background:transparent;color:#dbeafe;padding:7px 13px;border-radius:999px;font-weight:800;cursor:pointer;white-space:nowrap;font-size:15px}
-nav button.on{background:#fff;color:var(--blau2)}
-nav a.surt{display:inline-flex;align-items:center;gap:4px;color:#fff;text-decoration:none;font-weight:900;font-size:15px;padding:5px 12px;border-radius:999px;border:2px solid #ffffff66;white-space:nowrap;margin-right:4px}
-nav a.surt:hover,nav a.surt:focus-visible{background:#ffffff26;border-color:#fff;outline:none}
+nav button{border:0;background:transparent;color:#fff;padding:0 15px;height:40px;border-radius:999px;font-weight:800;cursor:pointer;white-space:nowrap;font-size:15.5px;display:inline-flex;align-items:center;text-shadow:0 1px 2px #0f172a66}
+nav button:hover:not(.on){background:#ffffff1f}
+nav button.on{background:#fff;color:var(--g1,var(--blau2));text-shadow:none}
+nav a.surt{display:inline-flex;align-items:center;gap:4px;color:#fff;text-decoration:none;font-weight:900;font-size:15.5px;padding:0 14px;height:40px;border-radius:999px;border:2px solid #ffffff80;white-space:nowrap;text-shadow:0 1px 2px #0f172a66}
+nav a.surt:hover,nav a.surt:focus-visible{background:#ffffff26;border-color:#fff}
+nav a.surt:focus-visible{outline:3px solid #facc15;outline-offset:2px}
+.nav-sep{flex:none;width:2px;height:24px;border-radius:2px;background:#ffffff59;margin:0 6px}
+nav{justify-content:safe center}
+/* so plegat: un botó i un panell petit (música, silenci, volum) */
+.vol{position:relative}
+.so-pan{position:absolute;top:calc(100% + 8px);right:-6px;z-index:31;display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:14px;background:var(--g1,#1e3a8a);border:1px solid #ffffff40;box-shadow:0 10px 24px #0f172a55;white-space:nowrap}
+.so-pan[hidden]{display:none}
+#soMenu{position:relative}.so-mus{position:absolute;top:-4px;right:-3px;font-size:12px;font-weight:900;color:#fff;text-shadow:0 1px 2px #0f172a}
+/* en baixar la pàgina (ordinador), la capçalera s'encongeix */
+@media(min-width:601px){header .hd{transition:padding .2s}header.petit .hd{padding-top:5px;padding-bottom:5px}header.petit .qui-fila{display:none}header.petit #logoic{width:32px;height:32px;font-size:18px}}
 .surt-gran{display:block;text-align:center;margin-top:16px;color:var(--suau);font-weight:800;text-decoration:none}
 .surt-gran:hover{color:var(--blau2)}
 main{max-width:960px;margin:0 auto;padding:18px 16px 40px}
@@ -400,11 +421,11 @@ table.an td{padding:9px 6px;border-bottom:1px solid #f1f5f9;vertical-align:middl
 .arc.sup .t2{color:#fef3c7}
 .arc.niv .t1{color:#e9d5ff;text-shadow:4px 4px 0 #7c3aed,0 0 24px #c084fcaa}
 .arc.niv .nic{position:relative;font-size:clamp(64px,20vw,110px);margin-top:12px;animation:estr .6s cubic-bezier(.3,1.8,.5,1) .3s both;filter:drop-shadow(0 0 18px #c084fc)}
-.vol{display:flex;align-items:center;gap:4px;background:#ffffff26;border:1px solid #ffffff40;border-radius:999px;padding:2px 10px 2px 4px;flex:none}
+.vol{display:flex;align-items:center;gap:4px;background:#ffffff26;border:1px solid #ffffff40;border-radius:999px;padding:2px 4px;flex:none}
 .so-btn{background:none;border:0;color:#fff;font-size:17px;cursor:pointer;padding:3px 4px;line-height:1}
 .vol input{width:76px;accent-color:#fff;cursor:pointer;margin:0}
 .vol b{font-size:13px;min-width:9px;text-align:center}
-@media(max-width:520px){.vol input{width:54px}.vol{padding-right:7px}}
+@media(max-width:520px){.vol input{width:70px}}
 body.tremola main{animation:tremola .4s}
 .arc.ko{background:radial-gradient(circle at 50% 40%,#3b0a0a,#0b0202 75%)}
 .arc.ko .t1{color:#f87171;text-shadow:4px 4px 0 #450a0a,0 0 20px #ef444466;animation:cau1 .7s cubic-bezier(.5,1.8,.5,1) both,parpelleja 1.4s steps(2) .8s infinite}
@@ -482,13 +503,16 @@ body.tremola main{animation:tremola .4s}
 nav i{font-style:normal;margin-right:5px}
 @media(max-width:600px){
  nav{position:fixed;left:0;right:0;bottom:0;z-index:40;max-width:none;margin:0;padding:4px 2px calc(4px + env(safe-area-inset-bottom));gap:0;display:grid;grid-template-columns:repeat(6,1fr);overflow:visible;background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb));box-shadow:0 -4px 14px #0f172a40}
- nav button,nav a.surt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 0 5px;margin:0;border:0;border-radius:12px;font-size:10.5px;font-weight:800;min-height:52px;min-width:0;color:#dbeafe;background:transparent}
+ nav{background:linear-gradient(rgba(15,23,42,.3),rgba(15,23,42,.3)),linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb))!important}
+ .nav-sep{display:none}
+ nav button,nav a.surt{height:auto;text-shadow:0 1px 2px #0f172a66}
+ nav button,nav a.surt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 0 5px;margin:0;border:0;border-radius:12px;font-size:10.5px;font-weight:800;min-height:52px;min-width:0;color:#fff;background:transparent}
  nav i{font-size:21px;margin:0;line-height:1.1}
  nav span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  nav button.on{background:#ffffff;color:var(--blau2)}
  nav a.surt{color:#fff}
  body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
- .vol input,.vol b{display:none}.vol{padding:2px 4px}
+ .vol{padding:2px 4px}
  .peu-pag{margin-bottom:10px}
 }
 /* ---- botó escolta (llegir en veu alta) ---- */
@@ -642,11 +666,11 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 <a class="salta" href="#app">Salta al contingut</a>
 <header>
  <div class="hd">
-  <div class="logo" role="button" tabindex="0" onclick="vista('inici')" aria-label="Inici del món"><span id="logoic">📚</span><span class="tt"><span id="hola"></span><small id="qui"></small></span></div>
-  <span class="vol" title="Volum dels sons (0-5)"><button class="so-btn mus-btn" id="mus" onclick="canviaMusica()" aria-label="Música de fons" aria-pressed="false"></button><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci"></button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum" oninput="posaVol(+this.value)"><b id="volN">3</b></span><span class="pill" id="punts" role="button" tabindex="0" aria-expanded="false" onclick="obreEstrelles(event)" style="cursor:pointer">⭐ 0</span>
+  <div class="logo" role="button" tabindex="0" onclick="vista('inici')" aria-label="Inici del món"><span id="logoic">📚</span><span class="tt"><span id="hola"></span><span class="qui-fila"><small id="qui"></small><span id="curs" class="curs"></span></span></span></div>
+  <span class="vol"><button class="so-btn" id="soMenu" type="button" onclick="obreSo(event)" aria-label="So: música i volum" aria-expanded="false" aria-controls="soPan" title="So: música i volum"></button><span class="so-pan" id="soPan" role="group" aria-label="So" hidden><button class="so-btn mus-btn" id="mus" onclick="canviaMusica()" aria-label="Música de fons" aria-pressed="false"></button><button class="so-btn" id="so" onclick="canviaSo()" aria-label="Silenci"></button><input type="range" id="volum" min="0" max="5" step="1" value="3" aria-label="Volum (0-5)" oninput="posaVol(+this.value)"><b id="volN">3</b></span></span><span class="pill" id="punts" role="button" tabindex="0" aria-expanded="false" onclick="obreEstrelles(event)" style="cursor:pointer">⭐ 0</span>
  </div>
  <nav id="nav" aria-label="Menú principal">
-  <a class="surt" href="../../" title="Tornar al menú de tots els mons"><i data-ic="mons"></i><span>Mons</span></a>
+  <a class="surt" href="../../" title="Tornar al menú de tots els mons"><i data-ic="mons"></i><span>Mons</span></a><span class="nav-sep" aria-hidden="true"></span>
   <button data-v="inici" onclick="vista('inici')"><i data-ic="inici"></i><span>Inici</span></button>
   <button data-v="temes" onclick="vista('temes')"><i data-ic="temes"></i><span>Temes</span></button>
   <button data-v="jocs" onclick="vista('jocs')"><i data-ic="jocs"></i><span>Jocs</span></button>
@@ -656,7 +680,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.48.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.49.0</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -1270,7 +1294,12 @@ function heroAv(){if(MODE_TAST)return `<div class="av" aria-hidden="true">👀</
  return `<a class="av" href="../../perfil/" title="Canvia el teu perfil" aria-label="El teu perfil: canvia l'animal i la insígnia" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${sk}</a>`}
 function heroAsp(){if(MODE_TAST)return `<p class="asp">Mode tast anònim · cap dada ni estrella es guarda</p>`;if(typeof bnSkillSpr!=="function")return "";const a=aspecteNen();if(!BN_SKILLS[a.sk])return `<p class="asp"><a href="../../perfil/">👾 Tria el teu perfil arcade</a></p>`;
  return `<p class="asp">${BN_SKILL_INFO[a.sk].n} · ${BN_SKILL_ESTILS[BN_SKILL_VAR_PAL[a.v]?a.v:""]}</p>`}
-function pintaCap(){if(MODE_TAST){document.getElementById("punts").textContent="👀 Tast anònim";document.getElementById("punts").title="Mode tast anònim: cap estrella ni nom es guarda ni surt al rànquing. Toca per saber-ne més.";document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=`👀 Sense compte · sense rànquing · ${ASSIG.curs}`;return}const nv=nivell(S.punts),tot=puntsTots(),sup=Math.floor(tot/SUPER);document.getElementById("punts").textContent=`⭐ ${tot}${sup?` · 🌠 ${sup}`:""} · ${nv.ic} ${nv.n}`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · 🌠 ${sup} superestrelles (1 cada ${SUPER} ⭐) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=S.nom?`👤 ${S.nom}${S.id?" · #"+S.id:""} · ${ASSIG.curs}`:ASSIG.curs}
+function pintaCap(){if(MODE_TAST){document.getElementById("punts").textContent="👀 Tast anònim";document.getElementById("punts").title="Mode tast anònim: cap estrella ni nom es guarda ni surt al rànquing. Toca per saber-ne més.";document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=`👀 Sense compte · sense rànquing`;const cr=document.getElementById("curs");if(cr)cr.textContent=ASSIG.curs||"";return}const nv=nivell(S.punts),tot=puntsTots(),sup=Math.floor(tot/SUPER);document.getElementById("punts").innerHTML=`⭐ ${tot}<span class="pt-ext"> · ${nv.ic} ${nv.n}</span>`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · 🌠 ${sup} superestrelles (1 cada ${SUPER} ⭐) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;pintaQui()}
+// capçalera: «👤 Mireia #8» (o l'avatar arcade, si n'ha triat un) i el curs en una etiqueta. El nom va com a text (mai com a HTML).
+function pintaQui(){const q=document.getElementById("qui"),c=document.getElementById("curs");if(!q)return;q.textContent="";
+ if(c)c.textContent=ASSIG.curs||"";if(!S.nom)return;
+ let av=null;try{const a=aspecteNen();if(typeof bnSpr==="function"&&typeof BN_AV!=="undefined"&&BN_AV.includes(a.av)){av=document.createElement("span");av.className="qui-av";av.setAttribute("aria-hidden","true");if(typeof BN_AV_BG!=="undefined")av.style.setProperty("--av",BN_AV_BG[a.av]);av.innerHTML=bnSpr(a.av)}}catch(e){}
+ q.append(av||"👤 ",S.nom);if(S.id){const n=document.createElement("span");n.className="qui-num";n.textContent="#"+S.id;q.append(" ",n)}}
 // temps d'estudi: cada 15 s amb la pestanya visible (i comprovació d'avisos de bon ús/nit fins i tot en mode tast)
 setInterval(()=>{if(document.visibilityState!=="visible")return;actualitzaTancamentMon();if(!MON_TANCAT&&S.nom){if(!MODE_TAST){S.temps+=15;TPEND+=15;const e=diaEst();e.ts=(e.ts||0)+15;guarda();if(TPEND>=300)buidaTemps()}comprovaBonUsTick()}},15000);
 const app=document.getElementById("app");
@@ -1394,7 +1423,15 @@ function audio(){if(!AC){AC=bnSo.context();if(!AC)throw new Error("sense Web Aud
   BG=guany(1);BG.connect(SB);
   MB=guany(0);MB.connect(MG);MB.connect(guany(.35)).connect(REV);MB.connect(guany(.2)).connect(ECO);}
  if(AC.state!=="running"&&AC.state!=="closed")try{AC.resume().catch(()=>{})}catch(e){}return AC}
-function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN");if(b)b.innerHTML=icSo(VOL);if(r)r.value=VOL;if(n)n.textContent=VOL;pintaMus()}
+function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN"),m=document.getElementById("soMenu");if(b)b.innerHTML=icSo(VOL);if(r)r.value=VOL;if(n)n.textContent=VOL;
+ if(m){m.innerHTML=icSo(VOL)+(typeof MUS!=="undefined"&&MUS&&VOL?`<span class="so-mus" aria-hidden="true">♪</span>`:"");m.title=VOL?`So: volum ${VOL} de 5${typeof MUS!=="undefined"&&MUS?" · música engegada":""} (toca per canviar-ho)`:"So apagat (toca per canviar-ho)"}pintaMus()}
+// panell del so: s'obre amb el botó 🔊 i es tanca tocant fora o amb Escape
+function obreSo(e){if(e)e.stopPropagation();const p=document.getElementById("soPan"),b=document.getElementById("soMenu");if(!p)return;const obre=p.hidden;p.hidden=!obre;if(b)b.setAttribute("aria-expanded",obre);if(obre){const r=document.getElementById("volum");if(r)r.focus({preventScroll:true})}}
+function tancaSo(){const p=document.getElementById("soPan"),b=document.getElementById("soMenu");if(p&&!p.hidden){p.hidden=true;if(b)b.setAttribute("aria-expanded","false")}}
+addEventListener("click",e=>{const v=document.querySelector("header .vol");if(v&&!v.contains(e.target))tancaSo()});
+addEventListener("keydown",e=>{if(e.key==="Escape"){const p=document.getElementById("soPan");if(p&&!p.hidden){tancaSo();const b=document.getElementById("soMenu");if(b)b.focus()}}});
+// en baixar la pàgina, la capçalera s'encongeix (ordinador; al mòbil el CSS no ho aplica)
+addEventListener("scroll",()=>{const h=document.querySelector("header");if(h)h.classList.toggle("petit",(window.scrollY||0)>60)},{passive:true});
 function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}bnSo.sessio(v>0);if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
 function canviaSo(){posaVol(VOL?0:(VOLant||3))}
 // una veu: oscil·lador amb envolupant (atac ràpid, caiguda exponencial), filtre opcional, lliscament de to i vibrato
@@ -1460,7 +1497,7 @@ function musVol(){if(MB)MB.gain.setTargetAtTime(MUS&&!document.hidden?.5*MUSduck
 function musEngega(){if(!MUS)return;audio();if(!MUSt){MUSseg=0;MUSt=setInterval(musBucle,60);musBucle()}musVol()}
 function musAtura(){if(MUSt){clearInterval(MUSt);MUSt=null}if(MB)musVol()}
 function canviaMusica(){MUS=!MUS;try{localStorage.setItem("bn_musica",MUS?"1":"0")}catch(e){}if(MUS){musEngega();if(!VOL)posaVol(VOLant||3)}else musAtura();pintaMus()}
-function pintaMus(){const b=document.getElementById("mus");if(b){b.innerHTML=ICO.musica;b.classList.toggle("on",MUS);b.title=MUS?"Música de fons: engegada (toca per apagar-la)":"Música de fons: apagada (toca per engegar-la)";b.setAttribute("aria-pressed",MUS)}}
+function pintaMus(){const m=document.getElementById("soMenu");if(m&&!m.querySelector(".so-mus")!==!(MUS&&VOL)&&typeof icSo==="function")m.innerHTML=icSo(VOL)+(MUS&&VOL?`<span class="so-mus" aria-hidden="true">♪</span>`:"");const b=document.getElementById("mus");if(b){b.innerHTML=ICO.musica;b.classList.toggle("on",MUS);b.title=MUS?"Música de fons: engegada (toca per apagar-la)":"Música de fons: apagada (toca per engegar-la)";b.setAttribute("aria-pressed",MUS)}}
 function abaixaMus(on){MUSduck=on?.25:1;if(AC)musVol()}
 let MUSarc=null;function abaixaMusUnMoment(seg){abaixaMus(true);clearTimeout(MUSarc);MUSarc=setTimeout(()=>abaixaMus(!!PARLANT),seg*1000)}
 document.addEventListener("visibilitychange",()=>{if(!AC)return;if(document.hidden)musVol();else if(MUS)musVol()});
