@@ -133,24 +133,6 @@ insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
   (22, 'P', 'la Lluna', 9, null),
   (23, 'P', 'l''univers', 10, null),
   (24, 'P', 'el Bona Nota d''or', 10, null),
-  (25, 'P', 'els nombres primers', null, 'divisibilitat'),
-  (26, 'P', 'el MCD', null, 'divisibilitat'),
-  (27, 'P', 'el MCM', null, 'divisibilitat'),
-  (28, 'P', 'la tramuntana', null, 'socials'),
-  (29, 'P', 'el climograma', null, 'socials'),
-  (30, 'P', 'l''anticicló', null, 'socials'),
-  (31, 'P', 'la cèl·lula', null, 'biogeo'),
-  (32, 'P', 'el mantell', null, 'biogeo'),
-  (33, 'P', 'la Via Làctia', null, 'biogeo'),
-  (34, 'P', 'les 43 comarques', null, 'comarques'),
-  (35, 'P', 'l''Anoia', null, 'comarques'),
-  (36, 'P', 'les capitals', null, 'comarques'),
-  (37, 'P', 'los sustantivos', null, 'castellano'),
-  (38, 'P', 'la noticia', null, 'castellano'),
-  (39, 'P', 'los determinantes', null, 'castellano'),
-  (40, 'P', 'la literatura oral', null, 'catala'),
-  (41, 'P', 'els signes de puntuació', null, 'catala'),
-  (42, 'P', 'el nom', null, 'catala'),
   (43, 'E', 'el wifi de l''institut', 1, null),
   (44, 'E', 'un examen sorpresa en dilluns', 1, null),
   (45, 'E', 'la campana a mitja frase', 1, null),
@@ -171,7 +153,29 @@ insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
   (60, 'J', 'he fallat la pregunta més fàcil', 2, null),
   (61, 'J', 'm''he menjat l''esmorzar a primera hora', 3, null),
   (62, 'J', 'he anat a l''aula equivocada', 4, null),
-  (63, 'J', 'he dit «present» quan no em cridaven', 5, null),
+  (63, 'J', 'he dit «present» quan no em cridaven', 5, null)
+on conflict (id) do update set tipus = excluded.tipus, text = excluded.text, nivell = excluded.nivell, mon = excluded.mon;
+
+-- XAT-MONS:inici (generat per motor/tot.py des de motor/mons.json, no editar a mà)
+insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
+  (25, 'P', 'els nombres primers', null, 'divisibilitat'),
+  (26, 'P', 'el MCD', null, 'divisibilitat'),
+  (27, 'P', 'el MCM', null, 'divisibilitat'),
+  (28, 'P', 'la tramuntana', null, 'socials'),
+  (29, 'P', 'el climograma', null, 'socials'),
+  (30, 'P', 'l''anticicló', null, 'socials'),
+  (31, 'P', 'la cèl·lula', null, 'biogeo'),
+  (32, 'P', 'el mantell', null, 'biogeo'),
+  (33, 'P', 'la Via Làctia', null, 'biogeo'),
+  (34, 'P', 'les 43 comarques', null, 'comarques'),
+  (35, 'P', 'l''Anoia', null, 'comarques'),
+  (36, 'P', 'les capitals', null, 'comarques'),
+  (37, 'P', 'los sustantivos', null, 'castellano'),
+  (38, 'P', 'la noticia', null, 'castellano'),
+  (39, 'P', 'los determinantes', null, 'castellano'),
+  (40, 'P', 'la literatura oral', null, 'catala'),
+  (41, 'P', 'els signes de puntuació', null, 'catala'),
+  (42, 'P', 'el nom', null, 'catala'),
   (64, 'P', 'el Present Continuous', null, 'angles'),
   (65, 'P', 'els stative verbs', null, 'angles'),
   (66, 'P', 'el tresor de Fenn', null, 'angles'),
@@ -179,6 +183,7 @@ insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
   (68, 'P', 'el cicle de les roques', null, 'geosfera'),
   (69, 'P', 'l''escala de Mohs', null, 'geosfera')
 on conflict (id) do update set tipus = excluded.tipus, text = excluded.text, nivell = excluded.nivell, mon = excluded.mon;
+-- XAT-MONS:fi
 
 -- ---------- ajudes internes (bn_priv: el navegador no les pot cridar) ----------
 -- configuració amb valors per defecte i límits: un valor estrany a bn_priv.config no trenca el xat

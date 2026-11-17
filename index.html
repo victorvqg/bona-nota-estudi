@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="9d9247dd02",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e29e588c8a",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -856,7 +856,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
 
 <footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.46.1</small></footer>
 
-<script src="sprites.js?v=e6fb6430"></script>
+<script src="sprites.js?v=276240d0"></script>
 <script>
 /* SO-MOBIL:inici (copiat de motor/eines/so-mobil.js per motor/tot.py, no editar a mà) */
 // ===== SO ALS MÒBILS (motor/eines/so-mobil.js · el mateix codi als mons i a la portada; tot.py el copia a index.html) =====
@@ -1197,7 +1197,7 @@ const NIV=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","�
 const niv=p=>{let i=0;while(i<NIV.length-1&&p>=NIV[i+1][0])i++;return i};
 /* XAT-CATALEG:inici · xat de la colla (n2528): el MATEIX catàleg que supabase/bn_xat.sql (motor/prova-xat-sql.js comprova que coincideixen).
    Frases: id 1–26 · c categoria · t text amb el forat ___ · s el que l'omple (P paraula d'estudi · E cosa de classe · J cosa teva · C company) · n nivell 1..10.
-   Peces: id 1–42 P, 43–57 E, 58–63 J, 64–66 P (les noves de l'admin, des de l'1001, arriben del servidor) · n nivell 1..10 o m món que cal acabar (25 ⭐).
+   Peces: XAT_PC_BASE (P generals, 43–57 E, 58–63 J) i XAT_PC_MONS (3 P per món, generades de motor/mons.json); les noves de l'admin, des de l'1001, arriben del servidor · n nivell 1..10 o m món que cal acabar (25 ⭐).
    REGLA D'OR: el nom d'un company (C) només va en frases bones; per riure, coses de classe (E) o un mateix (J). Si canvies res, canvia també el SQL. */
 const XAT_FR=[
  {id:1,c:"repte",t:"Vaig a per ___!",s:"P",n:1},
@@ -1226,7 +1226,7 @@ const XAT_FR=[
  {id:24,c:"colla",t:"GG, ___!",s:"C",n:2},
  {id:25,c:"colla",t:"___, et toca moure fitxa!",s:"C",n:4},
  {id:26,c:"colla",t:"Respecte per a ___",s:"C",n:7}];
-const XAT_PC=[
+const XAT_PC_BASE=[
  {id:1,s:"P",t:"el teu lloc",n:1},
  {id:2,s:"P",t:"el test",n:1},
  {id:3,s:"P",t:"l'examen sorpresa",n:1},
@@ -1251,24 +1251,6 @@ const XAT_PC=[
  {id:22,s:"P",t:"la Lluna",n:9},
  {id:23,s:"P",t:"l'univers",n:10},
  {id:24,s:"P",t:"el Bona Nota d'or",n:10},
- {id:25,s:"P",t:"els nombres primers",m:"divisibilitat"},
- {id:26,s:"P",t:"el MCD",m:"divisibilitat"},
- {id:27,s:"P",t:"el MCM",m:"divisibilitat"},
- {id:28,s:"P",t:"la tramuntana",m:"socials"},
- {id:29,s:"P",t:"el climograma",m:"socials"},
- {id:30,s:"P",t:"l'anticicló",m:"socials"},
- {id:31,s:"P",t:"la cèl·lula",m:"biogeo"},
- {id:32,s:"P",t:"el mantell",m:"biogeo"},
- {id:33,s:"P",t:"la Via Làctia",m:"biogeo"},
- {id:34,s:"P",t:"les 43 comarques",m:"comarques"},
- {id:35,s:"P",t:"l'Anoia",m:"comarques"},
- {id:36,s:"P",t:"les capitals",m:"comarques"},
- {id:37,s:"P",t:"los sustantivos",m:"castellano"},
- {id:38,s:"P",t:"la noticia",m:"castellano"},
- {id:39,s:"P",t:"los determinantes",m:"castellano"},
- {id:40,s:"P",t:"la literatura oral",m:"catala"},
- {id:41,s:"P",t:"els signes de puntuació",m:"catala"},
- {id:42,s:"P",t:"el nom",m:"catala"},
  {id:43,s:"E",t:"el wifi de l'institut",n:1},
  {id:44,s:"E",t:"un examen sorpresa en dilluns",n:1},
  {id:45,s:"E",t:"la campana a mitja frase",n:1},
@@ -1289,13 +1271,35 @@ const XAT_PC=[
  {id:60,s:"J",t:"he fallat la pregunta més fàcil",n:2},
  {id:61,s:"J",t:"m'he menjat l'esmorzar a primera hora",n:3},
  {id:62,s:"J",t:"he anat a l'aula equivocada",n:4},
- {id:63,s:"J",t:"he dit «present» quan no em cridaven",n:5},
+ {id:63,s:"J",t:"he dit «present» quan no em cridaven",n:5}];
+/* XAT-MONS:inici (generat per motor/tot.py des de motor/mons.json, no editar a mà) */
+const XAT_PC_MONS=[
+ {id:25,s:"P",t:"els nombres primers",m:"divisibilitat"},
+ {id:26,s:"P",t:"el MCD",m:"divisibilitat"},
+ {id:27,s:"P",t:"el MCM",m:"divisibilitat"},
+ {id:28,s:"P",t:"la tramuntana",m:"socials"},
+ {id:29,s:"P",t:"el climograma",m:"socials"},
+ {id:30,s:"P",t:"l'anticicló",m:"socials"},
+ {id:31,s:"P",t:"la cèl·lula",m:"biogeo"},
+ {id:32,s:"P",t:"el mantell",m:"biogeo"},
+ {id:33,s:"P",t:"la Via Làctia",m:"biogeo"},
+ {id:34,s:"P",t:"les 43 comarques",m:"comarques"},
+ {id:35,s:"P",t:"l'Anoia",m:"comarques"},
+ {id:36,s:"P",t:"les capitals",m:"comarques"},
+ {id:37,s:"P",t:"los sustantivos",m:"castellano"},
+ {id:38,s:"P",t:"la noticia",m:"castellano"},
+ {id:39,s:"P",t:"los determinantes",m:"castellano"},
+ {id:40,s:"P",t:"la literatura oral",m:"catala"},
+ {id:41,s:"P",t:"els signes de puntuació",m:"catala"},
+ {id:42,s:"P",t:"el nom",m:"catala"},
  {id:64,s:"P",t:"el Present Continuous",m:"angles"},
  {id:65,s:"P",t:"els stative verbs",m:"angles"},
  {id:66,s:"P",t:"el tresor de Fenn",m:"angles"},
  {id:67,s:"P",t:"la geosfera",m:"geosfera"},
  {id:68,s:"P",t:"el cicle de les roques",m:"geosfera"},
  {id:69,s:"P",t:"l'escala de Mohs",m:"geosfera"}];
+/* XAT-MONS:fi */
+const XAT_PC=XAT_PC_BASE.concat(XAT_PC_MONS).sort((x,y)=>x.id-y.id);
 /* XAT-CATALEG:fi */
 const esc=t=>String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
 const fT=s=>{const m=Math.round(s/60);return m<1?"<1 MIN":m>=60?`${Math.floor(m/60)}H ${m%60}M`:`${m} MIN`};

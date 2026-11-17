@@ -7,8 +7,9 @@
   3. Reescriu les targetes de ../index.html entre <!-- MONS:inici --> i <!-- MONS:fi -->.
   3a. Omple els blocs copiats de ../perfil/index.html (so als mòbils, actualització automàtica) i el ?v= de sprites.js.
 
-Per afegir un món nou: crea dades/<id>.js i afegeix una entrada a mons.json
-(dades, carpeta, mon, materia, titol, desc, colors [3], ic; opcional llengua:"es"). Després: python3 tot.py
+Per afegir un món nou: crea dades/<id>.js i afegeix una entrada a mons.json (o fes servir motor/nou_mon.py):
+dades, carpeta, mon, materia, titol, desc, colors [3], ic, curt, spr, xat [3 × [id, "text"]];
+opcionals llengua:"es", xmon, col_admin, demo_jocs (vegeu motor/registres.py). Després: python3 tot.py
 """
 import json, pathlib, subprocess, sys, html
 
@@ -28,7 +29,7 @@ js = r"""
 const fs=require('fs');const out={};
 for(const f of process.argv.slice(1)){const src=fs.readFileSync(f,'utf8');
  const g={document:{getElementById:()=>({})},window:{},location:{search:''}};
- const r=new Function('document','window','location',src+';return {n:T.length,j:ASSIG.jocs.length,clau:ASSIG.clau||("bn_"+ASSIG.id),id:ASSIG.id}')(g.document,g.window,g.location);
+ const r=new Function('document','window','location',src+';return {n:T.length,j:ASSIG.jocs.length,jocs:ASSIG.jocs.map(j=>j.id),clau:ASSIG.clau||("bn_"+ASSIG.id),id:ASSIG.id}')(g.document,g.window,g.location);
  out[f]=r}
 console.log(JSON.stringify(out))"""
 fitxers = [str(d / "dades" / f"{m['dades']}.js") for m in mons]
@@ -36,6 +37,18 @@ r = subprocess.run(["node", "-e", js] + fitxers, capture_output=True, text=True)
 if r.returncode:
     sys.exit("ERROR llegint les dades amb node:\n" + r.stderr)
 info = json.loads(r.stdout)
+
+# 2b) el que surt de mons.json fora de les pàgines: admin (nom, colors, xat, demo), BN_MON de sprites.js i les peces
+#     de món del xat (index.html i supabase/bn_xat.sql). Va abans de l'empremta de sprites.js. Detall: motor/registres.py.
+import registres
+registres.valida(mons, (arrel / "sprites.js").read_text())
+jocs_mon = {m["dades"]: info[str(d / "dades" / f"{m['dades']}.js")]["jocs"] for m in mons}
+registres.escriu_bloc(arrel / "admin" / "index.html", registres.ADM, registres.bloc_admin(mons, jocs_mon))
+registres.escriu_bloc(arrel / "sprites.js", registres.BN_MON, registres.bloc_bn_mon(mons))
+xat_js, xat_sql = registres.bloc_xat(mons)
+registres.escriu_bloc(arrel / "index.html", registres.XAT_JS, xat_js)
+registres.escriu_bloc(arrel / "supabase" / "bn_xat.sql", registres.XAT_SQL, xat_sql)
+print("✓ admin, sprites i xat generats des de mons.json")
 
 # 3) targetes (dels més nous als més antics, al revés de mons.json)
 e = lambda t: html.escape(str(t), quote=False).replace('"', '&quot;')
