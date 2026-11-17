@@ -45,6 +45,8 @@ jobs:
         run: node motor/prova-admin-fonts.js
       - name: mons.json és l'única font (admin, sprites i peces del xat generats)
         run: node motor/prova-mons.js
+      - name: Revisor de contingut dels mons (preguntes, jocs, figures i boss)
+        run: node motor/prova-revisa-mon.js && node motor/revisa-mon.js
       - name: Llista dinàmica de mons (motor/mons.json)
         id: llista
         run: |
