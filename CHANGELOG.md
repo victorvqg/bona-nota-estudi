@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.47.0 · 2026-11-17
+
+### Afegit
+- **Veu bilingüe al món d'Anglès** (`motor/plantilla-estudi-interactiu.html`, camp `ASSIG.veuContingut`): a la fitxa, les targetes, el test i les obertes, el que és en anglès sona amb veu anglesa (més a poc a poc) i les explicacions, amb veu catalana. Abans tot sonava en català, també «She's got curly hair.». Si l'aparell no té veu anglesa, avisa un cop. Prova nova `motor/prova-veu.js` (també a la CI).
+- **Frases amb buits que s'expliquen**: el buit mostra quantes paraules hi van, «🔎 Hi falta» (`falta`), la paraula pista subratllada (`clau`), «🗣️ Què vol dir?» abans de respondre, el perquè de cada opció falsa (`per`) en fallar, 🔊 a l'explicació i, als buits múltiples, es pot triar quin buit s'omple.
+- Tema 2 d'Anglès: 46 frases amb el perquè dels errors, paraules clau a les de temps verbals, «Hi falta» a les de gramàtica, dues traduccions arreglades i el joc «I really like…» de fàcil a difícil.
+
 ## 2.46.1 · 2026-11-17
 
 ### Canviat

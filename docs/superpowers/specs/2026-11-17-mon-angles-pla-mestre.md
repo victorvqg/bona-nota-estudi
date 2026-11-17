@@ -2,6 +2,8 @@
 
 17/11/2026 · Revisió a fons del món d'Anglès (Tema 2, `motor/dades/angles.js`, publicat a `angles/t2`) i del motor que el fa anar (`motor/plantilla-estudi-interactiu.html`).
 
+**Estat:** executat a la versió 2.47.0 amb les recomanacions de la secció 7 (veu bilingüe només per a Anglès; avís i lectura igualment sense veu anglesa; `clau` després del primer error a «Simple or Continuous?» i des del principi a la resta; «Què vol dir?» dona l'estrella; buit a triar; anglès a 0,85). El revisor de veu de la fase 2 és `motor/prova-veu.js`.
+
 **En poques línies.** El món té bon contingut, però té dos problemes. **1) La veu.** Tot el que no és una frase amb buits es llegeix amb la veu catalana, també el que és en anglès: el revers de les targetes («She's got curly hair.»), les preguntes de test en anglès («Her eyes aren't dark. They're…»), els enunciats i les respostes model de les obertes, i les paraules angleses de dins de les fitxes (*curly*, *straight*, *Present Continuous*). Ho diu en anglès amb accent català, i el nen aprèn una pronúncia equivocada. **2) Les frases amb buits** demanen la paraula sense dir què hi falta («?»), en fallar no expliquen per què aquella opció és dolenta, i la paraula clau que decideix la resposta (*now*, *every day*, *Listen!*) no es veu. Proposo una **veu bilingüe** (cada tros amb la seva veu), un **buit que s'explica** (quantes paraules, quina mena de paraula i la paraula pista) i un **perquè per a cada error**. Tot plegat, en 6 fases petites, cada una amb el seu PR. Al final hi ha 6 decisions per prendre abans de programar.
 
 ---

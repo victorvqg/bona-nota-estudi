@@ -20,10 +20,21 @@ Els passos comuns (`mons.json`, `tot.py`, proves, versió) són a l'apartat «Af
 Camps propis d'Anglès a `ASSIG`:
 
 ```js
-veuFrases:"en-GB",   // el botó «Escolta-la» de les frases llegeix en anglès
+veuFrases:"en-GB",     // el botó «Escolta-la» de les frases llegeix en anglès
+veuContingut:"en-GB",  // veu bilingüe: a la resta, el que és en anglès sona en anglès i les explicacions, en català
 ```
 
-No posis `veu:"en-GB"` a `ASSIG`: les fitxes s'expliquen en català i s'han de llegir amb veu catalana.
+No posis `veu:"en-GB"` a `ASSIG`: les fitxes s'expliquen en català i el català sonaria amb accent anglès.
+
+### La veu bilingüe
+
+Amb `veuContingut`, cada botó 🔊 (fitxa, targetes, test, obertes i el perquè de les frases) parteix el text en trossos i diu cada tros amb la seva veu: l'anglès a `en-GB` i més a poc a poc (0,85), la resta en català. El motor ho decideix sol:
+
+1. Una marca `<span lang="en">…</span>` o `<span lang="ca">…</span>` mana sempre. Posa-la només on el detector s'equivoqui.
+2. Si un text no té res de català (el revers «She's got curly hair.», una pregunta en anglès), tot sona en anglès.
+3. Si no, paraula per paraula. Les paraules angleses surten de les frases amb buits i dels títols dels temes (`A1 · Adjectives…`); les catalanes, de les traduccions `ca`, de les glosses entre parèntesis («tall (alt)») i de les paraules amb accents. Les ambigües (*a, no, on, he, film, musical…*) prenen la llengua de les veïnes. Una paraula desconeguda en `<b>` és anglesa.
+
+Per això: **posa en `<b>` les paraules angleses de les fitxes i la traducció catalana entre parèntesis** (`<b>curly</b> (arrissat)`). Comprova com sona amb `node motor/prova-veu.js` i, si cal, afegeix-hi un cas. Si l'aparell no té veu anglesa, el motor avisa un cop i ho llegeix igualment.
 
 ## 2. Regles de llengua
 
@@ -99,6 +110,9 @@ Serveix també per a un diàleg sencer: les línies se separen amb `<br>` i `no`
 | `ex` | Sí | El perquè, en català, amb la paraula clau en `<b>` |
 | `ca` | Sí | La traducció al català |
 | `pista` | Opcional | Ajuda que surt després del primer error. Si no n'hi ha, a les d'escriure el motor diu com comença la paraula |
+| `per` | Recomanat a gramàtica | El perquè de cada error: `{are:"<b>Hair</b> és singular: va amb is."}`. A les de triar, cada clau ha de ser una opció de `no`; a les d'escriure, un error típic escrit (`"is danceing"`). Surt en tocar aquella opció |
+| `clau` | Opcional | Paraula (o llista) de la frase que decideix la resposta: *now*, *every day*, *Listen!*. Surt subratllada; al final, il·luminada. Amb `clauDespres:true` al joc, només després del primer error (perquè el nen hi pensi sol) |
+| `falta` | Opcional | Què hi falta, en català: «el verb <i>be</i>», «<i>be</i> + verb en -ing». Surt damunt de la frase |
 | `id` | Opcional | Només si canvies el text d'una frase ja publicada i vols conservar-ne el repàs |
 
 ### Com repartir les 12 frases
@@ -122,8 +136,12 @@ Dues lectures poden compartir un mateix joc (al Tema 2, el museu i el tresor de 
 
 ## 4. Què fa el motor tot sol
 
-- Primer error: pista. Segon error: ensenya la resposta (en taronja).
-- Després de cada frase: la frase sencera, la traducció, el perquè, el botó 🔊 en anglès i «digues-la en veu alta».
+- El buit mostra tants guions com paraules té la resposta (*is dancing* → 2). A les d'ordenar, tants com paraules falten.
+- A les de triar, «🗣️ Què vol dir?» ensenya la traducció abans de respondre (dona l'estrella igual).
+- Als buits múltiples, el nen pot tocar el buit que vol omplir primer.
+- Als diàlegs, el nom de qui parla (`A:`, `Aina:`) surt en gris.
+- Primer error: el `per` d'aquella opció, o la pista. Segon error: ensenya la resposta (en taronja) i el perquè de l'opció triada.
+- Després de cada frase: la frase sencera, la traducció, el perquè (amb 🔊 bilingüe), el botó 🔊 en anglès i «digues-la en veu alta».
 - 1 ⭐ per frase bé a la primera; cada joc paga un cop al dia.
 - Les frases fallades entren a «🔁 Repassa els teus errors» i tornen al cap d'uns dies.
 
@@ -141,7 +159,8 @@ La prova juga tots els jocs de frases i en revisa les dades. Falla si:
 
 - una frase no té buit (`___`) o el nombre de buits no quadra amb `ok`;
 - una opció falsa és igual que la bona, o una frase de triar té menys de 2 opcions falses;
-- una frase no té `ex`, hi ha frases repetides o el joc té menys frases que les d'una partida.
+- una frase no té `ex`, hi ha frases repetides o el joc té menys frases que les d'una partida;
+- una clau de `per` no és cap opció falsa, o una `clau` no surt a la frase.
 
 Després, mira-ho al mòbil (360 a 430 px): el diàleg amb banc de paraules és la frase més llarga i la que primer es desquadra.
 
@@ -149,7 +168,7 @@ Després, mira-ho al mòbil (360 a 430 px): el diàleg amb banc de paraules és 
 
 1. Dades a `motor/dades/angles-t<N>.js` amb un `id` nou (per exemple `angles3`): l'`id` és la clau del progrés i no pot repetir el d'un altre món.
 2. Entrada a `motor/mons.json` amb la carpeta `angles/t<N>`.
-3. `veuFrases:"en-GB"` a `ASSIG`.
+3. `veuFrases:"en-GB"` i `veuContingut:"en-GB"` a `ASSIG`.
 4. Un joc `fr-…` per tema de vocabulari o gramàtica, amb 12 frases, i `frases:"fr-…"` a cada tema.
 5. La taula «Si el món és nou, també cal tocar això» del README (tauler, `bn_control.sql`, `sprites.js`, il·lustració, proves del tauler).
 6. `docs/MONS.md`, `docs/ESTAT.md`, `CHANGELOG.md` i versió MENOR nova.
