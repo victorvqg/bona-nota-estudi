@@ -187,6 +187,11 @@ Fet a partir dels 4 fulls del tema 2 (llibre de Llengua catalana de 1r d'ESO, Ba
 - **10 jocs en 3 seccions:** 📚 Literatura (De la veu al paper · Oral o escrita? · Gèneres i subgèneres · Quin gènere és?) ·
   🏷️ El nom (Individual i col·lectiu · Paraules diferents · El xivato del gènere · Plural igual o amb -s?) ·
   ✏️ Puntuació (Quin signe hi va? · Majúscula o minúscula?).
+- **Nou a la 2.51.0:**
+  - 🖍️ Tres jocs de «Pinta les paraules»: les peces del SN, propi o comú, i masculí o femení.
+  - 📝 «Puntua el text» (8 textos sencers) i 🔊 «Escolta i puntua» (l'entonació diu el signe).
+  - 📜 «Quin gènere és aquest text?», amb 9 fragments per llegir o escoltar.
+  - Esquemes dibuixats a la teoria i el perquè de cada error a les frases.
 - 👾 Boss: **El Monstre dels Signes**.
 - Falten les pàgines 52-53 del llibre (inici d'ortografia): la puntuació surt de la taula de la pàgina 54.
 

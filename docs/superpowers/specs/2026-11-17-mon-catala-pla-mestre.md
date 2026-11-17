@@ -2,6 +2,11 @@
 
 17/11/2026 · Revisió del món de Català (Tema 2: La literatura, el nom i la puntuació; `motor/dades/catala.js`, publicat a `catala/t2`). He comptat el contingut i he fet captures a 390 px de la fitxa del sintagma nominal, del joc «Quin signe hi va?», d'una frase amb buits (bé i malament) i d'una pregunta oberta.
 
+**Estat:** executat a la versió 2.51.0 amb les recomanacions de la secció 4.
+- He convertit 3 frases de regla en frases d'ús (no 20). Les frases d'ús noves han entrat sobretot als jocs nous: 8 textos per puntuar, 10 frases per escoltar i 9 fragments.
+- El joc de pintar és un joc `custom` amb `fn:"jocMarca"` (no un `tipus:"marca"` nou) i encara no envia els errors al repàs espaiat.
+- No he afegit frases d'escriure amb el mot entre parèntesis (punt A) ni el `per` a totes les opcions: n'hi ha a les frases on l'error té una explicació clara.
+
 **En poques línies.** El món té molt contingut i ben fet: 12 temes, 109 preguntes de test, 68 targetes, 15 obertes, 10 jocs i 6 jocs de frases amb buits (72 frases). El que hi falta és **practicar fent**, no recitant la regla:
 
 - Moltes frases amb buits pregunten **la regla** («Darrere d'un interrogant s'escriu ___»), i no l'**apliquen** a una frase de veritat.

@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="fddeb932a0",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e42f176e62",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -100,6 +100,12 @@ header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%
 @media(max-width:400px){.qui-num{display:none}}
 @media(max-width:600px){.hd{padding:8px 10px;gap:6px}.logo{font-size:17px;gap:6px}#logoic{width:30px;height:30px;font-size:17px;border-radius:9px}.vol .so-btn{width:28px}.vol{gap:2px}.logo .tt small{font-size:14px}.curs{font-size:12.5px;padding:0 7px}.qui-av{width:20px;height:20px}.qui-av svg{width:18px;height:18px}}
 .benv .tema{margin:4px 0 0;font-weight:900;color:var(--blau2)}
+.esq-tema{margin:10px 0;padding:10px 12px;border-radius:14px;background:#f8fafc;border:2px solid var(--vora);overflow-x:auto}
+.esq-tema>small{display:block;font-weight:900;color:#64748b;letter-spacing:.3px;margin-bottom:4px;text-transform:uppercase}
+.esq-tema table{border-collapse:separate;border-spacing:4px;margin:0 auto;font-weight:800}
+.esq-tema td,.esq-tema th{padding:5px 10px;border-radius:8px;background:#fff;border:1px solid var(--vora);text-align:center}
+.esq-tema th{background:#eef2ff}.esq-tema .ex{background:#fef3c7}
+.esq-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}.esq-col>div{padding:8px 10px;border-radius:12px;font-weight:700}
 .pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap;flex:none}
 @media(max-width:600px){.pill .pt-ext{display:none}.pill{padding:5px 8px}}
 /* menú: centrat, sobre una banda fosca translúcida perquè el text blanc es llegeixi sobre qualsevol degradat */
@@ -680,7 +686,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.50.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.51.0</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -694,105 +700,147 @@ const ASSIG={
   {id:"fr-oral-escrita",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🔥",titol:"De viva veu o per escrit",sub:"L'art de la paraula, l'oral i l'escrita",col:"#fef3c7",
    enunciat:"✍️ Completa les frases sobre la literatura oral i l'escrita",
    items:[
-    {f:"La literatura és l'art de dir coses de manera creativa amb un llenguatge ___.",ok:"estètic",no:["científic","matemàtic","secret"],pista:"Vol dir bonic, que busca la bellesa.",ex:"Literatura = art de la paraula amb un llenguatge estètic (bonic)."},
-    {f:"L'objectiu principal de la literatura és ___ i agradar.",ok:"emocionar",no:["ordenar","calcular","prohibir"],pista:"Fer sentir coses a qui escolta o llegeix.",ex:"La literatura busca emocionar i agradar comunicant fets, sentiments i imatges."},
+    {f:"La literatura és l'art de dir coses de manera creativa amb un llenguatge ___.",ok:"estètic",no:["científic","matemàtic","secret"],per:{"científic":"El llenguatge científic busca ser exacte, no bonic.","matemàtic":"Les mates no busquen emocionar: la literatura, sí.","secret":"La literatura es fa per compartir-la, no per amagar-la."},pista:"Vol dir bonic, que busca la bellesa.",ex:"Literatura = art de la paraula amb un llenguatge estètic (bonic)."},
+    {f:"L'objectiu principal de la literatura és ___ i agradar.",ok:"emocionar",no:["ordenar","calcular","prohibir"],per:{"ordenar":"Ordenar és d'una llista o d'un arxiu, no d'un poema.","calcular":"Calcular és cosa de les mates.","prohibir":"La literatura no prohibeix res: vol fer sentir i agradar."},pista:"Fer sentir coses a qui escolta o llegeix.",ex:"La literatura busca emocionar i agradar comunicant fets, sentiments i imatges."},
     {f:"Maria Dolors Alibés compara els bons records amb ___ que tenen espines.",r:["roses"],pista:"Són flors oloroses i suaus, però punxen.",ex:"Al conte del llibre, els records són com roses: suaus, però amb espines."},
     {mots:"Les primeres obres literàries van ser orals.",no:["impreses."],pista:"Es deien de viva veu abans de l'escriptura.",ex:"Les primeres manifestacions literàries van ser orals, molt anteriors a l'escriptura."},
     {f:"Quan encara no existia l'escriptura, els textos es guardaven a la ___.",r:["memòria"],pista:"Al cap de les persones, recordant-los.",ex:"Sense escriptura, les cançons i històries es conservaven a la memòria."},
-    {f:"La literatura oral passava de ___ a fills, i dels fills als ___.",ok:["pares","néts"],no:["copistes","llibres"],pista:"De generació en generació dins la família.",ex:"Pare → fill → nét: així es transmetia la literatura oral tradicional."},
-    {f:"La invenció de l'___ va portar l'escriptura i va fixar el text.",ok:"alfabet",no:["escenari","micròfon","diccionari"],pista:"El conjunt de lletres per poder escriure.",ex:"L'invent de l'alfabet va impulsar la literatura escrita."},
+    {f:"La literatura oral passava de ___ a fills, i dels fills als ___.",ok:["pares","néts"],no:["copistes","llibres"],per:{"copistes":"Els copistes són de la literatura escrita, quan ja hi havia llibres.","llibres":"La literatura oral no anava en llibres: passava de boca a orella."},pista:"De generació en generació dins la família.",ex:"Pare → fill → nét: així es transmetia la literatura oral tradicional."},
+    {f:"La invenció de l'___ va portar l'escriptura i va fixar el text.",ok:"alfabet",no:["escenari","micròfon","diccionari"],per:{"escenari":"L'escenari és del teatre, no de l'escriptura.","micròfon":"El micròfon és molt més modern que l'escriptura.","diccionari":"El diccionari va venir molt després: primer calien les lletres."},pista:"El conjunt de lletres per poder escriure.",ex:"L'invent de l'alfabet va impulsar la literatura escrita."},
     {f:"Abans de la impremta, els ___ copiaven els llibres manuscrits a mà.",r:["copistes"],pista:"Persones que feien còpies a mà.",ex:"Fins a la impremta de Gutenberg, els copistes copiaven els manuscrits a mà."},
-    {f:"Una obra és ___ quan no sabem qui l'ha feta.",r:["anònima"],pista:"Comença per «anò…» i porta accent obert a la o.",ex:"Anònima vol dir d'autor desconegut (no pas feta per molta gent alhora)."},
-    {f:"La literatura oral té ___ versions; en canvi, l'escrita té una versió ___.",ok:["diverses","única"],no:["impresa","secreta"],pista:"L'orador l'adapta; el llibre queda fixat.",ex:"Cada orador adapta l'oral (diverses versions), mentre que l'escrita queda invariable (versió única)."},
+    {f:"Una obra és ___ quan no sabem qui l'ha feta.",r:["anònima"],per:{"anonima":"Porta accent obert a la o: anònima."},pista:"Comença per «anò…» i porta accent obert a la o.",ex:"Anònima vol dir d'autor desconegut (no pas feta per molta gent alhora)."},
+    {f:"La literatura oral té ___ versions; en canvi, l'escrita té una versió ___.",ok:["diverses","única"],no:["impresa","secreta"],per:{"impresa":"Impresa vol dir feta amb la impremta; aquí parlem de quantes versions té.","secreta":"L'escrita no és secreta: és fixa i igual per a tothom."},pista:"L'orador l'adapta; el llibre queda fixat.",ex:"Cada orador adapta l'oral (diverses versions), mentre que l'escrita queda invariable (versió única)."},
     {mots:"Amb l'escriptura la lectura es torna silenciosa.",no:["cantada."],pista:"Una persona sola amb un llibre a les mans.",ex:"El lector solitari i silenciós va anar relegant el grup d'oients."},
-    {f:"El conjunt de cançons i relats populars transmesos de viva veu forma la literatura ___ tradicional.",ok:"oral",no:["escrita","impresa","privada"],pista:"Es transmet per la boca, parlant o cantant.",ex:"La literatura oral tradicional és patrimoni cultural popular."}
+    {f:"El conjunt de cançons i relats populars transmesos de viva veu forma la literatura ___ tradicional.",ok:"oral",no:["escrita","impresa","privada"],per:{"escrita":"Si es transmet de viva veu, no és escrita.","impresa":"Impresa és en paper; aquesta passa de boca a orella.","privada":"És de tot el poble: és patrimoni popular."},pista:"Es transmet per la boca, parlant o cantant.",ex:"La literatura oral tradicional és patrimoni cultural popular."}
    ],
    final:"Ja tens clares les tres diferències: com es transmet, qui n'és l'autor i quantes versions té!"},
   {id:"fr-generes",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🎭",titol:"Els quatre gèneres en frases",sub:"Vers, prosa, poesia, narrativa, teatre i assaig",col:"#ede9fe",
    enunciat:"✍️ Completa les frases dels gèneres literaris",
    items:[
-    {f:"Els quatre grans gèneres literaris són la poesia, la ___, el teatre i l'___.",ok:["narrativa","assaig"],no:["pintura","notícia"],pista:"Recorda el truc: la literatura PiNTA.",ex:"PiNTA: Poesia, Narrativa, Teatre i Assaig."},
-    {f:"Cada ratlla d'un poema és un ___, i un grup de versos forma una ___.",ok:["vers","estrofa"],no:["prosa","comèdia"],pista:"Primer una sola línia; després el conjunt de línies.",ex:"Un vers és cada ratlla del poema; una estrofa és un grup de versos."},
+    {f:"Els quatre grans gèneres literaris són la poesia, la ___, el teatre i l'___.",ok:["narrativa","assaig"],no:["pintura","notícia"],per:{"pintura":"La pintura és un art, però no un gènere literari.","notícia":"La notícia és periodisme, no literatura."},pista:"Recorda el truc: la literatura PiNTA.",ex:"PiNTA: Poesia, Narrativa, Teatre i Assaig."},
+    {f:"Cada ratlla d'un poema és un ___, i un grup de versos forma una ___.",ok:["vers","estrofa"],no:["prosa","comèdia"],per:{"prosa":"La prosa és el contrari del vers: s'escriu de punta a punta de ratlla.","comèdia":"La comèdia és un tipus d'obra de teatre."},pista:"Primer una sola línia; després el conjunt de línies.",ex:"Un vers és cada ratlla del poema; una estrofa és un grup de versos."},
     {f:"Els textos escrits sense regles mètriques, de punta a punta de ratlla, van en ___.",r:["prosa"],pista:"El contrari d'escriure en vers.",ex:"La prosa fa servir la forma habitual del llenguatge, sense regles mètriques."},
-    {f:"A la poesia ___, el poeta expressa un sentiment intens o una reflexió profunda.",ok:"lírica",no:["èpica","còmica","curta"],pista:"Sentiments íntims, com el mar i el mariner de Cèlia Viñas.",ex:"Poesia lírica = sentiments; poesia èpica = gestes d'herois."},
-    {f:"La poesia ___ narra en vers les gestes llegendàries d'uns herois, com el comte de Mataplana.",ok:"èpica",no:["lírica","dramàtica","oral"],pista:"Comença per «è…» i parla d'herois.",ex:"Verdaguer explica el comte de Mataplana en vers: és poesia èpica."},
+    {f:"A la poesia ___, el poeta expressa un sentiment intens o una reflexió profunda.",ok:"lírica",no:["èpica","còmica","curta"],per:{"èpica":"L'èpica explica gestes d'herois, no sentiments íntims.","còmica":"Còmica vol dir que fa riure; aquí parla d'un sentiment intens.","curta":"La llargada no decideix el gènere."},pista:"Sentiments íntims, com el mar i el mariner de Cèlia Viñas.",ex:"Poesia lírica = sentiments; poesia èpica = gestes d'herois."},
+    {f:"La poesia ___ narra en vers les gestes llegendàries d'uns herois, com el comte de Mataplana.",ok:"èpica",no:["lírica","dramàtica","oral"],per:{"lírica":"La lírica expressa sentiments, no aventures d'herois.","dramàtica":"Dramàtica és del teatre.","oral":"Verdaguer l'escriu: és èpica perquè explica les gestes d'un heroi."},pista:"Comença per «è…» i parla d'herois.",ex:"Verdaguer explica el comte de Mataplana en vers: és poesia èpica."},
     {f:"En una obra narrativa, qui explica els fets reals o imaginaris és el ___.",r:["narrador"],pista:"La veu que narra la història.",ex:"A la narrativa (en prosa) sempre hi ha un narrador que explica els fets."},
     {mots:"El teatre s'escriu amb diàlegs dels personatges.",no:["estrofes"],pista:"Parlen directament els actors dalt de l'escenari.",ex:"El teatre exposa un conflicte humà a través dels diàlegs per representar-lo."},
-    {f:"Al teatre, la ___ té un desenllaç fatal i la ___ té un desenllaç feliç.",ok:["tragèdia","comèdia"],no:["lírica","prosa"],pista:"T = Tomba (acaba malament) · C = Celebració (acaba bé).",ex:"Tragèdia → desenllaç fatal (com Julieta i el verí); comèdia → desenllaç feliç."},
-    {f:"El ___ és una obra teatral realista que té un desenllaç ___.",ok:["drama","incert"],no:["èpica","rimat"],pista:"D = Dubte: acaba a l'aire.",ex:"A diferència de la tragèdia, el drama planteja un conflicte realista amb desenllaç incert."},
+    {f:"Al teatre, la ___ té un desenllaç fatal i la ___ té un desenllaç feliç.",ok:["tragèdia","comèdia"],no:["lírica","prosa"],per:{"lírica":"La lírica és poesia, no teatre.","prosa":"La prosa és una manera d'escriure, no un tipus d'obra."},pista:"T = Tomba (acaba malament) · C = Celebració (acaba bé).",ex:"Tragèdia → desenllaç fatal (com Julieta i el verí); comèdia → desenllaç feliç."},
+    {f:"El ___ és una obra teatral realista que té un desenllaç ___.",ok:["drama","incert"],no:["èpica","rimat"],per:{"èpica":"L'èpica és poesia d'herois, no teatre.","rimat":"Rimat parla dels versos; el final del drama és incert."},pista:"D = Dubte: acaba a l'aire.",ex:"A diferència de la tragèdia, el drama planteja un conflicte realista amb desenllaç incert."},
     {f:"El ___ d'una obra és la manera com acaba el conflicte.",r:["desenllaç"],pista:"Porta «ç» final i vol dir el final de l'embolic.",ex:"El desenllaç és com es resol o acaba el conflicte d'una obra."},
     {f:"En un ___, l'autor exposa en prosa les seves reflexions i opinions sobre un tema.",r:["assaig"],pista:"És la A del truc PiNTA (com el text de Josep Pla).",ex:"L'assaig exposa en prosa les reflexions i opinions de l'autor amb voluntat literària."},
-    {f:"Quan Josep Pla opina sobre l'olivar i la vinya, escriu un text d'___.",ok:"assaig",no:["èpica","tragèdia","comèdia"],pista:"Hi dóna el seu punt de vista en prosa.",ex:"A l'activitat 13 del llibre, el fragment de Josep Pla és un assaig."}
+    {f:"Quan Josep Pla opina sobre l'olivar i la vinya, escriu un text d'___.",ok:"assaig",no:["èpica","tragèdia","comèdia"],per:{"èpica":"L'èpica narra gestes en vers, i Pla opina en prosa.","tragèdia":"La tragèdia és teatre amb final fatal.","comèdia":"La comèdia és teatre amb final feliç."},clau:"opina",pista:"Hi dóna el seu punt de vista en prosa.",ex:"A l'activitat 13 del llibre, el fragment de Josep Pla és un assaig."}
    ],
    final:"Recorda sempre: PiNTA per als 4 gèneres i T-C-D (Tomba, Celebració, Dubte) per al teatre!"},
   {id:"fr-sn-classes",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🧩",titol:"El sintagma nominal i els noms",sub:"Nucli, classes, col·lectius i mesura",col:"#dcfce7",
    enunciat:"✍️ Completa les frases del sintagma nominal i les classes de noms",
    items:[
-    {f:"El nom és una paraula ___ perquè canvia de gènere i de nombre.",ok:"variable",no:["invariable","verbal","mètrica"],pista:"Pot fer noi, noia, nois, noies.",ex:"El nom és variable: varia en gènere (masculí/femení) i nombre (singular/plural)."},
+    {f:"El nom és una paraula ___ perquè canvia de gènere i de nombre.",ok:"variable",no:["invariable","verbal","mètrica"],per:{"invariable":"Invariable seria si no canviés mai, i noi → noia → nois sí que canvia.","verbal":"Verbal és dels verbs.","mètrica":"Mètrica és dels versos."},pista:"Pot fer noi, noia, nois, noies.",ex:"El nom és variable: varia en gènere (masculí/femení) i nombre (singular/plural)."},
     {mots:"Tot sintagma nominal té un sol nucli.",no:["verb."],pista:"La paraula protagonista del grup sempre és un sol nom.",ex:"Dins del sintagma nominal (SN), el nucli és sempre un sol nom."},
-    {f:"A «un sobre groguenc», «un» és l'___, «sobre» és el nucli i «groguenc» és el ___.",ok:["especificador","complement"],no:["verb","topònim"],pista:"Davant qui presenta; darrere qui dona detalls.",ex:"Especificador (davant) + nucli (el nom) + complement (darrere)."},
+    {f:"A «un sobre groguenc», «un» és l'___, «sobre» és el nucli i «groguenc» és el ___.",ok:["especificador","complement"],no:["verb","topònim"],per:{"verb":"Dins del SN no hi ha verb: hi ha especificador, nucli i complement.","topònim":"Topònim és un nom propi de lloc."},pista:"Davant qui presenta; darrere qui dona detalls.",ex:"Especificador (davant) + nucli (el nom) + complement (darrere)."},
     {f:"A «els teus ulls verds i ametllats», el nucli del sintagma nominal és ___.",r:["ulls"],pista:"És l'únic nom: si el treus, no saps de què parles.",ex:"El nucli és sempre un sol nom: «ulls»."},
-    {f:"Els noms propis de persona es diuen ___ i els de lloc es diuen ___.",ok:["antropònims","topònims"],no:["col·lectius","abstractes"],pista:"Paula és de persona; Menorca és de mapa.",ex:"Antropònims = noms propis de persona; topònims = noms propis de lloc."},
-    {f:"«Valentia» i «amistat» són noms ___ perquè designen realitats que no podem tocar.",ok:"abstractes",no:["concrets","propis","col·lectius"],pista:"El contrari de concret.",ex:"Els noms abstractes anomenen conceptes, qualitats o sentiments no materials."},
+    {f:"Els noms propis de persona es diuen ___ i els de lloc es diuen ___.",ok:["antropònims","topònims"],no:["col·lectius","abstractes"],per:{"col·lectius":"Col·lectiu és un grup (ramat), no un nom propi.","abstractes":"Abstracte és el que no es pot tocar (amistat)."},pista:"Paula és de persona; Menorca és de mapa.",ex:"Antropònims = noms propis de persona; topònims = noms propis de lloc."},
+    {f:"«Valentia» i «amistat» són noms ___ perquè designen realitats que no podem tocar.",ok:"abstractes",no:["concrets","propis","col·lectius"],per:{"concrets":"Concrets són els que es poden tocar o veure, com taula.","propis":"Els propis van en majúscula: Paula, Girona.","col·lectius":"Col·lectiu vol dir un grup, com ramat."},clau:"no podem tocar",pista:"El contrari de concret.",ex:"Els noms abstractes anomenen conceptes, qualitats o sentiments no materials."},
     {f:"Un conjunt de pins és una ___.",r:["pineda"],pista:"És el nom col·lectiu de «pi».",ex:"Pi (individual) → pineda (col·lectiu)."},
     {f:"«Ovella» és un nom individual, i el grup d'ovelles en singular es diu ___.",r:["ramat"],pista:"Comença per «ra…» i acaba en «-t».",ex:"Ramat és un nom col·lectiu: va en singular però designa moltes ovelles."},
-    {f:"El nom col·lectiu de «flor» és ___, i el d'«ocell» és ___.",ok:["ram","aviram"],no:["pineda","equip"],pista:"Un de flors per regalar i el conjunt d'aus.",ex:"Activitat 16 del llibre: flor → ram; ocell → aviram; jugador → equip."},
-    {f:"«Farina», «sal» i «oli» són noms ___ perquè no es compten per unitats.",ok:"no comptables",no:["comptables","propis","col·lectius"],pista:"No podem dir «dues farines» ni «tres sals».",ex:"Els no comptables no admeten numerals directament, sinó quantitatius o noms de mesura."},
-    {f:"A l'activitat 17 diem «un ___ d'oli» i «un ___ de sal».",ok:["rajolí","pessic"],no:["ramat","eixam"],pista:"Un fil fi d'oli i el que agafes amb els dits de sal.",ex:"Davant d'un nom no comptable hi podem posar un nom de mesura: rajolí d'oli, pessic de sal."},
+    {f:"El nom col·lectiu de «flor» és ___, i el d'«ocell» és ___.",ok:["ram","aviram"],no:["pineda","equip"],per:{"pineda":"Pineda és un conjunt de pins.","equip":"Equip és un conjunt de jugadors."},pista:"Un de flors per regalar i el conjunt d'aus.",ex:"Activitat 16 del llibre: flor → ram; ocell → aviram; jugador → equip."},
+    {f:"«Farina», «sal» i «oli» són noms ___ perquè no es compten per unitats.",ok:"no comptables",no:["comptables","propis","col·lectius"],per:{"comptables":"Comptables seria si poguéssim dir «dues farines».","propis":"Els propis porten majúscula.","col·lectius":"Col·lectiu és un grup d'individus (ramat)."},clau:"no es compten",pista:"No podem dir «dues farines» ni «tres sals».",ex:"Els no comptables no admeten numerals directament, sinó quantitatius o noms de mesura."},
+    {f:"A l'activitat 17 diem «un ___ d'oli» i «un ___ de sal».",ok:["rajolí","pessic"],no:["ramat","eixam"],per:{"ramat":"Ramat és un grup d'ovelles.","eixam":"Eixam és un grup d'abelles."},pista:"Un fil fi d'oli i el que agafes amb els dits de sal.",ex:"Davant d'un nom no comptable hi podem posar un nom de mesura: rajolí d'oli, pessic de sal."},
     {f:"A «un got de llet», el nom no comptable és ___.",r:["llet"],pista:"«Got» sí que es pot comptar (dos gots); el líquid de dins, no.",ex:"Got és el nom de mesura (comptable) i llet és el nom no comptable."}
    ],
    final:"Molt bé! Ja saps trobar el nucli del SN i classificar qualsevol nom per les 4 parelles."},
   {id:"fr-genere-nombre",grup:"✍️ Frases amb buits",tipus:"frases",ic:"👫",titol:"Gènere, nombre i invariables",sub:"Articles trampa, femenins i plurals en -u / -us",col:"#fce7f3",
    enunciat:"✍️ Completa les frases de gènere, nombre i noms invariables",
    items:[
-    {f:"En català diem «___ costum» (masculí) i «___ dent» (femení).",ok:["el","la"],no:["les","els"],pista:"Van just al revés que en castellà!",ex:"En català és el costum (m.), els senyals (m.), la dent (f.) i les postres (f.)."},
-    {f:"Al final de l'àpat mengem ___ postres, en femení i plural.",ok:"les",no:["el","els","un"],pista:"En català és femení plural.",ex:"Sempre en femení i plural: les postres."},
-    {f:"El femení de «el cavall» és l'___.",r:["euga","l'euga"],pista:"Comença per «eu…» (mai «cavalla»!).",ex:"Cavall i euga fan el gènere amb paraules diferents (heterònims)."},
-    {f:"El femení de «el porc» és la ___, i el de «l'ase» és la ___.",ok:["truja","somera"],no:["cabra","ovella"],pista:"La femella del porc i la femella del ruc.",ex:"El porc → la truja (o la verra); l'ase o el ruc → la somera."},
-    {f:"El femení d'«actor» és ___, i el femení plural de «psicòleg» és ___.",ok:["actriu","psicòlogues"],no:["actora","psicòlegues"],pista:"Fixa't en el canvi -iu i en la grafia -gues.",ex:"Actor → actriu; psicòleg → psicòloga, psicòlegs, psicòlogues."},
+    {f:"En català diem «___ costum» (masculí) i «___ dent» (femení).",ok:["el","la"],no:["les","els"],per:{"les":"És un sol costum i una sola dent: singular.","els":"És una sola cosa: singular, no plural."},pista:"Van just al revés que en castellà!",ex:"En català és el costum (m.), els senyals (m.), la dent (f.) i les postres (f.)."},
+    {f:"Al final de l'àpat mengem ___ postres, en femení i plural.",ok:"les",no:["el","els","un"],per:{"el":"Postres és femení i plural: les postres.","els":"Postres és femení: les postres.","un":"Postres va sempre en plural."},pista:"En català és femení plural.",ex:"Sempre en femení i plural: les postres."},
+    {f:"El femení de «el cavall» és l'___.",r:["euga","l'euga"],per:{"cavalla":"«Cavalla» no existeix: cavall fa el femení amb una altra paraula, euga.","la cavalla":"«Cavalla» no existeix: el femení de cavall és l'euga."},pista:"Comença per «eu…» (mai «cavalla»!).",ex:"Cavall i euga fan el gènere amb paraules diferents (heterònims)."},
+    {f:"El femení de «el porc» és la ___, i el de «l'ase» és la ___.",ok:["truja","somera"],no:["cabra","ovella"],per:{"cabra":"La cabra és la femella del boc.","ovella":"L'ovella és la femella del moltó."},pista:"La femella del porc i la femella del ruc.",ex:"El porc → la truja (o la verra); l'ase o el ruc → la somera."},
+    {f:"El femení d'«actor» és ___, i el femení plural de «psicòleg» és ___.",ok:["actriu","psicòlogues"],no:["actora","psicòlegues"],per:{"actora":"«Actora» no existeix: el femení és actriu.","psicòlegues":"Canvia la vocal: psicòloga, psicòlogues."},pista:"Fixa't en el canvi -iu i en la grafia -gues.",ex:"Actor → actriu; psicòleg → psicòloga, psicòlegs, psicòlogues."},
     {f:"El femení de «el gendre» és la jove o la ___.",r:["nora","la nora"],pista:"Una paraula curta de quatre lletres que comença per «n».",ex:"El gendre té dos femenins correctes: la jove o la nora."},
     {f:"Com que «rossinyol» té una sola forma, diem «un rossinyol mascle» o «un rossinyol ___».",r:["femella"],pista:"S'hi afegeix aquesta paraula darrere per indicar el sexe.",ex:"Als noms d'animals d'una sola forma hi afegim mascle o femella."},
-    {f:"A «el cantant / la cantant», el nom és ___ en gènere i només canvia l'article.",ok:"invariable",no:["col·lectiu","propi","abstracte"],pista:"La paraula «cantant» no canvia gens.",ex:"Cantant, periodista, pilot o gimnasta són invariables en gènere."},
-    {f:"El plural d'«una tribu» és «les ___».",r:["tribus","les tribus"],pista:"Com que acaba en -u, hi afegim una -s.",ex:"Els singulars acabats en -u afegeixen -s: tribu → tribus, ritu → ritus."},
-    {f:"El plural d'«un virus» és «els ___».",r:["virus","els virus"],pista:"Ja acaba en -us en singular: no hi afegeixis res!",ex:"Si el singular ja acaba en -us (virus, focus, globus), el plural és idèntic."},
-    {f:"Tinc un llapis blau i dos ___ vermells a l'estoig.",ok:"llapis",no:["llapissos","llapisos","llàpissos"],pista:"Ja porta la essa de casa.",ex:"Llapis, dilluns i temps són invariables en nombre: dos llapis."},
+    {f:"A «el cantant / la cantant», el nom és ___ en gènere i només canvia l'article.",ok:"invariable",no:["col·lectiu","propi","abstracte"],per:{"col·lectiu":"Col·lectiu és un grup; aquí parlem del gènere.","propi":"Cantant no porta majúscula: no és propi.","abstracte":"Cantant és una persona: és concret."},pista:"La paraula «cantant» no canvia gens.",ex:"Cantant, periodista, pilot o gimnasta són invariables en gènere."},
+    {f:"El plural d'«una tribu» és «les ___».",r:["tribus","les tribus"],per:{"tribues":"Els acabats en -u només hi afegeixen -s: tribus.","tribu":"Ha d'anar en plural: les tribus."},pista:"Com que acaba en -u, hi afegim una -s.",ex:"Els singulars acabats en -u afegeixen -s: tribu → tribus, ritu → ritus."},
+    {f:"El plural d'«un virus» és «els ___».",r:["virus","els virus"],per:{"virussos":"Virus ja acaba en -us: el plural és igual, els virus.","virusos":"Virus ja acaba en -us: el plural és igual, els virus."},pista:"Ja acaba en -us en singular: no hi afegeixis res!",ex:"Si el singular ja acaba en -us (virus, focus, globus), el plural és idèntic."},
+    {f:"Tinc un llapis blau i dos ___ vermells a l'estoig.",ok:"llapis",no:["llapissos","llapisos","llàpissos"],per:{"llapissos":"Llapis és pla i ja acaba en -s: no canvia en plural.","llapisos":"Llapis no canvia en plural: dos llapis.","llàpissos":"Ni accent ni -os: dos llapis."},clau:"dos",pista:"Ja porta la essa de casa.",ex:"Llapis, dilluns i temps són invariables en nombre: dos llapis."},
     {mots:"Tallem el paper amb les estisores.",no:["l'estisora."],pista:"És un nom que només es fa servir en plural.",ex:"Les estisores, les alicates, les pinces i les postres només es fan servir en plural."}
    ],
    final:"Genial! Ni «cavalla», ni «llapissos», ni «virussos» t'enganyaran a l'examen."},
   {id:"fr-parelles-genere",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🔑",titol:"El clau o la clau?",sub:"Canvia l'article i canvia el significat",col:"#fef9c3",
    enunciat:"✍️ Tria o escriu l'article i el nom segons el significat",
    items:[
-    {f:"Per obrir la porta de casa necessito ___ clau, i per penjar el quadre clavo ___ clau.",ok:["la","el"],no:["les","els"],pista:"La que obre és femenina; el que es clava és masculí.",ex:"La clau obre el pany; el clau és la tija de ferro per clavar."},
-    {f:"El metge em pren ___ pols al canell per comptar el batec del cor.",ok:"el",no:["la","les","una"],pista:"El batec del cor és masculí.",ex:"El pols = batec del cor; la pols = partícules diminutes que s'escombren."},
-    {f:"Passa el drap per la prestatgeria, que hi ha molta ___.",ok:"pols",no:["clau","son","llum"],pista:"Partícules diminutes de brutícia (en femení: «molta…»).",ex:"La pols (en femení) són les partícules diminutes que s'acumulen als mobles."},
-    {f:"Badallo perquè tinc molta ___: me'n vaig a dormir!",ok:"son",no:["pols","clau","plata"],pista:"Tenir ganes de dormir és femení («molta…»).",ex:"La son = ganes de dormir; el son = l'acte de dormir."},
-    {f:"Durant ___ profund de la nit no va sentir gens el tro.",ok:"el son",no:["la son","la pols","la clau"],pista:"Aquí vol dir l'acte de dormir (masculí).",ex:"El son (masculí) és l'acte de dormir."},
-    {f:"He comprat ___ llum nou per a la tauleta de nit.",ok:"un",no:["una","les","la"],pista:"L'aparell elèctric (el llum) és masculí.",ex:"El llum = l'aparell que fa llum; la llum = la claror."},
-    {f:"Obre les cortines perquè entri ___ llum del sol.",ok:"la",no:["el","un","els"],pista:"La claror del sol és femenina.",ex:"La llum (femení) és la claror que il·lumina l'habitació."},
-    {f:"A la pel·lícula es veu com s'acosta ___ fi del món, però quin és ___ fi d'aquest invent?",ok:["la","el"],no:["les","una"],pista:"El final és femení; la finalitat o objectiu és masculí.",ex:"La fi = l'acabament o final; el fi = l'objectiu o la finalitat."},
-    {f:"Quina ___ que surt del contenidor d'escombraries!",ok:"pudor",no:["pols","son","clau"],pista:"En femení («quina…») vol dir mala olor.",ex:"La pudor = mala olor; el pudor = vergonya o modèstia."},
+    {f:"Per obrir la porta de casa necessito ___ clau, i per penjar el quadre clavo ___ clau.",ok:["la","el"],no:["les","els"],per:{"les":"És una sola clau i un sol clau: singular.","els":"És un sol clau: singular."},clau:["obrir la porta","clavo"],pista:"La que obre és femenina; el que es clava és masculí.",ex:"La clau obre el pany; el clau és la tija de ferro per clavar."},
+    {f:"El metge em pren ___ pols al canell per comptar el batec del cor.",ok:"el",no:["la","les","una"],per:{"la":"La pols és la brutícia; el batec del cor és el pols.","les":"És un sol batec: singular.","una":"El batec del cor és masculí: el pols."},clau:"batec",pista:"El batec del cor és masculí.",ex:"El pols = batec del cor; la pols = partícules diminutes que s'escombren."},
+    {f:"Passa el drap per la prestatgeria, que hi ha molta ___.",ok:"pols",no:["clau","son","llum"],per:{"clau":"La clau obre portes; amb el drap hi traiem la pols.","son":"La son és tenir ganes de dormir.","llum":"La llum és la claror."},clau:"drap",pista:"Partícules diminutes de brutícia (en femení: «molta…»).",ex:"La pols (en femení) són les partícules diminutes que s'acumulen als mobles."},
+    {f:"Badallo perquè tinc molta ___: me'n vaig a dormir!",ok:"son",no:["pols","clau","plata"],per:{"pols":"La pols s'escombra; no fa badallar.","clau":"La clau obre portes.","plata":"La plata és un plat gran."},clau:"Badallo",pista:"Tenir ganes de dormir és femení («molta…»).",ex:"La son = ganes de dormir; el son = l'acte de dormir."},
+    {f:"Durant ___ profund de la nit no va sentir gens el tro.",ok:"el son",no:["la son","la pols","la clau"],per:{"la son":"La son són les ganes de dormir; aquí és l'acte de dormir: el son.","la pols":"La pols és brutícia.","la clau":"La clau obre portes."},clau:"profund",pista:"Aquí vol dir l'acte de dormir (masculí).",ex:"El son (masculí) és l'acte de dormir."},
+    {f:"He comprat ___ llum nou per a la tauleta de nit.",ok:"un",no:["una","les","la"],per:{"una":"L'aparell és masculí: un llum.","les":"És un sol aparell: singular.","la":"La llum és la claror; l'aparell és el llum."},clau:"nou",pista:"L'aparell elèctric (el llum) és masculí.",ex:"El llum = l'aparell que fa llum; la llum = la claror."},
+    {f:"Obre les cortines perquè entri ___ llum del sol.",ok:"la",no:["el","un","els"],per:{"el":"El llum és l'aparell; la claror del sol és la llum.","un":"La claror és femenina: la llum.","els":"És una sola claror: singular."},clau:"del sol",pista:"La claror del sol és femenina.",ex:"La llum (femení) és la claror que il·lumina l'habitació."},
+    {f:"A la pel·lícula es veu com s'acosta ___ fi del món, però quin és ___ fi d'aquest invent?",ok:["la","el"],no:["les","una"],per:{"les":"És una sola fi i un sol fi.","una":"Aquí ja sabem quina és: va l'article la o el."},pista:"El final és femení; la finalitat o objectiu és masculí.",ex:"La fi = l'acabament o final; el fi = l'objectiu o la finalitat."},
+    {f:"Quina ___ que surt del contenidor d'escombraries!",ok:"pudor",no:["pols","son","clau"],per:{"pols":"La pols no fa mala olor.","son":"La son és tenir ganes de dormir.","clau":"La clau obre portes."},clau:"contenidor",pista:"En femení («quina…») vol dir mala olor.",ex:"La pudor = mala olor; el pudor = vergonya o modèstia."},
     {f:"Per Tots Sants portem una ___ gran plena de panellets al mig de la taula.",r:["plata"],pista:"Semblant a un plat, però en femení perquè és més gran.",ex:"Una plata és un recipient semblant al plat però més gran."},
-    {f:"A taula hem posat una ___ d'aigua fresca i al rebedor, un ___ amb flors.",ok:["gerra","gerro"],no:["plata","plat"],pista:"Per beure va en femení; per posar-hi flors, en masculí.",ex:"Canvi d'ús segons el gènere: una gerra de suc o d'aigua / un gerro de flors."},
+    {f:"A taula hem posat una ___ d'aigua fresca i al rebedor, un ___ amb flors.",ok:["gerra","gerro"],no:["plata","plat"],per:{"plata":"La plata és per servir menjar, no aigua.","plat":"El plat és per menjar, no per a les flors."},pista:"Per beure va en femení; per posar-hi flors, en masculí.",ex:"Canvi d'ús segons el gènere: una gerra de suc o d'aigua / un gerro de flors."},
     {mots:"Canviar l'article canvia tot el significat.",no:["accent"],pista:"El clau i la clau no són la mateixa cosa.",ex:"En aquestes parelles, el masculí i el femení són paraules amb significats diferents."}
    ],
    final:"El clau es clava i la clau obre; el pols batega i la pols s'escombra; el son dorm i la son badalla!"},
+  {id:"fr-fragments",grup:"✍️ Frases amb buits",tipus:"frases",ic:"📜",titol:"Quin gènere és aquest text?",sub:"Fragments per llegir i escoltar",col:"#ede9fe",escoltaAbans:true,
+   enunciat:"📜 Llegeix (o escolta) el fragment i digues de quin gènere és",
+   items:[
+    {f:"«Les fulles cauen lentes<br>damunt del meu carrer,<br>i el vent, amb veu de pluja,<br>em diu que ja és desembre.»<br>👉 És ___.",escolta:"Les fulles cauen lentes, damunt del meu carrer, i el vent, amb veu de pluja, em diu que ja és desembre.",ok:"poesia lírica",no:["narrativa","teatre"],per:{"narrativa":"No explica cap història amb personatges: expressa un sentiment, i en vers.","teatre":"No hi ha personatges que parlin ni acotacions."},pista:"Mira com està escrit: ratlles curtes, amb ritme. I què hi expressa?",ex:"Vers (ratlles curtes amb ritme) + un sentiment (la tristor de la tardor) = <b>poesia lírica</b>."},
+    {f:"«La Júlia va obrir la porta de les golfes. A dins, entre la pols, hi havia un bagul vell que ningú no recordava. Va aixecar la tapa i…»<br>👉 És ___.",escolta:"La Júlia va obrir la porta de les golfes. A dins, entre la pols, hi havia un bagul vell que ningú no recordava. Va aixecar la tapa i…",ok:"narrativa",no:["assaig","poesia lírica"],per:{"assaig":"L'assaig dona opinions; aquí un narrador explica què fa la Júlia.","poesia lírica":"Està escrit en prosa, de punta a punta de ratlla, i explica fets."},pista:"Hi ha un personatge i passen coses: algú ens ho explica.",ex:"Prosa + un narrador que explica què passa a un personatge = <b>narrativa</b>."},
+    {f:"«MARC (entrant amb pressa): On és la carta?<br>LAIA: L'he amagada. (Somriu.)»<br>👉 És ___.",escolta:"Marc, entrant amb pressa: On és la carta? Laia: L'he amagada.",ok:"teatre",no:["narrativa","poesia lírica"],per:{"narrativa":"No hi ha narrador: els personatges parlen directament.","poesia lírica":"No està en vers ni expressa un sentiment: és un diàleg."},pista:"Fixa't en els noms en majúscula seguits de dos punts i en el que va entre parèntesis.",ex:"Noms dels personatges + diàleg + acotacions entre parèntesis = <b>teatre</b>."},
+    {f:"«Crec que llegir cada dia ens fa més lliures. Quan llegim, pensem amb el cap d'altres persones i, a poc a poc, aprenem a pensar amb el nostre.»<br>👉 És ___.",escolta:"Crec que llegir cada dia ens fa més lliures. Quan llegim, pensem amb el cap d'altres persones i, a poc a poc, aprenem a pensar amb el nostre.",ok:"assaig",no:["narrativa","teatre"],per:{"narrativa":"No explica cap història: l'autor dona la seva opinió.","teatre":"No hi ha personatges ni diàleg."},clau:"Crec",pista:"L'autor diu què en pensa ell.",ex:"Prosa + reflexions i opinions de l'autor = <b>assaig</b>, com el de Josep Pla."},
+    {f:"«El comte, amb l'espasa a la mà,<br>va pujar la muntanya tot sol<br>a lluitar contra el drac del castell<br>i va tornar amb la victòria.»<br>👉 És ___.",escolta:"El comte, amb l'espasa a la mà, va pujar la muntanya tot sol a lluitar contra el drac del castell i va tornar amb la victòria.",ok:"poesia èpica",no:["poesia lírica","assaig"],per:{"poesia lírica":"Està en vers, però no expressa un sentiment: explica la gesta d'un heroi.","assaig":"No dona opinions: explica una aventura, i en vers."},pista:"Està en vers. Hi ha un heroi que fa una gesta?",ex:"Vers + les gestes d'un heroi = <b>poesia èpica</b>, com el comte de Mataplana de Verdaguer."},
+    {f:"«Hi havia una vegada un pagès tan pobre que només tenia una cabra i una olla foradada…» Aquesta rondalla es contava a la vora del foc i ningú no sap qui la va inventar.<br>👉 És literatura ___.",escolta:"Hi havia una vegada un pagès tan pobre que només tenia una cabra i una olla foradada.",ok:"oral",no:["escrita","impresa"],per:{"escrita":"Es contava de viva veu a la vora del foc: no s'escrivia.","impresa":"No venia en cap llibre: passava de boca a orella."},clau:"es contava",pista:"Com arribava a la gent: parlant o llegint?",ex:"Les rondalles es contaven de viva veu i són anònimes: són <b>literatura oral tradicional</b>."},
+    {f:"«Plou i fa sol,<br>les bruixes es pentinen;<br>plou i fa sol,<br>les bruixes porten dol.» Aquesta cançó la canten els nens des de fa molts anys i és ___.",escolta:"Plou i fa sol, les bruixes es pentinen; plou i fa sol, les bruixes porten dol.",ok:"anònima",no:["d'un sol autor","de Verdaguer"],per:{"d'un sol autor":"No sabem qui la va fer: és anònima.","de Verdaguer":"És una cançó popular: no la va escriure Verdaguer."},pista:"Sabem qui la va inventar?",ex:"Les cançons populars són <b>anònimes</b> (no sabem qui les va fer) i tenen moltes versions."},
+    {f:"«A l'abril, cada gota val per mil.» Un refrany com aquest és literatura ___.",escolta:"A l'abril, cada gota val per mil.",ok:"oral",no:["escrita","científica"],per:{"escrita":"Els refranys es diuen de viva veu i passen de pares a fills.","científica":"No és cap estudi: és saviesa popular."},pista:"On l'has sentit: en un llibre o dit pels avis?",ex:"Els refranys són <b>literatura oral tradicional</b>: es diuen de viva veu i no tenen autor conegut."},
+    {f:"«Al final de l'obra, els dos enamorats es casen, tothom balla a la plaça i el teló baixa entre aplaudiments.»<br>👉 L'obra és una ___.",escolta:"Al final de l'obra, els dos enamorats es casen, tothom balla a la plaça i el teló baixa entre aplaudiments.",ok:"comèdia",no:["tragèdia","drama"],per:{"tragèdia":"La tragèdia acaba malament (T de tomba); aquí acaba de festa.","drama":"El drama acaba amb un final incert; aquí el final és feliç."},clau:"es casen",pista:"Com acaba: malament, bé o a l'aire?",ex:"Desenllaç feliç = <b>comèdia</b> (C de Celebració)."}
+   ],
+   final:"Primer mira COM està escrit (vers, prosa o diàleg) i després QUÈ hi fa l'autor (sentir, explicar, opinar)."},
   {id:"fr-puntuacio",grup:"✍️ Frases amb buits",tipus:"frases",ic:"✏️",titol:"Porta tancada o entreoberta",sub:"Punts, interrogants, punt i coma i dos punts",col:"#fee2e2",
    enunciat:"✍️ Completa les regles i els exemples dels signes de puntuació",
    items:[
     {f:"Els títols i els subtítols no porten mai punt ___.",r:["final"],pista:"El punt que tanca tot un text.",ex:"El punt final marca l'acabament d'un text, però no es posa mai al final d'un títol."},
     {f:"El punt i a ___ tanca un paràgraf, i a la ratlla següent deixem el ___.",ok:["part","sagnat"],no:["seguit","títol"],pista:"Canviem de ratlla i deixem un petit espai en blanc de 3 o 4 espais.",ex:"Després d'un punt i a part comencem paràgraf nou deixant el sagnat."},
     {f:"«Va sonar el timbre. Tothom va sortir corrents.» Aquí hi ha un punt i ___.",r:["seguit"],pista:"Les dues oracions continuen a la mateixa ratlla.",ex:"El punt i seguit separa oracions dins del mateix paràgraf."},
-    {f:"Darrere d'un interrogant (?) o d'una admiració (!) que tanquen l'oració, s'escriu ___.",ok:"majúscula",no:["minúscula","punt","coma"],pista:"Són signes de «porta tancada».",ex:"Els signes que tanquen l'oració (. ? ! …) demanen majúscula darrere."},
+    {id:"f170pc6q",f:"«Quina hora és? ___ tard: corre!»",ok:"Ja és",no:["ja és","JA ÉS"],per:{"ja és":"Darrere d'un interrogant que tanca l'oració va majúscula: és una porta tancada.","JA ÉS":"Només la primera lletra en majúscula."},pista:"L'interrogant tanca l'oració: porta tancada.",ex:"Els signes que tanquen l'oració (. ? ! …) demanen majúscula darrere: «Quina hora és? Ja és tard»."},
     {f:"A l'enumeració «Porto llapis, gomes, retoladors, etc.» no hi podem afegir punts ___.",r:["suspensius"],pista:"Els tres puntets (…) no van mai junts amb «etc.».",ex:"O posem «etc.» o posem punts suspensius (…), però mai totes dues coses alhora."},
-    {f:"Darrere el punt i coma (;) i els dos punts (:) d'una llista s'escriu ___.",ok:"minúscula",no:["majúscula","interrogant","punt"],pista:"Deixen la «porta entreoberta».",ex:"El punt i coma i els dos punts deixen l'oració entreoberta: darrere va minúscula."},
-    {f:"«A l'estiu anem a la platja___ a l'hivern, a la neu.»",ok:";",no:[".","?","…"],pista:"Separa dues oracions molt relacionades i «a l'hivern» va en minúscula.",ex:"Exemple del llibre: el punt i coma separa dues oracions amb relació de proximitat."},
-    {f:"«Hi ha quatre gèneres literaris___ poesia, narrativa, teatre i assaig.»",ok:":",no:[";","?","!"],pista:"Són un teló que s'obre per presentar una llista.",ex:"Els dos punts introdueixen una enumeració o un exemple."},
-    {f:"«No vaig poder venir a classe___ estava malalt.»",ok:":",no:["?","!","…"],pista:"La segona part explica la causa de la primera, en minúscula.",ex:"Els dos punts també introdueixen una explicació o causa de l'oració anterior."},
-    {f:"Quan els dos punts introdueixen les paraules d'algú entre cometes «», comencen amb ___.",ok:"majúscula",no:["minúscula","punt i coma","guionet"],pista:"És l'excepció dels dos punts: «Demà hi ha examen».",ex:"Darrere dos punts, la citació directa entre cometes «» comença amb majúscula."},
+    {id:"f1ouzonu",f:"«Hi ha quatre gèneres: ___, narrativa, teatre i assaig.»",ok:"poesia",no:["Poesia","POESIA"],per:{"Poesia":"Darrere els dos punts d'una llista va minúscula: la porta queda entreoberta.","POESIA":"No s'escriu tot en majúscules; i darrere dels dos punts, minúscula."},pista:"Els dos punts deixen la porta entreoberta.",ex:"El punt i coma i els dos punts deixen l'oració entreoberta: darrere va minúscula."},
+    {f:"«A l'estiu anem a la platja___ a l'hivern, a la neu.»",ok:";",no:[".","?","…"],per:{".":"Amb un punt, «a l'hivern» aniria en majúscula i quedaria tallat.","?":"No és cap pregunta.","…":"L'oració no queda a mitges: continua."},clau:"a l'hivern",pista:"Separa dues oracions molt relacionades i «a l'hivern» va en minúscula.",ex:"Exemple del llibre: el punt i coma separa dues oracions amb relació de proximitat."},
+    {f:"«Hi ha quatre gèneres literaris___ poesia, narrativa, teatre i assaig.»",ok:":",no:[";","?","!"],per:{";":"El punt i coma separa oracions; per presentar una llista, dos punts.","?":"No és cap pregunta.","!":"No expressa sorpresa: presenta una llista."},clau:"quatre",pista:"Són un teló que s'obre per presentar una llista.",ex:"Els dos punts introdueixen una enumeració o un exemple."},
+    {f:"«No vaig poder venir a classe___ estava malalt.»",ok:":",no:["?","!","…"],per:{"?":"No és cap pregunta.","!":"No és una exclamació: explica per què.","…":"No queda a mitges: la segona part explica la causa."},clau:"estava malalt",pista:"La segona part explica la causa de la primera, en minúscula.",ex:"Els dos punts també introdueixen una explicació o causa de l'oració anterior."},
+    {id:"fc0an4o",f:"La mestra va dir: «___ hi ha examen».",ok:"Demà",no:["demà","DEMÀ"],per:{"demà":"Les paraules d'algú entre cometes comencen amb majúscula, encara que vagin darrere de dos punts.","DEMÀ":"Només la primera lletra en majúscula."},pista:"És l'excepció dels dos punts: comencen les paraules d'algú.",ex:"Darrere dos punts, la citació directa entre cometes «» comença amb majúscula."},
     {mots:"Els títols no porten mai punt final.",no:["coma"],pista:"Una regla d'or de la pàgina 54.",ex:"Recorda-ho sempre als treballs i exàmens: els títols van sense punt final."},
-    {f:"«Si no t'afanyes___ Ja ho veuràs.»",ok:"…",no:[";",":",","],pista:"L'oració queda interrompuda a mitges i després ve majúscula.",ex:"Els punts suspensius marquen una oració no acabada; com que la tanquen, «Ja» va en majúscula."}
+    {f:"«Si no t'afanyes___ Ja ho veuràs.»",ok:"…",no:[";",":",","],per:{";":"Darrere de «;» aniria minúscula, i «Ja» va en majúscula.",":":"Darrere de «:» aniria minúscula.",",":"Darrere de la coma aniria minúscula."},clau:"Ja",pista:"L'oració queda interrompuda a mitges i després ve majúscula.",ex:"Els punts suspensius marquen una oració no acabada; com que la tanquen, «Ja» va en majúscula."}
    ],
    final:"Porta tancada (. ? ! …) → majúscula. Porta entreoberta (; :) → minúscula (llevat de «Cita»)!"},
+  {id:"fr-textos",grup:"✍️ Frases amb buits",tipus:"frases",ic:"📝",titol:"Puntua el text",sub:"Textos sencers amb tots els signes buits",col:"#fee2e2",n:6,
+   enunciat:"📝 Posa tots els signes que falten al text",
+   items:[
+    {f:"Ahir vaig anar al mercat___ Hi havia moltes fruites___ pomes, peres i taronges___",ok:[".",":","."],no:["?","!"],pista:"Primer acaba una oració, després ve una llista i al final s'acaba el text.",ex:"Punt i seguit entre oracions, <b>dos punts</b> abans de la llista i punt final."},
+    {f:"— On vas tan de pressa___<br>— A l'escola___ Faig tard___",ok:["?",".","!"],no:[":",";"],pista:"Primer algú pregunta; després l'altre respon i s'espanta.",ex:"Pregunta → <b>?</b> · resposta normal → <b>.</b> · «Faig tard!» amb ensurt → <b>!</b>"},
+    {f:"La mare em va dir___ «Endreça l'habitació»___ Jo vaig contestar___ «Ara mateix»___",ok:[":",".",":","."],no:["?","…"],pista:"Abans de les paraules d'algú entre cometes van dos punts.",ex:"Els <b>dos punts</b> presenten les paraules d'algú entre cometes, i cada oració acaba amb punt."},
+    {f:"Si no estudies___ Ja ho veuràs___ L'examen és demà___",ok:["…","!","."],no:["?",":"],pista:"La primera oració queda a mitges com una amenaça.",ex:"Oració a mitges → <b>…</b> · avís fort → <b>!</b> · informació → <b>.</b>"},
+    {f:"Necessito tres coses___ llapis, goma i regle___ Les tens tu___",ok:[":",".","?"],no:[";","!"],pista:"Primer una llista, després una pregunta.",ex:"Abans de la llista, <b>dos punts</b>; per preguntar si les té, <b>?</b>"},
+    {f:"A l'hivern neva molt a la muntanya___ a l'estiu, en canvi, hi fa calor___",ok:[";","."],no:[":","?","!"],clau:"a l'estiu",pista:"Dues oracions que es comparen, i la segona comença en minúscula.",ex:"El <b>punt i coma</b> separa dues oracions molt relacionades: «a l'estiu» va en minúscula."},
+    {f:"Va sonar el timbre___ Tothom va sortir corrents___ Què havia passat___",ok:[".",".","?"],no:["!",":"],pista:"Dos fets i, al final, una pregunta.",ex:"Dos fets amb <b>punt i seguit</b> i una pregunta amb <b>?</b>"},
+    {f:"Quina sorpresa___ Hi havia tres regals a la taula___ un llibre, un joc i una bufanda___",ok:["!",":","."],no:["?",";"],clau:"Quina sorpresa",pista:"Primer una emoció, després es presenta una llista.",ex:"Emoció → <b>!</b> · llista → <b>:</b> · final → <b>.</b>"}
+   ],
+   final:"Llegeix el text en veu alta: on fas una pausa llarga, hi va un punt; on la veu puja, un interrogant."},
+  {id:"fr-escolta",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🔊",titol:"Escolta i puntua",sub:"La veu et diu si és pregunta o exclamació",col:"#e0f2fe",escoltaAbans:true,
+   enunciat:"🔊 Escolta la frase i posa-hi el signe del final",
+   items:[
+    {f:"Quina hora és___",ok:"?",no:["!","."],per:{"!":"No expressa cap emoció: demana l'hora.",".":"Demana una informació: és una pregunta."},pista:"Escolta-la: la veu puja al final?",ex:"Demana una informació i la veu puja: <b>?</b>"},
+    {f:"Quina sort que hem tingut___",ok:"!",no:["?","."],per:{"?":"No pregunta res: expressa alegria.",".":"Hi ha una emoció forta: admiració."},pista:"Comença igual que una pregunta, però escolta l'emoció.",ex:"«Quina sort…» expressa alegria: <b>!</b>"},
+    {f:"Que vindràs a la festa___",ok:"?",no:["!","."],per:{"!":"No és una emoció: espera una resposta (sí o no).",".":"Demana si vindràs: és una pregunta."},pista:"Espera que l'altre contesti sí o no?",ex:"Espera una resposta de sí o no: <b>?</b>"},
+    {f:"Que bé que has vingut___",ok:"!",no:["?","."],per:{"?":"No pregunta res: expressa alegria.",".":"Hi ha una emoció: admiració."},pista:"És una pregunta o una alegria?",ex:"Expressa alegria: <b>!</b>"},
+    {f:"Demà plourà tot el dia___",ok:".",no:["?","!"],per:{"?":"No pregunta res: informa.","!":"Ho diu amb to normal, sense emoció."},pista:"Escolta el to: és normal, puja o crida?",ex:"Informa d'un fet amb to normal: <b>.</b>"},
+    {f:"Si arribes tard___",ok:"…",no:["?","."],per:{"?":"No pregunta res.",".":"L'oració no s'acaba: queda a mitges."},pista:"La frase s'acaba de veritat o queda penjada?",ex:"L'oració queda a mitges: <b>…</b>"},
+    {f:"On has deixat les claus___",ok:"?",no:["!","."],per:{"!":"No és una emoció: busca les claus.",".":"Comença amb «On»: és una pregunta."},clau:"On",pista:"Comença amb una paraula de pregunta.",ex:"«On…» demana un lloc: <b>?</b>"},
+    {f:"Compte, que cau___",ok:"!",no:["?","…"],per:{"?":"No pregunta: avisa d'un perill.","…":"No queda a mitges: és un avís fort."},pista:"És un avís d'un perill.",ex:"Un avís fort i urgent: <b>!</b>"},
+    {f:"I llavors, de cop i volta___",ok:"…",no:["?","."],per:{"?":"No pregunta res.",".":"Queda en suspens: el que passa encara no s'ha dit."},pista:"Et deixa amb ganes de saber què passa.",ex:"Deixa la intriga a mitges: <b>…</b>"},
+    {f:"Tinc fred, tinc gana i tinc son___",ok:".",no:["?","…"],per:{"?":"No pregunta res: explica com està.","…":"L'enumeració s'acaba: punt."},pista:"Explica com està, amb to normal.",ex:"Una informació que s'acaba: <b>.</b>"}
+   ],
+   final:"Si la veu puja, interrogant; si hi ha emoció, admiració; si queda penjada, punts suspensius."},
   {id:"veu",grup:"📚 Literatura",tipus:"ordena",ic:"🔥",titol:"De la veu al paper",sub:"Com va canviar la literatura",col:"#fef3c7",
    enunciat:"🔥 Ordena la història de la literatura",instr:"Toca els passos en ordre, <b>del més antic al més nou</b>.",
    items:[["Cançons i històries de viva veu","els primers humans, abans de l'escriptura","#fef3c7"],["Es guarden a la memòria","pares → fills → néts: literatura oral tradicional","#fef3c7"],["La invenció de l'alfabet","arriba l'escriptura: el text queda fixat","#e0e7ff"],["Els copistes","copien els llibres a mà (manuscrits)","#e0e7ff"],["La impremta","Gutenberg, cap al 1450","#dcfce7"]],
@@ -810,6 +858,50 @@ const ASSIG={
    enunciat:"🔎 Uneix cada text del llibre amb el seu gènere",instr:"Toca un text a l'esquerra i després el seu gènere a la dreta.",
    pars:[["Kent Haruf: la noia que surt del cafè","Narrativa"],["Verdaguer: el comte de Mataplana i els dos cavalls","Poesia èpica"],["Josep Pla: l'olivar i la vinya","Assaig"],["Cèlia Viñas: el mar i el mariner","Poesia lírica"],["Shakespeare: Julieta i el verí","Tragèdia"],["Benet i Jornet: l'intendent i el marxant","Comèdia"]],
    final:"La literatura PiNTA amb paraules: Poesia, Narrativa, Teatre, Assaig."},
+  {id:"mc-sn",grup:"🏷️ El nom",tipus:"custom",fn:"jocMarca",prova:"jocMarcaProva",ic:"🖍️",titol:"Pinta les peces del SN",sub:"Especificador, nucli i complement",col:"#dcfce7",
+   enunciat:"🖍️ Pinta les tres peces del sintagma nominal",
+   cats:[["E","Especificador","#fde68a"],["N","Nucli","#93c5fd"],["C","Complement","#bbf7d0"]],
+   items:[
+    {t:"un sobre groguenc",m:"ENC",ex:"<b>un</b> presenta, <b>sobre</b> és el nom (nucli) i <b>groguenc</b> en dona detalls."},
+    {t:"els teus ulls verds",m:"EENC",ex:"L'especificador pot tenir dues paraules: <b>els teus</b>. El nucli és <b>ulls</b>."},
+    {t:"quatre trucs nous",m:"ENC",ex:"Els numerals també són especificadors: <b>quatre</b>."},
+    {t:"una pregunta difícil",m:"ENC",ex:"Nucli: <b>pregunta</b>. Si el treus, no saps de què parles."},
+    {t:"la meva germana petita",m:"EENC",ex:"<b>la meva</b> presenta, <b>germana</b> és el nucli i <b>petita</b> el complement."},
+    {t:"aquells llibres de màgia",m:"ENCC",ex:"El complement també pot tenir més d'una paraula: <b>de màgia</b>."},
+    {t:"el bruixot molt bo",m:"ENCC",ex:"<b>molt bo</b> és el complement: dona detalls del bruixot."},
+    {t:"les cases de pedra",m:"ENCC",ex:"Nucli: <b>cases</b> · complement: <b>de pedra</b>."},
+    {t:"tres gats negres",m:"ENC",ex:"<b>tres</b> presenta, <b>gats</b> és el nucli, <b>negres</b> el complement."},
+    {t:"el meu gos",m:"EEN",ex:"Un SN pot no tenir complement: <b>el meu</b> + <b>gos</b>."}
+   ],
+   final:"El nucli és sempre UN sol nom; davant hi va qui el presenta i darrere qui en dona detalls."},
+  {id:"mc-classes",grup:"🏷️ El nom",tipus:"custom",fn:"jocMarca",prova:"jocMarcaProva",ic:"🗂️",titol:"Propi o comú?",sub:"Pinta els noms de la frase",col:"#e0f2fe",
+   enunciat:"🗂️ Pinta els noms: propis o comuns? (Les altres paraules no es pinten.)",
+   cats:[["P","Nom propi","#fbcfe8"],["C","Nom comú","#bfdbfe"]],
+   items:[
+    {t:"La Paula viu a Menorca",m:"-P--P",ex:"<b>Paula</b> és una persona (antropònim) i <b>Menorca</b> un lloc (topònim): tots dos, propis."},
+    {t:"El meu gos es diu Bruc",m:"--C--P",ex:"<b>gos</b> és qualsevol gos (comú); <b>Bruc</b> és el nom d'aquest gos (propi)."},
+    {t:"Anem a Girona amb tren",m:"--P-C",ex:"<b>Girona</b> és un lloc concret (propi); <b>tren</b> és comú."},
+    {t:"En Marc té un ramat d'ovelles",m:"-P--CC",ex:"<b>Marc</b> és propi; <b>ramat</b> (col·lectiu) i <b>ovelles</b> són comuns."},
+    {t:"La Júlia llegeix un llibre al parc",m:"-P--C-C",ex:"Propi: <b>Júlia</b>. Comuns: <b>llibre</b> i <b>parc</b>."},
+    {t:"El riu Ebre passa per Tortosa",m:"-CP--P",ex:"<b>riu</b> és comú; <b>Ebre</b> i <b>Tortosa</b> són propis (topònims)."},
+    {t:"Tinc molta amistat amb la Núria",m:"--C--P",ex:"<b>amistat</b> és comú (i abstracte); <b>Núria</b> és propi."},
+    {t:"Al Montseny hi ha una pineda",m:"-P---C",ex:"<b>Montseny</b> és propi; <b>pineda</b> és comú (i col·lectiu)."}
+   ],
+   final:"Els noms propis van amb majúscula i anomenen UNA persona o UN lloc concret."},
+  {id:"mc-genere",grup:"🏷️ El nom",tipus:"custom",fn:"jocMarca",prova:"jocMarcaProva",ic:"👫",titol:"Masculí o femení?",sub:"Els noms trampa del tema",col:"#fce7f3",
+   enunciat:"👫 Pinta cada nom segons el gènere (l'article et dona la pista)",
+   cats:[["M","Masculí","#bfdbfe"],["F","Femení","#fbcfe8"]],
+   items:[
+    {t:"El costum i la dent",m:"-M--F",ex:"Al revés que en castellà: <b>el costum</b> i <b>la dent</b>."},
+    {t:"Les postres eren bones",m:"-F--",ex:"<b>Les postres</b>: femení i plural."},
+    {t:"L'euga i el cavall",m:"F--M",ex:"<b>euga</b> és el femení de <b>cavall</b>: són paraules diferents."},
+    {t:"Un senyal a la paret",m:"-M--F",ex:"En català, <b>el senyal</b> és masculí."},
+    {t:"El pols i la pols",m:"-M--F",ex:"<b>El pols</b> és el batec del cor; <b>la pols</b>, la brutícia."},
+    {t:"La clau del pany",m:"-F-M",ex:"<b>La clau</b> obre el pany; el clau es clava."},
+    {t:"Una gerra i un gerro",m:"-F--M",ex:"<b>La gerra</b> és per a l'aigua; <b>el gerro</b>, per a les flors."},
+    {t:"La son em fa badallar",m:"-F---",ex:"<b>La son</b> són les ganes de dormir (femení)."}
+   ],
+   final:"Si dubtes, posa-hi l'article: el costum, la dent, el senyal, les postres."},
   {id:"colectius",grup:"🏷️ El nom",tipus:"parelles",ic:"🐑",titol:"Individual i col·lectiu",sub:"Cada un amb el seu grup",col:"#dcfce7",
    enunciat:"🐑 Uneix cada nom individual amb el seu col·lectiu",instr:"Toca un individual a l'esquerra i després el seu col·lectiu a la dreta.",
    pars:[["pi","pineda"],["flor","ram"],["jugador","equip"],["ocell","aviram"],["ovella","ramat"],["alumne","alumnat"]],
@@ -900,7 +992,7 @@ const T=[
      ["Amb l'escriptura, com es va tornar la lectura?",["Cantada en grup, al voltant d'un foc","Solitària i silenciosa","Sempre en veu alta davant del públic"],1,"Una persona sola amb un llibre va relegar el grup d'oients."],
      ["Quina d'aquestes frases és de la literatura oral tradicional?",["Té el nom de l'autor a la portada","El text es manté sempre igual","És patrimoni popular"],2,"L'oral és anònima: és de tothom, patrimoni popular."],
      ["Qui era el copista?",["La persona que copiava els llibres a mà","L'orador que recitava davant del públic","L'autor que inventava les històries"],0,"Feia les còpies dels llibres manuscrits."]]},
- {id:"generes",frases:"fr-generes",ic:"📚",col:"#7c3aed",titol:"Els gèneres literaris: vers i prosa",font:"Llibre · Literatura 1.4 · pàg. 44",
+ {id:"generes",frases:"fr-generes",practica:"fr-fragments",esquema:{titol:"Com està escrit?",html:"<table><tr><th>Vers</th><th>Prosa</th><th>Diàleg</th></tr><tr><td>ratlles curtes amb ritme</td><td>de punta a punta de ratlla</td><td>NOM: el que diu (acotació)</td></tr><tr><td class='ex'>poesia</td><td class='ex'>narrativa · assaig</td><td class='ex'>teatre</td></tr></table>"},ic:"📚",col:"#7c3aed",titol:"Els gèneres literaris: vers i prosa",font:"Llibre · Literatura 1.4 · pàg. 44",
   idea:"Segons la forma i el contingut, les obres literàries es classifiquen en quatre grans gèneres: la poesia, la narrativa, el teatre i l'assaig.",
   pts:["Pensa en una biblioteca amb <b>quatre prestatgeries</b>: <b>poesia</b>, <b>narrativa</b>, <b>teatre</b> i <b>assaig</b>. Cada obra va a la seva segons <b>com està escrita</b> (la forma) i <b>de què parla</b> (el contingut).",
    "<b>Textos en vers</b>: segueixen <b>regles mètriques</b>: estrofes, un nombre regular de síl·labes, ritme i, sovint, rima. Cada <b>vers</b> va en una ratlla, i un grup de versos és una <b>estrofa</b>.",
@@ -920,7 +1012,7 @@ const T=[
      ["Un poema narra la història llegendària d'uns herois excepcionals. Quin subgènere és?",["Lírica","Assaig","Èpica"],2,"Èpica = herois i gestes."],
      ["Una novel·la amb una història llarga i personatges complexos és…",["narrativa llarga","narrativa curta","poesia èpica"],0,"La curta té una història breu i personatges senzills."],
      ["Qui explica els fets en una obra narrativa?",["Els personatges, amb diàlegs","Un narrador","L'autor, amb les seves opinions"],1,"A la narrativa hi ha un narrador que explica els fets."]]},
- {id:"teatre",frases:"fr-generes",ic:"🎭",col:"#be185d",titol:"El teatre, l'assaig i com reconèixer els gèneres",font:"Llibre · Literatura 1.4 · pàg. 44-45 (activitat 13)",
+ {id:"teatre",frases:"fr-generes",practica:"fr-fragments",ic:"🎭",col:"#be185d",titol:"El teatre, l'assaig i com reconèixer els gèneres",font:"Llibre · Literatura 1.4 · pàg. 44-45 (activitat 13)",
   idea:"El teatre exposa un conflicte humà amb els diàlegs dels personatges, per representar-lo; l'assaig exposa les reflexions i opinions de l'autor.",
   pts:["<b>Teatre</b> (en <b>diàlegs</b>): exposa un <b>conflicte humà</b> a través dels diàlegs dels personatges, perquè <b>actors i actrius</b> l'interpretin dalt d'un <b>escenari</b>.",
    "<b>Tragèdia</b>: to seriós i greu; desenllaç <b>fatal</b>.",
@@ -942,7 +1034,7 @@ const T=[
      ["Un text amb el nom de cada personatge davant de les seves paraules és…",["teatre","poesia lírica","narrativa"],0,"Els diàlegs dels personatges són la marca del teatre."],
      ["Què és el desenllaç d'una obra?",["El títol de l'obra","Com acaba el conflicte","La primera escena"],1,"El desenllaç és el final del conflicte."],
      ["Quina diferència hi ha entre la tragèdia i el drama?",["La tragèdia acaba malament segur; el drama, a l'aire","La tragèdia fa riure i el drama no","El drama s'escriu en vers i la tragèdia, en prosa i sense diàlegs"],0,"Tots dos són seriosos, però només la tragèdia té un final fatal segur."]]},
- {id:"nom",frases:"fr-sn-classes",ic:"🧩",col:"#16a34a",titol:"El nom i el sintagma nominal",font:"Llibre · Gramàtica 1.1 · pàg. 46",
+ {id:"nom",frases:"fr-sn-classes",practica:"mc-sn",esquema:{titol:"Les tres peces del SN",marca:{t:"els teus ulls verds",m:"EENC"},joc:"mc-sn"},ic:"🧩",col:"#16a34a",titol:"El nom i el sintagma nominal",font:"Llibre · Gramàtica 1.1 · pàg. 46",
   idea:"El nom anomena persones, animals, plantes, objectes i idees; canvia de gènere i de nombre, i és el nucli (el cor) del sintagma nominal.",
   pts:["Un <b>nom</b> designa una <b>persona</b> (<i>Harry</i>), un <b>animal</b> (<i>mussol</i>), una <b>planta</b> (<i>menta</i>), un <b>objecte</b> (<i>carta</i>) o una <b>idea</b> (<i>amistat</i>).",
    "És una paraula <b>variable</b>: canvia de <b>gènere</b> (masculí / femení) i de <b>nombre</b> (singular / plural): <i>noi, noia, nois, noies</i>.",
@@ -963,7 +1055,7 @@ const T=[
      ["Quin és el nucli de «una pregunta difícil de respondre»?",["difícil","pregunta","respondre"],1,"«difícil de respondre» és el complement."],
      ["A «quatre trucs de màgia», què és «de màgia»?",["El complement","L'especificador","El nucli"],0,"Va darrere i diu quina mena de trucs."],
      ["Quin truc serveix per trobar el nucli?",["Buscar sempre la primera paraula del grup, la que el presenta","Pensar quina paraula, si la trec, ja no sé de què parlo","Buscar la paraula més llarga"],1,"El nucli és el protagonista: sense ell, no se sap de què parles."]]},
- {id:"classes",frases:"fr-sn-classes",ic:"🗂️",col:"#0d9488",titol:"Les classes de noms",font:"Llibre · Gramàtica 1.2 · pàg. 46-47",
+ {id:"classes",frases:"fr-sn-classes",practica:"mc-classes",esquema:{titol:"Propi o comú?",marca:{t:"La Paula viu a Menorca",m:"-P--P"},joc:"mc-classes"},ic:"🗂️",col:"#0d9488",titol:"Les classes de noms",font:"Llibre · Gramàtica 1.2 · pàg. 46-47",
   idea:"Segons el que designen, els noms es classifiquen en quatre parelles: comuns i propis, concrets i abstractes, individuals i col·lectius, comptables i no comptables.",
   pts:["<b>Comuns</b>: qualsevol element d'una mateixa classe (<i>noia, illa, ciutat</i>). <b>Propis</b>: un element únic: noms de persona o <b>antropònims</b> (<i>Paula</i>) i noms de lloc o <b>topònims</b> (<i>Menorca, Maó</i>).",
    "<b>Concrets</b>: una persona, un animal o una cosa material (<i>pescador, gat, rosa</i>). <b>Abstractes</b>: realitats no materials: conceptes, qualitats o estats (<i>veritat, valentia, calma</i>).",
@@ -984,7 +1076,7 @@ const T=[
      ["A «un got de llet», quin nom és el no comptable?",["got","llet","un"],1,"Got és el nom de mesura (comptable)."],
      ["«Ramat» és un nom…",["comú, concret, col·lectiu i comptable","propi, abstracte, individual i no comptable","comú, abstracte, individual i comptable"],0,"Un mateix nom porta quatre etiquetes."],
      ["«Ovella» és un nom individual o col·lectiu?",["Col·lectiu, perquè n'hi ha moltes","Individual: designa un sol element","Totes dues coses alhora"],1,"Ovella és individual; ramat és col·lectiu."]]},
- {id:"genere",frases:"fr-genere-nombre",ic:"👫",col:"#db2777",titol:"Les marques de gènere i de nombre",font:"Llibre · Gramàtica 1.3 · pàg. 48-49",
+ {id:"genere",frases:"fr-genere-nombre",practica:"mc-genere",esquema:{titol:"Gènere i nombre",html:"<table><tr><th></th><th>Singular</th><th>Plural</th></tr><tr><th>Masculí</th><td>noi</td><td>nois</td></tr><tr><th>Femení</th><td>noia</td><td>noies</td></tr><tr><th>Trampes</th><td class='ex'>cavall → euga</td><td class='ex'>llapis → llapis</td></tr></table>"},ic:"👫",col:"#db2777",titol:"Les marques de gènere i de nombre",font:"Llibre · Gramàtica 1.3 · pàg. 48-49",
   idea:"L'article ens diu de quin gènere és un nom, i els noms de persones i d'animals canvien de forma amb unes marques que es diuen morfemes flexius.",
   pts:["La majoria dels noms tenen un <b>gènere assignat</b>. La <b>forma de l'article</b> diu si és <b>masculí (m.)</b> o <b>femení (f.)</b>: <i>un costum</i> (m.), <i>els senyals</i> (m.), <i>una dent</i> (f.), <i>les postres</i> (f.).",
    "Els noms de <b>persones o animals</b> canvien de forma amb marques de <b>gènere</b> i de <b>nombre</b>: els <b>morfemes flexius</b>. <i>nebot, neboda, nebots, nebodes</i> · <i>gall, gallina, galls, gallines</i> · <i>actor, actriu, actors, actrius</i>.",
@@ -1047,7 +1139,7 @@ const T=[
      ["«Un gerro de flors» i «una gerra de suc»: què canvia?",["Res, són sinònims","L'ús: un és per a flors i l'altre per a beure","Només la mida"],1,"El femení pot designar un ús diferent."],
      ["Per obrir la porta de casa necessites…",["la clau","el clau","el pols"],0,"La clau activa el pany."],
      ["En aquests noms, què canvia el significat?",["El gènere: masculí o femení","El nombre: singular o plural","L'accent"],0,"Mateixa paraula, gènere diferent, significat diferent."]]},
- {id:"punts",frases:"fr-puntuacio",ic:"🛑",col:"#dc2626",titol:"El punt, l'interrogant, l'admiració i els punts suspensius",font:"Llibre · Ortografia 1 · pàg. 54",
+ {id:"punts",frases:"fr-puntuacio",practica:"fr-escolta",esquema:{titol:"Porta tancada o entreoberta",html:"<div class='esq-col'><div style='background:#fee2e2'>🚪 <b>Porta tancada</b><br>. ? ! …<br>→ darrere, <b>Majúscula</b></div><div style='background:#dcfce7'>🚪↔ <b>Porta entreoberta</b><br>, ; :<br>→ darrere, <b>minúscula</b></div></div>"},ic:"🛑",col:"#dc2626",titol:"El punt, l'interrogant, l'admiració i els punts suspensius",font:"Llibre · Ortografia 1 · pàg. 54",
   idea:"Cada signe de puntuació té la seva feina. El punt, l'interrogant, l'admiració i els punts suspensius tanquen l'oració, i darrere seu va majúscula.",
   pts:["<b>Punt final</b>: marca l'acabament d'un text. <b>No</b> es posa al final d'un títol o d'un subtítol.",
    "<b>Punt i a part</b>: marca el final d'un paràgraf. A la ratlla següent es deixa el <b>sagnat</b>, un queixal en blanc de tres o quatre espais.",
@@ -1068,7 +1160,7 @@ const T=[
      ["Quina d'aquestes enumeracions està ben escrita?",["Porto llapis, gomes, retoladors, etc.","Porto llapis, gomes, retoladors, etc…","Porto llapis, gomes, retoladors etc"],0,"Etc. o punts suspensius, mai les dues coses."],
      ["Quin signe marca l'entonació de les oracions exclamatives?",["L'interrogant","L'admiració","El punt i coma"],1,"Quin gol més bonic!"],
      ["«Quin gol més bonic! Ha estat increïble.» Per què «Ha» comença amb majúscula?",["Perquè l'admiració tanca l'oració","Perquè és un verb","Perquè els verbs sempre comencen amb majúscula"],0,"L'admiració acaba l'oració: darrere, majúscula."]]},
- {id:"puntcoma",frases:"fr-puntuacio",ic:"🎬",col:"#9333ea",titol:"El punt i coma i els dos punts",font:"Llibre · Ortografia 1 · pàg. 54-55",
+ {id:"puntcoma",frases:"fr-puntuacio",practica:"fr-textos",esquema:{titol:"Porta tancada o entreoberta",html:"<div class='esq-col'><div style='background:#fee2e2'>🚪 <b>Porta tancada</b><br>. ? ! …<br>→ darrere, <b>Majúscula</b></div><div style='background:#dcfce7'>🚪↔ <b>Porta entreoberta</b><br>, ; :<br>→ darrere, <b>minúscula</b></div></div>"},ic:"🎬",col:"#9333ea",titol:"El punt i coma i els dos punts",font:"Llibre · Ortografia 1 · pàg. 54-55",
   idea:"El punt i coma i els dos punts deixen l'oració entreoberta: darrere seu va minúscula, llevat de les paraules d'algú entre cometes.",
   pts:["<b>Punt i coma</b> (;): a) separa <b>dues oracions</b> que tenen una relació de proximitat: <i>A l'estiu anem a la platja; a l'hivern, a la neu.</i> b) separa <b>sèries llargues</b> i complexes (davant de la <i>i</i> final es posa una coma).",
    "<b>Dos punts</b> (:): a) separen dues oracions relacionades, en què la segona depèn de la primera: <i>No vaig poder venir: estava malalt.</i>",
@@ -1125,7 +1217,87 @@ const OB=[
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
 ASSIG.boss={nom:"El Monstre dels Signes",spr:"signes",fx:"espiral",mus:"alegria",rotul:"PUNT I FINAL!",em:["📖","✨","🎭","🖋️"]};
 
-const MONS=[{"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
+// ===================== 🖍️ PINTA LES PARAULES (motor/eines/marca-llengua.js) =====================
+// Joc genèric per als mons de llengua: el nen tria un color (una categoria) i pinta cada paraula d'una frase.
+// Serveix per a les peces del sintagma nominal, les classes de noms, el gènere, el subjecte i el predicat, etc.
+// S'inclou a les dades del món amb  //@inclou eines/marca-llengua.js
+// Joc:  {id:"mc-…",grup:"…",tipus:"custom",fn:"jocMarca",prova:"jocMarcaProva",ic,titol,sub,col,enunciat,
+//        cats:[["E","Especificador","#fde68a"],["N","Nucli","#93c5fd"],…],   // codi d'una lletra, nom i color
+//        items:[{t:"els teus ulls verds",m:"EENC",ex:"El perquè (després de respondre)",pista:"Ajuda després del primer error"}], n:6}
+// «m» té una lletra per paraula de «t» (separades per espais); «-» vol dir que aquella paraula no es pinta.
+// 1 ⭐ per frase bé a la primera. En fallar, les paraules mal pintades es marquen; al segon intent es veu la solució.
+// Teoria: T[i].esquema = {marca:{t,m}, joc:"mc-…"} pinta la frase amb els colors del joc (marcaHtml).
+let MC=null;
+function mcCss(){if(document.getElementById("mcCss"))return;const s=document.createElement("style");s.id="mcCss";s.textContent=`
+.mc-pal{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0 12px}
+.mc-cat{font:inherit;font-weight:900;font-size:15px;padding:8px 14px;border-radius:999px;border:3px solid transparent;cursor:pointer;color:#0f172a;min-height:44px}
+.mc-cat.on{border-color:#0f172a;box-shadow:0 0 0 3px #fff inset}
+.mc-frase{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px 10px;border-radius:14px;background:#f8fafc;border:2px solid var(--vora);margin:6px 0}
+.mc-w{font:inherit;font-size:21px;font-weight:800;padding:6px 12px;border-radius:12px;border:2px dashed #94a3b8;background:#fff;cursor:pointer;color:#0f172a;min-height:46px;position:relative}
+.mc-w.pintat{border-style:solid;border-color:#0f172a33}
+.mc-w.fix{cursor:default;border:0;background:transparent;color:#64748b;font-weight:700}
+.mc-w.ko{border:3px solid #ef4444;animation:tremola .35s}
+.mc-w.ok{border:3px solid #16a34a}
+.mc-w small{display:block;font-size:10.5px;font-weight:900;letter-spacing:.3px;opacity:.75;line-height:1}
+.mc-llegenda{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:13px;font-weight:800;margin-top:6px}
+.mc-llegenda span{padding:2px 10px;border-radius:999px}
+.mc-esq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0}
+.mc-esq span{display:inline-flex;flex-direction:column;align-items:center;padding:4px 10px;border-radius:10px;font-size:19px;font-weight:800;color:#0f172a}
+.mc-esq small{font-size:10.5px;font-weight:900;opacity:.75}
+body.suau .mc-w.ko{animation:none}`;document.head.appendChild(s)}
+const mcParaules=t=>String(t).trim().split(/\s+/);
+const mcCat=(j,c)=>(j.cats||[]).find(x=>x[0]===c);
+// frase pintada (per a la teoria i la solució): cada paraula amb el color i el nom curt de la seva categoria
+function marcaHtml(t,m,cats){mcCss();const w=mcParaules(t);
+ return `<div class="mc-esq" role="img" aria-label="${w.map((x,i)=>{const c=cats.find(k=>k[0]===m[i]);return c?`${x}: ${c[1]}`:x}).join(", ")}">${w.map((x,i)=>{const c=cats.find(k=>k[0]===m[i]);return c?`<span style="background:${c[2]}">${x}<small>${c[1]}</small></span>`:`<span style="color:#64748b">${x}</span>`}).join("")}</div>`}
+function jocMarca(j){mcCss();if(typeof jgErrCss==="function")jgErrCss();const it=j.items||[],n=Math.min(j.n||6,it.length);
+ const tria=(typeof barreja==="function"?barreja(it.map((_,i)=>i)):it.map((_,i)=>i)).slice(0,n).sort((a,b)=>a-b);
+ MC={j,llista:tria.map(i=>it[i]),e:0,cat:j.cats[0][0],v:[],int:0,bones:0,errs:0,fi:false};mcPinta()}
+function mcPinta(){const {j,llista,e}=MC,E=llista[e],w=mcParaules(E.t);MC.v=w.map((_,i)=>E.m[i]==="-"?"-":null);MC.int=0;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><div class="jg-cap"><span class="jg-ap">Frase ${e+1} de ${llista.length}</span><span class="prog">🖍️ Pinta</span></div>
+ <p class="fr-ins" style="margin:6px 0 0;font-weight:700;color:#475569">Tria un color i toca les paraules per pintar-les. Quan les tinguis totes, comprova.</p>
+ <div class="mc-pal" role="radiogroup" aria-label="Color per pintar">${j.cats.map(([c,nom,col])=>`<button type="button" class="mc-cat${MC.cat===c?" on":""}" role="radio" aria-checked="${MC.cat===c}" data-c="${c}" style="background:${col}" onclick="mcTriaCat('${c}')">${nom}</button>`).join("")}</div>
+ <div class="mc-frase" id="mcFrase">${w.map((x,i)=>E.m[i]==="-"?`<span class="mc-w fix">${x}</span>`:`<button type="button" class="mc-w" data-i="${i}" onclick="mcToca(${i})" aria-label="${x}: sense pintar">${x}<small>&nbsp;</small></button>`).join("")}</div>
+ <div id="mcFb" role="status" aria-live="polite"></div><div class="fila" id="mcBts"><button class="btn" id="mcComp" onclick="mcComprova()">Comprova ✔</button></div><div id="zona"></div></div>`}
+function mcTriaCat(c){if(!MC)return;MC.cat=c;document.querySelectorAll(".mc-cat").forEach(b=>{const on=b.dataset.c===c;b.classList.toggle("on",on);b.setAttribute("aria-checked",on)})}
+function mcToca(i){if(!MC||MC.fase==="fet")return;MC.v[i]=MC.v[i]===MC.cat?null:MC.cat;if(typeof so==="function")so("clic");mcPintaParaula(i)}
+function mcPintaParaula(i){const b=document.querySelector(`#mcFrase .mc-w[data-i="${i}"]`);if(!b)return;const c=MC.v[i]?mcCat(MC.j,MC.v[i]):null,x=mcParaules(MC.llista[MC.e].t)[i];
+ b.classList.remove("ko","ok");b.classList.toggle("pintat",!!c);b.style.background=c?c[2]:"";b.innerHTML=`${x}<small>${c?c[1]:"&nbsp;"}</small>`;b.setAttribute("aria-label",`${x}: ${c?c[1]:"sense pintar"}`)}
+function mcComprova(){if(!MC||MC.fase==="fet")return;const E=MC.llista[MC.e],fb=document.getElementById("mcFb");
+ if(MC.v.some(x=>x===null)){fb.innerHTML=`<div class="fb">✏️ Encara hi ha paraules sense pintar.</div>`;return}
+ const mal=MC.v.map((x,i)=>x!==E.m[i]?i:-1).filter(i=>i>=0);
+ if(!mal.length){if(!MC.int){MC.bones++;if(typeof suma==="function"&&typeof JOCSTAR!=="undefined"&&JOCSTAR)suma(JOCSTAR)}if(typeof so==="function")so("ok");
+  document.querySelectorAll("#mcFrase .mc-w:not(.fix)").forEach(b=>b.classList.add("ok"));return mcFet(true)}
+ MC.int++;if(MC.int===1)MC.errs++;if(typeof so==="function")so("ko");
+ mal.forEach(i=>{const b=document.querySelector(`#mcFrase .mc-w[data-i="${i}"]`);if(b)b.classList.add("ko")});
+ if(MC.int>=2){E.m.split("").forEach((c,i)=>{if(c!=="-"){MC.v[i]=c;mcPintaParaula(i)}});return mcFet(false)}
+ const w=mcParaules(E.t),i0=mal[0],bona=mcCat(MC.j,E.m[i0]);
+ fb.innerHTML=`<div class="fb fr-ko">❌ ${mal.length===1?"Hi ha 1 paraula":`Hi ha ${mal.length} paraules`} mal pintada${mal.length>1?"s":""} (en vermell). ${E.pista?"💡 "+E.pista:`Mira «${w[i0]}» un altre cop: quin paper hi fa?`}</div>`}
+function mcFet(bo){MC.fase="fet";const ult=MC.e+1>=MC.llista.length,E=MC.llista[MC.e];
+ document.getElementById("mcFb").innerHTML=`<div class="fb ${bo?"ok":"fr-ko"}">${bo?(MC.int?"✅ Ara sí!":"✅ Molt bé! Bé a la primera."):"👉 Fixa-t'hi bé: així queda pintada."}</div>${E.ex?`<div class="fr-sol" style="margin-top:8px;padding:10px 12px;border-radius:14px;background:#fffef5;border:2px solid #fde68a">💡 ${E.ex}</div>`:""}`;
+ document.getElementById("mcBts").innerHTML=`<button class="btn" id="mcSeg" onclick="${ult?"mcFi()":"mcSeg()"}">${ult?"Acaba 🏁":"Següent frase ▶"}</button>`;
+ const s=document.getElementById("mcSeg");if(s&&!MC.prova)s.focus({preventScroll:true})}
+function mcSeg(){MC.e++;MC.fase="";mcPinta();window.scrollTo(0,0)}
+function mcFi(){const {j,bones,llista}=MC;MC.fi=true;const mal=llista.length-bones;
+ app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><p>Has pintat <b>${llista.length} frases</b>: <b>${bones}</b> bé a la primera${mal?` i <b>${mal}</b> amb algun error`:""}.</p>${j.final?`<p class="prog">💡 ${j.final}</p>`:""}<div id="zona"></div></div>`;
+ fiJoc(j,bones,mal)}
+// comprova les dades d'un joc de pintar (també ho fa servir la prova automàtica)
+function mcValida(j){const p=[],cs=new Set((j.cats||[]).map(c=>c[0]));if(cs.size<2)p.push("calen almenys 2 categories (cats)");
+ (j.items||[]).forEach((E,i)=>{const w=mcParaules(E.t||"");if(!E.m||E.m.length!==w.length)p.push(`frase ${i+1}: ${w.length} paraules i ${E.m?E.m.length:0} lletres a «m»`);
+  else if([...E.m].some(c=>c!=="-"&&!cs.has(c)))p.push(`frase ${i+1}: «m» té una lletra que no és cap categoria`);else if(![...E.m].some(c=>c!=="-"))p.push(`frase ${i+1}: no hi ha res per pintar`);
+  if(!E.ex)p.push(`frase ${i+1}: sense explicació (ex)`)});
+ if((j.items||[]).length<(j.n||6))p.push(`té ${(j.items||[]).length} frases i una partida en demana ${j.n||6}`);return p}
+// prova automàtica: juga totes les frases; la primera, primer amb un error
+function jocMarcaProva(j){const p=mcValida(j);if(p.length)return "jocMarca: "+p.join(" · ");
+ jocMarca(Object.assign({},j,{n:j.items.length}));MC.prova=true;let s=0,primer=true;
+ while(MC&&!MC.fi&&s++<500){const b=document.getElementById("mcSeg");if(b){b.click();continue}const E=MC.llista[MC.e];
+  if(primer){primer=false;E.m.split("").forEach((c,i)=>{if(c==="-")return;MC.cat=j.cats.find(k=>k[0]!==c)[0];if(MC.v[i]!==MC.cat)mcToca(i)});mcComprova();
+   if(!document.querySelector("#mcFrase .mc-w.ko"))return "jocMarca: en pintar malament no marca les paraules";}
+  E.m.split("").forEach((c,i)=>{if(c==="-"||MC.v[i]===c)return;MC.cat=c;mcToca(i)});mcComprova()}
+ if(!MC||!MC.fi)return "jocMarca: no ha acabat";if(MC.bones!==j.items.length-1)return `jocMarca: ${MC.bones} bones de ${j.items.length-1} esperades`;return true}
+if(typeof module!=="undefined")module.exports={mcValida,marcaHtml};
+
+const MONS=[{"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "opina", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
 const QIDS={"literatura":[1,2,3,4,5,6,7,8],"oral":[1,2,3,4,5,6,7,8],"escrita":[10,2,3,4,5,11,7,8,9],"generes":[1,2,3,4,5,6,7,8,9],"teatre":[1,2,3,4,5,6,7,8,9,10],"nom":[1,2,3,4,5,6,7,8,9],"classes":[1,2,3,4,5,6,7,8,9,10],"genere":[9,10,2,3,4,5,6,7,8,11],"invariables":[1,2,3,4,5,6,7,8,9],"clau":[1,2,3,4,5,6,7,8,9],"punts":[1,2,3,4,5,6,7,8,9],"puntcoma":[1,2,3,4,5,6,7,8,9]};
 const QDIF={"classes/6":3,"classes/9":3,"clau/3":3,"clau/4":3,"clau/5":3,"escrita/10":3,"escrita/11":3,"genere/4":3,"genere/7":3,"genere/8":3,"generes/1":3,"generes/7":3,"invariables/7":3,"invariables/8":3,"nom/4":3,"nom/7":3,"oral/8":3,"puntcoma/3":3,"puntcoma/9":3,"punts/7":3,"teatre/2":3,"teatre/7":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
@@ -1694,10 +1866,13 @@ function pintaTema(){
  <div class="passos" role="tablist" aria-label="Passos del tema">${[["fitxa",ICO.fitxa+" Fitxa",e.fitxa],["targetes",ICO.targetes+" Targetes",e.fc>=t.fc.length],["test",ICO.test+" Test",e.intents.length>0]].map(([k,n,f])=>`<button role="tab" aria-selected="${pest==k?'true':'false'}" class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
  if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,MODE_TAST?Math.min(NTEST_TAST,t.q.length):NTEST),0,0,t.id)}
 }
+// T[i].esquema: un esquema dibuixat a la fitxa, sota la idea clau. {html:"…"} (taula o quadre) i/o {marca:{t,m},joc:"id d'un joc de pintar"} (frase pintada)
+function esquemaTema(e){let h="";if(e.marca&&typeof marcaHtml==="function"){const j=(ASSIG.jocs||[]).find(x=>x.id===e.joc)||{};if(j.cats)h+=marcaHtml(e.marca.t,e.marca.m,j.cats)}if(e.html)h+=e.html;
+ return h?`<div class="esq-tema"><small>👀 ${e.titol||"ESQUEMA"}</small>${h}</div>`:""}
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
  const txtF=`${t.titol}. Idea clau: ${t.idea}. ${t.pts.join(". ")}. Truc: ${t.truc}. Compte: ${t.compte}`;
- document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div>${t.vista&&typeof mxVistaTema==="function"?mxVistaTema(t.vista):""}<ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
+ document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div>${t.vista&&typeof mxVistaTema==="function"?mxVistaTema(t.vista):""}${t.esquema?esquemaTema(t.esquema):""}<ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
  const cpt=document.querySelector("#zona .compte");if(cpt&&"IntersectionObserver" in window){const a=ACTV,ob=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){if(a)a.fi=1;ob.disconnect()}});ob.observe(cpt)}
 }
 function targetes(n){calla();
@@ -2908,6 +3083,8 @@ function frCss(){if(document.getElementById("frCss"))return;const s=document.cre
 .fr-vol{font:inherit;font-size:14px;font-weight:800;border:2px solid #fde68a;background:#fefce8;color:#854d0e;border-radius:10px;padding:4px 10px;cursor:pointer}
 .fr-ex-fila{display:flex;gap:8px;align-items:flex-start}
 body.suau .fr-esc input.ko{animation:none!important}`;document.head.appendChild(s)}
+// les fitxes del banc (triar, ordenar) es comparen exactes: «?» no és «!» ni «Demà» és «demà». Les respostes escrites, amb frNorm (més tolerant).
+function frChip(s){return String(s).replace(/<[^>]+>/g,"").replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim()}
 function frNorm(s){return String(s).replace(/<[^>]+>/g,"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g," ").replace(/\s*'\s*/g,"'").replace(/[.!?]+$/,"").trim()}
 function frId(E){if(E.id)return E.id;const s=E.f||E.mots;let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return "f"+h.toString(36)}
 function frPrep(raw){const E=Object.assign({},raw);E.id=frId(raw);E.mena=E.mots?"ordena":E.r?"escriu":"tria";E.sol=E.mots?E.mots.split(" "):E.r?[E.r[0]]:[].concat(E.ok);
@@ -2926,7 +3103,7 @@ function frFrase(E,fills,act,fi){
 function frTriaBuit(k){if(!FR||FR.fase!=="joc"||FR.fills[k]!==undefined)return;const E=FR.llista[FR.e];FR.gap=k;FR.int=0;document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,FR.gap)}
 function frVol(b){const E=FR.llista[FR.e];FR.vol=true;b.outerHTML=`<p class="fr-ca">En català: «${E.ca}»</p>`}
 // el perquè de l'error concret (E.per[opció]) o, si no n'hi ha, la pista
-function frPer(E,w){if(!E.per)return "";const k=Object.keys(E.per).find(x=>frNorm(x)===frNorm(w));return k?E.per[k]:""}
+function frPer(E,w){if(!E.per)return "";const eq=E.r?frNorm:frChip,k=Object.keys(E.per).find(x=>eq(x)===eq(w));return k?E.per[k]:""}
 function jocFrases(j){frCss();jgErrCss();const it=j.items||[],n=Math.min(j.n||8,it.length);
  const tria=barreja(it.map((x,i)=>i)).slice(0,n).sort((a,b)=>a-b);
  FR={j,llista:tria.map(i=>frPrep(it[i])),e:0,bones:0,errs:0,errE:[],fi:false,veu:j.veu||ASSIG.veuFrases||null};frPinta()}
@@ -2935,7 +3112,7 @@ function frPinta(){const {j,llista,e}=FR,E=llista[e];FR.int=0;FR.gap=0;FR.fills=
  const ins=E.mena==="ordena"?"Toca les paraules en ordre per fer la frase.":E.mena==="escriu"?(E.v?"Escriu el verb del parèntesi en la forma correcta.":"Escriu la paraula que falta."):(E.sol.length>1?"Omple els buits tocant les paraules del banc. Per començar per un altre buit, toca'l primer.":"Toca la paraula que falta.");
  E.veuClau=!!(E.clau&&!j.clauDespres);FR.vol=false;
  app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><div class="jg-cap"><span class="jg-ap">Frase ${e+1} de ${llista.length}</span><span class="prog">${mena}</span></div>
- <p class="fr-ins">${ins}</p>${E.falta?`<p class="fr-falta">🔎 Hi falta: ${E.falta}</p>`:""}${E.cue?`<p class="fr-ca">En català: «${E.ca}»</p>`:E.ca?`<button type="button" class="fr-vol" onclick="frVol(this)">🗣️ Què vol dir?</button>`:""}
+ <p class="fr-ins">${ins}</p>${j.escoltaAbans&&typeof btEscolta==="function"?`<div class="escolta-fila" style="margin:0 0 6px">${btEscolta(E.escolta||frSolucio(E),"Escolta-la primer",E.escolta?undefined:FR.veu||undefined)}</div>`:""}${E.falta?`<p class="fr-falta">🔎 Hi falta: ${E.falta}</p>`:""}${E.cue?`<p class="fr-ca">En català: «${E.ca}»</p>`:E.ca?`<button type="button" class="fr-vol" onclick="frVol(this)">🗣️ Què vol dir?</button>`:""}
  <div class="fr-frase" id="frFrase" aria-live="polite">${frFrase(E,[],0)}</div>
  ${E.mena==="escriu"?`<div class="fr-esc"><input id="frIn" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="40" placeholder="Escriu aquí" aria-label="Escriu la resposta"><button class="btn" onclick="frComprova()">Comprova ✔</button></div>`
   :`<div class="fr-banc" id="frBanc">${E.banc.map((w,k)=>`<button type="button" class="chip" data-k="${k}" onclick="frToca(${k})">${w}</button>`).join("")}</div>`}
@@ -2946,9 +3123,9 @@ function frErr(E){FR.int++;if(!FR.net)return;FR.net=false;FR.errs++;FR.errE[FR.e
  if(!FR.rep&&typeof repAnotaExt==="function")repAnotaExt("frase",`${FR.j.id}|${E.id}`,{jid:FR.j.id,eid:E.id},false)}
 function frToca(k){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],b=document.querySelector(`#frBanc .chip[data-k="${k}"]`);if(!b||b.disabled)return;
  const vol=E.sol[FR.gap],fb=document.getElementById("frFb");
- if(frNorm(E.banc[k])===frNorm(vol)){so("ok");fb.innerHTML="";frPosa(E,vol,b);return}
+ if(frChip(E.banc[k])===frChip(vol)){so("ok");fb.innerHTML="";frPosa(E,vol,b);return}
  frErr(E);sacseja(b);
- if(FR.int>=2){const c=[...document.querySelectorAll("#frBanc .chip")].find(x=>!x.disabled&&frNorm(E.banc[+x.dataset.k])===frNorm(vol));E.rev[FR.gap]=1;
+ if(FR.int>=2){const c=[...document.querySelectorAll("#frBanc .chip")].find(x=>!x.disabled&&frChip(E.banc[+x.dataset.k])===frChip(vol));E.rev[FR.gap]=1;
   const p2=frPer(E,E.banc[k]);fb.innerHTML=`<div class="fb fr-ko">${p2?`❌ ${p2}<br>`:""}👉 Aquí hi va <b>${vol}</b>.${E.sol.filter((_,i)=>FR.fills[i]===undefined).length>1?" Continua amb els altres.":""}</div>`;frPosa(E,vol,c);return}
  if(E.mena==="tria"&&E.sol.length===1){b.disabled=true;b.classList.add("no")}
  if(E.clau&&!E.veuClau){E.veuClau=true;document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,FR.gap)}
@@ -2956,6 +3133,8 @@ function frToca(k){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],b=docu
 function frPosa(E,vol,b){FR.fills[FR.gap]=vol;FR.int=0;if(b){b.disabled=true;b.classList.remove("ko");b.classList.add("ok")}
  const seg=E.sol.findIndex((_,i)=>FR.fills[i]===undefined);if(seg<0){FR.gap=E.sol.length;return frFet()}FR.gap=seg;
  document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,FR.gap)}
+// la frase sencera amb les respostes bones (per escoltar-la abans de respondre: l'entonació diu si és pregunta o exclamació)
+function frSolucio(E){if(E.mena==="ordena")return E.mots;let g=0;return E.f.replace(FR_BUIT,()=>E.sol[g++]||"")}
 function frPistaAuto(E){const r=E.r[0],n=r.split(" ").length;return `Comença per «${r.slice(0,r.length>3?2:1)}…» i ${n>1?`són ${n} paraules`:"és una sola paraula"}.`}
 function frComprova(){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],i=document.getElementById("frIn"),fb=document.getElementById("frFb");if(!i)return;const v=frNorm(i.value);
  if(!v){fb.innerHTML=`<div class="fb">✏️ Primer escriu la resposta.</div>`;return}
@@ -2985,17 +3164,17 @@ function frValida(j){const p=[],it=j.items||[];it.forEach((E,i)=>{const on=`fras
   else if(!E.f||!nb)p.push(on+": no té cap buit (___)");
   else if(E.r){if(nb!==1)p.push(on+": les d'escriure només poden tenir un buit");if(!E.r.length)p.push(on+": sense resposta")}
   else{const ok=[].concat(E.ok||[]),no=E.no||[];if(ok.length!==nb)p.push(on+`: ${nb} buits i ${ok.length} respostes`);
-   if(no.some(x=>ok.some(o=>frNorm(o)===frNorm(x))))p.push(on+": un distractor és igual que una resposta");if(ok.length===1&&no.length<2)p.push(on+": calen 2 distractors")}
+   if(no.some(x=>ok.some(o=>frChip(o)===frChip(x))))p.push(on+": un distractor és igual que una resposta");if(ok.length===1&&no.length<2)p.push(on+": calen 2 distractors")}
   if(!E.ex)p.push(on+": sense explicació (ex)");
-  if(E.per){if(typeof E.per!=="object")p.push(on+": per ha de ser {opció:\"perquè\"}");else if(!E.r){const no=E.no||[];Object.keys(E.per).forEach(k=>{if(!no.some(x=>frNorm(x)===frNorm(k)))p.push(on+`: per «${k}» no és cap opció falsa`)})}}
+  if(E.per){if(typeof E.per!=="object")p.push(on+": per ha de ser {opció:\"perquè\"}");else if(!E.r){const no=E.no||[];Object.keys(E.per).forEach(k=>{if(!no.some(x=>frChip(x)===frChip(k)))p.push(on+`: per «${k}» no és cap opció falsa`)})}}
   if(E.clau){const txt=frNorm(E.f||E.mots||"");[].concat(E.clau).forEach(c=>{if(!txt.includes(frNorm(c)))p.push(on+`: la paraula clau «${c}» no surt a la frase`)})}});
  const ids=it.map(frId);if(new Set(ids).size!==ids.length)p.push("hi ha frases repetides");if(it.length<(j.n||8))p.push(`té ${it.length} frases i una partida en demana ${j.n||8}`);return p}
 // juga la frase actual bé (o, amb mal=true, primer amb un error)
 function frProvaPas(mal){const E=FR.llista[FR.e];
  if(E.mena==="escriu"){const i=document.getElementById("frIn");if(mal){i.value="zzz";frComprova()}i.value=E.r[E.r.length-1].toUpperCase()+".";frComprova();return true}
  const vol=E.sol[FR.gap],cs=()=>[...document.querySelectorAll("#frBanc .chip")].filter(x=>!x.disabled);
- if(mal){const m=cs().find(x=>frNorm(x.textContent)!==frNorm(vol));if(m)m.click()}
- const c=cs().find(x=>frNorm(x.textContent)===frNorm(vol));if(!c)return `falta «${vol}» al banc`;c.click();return true}
+ if(mal){const m=cs().find(x=>frChip(x.textContent)!==frChip(vol));if(m)m.click()}
+ const c=cs().find(x=>frChip(x.textContent)===frChip(vol));if(!c)return `falta «${vol}» al banc`;c.click();return true}
 function jocFrasesProva(j){const p=frValida(j);if(p.length)return "jocFrases: "+p.join(" · ");
  jocFrases(Object.assign({},j,{n:j.items.length}));FR.prova=true;let s=0;
  while(FR&&!FR.fi&&s++<900){const b=document.getElementById("frSeg");if(b){b.click();continue}const r=frProvaPas(false);if(r!==true)return "jocFrases: "+r}
