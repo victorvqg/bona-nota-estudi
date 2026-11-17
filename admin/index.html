@@ -273,6 +273,12 @@ dialog::backdrop{background:rgba(15,23,42,.55)}
 .log-dia-t{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 12px}
 .log-dia-t h3{margin:0;font-size:14.5px;font-weight:700;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
 .log-dia-qui{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px}
+.log-pleg{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;border-radius:8px;padding:2px 4px;margin:-2px -4px}
+.log-pleg:hover{background:var(--card)}.log-pleg:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:2px}
+.log-fle{display:inline-block;transition:transform .15s;font-size:13px;color:var(--muted,#64748b)}
+.log-dia.plegat .log-fle{transform:rotate(-90deg)}
+.log-dia.plegat .log-llista{display:none}
+.log-dia.plegat .log-dia-cap{border-bottom:0}
 .log-nen-xip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:2px 9px 2px 4px;border-radius:999px;background:var(--card);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text)}
 .log-nen-xip:hover{border-color:var(--primary);background:var(--primary-soft)}
 .log-nen-xip.actiu{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
@@ -733,7 +739,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.49.0";
+const VERSIO_ADMIN="2.50.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -2359,20 +2365,30 @@ function vistaLog(c,rerender){
   lim.forEach((l,idx)=>{const d=diaMad(l.ts);let g=grups[grups.length-1];if(!g||g.d!==d)grups.push(g={d,L:[]});g.L.push({l,idx})});
   const titDia=d=>{const ds=DS[new Date(dU(d)).getUTCDay()];return `${d===avM?"Avui · ":d===ahM?"Ahir · ":""}${ds} ${diaLl(d)}`};
   const kAct=TF.nom.trim().toLowerCase();
+  // dies plegats: per defecte només el primer (el més recent) està obert; amb un dia filtrat, sempre obert. LOG_OBERTS guarda els que obre l'admin.
+  const obert=d=>!!TF.dia||(LOG_OBERTS?LOG_OBERTS.has(d):d===(grups[0]&&grups[0].d));
   cosH=`<div id="logDies">${grups.map(g=>{
    const info=diesMap.get(g.d),nensD=[...info.nens.values()].sort((a,b)=>b.temps-a.temps||b.n-a.n);
    const quiH=nensD.map(x=>`<button type="button" class="log-nen-xip${kAct===x.k?" actiu":""}" data-filtra-nen="${esc(x.nom)}" title="${kAct===x.k?"Treu el filtre de nen":`Filtra el log per ${x.nom}`}">${avatar(x.nom,"p")}<span>${esc(x.nom)}</span><small>${x.temps?fmtT(x.temps)+" · ":""}${x.n}</small></button>`).join("");
    const filesH=g.L.map(({l,idx})=>{const k=clauNen(l);
     return `<div class="log-lin"><time title="${esc(dataC(l.ts))}">${hora(l.ts)}</time><button type="button" class="nen-b" data-obre-nen="${esc(k)}">${avatar(l.nom,"p")}<span>${esc(l.nom)}</span></button>${pillMon(l.assig)}${xipEv(l.event)}<div class="log-d">${descriu(l)}${l.event==="oberta"?` <button type="button" class="btn sec petit" style="margin-left:6px;padding:2px 8px;min-height:24px;font-size:11.5px" data-log-obe="${idx}">Llegeix</button>`:""}</div></div>`}).join("");
-   return `<section class="log-dia" data-dia="${esc(g.d)}"><div class="log-dia-cap"><div class="log-dia-t"><h3>${ic("calendari")}<span>${esc(titDia(g.d))}</span><span class="pill neutre">${pl(nensD.length,"nen","nens")}</span>${info.temps?`<span class="pill neutre">${fmtT(info.temps)}</span>`:""}<span class="pill neutre">${pl(info.n,"acció","accions")}</span></h3><button type="button" class="btn sec petit" data-log-dia="${esc(g.d)}">${TF.dia===g.d?"Tots els dies":"Només aquest dia"}</button></div><div class="log-dia-qui"><span class="muted">Qui ha entrat:</span>${quiH}</div></div><div class="log-llista">${filesH}</div></section>`;
+   const ob=obert(g.d);
+   return `<section class="log-dia${ob?"":" plegat"}" data-dia="${esc(g.d)}"><div class="log-dia-cap"><div class="log-dia-t"><h3><button type="button" class="log-pleg" data-log-pleg="${esc(g.d)}" aria-expanded="${ob}" aria-controls="logLl-${esc(g.d)}" title="${ob?"Plega":"Desplega"} les accions d'aquest dia"><span class="log-fle" aria-hidden="true">▾</span>${ic("calendari")}<span>${esc(titDia(g.d))}</span></button><span class="pill neutre">${pl(nensD.length,"nen","nens")}</span>${info.temps?`<span class="pill neutre">${fmtT(info.temps)}</span>`:""}<span class="pill neutre">${pl(info.n,"acció","accions")}</span></h3><button type="button" class="btn sec petit" data-log-dia="${esc(g.d)}">${TF.dia===g.d?"Tots els dies":"Només aquest dia"}</button></div><div class="log-dia-qui"><span class="muted">Qui ha entrat:</span>${quiH}</div></div><div class="log-llista" id="logLl-${esc(g.d)}">${filesH}</div></section>`;
   }).join("")}</div>${ls.length>lim.length?`<div style="margin-top:12px;text-align:center"><button class="btn sec" type="button" id="btLogTot">Mostra les ${ls.length} accions completes del període</button></div>`:""}`;
  }
- c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="logCard"><div class="eines-t"><div class="seg" id="logVistaSeg" role="group" aria-label="Format del log"><button type="button" data-lv="dies" aria-pressed="${LOG_VISTA!=="taula"}">Per dia (qui entra i què fa)</button><button type="button" data-lv="taula" aria-pressed="${LOG_VISTA==="taula"}">Taula</button></div><span class="muted">${esc(comptaTxt)}</span><span class="esp"></span><button class="btn sec petit" type="button" id="flcsv">${ic("baixar")}CSV complet (${ls.length})</button></div>${cosH}</div></div>`;
+ c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="logCard"><div class="eines-t"><div class="seg" id="logVistaSeg" role="group" aria-label="Format del log"><button type="button" data-lv="dies" aria-pressed="${LOG_VISTA!=="taula"}">Per dia (qui entra i què fa)</button><button type="button" data-lv="taula" aria-pressed="${LOG_VISTA==="taula"}">Taula</button></div><span class="muted">${esc(comptaTxt)}</span><span class="esp"></span>${LOG_VISTA!=="taula"&&ls.length&&!TF.dia?`<button class="btn sec petit" type="button" id="btLogObre">Desplega-ho tot</button><button class="btn sec petit" type="button" id="btLogPlega">Plega-ho tot</button>`:""}<button class="btn sec petit" type="button" id="flcsv">${ic("baixar")}CSV complet (${ls.length})</button></div>${cosH}</div></div>`;
  const bCsv=$("#flcsv");if(bCsv)bCsv.onclick=()=>baixaCSV("bona-nota-log",[["data","nom","assignatura","tipus","que_ha_fet","detall","sessio","aparell"],...ls.map(l=>[l.ts,l.nom,l.assig,l.event,netTxt(descriu(l)),JSON.stringify(l.detall),l.sessio,l.aparell])]);
  const seg=$("#logVistaSeg");if(seg)seg.onclick=e=>{const b=e.target.closest("button[data-lv]");if(!b||b.dataset.lv===LOG_VISTA)return;LOG_VISTA=b.dataset.lv;vistaLog(c,rerender)};
  const bTot=$("#btLogTot");if(bTot)bTot.onclick=()=>{LOG_TOT=true;vistaLog(c,rerender)};
+ const posaDia=(sec,ob)=>{sec.classList.toggle("plegat",!ob);const b=sec.querySelector("button[data-log-pleg]");if(b){b.setAttribute("aria-expanded",ob);b.title=`${ob?"Plega":"Desplega"} les accions d'aquest dia`}};
+ const totsDies=()=>[...document.querySelectorAll("#logDies .log-dia")];
+ const iniOberts=()=>{if(!LOG_OBERTS)LOG_OBERTS=new Set(totsDies().filter(x=>!x.classList.contains("plegat")).map(x=>x.dataset.dia))};
+ const bObre=$("#btLogObre");if(bObre)bObre.onclick=()=>{iniOberts();totsDies().forEach(x=>{LOG_OBERTS.add(x.dataset.dia);posaDia(x,true)})};
+ const bPlega=$("#btLogPlega");if(bPlega)bPlega.onclick=()=>{iniOberts();totsDies().forEach(x=>{LOG_OBERTS.delete(x.dataset.dia);posaDia(x,false)})};
  const lc=$("#logCard");
  if(lc)lc.onclick=e=>{
+  const bp=e.target.closest("button[data-log-pleg]");
+  if(bp){const sec=bp.closest(".log-dia");if(TF.dia)return;iniOberts();const ob=sec.classList.contains("plegat");if(ob)LOG_OBERTS.add(sec.dataset.dia);else LOG_OBERTS.delete(sec.dataset.dia);posaDia(sec,ob);return}
   const bd=e.target.closest("button[data-log-dia]");
   if(bd){TF.dia=TF.dia===bd.dataset.logDia?"":bd.dataset.logDia;LOG_TOT=false;if(rerender)rerender();else vistaLog(c);return}
   const bn=e.target.closest("button[data-filtra-nen]");
@@ -2384,7 +2400,7 @@ function vistaLog(c,rerender){
 
 // ====================== DADES AGREGADES, INICI I VISTES SOTA DEMANDA ======================
 const PERIODE={1:"avui",7:"7d",30:"30d",365:"curs"};
-const TF={assig:"",nom:"",dia:"",ev:"",q:""};let LOG_VISTA="dies",LOG_TOT=false,TD=null,GRAF=[],TOK=0;
+const TF={assig:"",nom:"",dia:"",ev:"",q:""};let LOG_VISTA="dies",LOG_TOT=false,LOG_OBERTS=null,TD=null,GRAF=[],TOK=0;
 // 8 colors que es distingeixen bé (un per nen, el mateix a tots els gràfics); en tema fosc, més clars
 const PAL_C=["#2563eb","#ea580c","#16a34a","#db2777","#9333ea","#0891b2","#ca8a04","#475569"],PAL_F=["#60a5fa","#fb923c","#4ade80","#f472b6","#c084fc","#22d3ee","#facc15","#94a3b8"];
 const PAL=()=>TEMA==="fosc"?PAL_F:PAL_C;
