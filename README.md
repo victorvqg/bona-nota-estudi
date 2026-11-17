@@ -28,10 +28,10 @@ Aquest README explica **com està feta la web i com s'hi treballa**. El que no �
 | Vull… | Apartat |
 |---|---|
 | Entendre com està muntat tot, en un minut | [1. Visió general](#1-visió-general) |
-| Veure-ho en local, afegir un món o publicar | [2. Feines habituals](#2-feines-habituals) |
+| Veure-ho en local, afegir un món o publicar (`nou_mon.py`, `publica.py`) | [2. Feines habituals](#2-feines-habituals) |
 | Pujar el número de versió | [3. Versions](#3-versions) |
 | Trobar un fitxer | [4. On és cada cosa](#4-on-és-cada-cosa) |
-| Entendre o canviar el motor dels mons | [5. El motor](#5-el-motor) |
+| Entendre o canviar el motor dels mons, `mons.json` i les eines | [5. El motor](#5-el-motor) |
 | Tocar la portada, el rànquing, el xat o el perfil | [6. Portada, xat i perfil](#6-portada-xat-i-perfil) |
 | Saber com s'instal·la i s'actualitza al mòbil | [7. App: sense connexió i actualització](#7-app-sense-connexió-i-actualització) |
 | Saber quines dades es guarden i on | [8. Dades](#8-dades) |
@@ -58,7 +58,9 @@ Python només intervé abans de publicar, per generar les pàgines. Supabase gua
  motor/qids.json      ──┼──▶ build.py ──▶ <assignatura>/<tema>/index.html
  motor/plantilla-…html──┘                 (un sol fitxer per món, amb tot a dins)
 
- tot.py = build.py per a cada món + portada + admin/preguntes.json + versio.json + sw.js
+ tot.py = build.py per a cada món + portada + blocs de mons.json (admin, sprites.js, xat)
+          + admin/preguntes.json + versio.json + sw.js
+ publica.py = tot.py + revisions + commit + PR amb fusió automàtica (fusionar és publicar)
 
  Navegador   S (estat) ──▶ localStorage ──(8 s)──▶ RPC bn_progres_desa ──▶ Supabase
              registra() ──────────────────────────▶ taula bn_log ──▶ rànquing i tauler
@@ -134,27 +136,35 @@ Per provar una pantalla sense passar pel PIN, afegeix-ho a l'adreça d'un món. 
 
 ### Afegir o actualitzar un món
 
-**El mínim perquè el món surti a la web:**
-
-1. Escriu o amplia les dades a `motor/dades/<id>.js` (mateix format que els altres: `ASSIG`, `T`, `OB`; vegeu «Format de les dades» a l'apartat 5).
-2. Si és un món nou, afegeix-lo a `motor/mons.json`:
-   `dades`, `carpeta`, `mon`, `materia`, `titol`, `desc`, `colors` (3), `ic` (i `llengua: "es"` si és en castellà).
-3. Regenera-ho tot i passa la prova:
+**Un món nou** es fa d'una tirada. La guia és [`docs/NOU-MON.md`](docs/NOU-MON.md). Amb Claude Code, la skill `nou-mon` ho fa tota sola a partir d'una carpeta de Drive i sense demanar permisos.
 
 ```
-cd motor
-python3 tot.py
-ESTRICTE=1 node prova.js $PWD/../<carpeta>/index.html
+python3 motor/nou_mon.py --id <id> --carpeta <assignatura>/<id> --materia "Matèria" --titol "Títol" --desc "Una frase" --colors "#c1,#c2,#c3" --ic 🌋 --curt "Títol" --spr <sprite> --xat "peça 1|peça 2|peça 3"
 ```
 
-La prova ha d'acabar amb «errors: cap».
+1. `nou_mon.py` afegeix el món a `motor/mons.json` i crea l'esquelet `motor/dades/<id>.js`. Hi posa el número de món següent, la data d'avui (`neix`) i els ids de les 3 peces del xat.
+2. S'omple l'esquelet amb el contingut dels apunts (`ASSIG`, `T`, `OB`; vegeu «Format de les dades» a l'apartat 5).
+3. `node motor/revisa-mon.js <id>` revisa el contingut i diu on és cada error.
+4. `python3 motor/publica.py --id gN --missatge "feat(mons): afegeix el món N Títol (gN)"` ho regenera tot, passa les proves del món i el publica (vegeu «Publicar»).
 
-**Si el món és nou**, la guia és [`docs/NOU-MON.md`](docs/NOU-MON.md) (o la skill `nou-mon` amb Claude Code). L'admin, el dibuix del rànquing
-(`sprites.js`) i les paraules del xat surten soles dels camps `curt`, `spr` i `xat` de `motor/mons.json`; l'SQL valida els mons pel
-format de l'id i les proves compten els mons de `mons.json`. A mà només queden la il·lustració opcional (`motor/ilu/<id>.svg`), la
-versió MENOR (apartat 3) i `docs/MONS.md`.
+L'admin, el dibuix del rànquing (`sprites.js`) i les paraules del xat surten soles de `motor/mons.json` (apartat 5, «L'única font de cada món»).
+L'SQL valida els mons pel format de l'id, i les proves compten els mons que hi ha a `mons.json`. A mà només queden:
+- la il·lustració opcional (`motor/ilu/<id>.svg`);
+- l'`upsert` de les 3 peces del xat a Supabase;
+- la versió MENOR (apartat 3);
+- `docs/MONS.md`.
 
-**Regles del contingut:**
+**Un món que ja existeix:** canvia `motor/dades/<id>.js` i comprova-ho:
+
+```
+python3 motor/tot.py
+node motor/revisa-mon.js <id>
+node motor/prova-tot.js mons <carpeta>
+```
+
+L'última ordre passa dues proves del món: l'estricta (`ESTRICTE=1`, ha d'acabar amb «errors: cap») i la visual a 360, 390 i 430 px.
+
+**Regles del contingut** (el revisor i la prova estricta en comproven la major part):
 
 - Tot surt dels apunts o del llibre (res inventat). Si una dada és dubtosa, no va al test i la fitxa diu «pregunta-ho al profe».
 - Mínim **8 preguntes per tema**, 3 opcions i una sola correcta. Les opcions falses han de ser errors típics, mai opcions absurdes.
@@ -169,7 +179,7 @@ Per afegir un **Troba l'error** a qualsevol món, a `ASSIG.jocs` hi va un joc `t
 ### Millorar el motor
 
 Els canvis comuns a tots els mons (sons, estrelles, pantalles…) es fan a `motor/plantilla-estudi-interactiu.html`.
-Després, `python3 tot.py` els aplica a tots els mons, i cal passar la prova de cada món.
+Després, `python3 motor/tot.py` els aplica a tots els mons, i `node motor/prova-tot.js mons` passa les proves estricta i visual de tots.
 **Mai s'edita una pàgina generada** (`<assignatura>/<tema>/index.html`): el canvi es perdria i la revisió fallaria.
 
 ### Generar els PDFs d'estudi
@@ -179,14 +189,28 @@ preguntes orals i connexions, o el dossier d'un llibre de lectura. Comença per 
 
 ### Publicar
 
-Cada canvi va per una branca i un PR cap a `main`, mai directament a `main`:
+Cada canvi va per una branca i un PR cap a `main`, mai directament a `main`. **`motor/publica.py` ho fa tot amb una sola ordre:**
 
-1. Branca nova des de `main` actualitzat.
-2. `python3 motor/tot.py`, les proves i el commit.
-3. Push de la branca i PR cap a `main`.
-4. En obrir el PR s'activa la fusió automàtica (`gh pr merge --auto --squash --delete-branch`): GitHub el fusiona sol i esborra la branca
-   quan el check «Revisa Bona Nota · tot» surt en verd (el ruleset «main protegida» l'exigeix). Fusionar és publicar: GitHub Pages ho posa
-   a **bonanota.net** en 1 o 2 minuts. Si l'Action falla, s'arregla a la mateixa branca. `python3 motor/publica.py` fa tots aquests passos d'una ordre.
+```
+python3 motor/publica.py --id gN --missatge "tipus(àmbit): què (gN)"
+```
+
+| Pas | Què fa |
+|---|---|
+| 1 | Fa `git fetch`. Des de `main`, crea la branca `gN-<resum>` (amb `--id 12`, la branca `issue/12-<resum>`) |
+| 2 | Executa `python3 motor/tot.py` i `node motor/revisa-mon.js`, i per als mons canviats, les proves visual i estricta |
+| 3 | Fa el commit i passa la porta del nucli (`nucli ship plan`, cada check automàtic i `nucli ship seal`) |
+| 4 | Puja la branca, obre el PR cap a `main` i hi activa la fusió automàtica (`gh pr merge --auto --squash --delete-branch`). El cos del PR és el fitxer de `--cos`, si n'hi ha; si no, la primera entrada del `CHANGELOG.md`, o els commits |
+
+Abans de començar, `publica.py` s'atura si `main` de GitHub té canvis que aquí no hi són, si hi ha un merge a mitges o marques de conflicte, o si hi ha fitxers nous que no són de la feina. També s'atura si toques `.github/`, `.claude/`, `nucli.json`, `AGENTS.md` o `CLAUDE.md` i no hi poses `--config`.
+
+**Després:**
+- GitHub fusiona el PR sol i n'esborra la branca quan el check «Revisa Bona Nota · tot» surt en verd (el ruleset «main protegida» l'exigeix). Fusionar és publicar: GitHub Pages ho posa a **bonanota.net** en 1 o 2 minuts.
+- Si l'Action falla, s'arregla a la mateixa branca i es torna a executar `publica.py`, que aprofita el PR que ja hi ha.
+
+**Altres opcions:**
+- Amb `--prova` només revisa i escriu què faria, sense pujar res.
+- Surt amb 1 si falla una revisió (no puja res) i amb 2 si falla git, el nucli o `gh`.
 
 Si el canvi el notarà qui fa servir l'app, el mateix PR puja la versió (apartat 3).
 
@@ -229,9 +253,17 @@ pares/index.html               Guia oberta i sense tecnicismes per a les famíli
 motor/
   plantilla-estudi-interactiu.html   El motor (tot el que fa un món)
   dades/<id>.js                      Contingut de cada món (ASSIG, T, OB)
-  mons.json                          Catàleg de mons (carpeta, número, títol, colors, icona…)
+  mons.json                          Catàleg de mons i única font de cada món (portada, admin, rànquing i xat)
   build.py                           Genera un món: plantilla + dades → pàgina
-  tot.py                             Ho genera tot (mons, portada, admin/preguntes.json, versio.json, sw.js)
+  tot.py                             Ho genera tot (mons, portada, blocs de mons.json, admin/preguntes.json, versio.json, sw.js)
+  registres.py                       Escriu el que surt de mons.json fora dels mons: admin, BN_MON i peces del xat (el crida tot.py)
+  nou_mon.py                         Comença un món nou: entrada a mons.json i esquelet de dades
+  revisa-mon.js                      Revisor de contingut d'un món (preguntes, jocs, figures, Troba l'error i boss)
+  publica.py                         Publica d'una ordre: revisions, commit, porta del nucli, PR i fusió automàtica
+  prova-tot.js                       Passa en local les mateixes proves que l'Action (per grups o una sola)
+  prova-visual.js                    Res surt de la pantalla ni dels dibuixos d'un món a 360, 390 i 430 px
+  prova-mons.js                      mons.json i els blocs generats coincideixen
+  prova_nou_mon.py, prova_publica.py, prova_registres.py, prova-revisa-mon.js   Proves de les eines
   qids.py, qids.json                 Identificadors estables de les preguntes
   sw-plantilla.js                    Plantilla del service worker
   ilu/<id>.svg                       Il·lustració de la targeta de cada món
@@ -254,6 +286,8 @@ sw.js, manifest.webmanifest, icones/   App instal·lable (sw.js el genera tot.py
 versio.json                    Empremta de l'última publicació (la genera tot.py)
 CNAME                          Domini de la web: bonanota.net
 CHANGELOG.md                   Historial de versions
+.github/workflows/             revisa.yml (la revisió de cada PR) i etiqueta.yml (posa l'etiqueta vX.Y.Z)
+.claude/skills/nou-mon/        Skill de Claude Code que construeix i publica un món nou de cap a cap
 AGENTS.md, CLAUDE.md, nucli.json, docs/   Regles i memòria del projecte per als agents d'IA
 ```
 
@@ -282,7 +316,8 @@ El títol i l'id es llegeixen amb expressions regulars: `id:"…"`, `nom:"…"` 
 | Pas | Què fa |
 |---|---|
 | 1 | Executa `build.py` per a cada entrada de `mons.json` |
-| 2 | Compta temes i jocs avaluant les dades amb Node |
+| 2 | Compta temes i jocs avaluant les dades amb Node (i en treu els ids dels jocs per a la demo de l'admin) |
+| 2b | `registres.py` valida `mons.json` i escriu els blocs que en surten: `MONS-ADMIN` a `admin/index.html`, `BN-MON` a `sprites.js` i `XAT-MONS` a `index.html` i `supabase/bn_xat.sql` (vegeu «L'única font de cada món») |
 | 3 | A `index.html`: reescriu les targetes (`MONS:inici..fi`), copia `so-mobil.js` i `actualitza.js` entre les seves marques i posa `sprites.js?v=<empremta>`; a `perfil/index.html` copia els mateixos blocs i posa el mateix `?v=` (i `build.py` el posa a cada món) |
 | 3b | Escriu `admin/preguntes.json` (id → text, opcions, correcta, tema) |
 | 3b2 | Extreu les constants de regles de `motor/plantilla-estudi-interactiu.html` i escriu `motor/regles.json` i `admin/regles.json` |
@@ -290,6 +325,51 @@ El títol i l'id es llegeixen amb expressions regulars: `id:"…"`, `nom:"…"` 
 | 4 | Calcula una empremta del contingut i la posa a cada pàgina (`VER`), a `versio.json` i a `sw.js` |
 
 L'empremta es calcula amb el buit `__BN_VERSIO__` encara sense omplir, perquè no depengui d'ella mateixa. Si `tot.py` es torna a executar sense canvis, el resultat és idèntic: la revisió automàtica ho aprofita per detectar pàgines editades a mà.
+
+### L'única font de cada món (`motor/mons.json`)
+
+Cada món s'escriu en un sol lloc: la seva entrada de `motor/mons.json`. `build.py` en fa la pàgina i la targeta. El pas 2b de `tot.py` (`motor/registres.py`) escriu la resta entre marques «no editar a mà», i abans valida l'entrada:
+- l'sprite ha d'existir a `BN_SPR`;
+- els colors han de tenir la forma `#rrggbb`;
+- els textos no poden portar `<` ni `>`;
+- els ids de les peces han de ser únics, menors de 1001 i diferents dels de les peces generals.
+
+| Camp | Cal? | Per a què | On va a parar |
+|---|---|---|---|
+| `dades`, `carpeta`, `mon`, `neix`, `materia`, `titol`, `desc`, `colors` (3), `ic` | Sí | La pàgina del món, la seva targeta i la data de naixement (fases del bon ús) | `<carpeta>/index.html`, `index.html` |
+| `curt` | Sí | Nom curt del món al tauler | `ASSIGS` (bloc `MONS-ADMIN` d'`admin/index.html`) |
+| `spr` | Sí | Icona del rànquing (una clau de `BN_SPR`) | `BN_MON` (bloc `BN-MON` de `sprites.js`) |
+| `xat` | Sí | 3 paraules d'estudi del món per al xat, `[id, "text"]` | `XAT_PC_MONS` (bloc `XAT-MONS` d'`index.html` i de `supabase/bn_xat.sql`) |
+| `llengua` | No | `"es"` si el món és en castellà | La pàgina del món |
+| `xmon` | No | Nom del món al xat de l'admin (per defecte, `curt`) | `XMON` |
+| `col_admin` | No | 8 colors per al tauler (per defecte, surten de `colors[1]`) | `COL_MON` |
+| `demo_jocs` | No | Jocs de la demo de l'admin (per defecte, els 4 primers del món) | `DEMO_JOCS` |
+
+**Qui més llegeix `mons.json`:**
+- `motor/prova-mons.js` comprova que els blocs generats coincideixen amb `mons.json`.
+- Les proves del tauler i del xat en treuen el nombre de mons (`motor/eines/mons-prova.js`).
+- A Supabase, `bn_control.sql` accepta qualsevol món amb un id de la forma `^[a-z0-9_-]{1,40}$`, sense cap llista escrita a mà.
+
+Les peces del xat de cada món també s'han de posar a la base de dades: fes l'`upsert` de les files del món del bloc `XAT-MONS` de `supabase/bn_xat.sql`.
+
+### Eines per crear, revisar i publicar un món
+
+```
+ nou_mon.py ─▶ mons.json + motor/dades/<id>.js (esquelet)
+                         │  s'omple amb el contingut dels apunts
+                         ▼
+ tot.py ─▶ pàgines + blocs de mons.json ─▶ revisa-mon.js ─▶ prova.js (ESTRICTE) + prova-visual.js
+                                                                        │
+ publica.py ─▶ branca · commit · porta del nucli · PR · fusió automàtica ◀┘
+```
+
+| Eina | Què fa |
+|---|---|
+| `nou_mon.py` | Valida l'id, la carpeta (no pot ser una carpeta reservada com `admin` o `motor` ni existir ja), els colors i les 3 peces. Després afegeix l'entrada a `mons.json` i escriu l'esquelet de dades |
+| `revisa-mon.js [id…]` | Troba els errors de contingut que la prova estricta no explica bé o no mira: temes sense preguntes, preguntes o opcions repetides, la correcta fora de rang, la regla del 15–40 %, blocs que no sumen, obertes sense `q`/`p`/`m`, ítems i caixes dels jocs, figures que no tornen un `<svg>`, «Troba l'error» mal format i l'sprite del boss. Sense ids, revisa tots els mons. També es pot fer servir com a mòdul (`revisaFont`, `revisaMon`) |
+| `prova-visual.js <carpeta>…` | Obre la portada, el primer tema, els jocs de figura i d'error i el `?demoBoss=1` a 360, 390 i 430 px. Comprova que no hi ha scroll horitzontal i que cap text d'un SVG surt del dibuix ni del seu requadre. Les captures van a `motor/.captures/<id>/` |
+| `prova-tot.js` | Sense res, passa en local els grups `base`, `sql` i `interficie` de l'Action. El grup `base` comença comprovant que `tot.py` no canvia res. Amb `mons [carpeta…]`, passa l'estricta i la visual dels mons; amb un fitxer (`motor/prova-xat.js`), només aquella prova |
+| `publica.py` | Ho publica tot d'una ordre (apartat 2, «Publicar») |
 
 ### Format de les dades (`motor/dades/<id>.js`)
 
@@ -302,7 +382,7 @@ L'empremta es calcula amb el buit `__BN_VERSIO__` encara sense omplir, perquè n
 | `color` | 3 colors que omplen les variables CSS `--g1`, `--g2` i `--g3` |
 | `blocs` | `[{titol, n}]`: agrupa els temes. La suma de `n` ha de donar el nombre de temes |
 | `jocs` | Llista de jocs (vegeu «Jocs») |
-| `boss` | `{nom, spr, fx, mus, rotul, em}` (i opcionalment `pix` 16×16 i `notes` a mida): el repte final del món i la seva celebració audiovisual ([`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md)) |
+| `boss` | `{nom, spr, fx, mus, rotul, em}` (i opcionalment `pix` 16×16, `notes` a mida i `ic`, la icona central de la celebració): el repte final del món i la seva celebració audiovisual ([`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md)) |
 | `foto`, `pissarra`, `repasExtra`, `destacat` | Opcionals: foto del quadern, full de brut, joc ofert en acabar el repàs i joc amb botó gran a l'inici |
 | `peu` | Ja no es mostra: només deixa constància d'on surt el contingut |
 
@@ -470,6 +550,7 @@ Aquests tipus viuen a la plantilla (`motor/plantilla-estudi-interactiu.html`).
 | `so-mobil.js` | Un sol `AudioContext`, desbloquejat al primer toc, que sona a l'iPhone en silenci | Plantilla i portada |
 | `actualitza.js` | Actualització automàtica (vegeu l'apartat 7) | Plantilla i portada |
 | `mapa-comarques.js` | Genera els camins SVG de les 43 comarques i els escriu a `dades/comarques.js`, entre les marques `MAPA:inici` i `MAPA:fi` | Ningú: s'executa a mà |
+| `mons-prova.js` | Llegeix `mons.json` i el catàleg del xat (`N`, `ids`, `nou`, `vell`, `catalegXat`) perquè les proves no depenguin del nombre de mons | Les proves del tauler i del xat |
 
 El Taller desa cada resposta fallada com `exercici|pas|error` (camp `ep`), que el tauler agrupa. Hi ha generadors preparats que encara no surten enlloc: operacions combinades, suma i resta de fraccions i equacions de primer grau.
 
@@ -508,9 +589,9 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
 
 - **Rànquing i festes animades (`FESTES`):** combina les RPC `bn_ranking_mons` (total, estrelles per món i dies diferents d'estudi `dies`; amb `bn_ranking` de reserva) i `bn_ranking_remuntada`, amb les pestanyes `Estrelles`, `Dies` («Dies d'estudi»), `Nivell`, `Setmana`, `Remuntada` i `Xat`. Sense la segona RPC, la pestanya Remuntada surt buida. La classificació mostra els `HS_TOP` = 25 primers i, si el nen queda més avall, la seva fila a sota. `?demo` el mostra amb nens inventats. Tocar **5 vegades seguides** dins del rànquing (o assolir la meta setmanal de la colla) dispara en rotació una de les **5 festes musicals amb animació** (`🌋 TERRATRÈMOL!`, `🥁 LA GRAN DESFILADA!`, `🐝 ATAC D'ABELLOTS!`, `🚀 GRAVETAT ZERO!` i `🐉 FOC DE DRAC!`; detall a [`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md)).
 - **Icones:** `sprites.js` dibuixa el pixel art com a SVG a partir de graelles de 16×16, de manera que es veu igual a tots els aparells.
-- **Afegir un món al rànquing:** surt sol de la seva targeta (`data-id`, `.mat`, `h2`). Per donar-li dibuix i color, a `sprites.js` afegeix-lo a `BN_MON`
-  (`id: {ic: "un dibuix de BN_SPR", mat: "Assignatura"}`). Si l'assignatura és nova, afegeix-la també a `BN_MAT` (`curt`, `color`, `tint`).
-  Sense aquestes entrades no es trenca res: surt amb el seu emoji en una rajola grisa i l'assignatura nova agafa un color de reserva.
+- **Afegir un món al rànquing:** el món surt sol de la seva targeta (`data-id`, `.mat`, `h2`). El dibuix surt del camp `spr` de `motor/mons.json`: `tot.py` escriu `BN_MON` a `sprites.js` (bloc `BN-MON`, no s'edita a mà).
+  - Si l'assignatura és nova, afegeix-la a mà a `BN_MAT` (`curt`, `color`, `tint`). Si no hi és, no es trenca res: agafa un color de reserva.
+  - Per a un dibuix nou, primer s'afegeix a `BN_SPR`. Després la seva clau va a `spr`.
 
 ### 👀 Mode tast anònim (`?tast=1`)
 
@@ -528,7 +609,11 @@ Permet que pares, mestres o un company tafaner vegin com és Bona Nota per dins 
 
 Els nens es parlen **amb peces**, sense escriure: una frase amb un forat (`___`) i el que l'omple (una paraula d'estudi, una cosa de classe, una cosa seva o el nom d'un company del rànquing). Regles i motius: `docs/DECISIONS.md` (ADR-0006) i l'encàrrec `docs/superpowers/specs/2026-11-10-xat-colla.md`.
 
-- **Catàleg:** el bloc `XAT-CATALEG` d'`index.html` (`XAT_FR`: 26 frases; `XAT_PC`: 69 peces) és el mateix que carrega `supabase/bn_xat.sql`. Si en canvies un, canvia l'altre: `motor/prova-xat-sql.js` comprova que coincideixen. Les peces noves que afegeix l'admin (id ≥ 1001) arriben del servidor amb el seu text.
+- **Catàleg:** el bloc `XAT-CATALEG` d'`index.html` és el mateix que carrega `supabase/bn_xat.sql`. Té `XAT_FR`, amb 26 frases, i `XAT_PC`, amb 69 peces avui. `XAT_PC` ajunta dues llistes:
+  - `XAT_PC_BASE`: les 45 peces generals, escrites a mà. Si en canvies una, canvia-la també a l'SQL.
+  - `XAT_PC_MONS`: 3 peces per món, que `tot.py` genera del camp `xat` de `motor/mons.json` (bloc `XAT-MONS`, a tots dos fitxers).
+
+  `motor/prova-xat-sql.js` comprova que els dos catàlegs coincideixen. Les peces noves que afegeix l'admin (id ≥ 1001) arriben del servidor amb el seu text.
 - **Regla d'or:** el nom d'un company només va en frases de forat `C` (felicitar, donar aura o reptar); per riure, coses de classe (`E`) o un mateix (`J`).
 - **Text:** `xatCompon()` el compon al navegador amb el catàleg: contraccions (a/de/per + el/els → al, als, del, dels, pel, pels) i majúscula si la frase comença pel forat. Del servidor només arriben números. L'admin fa servir les mateixes regles.
 - **Crèdits:** els calcula el servidor (`bn_xat_estat`): cada `est_credit` (10) ⭐ guanyades avui = 1 crèdit, fins a `max_dia` (5) al dia; tornen a zero a mitjanit (Europe/Madrid). Votar «Ben dit» demana el primer crèdit d'avui. Entre missatges, `espera_s` (10 s). Els valors es canvien des de l'admin.
@@ -645,7 +730,7 @@ A **Inici** (`#control`, amb interruptors d'1 clic) i a **⚙ Configuració → 
 - **Programar l'horari automàtic** (`Configuració → Horaris i crèdits`): una hora de tancament i una d'obertura, en hora de Catalunya/Madrid (per exemple `21:30` → `07:00`), que tanca el xat de nit i mostra l'avís amable d'anar a descansar als mons i a la portada.
 - **Activar o desactivar cada món** (des d'`Inici` o des de `Mons → Llista`). Un món desactivat surt en gris a la portada amb «🔒 TANCAT» i no deixa entrar-hi, tampoc per enllaç directe. Les estrelles es conserven al rànquing.
 
-El SQL és a `supabase/bn_control.sql`. La llista de mons vàlids hi és escrita a mà: en afegir un món, cal afegir-hi el seu id.
+El SQL és a `supabase/bn_control.sql`. Els mons es validen pel format de l'id (`^[a-z0-9_-]{1,40}$`), sense cap llista escrita a mà: un món nou no hi demana cap canvi.
 
 ### 📊 Inici, Mons i Sessions
 
@@ -694,14 +779,26 @@ Dins dels mons ja no hi ha cap botó per esborrar el progrés: només es pot fer
 
 ## 10. Proves i revisió automàtica
 
-A cada PR i a cada pujada a `main`, GitHub Actions executa «Revisa Bona Nota» (`.github/workflows/revisa.yml`) en paral·lel (`base`, `sql`, `interficie` i un job simultani per a cadascun dels mons de `motor/mons.json`, amb Chromium en memòria cau). Si un sol pas falla, el PR no es fusiona.
-El resultat surt a la pestanya **Actions** del repo.
+A cada PR i a cada pujada a `main`, GitHub Actions executa «Revisa Bona Nota» (`.github/workflows/revisa.yml`). Hi ha quatre jobs en paral·lel, i un cinquè que en recull el resultat:
+
+| Job | Què hi ha |
+|---|---|
+| `base` | Comprova que `tot.py` no canvia res i passa les proves sense navegador: el Taller, les regles, `mons.json`, el revisor de contingut i les eines |
+| `sql` | El SQL de `supabase/` dins de PGlite |
+| `interficie` | La portada, el perfil, la guia per a les famílies, el mode tast i el tauler, amb Playwright |
+| `mons` | Un job per a cada món de `motor/mons.json`, amb la prova estricta i la visual. Les captures es poden baixar com a artefacte (`captures-…`) |
+| `tot` | El check «Revisa Bona Nota · tot», que només surt en verd si els altres quatre ho estan |
+
+Els tres jobs amb navegador tenen Chromium en memòria cau. El ruleset «main protegida» exigeix el check «Revisa Bona Nota · tot» abans de fusionar, i la fusió automàtica l'espera: si un sol pas falla, el PR no es fusiona. El resultat surt a la pestanya **Actions** del repo.
 
 | Pas | Fitxer | Què comprova |
 |---|---|---|
 | 1 | `motor/tot.py` + `git diff` | Torna a generar tots els mons i la portada. Si una pàgina pujada no coincideix (editada a mà o sense regenerar), falla i diu quins fitxers |
 | 2 | `motor/prova-generadors.js` | Els generadors del Taller de mates (càlculs, errors típics, Troba l'error) |
 | 3 | `motor/prova-regles.js` | Les regles copiades (nivells, aprovat…) coincideixen amb la plantilla |
+| 3b | `motor/prova-mons.js` | `mons.json` és l'única font: els camps de cada món, els ids de les peces i els blocs generats a l'admin, `sprites.js`, `index.html` i `bn_xat.sql` |
+| 3c | `motor/prova-revisa-mon.js`, `motor/revisa-mon.js` | El revisor de contingut (amb fitxers de prova) i el contingut de tots els mons |
+| 3d | `motor/prova_nou_mon.py`, `prova_publica.py`, `prova_registres.py` | Les eines per crear i publicar mons. `prova_publica.py` fa una publicació sencera en un repo temporal, amb `gh` i `nucli` simulats |
 | 4 | `motor/prova-nuvol.js` | El núvol d'un món, amb Supabase simulat: un aparell vell no trepitja el progrés del núvol, sense connexió no puja res i el `-2` es resol sense bucles |
 | 5 | `motor/prova-perfil.js` | La pàgina de perfil: tries amb clic i teclat, desat al núvol, sense connexió i amb PIN incorrecte, Sorpresa i «Efectes suaus» |
 | 6 | `motor/prova-admin-fonts.js` | Els orígens d'estrelles del tauler (funcions pures) |
@@ -711,7 +808,9 @@ El resultat surt a la pestanya **Actions** del repo.
 | 10 | `motor/prova-admin-fonts-rep-sql.js`, `prova-admin-fonts-rep.js` | «Combos i repàs» i «Errors pendents de la colla»: el SQL i el tauler |
 | 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
 | 12 | `motor/prova-pin-intents-sql.js`, `prova-fotos-sql.js`, `prova-pares.js`, `prova-tast.js`, `prova-dificultat-sql.js`, `prova-admin-dificultat.js` | El bloqueig de 15 minuts al 5è intent de PIN (#33), el permís de fotos del quadern, la guia per a les famílies (`pares/`), el mode tast anònim (`?tast=1`) i la dificultat real de les preguntes al servidor i al tauler (#16) |
+| 12b | `motor/prova-admin-evolucio.js` | El gràfic d'evolució del tauler |
 | 13 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |
+| 14 | `motor/prova-visual.js` (un cop per món) | A 360, 390 i 430 px no hi ha scroll horitzontal i cap text d'un SVG surt del dibuix ni del seu requadre |
 
 Les proves `…-sql.js` executen el SQL de `supabase/` dins de **PGlite**, un Postgres de prova sense xarxa. Les altres obren la pàgina amb **Playwright** i un Supabase simulat: cap prova toca la base de dades real.
 
@@ -722,7 +821,16 @@ npm install --no-save playwright@1 @electric-sql/pglite@0.5
 npx playwright install chromium
 ```
 
-I després, la que calgui, per exemple `node motor/prova-xat.js`. La d'un món: `cd motor && ESTRICTE=1 node prova.js $PWD/../<carpeta>/index.html`.
+Després, `motor/prova-tot.js` passa en local el mateix que l'Action i en fa un resum:
+
+| Ordre | Què passa |
+|---|---|
+| `node motor/prova-tot.js` | Els grups `base`, `sql` i `interficie` |
+| `node motor/prova-tot.js base` (o `sql`, o `interficie`) | Només aquell grup |
+| `node motor/prova-tot.js mons [carpeta…]` | Les proves estricta i visual dels mons triats (sense carpeta, de tots) |
+| `node motor/prova-tot.js motor/prova-xat.js` | Només aquella prova |
+
+Cada ordre és una de sola, sense `&&` ni `cd`, perquè Claude Code la pugui passar sense finestra de permís (apartat 11).
 
 **`motor/prova.js`** obre la pàgina generada amb Playwright i la fa jugar: cada tema (fitxa, targetes i test perfecte), cada joc, els exàmens, el repàs i les obertes, i executa les funcions de `prova` dels jocs `custom` i les de `BN_PROVES`.
 Amb `ESTRICTE=1`, un món falla si té temes amb menys de 8 preguntes o si la resposta correcta és l'opció més llarga fora del marge del 15 % al 40 %.
@@ -743,6 +851,17 @@ Bona Nota es programa amb agents d'IA. **Hi treballen Claude (Claude Code) i Gem
 - **Numeració de Gemini:** les tasques i els blocs que fa Gemini es numeren amb la lletra `g` (`g1`, `g2`, `g3`…). L'id surt al final del commit.
 - **Memòria del projecte**, a `docs/`: `ESTAT.md` (com està tot), `DECISIONS.md` (què s'ha decidit i per què), `TRAMPES.md` (errors per no repetir),
   `CONVENCIONS.md` (com es treballa) i `ARQUITECTURA.md` (on és cada cosa).
-- **Abans de publicar:** `nucli ship plan` diu quines comprovacions demana el canvi, `nucli ship run <check>` les passa i `nucli ship seal` les segella.
+- **Abans de publicar:** `nucli ship plan` diu quines comprovacions demana el canvi, `nucli ship run <check>` les passa i `nucli ship seal` les segella. `motor/publica.py` ho fa sol (apartat 2).
+- **Un món nou d'una tirada:** amb Claude Code, la skill `nou-mon` (`.claude/skills/nou-mon/SKILL.md`) llegeix la carpeta de Drive del tema i fa la resta de cap a cap, sense preguntar res pel camí:
+  1. `nou_mon.py` i les dades;
+  2. el revisor i una revisió de fidelitat als apunts;
+  3. l'`upsert` de les peces del xat a Supabase, la versió i els docs;
+  4. `publica.py`.
+
+  El que és dubtós no s'atura: va a la fitxa com «⚠ … pregunta-ho al profe».
+- **Sense finestres de permís:** `.claude/settings.local.json` és personal i no va a git. Deixa passar soles aquestes ordres: `gh`, `git push`/`fetch`/`pull`, `node motor/prova-tot.js …`, `node motor/prova-visual.js …` i `python3 motor/publica.py …`.
+  - Cada ordre s'ha d'executar sola, sense `&&`, `|`, `cd` ni heredoc.
+  - Fusionar amb `--admin` i empènyer cap a `main` estan prohibits.
+  - El bloc per copiar-lo en un altre ordinador és a l'apartat 5 de [`docs/NOU-MON.md`](docs/NOU-MON.md).
 
 Gemini es fa servir per desenvolupar l'app. Dins de l'app només hi ha una IA: Claude, que corregeix les fotos del quadern.

@@ -130,10 +130,12 @@ Dues lectures poden compartir un mateix joc (al Tema 2, el museu i el tresor de 
 ## 5. Comprovació abans de publicar
 
 ```
-cd motor
-python3 tot.py
-ESTRICTE=1 node prova.js $PWD/../angles/<carpeta>/index.html
+python3 motor/tot.py
+node motor/revisa-mon.js <id>
+node motor/prova-tot.js mons angles/<carpeta>
 ```
+
+L'última ordre passa dues proves del món: l'estricta (`ESTRICTE=1`) i la visual a 360, 390 i 430 px. Per publicar, `python3 motor/publica.py` (vegeu `docs/NOU-MON.md`).
 
 La prova juga tots els jocs de frases i en revisa les dades. Falla si:
 
