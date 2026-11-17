@@ -163,10 +163,12 @@ Així passa el xat de la colla pel filtre de les 10 preguntes de [`BON-US.md`](B
 
 Si només vols afegir una **peça nova** (una paraula d'estudi, cosa de classe o cosa teva), ho pots fer directament des del tauler (`admin/` → **⚙ Configuració → Catàleg del xat → Peça nova**): el servidor li dona un identificador a partir del `1001` i `bn_xat_llegeix` ja n'envia el text al navegador.
 
-Si vols afegir una **frase nova** o canviar el **catàleg fix** del codi (ids `1–26` per a frases i `1–66` per a peces):
+Les **3 paraules d'estudi de cada món** no es toquen aquí: surten del camp `xat` de `motor/mons.json` i `python3 motor/tot.py` les escriu als blocs `XAT-MONS` d'`index.html` i de `supabase/bn_xat.sql` (vegeu `docs/NOU-MON.md`).
+
+Si vols afegir una **frase nova** o canviar el **catàleg fix** del codi (ids `1–26` per a frases i les peces generals de `XAT_PC_BASE`):
 
 1. **Respecta la regla d'or:** si la frase té forat de company (`slot: 'C'`), ha de ser de les categories `'aura'` o `'colla'` i no pot portar cap número negatiu (com `-1000`) ni cap burla. Les frases per riure o queixar-se han de portar forat `'E'` (cosa de classe) o `'J'` (cosa teva). Cap peça no pot nomenar persones ni fets reals.
-2. **Canvia els dos llocs alhora:** edita el bloc `/* XAT-CATALEG:inici */ … /* XAT-CATALEG:fi */` d'`index.html` (`XAT_FR` i `XAT_PC`) i els `insert into bn_priv.xat_frases` / `bn_priv.xat_peces` de `supabase/bn_xat.sql` amb el mateix identificador, text, categoria/tipus, forat i nivell o món.
+2. **Canvia els dos llocs alhora:** edita el bloc `/* XAT-CATALEG:inici */ … /* XAT-CATALEG:fi */` d'`index.html` (`XAT_FR` i `XAT_PC_BASE`, fora del bloc generat `XAT-MONS`) i els `insert into bn_priv.xat_frases` / `bn_priv.xat_peces` de `supabase/bn_xat.sql` amb el mateix identificador, text, categoria/tipus, forat i nivell o món.
 3. **Executa `python3 motor/tot.py` i les proves:** `node motor/prova-xat-sql.js` llegeix el bloc `XAT-CATALEG` d'`index.html`, carrega `supabase/bn_xat.sql` dins de PGlite i comprova que totes les frases i peces amb `id < 1001` són idèntiques un a un, que totes les frases tenen exactament un forat `___`, que les frases amb forat `'C'` són només d'`aura` o `colla` sense signes negatius (`!/-\d/`) i que la taula `xat_msg` no té cap columna de text lliure.
 
 ## 11. Diferències amb l'encàrrec i d'on ve

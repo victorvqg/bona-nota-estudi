@@ -3,14 +3,16 @@
 en fusió automàtica (GitHub el fusiona quan «Revisa Bona Nota · tot» surt en verd i bonanota.net s'actualitza sol).
 
 Ús (des de l'arrel del repo, com una sola ordre perquè no surti cap finestra de permís):
-  python3 motor/publica.py --id gN --missatge "tipus(àmbit): què (gN)" [--cos fitxer.md] [--prova]
+  python3 motor/publica.py --id gN --missatge "tipus(àmbit): què (gN)" [--cos fitxer.md] [--prova] [--config]
 
-  1. Si ets a main, crea la branca gN-<resum>; si ets en una altra branca, ha de començar per «gN-».
-     S'atura si hi ha un merge a mitges o marques de conflicte («<<<<<<<») als fitxers canviats.
+  1. git fetch i s'atura si main de GitHub té canvis que aquí no hi són. Si ets a main, crea la branca gN-<resum>;
+     si ets en una altra branca, ha de començar per «gN-». S'atura si hi ha un merge a mitges, marques de conflicte,
+     fitxers nous que no són de la feina, o canvis de configuració (.github/, .claude/, nucli.json, AGENTS.md,
+     CLAUDE.md) sense --config.
   2. python3 motor/tot.py, node motor/revisa-mon.js i, per a cada món canviat, la prova estricta i la visual.
   3. Commit (si hi ha canvis) i nucli ship plan / run generat / run generadors / seal.
   4. git push, gh pr create (cos: --cos, o la primera entrada del CHANGELOG si ha canviat, o els commits) i
-     gh pr merge --auto --squash --delete-branch.
+     gh pr merge --auto --squash --delete-branch (abans comprova que el PR no tingui conflictes amb main).
   Amb --prova fa els passos 1 (sense crear branca) i 2 i només escriu les ordres dels passos 3 i 4.
 Surt amb 1 si falla una revisió (no puja res) i amb 2 si falla git, nucli o gh.
 """
@@ -21,6 +23,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 import unicodedata
 from pathlib import Path
 
@@ -44,6 +47,28 @@ def mons_canviats(fitxers: list, mons: list) -> list:
 def marques_conflicte(textos: dict) -> list:
     """Fitxers amb un conflicte de git sense resoldre (marques «<<<<<<< » i «>>>>>>> »)."""
     return sorted(f for f, t in textos.items() if re.search(r"^<<<<<<< ", t, re.M) and re.search(r"^>>>>>>> ", t, re.M))
+
+
+FEINA = ("motor/", "docs/", "supabase/", "admin/", "perfil/", "pares/", "icones/",
+         "CHANGELOG.md", "README.md", "index.html", "sprites.js", "sw.js", "versio.json")
+CONFIG = (".github/", ".claude/", "nucli.json", "AGENTS.md", "CLAUDE.md")
+
+
+def fitxers_estranys(nous: list, carpetes: list) -> list:
+    """Fitxers nous (sense seguiment) que no són de la feina d'un món: es pujarien a bonanota.net sense que ningú els miri."""
+    bons = FEINA + tuple(c.rstrip("/") + "/" for c in carpetes)
+    return sorted(f for f in nous if not f.startswith(bons))
+
+
+def fitxers_config(canviats: list) -> list:
+    """Canvis de configuració o de seguretat (CI, permisos, regles d'agents): només amb --config."""
+    return sorted(f for f in canviats if f.startswith(CONFIG))
+
+
+def base_desfasada(cwd: Path = None) -> bool:
+    """Cert si origin/main té commits que aquí no hi són: el PR tindria conflictes i la fusió automàtica no arribaria mai."""
+    r = subprocess.run(["git", "merge-base", "--is-ancestor", "origin/main", "HEAD"], cwd=cwd or ARREL, capture_output=True)
+    return r.returncode != 0
 
 
 def valida_missatge(id_: str, missatge: str) -> None:
@@ -71,14 +96,20 @@ def main(argv=None) -> None:
     p.add_argument("--missatge", required=True)
     p.add_argument("--cos")
     p.add_argument("--prova", action="store_true")
+    p.add_argument("--config", action="store_true", help="permet canvis a .github/, .claude/, nucli.json, AGENTS.md o CLAUDE.md")
     a = p.parse_args(argv)
     if not re.fullmatch(r"[gn]\d+", a.id):
         sys.exit("ERROR: --id ha de ser gN (o nN)")
     valida_missatge(a.id, a.missatge)
 
-    # 1) branca
+    # 1) base al dia i branca
+    corre(["git", "fetch", "origin", "main"], 2)
     actual = git("rev-parse", "--abbrev-ref", "HEAD")
     nom = branca(a.id, a.missatge)
+    if base_desfasada():
+        sys.exit("ERROR: GitHub té canvis de main que aquí no hi són (el PR tindria conflictes i no es fusionaria mai). "
+                 + ("Fes «git pull --ff-only origin main» i torna-ho a provar." if actual == "main"
+                    else "Integra main a la branca («git merge origin/main») i torna-ho a provar."))
     if actual == "main":
         if not a.prova:
             corre(["git", "checkout", "-b", nom], 2)
@@ -88,7 +119,6 @@ def main(argv=None) -> None:
         sys.exit(f"ERROR: ets a la branca «{actual}», que no és de {a.id}. Canvia a main o a una branca {a.id}-…")
     else:
         nom = actual
-    corre(["git", "fetch", "origin", "main"], 2)
     fitxers = set(git("diff", "--name-only", "origin/main...HEAD").splitlines())
     fitxers |= {l[3:].split(" -> ")[-1] for l in git("status", "--porcelain").splitlines() if len(l) > 3}
 
@@ -104,10 +134,19 @@ def main(argv=None) -> None:
     if marques_conflicte(textos):
         sys.exit("ERROR: marques de conflicte sense resoldre a: " + ", ".join(marques_conflicte(textos)))
 
+    # 1c) res que no sigui de la feina: fitxers nous estranys o canvis de configuració sense --config
+    mons = json.loads((ARREL / "motor" / "mons.json").read_text())
+    estranys = fitxers_estranys(git("ls-files", "--others", "--exclude-standard").splitlines(), [m["carpeta"] for m in mons])
+    if estranys:
+        sys.exit("ERROR: hi ha fitxers nous que no són de la feina (es publicarien): " + ", ".join(estranys)
+                 + ". Treu-los, posa'ls a .gitignore o mou-los a la carpeta que toca.")
+    if fitxers_config(sorted(fitxers)) and not a.config:
+        sys.exit("ERROR: canvis de configuració o de seguretat (" + ", ".join(fitxers_config(sorted(fitxers)))
+                 + "): torna-ho a provar amb --config si són volguts.")
+
     # 2) revisions
     corre([sys.executable, "motor/tot.py"], 1)
     corre(["node", "motor/revisa-mon.js"], 1)
-    mons = json.loads((ARREL / "motor" / "mons.json").read_text())
     for carpeta in mons_canviats(sorted(fitxers), mons):
         corre(["node", "prova.js", str(ARREL / carpeta / "index.html")], 1, cwd=ARREL / "motor", env={"ESTRICTE": "1"})
         corre(["node", "motor/prova-visual.js", carpeta], 1)
@@ -144,6 +183,16 @@ def main(argv=None) -> None:
         with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as t:
             t.write(cos)
         url = corre(["gh", "pr", "create", "--base", "main", "--head", nom, "--title", a.missatge, "--body-file", t.name], 2, captura=True)
+    mergeable = "UNKNOWN"
+    for _ in range(12):   # GitHub calcula si es pot fusionar uns segons després d'obrir el PR
+        mergeable = subprocess.run(["gh", "pr", "view", url, "--json", "mergeable", "--jq", ".mergeable"], cwd=ARREL,
+                                   text=True, capture_output=True).stdout.strip() or "UNKNOWN"
+        if mergeable != "UNKNOWN":
+            break
+        time.sleep(5)
+    if mergeable == "CONFLICTING":
+        print(f"ERROR: {url} té conflictes amb main: la revisió no s'executarà i no es fusionarà. Integra main i torna a publicar.")
+        sys.exit(2)
     corre(["gh", "pr", "merge", url, "--auto", "--squash", "--delete-branch"], 2)
     print(f"\n✓ {url} · en fusió automàtica: es publicarà sol quan la revisió de GitHub surti en verd")
 

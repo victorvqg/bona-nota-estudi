@@ -149,16 +149,10 @@ ESTRICTE=1 node prova.js $PWD/../<carpeta>/index.html
 
 La prova ha d'acabar amb «errors: cap».
 
-**Si el món és nou, també cal tocar això** (no surt sol de `mons.json`):
-
-| On | Què |
-|---|---|
-| `admin/index.html` | El nom del món a `ASSIGS` i a `XMON`, perquè el tauler no mostri només l'id |
-| `supabase/bn_control.sql` | L'id del món a les tres llistes de mons vàlids, i aplicar el SQL a Supabase. Sense això el món funciona, però no es pot tancar des del «Control ràpid» |
-| `sprites.js` | Opcional: dibuix i color al rànquing (`BN_MON` i, si l'assignatura és nova, `BN_MAT`). Sense això surt amb el seu emoji |
-| `motor/ilu/<id>.svg` | Opcional: il·lustració de la targeta de la portada. Sense això surt l'emoji |
-| `motor/prova-admin-alta.js` i `motor/prova-admin-benestar.js` | Porten escrit el nombre de mons: cal sumar-n'hi un |
-| `docs/MONS.md`, `docs/ESTAT.md`, `CHANGELOG.md` i la versió d'aquest README | Un món nou puja la versió MENOR (apartat 3) |
+**Si el món és nou**, la guia és [`docs/NOU-MON.md`](docs/NOU-MON.md) (o la skill `nou-mon` amb Claude Code). L'admin, el dibuix del rànquing
+(`sprites.js`) i les paraules del xat surten soles dels camps `curt`, `spr` i `xat` de `motor/mons.json`; l'SQL valida els mons pel
+format de l'id i les proves compten els mons de `mons.json`. A mà només queden la il·lustració opcional (`motor/ilu/<id>.svg`), la
+versió MENOR (apartat 3) i `docs/MONS.md`.
 
 **Regles del contingut:**
 
@@ -190,8 +184,9 @@ Cada canvi va per una branca i un PR cap a `main`, mai directament a `main`:
 1. Branca nova des de `main` actualitzat.
 2. `python3 motor/tot.py`, les proves i el commit.
 3. Push de la branca i PR cap a `main`.
-4. Quan l'Action «Revisa Bona Nota» del PR surt en verd, es fusiona amb squash i s'esborra la branca.
-   Fusionar és publicar: GitHub Pages ho posa a **bonanota.net** en 1 o 2 minuts. Si l'Action falla, s'arregla a la mateixa branca.
+4. En obrir el PR s'activa la fusió automàtica (`gh pr merge --auto --squash --delete-branch`): GitHub el fusiona sol i esborra la branca
+   quan el check «Revisa Bona Nota · tot» surt en verd (el ruleset «main protegida» l'exigeix). Fusionar és publicar: GitHub Pages ho posa
+   a **bonanota.net** en 1 o 2 minuts. Si l'Action falla, s'arregla a la mateixa branca. `python3 motor/publica.py` fa tots aquests passos d'una ordre.
 
 Si el canvi el notarà qui fa servir l'app, el mateix PR puja la versió (apartat 3).
 
@@ -215,14 +210,8 @@ Si un canvi només toca documentació o proves, la versió no puja.
 1. Al mateix PR del canvi, afegeix l'entrada nova a dalt de tot de `CHANGELOG.md` (número, data i apartats Afegit, Canviat o Corregit).
 2. Canvia el número a la capçalera d'aquest README.
 3. Executa `python3 motor/tot.py`: llegeix la primera entrada del `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera del tauler.
-4. Quan el PR estigui fusionat, posa l'etiqueta al commit de `main`:
-
-```
-git switch main
-git pull
-git tag -a v2.4.0 -m "Bona Nota 2.4.0"
-git push origin v2.4.0
-```
+4. No cal etiquetar a mà: quan el PR arriba a `main`, l'Action «Etiqueta la versió» (`.github/workflows/etiqueta.yml`) posa l'etiqueta
+   `vX.Y.Z` del número de la capçalera si encara no existeix.
 
 > `versio.json` i el `VERSIO` de `sw.js` no són aquest número. Són empremtes que genera `motor/tot.py` a cada canvi perquè els mòbils
 > es posin al dia.
@@ -742,7 +731,7 @@ Amb `ESTRICTE=1`, un món falla si té temes amb menys de 8 preguntes o si la re
 
 **Les proves del xat:** `motor/prova-xat-sql.js` executa `supabase/bn_xat.sql` (dues vegades, per comprovar que és idempotent) i prova cada codi de `bn_xat_envia`, el canvi de dia a mitjanit, els vots, la lectura, l'admin i els permisos; `motor/prova-xat.js` prova la portada (crèdits, bloquejos, enviar, votar, contraccions, «Digues-li», mòbil, `?demo` i el rànquing igual que abans sense el SQL); `motor/prova-admin-xat.js` prova la pestanya Xat de l'admin.
 
-> Algunes proves del tauler porten escrit el nombre de mons (`prova-admin-alta.js`, `prova-admin-benestar.js`). Si afegeixes un món, cal actualitzar-les.
+> Les proves del tauler compten els mons de `motor/mons.json` (`motor/eines/mons-prova.js`): un món nou no les trenca.
 
 ---
 
