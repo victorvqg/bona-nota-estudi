@@ -88,7 +88,11 @@ Tot passa dins de la finestra del **rànquing**, a la portada:
 
 ## 6. Desbloquejos
 
-El catàleg inicial té **26 frases** i **69 peces** (en total, 95 elements). Es troba tant a la portada (`index.html`, bloc `XAT-CATALEG`) com a la base de dades (`supabase/bn_xat.sql`).
+El catàleg té **26 frases** i, avui, **69 peces** (en total, 95 elements). Es troba tant a la portada (`index.html`, bloc `XAT-CATALEG`) com a la base de dades (`supabase/bn_xat.sql`).
+
+Les peces són de dos tipus:
+- **45 generals**, escrites a mà.
+- **3 per món**, que surten del camp `xat` de `motor/mons.json`. Cada món nou n'hi afegeix 3, sense tocar el catàleg a mà (vegeu `docs/NOU-MON.md`).
 
 Cada frase i cada peça s'obre segons el **nivell del rànquing** del nen (de l'1 🐣 Aprenent al 10 🌟 Llegenda d'or, calculat amb les estrelles del seu millor món dels últims 120 dies) o bé en **acabar un món**, que al xat vol dir tenir **25 ⭐ o més** en aquell món (també dins dels últims 120 dies).
 
@@ -145,7 +149,7 @@ Així passa el xat de la colla pel filtre de les 10 preguntes de [`BON-US.md`](B
 
 | Cosa | On és |
 |---|---|
-| Catàleg al navegador (`XAT_FR`, `XAT_PC`) | `index.html`, bloc `/* XAT-CATALEG:inici */ … /* XAT-CATALEG:fi */` |
+| Catàleg al navegador (`XAT_FR`, `XAT_PC`) | `index.html`, bloc `/* XAT-CATALEG:inici */ … /* XAT-CATALEG:fi */`. `XAT_PC` = `XAT_PC_BASE` (a mà) + `XAT_PC_MONS` (bloc `XAT-MONS`, el genera `motor/tot.py` de `motor/mons.json`; el mateix bloc és a `supabase/bn_xat.sql`) |
 | Composició del text i contraccions | `xatCompon()` a `index.html` i bloc `// [xat-pures]` a `admin/index.html` (`XAT_CONTR` / `XCONTR`) |
 | Vista del xat, bafarades, targeta, «Digues-li…» i cinta | `index.html`: `XAT`, `xatCarrega()`, `xatLlegeix()`, `xatEstat()`, `xatEnvia()`, `xatVota()`, `xatPintaVista()`, `xatBafs()`, `xatPeekHtml()`, `xatDiguesHtml()`, `xatCinta()` (integrat amb `carregaHs()` i `pintaHs()`) |
 | Dibuixos de pixel art nous | `sprites.js`: `bafarada`, `moneda`, `cadenat` i `polze` |
