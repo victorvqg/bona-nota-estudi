@@ -3,7 +3,7 @@
 Data: 2026-11-17
 
 ## Què funciona
-- **Versió actual: 2.46.0** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
+- **Versió actual: 2.46.1** (historial a `CHANGELOG.md`, regles a l'apartat «Versions» del README). El número surt al peu de la portada i de cada món, i a la capçalera del tauler.
 - **8 mons publicats** a `https://bonanota.net/` (`sociales/t3-clima`, `bio-i-geo/univers`, `castellano/t2-t3`, `sociales/comarques`, `matematiques/divisibilitat`, `catala/t2`, `angles/t2`, `bio-i-geo/geosfera`), tots 8 amb il·lustració animada (`motor/ilu/*.svg`), sprite i color propi (`sprites.js`), preguntes difícils per al super combo (`motor/dificultat.json`, 147 en total) i 3 peces del xat per món.
 - **Bloc `g32` (`2.46.0`, Món 8 · Biologia i Geologia: Geosfera)**:
   - Fet amb les diapositives, l'esquema de 4 fulls, l'examen i el full de respostes de la carpeta de Drive «Geosfera»: 16 temes en 4 blocs, 129 preguntes de test (17 ⚡ difícils), 16 obertes i 16 jocs (3 figures noves i un «Troba l'error del geòleg»).
