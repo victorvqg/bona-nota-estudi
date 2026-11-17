@@ -29,6 +29,11 @@ class ProvaPublica(unittest.TestCase):
     def test_cap_mon_si_nomes_canvien_docs(self):
         self.assertEqual(publica.mons_canviats(["docs/NOU-MON.md", "README.md"], MONS), [])
 
+    def test_detecta_marques_de_conflicte(self):
+        textos = {"a.yml": "x\n<<<<<<< HEAD\nu\n=======\nv\n>>>>>>> origin/main\n", "b.md": "Títol\n=======\ntext\n",
+                  "c.js": "const a = 1;\n"}
+        self.assertEqual(publica.marques_conflicte(textos), ["a.yml"])
+
     def test_missatge_ha_de_portar_l_id(self):
         with self.assertRaises(SystemExit):
             publica.valida_missatge("g40", "feat(mons): afegeix un món")

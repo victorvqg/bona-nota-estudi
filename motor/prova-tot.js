@@ -8,12 +8,8 @@ const arrel = path.join(__dirname, "..");
 const GRUPS = {
   base: [["python3", "motor/tot.py"], ["node", "prova-generadors.js", { cwd: "motor" }], ["node", "motor/prova-regles.js"],
     ["node", "motor/prova-admin-fonts.js"], ["node", "motor/prova-mons.js"],
-<<<<<<< HEAD
     ["node", "motor/prova-revisa-mon.js"], ["node", "motor/revisa-mon.js"],
     ["python3", "motor/prova_nou_mon.py"], ["python3", "motor/prova_publica.py"]],
-=======
-    ["node", "motor/prova-revisa-mon.js"], ["node", "motor/revisa-mon.js"]],
->>>>>>> origin/main
   sql: ["prova-xat-sql", "prova-admin-fitxa-sql", "prova-admin-benestar-sql", "prova-bon-us-sql", "prova-admin-fonts-rep-sql",
     "prova-control-sql", "prova-pin-intents-sql", "prova-fotos-sql", "prova-dificultat-sql"].map(p => ["node", `motor/${p}.js`]),
   interficie: ["prova-nuvol", "prova-perfil", "prova-pares", "prova-tast", "prova-xat", "prova-admin-xat", "prova-admin-fitxa",

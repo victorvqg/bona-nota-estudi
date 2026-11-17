@@ -6,6 +6,7 @@ en fusió automàtica (GitHub el fusiona quan «Revisa Bona Nota · tot» surt e
   python3 motor/publica.py --id gN --missatge "tipus(àmbit): què (gN)" [--cos fitxer.md] [--prova]
 
   1. Si ets a main, crea la branca gN-<resum>; si ets en una altra branca, ha de començar per «gN-».
+     S'atura si hi ha un merge a mitges o marques de conflicte («<<<<<<<») als fitxers canviats.
   2. python3 motor/tot.py, node motor/revisa-mon.js i, per a cada món canviat, la prova estricta i la visual.
   3. Commit (si hi ha canvis) i nucli ship plan / run generat / run generadors / seal.
   4. git push, gh pr create (cos: --cos, o la primera entrada del CHANGELOG si ha canviat, o els commits) i
@@ -38,6 +39,11 @@ def branca(id_: str, missatge: str) -> str:
 def mons_canviats(fitxers: list, mons: list) -> list:
     return [m["carpeta"] for m in mons
             if any(f.startswith(m["carpeta"] + "/") or f == f"motor/dades/{m['dades']}.js" for f in fitxers)]
+
+
+def marques_conflicte(textos: dict) -> list:
+    """Fitxers amb un conflicte de git sense resoldre (marques «<<<<<<< » i «>>>>>>> »)."""
+    return sorted(f for f, t in textos.items() if re.search(r"^<<<<<<< ", t, re.M) and re.search(r"^>>>>>>> ", t, re.M))
 
 
 def valida_missatge(id_: str, missatge: str) -> None:
@@ -83,12 +89,24 @@ def main(argv=None) -> None:
     else:
         nom = actual
     corre(["git", "fetch", "origin", "main"], 2)
+    fitxers = set(git("diff", "--name-only", "origin/main...HEAD").splitlines())
+    fitxers |= {l[3:].split(" -> ")[-1] for l in git("status", "--porcelain").splitlines() if len(l) > 3}
+
+    # 1b) cap merge a mitges ni marques de conflicte (si no, es pujarien fitxers trencats)
+    if (ARREL / ".git" / "MERGE_HEAD").exists() or git("diff", "--name-only", "--diff-filter=U"):
+        sys.exit("ERROR: hi ha un merge a mitges (conflictes sense resoldre). Resol-los i torna-ho a provar.")
+    textos = {}
+    for f in fitxers:
+        try:
+            textos[f] = (ARREL / f).read_text()
+        except (OSError, UnicodeDecodeError):
+            pass
+    if marques_conflicte(textos):
+        sys.exit("ERROR: marques de conflicte sense resoldre a: " + ", ".join(marques_conflicte(textos)))
 
     # 2) revisions
     corre([sys.executable, "motor/tot.py"], 1)
     corre(["node", "motor/revisa-mon.js"], 1)
-    fitxers = set(git("diff", "--name-only", "origin/main...HEAD").splitlines())
-    fitxers |= {l[3:].split(" -> ")[-1] for l in git("status", "--porcelain").splitlines() if len(l) > 3}
     mons = json.loads((ARREL / "motor" / "mons.json").read_text())
     for carpeta in mons_canviats(sorted(fitxers), mons):
         corre(["node", "prova.js", str(ARREL / carpeta / "index.html")], 1, cwd=ARREL / "motor", env={"ESTRICTE": "1"})
