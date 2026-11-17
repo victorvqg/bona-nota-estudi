@@ -13,6 +13,7 @@ Aquest README explica **com està feta la web i com s'hi treballa**. El que no �
 | Com construir un món nou pas a pas | [`docs/NOU-MON.md`](docs/NOU-MON.md) |
 | Com es construeix un món d'Anglès (frases amb buits) | [`docs/MON-ANGLES.md`](docs/MON-ANGLES.md) |
 | Com es construeix un món de Matemàtiques (taller, vistes i pistes) | [`docs/MON-MATES.md`](docs/MON-MATES.md) |
+| Com es construeix un món de llengua (frases d'ús, pintar paraules, puntuació) | [`docs/MON-LLENGUA.md`](docs/MON-LLENGUA.md) |
 | Com funcionen els Bosses, els efectes musicals i les variants per a nous mons | [`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md) |
 | Com es posen les notes | [`docs/AVALUACIO.md`](docs/AVALUACIO.md) |
 | Com es guanyen les estrelles | [`docs/PUNTUACIO.md`](docs/PUNTUACIO.md) |

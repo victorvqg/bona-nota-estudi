@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="fddeb932a0",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e42f176e62",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -100,6 +100,12 @@ header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%
 @media(max-width:400px){.qui-num{display:none}}
 @media(max-width:600px){.hd{padding:8px 10px;gap:6px}.logo{font-size:17px;gap:6px}#logoic{width:30px;height:30px;font-size:17px;border-radius:9px}.vol .so-btn{width:28px}.vol{gap:2px}.logo .tt small{font-size:14px}.curs{font-size:12.5px;padding:0 7px}.qui-av{width:20px;height:20px}.qui-av svg{width:18px;height:18px}}
 .benv .tema{margin:4px 0 0;font-weight:900;color:var(--blau2)}
+.esq-tema{margin:10px 0;padding:10px 12px;border-radius:14px;background:#f8fafc;border:2px solid var(--vora);overflow-x:auto}
+.esq-tema>small{display:block;font-weight:900;color:#64748b;letter-spacing:.3px;margin-bottom:4px;text-transform:uppercase}
+.esq-tema table{border-collapse:separate;border-spacing:4px;margin:0 auto;font-weight:800}
+.esq-tema td,.esq-tema th{padding:5px 10px;border-radius:8px;background:#fff;border:1px solid var(--vora);text-align:center}
+.esq-tema th{background:#eef2ff}.esq-tema .ex{background:#fef3c7}
+.esq-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}.esq-col>div{padding:8px 10px;border-radius:12px;font-weight:700}
 .pill{background:#ffffff26;border:1px solid #ffffff40;padding:5px 12px;border-radius:999px;font-weight:800;white-space:nowrap;flex:none}
 @media(max-width:600px){.pill .pt-ext{display:none}.pill{padding:5px 8px}}
 /* menú: centrat, sobre una banda fosca translúcida perquè el text blanc es llegeixi sobre qualsevol degradat */
@@ -680,7 +686,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.50.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.51.0</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -1070,7 +1076,7 @@ const OB=[
 // 👾 Boss del món: nom i monstre del repte final
 ASSIG.boss={nom:"El Fantasma del Cinema",spr:"fantasma",fx:"focus",mus:"estrena",rotul:"THAT'S A WRAP!",em:["🎬","🍿","🎥","🌟"]};
 
-const MONS=[{"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "bn_catala", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
+const MONS=[{"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "opina", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "bn_castellano", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
 const QIDS={"adj1":[1,2,3,4,5,6,7,8,9,10],"museu":[1,2,3,4,5,6,7,8,9,10],"continuous":[1,2,3,4,5,6,7,8,9,10,11],"generes":[1,2,3,4,5,6,7,8,9,10,11],"fenn":[1,2,3,4,5,6,7,8,9,10,11],"dospresents":[1,2,3,4,5,6,7,8,9,10,11],"adj2":[1,2,3,4,5,6,7,8,9,10,11],"suggeriments":[1,2,3,4,5,6,7,8,9,10]};
 const QDIF={"adj1/6":3,"adj1/10":3,"adj2/6":3,"adj2/10":3,"continuous/4":3,"continuous/6":3,"dospresents/2":3,"dospresents/5":3,"dospresents/9":3,"fenn/6":3,"fenn/7":3,"fenn/8":3,"generes/6":3,"generes/10":3,"museu/7":3,"museu/8":3,"museu/10":3,"suggeriments/1":3,"suggeriments/10":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
@@ -1639,10 +1645,13 @@ function pintaTema(){
  <div class="passos" role="tablist" aria-label="Passos del tema">${[["fitxa",ICO.fitxa+" Fitxa",e.fitxa],["targetes",ICO.targetes+" Targetes",e.fc>=t.fc.length],["test",ICO.test+" Test",e.intents.length>0]].map(([k,n,f])=>`<button role="tab" aria-selected="${pest==k?'true':'false'}" class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
  if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,MODE_TAST?Math.min(NTEST_TAST,t.q.length):NTEST),0,0,t.id)}
 }
+// T[i].esquema: un esquema dibuixat a la fitxa, sota la idea clau. {html:"…"} (taula o quadre) i/o {marca:{t,m},joc:"id d'un joc de pintar"} (frase pintada)
+function esquemaTema(e){let h="";if(e.marca&&typeof marcaHtml==="function"){const j=(ASSIG.jocs||[]).find(x=>x.id===e.joc)||{};if(j.cats)h+=marcaHtml(e.marca.t,e.marca.m,j.cats)}if(e.html)h+=e.html;
+ return h?`<div class="esq-tema"><small>👀 ${e.titol||"ESQUEMA"}</small>${h}</div>`:""}
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
  const txtF=`${t.titol}. Idea clau: ${t.idea}. ${t.pts.join(". ")}. Truc: ${t.truc}. Compte: ${t.compte}`;
- document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div>${t.vista&&typeof mxVistaTema==="function"?mxVistaTema(t.vista):""}<ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
+ document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div>${t.vista&&typeof mxVistaTema==="function"?mxVistaTema(t.vista):""}${t.esquema?esquemaTema(t.esquema):""}<ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
  const cpt=document.querySelector("#zona .compte");if(cpt&&"IntersectionObserver" in window){const a=ACTV,ob=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){if(a)a.fi=1;ob.disconnect()}});ob.observe(cpt)}
 }
 function targetes(n){calla();
@@ -2853,6 +2862,8 @@ function frCss(){if(document.getElementById("frCss"))return;const s=document.cre
 .fr-vol{font:inherit;font-size:14px;font-weight:800;border:2px solid #fde68a;background:#fefce8;color:#854d0e;border-radius:10px;padding:4px 10px;cursor:pointer}
 .fr-ex-fila{display:flex;gap:8px;align-items:flex-start}
 body.suau .fr-esc input.ko{animation:none!important}`;document.head.appendChild(s)}
+// les fitxes del banc (triar, ordenar) es comparen exactes: «?» no és «!» ni «Demà» és «demà». Les respostes escrites, amb frNorm (més tolerant).
+function frChip(s){return String(s).replace(/<[^>]+>/g,"").replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim()}
 function frNorm(s){return String(s).replace(/<[^>]+>/g,"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g," ").replace(/\s*'\s*/g,"'").replace(/[.!?]+$/,"").trim()}
 function frId(E){if(E.id)return E.id;const s=E.f||E.mots;let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return "f"+h.toString(36)}
 function frPrep(raw){const E=Object.assign({},raw);E.id=frId(raw);E.mena=E.mots?"ordena":E.r?"escriu":"tria";E.sol=E.mots?E.mots.split(" "):E.r?[E.r[0]]:[].concat(E.ok);
@@ -2871,7 +2882,7 @@ function frFrase(E,fills,act,fi){
 function frTriaBuit(k){if(!FR||FR.fase!=="joc"||FR.fills[k]!==undefined)return;const E=FR.llista[FR.e];FR.gap=k;FR.int=0;document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,FR.gap)}
 function frVol(b){const E=FR.llista[FR.e];FR.vol=true;b.outerHTML=`<p class="fr-ca">En català: «${E.ca}»</p>`}
 // el perquè de l'error concret (E.per[opció]) o, si no n'hi ha, la pista
-function frPer(E,w){if(!E.per)return "";const k=Object.keys(E.per).find(x=>frNorm(x)===frNorm(w));return k?E.per[k]:""}
+function frPer(E,w){if(!E.per)return "";const eq=E.r?frNorm:frChip,k=Object.keys(E.per).find(x=>eq(x)===eq(w));return k?E.per[k]:""}
 function jocFrases(j){frCss();jgErrCss();const it=j.items||[],n=Math.min(j.n||8,it.length);
  const tria=barreja(it.map((x,i)=>i)).slice(0,n).sort((a,b)=>a-b);
  FR={j,llista:tria.map(i=>frPrep(it[i])),e:0,bones:0,errs:0,errE:[],fi:false,veu:j.veu||ASSIG.veuFrases||null};frPinta()}
@@ -2880,7 +2891,7 @@ function frPinta(){const {j,llista,e}=FR,E=llista[e];FR.int=0;FR.gap=0;FR.fills=
  const ins=E.mena==="ordena"?"Toca les paraules en ordre per fer la frase.":E.mena==="escriu"?(E.v?"Escriu el verb del parèntesi en la forma correcta.":"Escriu la paraula que falta."):(E.sol.length>1?"Omple els buits tocant les paraules del banc. Per començar per un altre buit, toca'l primer.":"Toca la paraula que falta.");
  E.veuClau=!!(E.clau&&!j.clauDespres);FR.vol=false;
  app.innerHTML=`<h2 class="sec">${j.enunciat||j.titol}</h2><div class="box"><div class="jg-cap"><span class="jg-ap">Frase ${e+1} de ${llista.length}</span><span class="prog">${mena}</span></div>
- <p class="fr-ins">${ins}</p>${E.falta?`<p class="fr-falta">🔎 Hi falta: ${E.falta}</p>`:""}${E.cue?`<p class="fr-ca">En català: «${E.ca}»</p>`:E.ca?`<button type="button" class="fr-vol" onclick="frVol(this)">🗣️ Què vol dir?</button>`:""}
+ <p class="fr-ins">${ins}</p>${j.escoltaAbans&&typeof btEscolta==="function"?`<div class="escolta-fila" style="margin:0 0 6px">${btEscolta(E.escolta||frSolucio(E),"Escolta-la primer",E.escolta?undefined:FR.veu||undefined)}</div>`:""}${E.falta?`<p class="fr-falta">🔎 Hi falta: ${E.falta}</p>`:""}${E.cue?`<p class="fr-ca">En català: «${E.ca}»</p>`:E.ca?`<button type="button" class="fr-vol" onclick="frVol(this)">🗣️ Què vol dir?</button>`:""}
  <div class="fr-frase" id="frFrase" aria-live="polite">${frFrase(E,[],0)}</div>
  ${E.mena==="escriu"?`<div class="fr-esc"><input id="frIn" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="40" placeholder="Escriu aquí" aria-label="Escriu la resposta"><button class="btn" onclick="frComprova()">Comprova ✔</button></div>`
   :`<div class="fr-banc" id="frBanc">${E.banc.map((w,k)=>`<button type="button" class="chip" data-k="${k}" onclick="frToca(${k})">${w}</button>`).join("")}</div>`}
@@ -2891,9 +2902,9 @@ function frErr(E){FR.int++;if(!FR.net)return;FR.net=false;FR.errs++;FR.errE[FR.e
  if(!FR.rep&&typeof repAnotaExt==="function")repAnotaExt("frase",`${FR.j.id}|${E.id}`,{jid:FR.j.id,eid:E.id},false)}
 function frToca(k){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],b=document.querySelector(`#frBanc .chip[data-k="${k}"]`);if(!b||b.disabled)return;
  const vol=E.sol[FR.gap],fb=document.getElementById("frFb");
- if(frNorm(E.banc[k])===frNorm(vol)){so("ok");fb.innerHTML="";frPosa(E,vol,b);return}
+ if(frChip(E.banc[k])===frChip(vol)){so("ok");fb.innerHTML="";frPosa(E,vol,b);return}
  frErr(E);sacseja(b);
- if(FR.int>=2){const c=[...document.querySelectorAll("#frBanc .chip")].find(x=>!x.disabled&&frNorm(E.banc[+x.dataset.k])===frNorm(vol));E.rev[FR.gap]=1;
+ if(FR.int>=2){const c=[...document.querySelectorAll("#frBanc .chip")].find(x=>!x.disabled&&frChip(E.banc[+x.dataset.k])===frChip(vol));E.rev[FR.gap]=1;
   const p2=frPer(E,E.banc[k]);fb.innerHTML=`<div class="fb fr-ko">${p2?`❌ ${p2}<br>`:""}👉 Aquí hi va <b>${vol}</b>.${E.sol.filter((_,i)=>FR.fills[i]===undefined).length>1?" Continua amb els altres.":""}</div>`;frPosa(E,vol,c);return}
  if(E.mena==="tria"&&E.sol.length===1){b.disabled=true;b.classList.add("no")}
  if(E.clau&&!E.veuClau){E.veuClau=true;document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,FR.gap)}
@@ -2901,6 +2912,8 @@ function frToca(k){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],b=docu
 function frPosa(E,vol,b){FR.fills[FR.gap]=vol;FR.int=0;if(b){b.disabled=true;b.classList.remove("ko");b.classList.add("ok")}
  const seg=E.sol.findIndex((_,i)=>FR.fills[i]===undefined);if(seg<0){FR.gap=E.sol.length;return frFet()}FR.gap=seg;
  document.getElementById("frFrase").innerHTML=frFrase(E,FR.fills,FR.gap)}
+// la frase sencera amb les respostes bones (per escoltar-la abans de respondre: l'entonació diu si és pregunta o exclamació)
+function frSolucio(E){if(E.mena==="ordena")return E.mots;let g=0;return E.f.replace(FR_BUIT,()=>E.sol[g++]||"")}
 function frPistaAuto(E){const r=E.r[0],n=r.split(" ").length;return `Comença per «${r.slice(0,r.length>3?2:1)}…» i ${n>1?`són ${n} paraules`:"és una sola paraula"}.`}
 function frComprova(){if(!FR||FR.fase!=="joc")return;const E=FR.llista[FR.e],i=document.getElementById("frIn"),fb=document.getElementById("frFb");if(!i)return;const v=frNorm(i.value);
  if(!v){fb.innerHTML=`<div class="fb">✏️ Primer escriu la resposta.</div>`;return}
@@ -2930,17 +2943,17 @@ function frValida(j){const p=[],it=j.items||[];it.forEach((E,i)=>{const on=`fras
   else if(!E.f||!nb)p.push(on+": no té cap buit (___)");
   else if(E.r){if(nb!==1)p.push(on+": les d'escriure només poden tenir un buit");if(!E.r.length)p.push(on+": sense resposta")}
   else{const ok=[].concat(E.ok||[]),no=E.no||[];if(ok.length!==nb)p.push(on+`: ${nb} buits i ${ok.length} respostes`);
-   if(no.some(x=>ok.some(o=>frNorm(o)===frNorm(x))))p.push(on+": un distractor és igual que una resposta");if(ok.length===1&&no.length<2)p.push(on+": calen 2 distractors")}
+   if(no.some(x=>ok.some(o=>frChip(o)===frChip(x))))p.push(on+": un distractor és igual que una resposta");if(ok.length===1&&no.length<2)p.push(on+": calen 2 distractors")}
   if(!E.ex)p.push(on+": sense explicació (ex)");
-  if(E.per){if(typeof E.per!=="object")p.push(on+": per ha de ser {opció:\"perquè\"}");else if(!E.r){const no=E.no||[];Object.keys(E.per).forEach(k=>{if(!no.some(x=>frNorm(x)===frNorm(k)))p.push(on+`: per «${k}» no és cap opció falsa`)})}}
+  if(E.per){if(typeof E.per!=="object")p.push(on+": per ha de ser {opció:\"perquè\"}");else if(!E.r){const no=E.no||[];Object.keys(E.per).forEach(k=>{if(!no.some(x=>frChip(x)===frChip(k)))p.push(on+`: per «${k}» no és cap opció falsa`)})}}
   if(E.clau){const txt=frNorm(E.f||E.mots||"");[].concat(E.clau).forEach(c=>{if(!txt.includes(frNorm(c)))p.push(on+`: la paraula clau «${c}» no surt a la frase`)})}});
  const ids=it.map(frId);if(new Set(ids).size!==ids.length)p.push("hi ha frases repetides");if(it.length<(j.n||8))p.push(`té ${it.length} frases i una partida en demana ${j.n||8}`);return p}
 // juga la frase actual bé (o, amb mal=true, primer amb un error)
 function frProvaPas(mal){const E=FR.llista[FR.e];
  if(E.mena==="escriu"){const i=document.getElementById("frIn");if(mal){i.value="zzz";frComprova()}i.value=E.r[E.r.length-1].toUpperCase()+".";frComprova();return true}
  const vol=E.sol[FR.gap],cs=()=>[...document.querySelectorAll("#frBanc .chip")].filter(x=>!x.disabled);
- if(mal){const m=cs().find(x=>frNorm(x.textContent)!==frNorm(vol));if(m)m.click()}
- const c=cs().find(x=>frNorm(x.textContent)===frNorm(vol));if(!c)return `falta «${vol}» al banc`;c.click();return true}
+ if(mal){const m=cs().find(x=>frChip(x.textContent)!==frChip(vol));if(m)m.click()}
+ const c=cs().find(x=>frChip(x.textContent)===frChip(vol));if(!c)return `falta «${vol}» al banc`;c.click();return true}
 function jocFrasesProva(j){const p=frValida(j);if(p.length)return "jocFrases: "+p.join(" · ");
  jocFrases(Object.assign({},j,{n:j.items.length}));FR.prova=true;let s=0;
  while(FR&&!FR.fi&&s++<900){const b=document.getElementById("frSeg");if(b){b.click();continue}const r=frProvaPas(false);if(r!==true)return "jocFrases: "+r}

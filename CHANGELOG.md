@@ -5,6 +5,21 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.51.0 · 2026-11-17
+
+### Afegit
+- **Català · joc nou «Pinta les paraules»** (`motor/eines/marca-llengua.js`, genèric per als mons de llengua): el nen tria un color i pinta cada paraula. Al Tema 2 n'hi ha 3: les peces del SN (especificador, nucli i complement), propi o comú, i masculí o femení.
+- **Català · puntuació en context:**
+  - «Puntua el text»: 8 textos amb tots els signes buits.
+  - «🔊 Escolta i puntua»: 10 frases que es poden escoltar abans de respondre, amb el camp de joc nou `escoltaAbans`.
+- **Català · literatura amb fragments:** «Quin gènere és aquest text?», 9 fragments (poesia lírica i èpica, narrativa, teatre, assaig, rondalla, cançó popular i refrany) que es poden escoltar.
+- **Català · esquemes a la teoria** (`T[i].esquema`): el SN pintat, propi o comú, la taula de gènere i nombre, porta tancada o entreoberta i vers, prosa o diàleg. També «Practica-ho com a classe» a 7 temes.
+- **Català · el perquè de cada error** (`per`) a 62 de les 71 frases de triar, la paraula pista (`clau`) i 3 frases de regla convertides en frases d'ús (mantenen el repàs).
+- Guia nova `docs/MON-LLENGUA.md`.
+
+### Canviat
+- **Frases amb buits:** les fitxes del banc es comparen exactes («?» no és «!», ni «Demà» és «demà»). Les respostes escrites continuen sense tenir en compte les majúscules ni el punt final.
+
 ## 2.50.0 · 2026-11-17
 
 ### Afegit
