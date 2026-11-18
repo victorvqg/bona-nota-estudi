@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.58.2 · 2026-11-18
+
+### Corregit
+- **«Etiqueta la versió» ja no s'atura si no pot crear una etiqueta.** A la 2.58.1 va fallar en la primera (`v2.25.0`): GitHub no deixa que el token de l'Action etiqueti commits on els fitxers de `.github/workflows/` són diferents dels d'ara (cal el permís `workflows`, que aquest token no pot tenir). Per això no es va crear cap etiqueta, tampoc la de la `v2.58.1`.
+  - Ara va de la versió més nova a la més antiga, avisa de les que no pot crear sense aturar-se, i només falla si la versió actual es queda sense etiqueta.
+  - Les etiquetes antigues que falten (`v2.25.0`, `v2.47.0`-`v2.58.0` i `v2.58.1`) s'han de posar a mà des d'un ordinador. Explicació a `docs/TRAMPES.md`.
+
 ## 2.58.1 · 2026-11-18
 
 ### Corregit
