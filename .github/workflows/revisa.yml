@@ -132,6 +132,8 @@ jobs:
         run: node motor/prova-admin-evolucio.js
       - name: Prova de l'actualització del tauler sense pantallasso
         run: node motor/prova-admin-auto.js
+      - name: Prova de la paginació del tauler
+        run: node motor/prova-admin-pagines.js
 
   mons:
     name: Món (${{ matrix.mon }})
