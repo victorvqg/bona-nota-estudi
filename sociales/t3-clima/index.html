@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="d7a921591b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="8d9207d0f8",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -686,7 +686,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.53.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.54.0</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -803,6 +803,30 @@ const ASSIG={
       ["On bufarà més fort el vent?",["Al nord, on les isòbares estan juntes","Al centre de la península","Al sud de la península"],0,"Prop de la D les isòbares estan juntes: vent fort."],
       ["Què és una isòbara?",["Una línia que uneix punts amb la mateixa pressió","Una línia de la mateixa temperatura","La frontera entre dos països"],0,"Iso = igual; bara = pressió."],
       ["Què porta sempre un front?",["Precipitacions","Sol","Calor"],0,"Un front és el xoc de dues masses d'aire: sempre porta precipitacions."]]},
+  {id:"mapa-temps3",grup:"🗺️ Mapes del temps",tipus:"figura",ic:"🌧️",titol:"Llegeix el mapa del temps (3)",sub:"Una borrasca arriba de l'Atlàntic",col:"#e0e7ff",
+   enunciat:"🌧️ Llegeix el mapa del temps",figura:"svgMapaTemps3",
+   q:[["On plourà avui?",["Al nord-oest, a Galícia, prop de la D","A les Balears, prop de la A","A tot arreu igual"],0,"La D (depressió) és al nord-oest: allà l'aire puja i plou."],
+      ["Què és la línia amb semicercles vermells?",["Un front càlid","Un front fred","Una isòbara"],0,"Semicercles vermells, com el sol = front càlid."],
+      ["On farà bon temps?",["A l'est, al Mediterrani, prop de la A","A Galícia","Al centre de la D"],0,"La A (anticicló) porta temps estable i assolellat."],
+      ["On bufarà més fort el vent?",["Al nord-oest, on les isòbares estan juntes","A l'est, prop de la A","Al centre de la península"],0,"Al voltant de la D les isòbares estan molt juntes: vent fort."],
+      ["Les borrasques de l'Atlàntic solen anar cap a l'est. Què pot passar demà a Catalunya?",["Que arribin núvols i pluja","Que faci més sol que avui","Que no canviï res"],0,"Si la D avança cap a l'est, el mal temps s'acosta a Catalunya."],
+      ["Quina pressió hi ha al centre de la D?",["988 hPa","1 024 hPa","1 013 hPa"],0,"La depressió té la pressió més baixa del mapa: 988 hPa."]]},
+  {id:"mapa-temps4",grup:"🗺️ Mapes del temps",tipus:"figura",ic:"🌊",titol:"Llegeix el mapa del temps (4)",sub:"Una llevantada a la costa",col:"#ccfbf1",
+   enunciat:"🌊 Llegeix el mapa del temps",figura:"svgMapaTemps4",
+   q:[["On plourà més?",["A la costa mediterrània, prop de la D","A Galícia","A l'interior de França"],0,"La D és al Mediterrani, davant de la costa: la pluja cau a la costa."],
+      ["D'on ve el vent que arriba a la costa catalana?",["De l'est, del mar: és llevant","De l'oest, de l'Atlàntic","Del sud, de l'Àfrica"],0,"El vent es diu pel lloc d'on ve: de l'est (per on surt el sol) és llevant."],
+      ["Per què aquest vent porta pluja?",["Perquè ve del mar i porta molta humitat","Perquè és molt fred","Perquè passa per sobre de muntanyes seques"],0,"El vent que ve del mar va carregat de vapor d'aigua i, en xocar amb la costa i les muntanyes, plou."],
+      ["On és l'anticicló?",["Al nord-est, sobre Europa","Sobre la península","Al sud, a l'Àfrica"],0,"La A és a dalt a la dreta, sobre Europa."],
+      ["Quin temps farà a l'oest de la península?",["Més tranquil: és lluny de la D","Tempesta forta","Neu a tot arreu"],0,"La depressió és a l'est; l'oest queda lluny del mal temps."],
+      ["Quina pressió hi ha al centre de la D?",["1 000 hPa","1 028 hPa","1 040 hPa"],0,"La D té la pressió més baixa del mapa: 1 000 hPa."]]},
+  {id:"mapa-temps5",grup:"🗺️ Mapes del temps",tipus:"figura",ic:"🌫️",titol:"Llegeix el mapa del temps (5)",sub:"Un anticicló d'hivern",col:"#f1f5f9",
+   enunciat:"🌫️ Llegeix el mapa del temps",figura:"svgMapaTemps5",
+   q:[["Quina pressió hi ha sobre la península?",["Alta: hi ha un anticicló","Baixa: hi ha una depressió","No se sap"],0,"La A al mig del mapa vol dir pressió alta (1 036 hPa)."],
+      ["Bufarà vent fort?",["No: les isòbares estan molt separades i el vent és fluix","Sí: les isòbares estan molt juntes","Sí, perquè hi ha un front fred"],0,"Isòbares separades = vent fluix o calma."],
+      ["Plourà?",["No: amb anticicló el temps és estable i sec","Sí, molt","Només a la costa"],0,"A l'anticicló l'aire baixa i no es formen núvols de pluja."],
+      ["Per què a l'hivern, amb aquest temps, a Igualada hi pot haver boira?",["Perquè sense vent l'aire fred i humit es queda quiet a les zones baixes","Perquè arriba un front càlid","Perquè plou molt"],0,"Amb anticicló i calma, l'aire fred s'estanca a la conca d'Òdena i es fa boira."],
+      ["Hi ha cap front al mapa?",["No, no n'hi ha cap","Sí, un front fred","Sí, un front càlid"],0,"Sense fronts ni depressions, no hi ha precipitacions."],
+      ["Com gira l'aire al voltant de la A?",["Com les agulles del rellotge","Al revés de les agulles del rellotge","No gira mai"],0,"Anticicló = Agulles del rellotge."]]},
   {id:"capes",grup:"🎮 Jocs ràpids",tipus:"ordena",ic:"🧅",titol:"Ordena les capes",sub:"Atmosfera, de baix a dalt",col:"#f3e8ff",
    enunciat:"🧅 Ordena les capes de l'atmosfera",instr:"Toca les capes <b>de baix a dalt</b>, de la Terra cap a l'espai.",base:"🌍 TERRA",
    items:[["Troposfera","0-12 km · núvols i pluja","#E8F5E9"],["Estratosfera","12-50 km · capa d'ozó","#EAF6FF"],["Mesosfera","50-80 km · estels fugaços","#E3F2FD"],["Termosfera","80-500 km · aurores i satèl·lits","#DCE8F7"],["Exosfera","500-10 000 km · cap a l'espai","#DCDDF3"]],
@@ -1097,10 +1121,24 @@ function svgMiniClimo(T,Pp,titol,dx){const x0=dx+28,x1=dx+200,y0=170,y1=20,bw=(x
  return s+`<text x="${(x0+x1)/2}" y="14" font-size="12" font-weight="800" text-anchor="middle" fill="#1e293b">${titol}</text>`}
 function svgCompara(){return `<svg viewBox="0 0 430 190" width="100%" style="max-width:520px" font-family="Nunito,Arial,sans-serif" role="img" aria-label="Climogrames de Girona i d'Igualada">${svgMiniClimo(Tm,P,"Girona",0)}${svgMiniClimo(IG_T,IG_P,"Igualada",215)}<text x="215" y="188" font-size="10" text-anchor="middle" fill="#64748b">°C a l'esquerra · barres de pluja (0-120 mm) · valors aproximats</text></svg>`}
 // 🌀 mapes del temps esquemàtics: la península, una A (anticicló), una D (depressió) i les isòbares
-function svgPeninsula(){return `<path d="M60 70 L150 55 L235 62 L262 85 L250 120 L232 160 L190 190 L120 198 L78 180 L58 140 L52 100 Z" fill="#fef3c7" stroke="#a16207" stroke-width="2"/><text x="150" y="130" font-size="12" text-anchor="middle" fill="#92400e">Península Ibèrica</text><path d="M150 55 L180 20 L300 15 L310 60 L262 85 L235 62 Z" fill="#fef9c3" stroke="#a16207" stroke-width="1.5"/><text x="245" y="38" font-size="11" text-anchor="middle" fill="#92400e">França</text><text x="35" y="230" font-size="11" fill="#1d4ed8">Oceà Atlàntic</text><text x="300" y="200" font-size="11" fill="#1d4ed8">Mar Mediterrani</text>`}
+function svgPeninsula(){return `<path d="M60 70 L150 55 L235 62 L262 85 L250 120 L232 160 L190 190 L120 198 L78 180 L58 140 L52 100 Z" fill="#fef3c7" stroke="#a16207" stroke-width="2"/><text x="150" y="130" font-size="12" text-anchor="middle" fill="#92400e">Península Ibèrica</text><path d="M150 55 L180 20 L300 15 L310 60 L262 85 L235 62 Z" fill="#fef9c3" stroke="#a16207" stroke-width="1.5"/><text x="245" y="38" font-size="11" text-anchor="middle" fill="#92400e">França</text><text x="35" y="230" font-size="11" fill="#1d4ed8">Oceà Atlàntic</text><text x="295" y="240" font-size="11" fill="#1d4ed8">Mar Mediterrani</text>`}
 function svgIsobares(cx,cy,vals,pas){return vals.map((v,i)=>`<ellipse cx="${cx}" cy="${cy}" rx="${22+i*pas}" ry="${16+i*pas*.75}" fill="none" stroke="#475569" stroke-width="1.3"/><text x="${cx}" y="${cy-(16+i*pas*.75)-2}" font-size="9" text-anchor="middle" fill="#334155" stroke="#e0f2fe" stroke-width="3" paint-order="stroke">${v}</text>`).join("")}
 function svgMapaTemps1(){return `<svg viewBox="0 0 400 250" width="100%" style="max-width:480px" font-family="Nunito,Arial,sans-serif" role="img" aria-label="Mapa del temps amb un anticicló a l'oest i una depressió sobre les Balears"><rect width="400" height="250" fill="#e0f2fe"/>${svgPeninsula()}${svgIsobares(30,120,[1028,1024,1020],26)}${svgIsobares(330,150,[996,1000,1004,1008],13)}<text x="30" y="127" font-size="22" font-weight="900" text-anchor="middle" fill="#1d4ed8">A</text><text x="330" y="157" font-size="22" font-weight="900" text-anchor="middle" fill="#b91c1c">D</text><path d="M330 150 L300 190 L270 230" fill="none" stroke="#2563eb" stroke-width="3"/>${[[316,170],[296,198],[280,222]].map(([x,y])=>`<path d="M${x} ${y} l9 -3 l-3 9 z" fill="#2563eb"/>`).join("")}<path d="M85 125 L280 145" stroke="#0f172a" stroke-width="2" marker-end="url(#mtF)" stroke-dasharray="6 4"/><defs><marker id="mtF" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0f172a"/></marker></defs></svg>`}
 function svgMapaTemps2(){return `<svg viewBox="0 0 400 250" width="100%" style="max-width:480px" font-family="Nunito,Arial,sans-serif" role="img" aria-label="Mapa del temps amb un anticicló sobre la península i una depressió al nord, sobre França"><rect width="400" height="250" fill="#e0f2fe"/>${svgPeninsula()}${svgIsobares(150,125,[1032,1028,1024],22)}${svgIsobares(270,52,[992,996,1000],9)}<text x="150" y="132" font-size="22" font-weight="900" text-anchor="middle" fill="#1d4ed8">A</text><text x="270" y="59" font-size="22" font-weight="900" text-anchor="middle" fill="#b91c1c">D</text><text x="225" y="100" font-size="20">☀️</text><text x="318" y="80" font-size="18">🌧️</text></svg>`}
+
+function svgFront(pts,cal){const d="M"+pts.map(p=>p.join(" ")).join(" L"),col=cal?"#dc2626":"#2563eb";
+ // marques al llarg del front, als punts del mig de cada tram: semicercles vermells (càlid) o triangles blaus (fred)
+ const m=pts.slice(1).map((q,i)=>{const p=pts[i],x=(p[0]+q[0])/2,y=(p[1]+q[1])/2,a=Math.atan2(q[1]-p[1],q[0]-p[0])*180/Math.PI;
+  return `<g transform="translate(${x} ${y}) rotate(${a})">${cal?`<path d="M-6 0 A6 6 0 0 1 6 0 Z" fill="${col}"/>`:`<path d="M-6 0 L0 -9 L6 0 Z" fill="${col}"/>`}</g>`}).join("");
+ return `<path d="${d}" fill="none" stroke="${col}" stroke-width="3"/>${m}`}
+const MT_SVG=(et,cos)=>`<svg viewBox="0 0 400 250" width="100%" style="max-width:480px" font-family="Nunito,Arial,sans-serif" role="img" aria-label="${et}"><rect width="400" height="250" fill="#e0f2fe"/>${svgPeninsula()}${cos}</svg>`;
+const MT_A=(x,y)=>`<text x="${x}" y="${y+7}" font-size="22" font-weight="900" text-anchor="middle" fill="#1d4ed8">A</text>`,MT_D=(x,y)=>`<text x="${x}" y="${y+7}" font-size="22" font-weight="900" text-anchor="middle" fill="#b91c1c">D</text>`;
+function svgMapaTemps3(){return MT_SVG("Mapa del temps amb una borrasca a l'Atlàntic, al nord-oest, amb un front càlid i un de fred, i un anticicló al Mediterrani",
+ `${svgIsobares(40,95,[988,992,996,1000],14)}${svgIsobares(345,160,[1024,1020],24)}${svgFront([[52,100],[95,108],[140,115]],1)}${svgFront([[40,110],[48,150],[60,190]],0)}${MT_D(40,95)}${MT_A(345,160)}<text x="100" y="92" font-size="18">🌧️</text><text x="292" y="100" font-size="18">☀️</text>`)}
+function svgMapaTemps4(){return MT_SVG("Mapa del temps amb un anticicló al nord-est, sobre Europa, i una depressió al Mediterrani, davant de la costa, amb vent de llevant",
+ `${svgIsobares(345,48,[1028,1024],18)}${svgIsobares(318,178,[1000,1004,1008],15)}${MT_A(345,48)}${MT_D(318,178)}<path d="M335 122 L272 98" stroke="#0f172a" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#mtL)"/><defs><marker id="mtL" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0f172a"/></marker></defs><text x="352" y="114" font-size="10" font-weight="800" text-anchor="middle" fill="#0f172a" stroke="#e0f2fe" stroke-width="3" paint-order="stroke">llevant</text><text x="236" y="112" font-size="18">🌧️</text><text x="80" y="110" font-size="18">⛅</text>`)}
+function svgMapaTemps5(){return MT_SVG("Mapa del temps d'hivern amb un anticicló gran sobre la península i les isòbares molt separades",
+ `${svgIsobares(150,102,[1036,1032,1028],38)}${MT_A(150,102)}<text x="185" y="165" font-size="18">🌫️</text><text x="95" y="100" font-size="18">☀️</text>`)}
 
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
 ASSIG.boss={nom:"La Gran Borrasca",spr:"borrasca",fx:"tempesta",mus:"primavera",rotul:"SURT EL SOL!",em:["🌈","☀️","🌤️","🍃"]};
@@ -2245,7 +2283,7 @@ function jocConstrueixProva(j){if(!j.ciutats||!j.ciutats.length)return "sense ci
  if(!CC||!CC.fi)return "no ha acabat";if(CC.bones!==j.ciutats.length*2-1)return `${CC.bones} bones de ${j.ciutats.length*2-1} esperades`;return true}
 
 const MONS=[{"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "opina", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "Baix", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "Siéntate", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
-const QIDS={"temps":[1,2,3,4,5,6,7,8],"atmos":[1,2,3,4,5,9,7,8],"elements":[1,2,3,4,5,6,7,8],"pressio":[1,2,3,4,5,6,7,8],"mapes":[1,2,3,4,5,6,7,8],"canvi":[1,2,3,4,5,6,7,8],"relleu":[1,2,3,4,5,6,7,8],"riu":[1,2,3,4,5,6,7,8],"climaig":[1,2,3,4,5,6,7,8],"paisatge":[1,2,3,4,5,6,7,8],"j-cl-compara":[1,2,3,4,5,6],"j-mapa-temps1":[1,2,3,4,5,6],"j-mapa-temps2":[1,2,3,4,5,6],"j-climo":[1,2,3,4,5,6]};
+const QIDS={"temps":[1,2,3,4,5,6,7,8],"atmos":[1,2,3,4,5,9,7,8],"elements":[1,2,3,4,5,6,7,8],"pressio":[1,2,3,4,5,6,7,8],"mapes":[1,2,3,4,5,6,7,8],"canvi":[1,2,3,4,5,6,7,8],"relleu":[1,2,3,4,5,6,7,8],"riu":[1,2,3,4,5,6,7,8],"climaig":[1,2,3,4,5,6,7,8],"paisatge":[1,2,3,4,5,6,7,8],"j-cl-compara":[1,2,3,4,5,6],"j-mapa-temps1":[1,2,3,4,5,6],"j-mapa-temps2":[1,2,3,4,5,6],"j-mapa-temps3":[1,2,3,4,5,6],"j-mapa-temps4":[1,2,3,4,5,6],"j-mapa-temps5":[1,2,3,4,5,6],"j-climo":[1,2,3,4,5,6]};
 const QDIF={"atmos/4":3,"atmos/9":3,"climaig/1":3,"climaig/2":3,"elements/1":3,"elements/5":3,"elements/7":3,"mapes/4":3,"mapes/7":3,"paisatge/6":3,"pressio/5":3,"pressio/6":3,"relleu/3":3,"riu/6":3,"temps/2":3,"temps/8":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
 ["--g1","--g2","--g3"].forEach((v,i)=>document.documentElement.style.setProperty(v,ASSIG.color[i]));

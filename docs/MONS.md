@@ -10,7 +10,7 @@ Després, aquí es comprova si se sap de veritat.
 
 | Món | Assignatura | Tema | Temes | Preguntes | Obertes | Jocs | 👾 Boss | Web |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Ciències socials | Tema 3: El clima | 10 | 80 | 15 | 15 | La Gran Borrasca | [obre'l](https://bonanota.net/sociales/t3-clima/) |
+| 1 | Ciències socials | Tema 3: El clima | 10 | 80 | 15 | 18 | La Gran Borrasca | [obre'l](https://bonanota.net/sociales/t3-clima/) |
 | 2 | Biologia i Geologia | Bloc 1: Univers, Terra i cèl·lula | 11 | 88 | 13 | 5 | El Cometa Rebel | [obre'l](https://bonanota.net/bio-i-geo/univers/) |
 | 3 | Lengua Castellana | Temas 2 y 3 | 15 | 120 | 13 | 23 | El Monstruo de las Faltas | [obre'l](https://bonanota.net/castellano/t2-t3/) |
 | 4 | Ciències socials | Les comarques de Catalunya | 7 | 56 | 7 | 10 | El Drac de les Comarques | [obre'l](https://bonanota.net/sociales/comarques/) |
