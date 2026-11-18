@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.58.1 · 2026-11-18
+
+### Corregit
+- **El número de versió té una sola font: la primera entrada del `CHANGELOG.md`** (fase 1 del pla `docs/superpowers/specs/2026-11-18-readme-changelog-motor-pla-mestre.md`). Abans, l'Action «Etiqueta la versió» llegia la capçalera del README, que s'havia de canviar a mà i s'havia quedat a la 2.46.1. Per això no s'havien creat les etiquetes de la `v2.47.0` a la `v2.58.0` (ni la `v2.25.0`).
+  - `motor/tot.py` escriu el número a la capçalera del README, i el check «generat» falla si no s'ha executat.
+  - `.github/workflows/etiqueta.yml` llegeix el `CHANGELOG.md`.
+  - L'Action recorre l'historial de `main` i posa totes les etiquetes que falten des de la 2.9.0, al commit on va entrar cada versió. En fusionar aquesta versió, posa les 13 que faltaven (`v2.25.0` i `v2.47.0`-`v2.58.0`) i la `v2.58.1`. Té també un botó per llançar-la a mà (`workflow_dispatch`).
+  - README §3 «Versions» amb el procés nou, en 3 passos.
+
 ## 2.58.0 · 2026-11-18
 
 ### Canviat

@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.46.1 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.58.1 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -233,11 +233,13 @@ Si un canvi només toca documentació o proves, la versió no puja.
 
 **Com es puja una versió:**
 
-1. Al mateix PR del canvi, afegeix l'entrada nova a dalt de tot de `CHANGELOG.md` (número, data i apartats Afegit, Canviat o Corregit).
-2. Canvia el número a la capçalera d'aquest README.
-3. Executa `python3 motor/tot.py`: llegeix la primera entrada del `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera del tauler.
-4. No cal etiquetar a mà: quan el PR arriba a `main`, l'Action «Etiqueta la versió» (`.github/workflows/etiqueta.yml`) posa l'etiqueta
-   `vX.Y.Z` del número de la capçalera si encara no existeix.
+El número té **una sola font: la primera entrada de `CHANGELOG.md`** (des de la 2.58.1). No s'escriu enlloc més a mà.
+
+1. Al mateix PR del canvi, afegeix l'entrada nova a dalt de tot de `CHANGELOG.md` (número, data i apartats Afegit, Canviat, Corregit o Eliminat).
+2. Executa `python3 motor/tot.py`: posa el número al peu de la portada i de cada món, a la capçalera del tauler i a la capçalera d'aquest README.
+   Si t'oblides d'executar-lo, el check «generat» de la revisió falla.
+3. No cal etiquetar a mà: quan el PR arriba a `main`, l'Action «Etiqueta la versió» (`.github/workflows/etiqueta.yml`) llegeix el mateix
+   `CHANGELOG.md` i posa l'etiqueta `vX.Y.Z` si encara no existeix.
 
 > `versio.json` i el `VERSIO` de `sw.js` no són aquest número. Són empremtes que genera `motor/tot.py` a cada canvi perquè els mòbils
 > es posin al dia.
