@@ -8,7 +8,7 @@ He comptat el contingut i he fet captures a 390 px de la llista de jocs, del cli
 
 **Estat:** executat a la versió 2.53.0 amb les recomanacions de la secció 6. Diferències amb el pla:
 - El repàs del mapa ja es feia al mapa (`MP.rep`): no ha calgut tocar-lo.
-- Hi ha 2 mapes del temps, no 4-5, i el mapa de la fitxa no s'il·lumina en tocar el nom d'una comarca.
+- A la 2.54.0 s'hi van afegir 3 mapes del temps més (5 en total) i el mapa de la fitxa s'il·lumina en tocar una comarca, al mapa o a la llista.
 - El joc de veïnes queda per més endavant, com es va decidir.
 
 **En poques línies.** Tots dos mons tenen un bon test (80 i 56 preguntes) i una peça estrella: **el mapa interactiu de les 43 comarques** (5 modes, amb repàs dels errors) i **el climograma de Girona**. Però són els mons amb **menys pràctica**:

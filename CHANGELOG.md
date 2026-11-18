@@ -5,6 +5,12 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.54.0 · 2026-11-18
+
+### Afegit
+- **Socials · El clima:** 3 mapes del temps més (5 en total), amb l'anticicló i la depressió en llocs diferents perquè no s'aprenguin de memòria: una borrasca de l'Atlàntic amb front càlid i fred, una llevantada a la costa i un anticicló d'hivern amb boira a l'Anoia. Els fronts es dibuixen amb `svgFront` (semicercles vermells o triangles blaus).
+- **Socials · Les comarques:** al mapa de cada fitxa de demarcació, tocar una comarca (al mapa o a la llista) l'il·lumina als dos llocs i en diu el nom i la capital (`mpDemLlum`). Tornar-la a tocar l'apaga.
+
 ## 2.53.0 · 2026-11-18
 
 ### Afegit

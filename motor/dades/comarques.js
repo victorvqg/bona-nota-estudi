@@ -481,13 +481,21 @@ const MAPA={w:600,h:640,c:[[1,"M227.3,388.8L233.2,383.8L237.1,386.7L243.8,383.2L
 
 // 🗺️ mapa d'una demarcació per a la fitxa del tema (T[i].esquema = {fn:"mapaDem", dem:"B"}): la demarcació pintada, les altres en gris
 function mapaDem(e){const d=e.dem,ns=COM.filter(c=>!d||c[3]===d).map(c=>c[0]);
- const c=MAPA.c.map(([n,p])=>{const dm=mpC(n)[3],on=!d||dm===d;return `<path d="${p}" fill="${on?DEMCOL[dm][0]:"#f1f5f9"}" stroke="${on?DEMCOL[dm][1]:"#cbd5e1"}" stroke-width="${on?1:.6}"/>`}).join("");
- const lab=MAPA.c.filter(([n])=>ns.includes(n)).map(([n,,x,y])=>`<g><circle cx="${x}" cy="${y}" r="9" fill="#fff" stroke="#334155" stroke-width="1"/><text x="${x}" y="${y+4}" font-size="11" font-weight="800" text-anchor="middle" fill="#0f172a">${n}</text></g>`).join("");
- const llista=ns.map(n=>{const [,nom,cap]=mpC(n);return `<div style="font-size:13.5px;padding:2px 0"><b>${n}</b> ${nom} · <span style="color:#b91c1c">${cap}</span></div>`}).join("");
+ // cada comarca de la demarcació es pot tocar (al mapa o a la llista) i s'il·lumina als dos llocs: mpDemLlum
+ const c=MAPA.c.map(([n,p])=>{const dm=mpC(n)[3],on=!d||dm===d;return `<path d="${p}" fill="${on?DEMCOL[dm][0]:"#f1f5f9"}" stroke="${on?DEMCOL[dm][1]:"#cbd5e1"}" stroke-width="${on?1:.6}"${on?` data-mp="${n}" style="cursor:pointer" onclick="mpDemLlum(this,${n})"`:""}/>`}).join("");
+ const lab=MAPA.c.filter(([n])=>ns.includes(n)).map(([n,,x,y])=>`<g data-mpl="${n}" style="cursor:pointer" onclick="mpDemLlum(this,${n})"><circle cx="${x}" cy="${y}" r="9" fill="#fff" stroke="#334155" stroke-width="1"/><text x="${x}" y="${y+4}" font-size="11" font-weight="800" text-anchor="middle" fill="#0f172a">${n}</text></g>`).join("");
+ const llista=ns.map(n=>{const [,nom,cap]=mpC(n);return `<button type="button" class="mpdem-it" data-mpi="${n}" onclick="mpDemLlum(this,${n})" aria-pressed="false" style="display:block;width:100%;text-align:left;font:inherit;font-size:13.5px;padding:3px 6px;margin:1px 0;border:0;border-radius:8px;background:none;color:inherit;cursor:pointer;break-inside:avoid"><b>${n}</b> ${nom} · <span style="color:#b91c1c">${cap}</span></button>`}).join("");
  // enquadra la demarcació (amb un marge) perquè es vegi gran
  const pts=MAPA.c.filter(([n])=>ns.includes(n)).map(([,,x,y])=>[x,y]),mg=55,bx=d?Math.max(0,Math.min(...pts.map(p=>p[0]))-mg):0,by=d?Math.max(0,Math.min(...pts.map(p=>p[1]))-mg):0,
   bw=d?Math.min(MAPA.w-bx,Math.max(...pts.map(p=>p[0]))+mg-bx):MAPA.w,bh=d?Math.min(MAPA.h-by,Math.max(...pts.map(p=>p[1]))+mg-by):MAPA.h;
- return `<svg viewBox="${bx} ${by} ${bw} ${bh}" width="100%" style="max-width:420px" role="img" aria-label="Mapa de la demarcació${d?" de "+DEMNOM[d]:""}"><g>${c}</g><path d="${MAPA.prov}" fill="none" stroke="#1e293b" stroke-width="2"/>${lab}</svg><div style="columns:2;column-gap:14px;text-align:left;margin-top:6px">${llista}</div>`}
+ return `<div class="mpdem"><svg viewBox="${bx} ${by} ${bw} ${bh}" width="100%" style="max-width:420px" role="img" aria-label="Mapa de la demarcació${d?" de "+DEMNOM[d]:""}"><g>${c}</g><path d="${MAPA.prov}" fill="none" stroke="#1e293b" stroke-width="2" pointer-events="none"/>${lab}</svg><div style="font-size:12.5px;color:#64748b;margin-top:2px">👆 Toca una comarca, al mapa o a la llista, i s'il·luminarà.</div><div class="mpdem-nom" aria-live="polite" style="min-height:22px;font-weight:800;margin-top:4px"></div><div style="columns:2;column-gap:14px;text-align:left;margin-top:4px">${llista}</div></div>`}
+// il·lumina la comarca n al mapa i a la llista de la mateixa fitxa (tornar-la a tocar l'apaga)
+function mpDemLlum(el,n){const w=el.closest(".mpdem");if(!w)return;const ja=w.dataset.on==String(n);w.dataset.on=ja?"":n;
+ w.querySelectorAll("[data-mp]").forEach(p=>{const on=!ja&&p.dataset.mp==n;p.style.fill=on?"#facc15":"";p.style.strokeWidth=on?"2.5":"";p.style.stroke=on?"#a16207":"";if(on)p.parentNode.appendChild(p)});
+ w.querySelectorAll("[data-mpl]").forEach(g=>{const on=!ja&&g.dataset.mpl==n,ci=g.querySelector("circle");ci.setAttribute("fill",on?"#a16207":"#fff");g.querySelector("text").setAttribute("fill",on?"#fff":"#0f172a");ci.setAttribute("r",on?11:9)});
+ w.querySelectorAll("[data-mpi]").forEach(b=>{const on=!ja&&b.dataset.mpi==n;b.style.background=on?"#fef08a":"none";b.setAttribute("aria-pressed",on?"true":"false")});
+ const [,nom,cap]=mpC(n),t=w.querySelector(".mpdem-nom");if(t)t.innerHTML=ja?"":`🟡 ${n} · ${nom} — capital: <span style="color:#b91c1c">${cap}</span>`}
+window.mpDemLlum=mpDemLlum;
 
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
 ASSIG.boss={nom:"El Drac de les Comarques",spr:"drac",fx:"explosio",mus:"epica",rotul:"FOC DE SANT JORDI!",em:["🐉","🌹","🔥","🛡️"]};
