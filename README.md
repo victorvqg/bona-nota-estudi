@@ -278,6 +278,9 @@ motor/
   prova-generadors.js                Prova dels generadors del Taller de mates (sense navegador)
   prova-regles.js                    Prova que les regles copiades coincideixen amb la plantilla
   prova-nuvol.js, prova-perfil.js, prova-pares.js   Proves del núvol, del perfil i de la guia per a famílies
+  prova-tast.js                      Prova del mode tast anònim (?tast=1)
+  prova-veu.js, prova-vistes-mates.js, prova-ui-es.js   Proves de la veu bilingüe, les vistes de mates i el castellà (sense navegador)
+  prova-docs.js                      La documentació (README, ARQUITECTURA i CHANGELOG) no es queda enrere
   prova-xat*.js                      Proves del xat: el SQL (PGlite) i la portada
   prova-admin-*.js, prova-control-sql.js   Proves del tauler i del seu SQL (vegeu l'apartat 10)
   prova-pin-intents-sql.js, prova-fotos-sql.js   Proves del bloqueig de PIN i del permís de fotos (PGlite)
@@ -325,7 +328,7 @@ El títol i l'id es llegeixen amb expressions regulars: `id:"…"`, `nom:"…"` 
 | 3 | A `index.html`: reescriu les targetes (`MONS:inici..fi`), copia `so-mobil.js` i `actualitza.js` entre les seves marques i posa `sprites.js?v=<empremta>`; a `perfil/index.html` copia els mateixos blocs i posa el mateix `?v=` (i `build.py` el posa a cada món) |
 | 3b | Escriu `admin/preguntes.json` (id → text, opcions, correcta, tema) |
 | 3b2 | Extreu les constants de regles de `motor/plantilla-estudi-interactiu.html` i escriu `motor/regles.json` i `admin/regles.json` |
-| 3c | Llegeix la primera entrada de `CHANGELOG.md` i posa el número al peu de la portada i de cada món, i a la capçalera i a l'entrada del tauler (`VERSIO_ADMIN`) |
+| 3c | Llegeix la primera entrada de `CHANGELOG.md` i posa el número al peu de la portada i de cada món, a la capçalera i a l'entrada del tauler (`VERSIO_ADMIN`) i a la capçalera d'aquest README |
 | 4 | Calcula una empremta del contingut i la posa a cada pàgina (`VER`), a `versio.json` i a `sw.js` |
 
 L'empremta es calcula amb el buit `__BN_VERSIO__` encara sense omplir, perquè no depengui d'ella mateixa. Si `tot.py` es torna a executar sense canvis, el resultat és idèntic: la revisió automàtica ho aprofita per detectar pàgines editades a mà.
@@ -555,6 +558,10 @@ Aquests tipus viuen a la plantilla (`motor/plantilla-estudi-interactiu.html`).
 | `actualitza.js` | Actualització automàtica (vegeu l'apartat 7) | Plantilla i portada |
 | `mapa-comarques.js` | Genera els camins SVG de les 43 comarques i els escriu a `dades/comarques.js`, entre les marques `MAPA:inici` i `MAPA:fi` | Ningú: s'executa a mà |
 | `mons-prova.js` | Llegeix `mons.json` i el catàleg del xat (`N`, `ids`, `nou`, `vell`, `catalegXat`) perquè les proves no depenguin del nombre de mons | Les proves del tauler i del xat |
+| `vistes-mates.js` | Vistes del Taller amb marques (`MXV`, `mxVistaTema`): el dibuix de cada exercici i la teoria dibuixada (`docs/MON-MATES.md`) | Mates i el clima |
+| `clima.js` | Generador `climograma` del Taller: un climograma nou cada vegada amb 7 passos (mes més calorós, amplitud, mitjana, total, mesos secs i tipus de clima) | El clima |
+| `marca-llengua.js` | Joc «Pinta les paraules» / «Pinta las palabras» (`marcaHtml`) i frases pintades als esquemes de la teoria (`docs/MON-LLENGUA.md`) | Català i Castellano |
+| `ui-es.js` | Tradueix al castellà els textos del motor (`uiEs`) perquè les activitats del món de Castellano surtin en castellà | Castellano |
 
 El Taller desa cada resposta fallada com `exercici|pas|error` (camp `ep`), que el tauler agrupa. Hi ha generadors preparats que encara no surten enlloc: operacions combinades, suma i resta de fraccions i equacions de primer grau.
 
@@ -813,6 +820,8 @@ Els tres jobs amb navegador tenen Chromium en memòria cau. El ruleset «main pr
 | 3b | `motor/prova-mons.js` | `mons.json` és l'única font: els camps de cada món, els ids de les peces i els blocs generats a l'admin, `sprites.js`, `index.html` i `bn_xat.sql` |
 | 3c | `motor/prova-revisa-mon.js`, `motor/revisa-mon.js` | El revisor de contingut (amb fitxers de prova) i el contingut de tots els mons |
 | 3d | `motor/prova_nou_mon.py`, `prova_publica.py`, `prova_registres.py` | Les eines per crear i publicar mons. `prova_publica.py` fa una publicació sencera en un repo temporal, amb `gh` i `nucli` simulats |
+| 3e | `motor/prova-veu.js`, `prova-vistes-mates.js`, `prova-ui-es.js` | La veu bilingüe (cada tros sona en la llengua que toca), les vistes amb marques del Taller i la traducció al castellà dels textos del motor (sense navegador) |
+| 3f | `motor/prova-docs.js` | Que la documentació no es quedi enrere: cada eina de `motor/eines/` surt al README i a ARQUITECTURA, cada prova de `motor/` surt a la taula d'aquest apartat, i el CHANGELOG només fa servir els apartats Afegit, Canviat, Corregit i Eliminat |
 | 4 | `motor/prova-nuvol.js` | El núvol d'un món, amb Supabase simulat: un aparell vell no trepitja el progrés del núvol, sense connexió no puja res i el `-2` es resol sense bucles |
 | 5 | `motor/prova-perfil.js` | La pàgina de perfil: tries amb clic i teclat, desat al núvol, sense connexió i amb PIN incorrecte, Sorpresa i «Efectes suaus» |
 | 6 | `motor/prova-admin-fonts.js` | Els orígens d'estrelles del tauler (funcions pures) |
@@ -853,7 +862,7 @@ Cada ordre és una de sola, sense `&&` ni `cd`, perquè Claude Code la pugui pas
 **`motor/prova.js`** obre la pàgina generada amb Playwright i la fa jugar: cada tema (fitxa, targetes i test perfecte), cada joc, els exàmens, el repàs i les obertes, i executa les funcions de `prova` dels jocs `custom` i les de `BN_PROVES`.
 Amb `ESTRICTE=1`, un món falla si té temes amb menys de 8 preguntes o si la resposta correcta és l'opció més llarga fora del marge del 15 % al 40 %.
 
-**`motor/prova-generadors.js`** carrega el Taller sense navegador i executa cada generador moltes vegades per nivell (10.800 exercicis): comprova que la resposta bona es dona per bona, que les dolentes no fan petar els missatges i que els càlculs quadren.
+**`motor/prova-generadors.js`** carrega el Taller sense navegador i executa cada generador moltes vegades per nivell (11.700 exercicis, també els climogrames del món del clima): comprova que la resposta bona es dona per bona, que les dolentes no fan petar els missatges i que els càlculs quadren.
 
 **Les proves del xat:** `motor/prova-xat-sql.js` executa `supabase/bn_xat.sql` (dues vegades, per comprovar que és idempotent) i prova cada codi de `bn_xat_envia`, el canvi de dia a mitjanit, els vots, la lectura, l'admin i els permisos; `motor/prova-xat.js` prova la portada (crèdits, bloquejos, enviar, votar, contraccions, «Digues-li», mòbil, `?demo` i el rànquing igual que abans sense el SQL); `motor/prova-admin-xat.js` prova la pestanya Xat de l'admin.
 

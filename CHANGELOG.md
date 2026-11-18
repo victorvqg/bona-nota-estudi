@@ -407,7 +407,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 - Guia per a les famílies (`pares/index.html` a `https://bonanota.net/pares/`, enllaçada des de la portada i integrada a `motor/tot.py` i `sw.js`): explica sense cap tecnicisme què fa el fill o filla a Bona Nota, els 6 passos d'aprenentatge, per què les estrelles i el rànquing no enganxen, les mesures de bon ús, descans i son, la seguretat del xat sense teclat lliure, la privadesa i les preguntes freqüents (`docs/superpowers/specs/2026-11-11-pagina-pares-design.md`, `motor/prova-pares.js` · g6).
 - Prova automàtica `motor/prova-fotos-sql.js` a l'Action per a `supabase/bn_fotos.sql`, i desplegament en viu de `bn_fotos.sql` i l'Edge Function `bn-corregeix` a Supabase amb CORS actiu per a `https://bonanota.net` (g6).
 
-### Esborrat
+### Eliminat
 - `motor/jocs_generics.js`: còpia antiga dels jocs genèrics que ja no carregava cap pàgina (els jocs viuen a `motor/plantilla-estudi-interactiu.html`) (g6).
 
 ## 2.21.0 · 2026-11-11
@@ -444,7 +444,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 
 ## 2.18.1 · 2026-11-11
 
-### Arreglat
+### Corregit
 - Seguretat, PIN al núvol: `bn_aspecte_desa`, `bn_perfil_canvia_pin`, `bn_progres_llegeix` i `bn_progres_desa` tornen un codi (`'pin'`, `{"ok":false,"codi":"pin"}` o `-3`) en lloc de fer `raise exception 'pin incorrecte'` quan `bn_priv.pin_ok` torna `false`, de manera que el comptador d'intents fallits de `bn_priv.intents` no es desfà i el bloqueig de 15 minuts al 5è intent fallit s'aplica a totes les crides amb PIN (#33).
 - Proves: `motor/prova-pin-intents-sql.js` (PGlite) afegida a l'Action (#33).
 
@@ -457,7 +457,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 
 ## 2.17.1 · 2026-11-10
 
-### Arreglat
+### Corregit
 - Portada, perfil i mons: `rpcP` i `rpc` accepten tant l'error HTTP 400 `'pin incorrecte'` com les respostes sense excepció (`"pin"`, `{"ok":false,"codi":"pin"}` i `-3` a `bn_progres_desa`), com a pas 1 per conservar el comptador de 5 intents de PIN fallits a la base de dades (#33).
 
 ## 2.17.0 · 2026-11-10
@@ -523,7 +523,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 - ⚡ Super combo: les preguntes difícils porten la marca «⚡ difícil». Encertar-ne 3 seguides dona +3 ⭐ i 5 seguides +5 ⭐ (després es torna a començar), fins a 10 ⭐ al dia per món. La ratxa dura tot el dia, encara que canviïs de tema; les preguntes normals no la fan pujar ni la trenquen, i un error sí. Funciona als tests, a l'examen sorpresa i a l'examen de veritat (es compta en lliurar-lo).
 - La dificultat de cada pregunta és a `motor/dificultat.json` (primera passada: 111 de 524 preguntes). `motor/dificultat.py` en fa la llista `docs/DIFICILS.md`.
 
-### Arreglat
+### Corregit
 - Preguntes amb el text o la resposta discutibles: l'Acord de París (2 °C i 1,5 °C), l'ozó com a resposta falsa d'un gas d'efecte d'hivernacle, «meteorits» on calia «meteoroides», Ptolemeu (Alexandria, segle II), el delta de l'Ebre, dues preguntes de català que es podien llegir de dues maneres, i a castellà «primero», «treintaiséis», «clubs» i Teseu amb el Minotaure.
 - Les tres preguntes de català «Com es diu en català?» ara tenen cada una el seu enunciat, i per tant el seu identificador.
 
@@ -544,7 +544,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 
 ## 2.8.2 · 2026-11-09
 
-### Arreglat
+### Corregit
 - Un aparell amb el progrés vell ja no pot fer baixar les estrelles del núvol. En obrir un món on el nen ja era l'actiu, ara es baixa el progrés del núvol abans de desar-hi res, i el núvol no accepta un progrés amb menys estrelles que el que ja té (`supabase/bn_progres_no_baixa.sql`). Això feia que les estrelles d'un món no quadressin amb les del rànquing.
 - Les estrelles de cada test, joc, examen i pregunta oberta s'apunten al registre en el moment, i no només en tancar la pàgina. Així el rànquing no se'n perd cap si el navegador es tanca de cop.
 
@@ -565,7 +565,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 - Cada test, joc, examen i pregunta oberta apunta al registre les estrelles que ha donat (`est`).
 - Tauler d'admin: a «Nens», la targeta «Estrelles per origen» (de tots els nens) amb les estrelles per minut de cada activitat. Els orígens de cada nen agafen el màxim de cada font, de manera que gairebé desapareix la fila «D'abans (sense detall)».
 
-### Arreglat
+### Corregit
 - Les +2 ⭐ d'un rècord ara compten dins del test que el fa.
 - Amb «efectes suaus», els rètols de combo i missions ja no s'animen.
 
