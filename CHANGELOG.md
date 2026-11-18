@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.58.0 · 2026-11-18
+
+### Canviat
+- **El tauler d'admin només baixa el que és nou** (fase 4 del pla `docs/superpowers/specs/2026-11-18-admin-ordre-paginacio-pla-mestre.md`):
+  - `bn_admin_logs` (`supabase/bn_log.sql`) té un paràmetre nou, `p_des_id`: només torna les files amb un id més gran, és a dir, les que el tauler encara no té. La versió vella de 3 paràmetres s'esborra perquè PostgREST no hagi de triar entre dues.
+  - En clicar «Mostra-les» o «Actualitza», el tauler demana només les files noves i les ajunta amb les que ja té (sense repetir-ne cap i retallades al període). La comprovació de novetats de cada minut també fa servir `p_des_id`.
+  - **Cal aplicar `supabase/bn_log.sql` al SQL Editor de Supabase.** Mentre no s'aplica, el tauler ho detecta (la funció amb `p_des_id` no existeix) i continua amb la baixada sencera, com fins ara.
+- Prova nova `motor/prova-admin-logs-sql.js` (grup `sql`), i `motor/prova-admin-auto.js` prova la baixada incremental i el retorn a la sencera.
+
 ## 2.57.0 · 2026-11-18
 
 ### Canviat

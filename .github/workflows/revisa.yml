@@ -83,6 +83,8 @@ jobs:
         run: node motor/prova-fotos-sql.js
       - name: Prova de la dificultat calculada amb dades (supabase/bn_admin_dificultat.sql, issue #16)
         run: node motor/prova-dificultat-sql.js
+      - name: Prova de la baixada incremental del registre (supabase/bn_log.sql, p_des_id)
+        run: node motor/prova-admin-logs-sql.js
 
   interficie:
     name: Portada, perfil, pares i admin

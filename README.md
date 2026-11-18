@@ -811,6 +811,7 @@ Els tres jobs amb navegador tenen Chromium en memòria cau. El ruleset «main pr
 | 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
 | 12 | `motor/prova-pin-intents-sql.js`, `prova-fotos-sql.js`, `prova-pares.js`, `prova-tast.js`, `prova-dificultat-sql.js`, `prova-admin-dificultat.js` | El bloqueig de 15 minuts al 5è intent de PIN (#33), el permís de fotos del quadern, la guia per a les famílies (`pares/`), el mode tast anònim (`?tast=1`) i la dificultat real de les preguntes al servidor i al tauler (#16) |
 | 12b | `motor/prova-admin-evolucio.js` | El gràfic d'evolució del tauler |
+| 12f | `motor/prova-admin-logs-sql.js` | La baixada incremental del registre: `bn_admin_logs(…, p_des_id)` torna només les files noves i substitueix la versió vella de 3 paràmetres |
 | 12e | `motor/prova-admin-ordre.js` | L'ordre del tauler: menú amb Activitat i Xat, alertes a dalt d'Inici, Rànquing sense Xat, adreça vella del xat i barra del mòbil amb 6 botons |
 | 12d | `motor/prova-admin-pagines.js` | La paginació del tauler: taules de 25 en 25 (o 50/100), cerca, ordenació i CSV amb totes les files, log per dia sense tall i alertes de 10 en 10 |
 | 12c | `motor/prova-admin-auto.js` | L'actualització del tauler sense pantallasso: comprovació silenciosa, avís «Mostra-les», repintat sense esquelets i banda de versió nova |
