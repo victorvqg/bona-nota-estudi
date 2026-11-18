@@ -728,7 +728,7 @@ A la barra superior hi ha només el selector global de període (`Avui`, `7 dies
 
 A **Inici** (`#control`, amb interruptors d'1 clic) i a **⚙ Configuració → Horaris i crèdits**:
 
-- **Obrir o tancar el xat** amb un clic (també des de `Rànquing → Xat`).
+- **Obrir o tancar el xat** amb un clic (també des de la secció `Xat` del menú).
 - **Programar l'horari automàtic** (`Configuració → Horaris i crèdits`): una hora de tancament i una d'obertura, en hora de Catalunya/Madrid (per exemple `21:30` → `07:00`), que tanca el xat de nit i mostra l'avís amable d'anar a descansar als mons i a la portada.
 - **Activar o desactivar cada món** (des d'`Inici` o des de `Mons → Llista`). Un món desactivat surt en gris a la portada amb «🔒 TANCAT» i no deixa entrar-hi, tampoc per enllaç directe. Les estrelles es conserven al rànquing.
 
@@ -811,6 +811,7 @@ Els tres jobs amb navegador tenen Chromium en memòria cau. El ruleset «main pr
 | 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
 | 12 | `motor/prova-pin-intents-sql.js`, `prova-fotos-sql.js`, `prova-pares.js`, `prova-tast.js`, `prova-dificultat-sql.js`, `prova-admin-dificultat.js` | El bloqueig de 15 minuts al 5è intent de PIN (#33), el permís de fotos del quadern, la guia per a les famílies (`pares/`), el mode tast anònim (`?tast=1`) i la dificultat real de les preguntes al servidor i al tauler (#16) |
 | 12b | `motor/prova-admin-evolucio.js` | El gràfic d'evolució del tauler |
+| 12e | `motor/prova-admin-ordre.js` | L'ordre del tauler: menú amb Activitat i Xat, alertes a dalt d'Inici, Rànquing sense Xat, adreça vella del xat i barra del mòbil amb 6 botons |
 | 12d | `motor/prova-admin-pagines.js` | La paginació del tauler: taules de 25 en 25 (o 50/100), cerca, ordenació i CSV amb totes les files, log per dia sense tall i alertes de 10 en 10 |
 | 12c | `motor/prova-admin-auto.js` | L'actualització del tauler sense pantallasso: comprovació silenciosa, avís «Mostra-les», repintat sense esquelets i banda de versió nova |
 | 13 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |

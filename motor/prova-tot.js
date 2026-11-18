@@ -15,7 +15,7 @@ const GRUPS = {
   sql: ["prova-xat-sql", "prova-admin-fitxa-sql", "prova-admin-benestar-sql", "prova-bon-us-sql", "prova-admin-fonts-rep-sql",
     "prova-control-sql", "prova-pin-intents-sql", "prova-fotos-sql", "prova-dificultat-sql"].map(p => ["node", `motor/${p}.js`]),
   interficie: ["prova-nuvol", "prova-perfil", "prova-pares", "prova-tast", "prova-xat", "prova-admin-xat", "prova-admin-fitxa",
-    "prova-admin-benestar", "prova-admin-fonts-rep", "prova-admin-alta", "prova-admin-dificultat", "prova-admin-evolucio", "prova-admin-auto", "prova-admin-pagines"].map(p => ["node", `motor/${p}.js`])
+    "prova-admin-benestar", "prova-admin-fonts-rep", "prova-admin-alta", "prova-admin-dificultat", "prova-admin-evolucio", "prova-admin-auto", "prova-admin-pagines", "prova-admin-ordre"].map(p => ["node", `motor/${p}.js`])
 };
 const args = process.argv.slice(2), grup = args[0];
 let tasques;
