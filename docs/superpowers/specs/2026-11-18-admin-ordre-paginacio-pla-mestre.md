@@ -2,7 +2,7 @@
 
 18/11/2026 · Versió 2.54.0 · Revisió de `admin/index.html` (4.549 línies), feta amb el codi i captures del mode demo (`/admin/?demo`) a 1280 px.
 
-**Estat:** decisions preses el 18/11/2026: totes les recomanacions de la secció 4. **Fase 1 feta a la 2.55.0, fase 2 a la 2.56.0, fase 3 a la 2.57.0 i fase 4 a la 2.58.0** (cal aplicar `supabase/bn_log.sql` a Supabase). Diferències amb el pla:
+**Estat:** decisions preses el 18/11/2026: totes les recomanacions de la secció 4. **Pla tancat.** Fase 1 feta a la 2.55.0, fase 2 a la 2.56.0, fase 3 a la 2.57.0 i fase 4 a la 2.58.0 (`supabase/bn_log.sql` aplicat a Supabase el 18/11/2026). La fase 5 (docs i captures de totes les seccions a 1280 i 390 px) es va fer el mateix dia. Diferències amb el pla:
 - La comprovació mira les 50 últimes accions del registre (`bn_admin_logs?limit=50`): les novetats que no passen pel registre (missatges nous del xat) no fan sortir l'avís.
 - «Actualitza» també repinta sense esquelets.
 - La banda de versió nova té «Més tard», que l'amaga fins a la versió següent.
