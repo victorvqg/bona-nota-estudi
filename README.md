@@ -720,9 +720,18 @@ el tauler mostri el text de les preguntes.
 ## 9. Tauler d'administració
 
 El tauler és a https://bonanota.net/admin/ i demana el correu i la contrasenya d'admin. Serveix per veure què fan els nens, cuidar-ne l'ús i gestionar-los.
-S'organitza en **5 seccions principals** (`Inici`, `Nens`, `Mons`, `Sessions` i `Rànquing`, amb barra inferior fixa al mòbil) més l'accés **⚙ Configuració** (`Horaris i crèdits`, `Catàleg del xat`, `Llindars` i `Còpies`) a la barra superior, i carrega les funcions de `supabase/bn_admin_*.sql` **sota demanda** segons la pantalla oberta.
+S'organitza en **6 seccions principals** (`Inici`, `Nens`, `Mons`, `Activitat`, `Rànquing` i `Xat`, amb barra inferior fixa al mòbil) més l'accés **⚙ Configuració** (`Horaris i crèdits`, `Rànquing`, `Catàleg del xat`, `Llindars` i `Còpies`) a la barra superior, i carrega les funcions de `supabase/bn_admin_*.sql` **sota demanda** segons la pantalla oberta. «Activitat» conserva l'adreça `?v=sessions`, i l'adreça vella del xat (`?v=ranquing&tab=xat`) porta a `?v=xat`.
 
-A la barra superior hi ha només el selector global de període (`Avui`, `7 dies`, `30 dies`, `Curs`, ocult a `Configuració`), actualitzar, tema clar/fosc i `Configuració`; els filtres d'assignatura (`#fAssig`) i de nen (`#fNen`) apareixen localment a cada sub-vista que els admet. El desplegable `#fNen` mostra sempre **tots els nens** que existeixen a la base de dades (`bn_admin_ids`, que uneix `bn_priv.perfils` i `public.bn_log` a `supabase/bn_ids_i_punts.sql`), encara que no tinguin activitat en el període triat o que tinguin 0 registres. El registre (`bn_admin_logs`) es carrega sota demanda paginat en blocs de 1.000 files (`?limit=1000&offset=…`) fins a cobrir tot el període seleccionat, de manera que el límit de 1.000 files per resposta de PostgREST no deixa cap nen fora.
+A la barra superior hi ha només el selector global de període (`Avui`, `7 dies`, `30 dies`, `Curs`, ocult a `Configuració`), actualitzar, tema clar/fosc i `Configuració`; els filtres d'assignatura (`#fAssig`) i de nen (`#fNen`) apareixen localment a cada sub-vista que els admet. El desplegable `#fNen` mostra sempre **tots els nens** que existeixen a la base de dades (`bn_admin_ids`, que uneix `bn_priv.perfils` i `public.bn_log` a `supabase/bn_ids_i_punts.sql`), encara que no tinguin activitat en el període triat o que tinguin 0 registres. El registre (`bn_admin_logs`) es carrega sota demanda paginat en blocs de 1.000 files (`?limit=1000&offset=…`) fins a cobrir tot el període seleccionat, de manera que el límit de 1.000 files per resposta de PostgREST no deixa cap nen fora. Després, en actualitzar, només es baixen les files noves (`p_des_id`, apartat següent).
+
+### 🔄 Actualització sense pantallasso i paginació
+
+Pla: [`docs/superpowers/specs/2026-11-18-admin-ordre-paginacio-pla-mestre.md`](docs/superpowers/specs/2026-11-18-admin-ordre-paginacio-pla-mestre.md) (versions 2.55.0-2.58.0).
+- **La pantalla no es repinta mai sola.** Cada minut, i en tornar a la pestanya, `comprovaNovetats()` mira en silenci les últimes accions del registre. Si n'hi ha de noves, surt l'avís «N novetats · Mostra-les» a la capçalera, i a Inici les 6 xifres canvien al seu lloc.
+- **Repintat sense esquelets** (`repintaSuau()`): amb «Mostra-les», «Actualitza» o un canvi de període, la vista nova es prepara amagada i substitueix la vella d'una vegada, amb l'scroll al mateix lloc.
+- **Versió nova del web:** no recarrega el tauler; surt la banda «Hi ha una versió nova del tauler · Recarrega / Més tard».
+- **Baixada incremental:** `bn_admin_logs(…, p_des_id)` (`supabase/bn_log.sql`) torna només les files amb un id més gran que l'última que ja té el tauler. Si el SQL fos vell (sense `p_des_id`), el tauler ho detecta i baixa sencer.
+- **Paginació:** totes les taules (`taula()`) van de 25 en 25 (selector 25/50/100, desat al navegador), amb la cerca, l'ordenació i el CSV sobre totes les files. El log per dia va de 7 dies en 7 dies, amb 50 accions per dia i «Mostra'n 50 més». Les alertes d'Inici van de 10 en 10.
 
 ### 🎛️ Control ràpid: xat, horari i mons
 
@@ -734,13 +743,14 @@ A **Inici** (`#control`, amb interruptors d'1 clic) i a **⚙ Configuració → 
 
 El SQL és a `supabase/bn_control.sql`. Els mons es validen pel format de l'id (`^[a-z0-9_-]{1,40}$`), sense cap llista escrita a mà: un món nou no hi demana cap canvi.
 
-### 📊 Inici, Mons i Sessions
+### 📊 Inici, Mons, Activitat, Rànquing i Xat
 
 Les vistes s'alimenten amb les funcions agregades de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`, `_domini`, `_fallades`, `_evolucio`, `_alertes`) carregades sota demanda:
-- **Inici (`?v=inici`):** 6 xifres clau amb comparació amb el període anterior, control ràpid d'1 clic, **alertes plegables** (`bn_admin_alertes`, amb resum de pastilles, filtres per gravetat/tipus/món, enunciat real de les preguntes i drecera `⚙ Ajusta`), nens nous (`bn_admin_altes`) i resum d'estrelles per origen (`bn_admin_fonts_dia`).
+- **Inici (`?v=inici`):** 6 xifres clau amb comparació amb el període anterior, **alertes plegables** (a dalt, abans del control ràpid d'1 clic) (`bn_admin_alertes`, amb resum de pastilles, filtres per gravetat/tipus/món, enunciat real de les preguntes, drecera `⚙ Ajusta` i 10 alertes per pàgina), nens nous (`bn_admin_altes`) i resum d'estrelles per origen (`bn_admin_fonts_dia`).
 - **Mons (`?v=mons`) i Fitxa del món (`?v=mons&id=<mon>`):** llista dels 8 mons amb interruptor directe, matriu de domini nen × tema (`bn_admin_domini`), preguntes més fallades amb el parany més triat (`bn_admin_fallades`), errors pendents (`bn_admin_rep_pendents`), dificultat real (`bn_admin_dificultat`), preguntes obertes al panell lateral i, a matemàtiques, **✏️ Taller de mates: on s'equivoquen** (`bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql`).
-- **Sessions (`?v=sessions`):** cronologia de sessions (detall al panell lateral), **Log complet per dia** filtrable per món, nen i data, **Activitat** (mapa de calor hora × dia, evolució diària i estrelles per origen) i **Registre** complet amb exportació CSV.
-- **Rànquing (`?v=ranquing`):** `Classificació` pública (`Total`, `Per món`, `Setmana` via `bn_ranking_mons`) amb interruptor `Visible` i bloc inferior d'amagats, `Reptes` (`Combos i repàs` i `Repàs, boss i missions` de `tMotivacio()`) i `Xat` (moderació en 5 columnes i silenciats).
+- **Activitat (`?v=sessions`):** `Sessions` (cronologia, amb el detall al panell lateral), **`Log per dia`** filtrable per món, nen i data (o en `Taula`, amb exportació CSV) i `Gràfics` (mapa de calor hora × dia, evolució diària i estrelles per origen).
+- **Rànquing (`?v=ranquing`):** `Classificació` pública (`Total`, `Per món`, `Setmana` via `bn_ranking_mons`) amb interruptor `Visible` i bloc inferior d'amagats, i `Reptes` (`Combos i repàs` i `Repàs, boss i missions` de `tMotivacio()`).
+- **Xat (`?v=xat`):** resum del dia, interruptor del xat, moderació dels missatges en 5 columnes i silenciats, amb dreceres al catàleg i als horaris de `Configuració`.
 
 ### 💚 Benestar
 
@@ -811,10 +821,10 @@ Els tres jobs amb navegador tenen Chromium en memòria cau. El ruleset «main pr
 | 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
 | 12 | `motor/prova-pin-intents-sql.js`, `prova-fotos-sql.js`, `prova-pares.js`, `prova-tast.js`, `prova-dificultat-sql.js`, `prova-admin-dificultat.js` | El bloqueig de 15 minuts al 5è intent de PIN (#33), el permís de fotos del quadern, la guia per a les famílies (`pares/`), el mode tast anònim (`?tast=1`) i la dificultat real de les preguntes al servidor i al tauler (#16) |
 | 12b | `motor/prova-admin-evolucio.js` | El gràfic d'evolució del tauler |
-| 12f | `motor/prova-admin-logs-sql.js` | La baixada incremental del registre: `bn_admin_logs(…, p_des_id)` torna només les files noves i substitueix la versió vella de 3 paràmetres |
-| 12e | `motor/prova-admin-ordre.js` | L'ordre del tauler: menú amb Activitat i Xat, alertes a dalt d'Inici, Rànquing sense Xat, adreça vella del xat i barra del mòbil amb 6 botons |
-| 12d | `motor/prova-admin-pagines.js` | La paginació del tauler: taules de 25 en 25 (o 50/100), cerca, ordenació i CSV amb totes les files, log per dia sense tall i alertes de 10 en 10 |
 | 12c | `motor/prova-admin-auto.js` | L'actualització del tauler sense pantallasso: comprovació silenciosa, avís «Mostra-les», repintat sense esquelets i banda de versió nova |
+| 12d | `motor/prova-admin-pagines.js` | La paginació del tauler: taules de 25 en 25 (o 50/100), cerca, ordenació i CSV amb totes les files, log per dia sense tall i alertes de 10 en 10 |
+| 12e | `motor/prova-admin-ordre.js` | L'ordre del tauler: menú amb Activitat i Xat, alertes a dalt d'Inici, Rànquing sense Xat, adreça vella del xat i barra del mòbil amb 6 botons |
+| 12f | `motor/prova-admin-logs-sql.js` | La baixada incremental del registre: `bn_admin_logs(…, p_des_id)` torna només les files noves i substitueix la versió vella de 3 paràmetres |
 | 13 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |
 | 14 | `motor/prova-visual.js` (un cop per món) | A 360, 390 i 430 px no hi ha scroll horitzontal i cap text d'un SVG surt del dibuix ni del seu requadre |
 
