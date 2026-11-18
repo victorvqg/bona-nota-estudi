@@ -685,7 +685,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
  .log-lin{display:flex;flex-wrap:wrap;gap:5px 8px;padding:8px 0}.log-lin .log-d{flex:1 1 100%}
  .pestanyes button{padding:8px 10px;font-size:13px}
  .calor{min-width:0;grid-template-columns:22px repeat(24,minmax(0,1fr));gap:2px}.calor .h3{visibility:hidden}
- .nav-inf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);border-top:1px solid var(--border);padding:4px 2px calc(4px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 10px rgba(15,23,42,.06)}
+ .nav-inf{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);border-top:1px solid var(--border);padding:4px 2px calc(4px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 10px rgba(15,23,42,.06)}
  .nav-inf button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 2px;border-radius:var(--r1);color:var(--muted);font-size:11px;font-weight:600;line-height:1.15;min-width:0;text-align:center}
  .nav-inf button .ic{width:18px;height:18px}
  .nav-inf button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -756,7 +756,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.56.0";
+const VERSIO_ADMIN="2.57.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -1081,8 +1081,9 @@ function avisVersioNova(v){const b=$("#versioBar");if(!b||VERSIO_MES_TARD===v)re
 window.bnAdminAvisVersio=avisVersioNova;
 
 // ====================== MENÚ, GESTOR D'ADREÇA WEB I CAPÇALERA ======================
-const MENU=[["inici","Inici","inici"],["nens","Nens","nens"],["mons","Mons","llibre"],["sessions","Sessions","sessions"],["ranquing","Rànquing","trofeu"]];
-const VISTES_OK=new Set(["inici","nens","mons","sessions","ranquing","config"]);
+// «sessions» es diu Activitat (fase 3 del pla de l'admin) però conserva l'id a l'adreça (?v=sessions) perquè els enllaços vells funcionin
+const MENU=[["inici","Inici","inici"],["nens","Nens","nens"],["mons","Mons","llibre"],["sessions","Activitat","sessions"],["ranquing","Rànquing","trofeu"],["xat","Xat","xat"]];
+const VISTES_OK=new Set(["inici","nens","mons","sessions","ranquing","xat","config"]);
 const PERIODES=[[1,"Avui","avui"],[7,"7 dies","7d"],[30,"30 dies","30d"],[365,"Curs","curs"]];
 const DIES_DE_P={avui:1,"7d":7,"30d":30,curs:365};
 const P_DE_DIES={1:"avui",7:"7d",30:"30d",365:"curs"};
@@ -1098,6 +1099,7 @@ function llegeixUrl(){
  const p=sp.get("p");if(p&&DIES_DE_P[p])DIES=DIES_DE_P[p];
  let v=(sp.get("v")||"").trim().toLowerCase(),id=(sp.get("id")||"").trim()||null,tab=(sp.get("tab")||"").trim().toLowerCase()||null;
  if(v==="fitxa"&&id){v="nens"}
+ if(v==="ranquing"&&tab==="xat"){v="xat";tab=null} // adreces velles: el xat era una pestanya de Rànquing
  if(!VISTES_OK.has(v))v="inici";
  if(v==="mons"&&id)id=normMonId(id);
  VISTA=v;ELEM=id;FITXA=v==="nens"&&id?id:null;
@@ -1211,7 +1213,7 @@ const LF=()=>LOGS.filter(l=>(!TF.assig||l.assig===TF.assig)&&(!TF.nom||clauNen(l
 async function pinta(){
  GRAF.forEach(g=>g.destroy());GRAF=[];temaGrafics();
  marcaMenu();
- const titols={inici:"Inici",nens:ELEM?"Fitxa del nen":"Nens",mons:ELEM?"Fitxa del món":"Mons",sessions:"Sessions",ranquing:"Rànquing",config:"Configuració"};
+ const titols={inici:"Inici",nens:ELEM?"Fitxa del nen":"Nens",mons:ELEM?"Fitxa del món":"Mons",sessions:"Activitat",ranquing:"Rànquing",xat:"Xat",config:"Configuració"};
  $("#titol").textContent=titols[VISTA]||"Inici";
  const c=$("#contingut");
  if(VISTA==="inici")return vistaInici(c);
@@ -1222,6 +1224,7 @@ async function pinta(){
  if(VISTA==="mons")return vistaMonsSeccio(c);
  if(VISTA==="sessions")return vistaSessionsSeccio(c);
  if(VISTA==="ranquing")return vistaRanquingSeccio(c);
+ if(VISTA==="xat")return vistaXatModeracio(c);
  return vistaInici(c);
 }
 
@@ -2412,8 +2415,7 @@ function vistaSessions(c){const ls=LF(),g={};ls.forEach(l=>(g[l.sessio]=g[l.sess
   {k:"evs",t:"Què ha fet",ord:false,cls:"nw",q:r=>r.evs.join(" ")+" "+r.a.map(l=>JSON.stringify(l.detall)).join(" "),h:r=>r.evs.filter(e=>e!=="temps"&&e!=="entra").map(xipEv).join(" ")||`<span class="muted">—</span>`}
  ];
  const prev=TAULES.tSes;
- c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="sesCard"><div class="eines-t"><span class="muted">${TF.dia?`Filtrat pel dia ${diaLl(TF.dia)}`:`Agrupat per sessió · clica una fila per veure'n el detall`}</span><span class="esp"></span><button class="btn sec petit" type="button" id="btVeureLog">${ic("log")}Log complet per dia ${ic("endavant")}</button></div>${S.length?taula("tSes",cols,S,{k:prev?prev.k:"ini",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Sessions",csvNom:"bona-nota-sessions",fila:r=>` class="clic" data-ses="${esc(r.id)}" tabindex="0"`}):buit("sessions","Cap sessió amb aquests filtres.")}</div></div>`;
- const bLog=$("#btVeureLog");if(bLog)bLog.onclick=()=>navega("sessions",{tab:"registre",scroll:false});
+ c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="sesCard"><div class="eines-t"><span class="muted">${TF.dia?`Filtrat pel dia ${diaLl(TF.dia)}`:`Agrupat per sessió · clica una fila per veure'n el detall`}</span><span class="esp"></span></div>${S.length?taula("tSes",cols,S,{k:prev?prev.k:"ini",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Sessions",csvNom:"bona-nota-sessions",fila:r=>` class="clic" data-ses="${esc(r.id)}" tabindex="0"`}):buit("sessions","Cap sessió amb aquests filtres.")}</div></div>`;
  const obreSes=id=>{const s=S.find(x=>x.id===id);if(!s)return;
   obrePanell({titol:`Sessió de ${s.nom}`,cos:`<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px">${pillMon(s.assig)}<span class="xip">${dataC(s.ini)} → ${hora(s.fi)}</span><span class="xip">${fmtT(s.durada)} · ${pl(s.n,"acció","accions")}</span></div>
    <div style="margin-bottom:12px"><button class="btn sec petit" type="button" data-obre-nen="${esc(s.k)}">Obre la fitxa de ${esc(s.nom)} ${ic("endavant")}</button></div>
@@ -2727,8 +2729,8 @@ async function vistaInici(c){
  TF.assig="";TF.nom="";
  c.innerHTML=`<div class="pila"><div id="iniciKpis">${esqKpis(6)}</div>
   <div class="graella">
-   ${card("control","c-12","ajust","Control ràpid","Obre o tanca el xat i cadascun dels mons en un clic. Els horaris automàtics i els crèdits són a Configuració.",`<div id="tCtrl" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
    ${cartaAlertesInici()}
+   ${card("control","c-12","ajust","Control ràpid","Obre o tanca el xat i cadascun dels mons en un clic. Els horaris automàtics i els crèdits són a Configuració.",`<div id="tCtrl" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
    ${cartaAltes("c-6")}
    ${card("fontsDia","c-6","estrella","Estrelles per origen","Repartiment de les estrelles noves guanyades durant el període seleccionat.",`<div id="fontsDiaCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   </div></div>`;
@@ -3064,7 +3066,7 @@ async function pintaMonDomini(monId,tok){
   ${card("domini","c-12","diana","Domini per tema","Quants temes té aprovats cada nen i la millor nota de test a cada tema. Clica un nen per obrir-ne la fitxa.",`<div id="tDom" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   ${card("fallades","c-12","creu","Preguntes més fallades","Top 20 d'aquest món, amb l'opció equivocada que més trien (parany).",`<div id="tFal" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   ${card("pendents","c-12","reinicia","Errors pendents de repàs","Temes d'aquest món on els nens amb PIN acumulen més errors per repassar al núvol.",`<div id="tRep" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
-  ${card("monDifCard","c-12","llamp","Dificultat real de les preguntes","Encert real de les preguntes d'aquest món en tests i exàmens dels últims 365 dies.",`<div id="tMonDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  ${card("monDifCard","c-12","llamp","Dificultat real d'aquest món","Encert real de les preguntes d'aquest món en tests i exàmens dels últims 365 dies.",`<div id="tMonDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
  </div>`;
  Promise.all([rpcT("bn_admin_domini",{p_assig:monId,p_nom:null}),preguntes()]).then(([dom])=>{
   if(tok!==TOK||ELEM!==monId||!$("#tDom"))return;$("#tDom").removeAttribute("aria-busy");tDomini(Array.isArray(dom)?dom:[],"tDom");
@@ -3121,7 +3123,7 @@ function pintaMonTaller(monId){
 }
 async function vistaSessionsSeccio(c){
  const tIn=TAB==="log"?"registre":TAB;
- const ll=[["sessions","Sessions"],["registre","Log complet per dia"],["activitat","Activitat"]],tab=ll.some(x=>x[0]===tIn)?tIn:"sessions";
+ const ll=[["sessions","Sessions"],["registre","Log per dia"],["activitat","Gràfics"]],tab=ll.some(x=>x[0]===tIn)?tIn:"sessions";
  TAB=tab;escriuUrl(false);
  const renderTab=async()=>{
   const tk=++TOK;
@@ -3131,7 +3133,7 @@ async function vistaSessionsSeccio(c){
   if(tab==="sessions"||tab==="registre"){try{await asseguraLogs()}catch(e){c.innerHTML=avisErr(`No s'han pogut carregar els registres (${e}).`);return}}
   if(tk!==TOK||VISTA!=="sessions")return;
   const fOpts=tab==="registre"?{assig:true,nen:true,dia:true,ev:true,cerca:true}:{assig:true,nen:true,dia:true};
-  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Sessions")+(tab!=="activitat"?`<div id="sesFiltres">${barraFiltresLocals(fOpts)}</div>`:"")+`<div id="sesCos">${tab==="activitat"?esqTaula():""}</div>`;
+  c.innerHTML=htmlPestanyes(ll,tab,"Seccions d'Activitat")+(tab!=="activitat"?`<div id="sesFiltres">${barraFiltresLocals(fOpts)}</div>`:"")+`<div id="sesCos">${tab==="activitat"?esqTaula():""}</div>`;
   lligaPestanyes(c,ll);
   const cos=$("#sesCos");if(!cos)return;
   if(tab!=="activitat")lligaFiltresLocals(renderTab,()=>{
@@ -3184,7 +3186,7 @@ async function amagatsRanquingDe(rk){
  return [...m.values()].sort((a,b)=>a.nom.localeCompare(b.nom,"ca"));
 }
 async function vistaRanquingSeccio(c){
- const ll=[["classificacio","Classificació"],["reptes","Reptes"],["xat","Xat"]],tab=ll.some(x=>x[0]===TAB)?TAB:"classificacio";
+ const ll=[["classificacio","Classificació"],["reptes","Reptes"]],tab=ll.some(x=>x[0]===TAB)?TAB:"classificacio";
  TAB=tab;if(tab!=="reptes"){TF.assig="";TF.nom=""}escriuUrl(false);
  const renderTab=async()=>{
   const tk=++TOK;
@@ -3202,8 +3204,6 @@ async function vistaRanquingSeccio(c){
     ${card("motivacio","c-12","trofeu","Repàs i boss","Errors apresos al repàs, intents de boss i estrelles de missions.",`<div id="tMot"></div>`)}
    </div>`;
    lligaFiltresLocals(renderTab);tCombos();tMotivacio();
-  }else{
-   await vistaXatModeracio(cos);
   }
  };
  await renderTab();
@@ -4274,9 +4274,9 @@ async function vistaXatModeracio(c){
  const tok=++XTOK;
  c.innerHTML=`${esqKpis(4)}<div class="graella" style="margin-top:14px"><div class="esq esq-g c-8" style="height:260px"></div><div class="esq esq-g c-4" style="height:260px"></div></div>`;
  try{const [resum,msgs,sil,cfg,cat]=await Promise.all([rpcX("bn_admin_xat_resum"),rpcX("bn_admin_xat_msgs",{p_dies:DIES}),rpcX("bn_admin_xat_silencis"),rpcX("bn_admin_xat_config"),rpcX("bn_admin_xat_cataleg"),ctrlDe().catch(()=>null)]);
-  if(tok!==XTOK||VISTA!=="ranquing"||TAB!=="xat")return;
+  if(tok!==XTOK||VISTA!=="xat")return;
   X=Object.assign(X||{mons:[]},{resum:resum&&typeof resum==="object"?resum:{},msgs:Array.isArray(msgs)?msgs:[],sil:Array.isArray(sil)?sil:[],cfg:Object.assign({},XCFG0,cfg&&typeof cfg==="object"?cfg:{}),cat:xCat(cat)})}
- catch(e){if(tok!==XTOK||VISTA!=="ranquing"||TAB!=="xat")return;
+ catch(e){if(tok!==XTOK||VISTA!=="xat")return;
   c.innerHTML=e==="falta"?avisSQL("supabase/bn_xat.sql","Cal executar supabase/bn_xat.sql: el xat de la colla encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar les dades del xat (${e}).`);return}
  pintaXatModeracio(c);
 }

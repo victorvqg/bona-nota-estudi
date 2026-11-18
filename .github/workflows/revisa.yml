@@ -134,6 +134,8 @@ jobs:
         run: node motor/prova-admin-auto.js
       - name: Prova de la paginació del tauler
         run: node motor/prova-admin-pagines.js
+      - name: Prova de l'ordre del menú del tauler
+        run: node motor/prova-admin-ordre.js
 
   mons:
     name: Món (${{ matrix.mon }})

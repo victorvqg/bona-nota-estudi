@@ -123,10 +123,9 @@ function respon(st, f, cos) {
   const errors = []; p.on("pageerror", e => errors.push(e.message));
   await p.goto(BASE + url); await p.waitForSelector("#shell:not([hidden])");
   const vesXat = async () => {
-   if (await p.isVisible("#navInf")) await p.click('#navInf [data-v="ranquing"]');
-   else await p.click('#nav [data-v="ranquing"]');
-   await p.waitForSelector('[data-vtab="xat"]');
-   await p.click('[data-vtab="xat"]');
+   // des de la fase 3 del pla de l'admin, el xat és una secció pròpia del menú (abans, Rànquing → Xat)
+   if (await p.isVisible("#navInf")) await p.click('#navInf [data-v="xat"]');
+   else await p.click('#nav [data-v="xat"]');
   };
   if (o.obreXat !== false) await vesXat();
   const crida = async (f, n) => { for (let i = 0; i < 60; i++) { const c = crides.filter(x => x.f === f); if (c.length >= (n || 1)) { await p.waitForTimeout(120); return c[c.length - 1] } await p.waitForTimeout(50) } return null };
@@ -135,11 +134,11 @@ function respon(st, f, cos) {
   return { p, ctx, st, crides, errors, crida, txt, errG, vesXat };
  }
 
- console.log("1) ?demo: Rànquing → Xat i Configuració → Catàleg amb dades de mostra i sense cap crida");
+ console.log("1) ?demo: Xat (secció pròpia) i Configuració → Catàleg amb dades de mostra i sense cap crida");
  { const { p, ctx, crides, errors, txt, errG } = await obre("/admin/?demo");
   await p.waitForSelector("#xMsgs .xm");
-  ok((await txt("#titol")) === "Rànquing", "títol «Rànquing» amb la sub-pestanya Xat");
-  ok((await p.getAttribute('#nav [data-v="ranquing"]', "aria-current")) === "page" && (await p.getAttribute('[data-vtab="xat"]', "aria-selected")) === "true", "entrada «Rànquing» marcada i sub-pestanya «Xat» seleccionada");
+  ok((await txt("#titol")) === "Xat" && p.url().includes("v=xat"), "títol «Xat» i adreça ?v=xat");
+  ok((await p.getAttribute('#nav [data-v="xat"]', "aria-current")) === "page" && (await p.$('[data-vtab="xat"]')) === null, "entrada «Xat» del menú marcada, sense pestanya dins de Rànquing");
   ok((await txt("#contingut .avis")).includes("Mode demo"), "avís de mode demo");
   ok((await p.$$("#xRes .kpi")).length === 4, "resum del dia amb 4 KPIs compactes");
   ok((await p.$$("#tXMsgs thead th")).length === 5, "taula de missatges del xat compactada a 5 columnes (Hora, Nen, Text, Estat, Silenciar)");
@@ -156,13 +155,14 @@ function respon(st, f, cos) {
   ok(activesMod === 0, "totes les accions de moderació desactivades en demo");
   ok((await p.getAttribute("[data-xesb]", "title")) === "No disponible en demo", "«No disponible en demo» als botons");
   // Rànquing → Classificació en demo: 4 KPIs, selector Total/Per món/Setmana, 5 columnes i bloc d'amagats (Ona)
-  await p.click('[data-vtab="classificacio"]');
+  await p.click((await p.isVisible("#navInf")) ? '#navInf [data-v="ranquing"]' : '#nav [data-v="ranquing"]');
   await p.waitForSelector("#tRk tbody tr");
+  ok((await p.$$eval("main .pestanyes [data-vtab]", b => b.map(x => x.dataset.vtab).join(","))) === "classificacio,reptes", "Rànquing només té Classificació i Reptes");
   ok((await p.$$("#rkKpis .kpi")).length === 4 && (await p.$$("#rkKpis .kpi-s")).length === 0 && (await p.$$("#tRk thead th")).length === 5,
    "Rànquing → Classificació té 4 KPIs sense subtítol i taula de 5 columnes");
   ok((await txt("#rkAmagats")).includes("Ona") && !(await txt("#tRk")).includes("Ona"),
    "el bloc inferior d'amagats mostra l'Ona i la classificació pública l'exclou");
-  await p.click('[data-vtab="xat"]'); await p.waitForSelector('[data-go-cfg="cataleg"]');
+  await p.click('#nav [data-v="xat"]'); await p.waitForSelector('[data-go-cfg="cataleg"]');
   // enllaç ràpid cap a Configuració → Catàleg
   await p.click('[data-go-cfg="cataleg"]');
   await p.waitForSelector("#xkTaula tbody tr");
@@ -184,7 +184,7 @@ function respon(st, f, cos) {
   ok(crides.length === 0, "cap crida a Supabase en demo (" + crides.map(c => c.f).join(", ") + ")");
   ok(errors.length === 0 && !(await errG()), "cap error de JavaScript" + (errors[0] ? ": " + errors[0] : "")); await ctx.close() }
 
- console.log("2) amb credencials: moderació (Rànquing → Xat) + Horaris i Catàleg (Configuració)");
+ console.log("2) amb credencials: moderació (Xat) + Horaris i Catàleg (Configuració)");
  { const { p, ctx, st, crides, errors, crida, txt, errG, vesXat } = await obre("/admin/", { cred: CRED });
   await p.waitForSelector("#xMsgs .xm");
   const fs5 = ["bn_admin_xat_resum", "bn_admin_xat_msgs", "bn_admin_xat_silencis", "bn_admin_xat_config", "bn_admin_xat_cataleg"];
@@ -291,7 +291,7 @@ function respon(st, f, cos) {
   ok((await txt("#xRes")).includes("Xat tancat") && (await txt('.xm[data-xid="10"] .xm-t')).includes("Jana"), "Rànquing → Xat mostra «Xat tancat»");
 
   // Rànquing → Classificació amb credencials: selector Total / Per món / Setmana + amagar i tornar a mostrar en 1 clic
-  await p.click('[data-vtab="classificacio"]');
+  await p.click((await p.isVisible("#navInf")) ? '#navInf [data-v="ranquing"]' : '#nav [data-v="ranquing"]');
   await p.waitForSelector("#tRk tbody tr");
   const rkKpisTxt = await txt("#rkKpis");
   ok(rkKpisTxt.includes("3") && rkKpisTxt.includes("1") && rkKpisTxt.includes("66") && rkKpisTxt.includes("6"),
@@ -346,7 +346,7 @@ function respon(st, f, cos) {
   const ample = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
   const fora = await p.$$eval("#xMsgs .xm-a button, #xsBt", bs => bs.filter(b => { const r = b.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1 }).length);
   ok(ample <= wPx && fora === 0, `${wPx} px · Rànquing → Xat: res no surt per la dreta (ample ${ample}) i botons sencers`);
-  await p.click('[data-vtab="classificacio"]'); await p.waitForSelector("#tRk tbody tr");
+  await p.click((await p.isVisible("#navInf")) ? '#navInf [data-v="ranquing"]' : '#nav [data-v="ranquing"]'); await p.waitForSelector("#tRk tbody tr");
   const ampleRk = await p.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
   ok(ampleRk <= wPx, `${wPx} px · Rànquing → Classificació: res no surt per la dreta (ample ${ampleRk})`);
   await p.click("#btConfig"); await p.waitForSelector("#xcDesa");

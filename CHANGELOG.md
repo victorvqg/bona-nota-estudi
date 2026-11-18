@@ -5,6 +5,18 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.57.0 · 2026-11-18
+
+### Canviat
+- **Tauler d'admin més ordenat** (fase 3 del pla `docs/superpowers/specs/2026-11-18-admin-ordre-paginacio-pla-mestre.md`):
+  - El menú passa a ser Inici · Nens · Mons · **Activitat** · Rànquing · **Xat**. «Sessions» es diu Activitat (pestanyes Sessions · Log per dia · Gràfics) i conserva l'adreça `?v=sessions`.
+  - **El xat té secció pròpia** (`?v=xat`): la moderació és a un clic. Rànquing es queda amb Classificació i Reptes, i l'adreça vella `?v=ranquing&tab=xat` porta al Xat.
+  - A Inici, les **Alertes** surten a dalt, abans del Control ràpid.
+  - Fora el botó repetit «Log complet per dia» de la pestanya Sessions.
+  - A la fitxa del món, la targeta es diu «Dificultat real d'aquest món».
+  - La barra inferior del mòbil té 6 botons.
+- Prova nova `motor/prova-admin-ordre.js`, i `motor/prova-admin-xat.js` va a la secció Xat.
+
 ## 2.56.0 · 2026-11-18
 
 ### Afegit
