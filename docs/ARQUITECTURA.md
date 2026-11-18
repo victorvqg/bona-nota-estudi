@@ -40,10 +40,16 @@ Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el deta
 - `mapa-comarques.js`: generador del mapa SVG de comarques.
 - `so-mobil.js`: desbloqueig i manteniment d'àudio WebAudio a iOS/mòbil fins i tot en mode silenci.
 - `actualitza.js`: actualització automàtica en obrir la pàgina (portada i mons). Compara la versió de la pàgina amb `versio.json` (generat per `tot.py`) i, si és una còpia vella, esborra la memòria cau `bn-…` i recarrega un sol cop; mai toca el progrés.
+- `vistes-mates.js`: vistes amb marques del Taller (`MXV`, `mxVistaTema`), per a mates i el clima.
+- `clima.js`: generador `climograma` del Taller (món del clima).
+- `marca-llengua.js`: joc «Pinta les paraules» i frases pintades als esquemes (Català i Castellano).
+- `ui-es.js`: traducció al castellà dels textos del motor (món de Castellano).
 - `mons-prova.js`: no va a cap pàgina. Les proves del tauler i del xat hi llegeixen `mons.json` i el catàleg del xat, de manera que no depenen del nombre de mons.
 
 ## Proves (`motor/`)
-- `motor/prova-generadors.js`: valida 10.800 exercicis generats del Taller de mates (càlculs, distractors i Troba l'error) sense navegador.
+- `motor/prova-docs.js`: cada eina de `motor/eines/` surt aquí i al README, cada prova de `motor/` surt a la taula de proves del README, i el CHANGELOG només fa servir 4 apartats.
+- `motor/prova-veu.js`, `motor/prova-vistes-mates.js` i `motor/prova-ui-es.js`: la veu bilingüe, les vistes de mates i la traducció al castellà, sense navegador.
+- `motor/prova-generadors.js`: valida 11.700 exercicis generats del Taller de mates (també els climogrames de `clima.js`) (càlculs, distractors i Troba l'error) sense navegador.
 - `motor/prova-regles.js`: comprova que `motor/regles.json` i `admin/regles.json` coincideixen amb les constants de la plantilla i amb les còpies de `index.html`, `perfil/index.html`, `admin/index.html`, `supabase/bn_xat.sql` i `supabase/bn_admin_tauler.sql`.
 - `motor/prova.js`: prova E2E amb Playwright en mode `ESTRICTE=1` per a cada món.
 - `motor/prova-visual.js`: a 360/390/430 px, sense scroll horitzontal i cap text d'SVG fora del dibuix ni del seu requadre (portada, primer tema, jocs de figura i d'error i `?demoBoss=1`). Captures a `motor/.captures/<id>/`, fora de git.
