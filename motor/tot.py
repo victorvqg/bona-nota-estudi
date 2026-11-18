@@ -178,7 +178,13 @@ t, n = re.subn(r'const VERSIO_ADMIN="[^"]*";', f'const VERSIO_ADMIN="{trobat.gro
 if n != 1:
     sys.exit("ERROR: admin/index.html ha de portar exactament un const VERSIO_ADMIN")
 adm.write_text(t)
-print(f"✓ versió {trobat.group(1)} al peu de la portada i dels mons, i al tauler")
+# la capçalera del README també surt d'aquí: el CHANGELOG és l'única font del número (abans s'havia de canviar a mà i s'oblidava;
+# pla docs/superpowers/specs/2026-11-18-readme-changelog-motor-pla-mestre.md). Si algú no executa tot.py, el check «generat» de la CI ho atrapa.
+t, n = re.subn(r"\*\*Versió:\*\* \d+\.\d+\.\d+", f"**Versió:** {trobat.group(1)}", (arrel / "README.md").read_text())
+if n != 1:
+    sys.exit("ERROR: README.md ha de portar exactament un «**Versió:** X.Y.Z» a la capçalera")
+(arrel / "README.md").write_text(t)
+print(f"✓ versió {trobat.group(1)} al peu de la portada i dels mons, al tauler i a la capçalera del README")
 
 # 4) versió publicada: una empremta del contingut (portada, sprites i mons, calculada amb el buit «__BN_VERSIO__» encara
 #    sense omplir, perquè no depengui d'ella mateixa). Va a: cada pàgina (actualitza.js la compara amb versio.json en obrir-la

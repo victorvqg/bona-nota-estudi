@@ -1,9 +1,14 @@
 # Bona Nota · posa l'etiqueta de versió (vX.Y.Z) quan un canvi arriba a main.
-# La versió és la de la capçalera del README («**Versió:** X.Y.Z»). Si l'etiqueta ja existeix (canvis que no pugen versió), no fa res.
+# La versió és la primera entrada del CHANGELOG.md («## X.Y.Z», la mateixa que fa servir motor/tot.py).
+# Recorre l'historial de main (primer pare) i, per a cada versió des de la 2.9.0, posa l'etiqueta al primer commit on el
+# CHANGELOG.md la té a dalt de tot, si encara no existeix. Així també recupera etiquetes que s'haguessin perdut (com les de la
+# 2.47.0 a la 2.58.0, quan l'Action llegia la capçalera del README). Les anteriors a la 2.9.0 es van numerar després de publicar-les
+# i no s'etiqueten. Si no hi ha res de nou (canvis que no pugen versió), no fa res.
 name: Etiqueta la versió
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,14 +21,27 @@ jobs:
   etiqueta:
     name: Etiqueta vX.Y.Z
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Crea i puja l'etiqueta si no existeix
+        with:
+          fetch-depth: 0
+      - name: Crea i puja les etiquetes que falten
         run: |
-          v=$(sed -n 's/.*\*\*Versió:\*\* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' README.md | head -1)
-          if [ -z "$v" ]; then echo "::error::No trobo «**Versió:** X.Y.Z» al README.md"; exit 1; fi
-          if [ -n "$(git ls-remote --tags origin "refs/tags/v$v")" ]; then echo "v$v ja existeix: res a fer"; exit 0; fi
-          git tag "v$v" "$GITHUB_SHA"
-          git push origin "v$v"
-          echo "Etiqueta v$v creada a $GITHUB_SHA"
+          v=$(sed -n 's/^## \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' CHANGELOG.md | head -1)
+          if [ -z "$v" ]; then echo "::error::No trobo cap entrada «## X.Y.Z» al CHANGELOG.md"; exit 1; fi
+          git fetch --tags --quiet origin
+          for c in $(git rev-list --first-parent --reverse HEAD); do
+            w=$(git show "$c:CHANGELOG.md" 2>/dev/null | sed -n 's/^## \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+            [ -n "$w" ] && echo "$w $c"
+          done | awk '!vist[$1]++' > "$RUNNER_TEMP/versions.txt"
+          noves=0
+          while read -r w c; do
+            [ "$(printf '%s\n' 2.9.0 "$w" | sort -V | head -1)" = "2.9.0" ] || continue
+            git rev-parse -q --verify "refs/tags/v$w" >/dev/null && continue
+            git tag "v$w" "$c"
+            git push origin "v$w"
+            echo "Etiqueta v$w creada a $c"
+            noves=$((noves+1))
+          done < "$RUNNER_TEMP/versions.txt"
+          echo "Versió actual: v$v · etiquetes noves: $noves"
