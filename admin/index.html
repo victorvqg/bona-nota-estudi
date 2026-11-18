@@ -208,6 +208,12 @@ tr.det td{background:var(--card2)}
 .avis p{margin:0 0 8px}
 .avis.err{border-color:var(--bad);background:var(--bad-bg)}.avis.err>.ic{color:var(--bad)}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:var(--card);border:1px solid var(--border);padding:2px 6px;border-radius:6px}
+.tb-pag{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 2px 0;font-size:12.5px;color:var(--muted)}
+.tb-pag:empty{display:none}
+.tb-pag-b{display:inline-flex;align-items:center;gap:8px}.tb-pag-n{font-weight:700;color:var(--text);white-space:nowrap}
+.tb-pag-m{display:inline-flex;align-items:center;gap:6px;margin-left:auto}.tb-pag-m select{padding:3px 6px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--text);font:inherit}
+@media (max-width:767px){.tb-pag-b .btn span{display:none}.tb-pag-m{margin-left:0}}
+.log-mes{display:block;margin:6px auto 2px}
 .novetats{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--info);background:var(--info-bg);color:var(--info);border-radius:999px;padding:4px 11px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
 .novetats i{width:8px;height:8px;border-radius:50%;background:var(--info);flex:none}
 .novetats:hover{filter:brightness(.97)}
@@ -750,7 +756,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.55.0";
+const VERSIO_ADMIN="2.56.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -1108,7 +1114,7 @@ function escriuUrl(push){
  const qs=sp.toString(),url=location.pathname+(qs?"?"+qs:"");
  if(url!==location.pathname+location.search){try{history[push?"pushState":"replaceState"](null,"",url)}catch(e){}}
 }
-function netejaTF(){TF.assig="";TF.nom="";TF.dia="";TF.ev="";TF.q="";LOG_TOT=false}
+function netejaTF(){TF.assig="";TF.nom="";TF.dia="";TF.ev="";TF.q="";pagIni()}
 function navega(v,o={}){
  if(!VISTES_OK.has(v))v="inici";
  const canviSeccio=v!==VISTA;
@@ -1138,7 +1144,7 @@ function muntaShell(){
  $("#btConfig").onclick=()=>{navega("config");$("#contingut").focus({preventScroll:true})};
  $("#periode").onclick=e=>{const b=e.target.closest("button");if(!b||+b.dataset.d===DIES)return;DIES=+b.dataset.d;
   $$("#periode button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.d===DIES));
-  ALTES=null;BEN=null;FDIA=null;FAPR=null;LOGS_DIES=null;LOGS_PROM=null;ACT=new Date();escriuUrl(true);repintaSuau()};
+  ALTES=null;BEN=null;FDIA=null;FAPR=null;LOGS_DIES=null;LOGS_PROM=null;pagIni();ACT=new Date();escriuUrl(true);repintaSuau()};
  $("#refresca").onclick=async()=>{if(!(await refrescaAuto(true)))carrega()};
  $("#novetats").onclick=()=>refrescaAuto(true);
  $("#tema").onclick=()=>{TEMA=TEMA==="fosc"?"clar":"fosc";try{localStorage.setItem("bn_admin_tema",TEMA)}catch(e){}aplicaTema();pinta()};
@@ -1184,12 +1190,12 @@ function barraFiltresLocals({assig=true,nen=true,dia=false,ev=false,cerca=false}
  return `<div class="filtres-loc" role="group" aria-label="Filtres locals">${assig?`<label class="sr" for="fAssig">Món</label><select id="fAssig"><option value="">Tots els mons</option>${as.map(a=>`<option value="${esc(a)}" ${TF.assig===a?"selected":""}>${esc(nomAssig(a))}</option>`).join("")}</select>`:""}${nen?`<label class="sr" for="fNen">Nen</label><select id="fNen"><option value="">Tots els nens</option>${noms.map(n=>`<option ${TF.nom.toLowerCase()===n.toLowerCase()?"selected":""}>${esc(n)}</option>`).join("")}</select>`:""}${diaH}${evH}${qH}${act?`<button class="btn sec petit" type="button" id="fNeteja">Neteja filtres</button>`:""}</div>`}
 function lligaFiltresLocals(rerender,renderCos){
  const fa=$("#fAssig"),fn=$("#fNen"),fd=$("#fDia"),fc=$("#fDiaCal"),fe=$("#fEvent"),fq=$("#fLogQ"),bt=$("#fNeteja");
- if(fa)fa.onchange=e=>{TF.assig=e.target.value;LOG_TOT=false;FDIA=null;REPP=null;DIFR=null;rerender()};
- if(fn)fn.onchange=e=>{TF.nom=e.target.value;LOG_TOT=false;BEN=null;FDIA=null;rerender()};
- if(fd)fd.onchange=e=>{TF.dia=e.target.value;LOG_TOT=false;rerender()};
- if(fc)fc.onchange=e=>{TF.dia=e.target.value;LOG_TOT=false;rerender()};
- if(fe)fe.onchange=e=>{TF.ev=e.target.value;LOG_TOT=false;rerender()};
- if(fq)fq.oninput=e=>{TF.q=e.target.value;LOG_TOT=false;if(renderCos)renderCos();else rerender()};
+ if(fa)fa.onchange=e=>{TF.assig=e.target.value;pagIni();FDIA=null;REPP=null;DIFR=null;rerender()};
+ if(fn)fn.onchange=e=>{TF.nom=e.target.value;pagIni();BEN=null;FDIA=null;rerender()};
+ if(fd)fd.onchange=e=>{TF.dia=e.target.value;pagIni();rerender()};
+ if(fc)fc.onchange=e=>{TF.dia=e.target.value;pagIni();rerender()};
+ if(fe)fe.onchange=e=>{TF.ev=e.target.value;pagIni();rerender()};
+ if(fq)fq.oninput=e=>{TF.q=e.target.value;pagIni();if(renderCos)renderCos();else rerender()};
  if(bt)bt.onclick=()=>{netejaTF();BEN=null;FDIA=null;REPP=null;DIFR=null;rerender()};
 }
 function htmlPestanyes(llista,actual,label="Apartats"){
@@ -1272,10 +1278,12 @@ const TAULES={};
 const netTxt=s=>String(s??"").replace(/<[^>]+>/g," ").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\s+/g," ").trim();
 function taula(id,cols,rows,o={}){
  const prev=TAULES[id],cs=(cols||[]).slice(0,8);
- TAULES[id]={cols:cs,rows:rows||[],k:o.k||(cs.find(c=>c.ord!==false)||{}).k,desc:o.desc!==false,q:prev&&o.manteQ?prev.q:"",fila:o.fila,etiqueta:o.etiqueta||"Taula",alta:!!o.alta,eines:o.eines!==false,csvNom:o.csvNom||id};
+ // la pàgina es manté en repintar les taules que conserven la cerca (manteQ: sessions, mons, log…); les altres tornen a la 1a
+ if(!(prev&&o.manteQ))TPAG[id]=0;
+ TAULES[id]={cols:cs,rows:rows||[],k:o.k||(cs.find(c=>c.ord!==false)||{}).k,desc:o.desc!==false,q:prev&&o.manteQ?prev.q:"",fila:o.fila,etiqueta:o.etiqueta||"Taula",alta:!!o.alta,eines:o.eines!==false,csvNom:o.csvNom||id,mida:o.mida||null};
  const T=TAULES[id],rs=taulaFiles(T);
  const bar=T.eines?`<div class="tb-bar"><label class="cerca">${ic("cerca")}<span class="sr">Cerca a ${esc(T.etiqueta)}</span><input type="search" class="tb-q" data-tq="${esc(id)}" placeholder="Filtra…" value="${esc(T.q)}"></label><span class="tb-meta"><span class="tb-cnt">${pl(rs.length,"fila","files")}</span><button class="btn sec petit" type="button" data-tcsv="${esc(id)}">${ic("baixar")}CSV</button></span></div>`:"";
- return `<div class="tb-bloc" id="${esc(id)}" data-taula="${esc(id)}">${bar}<div class="taula-w${T.alta?" alta":""}" role="region" aria-label="${esc(T.etiqueta)}" tabindex="0">${taulaHTML(id,rs)}</div></div>`;
+ return `<div class="tb-bloc" id="${esc(id)}" data-taula="${esc(id)}">${bar}<div class="taula-w${T.alta?" alta":""}" role="region" aria-label="${esc(T.etiqueta)}" tabindex="0">${taulaHTML(id,taulaPagina(id,rs))}</div><div class="tb-pag" data-tpag="${esc(id)}">${pagHTML(id,rs.length)}</div></div>`;
 }
 function taulaTextFila(T,r){return T.cols.map(c=>c.q?c.q(r):c.h?netTxt(c.h(r)):String(r[c.k]??"")).join(" ").toLowerCase()}
 function taulaFiles(T){
@@ -1290,19 +1298,35 @@ function taulaHTML(id,rs0){const T=TAULES[id],rs=rs0||taulaFiles(T);
  return `<table><thead><tr>${T.cols.map(x=>x.ord===false?`<th scope="col" class="${x.num?"num":""}">${x.t}</th>`
   :`<th scope="col" class="${x.num?"num":""}" aria-sort="${x.k===T.k?(T.desc?"descending":"ascending"):"none"}"><button type="button" class="ord" data-k="${x.k}">${x.t}${ic(x.k===T.k?(T.desc?"avall":"amunt"):"ordena")}</button></th>`).join("")}</tr></thead>
   <tbody>${rs.map(r=>`<tr${T.fila?T.fila(r):""}>${T.cols.map(x=>`<td class="${x.num?"num":""}${x.cls?" "+x.cls:""}">${x.h?x.h(r):esc(r[x.k]??"")}</td>`).join("")}</tr>`).join("")}</tbody></table>`}
-function refrescaTaula(id){const bl=document.getElementById(id),T=TAULES[id];if(!bl||!T)return;const rs=taulaFiles(T),w=bl.querySelector(".taula-w")||bl,cnt=bl.querySelector(".tb-cnt");
- w.innerHTML=taulaHTML(id,rs);if(cnt)cnt.textContent=pl(rs.length,"fila","files")}
+function refrescaTaula(id,{pag0=false}={}){const bl=document.getElementById(id),T=TAULES[id];if(!bl||!T)return;if(pag0)TPAG[id]=0;const rs=taulaFiles(T),w=bl.querySelector(".taula-w")||bl,cnt=bl.querySelector(".tb-cnt"),pg=bl.querySelector(".tb-pag");
+ w.innerHTML=taulaHTML(id,taulaPagina(id,rs));if(cnt)cnt.textContent=pl(rs.length,"fila","files");if(pg)pg.innerHTML=pagHTML(id,rs.length)}
+// ---- Paginació de totes les taules (fase 2 del pla de l'admin): 25 files per pàgina (o les de T.mida), selector 25/50/100 desat al navegador.
+// La cerca, l'ordenació i el CSV treballen amb TOTES les files; la pàgina de cada taula es recorda (TPAG) en repintar i en tornar d'una fitxa.
+const TPAG={},TMIDA={},MIDES_PAG=[10,25,50,100];
+// en canviar un filtre o el període, totes les taules i el log tornen a la primera pàgina
+function pagIni(){Object.keys(TPAG).forEach(k=>delete TPAG[k]);LOG_PAG=0;LOG_DIA_N={}}
+let MIDA_PAG=(()=>{try{const v=+localStorage.getItem("bn_admin_pag");return MIDES_PAG.includes(v)&&v>=25?v:25}catch(e){return 25}})();
+const midaTaula=id=>{const T=TAULES[id];return TMIDA[id]||(T&&T.mida)||MIDA_PAG};
+function taulaPagina(id,rs){const m=midaTaula(id),np=Math.max(1,Math.ceil(rs.length/m));let pg=Math.min(Math.max(0,TPAG[id]||0),np-1);TPAG[id]=pg;return rs.length>m?rs.slice(pg*m,pg*m+m):rs}
+function pagHTML(id,n){const m=midaTaula(id);if(n<=m&&n<=25)return "";const np=Math.max(1,Math.ceil(n/m)),pg=TPAG[id]||0,i0=n?pg*m+1:0,i1=Math.min(n,pg*m+m);
+ const opc=MIDES_PAG.filter(x=>x>=Math.min(m,25)).map(x=>`<option value="${x}"${x===m?" selected":""}>${x}</option>`).join("");
+ return `<span class="tb-pag-t">Files ${i0}-${i1} de ${n}</span>${np>1?`<span class="tb-pag-b"><button class="btn sec petit" type="button" data-tpg="-1" aria-label="Pàgina anterior"${pg<=0?" disabled":""}>${ic("enrere")}<span>Anterior</span></button><span class="tb-pag-n" aria-live="polite">Pàgina ${pg+1} de ${np}</span><button class="btn sec petit" type="button" data-tpg="1" aria-label="Pàgina següent"${pg>=np-1?" disabled":""}><span>Següent</span>${ic("endavant")}</button></span>`:""}<label class="tb-pag-m"><select data-tmida aria-label="Files per pàgina">${opc}</select><span>per pàgina</span></label>`}
+document.addEventListener("click",e=>{const b=e.target.closest("button[data-tpg]");if(!b)return;const bl=b.closest("[data-taula]"),id=bl&&bl.id;if(!id||!TAULES[id])return;
+ TPAG[id]=(TPAG[id]||0)+(+b.dataset.tpg);refrescaTaula(id);const top=bl.getBoundingClientRect().top;if(top<0)bl.scrollIntoView({block:"start"});
+ const nb=bl.querySelector(`button[data-tpg="${b.dataset.tpg}"]:not([disabled])`)||bl.querySelector("button[data-tpg]:not([disabled])");if(nb)nb.focus({preventScroll:true})});
+document.addEventListener("change",e=>{const sel=e.target.closest("select[data-tmida]");if(!sel)return;const bl=sel.closest("[data-taula]"),id=bl&&bl.id,T=id&&TAULES[id];if(!T)return;
+ const v=+sel.value;if(T.mida)TMIDA[id]=v;else{MIDA_PAG=v;try{localStorage.setItem("bn_admin_pag",String(v))}catch(x){}}refrescaTaula(id,{pag0:true});const ns=bl.querySelector("select[data-tmida]");if(ns)ns.focus()});
 document.addEventListener("click",e=>{
  const b=e.target.closest("th button.ord");
  if(b){const bl=b.closest("[data-taula]")||b.closest(".taula-w"),id=bl&&bl.id,T=id&&TAULES[id];if(!T)return;const k=b.dataset.k;
-  if(T.k===k)T.desc=!T.desc;else{T.k=k;T.desc=!!(T.cols.find(c=>c.k===k)||{}).num}refrescaTaula(id);const nb=bl.querySelector(`th button[data-k="${k}"]`);if(nb)nb.focus();return}
+  if(T.k===k)T.desc=!T.desc;else{T.k=k;T.desc=!!(T.cols.find(c=>c.k===k)||{}).num}refrescaTaula(id,{pag0:true});const nb=bl.querySelector(`th button[data-k="${k}"]`);if(nb)nb.focus();return}
  const csv=e.target.closest("button[data-tcsv]");
  if(csv){const id=csv.dataset.tcsv,T=TAULES[id];if(!T)return;const rs=taulaFiles(T);
   const cap=T.cols.map(c=>netTxt(c.t)||c.k);
   const cos=rs.map(r=>T.cols.map(c=>c.csv?c.csv(r):c.h?netTxt(c.h(r)):r[c.k]??""));
   baixaCSV(T.csvNom,[cap,...cos]);return}
 });
-document.addEventListener("input",e=>{const inp=e.target.closest("input.tb-q[data-tq]");if(!inp)return;const id=inp.dataset.tq,T=TAULES[id];if(!T)return;T.q=inp.value;refrescaTaula(id)});
+document.addEventListener("input",e=>{const inp=e.target.closest("input.tb-q[data-tq]");if(!inp)return;const id=inp.dataset.tq,T=TAULES[id];if(!T)return;T.q=inp.value;refrescaTaula(id,{pag0:true})});
 // files que obren la fitxa del nen (clic o Retorn)
 document.addEventListener("click",e=>{const tr=e.target.closest("tr.clic[data-nen]");if(tr&&!e.target.closest("button,a,input,select"))obreFitxaNen(tr.dataset.nen)});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const tr=e.target.closest&&e.target.closest("tr.clic[data-nen]");if(tr&&e.target===tr)obreFitxaNen(tr.dataset.nen)});
@@ -2414,14 +2438,13 @@ function vistaLog(c,rerender){
   {t:"Accions al log",v:ls.length},
   {t:"Temps d'estudi",v:fmtT(tempsTot)}
  ],4);
- const teFiltre=!!(TF.assig||TF.nom||TF.dia||TF.ev||TF.q);
- const lim=(LOG_TOT||teFiltre)?ls:ls.slice(0,500);
- const comptaTxt=ls.length>lim.length?`Es mostren ${lim.length} de ${ls.length} accions (${pl(diesMap.size,"dia","dies")})`:`${pl(ls.length,"acció","accions")} en ${pl(diesMap.size,"dia","dies")}`;
+ // sense tall: totes les accions del període; el log per dia es pagina per dies (LOG_DIES_PAG) i, dins de cada dia, de 50 en 50
+ const lim=ls,comptaTxt=`${pl(ls.length,"acció","accions")} en ${pl(diesMap.size,"dia","dies")}`;
  let cosH="";
  if(!ls.length){
   cosH=buit("log","Cap registre amb aquests filtres.","Prova de canviar el dia, el nen, el món o d'ampliar el període a dalt.");
  }else if(LOG_VISTA==="taula"){
-  const limT=ls.slice(0,1500),prev=TAULES.tLog;
+  const limT=ls,prev=TAULES.tLog;
   const cols=[
    {k:"ts",t:"Data",cls:"nw",h:r=>dataC(r.ts)},
    {k:"nom",t:"Nen",cls:"nw",h:r=>`<button type="button" class="nen-b" data-obre-nen="${esc(clauNen(r))}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`},
@@ -2432,8 +2455,10 @@ function vistaLog(c,rerender){
   ];
   cosH=taula("tLog",cols,limT,{k:prev?prev.k:"ts",desc:prev?prev.desc:true,manteQ:true,alta:true,etiqueta:"Registre complet",csvNom:"bona-nota-registre"});
  }else{
-  const avM=diaMad(),ahM=sumaD(avM,-1),grups=[];
-  lim.forEach((l,idx)=>{const d=diaMad(l.ts);let g=grups[grups.length-1];if(!g||g.d!==d)grups.push(g={d,L:[]});g.L.push({l,idx})});
+  const avM=diaMad(),ahM=sumaD(avM,-1),totsG=[];
+  lim.forEach((l,idx)=>{const d=diaMad(l.ts);let g=totsG[totsG.length-1];if(!g||g.d!==d)totsG.push(g={d,L:[]});g.L.push({l,idx})});
+  const npD=Math.max(1,Math.ceil(totsG.length/LOG_DIES_PAG));LOG_PAG=Math.min(Math.max(0,LOG_PAG),npD-1);
+  const grups=totsG.slice(LOG_PAG*LOG_DIES_PAG,LOG_PAG*LOG_DIES_PAG+LOG_DIES_PAG);
   const titDia=d=>{const ds=DS[new Date(dU(d)).getUTCDay()];return `${d===avM?"Avui · ":d===ahM?"Ahir · ":""}${ds} ${diaLl(d)}`};
   const kAct=TF.nom.trim().toLowerCase();
   // dies plegats: per defecte només el primer (el més recent) està obert; amb un dia filtrat, sempre obert. LOG_OBERTS guarda els que obre l'admin.
@@ -2441,16 +2466,17 @@ function vistaLog(c,rerender){
   cosH=`<div id="logDies">${grups.map(g=>{
    const info=diesMap.get(g.d),nensD=[...info.nens.values()].sort((a,b)=>b.temps-a.temps||b.n-a.n);
    const quiH=nensD.map(x=>`<button type="button" class="log-nen-xip${kAct===x.k?" actiu":""}" data-filtra-nen="${esc(x.nom)}" title="${kAct===x.k?"Treu el filtre de nen":`Filtra el log per ${x.nom}`}">${avatar(x.nom,"p")}<span>${esc(x.nom)}</span><small>${x.temps?fmtT(x.temps)+" · ":""}${x.n}</small></button>`).join("");
-   const filesH=g.L.map(({l,idx})=>{const k=clauNen(l);
+   const nVis=LOG_DIA_N[g.d]||LOG_LIN_PAG,resta=g.L.length-nVis;
+   const filesH=g.L.slice(0,nVis).map(({l,idx})=>{const k=clauNen(l);
     return `<div class="log-lin"><time title="${esc(dataC(l.ts))}">${hora(l.ts)}</time><button type="button" class="nen-b" data-obre-nen="${esc(k)}">${avatar(l.nom,"p")}<span>${esc(l.nom)}</span></button>${pillMon(l.assig)}${xipEv(l.event)}<div class="log-d">${descriu(l)}${l.event==="oberta"?` <button type="button" class="btn sec petit" style="margin-left:6px;padding:2px 8px;min-height:24px;font-size:11.5px" data-log-obe="${idx}">Llegeix</button>`:""}</div></div>`}).join("");
    const ob=obert(g.d);
-   return `<section class="log-dia${ob?"":" plegat"}" data-dia="${esc(g.d)}"><div class="log-dia-cap"><div class="log-dia-t"><h3><button type="button" class="log-pleg" data-log-pleg="${esc(g.d)}" aria-expanded="${ob}" aria-controls="logLl-${esc(g.d)}" title="${ob?"Plega":"Desplega"} les accions d'aquest dia"><span class="log-fle" aria-hidden="true">▾</span>${ic("calendari")}<span>${esc(titDia(g.d))}</span></button><span class="pill neutre">${pl(nensD.length,"nen","nens")}</span>${info.temps?`<span class="pill neutre">${fmtT(info.temps)}</span>`:""}<span class="pill neutre">${pl(info.n,"acció","accions")}</span></h3><button type="button" class="btn sec petit" data-log-dia="${esc(g.d)}">${TF.dia===g.d?"Tots els dies":"Només aquest dia"}</button></div><div class="log-dia-qui"><span class="muted">Qui ha entrat:</span>${quiH}</div></div><div class="log-llista" id="logLl-${esc(g.d)}">${filesH}</div></section>`;
-  }).join("")}</div>${ls.length>lim.length?`<div style="margin-top:12px;text-align:center"><button class="btn sec" type="button" id="btLogTot">Mostra les ${ls.length} accions completes del període</button></div>`:""}`;
+   return `<section class="log-dia${ob?"":" plegat"}" data-dia="${esc(g.d)}"><div class="log-dia-cap"><div class="log-dia-t"><h3><button type="button" class="log-pleg" data-log-pleg="${esc(g.d)}" aria-expanded="${ob}" aria-controls="logLl-${esc(g.d)}" title="${ob?"Plega":"Desplega"} les accions d'aquest dia"><span class="log-fle" aria-hidden="true">▾</span>${ic("calendari")}<span>${esc(titDia(g.d))}</span></button><span class="pill neutre">${pl(nensD.length,"nen","nens")}</span>${info.temps?`<span class="pill neutre">${fmtT(info.temps)}</span>`:""}<span class="pill neutre">${pl(info.n,"acció","accions")}</span></h3><button type="button" class="btn sec petit" data-log-dia="${esc(g.d)}">${TF.dia===g.d?"Tots els dies":"Només aquest dia"}</button></div><div class="log-dia-qui"><span class="muted">Qui ha entrat:</span>${quiH}</div></div><div class="log-llista" id="logLl-${esc(g.d)}">${filesH}${resta>0?`<button class="btn sec petit log-mes" type="button" data-log-mes="${esc(g.d)}">Mostra'n ${Math.min(LOG_LIN_PAG,resta)} més (en queden ${resta})</button>`:""}</div></section>`;
+  }).join("")}</div>${npD>1?`<div class="tb-pag log-pag"><span class="tb-pag-t">Dies ${LOG_PAG*LOG_DIES_PAG+1}-${Math.min(totsG.length,LOG_PAG*LOG_DIES_PAG+LOG_DIES_PAG)} de ${totsG.length}</span><span class="tb-pag-b"><button class="btn sec petit" type="button" data-log-pag="-1"${LOG_PAG<=0?" disabled":""}>${ic("enrere")}<span>Dies més recents</span></button><span class="tb-pag-n" aria-live="polite">Pàgina ${LOG_PAG+1} de ${npD}</span><button class="btn sec petit" type="button" data-log-pag="1"${LOG_PAG>=npD-1?" disabled":""}><span>Dies més antics</span>${ic("endavant")}</button></span></div>`:""}`;
  }
  c.innerHTML=`<div class="pila">${kpis}<div class="targeta" id="logCard"><div class="eines-t"><div class="seg" id="logVistaSeg" role="group" aria-label="Format del log"><button type="button" data-lv="dies" aria-pressed="${LOG_VISTA!=="taula"}">Per dia (qui entra i què fa)</button><button type="button" data-lv="taula" aria-pressed="${LOG_VISTA==="taula"}">Taula</button></div><span class="muted">${esc(comptaTxt)}</span><span class="esp"></span>${LOG_VISTA!=="taula"&&ls.length&&!TF.dia?`<button class="btn sec petit" type="button" id="btLogObre">Desplega-ho tot</button><button class="btn sec petit" type="button" id="btLogPlega">Plega-ho tot</button>`:""}<button class="btn sec petit" type="button" id="flcsv">${ic("baixar")}CSV complet (${ls.length})</button></div>${cosH}</div></div>`;
  const bCsv=$("#flcsv");if(bCsv)bCsv.onclick=()=>baixaCSV("bona-nota-log",[["data","nom","assignatura","tipus","que_ha_fet","detall","sessio","aparell"],...ls.map(l=>[l.ts,l.nom,l.assig,l.event,netTxt(descriu(l)),JSON.stringify(l.detall),l.sessio,l.aparell])]);
  const seg=$("#logVistaSeg");if(seg)seg.onclick=e=>{const b=e.target.closest("button[data-lv]");if(!b||b.dataset.lv===LOG_VISTA)return;LOG_VISTA=b.dataset.lv;vistaLog(c,rerender)};
- const bTot=$("#btLogTot");if(bTot)bTot.onclick=()=>{LOG_TOT=true;vistaLog(c,rerender)};
+
  const posaDia=(sec,ob)=>{sec.classList.toggle("plegat",!ob);const b=sec.querySelector("button[data-log-pleg]");if(b){b.setAttribute("aria-expanded",ob);b.title=`${ob?"Plega":"Desplega"} les accions d'aquest dia`}};
  const totsDies=()=>[...document.querySelectorAll("#logDies .log-dia")];
  const iniOberts=()=>{if(!LOG_OBERTS)LOG_OBERTS=new Set(totsDies().filter(x=>!x.classList.contains("plegat")).map(x=>x.dataset.dia))};
@@ -2458,12 +2484,17 @@ function vistaLog(c,rerender){
  const bPlega=$("#btLogPlega");if(bPlega)bPlega.onclick=()=>{iniOberts();totsDies().forEach(x=>{LOG_OBERTS.delete(x.dataset.dia);posaDia(x,false)})};
  const lc=$("#logCard");
  if(lc)lc.onclick=e=>{
+  const bm=e.target.closest("button[data-log-mes]");
+  if(bm){const d=bm.dataset.logMes,sec=bm.closest(".log-dia"),sy=scrollY;LOG_DIA_N[d]=(LOG_DIA_N[d]||LOG_LIN_PAG)+LOG_LIN_PAG;vistaLog(c,rerender);scrollTo(0,sy);
+   const nb=document.querySelector(`#logDies [data-log-mes="${CSS.escape(d)}"]`);if(nb)nb.focus({preventScroll:true});return}
+  const bpg=e.target.closest("button[data-log-pag]");
+  if(bpg){LOG_PAG+=+bpg.dataset.logPag;LOG_OBERTS=null;vistaLog(c,rerender);const lc2=$("#logCard");if(lc2&&lc2.getBoundingClientRect().top<0)lc2.scrollIntoView({block:"start"});return}
   const bp=e.target.closest("button[data-log-pleg]");
   if(bp){const sec=bp.closest(".log-dia");if(TF.dia)return;iniOberts();const ob=sec.classList.contains("plegat");if(ob)LOG_OBERTS.add(sec.dataset.dia);else LOG_OBERTS.delete(sec.dataset.dia);posaDia(sec,ob);return}
   const bd=e.target.closest("button[data-log-dia]");
-  if(bd){TF.dia=TF.dia===bd.dataset.logDia?"":bd.dataset.logDia;LOG_TOT=false;if(rerender)rerender();else vistaLog(c);return}
+  if(bd){TF.dia=TF.dia===bd.dataset.logDia?"":bd.dataset.logDia;pagIni();if(rerender)rerender();else vistaLog(c);return}
   const bn=e.target.closest("button[data-filtra-nen]");
-  if(bn){const nm=bn.dataset.filtraNen;TF.nom=TF.nom.trim().toLowerCase()===nm.trim().toLowerCase()?"":nm;LOG_TOT=false;if(rerender)rerender();else vistaLog(c);return}
+  if(bn){const nm=bn.dataset.filtraNen;TF.nom=TF.nom.trim().toLowerCase()===nm.trim().toLowerCase()?"":nm;pagIni();if(rerender)rerender();else vistaLog(c);return}
   const bo=e.target.closest("button[data-log-obe]");
   if(bo){const x=lim[+bo.dataset.logObe];if(x)obrePanellOberta(x,({k:clauNen(x),nom:x.nom}))}
  };
@@ -2471,7 +2502,7 @@ function vistaLog(c,rerender){
 
 // ====================== DADES AGREGADES, INICI I VISTES SOTA DEMANDA ======================
 const PERIODE={1:"avui",7:"7d",30:"30d",365:"curs"};
-const TF={assig:"",nom:"",dia:"",ev:"",q:""};let LOG_VISTA="dies",LOG_TOT=false,LOG_OBERTS=null,TD=null,GRAF=[],TOK=0;
+const TF={assig:"",nom:"",dia:"",ev:"",q:""};const LOG_DIES_PAG=7,LOG_LIN_PAG=50;let LOG_VISTA="dies",LOG_PAG=0,LOG_DIA_N={},LOG_OBERTS=null,TD=null,GRAF=[],TOK=0;
 // 8 colors que es distingeixen bé (un per nen, el mateix a tots els gràfics); en tema fosc, més clars
 const PAL_C=["#2563eb","#ea580c","#16a34a","#db2777","#9333ea","#0891b2","#ca8a04","#475569"],PAL_F=["#60a5fa","#fb923c","#4ade80","#f472b6","#c084fc","#22d3ee","#facc15","#94a3b8"];
 const PAL=()=>TEMA==="fosc"?PAL_F:PAL_C;
@@ -2787,7 +2818,7 @@ function pintaAlertesTaula(){
   {k:"acc",t:"Acció",ord:false,cls:"nw",h:r=>r.k?`<button class="linkb" type="button" data-obre-nen="${esc(r.k)}">Fitxa ${ic("endavant")}</button>`:r.assig?`<button class="linkb" type="button" data-obre-mon="${esc(r.assig)}">Món ${ic("endavant")}</button>`:`<span class="muted">—</span>`}
  ];
  const prev=TAULES.tAlertes;
- e.innerHTML=taula("tAlertes",cols,rows,{k:prev?prev.k:"grav",desc:prev?prev.desc:true,alta:true,etiqueta:"Alertes",csvNom:"bona-nota-alertes",fila:r=>r.k?` class="clic" data-nen="${esc(r.k)}" tabindex="0"`:""});
+ e.innerHTML=taula("tAlertes",cols,rows,{k:prev?prev.k:"grav",desc:prev?prev.desc:true,mida:10,alta:true,etiqueta:"Alertes",csvNom:"bona-nota-alertes",fila:r=>r.k?` class="clic" data-nen="${esc(r.k)}" tabindex="0"`:""});
 }
 // ====================== SECCIONS DE NENS, MONS, SESSIONS I RÀNQUING (sota demanda) ======================
 async function vistaNensSeccio(c){

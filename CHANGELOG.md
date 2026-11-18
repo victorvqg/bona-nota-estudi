@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.56.0 · 2026-11-18
+
+### Afegit
+- **Paginació al tauler d'admin** (fase 2 del pla `docs/superpowers/specs/2026-11-18-admin-ordre-paginacio-pla-mestre.md`):
+  - Totes les taules (`taula()`) van de 25 en 25, amb «Anterior · Pàgina 2 de 14 · Següent», «Files 26-50 de 340» i un selector de 25/50/100 que es desa al navegador. Les taules de menys de 25 files queden igual.
+  - La cerca, l'ordenació i el CSV treballen amb totes les files. En cercar, ordenar o canviar un filtre o el període es torna a la pàgina 1; en actualitzar o tornar d'una fitxa, la pàgina es manté.
+  - El **log per dia ja no talla a 500 accions**: 7 dies per pàgina («Dies més recents / Dies més antics») i, dins de cada dia, 50 accions amb «Mostra'n 50 més». La vista Taula del log tampoc no talla a 1.500.
+  - Les alertes d'Inici van de 10 en 10, amb les «malament» primer.
+- Prova nova `motor/prova-admin-pagines.js` (al grup `interficie` i a la revisió de GitHub).
+
 ## 2.55.0 · 2026-11-18
 
 ### Canviat
