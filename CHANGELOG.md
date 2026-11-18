@@ -5,6 +5,22 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.53.0 · 2026-11-18
+
+### Afegit
+- **Socials · El clima:**
+  - 5 jocs de frases amb buits (atmosfera, elements i factors, pressió i mapes del temps, canvi climàtic i l'Anoia), amb el perquè de cada error.
+  - **«Calcula amb el climograma»** (generador `climograma` a `motor/eines/clima.js`, sobre el taller de mates): un climograma nou cada vegada, i es calcula el mes més calorós, l'amplitud tèrmica, la temperatura mitjana, la precipitació total, els mesos secs (P < 2·T) i el tipus de clima. Amb pistes en 3 graons i el gràfic marcat.
+  - **«Construeix el climograma»**: es toca la graella per posar les barres i la línia a partir d'una taula (Igualada i una ciutat de muntanya).
+  - **«Compara dos climogrames»** (Girona i Igualada) i **2 mapes del temps** (anticicló, depressió, isòbares i front fred).
+  - Esquemes a la teoria (temps o clima, les capes de l'atmosfera, elements i factors, anticicló i depressió, efecte d'hivernacle). Jocs agrupats i «Practica-ho com a classe» als 10 temes.
+- **Socials · Les comarques:**
+  - **El mapa a cada fitxa de demarcació**: enquadrat, amb les comarques numerades i la llista de capitals.
+  - 3 jocs de frases amb buits: «Escriu la capital», «De quina demarcació és?» i «Els paranys».
+  - Esquemes (capses dins de capses, les 4 demarcacions, regalades i paranys), jocs agrupats i «Practica-ho com a classe» als 7 temes.
+- **Plantilla:** `T[i].esquema` accepta `{fn:"nomFuncio"}`, una funció de les dades que torna l'HTML de l'esquema (per exemple, un mapa).
+- `prova-generadors.js` comprova el generador `climograma` (màxim i mínim únics, mitjana exacta i càlculs).
+
 ## 2.52.0 · 2026-11-17
 
 ### Afegit

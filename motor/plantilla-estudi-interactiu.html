@@ -1168,8 +1168,9 @@ function pintaTema(){
  <div class="passos" role="tablist" aria-label="Passos del tema">${[["fitxa",ICO.fitxa+" Fitxa",e.fitxa],["targetes",ICO.targetes+" Targetes",e.fc>=t.fc.length],["test",ICO.test+" Test",e.intents.length>0]].map(([k,n,f])=>`<button role="tab" aria-selected="${pest==k?'true':'false'}" class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
  if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,MODE_TAST?Math.min(NTEST_TAST,t.q.length):NTEST),0,0,t.id)}
 }
-// T[i].esquema: un esquema dibuixat a la fitxa, sota la idea clau. {html:"…"} (taula o quadre) i/o {marca:{t,m},joc:"id d'un joc de pintar"} (frase pintada)
-function esquemaTema(e){let h="";if(e.marca&&typeof marcaHtml==="function"){const j=(ASSIG.jocs||[]).find(x=>x.id===e.joc)||{};if(j.cats)h+=marcaHtml(e.marca.t,e.marca.m,j.cats)}if(e.html)h+=e.html;
+// T[i].esquema: un esquema dibuixat a la fitxa, sota la idea clau. {html:"…"} (taula o quadre), {marca:{t,m},joc:"id d'un joc de pintar"} (frase pintada)
+// i/o {fn:"nomFuncio", …} (una funció de les dades que rep l'esquema i torna HTML, p. ex. un mapa)
+function esquemaTema(e){let h="";if(e.fn&&typeof window[e.fn]==="function"){try{h+=window[e.fn](e)}catch(x){}}if(e.marca&&typeof marcaHtml==="function"){const j=(ASSIG.jocs||[]).find(x=>x.id===e.joc)||{};if(j.cats)h+=marcaHtml(e.marca.t,e.marca.m,j.cats)}if(e.html)h+=e.html;
  return h?`<div class="esq-tema"><small>👀 ${e.titol||"ESQUEMA"}</small>${h}</div>`:""}
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
