@@ -9,7 +9,7 @@ He comptat el contingut i he fet captures a 390 px de la llista de jocs, del cli
 **Estat:** executat a la versió 2.53.0 amb les recomanacions de la secció 6. Diferències amb el pla:
 - El repàs del mapa ja es feia al mapa (`MP.rep`): no ha calgut tocar-lo.
 - A la 2.54.0 s'hi van afegir 3 mapes del temps més (5 en total) i el mapa de la fitxa s'il·lumina en tocar una comarca, al mapa o a la llista.
-- El joc de veïnes queda per més endavant, com es va decidir.
+- El joc de veïnes queda **descartat** (decisió del 18/11/2026).
 
 **En poques línies.** Tots dos mons tenen un bon test (80 i 56 preguntes) i una peça estrella: **el mapa interactiu de les 43 comarques** (5 modes, amb repàs dels errors) i **el climograma de Girona**. Però són els mons amb **menys pràctica**:
 - **Cap joc de frases amb buits** en tots dos mons. Tampoc hi ha cap explicació de per què una opció és dolenta, ni cap esquema a la teoria, ni cap botó «Practica-ho com a classe».
@@ -115,7 +115,7 @@ Cada opció falsa porta el seu `per`, i on una paraula decideix la resposta, `cl
 
 ### I · El mapa, encara millor
 - **Repàs del mapa**: les comarques fallades al mapa ja van al repàs dels errors (`mpRepAnota`). Abans de fer res, cal comprovar com es presenten al repàs: si no es fa tocant el mapa, proposo que el repàs del mapa es faci **al mapa**, tocant la comarca.
-- **Veïnes (opcional):** «Toca les comarques que toquen el Bages». Ajuda a recordar-ne la posició.
+- ~~**Veïnes (opcional):** «Toca les comarques que toquen el Bages». Ajuda a recordar-ne la posició.~~ **Descartat.**
 
 ---
 
@@ -158,4 +158,4 @@ Totes passen `python3 motor/tot.py`, `node motor/revisa-mon.js socials comarques
 3. **Mapa del temps:** un sol mapa amb preguntes o diversos mapes amb la A i la B en llocs diferents? *Recomano 4 o 5 mapes diferents, perquè no s'aprenguin la resposta de memòria.*
 4. **Mapa a les fitxes de comarques:** a les 4 fitxes de demarcació o també a «Què és una comarca» (Catalunya sencera)? *Recomano a les 5.*
 5. **Repàs del mapa al mapa:** el fem ara o ho deixem per més endavant? *Recomano fer-ho ara: és on més s'equivoquen.*
-6. **Veïnes del mapa:** ho fem ara o més endavant? *Recomano més endavant.*
+6. **Veïnes del mapa:** ho fem ara o més endavant? *Recomano més endavant.* → **Descartat** (18/11/2026).
