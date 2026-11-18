@@ -2,7 +2,7 @@
 
 18/11/2026 · Versió 2.58.0 · Revisió del `README.md` (883 línies), del `CHANGELOG.md` (69 versions), de `docs/ARQUITECTURA.md`, de `motor/` (eines, proves, `tot.py`) i de les Actions (`revisa.yml`, `etiqueta.yml`).
 
-**Estat:** decisions preses el 18/11/2026: totes les recomanacions de la secció 4. **Fase 1 feta a la 2.58.1.** Diferència amb el pla: el proxy de la sessió no deixa pujar etiquetes, així que l'Action «Etiqueta la versió» recorre l'historial de `main` a cada fusió i posa les que falten des de la 2.9.0. Així les 13 es posen soles quan es fusiona la 2.58.1, i si mai se'n perd alguna, es recupera a la fusió següent.
+**Estat:** decisions preses el 18/11/2026: totes les recomanacions de la secció 4. **Fase 1 feta a la 2.58.1 i 2.58.2.** Diferències amb el pla: el proxy de la sessió no deixa pujar etiquetes, i el token de l'Action tampoc no pot etiquetar commits antics (cal el permís `workflows`; `docs/TRAMPES.md`). L'Action etiqueta sola la versió de cada PR, però les 14 que falten (`v2.25.0`, `v2.47.0`-`v2.58.0` i `v2.58.1`) s'han de posar a mà des d'un ordinador.
 
 **En poques línies.** El que s'explica està bé, però hi ha **un error que fa mal** i **forats de documentació** que s'han anat acumulant:
 1. **Les etiquetes de versió s'han aturat a la v2.46.1.** El web diu 2.58.0, però a GitHub no hi ha cap etiqueta de la `v2.47.0` a la `v2.58.0` (ni la `v2.25.0`). Hi ha **dues fonts** per al número de versió i no coincideixen:

@@ -33,3 +33,8 @@ Com s'escriu una entrada:
 - Símptoma: el bloqueig de 15 minuts després de 5 PIN dolents no saltava mai amb `bn_aspecte_desa`, `bn_progres_desa`, `bn_progres_llegeix` ni `bn_perfil_canvia_pin` (amb `bn_xat_*` i `bn_fotos` sí).
 - Causa: `bn_priv.pin_ok` apunta l'intent fallit a `bn_priv.intents` i torna `false`; si la funció que la crida llança `raise exception 'pin incorrecte'`, PostgREST desfà tota la petició, també aquell apunt (Postgres no té transaccions autònomes). Trobat a la revisió del xat (n2528, 10/11/2026); comprovat amb PGlite.
 - Com evitar-la: a les funcions amb PIN, tornar sempre un codi normal sense excepció (`'pin'`, `-3` a `bn_progres_desa`, o `{"codi":"pin"}` / `{"ok":false,"codi":"pin"}`) quan `pin_ok` és `false`. Arreglat en dos passos a l'issue #33 i verificat amb `motor/prova-pin-intents-sql.js`.
+
+### L'Action no pot etiquetar commits antics
+- Símptoma: «Etiqueta la versió» falla amb `refusing to allow a GitHub App to create or update workflow … without workflows permission` en posar una etiqueta en un commit vell (la `v2.25.0` el 18/11/2026).
+- Causa: el token de les Actions (`GITHUB_TOKEN`) no pot tenir el permís `workflows`, i GitHub no el deixa crear una etiqueta en un commit on els fitxers de `.github/workflows/` són diferents dels d'ara.
+- Com evitar-la: l'Action va de la versió més nova a la més antiga i una etiqueta que no pot crear queda com a avís, sense aturar les altres. La versió de cada PR sí que s'etiqueta sola, perquè va al commit que s'acaba de fusionar. Les antigues que falten s'han de posar a mà des d'un ordinador amb `git tag vX.Y.Z <commit>` i `git push origin vX.Y.Z`. Si un PR canvia `etiqueta.yml`, ha de pujar versió perquè la seva pròpia etiqueta es pugui crear.

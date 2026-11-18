@@ -4,6 +4,9 @@
 # CHANGELOG.md la té a dalt de tot, si encara no existeix. Així també recupera etiquetes que s'haguessin perdut (com les de la
 # 2.47.0 a la 2.58.0, quan l'Action llegia la capçalera del README). Les anteriors a la 2.9.0 es van numerar després de publicar-les
 # i no s'etiqueten. Si no hi ha res de nou (canvis que no pugen versió), no fa res.
+# Va de la versió més nova a la més antiga i una etiqueta que no es pot crear no atura les altres: GitHub no deixa que el token
+# de l'Action etiqueti commits on els fitxers de .github/workflows/ són diferents dels d'ara (cal el permís «workflows»).
+# Aquestes queden com a avís i s'han de posar a mà (docs/TRAMPES.md).
 name: Etiqueta la versió
 on:
   push:
@@ -35,13 +38,15 @@ jobs:
             w=$(git show "$c:CHANGELOG.md" 2>/dev/null | sed -n 's/^## \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             [ -n "$w" ] && echo "$w $c"
           done | awk '!vist[$1]++' > "$RUNNER_TEMP/versions.txt"
-          noves=0
+          noves=0;fallades=0
+          tac "$RUNNER_TEMP/versions.txt" > "$RUNNER_TEMP/versions-desc.txt"
           while read -r w c; do
             [ "$(printf '%s\n' 2.9.0 "$w" | sort -V | head -1)" = "2.9.0" ] || continue
             git rev-parse -q --verify "refs/tags/v$w" >/dev/null && continue
             git tag "v$w" "$c"
-            git push origin "v$w"
-            echo "Etiqueta v$w creada a $c"
-            noves=$((noves+1))
-          done < "$RUNNER_TEMP/versions.txt"
-          echo "Versió actual: v$v · etiquetes noves: $noves"
+            if git push origin "v$w"; then echo "Etiqueta v$w creada a $c"; noves=$((noves+1))
+            else git tag -d "v$w" >/dev/null; fallades=$((fallades+1)); echo "::warning::No s'ha pogut crear v$w a $c (cal posar-la a mà: docs/TRAMPES.md)"; fi
+          done < "$RUNNER_TEMP/versions-desc.txt"
+          echo "Versió actual: v$v · etiquetes noves: $noves · sense poder crear: $fallades"
+          # la versió actual sí que ha de tenir etiqueta: si no en té, és un error de debò
+          git ls-remote --exit-code --tags origin "refs/tags/v$v" >/dev/null || { echo "::error::La versió actual v$v no té etiqueta"; exit 1; }
