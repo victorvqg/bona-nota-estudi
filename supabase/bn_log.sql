@@ -27,7 +27,11 @@ revoke all on schema bn_priv from public, anon, authenticated;
 create table if not exists bn_priv.admin(email text not null, hash text primary key);
 revoke all on bn_priv.admin from public, anon, authenticated;
 
-create or replace function public.bn_admin_logs(p_email text, p_pass text, p_dies int default 30)
+-- p_des_id (2.58.0, fase 4 del pla de l'admin): si es dona, només torna les files amb id > p_des_id, és a dir, les que el tauler
+-- encara no té. Així, en actualitzar, el tauler baixa unes poques files en lloc de tot el període. Sense p_des_id, com sempre.
+-- Primer s'esborra la versió de 3 paràmetres: si en quedessin dues, PostgREST no sabria quina triar quan el tauler en passa 3.
+drop function if exists public.bn_admin_logs(text,text,int);
+create or replace function public.bn_admin_logs(p_email text, p_pass text, p_dies int default 30, p_des_id bigint default null)
 returns setof public.bn_log
 language plpgsql security definer set search_path = '' as $$
 begin
@@ -38,10 +42,11 @@ begin
   end if;
   return query select * from public.bn_log l
     where l.ts > now() - make_interval(days => least(greatest(p_dies,1),365))
+      and (p_des_id is null or l.id > p_des_id)
     order by l.ts desc limit 20000;
 end $$;
-revoke all on function public.bn_admin_logs(text,text,int) from public;
-grant execute on function public.bn_admin_logs(text,text,int) to anon, authenticated;
+revoke all on function public.bn_admin_logs(text,text,int,bigint) from public;
+grant execute on function public.bn_admin_logs(text,text,int,bigint) to anon, authenticated;
 
 -- Contrasenya de l'admin (executar a part, posant-hi la contrasenya; no la deixis en cap fitxer):
 -- insert into bn_priv.admin(email, hash)

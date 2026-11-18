@@ -7,7 +7,8 @@
 //   3) «Mostra-les» repinta sense que es vegi cap esquelet (repintaSuau) i manté l'scroll;
 //   4) a Inici, les 6 xifres canvien al seu lloc sense repintar la resta;
 //   5) canviar el període tampoc ensenya esquelets;
-//   6) una versió nova del tauler mostra la banda «Recarrega» i no recarrega sola.
+//   6) una versió nova del tauler mostra la banda «Recarrega» i no recarrega sola;
+//   7) fase 4: amb el SQL nou (p_des_id) «Mostra-les» només baixa les files noves; sense el SQL nou (404) torna a la baixada sencera.
 // Ús: node motor/prova-admin-auto.js
 const http = require("http"), fs = require("fs"), path = require("path");
 const { chromium } = require("playwright");
@@ -46,7 +47,12 @@ function dades() {
 }
 
 function respon(st, f, cos) {
- if (f === "bn_admin_logs") return st.logs;
+ if (f === "bn_admin_logs") {
+  // st.incr: "si" = SQL nou (filtra per p_des_id) · "no" = SQL vell (la funció amb p_des_id no existeix → 404) · res = ignora el paràmetre
+  if (cos.p_des_id != null && st.incr === "no") return undefined;
+  if (cos.p_des_id != null && st.incr === "si") return st.logs.filter(l => l.id > cos.p_des_id);
+  return st.logs;
+ }
  if (f === "bn_admin_ids" || f === "bn_aspectes") return [];
  if (f === "bn_admin_resum") return { periode: "7d", ara: st.resum, abans: null };
  if (f === "bn_admin_alertes" || f === "bn_admin_activitat" || f === "bn_admin_calor" || f === "bn_admin_evolucio" || f === "bn_admin_domini" || f === "bn_admin_fallades") return [];
@@ -68,10 +74,11 @@ function respon(st, f, cos) {
   const crides = [];
   await p.route("**/rest/v1/rpc/**", async r => {
    const u = r.request().url(), f = u.split("/rpc/")[1].split("?")[0], cos = r.request().postDataJSON() || {};
-   crides.push({ f, limit: (u.match(/[?&]limit=(\d+)/) || [])[1] });
+   crides.push({ f, limit: (u.match(/[?&]limit=(\d+)/) || [])[1], des: cos.p_des_id, n: null });
    const resp = respon(st, f, cos);
    if (st.lents && f !== "bn_admin_logs") await new Promise(x => setTimeout(x, 400));
    if (resp === undefined) return r.fulfill({ status: 404, contentType: "application/json", body: '{"message":"no"}' });
+   if (Array.isArray(resp)) crides[crides.length - 1].n = resp.length;
    return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(resp) });
   });
   await p.route("https://fonts.googleapis.com/**", r => r.fulfill({ status: 200, contentType: "text/css", body: "" }));
@@ -185,6 +192,31 @@ function respon(st, f, cos) {
    const fn = src.slice(src.indexOf("function comprovaVersioAdmin("), src.indexOf("let VERSIO_MES_TARD"));
    ok(fn.length > 0 && !fn.includes("location.replace"), "comprovaVersioAdmin ja no fa location.replace");
    ok(errors.length === 0, "cap error de JS");
+   await ctx.close();
+  }
+  console.log("7) Fase 4: baixada incremental amb p_des_id i retorn a la baixada sencera sense el SQL nou");
+  for (const incr of ["si", "no"]) {
+   const { ctx, p, st, crides, errors } = await obre("/admin/?v=sessions&p=curs");
+   st.incr = incr;
+   await p.waitForSelector("#tSes table");
+   await p.evaluate(() => window.bnAdminComprovaNovetats());
+   st.logs.unshift({ id: 7000, ts: new Date().toISOString(), assig: "socials", nom: "Biel", sessio: "s-biel-4", aparell: "ab", event: "entra", detall: { punts: 5 } });
+   await p.evaluate(() => window.bnAdminComprovaNovetats());
+   const nCrides = crides.length;
+   await p.evaluate(() => document.querySelector("#novetats").click());
+   await p.waitForFunction(() => (document.querySelector("#tSes")?.textContent || "").includes("Biel") && !document.querySelector(".suau-nou,#contingutVell"));
+   const logsC = crides.slice(nCrides).filter(c => c.f === "bn_admin_logs");
+   const files = await p.$$eval("#tSes tbody tr", t => t.length);
+   const total = await p.evaluate(() => (document.querySelector("#tSes .tb-cnt")?.textContent || ""));
+   if (incr === "si") {
+    ok(logsC.length === 1 && logsC[0].des === 1000 && logsC[0].n === 1, `amb el SQL nou, «Mostra-les» fa 1 sola crida amb p_des_id=1000 i en baixa 1 fila (${JSON.stringify(logsC.map(c => [c.des, c.n]))})`);
+    ok(await p.evaluate(() => window.bnAdminLogsIncr()) === true, "el tauler recorda que el servidor té la baixada incremental");
+   } else {
+    ok(logsC.some(c => c.des == null && c.n === st.logs.length), `sense el SQL nou, torna a la baixada sencera (${JSON.stringify(logsC.map(c => [c.des, c.n]))})`);
+    ok(await p.evaluate(() => window.bnAdminLogsIncr()) === false, "i recorda que no hi és, per no tornar-ho a provar");
+   }
+   ok(/61 files/.test(total) && files === 25, `la taula té les 61 sessions, sense repetides ni perdudes (${total})`);
+   ok(errors.length === 0, "cap error de JS" + (errors.length ? ": " + errors.join(" | ") : ""));
    await ctx.close();
   }
  } finally {

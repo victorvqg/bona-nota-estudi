@@ -13,7 +13,7 @@ const GRUPS = {
     ["node", "motor/prova-revisa-mon.js"], ["node", "motor/prova-veu.js"], ["node", "motor/prova-vistes-mates.js"], ["node", "motor/prova-ui-es.js"], ["node", "motor/revisa-mon.js"],
     ["python3", "motor/prova_nou_mon.py"], ["python3", "motor/prova_publica.py"], ["python3", "motor/prova_registres.py"]],
   sql: ["prova-xat-sql", "prova-admin-fitxa-sql", "prova-admin-benestar-sql", "prova-bon-us-sql", "prova-admin-fonts-rep-sql",
-    "prova-control-sql", "prova-pin-intents-sql", "prova-fotos-sql", "prova-dificultat-sql"].map(p => ["node", `motor/${p}.js`]),
+    "prova-control-sql", "prova-pin-intents-sql", "prova-fotos-sql", "prova-dificultat-sql", "prova-admin-logs-sql"].map(p => ["node", `motor/${p}.js`]),
   interficie: ["prova-nuvol", "prova-perfil", "prova-pares", "prova-tast", "prova-xat", "prova-admin-xat", "prova-admin-fitxa",
     "prova-admin-benestar", "prova-admin-fonts-rep", "prova-admin-alta", "prova-admin-dificultat", "prova-admin-evolucio", "prova-admin-auto", "prova-admin-pagines", "prova-admin-ordre"].map(p => ["node", `motor/${p}.js`])
 };

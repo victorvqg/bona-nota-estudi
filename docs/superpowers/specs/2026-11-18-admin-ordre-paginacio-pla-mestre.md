@@ -2,12 +2,13 @@
 
 18/11/2026 · Versió 2.54.0 · Revisió de `admin/index.html` (4.549 línies), feta amb el codi i captures del mode demo (`/admin/?demo`) a 1280 px.
 
-**Estat:** decisions preses el 18/11/2026: totes les recomanacions de la secció 4. **Fase 1 feta a la 2.55.0, fase 2 a la 2.56.0 i fase 3 a la 2.57.0.** Diferències amb el pla:
+**Estat:** decisions preses el 18/11/2026: totes les recomanacions de la secció 4. **Fase 1 feta a la 2.55.0, fase 2 a la 2.56.0, fase 3 a la 2.57.0 i fase 4 a la 2.58.0** (cal aplicar `supabase/bn_log.sql` a Supabase). Diferències amb el pla:
 - La comprovació mira les 50 últimes accions del registre (`bn_admin_logs?limit=50`): les novetats que no passen pel registre (missatges nous del xat) no fan sortir l'avís.
 - «Actualitza» també repinta sense esquelets.
 - La banda de versió nova té «Més tard», que l'amaga fins a la versió següent.
 - Fase 2: la pàgina es manté en actualitzar les taules que conserven la cerca (sessions, mons, log…); les altres, i qualsevol canvi de filtre o de període, tornen a la pàgina 1.
 - Fase 3: la secció Xat és una sola pàgina amb les dues targetes (Missatges i Silenciats), sense pestanyes. L'id intern de «Activitat» continua sent `sessions` (`?v=sessions`) perquè els enllaços vells funcionin. La pàgina de cada taula no va a l'adreça: es recorda en memòria mentre el tauler és obert.
+- Fase 4: `p_des_id` compara per id (l'identitat de `bn_log` creix amb cada fila). El tauler detecta un SQL vell per l'error 404/400 i ho recorda (`LOGS_INCR=false`) fins que es torna a entrar.
 
 **En poques línies.** El tauler funciona: les 12 proves de la interfície surten en verd (`node motor/prova-tot.js interficie`, amb les 7 de l'admin). Però té tres problemes:
 1. **El «pantallasso».** Cada 30 segons, i cada vegada que es torna a la pestanya, **es torna a pintar tota la pantalla**: esquelets grisos, gràfics destruïts i refets i taules noves. I quan es publica una versió nova del web, **la pàgina es recarrega sola**. Amb les fusions automàtiques, això passa diverses vegades al dia.

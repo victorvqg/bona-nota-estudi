@@ -756,7 +756,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.57.0";
+const VERSIO_ADMIN="2.58.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -958,6 +958,33 @@ async function baixaLogs(d){
    if(!rp.ok)break;const pag=await rp.json();if(!Array.isArray(pag)||!pag.length||pag[0].id===L[0].id)break;L.push(...pag);if(pag.length<1000)break}catch(e){break}}
  return Array.isArray(L)?L:[];
 }
+// ---- Baixada incremental (fase 4 del pla de l'admin): bn_admin_logs(…, p_des_id) torna només les files amb id > p_des_id.
+// Si el SQL nou encara no s'ha aplicat a Supabase (la funció no té p_des_id: 404/400), es recorda (LOGS_INCR=false) i es torna a la baixada sencera.
+let LOGS_INCR=null,NOV_BASE_ID=null;
+const maxIdLogs=L=>L.reduce((m,l)=>l&&+l.id>m?+l.id:m,0)||null;
+const clauLog=l=>`${l.id}|${l.ts}|${l.sessio}|${l.event}`;
+async function postLogs(d,desId,qs=""){
+ const ambIncr=desId!=null&&LOGS_INCR!==false;
+ const cos=o=>JSON.stringify(Object.assign({p_email:CRED.e,p_pass:CRED.p,p_dies:d},o));
+ let r=await fetch(API+qs,{method:"POST",cache:"no-store",headers:{apikey:KEY,"Content-Type":"application/json"},body:cos(ambIncr?{p_des_id:desId}:{})});
+ if(ambIncr&&(r.status===404||r.status===400)){LOGS_INCR=false;r=await fetch(API+qs,{method:"POST",cache:"no-store",headers:{apikey:KEY,"Content-Type":"application/json"},body:cos({})});return {r,incr:false}}
+ if(ambIncr&&r.ok)LOGS_INCR=true;
+ return {r,incr:ambIncr&&r.ok};
+}
+// files noves des de l'última que ja té el tauler, ajuntades amb les que ja hi són (sense repetir) i retallades al període
+async function logsAmbNous(d){
+ const desId=maxIdLogs(LOGS);
+ if(desId==null||LOGS_INCR===false||LOGS_DIES!==d)return baixaLogs(d);
+ const {r,incr}=await postLogs(d,desId);
+ if(!r.ok)throw r.status;
+ const nous=await r.json();
+ // sense p_des_id al servidor (o una resposta estranya): baixada sencera, amb les seves pàgines de 1.000
+ if(!incr||!Array.isArray(nous)||nous.length>=1000)return baixaLogs(d);
+ const vist=new Set(),lim=Date.now()-Math.min(Math.max(d,1),365)*864e5,tot=[];
+ [...nous,...LOGS].forEach(l=>{const k=clauLog(l);if(vist.has(k)||Date.parse(l.ts)<=lim)return;vist.add(k);tot.push(l)});
+ return tot.sort((a,b)=>Date.parse(b.ts)-Date.parse(a.ts));
+}
+window.bnAdminLogsIncr=()=>LOGS_INCR;
 async function asseguraLogs(){
  if(DEMO){await preguntes();demoInit();if(LOGS_DIES!==DIES){LOGS=demoLogsDies(DIES);LOGS_DIES=DIES}return LOGS}
  if(LOGS_DIES===DIES)return LOGS;
@@ -973,7 +1000,7 @@ async function carregaIds(){
 }
 let FAPR=null,ALTES_CURS=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null,RK_VISTA="total",RK_MON="socials";
 const AUTO_MS=60000;let NOV_BASE=null,NOV_ULT=0,NOV_CURS=false;
-function netejaCaches(){NOV_BASE=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
 function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
 async function carrega(){
  netejaCaches();
@@ -999,9 +1026,9 @@ async function refrescaAuto(forcat=false){
  AUTO_CURS=true;
  try{
   const d=DIES,calLogs=VISTA==="nens"||VISTA==="mons"||VISTA==="sessions"||VISTA==="fitxa"||(VISTA==="ranquing"&&TAB==="reptes");
-  const [L]=await Promise.all([calLogs?baixaLogs(d):Promise.resolve(null),carregaIds(),carregaAspectes()]);
+  const [L]=await Promise.all([calLogs?logsAmbNous(d):Promise.resolve(null),carregaIds(),carregaAspectes()]);
   if(!CRED||$("#shell").hidden)return false;
-  if(calLogs&&Array.isArray(L)&&DIES===d){LOGS=L;LOGS_DIES=d;LOGS_PROM=null;invalidarDades({logs:false});if(L.length)NOV_BASE=L[0].ts}
+  if(calLogs&&Array.isArray(L)&&DIES===d){LOGS=L;LOGS_DIES=d;LOGS_PROM=null;invalidarDades({logs:false});if(L.length){NOV_BASE=L[0].ts;NOV_BASE_ID=maxIdLogs(L)}}
   else invalidarDades({logs:true});
   ACT=new Date();amagaNovetats();
   await repintaSuau();
@@ -1050,12 +1077,12 @@ async function comprovaNovetats(){
  if(!CRED||DEMO||$("#shell").hidden||NOV_CURS||document.visibilityState==="hidden")return false;
  NOV_CURS=true;NOV_ULT=Date.now();
  try{
-  const r=await fetch(`${API}?limit=${NOV_MAX}`,{method:"POST",cache:"no-store",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:Math.max(1,DIES)})});
+  const {r}=await postLogs(Math.max(1,DIES),NOV_BASE_ID,`?limit=${NOV_MAX}`);
   if(!r.ok)return false;
   const L=(await r.json()||[]).slice(0,NOV_MAX),dt=x=>Date.parse(x)||0;
   ACT=new Date();marcaHora();
   if(!L.length)return false;
-  if(NOV_BASE==null){NOV_BASE=(LOGS_DIES!=null&&LOGS.length?LOGS[0].ts:L[0].ts);}
+  if(NOV_BASE==null){const B=LOGS_DIES!=null&&LOGS.length?LOGS:L;NOV_BASE=B[0].ts;NOV_BASE_ID=maxIdLogs(B)}
   const n=L.filter(l=>dt(l.ts)>dt(NOV_BASE)).length;
   if(!n)return false;
   mostraAvisNovetats(n);
