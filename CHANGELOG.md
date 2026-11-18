@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.55.0 · 2026-11-18
+
+### Canviat
+- **Tauler d'admin sense pantallasso** (fase 1 del pla `docs/superpowers/specs/2026-11-18-admin-ordre-paginacio-pla-mestre.md`):
+  - La pantalla ja no es repinta sola cada 30 s. Cada minut, i en tornar a la pestanya, només es comprova en silenci si hi ha accions noves (les 50 últimes, no tot el registre).
+  - Si n'hi ha, surt l'avís «N novetats · Mostra-les» a la capçalera, i a Inici les 6 xifres canvien al seu lloc.
+  - En clicar «Mostra-les» o «Actualitza», o en canviar el període, la vista nova es prepara amagada i substitueix la vella d'una vegada: sense esquelets, sense que els gràfics desapareguin i amb l'scroll al mateix lloc (`repintaSuau`).
+  - Una versió nova del web ja no recarrega el tauler: surt la banda «Hi ha una versió nova del tauler · Recarrega / Més tard».
+- Prova nova `motor/prova-admin-auto.js` (al grup `interficie` i a la revisió de GitHub).
+
 ## 2.54.0 · 2026-11-18
 
 ### Afegit

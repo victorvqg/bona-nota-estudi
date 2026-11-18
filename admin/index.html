@@ -60,7 +60,7 @@ a{color:var(--primary)}
 .menu .sub button:focus-visible{outline:2px solid var(--primary)}
 .menu-peu{margin-top:auto;padding:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:2px}
 .menu-peu small{color:var(--soft);font-size:11.5px;padding:6px 12px 2px}
-.principal{margin-left:var(--menu);min-width:0;padding-top:var(--dalt)}
+.principal{margin-left:var(--menu);min-width:0;padding-top:var(--dalt);position:relative}
 /* ---- capçalera ---- */
 .cap{position:sticky;top:var(--dalt);z-index:30;background:var(--bg);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
 .cap h1{margin:0;font-size:20px;font-weight:700;letter-spacing:-.01em;margin-right:auto}
@@ -208,6 +208,13 @@ tr.det td{background:var(--card2)}
 .avis p{margin:0 0 8px}
 .avis.err{border-color:var(--bad);background:var(--bad-bg)}.avis.err>.ic{color:var(--bad)}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:var(--card);border:1px solid var(--border);padding:2px 6px;border-radius:6px}
+.novetats{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--info);background:var(--info-bg);color:var(--info);border-radius:999px;padding:4px 11px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.novetats i{width:8px;height:8px;border-radius:50%;background:var(--info);flex:none}
+.novetats:hover{filter:brightness(.97)}
+#carregant{color:var(--muted);font-size:12px}
+.versio-bar{position:fixed;left:16px;bottom:16px;z-index:290;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 32px);background:var(--card);color:var(--text);border:1px solid var(--border2);border-left:4px solid var(--info);border-radius:var(--r1);padding:10px 12px;box-shadow:0 6px 20px rgba(15,23,42,.14);font-size:13.5px}
+.versio-bar[hidden]{display:none}
+#contingut.suau-nou{position:absolute;left:0;right:0;top:0;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
 .toasts{position:fixed;right:16px;bottom:16px;z-index:300;display:flex;flex-direction:column;gap:8px;align-items:flex-end;pointer-events:none}
 .toast{pointer-events:auto;background:var(--card);color:var(--text);border:1px solid var(--border);border-left:4px solid var(--ok);box-shadow:var(--sh2);border-radius:var(--r1);padding:10px 14px;display:flex;gap:8px;align-items:center;max-width:380px;font-weight:500;animation:entra .2s ease}
 .toast .ic{color:var(--ok)}
@@ -679,6 +686,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
  .nav-inf button[aria-current="page"]{color:var(--primary);background:var(--primary-soft)}
  .nav-inf button:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
  .toasts{bottom:76px}
+ .versio-bar{bottom:76px}
  .cv.cv-evo{height:300px}
  .evo-filts{width:100%}
  .evo-f{flex:1 1 auto;text-align:center;padding:5px 7px;font-size:12px}
@@ -713,7 +721,9 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
     <div class="seg" id="periode" role="group" aria-label="Període"></div>
    </div>
    <div class="act">
-    <small id="actualitzat" aria-live="polite"></small>
+    <button class="novetats" id="novetats" type="button" hidden></button>
+    <small id="carregant" hidden>Carregant…</small>
+    <small id="actualitzat"></small>
     <button class="btn sec petit" id="refresca" type="button"></button>
     <div class="cap-acc">
      <button class="btn-ic" id="tema" type="button"></button>
@@ -723,6 +733,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
    </div>
   </header>
   <main id="contingut" tabindex="-1"></main>
+  <div class="versio-bar" id="versioBar" role="status" hidden><span>Hi ha una versió nova del tauler.</span><button class="btn petit" id="btRecarrega" type="button">Recarrega</button><button class="btn sec petit" id="btVersioMesTard" type="button">Més tard</button></div>
  </div>
  <nav class="nav-inf" id="navInf" aria-label="Menú principal mòbil"></nav>
 </div>
@@ -739,7 +750,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.54.0";
+const VERSIO_ADMIN="2.55.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -881,7 +892,7 @@ function obrePanell({titol,cos,onClose}){PANELL_RET=document.activeElement;PANEL
 function tancaPanell(){if($("#panell").hidden)return;$("#panell").hidden=true;$("#panellVelo").hidden=true;$("#panellCos").innerHTML="";
  const cb=PANELL_TANCAR;PANELL_TANCAR=null;if(cb)try{cb()}catch(e){}
  if(PANELL_RET&&typeof PANELL_RET.focus==="function"&&document.contains(PANELL_RET))PANELL_RET.focus();PANELL_RET=null;
- if(CRED&&!DEMO&&ACT&&Date.now()-ACT.getTime()>=(window.__BN_AUTO_MS||AUTO_MS))setTimeout(()=>refrescaAuto(),50)}
+ if(CRED&&!DEMO&&Date.now()-NOV_ULT>=(window.__BN_AUTO_MS||AUTO_MS))setTimeout(()=>comprovaNovetats(),50)}
 document.addEventListener("click",e=>{if(e.target.id==="panellVelo"||e.target.closest("#panellTanca"))tancaPanell()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#panell").hidden&&!($("#dlg")&&$("#dlg").open)){e.preventDefault();tancaPanell()}});
 // avatar: el mateix animal i el mateix color que al rànquing (sprites.js; si no s'ha pogut carregar, un cercle amb la inicial).
@@ -955,8 +966,8 @@ async function carregaIds(){
   IDS=ids;NOMS_TOTS=noms}catch(e){}
 }
 let FAPR=null,ALTES_CURS=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null,RK_VISTA="total",RK_MON="socials";
-const AUTO_MS=30000;
-function netejaCaches(){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+const AUTO_MS=60000;let NOV_BASE=null,NOV_ULT=0,NOV_CURS=false;
+function netejaCaches(){NOV_BASE=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
 function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
 async function carrega(){
  netejaCaches();
@@ -970,7 +981,8 @@ async function carrega(){
   mostraApp();ACT=new Date();await pinta();return true;
  }catch(e){login("No hi ha connexió. Torna-ho a provar.");return false}
 }
-// Actualització silenciosa automàtica (cada 30 s, en tornar a la pestanya i en canviar de secció), sense esborrar filtres ni moure l'scroll
+// Torna a carregar les dades i repinta la vista SENSE pantallasso (repintaSuau): el contingut vell es queda a la vista fins que el nou és a punt.
+// Ja no es crida sol: el criden «Mostra-les» (novetats), «Actualitza» i les proves (window.bnAdminAutoRefresca). L'automàtic és comprovaNovetats.
 async function refrescaAuto(forcat=false){
  if(!CRED||DEMO||$("#shell").hidden||VISTA==="config"||AUTO_CURS)return false;
  if(!forcat&&(document.visibilityState==="hidden"||($("#dlg")&&$("#dlg").open)||($("#evoDlg")&&$("#evoDlg").open)||!$("#panell").hidden))return false;
@@ -983,10 +995,10 @@ async function refrescaAuto(forcat=false){
   const d=DIES,calLogs=VISTA==="nens"||VISTA==="mons"||VISTA==="sessions"||VISTA==="fitxa"||(VISTA==="ranquing"&&TAB==="reptes");
   const [L]=await Promise.all([calLogs?baixaLogs(d):Promise.resolve(null),carregaIds(),carregaAspectes()]);
   if(!CRED||$("#shell").hidden)return false;
-  if(calLogs&&Array.isArray(L)&&DIES===d){LOGS=L;LOGS_DIES=d;LOGS_PROM=null;invalidarDades({logs:false})}
+  if(calLogs&&Array.isArray(L)&&DIES===d){LOGS=L;LOGS_DIES=d;LOGS_PROM=null;invalidarDades({logs:false});if(L.length)NOV_BASE=L[0].ts}
   else invalidarDades({logs:true});
-  ACT=new Date();
-  await pinta();
+  ACT=new Date();amagaNovetats();
+  await repintaSuau();
   scrollTo(0,sy);
   if(fTq){const inp=document.querySelector(`input.tb-q[data-tq="${CSS&&CSS.escape?CSS.escape(fTq.id):fTq.id}"]`);
    if(inp){inp.focus({preventScroll:true});try{if(fTq.s0!=null)inp.setSelectionRange(fTq.s0,fTq.s1)}catch(e){}}}
@@ -996,14 +1008,71 @@ async function refrescaAuto(forcat=false){
  finally{AUTO_CURS=false}
 }
 window.bnAdminAutoRefresca=refrescaAuto;
+// Repintat suau: la vista nova es pinta en un #contingut amagat (abans del vell a l'arbre, perquè $("#…") trobi els elements nous)
+// i, quan ja no queden esquelets ni parts carregant (o passats 8 s), substitueix el vell d'una vegada. Ni esquelets a la vista ni salts.
+async function repintaSuau(){
+ const vell=$("#contingut");
+ if(!vell||!vell.firstElementChild||SUAU_CURS){await pinta();return}
+ SUAU_CURS=true;try{await repintaSuau_(vell)}finally{SUAU_CURS=false}
+}
+let SUAU_CURS=false;
+async function repintaSuau_(vell){
+ const sy=window.scrollY,nou=document.createElement("main");
+ nou.id="contingut";nou.tabIndex=-1;nou.className="suau-nou";nou.setAttribute("aria-hidden","true");
+ vell.id="contingutVell";vell.parentNode.insertBefore(nou,vell);
+ const crg=$("#carregant");if(crg)crg.hidden=false;
+ // els gràfics vells es queden dibuixats fins al canvi (pinta() només destrueix els de GRAF)
+ const gVells=GRAF;GRAF=[];
+ try{await pinta()}catch(e){}
+ const t0=Date.now();
+ while(Date.now()-t0<8000&&nou.isConnected&&nou.querySelector('[aria-busy="true"],.esq'))await new Promise(r=>setTimeout(r,80));
+ if(crg)crg.hidden=true;
+ const fora=()=>gVells.forEach(g=>{try{g.destroy()}catch(e){}});
+ if(!nou.isConnected){fora();vell.remove();return}
+ const fv=vell.contains(document.activeElement);
+ nou.className="";nou.removeAttribute("aria-hidden");fora();vell.remove();
+ scrollTo(0,sy);if(fv)nou.focus({preventScroll:true});
+ GRAF.forEach(g=>{try{g.resize()}catch(e){}});
+}
+// Comprovació silenciosa de novetats (cada minut i en tornar a la pestanya): demana les últimes accions del registre i NO toca la pantalla.
+// Si n'hi ha de noves, només surt l'avís «N novetats · Mostra-les» i, a Inici, les 6 xifres de dalt canvien al seu lloc.
+const NOV_MAX=50;
+function amagaNovetats(){const b=document.getElementById("novetats");if(b){b.hidden=true;b.innerHTML=""}}
+function mostraAvisNovetats(n){const b=$("#novetats");if(!b)return;const t=n>=NOV_MAX?`${NOV_MAX}+ novetats`:n===1?"1 novetat":`${n} novetats`;
+ b.innerHTML=`<i aria-hidden="true"></i><span>${t} · Mostra-les</span>`;b.title="Hi ha activitat nova des de l'última vegada. Clica per veure-la (la pantalla no es mou sola).";b.hidden=false}
+async function comprovaNovetats(){
+ if(!CRED||DEMO||$("#shell").hidden||NOV_CURS||document.visibilityState==="hidden")return false;
+ NOV_CURS=true;NOV_ULT=Date.now();
+ try{
+  const r=await fetch(`${API}?limit=${NOV_MAX}`,{method:"POST",cache:"no-store",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_dies:Math.max(1,DIES)})});
+  if(!r.ok)return false;
+  const L=(await r.json()||[]).slice(0,NOV_MAX),dt=x=>Date.parse(x)||0;
+  ACT=new Date();marcaHora();
+  if(!L.length)return false;
+  if(NOV_BASE==null){NOV_BASE=(LOGS_DIES!=null&&LOGS.length?LOGS[0].ts:L[0].ts);}
+  const n=L.filter(l=>dt(l.ts)>dt(NOV_BASE)).length;
+  if(!n)return false;
+  mostraAvisNovetats(n);
+  if(VISTA==="inici"&&$("#iniciKpis")&&!$("#iniciKpis .esq"))kpisInici(TOK,true);
+  return true;
+ }catch(e){return false}
+ finally{NOV_CURS=false}
+}
+window.bnAdminComprovaNovetats=comprovaNovetats;
 function comprovaVersioAdmin(){
  if(location.protocol!=="https:"||!window.fetch)return;
  fetch("./index.html?_t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{
   const m=t&&t.match(/const VERSIO_ADMIN="([^"]+)"/);if(!m||m[1]===VERSIO_ADMIN)return;
-  try{if(sessionStorage.getItem("bn_adm_ver")===m[1])return;sessionStorage.setItem("bn_adm_ver",m[1])}catch(e){}
-  const sp=new URLSearchParams(location.search);sp.set("_b",m[1]);location.replace(location.pathname+"?"+sp.toString()+location.hash);
+  // ja no recarrega sola (el pantallasso): ho avisa i l'admin tria quan
+  avisVersioNova(m[1]);
  }).catch(()=>{});
 }
+
+let VERSIO_MES_TARD=null;
+function avisVersioNova(v){const b=$("#versioBar");if(!b||VERSIO_MES_TARD===v)return;b.hidden=false;
+ $("#btRecarrega").onclick=()=>{const sp=new URLSearchParams(location.search);sp.set("_b",v);location.replace(location.pathname+"?"+sp.toString()+location.hash)};
+ $("#btVersioMesTard").onclick=()=>{VERSIO_MES_TARD=v;b.hidden=true}}
+window.bnAdminAvisVersio=avisVersioNova;
 
 // ====================== MENÚ, GESTOR D'ADREÇA WEB I CAPÇALERA ======================
 const MENU=[["inici","Inici","inici"],["nens","Nens","nens"],["mons","Mons","llibre"],["sessions","Sessions","sessions"],["ranquing","Rànquing","trofeu"]];
@@ -1069,18 +1138,19 @@ function muntaShell(){
  $("#btConfig").onclick=()=>{navega("config");$("#contingut").focus({preventScroll:true})};
  $("#periode").onclick=e=>{const b=e.target.closest("button");if(!b||+b.dataset.d===DIES)return;DIES=+b.dataset.d;
   $$("#periode button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.d===DIES));
-  ALTES=null;BEN=null;FDIA=null;FAPR=null;LOGS_DIES=null;LOGS_PROM=null;ACT=new Date();escriuUrl(true);pinta()};
- $("#refresca").onclick=()=>carrega();
+  ALTES=null;BEN=null;FDIA=null;FAPR=null;LOGS_DIES=null;LOGS_PROM=null;ACT=new Date();escriuUrl(true);repintaSuau()};
+ $("#refresca").onclick=async()=>{if(!(await refrescaAuto(true)))carrega()};
+ $("#novetats").onclick=()=>refrescaAuto(true);
  $("#tema").onclick=()=>{TEMA=TEMA==="fosc"?"clar":"fosc";try{localStorage.setItem("bn_admin_tema",TEMA)}catch(e){}aplicaTema();pinta()};
  const surt=()=>{if(DEMO){location.href="./";return}CRED=null;LOGS=[];LOGS_DIES=null;sessionStorage.removeItem("bn_admin");login()};
  $("#surt").onclick=surt;$("#surtMobil").onclick=surt;
  window.addEventListener("popstate",()=>{llegeixUrl();tancaPanell();pinta()});
  comprovaVersioAdmin();
- const miraAuto=()=>{if(CRED&&!DEMO&&ACT&&Date.now()-ACT.getTime()>=(window.__BN_AUTO_MIN_MS||10000))refrescaAuto()};
+ // novetats: només es comproven (comprovaNovetats), mai es repinta sol
+ const miraAuto=()=>{if(CRED&&!DEMO&&Date.now()-NOV_ULT>=(window.__BN_AUTO_MIN_MS||10000))comprovaNovetats()};
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){comprovaVersioAdmin();miraAuto()}});
- window.addEventListener("focus",miraAuto);
  window.addEventListener("online",miraAuto);
- if(!AUTO_TIMER)AUTO_TIMER=setInterval(()=>{if(CRED&&!DEMO&&ACT&&Date.now()-ACT.getTime()>=(window.__BN_AUTO_MS||AUTO_MS)-1000)refrescaAuto()},5000);
+ if(!AUTO_TIMER)AUTO_TIMER=setInterval(()=>{if(CRED&&!DEMO&&Date.now()-NOV_ULT>=(window.__BN_AUTO_MS||AUTO_MS)-1000)comprovaNovetats()},5000);
 }
 function marcaMenu(){
  const v=VISTA;
@@ -1088,9 +1158,10 @@ function marcaMenu(){
  const bc=$("#btConfig");if(bc){if(v==="config")bc.setAttribute("aria-current","page");else bc.removeAttribute("aria-current")}
  const pw=$("#periodeWrap");if(pw)pw.hidden=v==="config";
  $$("#periode button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.d===DIES));
- const act=$("#actualitzat");
- if(act){act.textContent=ACT?`Actualitzat a les ${hora(ACT)}${DEMO?"":" · auto"}`:"";act.title=DEMO?"":"S'actualitza sol cada 30 s i en tornar a la pestanya"}
+ marcaHora();
 }
+function marcaHora(){const act=$("#actualitzat");
+ if(act){act.textContent=ACT?`Actualitzat a les ${hora(ACT)}`:"";act.title=DEMO?"":"Cada minut i en tornar a la pestanya comprova si hi ha novetats. La pantalla no es mou sola: si n'hi ha, surt «Mostra-les»."}}
 function nomsTots(){const m=new Map();
  Object.entries(NOMS_TOTS).forEach(([k,n])=>{if(k&&k!=="_alta"&&n)m.set(k,n)});
  LOGS.forEach(l=>{const k=clauNen(l);if(k&&k!=="_alta"&&l.nom)m.set(k,l.nom)});
@@ -2598,6 +2669,28 @@ function aplicaPlegaAlertes(obert){
  const sec=$("#alertes"),bt=$("#btAlPlega"),cos=$("#alCos");if(!sec||!bt||!cos)return;
  cos.hidden=!obert;bt.setAttribute("aria-expanded",String(obert));sec.dataset.plegat=obert?"0":"1";
 }
+// les 6 xifres d'Inici: també les crida comprovaNovetats per actualitzar-les al seu lloc (només canvia el número)
+function kpisInici(tok,silenci=false){
+ const pResum=rpcT("bn_admin_resum",{p_assig:null,p_nom:null});
+ const pXatRes=rpcX("bn_admin_xat_resum").catch(()=>null);
+ const pCtrl=ctrlDe().catch(()=>null);
+ return Promise.all([pResum,pXatRes,pCtrl]).then(([resum,xRes,ctrl])=>{
+  if(tok!==TOK||VISTA!=="inici"||!$("#iniciKpis"))return;
+  const A=(resum&&resum.ara)||{},B=resum&&resum.abans,ex=estatXatCtrl(ctrl||{});
+  const xPill=`<span id="kpiXatPill">${ex.obertAra?pillEstat("be","Xat obert ara"):ex.xatAct?pillEstat("avis","Tancat per horari"):pillEstat("malament","Tancat manualment")}</span>`;
+  $("#iniciKpis").innerHTML=filaKpis([
+   {t:"Nens actius",v:A.nens??"—",p:deltaKpi(A,B,"nens")},
+   {t:"Sessions",v:A.sessions??"—",p:deltaKpi(A,B,"sessions")},
+   {t:"Temps d'estudi",v:fmtM(A.minuts),p:deltaKpi(A,B,"minuts")},
+   {t:"Nota mitjana",v:pcVal(A.nota),p:deltaKpi(A,B,"nota")},
+   {t:"Encert preguntes",v:pcVal(A.encert),p:deltaKpi(A,B,"encert")},
+   {t:"Xat avui",v:xRes&&xRes.frases!=null?pl(xRes.frases,"frase","frases"):"—",p:xPill}
+  ],6);
+ }).catch(e=>{
+  if(silenci||tok!==TOK||VISTA!=="inici"||!$("#iniciKpis"))return;
+  $("#iniciKpis").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El resum del tauler encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el resum (${e}).`);
+ });
+}
 async function vistaInici(c){
  const tok=++TOK;
  TF.assig="";TF.nom="";
@@ -2612,26 +2705,8 @@ async function vistaInici(c){
  tControl();
  pintaAltes();
  pintaFontsDiaInici(tok);
- const pResum=rpcT("bn_admin_resum",{p_assig:null,p_nom:null});
+ kpisInici(tok);
  const pAlertes=Promise.all([rpcT("bn_admin_alertes",{p_assig:null,p_nom:null}),preguntes().catch(()=>null)]);
- const pXatRes=rpcX("bn_admin_xat_resum").catch(()=>null);
- const pCtrl=ctrlDe().catch(()=>null);
- Promise.all([pResum,pXatRes,pCtrl]).then(([resum,xRes,ctrl])=>{
-  if(tok!==TOK||VISTA!=="inici"||!$("#iniciKpis"))return;
-  const A=(resum&&resum.ara)||{},B=resum&&resum.abans,ex=estatXatCtrl(ctrl||{});
-  const xPill=`<span id="kpiXatPill">${ex.obertAra?pillEstat("be","Xat obert ara"):ex.xatAct?pillEstat("avis","Tancat per horari"):pillEstat("malament","Tancat manualment")}</span>`;
-  $("#iniciKpis").innerHTML=filaKpis([
-   {t:"Nens actius",v:A.nens??"—",p:deltaKpi(A,B,"nens")},
-   {t:"Sessions",v:A.sessions??"—",p:deltaKpi(A,B,"sessions")},
-   {t:"Temps d'estudi",v:fmtM(A.minuts),p:deltaKpi(A,B,"minuts")},
-   {t:"Nota mitjana",v:pcVal(A.nota),p:deltaKpi(A,B,"nota")},
-   {t:"Encert preguntes",v:pcVal(A.encert),p:deltaKpi(A,B,"encert")},
-   {t:"Xat avui",v:xRes&&xRes.frases!=null?pl(xRes.frases,"frase","frases"):"—",p:xPill}
-  ],6);
- }).catch(e=>{
-  if(tok!==TOK||VISTA!=="inici"||!$("#iniciKpis"))return;
-  $("#iniciKpis").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El resum del tauler encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el resum (${e}).`);
- });
  pAlertes.then(([al])=>{
   if(tok!==TOK||VISTA!=="inici"||!$("#tAl"))return;
   $("#tAl").removeAttribute("aria-busy");tAlertes(Array.isArray(al)?al:[]);
