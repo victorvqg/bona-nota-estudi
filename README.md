@@ -811,6 +811,7 @@ Els tres jobs amb navegador tenen Chromium en memòria cau. El ruleset «main pr
 | 11 | `motor/prova-control-sql.js`, `prova-admin-alta.js` | El control de xat, horari i mons, el filtre superior amb tots els nens i els nivells al tauler |
 | 12 | `motor/prova-pin-intents-sql.js`, `prova-fotos-sql.js`, `prova-pares.js`, `prova-tast.js`, `prova-dificultat-sql.js`, `prova-admin-dificultat.js` | El bloqueig de 15 minuts al 5è intent de PIN (#33), el permís de fotos del quadern, la guia per a les famílies (`pares/`), el mode tast anònim (`?tast=1`) i la dificultat real de les preguntes al servidor i al tauler (#16) |
 | 12b | `motor/prova-admin-evolucio.js` | El gràfic d'evolució del tauler |
+| 12c | `motor/prova-admin-auto.js` | L'actualització del tauler sense pantallasso: comprovació silenciosa, avís «Mostra-les», repintat sense esquelets i banda de versió nova |
 | 13 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |
 | 14 | `motor/prova-visual.js` (un cop per món) | A 360, 390 i 430 px no hi ha scroll horitzontal i cap text d'un SVG surt del dibuix ni del seu requadre |
 

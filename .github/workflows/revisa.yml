@@ -130,6 +130,8 @@ jobs:
         run: node motor/prova-admin-dificultat.js
       - name: Prova del gràfic «Evolució de les notes» del tauler
         run: node motor/prova-admin-evolucio.js
+      - name: Prova de l'actualització del tauler sense pantallasso
+        run: node motor/prova-admin-auto.js
 
   mons:
     name: Món (${{ matrix.mon }})
