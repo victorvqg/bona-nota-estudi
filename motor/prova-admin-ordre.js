@@ -105,6 +105,14 @@ function respon(st, f) {
    ok(errors.length === 0, "cap error de JS" + (errors.length ? ": " + errors.join(" | ") : ""));
    await ctx.close();
   }
+  console.log("2b) Les files de pestanyes no tenen barra de desplaçament vertical (2.58.3)");
+  for (const [w, url] of [[1280, "/admin/?v=nens"], [1280, "/admin/?v=sessions"], [390, "/admin/?v=config"]]) {
+   const { ctx, p } = await obre(url, { viewport: { width: w, height: 800 } });
+   await p.waitForSelector("main .pestanyes");
+   const v = await p.$$eval("main .pestanyes", els => els.map(e => [getComputedStyle(e).overflowY, e.scrollHeight - e.clientHeight]));
+   ok(v.length && v.every(([o]) => o === "hidden"), `${w} px ${url}: les pestanyes no es poden desplaçar en vertical (${JSON.stringify(v)})`);
+   await ctx.close();
+  }
   console.log("3) Adreça vella del xat");
   {
    const { ctx, p } = await obre("/admin/?v=ranquing&tab=xat");

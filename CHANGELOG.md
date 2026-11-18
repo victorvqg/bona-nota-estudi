@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.58.3 · 2026-11-18
+
+### Corregit
+- **Tauler d'admin:** a la dreta de les pestanyes (Llista · Benestar · Missatges al nen, i les de totes les seccions) sortia una barra de desplaçament vertical que no servia per a res. Amb `overflow-x:auto` el navegador també posava `overflow-y:auto`, i el `margin-bottom:-1px` de les pestanyes feia la fila 1 px massa alta. Ara la fila té `overflow-y:hidden`, i `motor/prova-admin-ordre.js` ho comprova.
+
 ## 2.58.2 · 2026-11-18
 
 ### Corregit

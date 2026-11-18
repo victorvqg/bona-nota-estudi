@@ -250,7 +250,8 @@ dialog::backdrop{background:rgba(15,23,42,.55)}
 .perfil h2{font-size:21px;margin:0;font-weight:700}
 .mon-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:var(--card2);border:2px solid var(--mc,#94a3b8);flex:none}
 .xips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.pestanyes{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:16px 0 14px;overflow-x:auto;max-width:100%}
+/* overflow-y:hidden: amb overflow-x:auto el navegador posa també overflow-y:auto, i el margin-bottom:-1px dels botons feia sortir una barra vertical inútil */
+.pestanyes{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:16px 0 14px;overflow-x:auto;overflow-y:hidden;max-width:100%}
 .pestanyes.compacta{margin:0 0 14px}
 .filtres-loc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
 .filtres-loc select,.filtres-loc input[type="date"]{max-width:100%;min-width:0}
@@ -756,7 +757,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.58.2";
+const VERSIO_ADMIN="2.58.3";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
