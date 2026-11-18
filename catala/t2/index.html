@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e692546b00",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="d7a921591b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -686,7 +686,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.52.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.53.0</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -1297,7 +1297,7 @@ function jocMarcaProva(j){const p=mcValida(j);if(p.length)return "jocMarca: "+p.
  if(!MC||!MC.fi)return "jocMarca: no ha acabat";if(MC.bones!==j.items.length-1)return `jocMarca: ${MC.bones} bones de ${j.items.length-1} esperades`;return true}
 if(typeof module!=="undefined")module.exports={mcValida,marcaHtml};
 
-const MONS=[{"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "opina", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "bn_comarques", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "Siéntate", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
+const MONS=[{"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "opina", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "Baix", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "Siéntate", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
 const QIDS={"literatura":[1,2,3,4,5,6,7,8],"oral":[1,2,3,4,5,6,7,8],"escrita":[10,2,3,4,5,11,7,8,9],"generes":[1,2,3,4,5,6,7,8,9],"teatre":[1,2,3,4,5,6,7,8,9,10],"nom":[1,2,3,4,5,6,7,8,9],"classes":[1,2,3,4,5,6,7,8,9,10],"genere":[9,10,2,3,4,5,6,7,8,11],"invariables":[1,2,3,4,5,6,7,8,9],"clau":[1,2,3,4,5,6,7,8,9],"punts":[1,2,3,4,5,6,7,8,9],"puntcoma":[1,2,3,4,5,6,7,8,9]};
 const QDIF={"classes/6":3,"classes/9":3,"clau/3":3,"clau/4":3,"clau/5":3,"escrita/10":3,"escrita/11":3,"genere/4":3,"genere/7":3,"genere/8":3,"generes/1":3,"generes/7":3,"invariables/7":3,"invariables/8":3,"nom/4":3,"nom/7":3,"oral/8":3,"puntcoma/3":3,"puntcoma/9":3,"punts/7":3,"teatre/2":3,"teatre/7":3};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
@@ -1866,8 +1866,9 @@ function pintaTema(){
  <div class="passos" role="tablist" aria-label="Passos del tema">${[["fitxa",ICO.fitxa+" Fitxa",e.fitxa],["targetes",ICO.targetes+" Targetes",e.fc>=t.fc.length],["test",ICO.test+" Test",e.intents.length>0]].map(([k,n,f])=>`<button role="tab" aria-selected="${pest==k?'true':'false'}" class="${pest==k?'on':''} ${f?'fet':''}" onclick="pest='${k}';pintaTema()">${n}</button>`).join("")}</div><div id="zona"></div>`;
  if(pest=="fitxa")fitxa();else if(pest=="targetes")targetes(0);else{REPAS=false;test(barreja(t.q.map((x,i)=>i)).slice(0,MODE_TAST?Math.min(NTEST_TAST,t.q.length):NTEST),0,0,t.id)}
 }
-// T[i].esquema: un esquema dibuixat a la fitxa, sota la idea clau. {html:"…"} (taula o quadre) i/o {marca:{t,m},joc:"id d'un joc de pintar"} (frase pintada)
-function esquemaTema(e){let h="";if(e.marca&&typeof marcaHtml==="function"){const j=(ASSIG.jocs||[]).find(x=>x.id===e.joc)||{};if(j.cats)h+=marcaHtml(e.marca.t,e.marca.m,j.cats)}if(e.html)h+=e.html;
+// T[i].esquema: un esquema dibuixat a la fitxa, sota la idea clau. {html:"…"} (taula o quadre), {marca:{t,m},joc:"id d'un joc de pintar"} (frase pintada)
+// i/o {fn:"nomFuncio", …} (una funció de les dades que rep l'esquema i torna HTML, p. ex. un mapa)
+function esquemaTema(e){let h="";if(e.fn&&typeof window[e.fn]==="function"){try{h+=window[e.fn](e)}catch(x){}}if(e.marca&&typeof marcaHtml==="function"){const j=(ASSIG.jocs||[]).find(x=>x.id===e.joc)||{};if(j.cats)h+=marcaHtml(e.marca.t,e.marca.m,j.cats)}if(e.html)h+=e.html;
  return h?`<div class="esq-tema"><small>👀 ${e.titol||"ESQUEMA"}</small>${h}</div>`:""}
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};

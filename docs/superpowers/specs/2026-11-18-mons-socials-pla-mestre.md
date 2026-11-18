@@ -6,6 +6,11 @@
 
 He comptat el contingut i he fet captures a 390 px de la llista de jocs, del climograma, de «Troba l'error al climograma», d'una fitxa de cada món, del mapa de les 43 comarques i de «Capses dins de capses».
 
+**Estat:** executat a la versió 2.53.0 amb les recomanacions de la secció 6. Diferències amb el pla:
+- El repàs del mapa ja es feia al mapa (`MP.rep`): no ha calgut tocar-lo.
+- Hi ha 2 mapes del temps, no 4-5, i el mapa de la fitxa no s'il·lumina en tocar el nom d'una comarca.
+- El joc de veïnes queda per més endavant, com es va decidir.
+
 **En poques línies.** Tots dos mons tenen un bon test (80 i 56 preguntes) i una peça estrella: **el mapa interactiu de les 43 comarques** (5 modes, amb repàs dels errors) i **el climograma de Girona**. Però són els mons amb **menys pràctica**:
 - **Cap joc de frases amb buits** en tots dos mons. Tampoc hi ha cap explicació de per què una opció és dolenta, ni cap esquema a la teoria, ni cap botó «Practica-ho com a classe».
 - **Clima:** només 5 jocs per a 10 temes, sense grups a la pantalla de jocs. No hi ha res per **calcular** amb un climograma (mitjana, amplitud tèrmica, pluja total), per **dibuixar-ne** un, ni per llegir un **mapa del temps** (anticicló, borrasca, isòbares). Els 4 temes de l'Anoia no tenen cap joc.

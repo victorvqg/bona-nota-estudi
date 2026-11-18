@@ -10,10 +10,10 @@ Després, aquí es comprova si se sap de veritat.
 
 | Món | Assignatura | Tema | Temes | Preguntes | Obertes | Jocs | 👾 Boss | Web |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Ciències socials | Tema 3: El clima | 10 | 80 | 15 | 5 | La Gran Borrasca | [obre'l](https://bonanota.net/sociales/t3-clima/) |
+| 1 | Ciències socials | Tema 3: El clima | 10 | 80 | 15 | 15 | La Gran Borrasca | [obre'l](https://bonanota.net/sociales/t3-clima/) |
 | 2 | Biologia i Geologia | Bloc 1: Univers, Terra i cèl·lula | 11 | 88 | 13 | 5 | El Cometa Rebel | [obre'l](https://bonanota.net/bio-i-geo/univers/) |
 | 3 | Lengua Castellana | Temas 2 y 3 | 15 | 120 | 13 | 23 | El Monstruo de las Faltas | [obre'l](https://bonanota.net/castellano/t2-t3/) |
-| 4 | Ciències socials | Les comarques de Catalunya | 7 | 56 | 7 | 7 | El Drac de les Comarques | [obre'l](https://bonanota.net/sociales/comarques/) |
+| 4 | Ciències socials | Les comarques de Catalunya | 7 | 56 | 7 | 10 | El Drac de les Comarques | [obre'l](https://bonanota.net/sociales/comarques/) |
 | 5 | Matemàtiques | Tema 2: Divisibilitat | 8 | 71 | 15 | 20 | El Gegant Primer | [obre'l](https://bonanota.net/matematiques/divisibilitat/) |
 | 6 | Català | Tema 2: La literatura, el nom i la puntuació | 12 | 109 | 15 | 16 | El Monstre dels Signes | [obre'l](https://bonanota.net/catala/t2/) |
 | 7 | Anglès | Tema 2: That's Entertainment | 8 | 85 | 12 | 15 | El Fantasma del Cinema | [obre'l](https://bonanota.net/angles/t2/) |

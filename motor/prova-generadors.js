@@ -5,7 +5,7 @@
 // els «per què?» i el «Troba l'error» estan ben fets, i els càlculs dels generadors nous quadren.
 const fs=require("fs"),path=require("path");
 // les vistes (MXV) van abans del taller, com a les pàgines dels mons
-const src=fs.readFileSync(path.join(__dirname,"eines/vistes-mates.js"),"utf8")+"\n"+fs.readFileSync(path.join(__dirname,"eines/exercicis-mates.js"),"utf8");
+const src=fs.readFileSync(path.join(__dirname,"eines/vistes-mates.js"),"utf8")+"\n"+fs.readFileSync(path.join(__dirname,"eines/exercicis-mates.js"),"utf8")+"\n"+fs.readFileSync(path.join(__dirname,"eines/clima.js"),"utf8");
 // el fitxer només toca el navegador dins de funcions: n'hi ha prou amb un parell d'objectes buits
 const ctx=new Function("document","window",src+";return {MXG,MXE,mxBo,mxMsg,mxFactors,mxMCD,mxMCM,mxVal,mxN}")({getElementById:()=>null},{});
 const {MXG,MXE,mxBo,mxMsg,mxMCD,mxN}=ctx;
@@ -13,7 +13,7 @@ const N=+process.env.N||300,errs=[];let passos=0,exercicis=0;
 const err=(g,nv,m,E)=>{if(errs.length<40)errs.push(`${g} (nivell ${nv}): ${m}${E?" · "+String(E.enun).replace(/<[^>]+>/g,"").slice(0,80):""}`)};
 const dolentes=P=>P.t==="tria"?P.op.map((_,i)=>i).filter(i=>i!==P.r):P.t==="num"?[P.r+1,Math.max(0,P.r-1),P.r*2+3].filter(v=>v!==P.r):
  P.t==="llista"?[P.r.slice(1),[...P.r,P.r[P.r.length-1]+1],[1]]:[{2:9},{3:1},{}];
-const variants=[["criteri"],["multiples"],["divisors"],["primer"],["escala"],["mcmmcd","MCD"],["mcmmcd","MCM"],["problema"],["divisio"],["combinades"],["fraccions"],["equacio"]];
+const variants=[["criteri"],["multiples"],["divisors"],["primer"],["escala"],["mcmmcd","MCD"],["mcmmcd","MCM"],["problema"],["divisio"],["combinades"],["fraccions"],["equacio"],["climograma"]];
 for(const [g,arg] of variants)for(const nv of [1,2,3])for(let k=0;k<N;k++){
  let E;try{E=MXG[g](nv,arg)}catch(e){err(g,nv,"peta: "+e.message);continue}
  exercicis++;
@@ -36,6 +36,10 @@ for(const [g,arg] of variants)for(const nv of [1,2,3])for(let k=0;k<N;k++){
  if(c.tipus==="combinades"){const js=c.expr.replace(/\./g,"").replace(/·/g,"*").replace(/:/g,"/").replace(/−/g,"-");const v=Function(`return (${js})`)();
   if(v!==c.res)err(g,nv,`combinades: ${c.expr} hauria de donar ${v} i dona ${c.res}`,E);if(E.passos[E.passos.length-1].r!==c.res)err(g,nv,"l'últim pas no és el resultat",E)}
  if(c.tipus==="fraccions"){const s=c.op==="+"?1:-1;if((c.a*c.d+s*c.c*c.b)*c.fd!==c.fn*c.b*c.d||mxMCD(c.fn,c.fd)!==1||c.fn<=0)err(g,nv,`fraccions: ${c.a}/${c.b} ${c.op} ${c.c}/${c.d} ≠ ${c.fn}/${c.fd}`,E)}
+ if(c.tipus==="climograma"){const T=c.T,P=c.P,mx=Math.max(...T),mn=Math.min(...T),sm=T.reduce((a,b)=>a+b,0);
+  if(T.length!==12||P.length!==12)err(g,nv,"climograma sense 12 mesos",E);
+  if(T[6]!==mx||T.filter(x=>x===mx).length!==1||T[0]!==mn||T.filter(x=>x===mn).length!==1)err(g,nv,`climograma: el juliol (${T[6]}) i el gener (${T[0]}) han de ser el màxim i el mínim únics`,E);
+  if(sm%12||c.mitj!==sm/12||c.amp!==mx-mn||c.ptot!==P.reduce((a,b)=>a+b,0)||c.secs!==P.filter((v,i)=>v<2*T[i]).length||mn<0)err(g,nv,"climograma: els càlculs no quadren",E)}
  if(c.tipus==="equacio"){if(c.a*c.x+c.b!==c.c*c.x+c.e)err(g,nv,`equació: x = ${c.x} no la compleix`,E);if(E.passos[E.passos.length-1].r!==c.x)err(g,nv,"l'últim pas no és la x",E)}
 }
 // Troba l'error
