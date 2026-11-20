@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="64ef265b53",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="81c4502a9e",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -298,6 +298,19 @@ body.boss-mal{box-shadow:inset 0 0 0 6px #ef4444}
 .boss-intro .boss-spr.gran{width:150px;height:150px;margin:0 auto;animation:bossFlota 2.4s ease-in-out infinite}
 .boss-intro .boss-spr.ko{animation:none;transform:rotate(90deg) translateX(20px);filter:grayscale(.7) drop-shadow(0 6px 0 #0006)}
 .boss-intro .boss-spr.riu{animation:bossFlota .8s ease-in-out infinite}
+.boss-resum{margin:12px auto 6px;padding:10px;border-radius:14px;background:#0f172a88;border:1.5px solid #6366f155;max-width:560px}
+.br-fila{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}
+.br-r{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;border-radius:9px;background:#1e293bcc;border:1.5px solid #475569;font-size:12px;line-height:1.1}
+.br-r i{font-style:normal;font-size:16px;font-weight:900}
+.br-r b{font-family:'Press Start 2P',monospace;font-size:9px;color:#e2e8f0}
+.br-r.br-ok{border-color:#4ade8088;background:#14532d66}
+.br-r.br-crit{border-color:#fde047;background:#7c2d12aa}.br-r.br-crit b{color:#fde047}
+.br-r.br-mig{border-color:#fb923c;background:#7c2d1266}.br-r.br-mig i{color:#fdba74}
+.br-r.br-err{border-color:#f8717188;background:#7f1d1d66}.br-r.br-err b{color:#fca5a5}
+.br-r.br-no{opacity:.42}
+.br-tot{margin-top:8px;font-size:13.5px;font-weight:800;color:#e0e7ff}
+.br-tot small{display:block;font-size:12px;font-weight:700;color:#a5b4fc;margin-top:3px}
+@media(max-width:540px){.br-fila{grid-template-columns:repeat(5,minmax(0,1fr))}}
 /* celebració audiovisual en vèncer el boss de cada món (g27 · n2899) */
 .boss-festa{position:absolute;inset:0;z-index:8;border-radius:17px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px 12px;text-align:center;cursor:pointer;background:radial-gradient(circle at 50% 42%,var(--bf1,#312e81f2),#090d1ef6 80%);animation:bfEntra .26s ease-out both}
 .boss-festa.surt{opacity:0;transition:opacity .35s ease;pointer-events:none}
@@ -726,7 +739,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.59.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.60.0</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -2539,14 +2552,13 @@ function bossQuiet(){return SUAU||(typeof matchMedia==="function"&&matchMedia("(
 function bossEsFuria(B){return !!(B&&B.hp>0&&B.hp0>0&&(B.hp/B.hp0)<0.3)}
 function bossSerRonda(r){
  if(r.tipus==="test")return {tipus:"test",q:[r.q[0],r.q[1],r.q[2],r.q[3]],qid:r.q.id,qd:r.q.d,qtid:r.q.tid,qtema:r.q.tema,svg:r.svg||"",joc:r.joc||"",dmg:r.dmg};
- if(r.tipus==="ordena")return {tipus:"ordena",j:{titol:r.j.titol,instr:r.j.instr||"",base:r.j.base||""},items:r.items,dmg:r.dmg};
- return {tipus:"oberta",o:r.o,dmg:r.dmg}}
+ return {tipus:"ordena",j:{titol:r.j.titol,instr:r.j.instr||"",base:r.j.base||""},items:r.items,dmg:r.dmg}}
 function bossDeserRonda(r){
  if(r.tipus==="test"){const q=Object.assign(r.q.slice(),{id:r.qid,d:r.qd,tid:r.qtid,tema:r.qtema});return {tipus:"test",q,svg:r.svg||"",joc:r.joc||"",dmg:r.dmg}}
  return r}
 function bossDesaEstat(kSeg,fi){
  const cl=bossClau(),B=BOSS;if(!cl||!B||B.fet)return;
- try{localStorage.setItem(cl,JSON.stringify({v:1,dia:avui(),t0:B.t0,k:kSeg!==undefined?kSeg:B.k,hp:B.hp,hp0:B.hp0,cors:B.cors,enc:B.enc,err:B.err,ratxa:B.ratxa||0,fi:!!fi,tq:TQ.slice(),rondes:B.rondes.map(bossSerRonda)}))}catch(e){}}
+ try{localStorage.setItem(cl,JSON.stringify({v:1,dia:avui(),t0:B.t0,k:kSeg!==undefined?kSeg:B.k,hp:B.hp,hp0:B.hp0,cors:B.cors,enc:B.enc,err:B.err,ratxa:B.ratxa||0,hist:Array.isArray(B.hist)?B.hist.slice():[],fi:!!fi,tq:TQ.slice(),rondes:B.rondes.map(bossSerRonda)}))}catch(e){}}
 function bossEsborraEstat(){const cl=bossClau();if(!cl)return;try{localStorage.removeItem(cl)}catch(e){}}
 function bossEstatDesat(){
  const cl=bossClau();if(!cl)return null;
@@ -2574,28 +2586,27 @@ function bossCarta(enInici){if(!S.nom||!T.length)return "";if(MODE_TAST){if(enIn
  const e=bossEstat(),desat=bossEstatDesat();if(enInici&&(!e.obert||(e.avui&&!desat)))return "";
  const rNum=desat?Math.min(desat.rondes.length,(desat.k||0)+1):0,hpAra=desat?Math.max(0,desat.hp):0,hpTot=desat?Math.max(1,desat.hp0||hpAra||1):0;
  return `<div class="boss-carta${e.obert?"":" tancat"}" ${e.obert?`onclick="boss()" role="button" tabindex="0"`:""}>${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}${e.guanyat?` <span class="bc-med" title="Ja l'has vençut ${S.boss.v} ${S.boss.v>1?"vegades":"vegada"}">🏆 ${S.boss.v}</span>`:""}</b><small>${e.obert?(desat?`Combat en marxa · ${"❤️".repeat(Math.max(0,desat.cors||0))}${"🤍".repeat(Math.max(0,3-(desat.cors||0)))}`:e.avui?"L'has vençut avui! Pots tornar-hi per practicar.":`El repte final del món. Guanya'l: +${BOSS_ESTRELLES} ⭐ (+1 per cor que et queda)${e.guanyat?" · ja l'has vençut "+S.boss.v+(S.boss.v>1?" vegades":" vegada"):""}`):`🔒 Per obrir-lo: aprova ${e.cal} dels ${e.n} temes (ara: ${e.ap}) o treu un ${APROVA} % en un examen`}</small>${e.obert?"":`<i class="bc-b"><i style="width:${Math.round(e.ap*100/e.cal)}%"></i></i>`}</div>${e.obert?`<span class="btn verd">${desat?`⚔️ Continua el combat (ronda ${rNum}, vida ${hpAra}/${hpTot})`:"Lluita ⚔️"}</span>`:""}</div>`}
-// rondes: ~10, amb les especials repartides; si el món no té un tipus de joc, s'hi posa una pregunta de test
+// rondes: 10, només tests i jocs (sense pregunta oberta); si el món no té un tipus de joc, s'hi posa una pregunta de test
 function bossRondes(){const temes=barreja(T.slice()),tests=[];
- for(let i=0;tests.length<9&&i<temes.length*4;i++){const t=temes[i%temes.length],q=barreja(t.q.filter(x=>!tests.some(y=>y[0]===x[0])))[0];if(q){const c=cpQ(q);c.tid=t.id;c.tema=t.titol;tests.push(c)}}
+ for(let i=0;tests.length<10&&i<temes.length*4;i++){const t=temes[i%temes.length],q=barreja(t.q.filter(x=>!tests.some(y=>y[0]===x[0])))[0];if(q){const c=cpQ(q);c.tid=t.id;c.tema=t.titol;tests.push(c)}}
  const J=ASSIG.jocs||[],de=tp=>barreja(J.filter(j=>j.tipus===tp))[0],test=()=>tests.length?{tipus:"test",q:tests.shift(),dmg:12}:null,R=[];
  const fig=(()=>{const j=de("figura");if(!j||!j.q||!j.q.length)return null;const q=cpQ(barreja(j.q.slice())[0]);return {tipus:"test",q,svg:typeof window[j.figura]==="function"?window[j.figura]():j.figura,dmg:12}})();
- const par=(()=>{const j=de("parelles");if(j&&j.pars&&j.pars.length>=3){const ps=barreja(j.pars.slice()).slice(0,3),q=[`Quina és la parella de «${ps[0][0]}»?`,ps.map(x=>x[1]),0,`La parella bona és «${ps[0][1]}».`];return {tipus:"test",q,dmg:12,joc:j.titol}}
-  const c=de("classifica");if(c&&c.caixes&&c.items&&c.items.length){const it=barreja(c.items.slice())[0],ix=c.caixes.findIndex(x=>x[0]===it[1]);if(ix<0)return null;
-   const q=[`On va? «${it[0]}»`,c.caixes.map(x=>x[1]),ix,`Va a «${c.caixes[ix][1]}».`];return {tipus:"test",q,dmg:12,joc:c.titol}}return null})();
+ const par=(()=>{const j=de("parelles");if(j&&j.pars&&j.pars.length>=3){const ps=barreja(j.pars.slice()).slice(0,3),q=[`Quina és la parella de «${ps[0][0]}»?`,ps.map(x=>x[1]),0,`La parella bona és «${ps[0][1]}».`];return {tipus:"test",q,dmg:12,joc:j.titol}}return null})();
+ const cla=(()=>{const c=de("classifica");if(c&&c.caixes&&c.items&&c.items.length){const it=barreja(c.items.slice())[0],ix=c.caixes.findIndex(x=>x[0]===it[1]);if(ix<0)return null;
+  const q=[`On va? «${it[0]}»`,c.caixes.map(x=>x[1]),ix,`Va a «${c.caixes[ix][1]}».`];return {tipus:"test",q,dmg:12,joc:c.titol}}return null})();
  const ord=(()=>{const j=de("ordena");if(!j||!j.items||j.items.length<3)return null;const n=Math.min(5,j.items.length),i0=Math.floor(Math.random()*(j.items.length-n+1));return {tipus:"ordena",j,items:j.items.slice(i0,i0+n),dmg:24}})();
- const ob=OB.length?{tipus:"oberta",o:barreja(OB.slice())[0],dmg:24}:null;
- [test(),test(),ord||test(),test(),fig||test(),ob||test(),test(),par||test(),test(),test()].forEach(x=>{if(x)R.push(x)});return R}
+ [test(),test(),ord||test(),test(),fig||test(),cla||test(),test(),par||test(),test(),test()].forEach(x=>{if(x)R.push(x)});return R}
 function boss(){tancaBossFesta();if(MODE_TAST){convidaPin(`«${bossNom()}» és el repte final del món i s'obre entrant amb nom i PIN.`);return}aturaSeg();tancaActivitat();iniciActivitat();REPAS=false;COMBO=0;FONT=["boss"];marcaNav("jocs");window.scrollTo(0,0);const e=bossEstat();
  if(!e.obert){app.innerHTML=`<h2 class="sec">👾 ${bossNom()}</h2>${bossCarta()}<div class="fila"><button class="btn sec" onclick="vista('jocs')">Torna als jocs</button></div>`;return}
  const desat=bossEstatDesat();
  if(desat){
-  BOSS={rondes:desat.rondes.map(bossDeserRonda),k:desat.k||0,hp:desat.hp,hp0:desat.hp0,cors:desat.cors,enc:desat.enc||0,err:desat.err||0,ratxa:desat.ratxa||0,t0:desat.t0||Date.now(),fet:false};
+  BOSS={rondes:desat.rondes.map(bossDeserRonda),k:desat.k||0,hp:desat.hp,hp0:desat.hp0,cors:desat.cors,enc:desat.enc||0,err:desat.err||0,ratxa:desat.ratxa||0,hist:Array.isArray(desat.hist)?desat.hist.slice():[],t0:desat.t0||Date.now(),fet:false};
   TQ=Array.isArray(desat.tq)?desat.tq.slice():[];
   if(desat.fi||BOSS.hp<=0||BOSS.cors<=0||BOSS.k>=BOSS.rondes.length)return bossFi();
   return bossPinta()}
- const rondes=bossRondes(),max=rondes.reduce((a,r)=>a+r.dmg,0),hp=Math.round(max*.8);
- BOSS={rondes,k:0,hp,hp0:hp,cors:3,enc:0,err:0,ratxa:0,t0:Date.now(),fet:false};TQ=[];
- app.innerHTML=`<div class="boss"><div class="boss-intro">${bossSpr("boss-spr gran")}<h2>${bossNom()}</h2><p>Té <b>${hp}</b> punts de vida. Tu tens <b style="white-space:nowrap">3 cors ❤️❤️❤️</b></p><p class="petit">Cada encert li treu vida. Cada error et treu un cor. ${rondes.length} rondes: test, jocs i una pregunta oberta.</p><button class="btn verd gran" id="bossGo">⚔️ Lluita!</button></div></div>`;
+ const rondes=bossRondes(),max=rondes.reduce((a,r)=>a+r.dmg,0),hp=Math.round(max*.9);
+ BOSS={rondes,k:0,hp,hp0:hp,cors:3,enc:0,err:0,ratxa:0,hist:[],t0:Date.now(),fet:false};TQ=[];
+ app.innerHTML=`<div class="boss"><div class="boss-intro">${bossSpr("boss-spr gran")}<h2>${bossNom()}</h2><p>Té <b>${hp}</b> punts de vida. Tu tens <b style="white-space:nowrap">3 cors ❤️❤️❤️</b></p><p class="petit">Cada encert li treu vida (3 seguits = ⚡ cop crític ×1,5). Cada error et treu un cor. ${rondes.length} rondes de test i jocs.</p><button class="btn verd gran" id="bossGo">⚔️ Lluita!</button></div></div>`;
  document.getElementById("bossGo").onclick=()=>{so("clic");bossPinta()}}
 function bossCap(){const B=BOSS,v=Math.max(0,B.hp),pc=Math.max(0,Math.round(v*100/B.hp0)),fur=bossEsFuria(B);
  return `<div class="boss-cap"><div class="boss-nom">${bossNom()}${fur?` <span class="boss-furia-tag">🔥 FASE DE FÚRIA</span>`:""}</div><div class="boss-hp" title="Vida del boss" aria-label="Vida del boss: ${v} de ${B.hp0}"><i class="boss-hp-d" style="width:${pc}%"></i><i class="boss-hp-v" style="width:${pc}%"></i><span>👾 VIDA ${v} / ${B.hp0}</span></div></div>
@@ -2605,49 +2616,50 @@ function bossPinta(){const B=BOSS,r=B.rondes[B.k];window.scrollTo(0,0);TQ0=Date.
  let cos="";
  if(r.tipus==="test"){const ops=barreja(r.q[1].map((o,i)=>[o,i]));r.ops=ops;
   cos=`${r.svg?`<div class="boss-fig">${r.svg}</div>`:""}<div class="prog">${r.q.tema||r.joc||"Repte"}</div><div class="pregunta">${r.q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt bo" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div>`}
- else if(r.tipus==="ordena"){r.ok=0;r.fallat=false;const ix=barreja(r.items.map((x,i)=>i));
+ else{r.ok=0;r.fallat=false;const ix=barreja(r.items.map((x,i)=>i));
   cos=`<div class="prog">⚡ Cop doble · ${r.j.titol}</div><div class="pregunta">${r.j.instr||"Toca'ls en ordre."}${r.j.base?` <small>(a sota: ${r.j.base})</small>`:""}</div><div class="bo-ord">${ix.map(i=>`<button class="opt bo-o" data-k="${i}" style="${r.items[i][2]?`background:${r.items[i][2]}`:""}"><b>${r.items[i][0]}</b>${r.items[i][1]?`<small>${r.items[i][1]}</small>`:""}</button>`).join("")}</div><div class="bo-fet" id="boFet"></div>`}
- else{cos=`<div class="prog">⚡ Cop final · ${r.o.t}</div><div class="pregunta">${r.o.q}</div><textarea id="boResp" rows="5" placeholder="Explica-ho amb les teves paraules: cada idea clau li treu vida…"></textarea><div class="fila"><button class="btn" id="bossCop">Llança el cop ⚡</button></div>`}
  app.innerHTML=`<div class="boss${bossEsFuria(B)?" furia":""}">${bossCap()}<div class="box boss-box">${cos}<div id="boFb"></div></div></div>`;
  if(r.tipus==="test")app.querySelectorAll(".bo").forEach(b=>b.onclick=()=>{const ok=+b.dataset.i===r.q[2];anotaQ(r.q,ok,+b.dataset.i);
    app.querySelectorAll(".bo").forEach(x=>{x.disabled=true;if(+x.dataset.i===r.q[2])x.classList.add("ok")});if(!ok)b.classList.add("ko");
    if(r.q.tid){repAnota(r.q.tid,r.q[0],ok);if(!ok){const e=ET(r.q.tid);e.fallades[r.q[0]]=(e.fallades[r.q[0]]||0)+1;desa()}}
    bossResol(ok,ok?r.dmg:0,(ok?"✅ <b>Cop!</b> ":"💥 <b>T'ha tocat!</b> ")+(r.q[3]||""))});
- else if(r.tipus==="ordena")app.querySelectorAll(".bo-o").forEach(b=>b.onclick=()=>{if(b.disabled)return;const k=+b.dataset.k;
+ else app.querySelectorAll(".bo-o").forEach(b=>b.onclick=()=>{if(b.disabled)return;const k=+b.dataset.k;
    if(k===r.ok){b.disabled=true;b.classList.add("ok");b.style.order=-100+r.ok;r.ok++;document.getElementById("boFet").textContent=`${r.ok} de ${r.items.length}`;so("ok");
-    if(r.ok>=r.items.length)bossResol(!r.fallat,r.fallat?Math.round(r.dmg/2):r.dmg,r.fallat?"👍 <b>Ordenat!</b> Amb una errada: mig cop.":"⚡ <b>Cop doble!</b> Tot en ordre a la primera.",r.fallat)}
+    if(r.ok>=r.items.length)bossResol(!r.fallat,r.fallat?Math.round(r.dmg/2):r.dmg,r.fallat?"👍 <b>Ordenat!</b> Amb una errada: mig cop.":"⚡ <b>Cop doble!</b> Tot en ordre a la primera.",r.fallat,r.fallat)}
    else{b.classList.add("ko");setTimeout(()=>b.classList.remove("ko"),500);so("ko");if(!r.fallat){r.fallat=true;bossDolor();
-    if(BOSS.cors<=0){app.querySelectorAll(".bo-o").forEach(x=>x.disabled=true);bossResol(false,0,"💥 <b>T'has quedat sense cors!</b>",true)}}}});
- else{const ta=document.getElementById("boResp"),fb=document.getElementById("boFb");obProtegeix(ta,fb);
-  document.getElementById("bossCop").onclick=()=>{const txt=ta.value.trim(),mot=validaOberta(txt,r.o);
-   if(mot){fb.innerHTML=`<div class="fb ko">${OB_MOTIU[mot]}</div>`;return}
-   document.getElementById("bossCop").disabled=true;ta.readOnly=true;
-   const det=r.o.p.filter(pt=>ideaDetectada(pt,txt,r.o.q)).length,tot=r.o.p.length,dmg=Math.round(r.dmg*det/Math.max(1,tot));
-   bossResol(det>0,dmg,`${det?`⚡ <b>${det} de ${tot} idees clau!</b>`:"🤔 <b>No hi he trobat cap idea clau.</b>"} <details style="margin-top:6px"><summary>👀 Resposta model</summary><p>${r.o.m}</p></details>`,true)}}}
+    if(BOSS.cors<=0){app.querySelectorAll(".bo-o").forEach(x=>x.disabled=true);bossResol(false,0,"💥 <b>T'has quedat sense cors!</b>",true)}}}})}
 // un error: perds un cor (només un per ronda)
 function bossDolor(){const B=BOSS;B.cors=Math.max(0,B.cors-1);B.err++;B.ratxa=0;so("ko");
  const c=app.querySelector(".boss-cors");if(c){c.setAttribute("aria-label",`${B.cors} cors`);c.innerHTML=bossCorsHtml(B.cors,B.cors);c.classList.remove("tremola");void c.offsetWidth;c.classList.add("tremola")}
  const w=document.getElementById("bossSprW");if(w){w.classList.remove("cop","ataca");void w.offsetWidth;w.classList.add("ataca")}
  document.body.classList.add("boss-mal");setTimeout(()=>document.body.classList.remove("boss-mal"),350);
  bossDesaEstat(B.k,B.cors<=0)}
-function bossResol(ok,dmg,txt,jaComptat){const B=BOSS;if(ok){B.enc++;B.ratxa=(B.ratxa||0)+1;missio("enc")}else{B.ratxa=0;if(!jaComptat)bossDolor()}
+function bossResol(ok,dmg,txt,jaComptat,mig){const B=BOSS;if(ok){B.enc++;B.ratxa=(B.ratxa||0)+1;missio("enc")}else{B.ratxa=0;if(!jaComptat)bossDolor()}
  const crit=ok&&dmg>0&&B.ratxa>=3&&B.ratxa%3===0;
- if(dmg>0){B.hp-=dmg;so("super");
+ let realDmg=crit?Math.round(dmg*1.5):dmg,copFinal=false;
+ if(realDmg>0)B.hp-=realDmg;
+ if(B.k>=B.rondes.length-1&&B.hp>0&&B.cors===3&&B.err===0){copFinal=true;realDmg+=B.hp;B.hp=0}
+ B.hist=B.hist||[];B.hist.push({t:(crit||copFinal)?"crit":mig?"mig":(ok&&realDmg>0)?"ok":"err",d:realDmg});
+ if(realDmg>0){so("super");
   const box=app.querySelector(".boss");
   if(box&&!bossQuiet()){box.classList.remove("sacseja");void box.offsetWidth;box.classList.add("sacseja")}
   const w=document.getElementById("bossSprW");
   if(w){w.classList.remove("cop","ataca");void w.offsetWidth;w.classList.add("cop");
-   const d=document.createElement("b");d.className="boss-dmg"+(crit?" crit":"");d.textContent="-"+(crit?dmg*2:dmg)+(crit?"!":"");w.appendChild(d);
-   if(crit){const ct=document.createElement("b");ct.className="boss-crit-tag";ct.textContent="⚡ COP CRÍTIC!";w.appendChild(ct)}
-   bossEspurnes(w,crit)}
+   const d=document.createElement("b");d.className="boss-dmg"+((crit||copFinal)?" crit":"");d.textContent="-"+realDmg+((crit||copFinal)?"!":"");w.appendChild(d);
+   if(copFinal||crit){const ct=document.createElement("b");ct.className="boss-crit-tag";ct.textContent=copFinal?"⚡ COP FINAL!":"⚡ COP CRÍTIC!";w.appendChild(ct)}
+   bossEspurnes(w,crit||copFinal)}
   const h=app.querySelector(".boss-hp"),vida=Math.max(0,B.hp),pc=Math.max(0,Math.round(vida*100/B.hp0));
   if(h){const v=h.querySelector(".boss-hp-v"),dl=h.querySelector(".boss-hp-d");if(v)v.style.width=pc+"%";if(dl)dl.style.width=pc+"%";h.setAttribute("aria-label",`Vida del boss: ${vida} de ${B.hp0}`);h.querySelector("span").textContent=`👾 VIDA ${vida} / ${B.hp0}`}
   if(box&&bossEsFuria(B)&&!box.classList.contains("furia")){box.classList.add("furia");const nm=box.querySelector(".boss-nom");if(nm&&!nm.querySelector(".boss-furia-tag"))nm.insertAdjacentHTML("beforeend",` <span class="boss-furia-tag">🔥 FASE DE FÚRIA</span>`)}}
  const fi=B.hp<=0||B.cors<=0||B.k>=B.rondes.length-1;
  bossDesaEstat(fi?B.k:B.k+1,fi);
- const critFb=crit?`<b>⚡ COP CRÍTIC!</b> `:"";
- document.getElementById("boFb").innerHTML=`<div class="fb ${ok&&dmg>0?"ok":"ko"}">${critFb}${txt}</div><div class="fila"><button class="btn" id="bossSeg">${fi?"Veure el resultat 🏁":"Següent ronda ▶"}</button></div>`;
+ const tagFb=copFinal?`<b>⚡ COP FINAL!</b> Sense cap error, el tombes de cop! `:crit?`<b>⚡ COP CRÍTIC (×1,5)!</b> `:"";
+ document.getElementById("boFb").innerHTML=`<div class="fb ${ok&&realDmg>0?"ok":"ko"}">${tagFb}${txt}</div><div class="fila"><button class="btn" id="bossSeg">${fi?"Veure el resultat 🏁":"Següent ronda ▶"}</button></div>`;
  document.getElementById("bossSeg").onclick=()=>{if(fi)return bossFi();B.k++;bossPinta()}}
+function bossResumHtml(B){const h=B.hist||[],ic={ok:"✅",crit:"⚡",mig:"½",err:"❌"},tot=h.reduce((a,x)=>a+(x.d||0),0);
+ const cel=B.rondes.map((r,i)=>{const x=h[i];if(!x)return `<span class="br-r br-no" title="Ronda ${i+1}: no jugada"><i>·</i><b>—</b></span>`;
+  return `<span class="br-r br-${x.t}" title="Ronda ${i+1}: ${x.d?`-${x.d}`:"0"}"><i>${ic[x.t]||"✅"}</i><b>${x.d?`-${x.d}`:"0"}</b></span>`}).join("");
+ return `<div class="boss-resum" aria-label="Resum de rondes"><div class="br-fila">${cel}</div><div class="br-tot">Has tret <b>${tot}</b> de <b>${B.hp0}</b><small>✅ cop sencer · ⚡ crític · ½ mig cop · ❌ error</small></div></div>`}
 function bossFi(){const B=BOSS;if(!B||B.fet)return;B.fet=true;bossEsborraEstat();tancaBossFesta();const guanya=B.hp<=0,n=B.enc+B.err,pc=n?Math.round(B.enc*100/n):0;window.scrollTo(0,0);
  let premiBase=0,premiCors=0,premi=0;const corsExtra=Math.min(3,Math.max(0,B.cors||0));
  if(guanya){const e=diaEst();if(!e.boss){e.boss=1;premiBase=BOSS_ESTRELLES;premiCors=corsExtra;premi=premiBase+premiCors;const f=FONT;FONT=["boss"];suma(premi);FONT=f}S.boss=S.boss||{};S.boss.v=(S.boss.v||0)+1;S.boss.d=avui();S.boss.cors=Math.max(S.boss.cors||0,B.cors);desa();confeti();
@@ -2656,6 +2668,7 @@ function bossFi(){const B=BOSS;if(!B||B.fet)return;B.fet=true;bossEsborraEstat()
  const fall=[...new Set(B.rondes.slice(0,B.k+1).filter((r,i)=>r.tipus==="test"&&r.q.tid&&TQ.some(x=>x.startsWith((r.q.id||"?")+":0"))).map(r=>r.q.tema))];
  app.innerHTML=`<div class="boss"><div class="boss-intro" id="bossFi">${guanya?`${bossSpr("boss-spr gran ko")}<h2>🏆 HAS VENÇUT ${bossNom().toUpperCase()}!</h2><p>Amb ${B.cors} ${B.cors===1?"cor":"cors"} de sobres ${"❤️".repeat(B.cors)}</p><p class="petit">${premi?`+${premiBase} ⭐ + ${premiCors} ⭐ pels cors = <b>+${premi} ⭐</b> de premi!`:"Avui ja l'havies vençut: aquesta vegada, sense estrelles."} Ja estàs a punt per a l'examen d'aquest tema 💪</p>`
   :`${bossSpr("boss-spr gran riu")}<h2>${B.cors<=0?"T'HA GUANYAT AQUESTA VEGADA!":"S'HA ESCAPAT PER POC!"}</h2><p>${B.cors<=0?"T'has quedat sense cors.":`Li quedaven ${B.hp} punts de vida.`} Has encertat ${B.enc} de ${n}.</p>${fall.length?`<p class="petit">Abans de tornar-hi, repassa: <b>${fall.join(", ")}</b>. Els errors ja són al teu repàs 🔁</p>`:""}`}
+  ${bossResumHtml(B)}
   <div class="fila" style="justify-content:center">${guanya?`<button class="btn verd" type="button" onclick="bossFesta(true)">🎬 Celebració</button>`:""}<button class="btn${guanya?" sec":" verd"}" onclick="boss()">${guanya?"Torna a lluitar":"Torna-hi ⚔️"}</button>${!guanya&&repPendents().length?`<button class="btn" onclick="repas()">🔁 Repassa els errors</button>`:""}<button class="btn sec" onclick="vista('jocs')">Jocs</button></div></div></div>`;
  if(guanya)bossFesta(false,BOSS_ULTIM);
  setTimeout(mostraNivell,guanya&&!bossQuiet()?9000:1200)}
@@ -2663,52 +2676,61 @@ function demoBossVista(){tancaBossFesta();marcaNav("jocs");const c=bossCfg();
  BOSS_ULTIM={premiBase:BOSS_ESTRELLES,premiCors:3,premi:BOSS_ESTRELLES+3,cors:3,vegades:(S.boss&&S.boss.v)||1};
  app.innerHTML=`<div class="boss"><div class="boss-intro" id="bossFi">${bossSpr("boss-spr gran ko")}<h2>🏆 HAS VENÇUT ${c.nom.toUpperCase()}!</h2><p>Vista prèvia de la celebració (${c.spr} · ${c.fx} · ${c.mus})</p><p class="petit">Mode demostració: no suma estrelles ni registra res al núvol.</p><div class="fila" style="justify-content:center"><button class="btn verd" type="button" onclick="bossFesta(true)">🎬 Torna a veure la celebració</button><button class="btn sec" type="button" onclick="vista('jocs')">Jocs</button></div></div></div>`;
  bossFesta(true,BOSS_ULTIM)}
-// prova automàtica (motor/prova.js): victòria (+10 ⭐ + 1 per cor, màx +13 un sol cop al dia), derrota (3 errors) i zero «HP» al DOM
+// prova automàtica (motor/prova.js): sense obertes, dany real = mostrat, tot bé guanya sempre (+13 amb 3 cors, +11 amb 1 cor, +0 la 2a), resum final i zero «HP» al DOM
 async function bnProvaBoss(){const repAbans=JSON.stringify(S.rep||{}),bossAbans=JSON.stringify(S.boss||null),e=diaEst(),avuiAbans=e.boss,p0=S.punts;
  const juga=be=>{let n=0;while(n++<60){if(document.getElementById("bossFi"))return true;const sg=document.getElementById("bossSeg");if(sg){sg.click();continue}
-  const r=BOSS.rondes[BOSS.k];
-  if(r.tipus==="test"){[...app.querySelectorAll(".bo")].find(o=>be?+o.dataset.i===r.q[2]:+o.dataset.i!==r.q[2]).click();continue}
-  if(r.tipus==="ordena"){if(!be){const mal=[...app.querySelectorAll(".bo-o")].find(o=>+o.dataset.k!==0);if(mal&&!r.fallat){mal.click();}}
-   for(let k=r.ok;k<r.items.length;k++)app.querySelector(`.bo-o[data-k="${k}"]`).click();continue}
-  // bona: les idees i la resposta model en ordre invers (no és una còpia); dolenta: frase vàlida sense cap paraula important
-  document.getElementById("boResp").value=be?(r.o.m+" "+r.o.p.join(". ")).split(/\s+/).reverse().join(" "):"aquest perque quan sense sobre entre durant despres";document.getElementById("bossCop").click()}return false};
+  const r=BOSS.rondes[BOSS.k],hpAbans=BOSS.hp;
+  if(r.tipus==="test")[...app.querySelectorAll(".bo")].find(o=>be?+o.dataset.i===r.q[2]:+o.dataset.i!==r.q[2]).click();
+  else{if(!be){const mal=[...app.querySelectorAll(".bo-o")].find(o=>+o.dataset.k!==0);if(mal&&!r.fallat){mal.click();}}
+   for(let k=r.ok;k<r.items.length;k++){const el=app.querySelector(`.bo-o[data-k="${k}"]`);if(el&&!el.disabled)el.click()}}
+  const dm=app.querySelector("#bossSprW .boss-dmg");
+  if(dm){const mostrat=parseInt(dm.textContent.replace(/[^0-9]/g,""),10),restat=hpAbans-BOSS.hp;
+   if(mostrat!==restat)return `dany mostrat (${mostrat}) != dany restat (${restat})`}}return false};
  const senseHP=lloc=>/\bHP\b/.test(app.textContent)?`no hauria de sortir «HP» al DOM (${lloc})`:"";
  const mfAbans=JSON.stringify(e.mf||[]),mtAbans=e.mt;e.mf=missionsAvui().map(m=>m.id);e.mt=1;  // les missions, ja fetes: no han de sumar durant la prova
  try{if(!bossEstat().obert)return "el boss hauria d'estar obert (tots els temes aprovats)";e.boss=0;
   vista('jocs');if(!app.querySelector('.boss-carta'))return "no surt la targeta del boss a Jocs";
   boss();let errHP=senseHP("intro");if(errHP)return errHP;
+  if(BOSS.rondes.some(r=>r.tipus==="oberta"))return "al combat del boss no hi ha d'haver cap ronda oberta";
   document.getElementById("bossGo").click();errHP=senseHP("combat");if(errHP)return errHP;
   if(!/VIDA\s+\d+\s*\/\s*\d+/.test(app.querySelector(".boss-hp").textContent))return "la barra de vida ha de mostrar «VIDA X / Y»";
-  if(!juga(true))return "el combat no s'acaba (victòria 3 cors)";
+  const r1=juga(true);if(r1!==true)return r1||"el combat no s'acaba (victòria 3 cors)";
   errHP=senseHP("victòria");if(errHP)return errHP;
   if(BOSS.hp>0)return `amb tot encertat el boss hauria de caure (li queda ${BOSS.hp} de vida)`;
   if(S.punts!==p0+BOSS_ESTRELLES+3)return `victòria amb 3 cors: +${S.punts-p0} ⭐ i havien de ser +${BOSS_ESTRELLES+3}`;
   if(!diaEst().boss||!S.boss||!S.boss.v)return "la victòria no ha quedat apuntada";
+  if(!app.querySelector(".boss-resum")||!/Has tret \d+ de \d+/.test(app.textContent))return "falta la franja de resum de rondes a #bossFi";
   // 2a victòria del dia: +0 ⭐
-  const p1=S.punts;boss();document.getElementById("bossGo").click();juga(true);if(S.punts!==p1)return "la 2a victòria del dia no hauria de donar estrelles";
+  const p1=S.punts;boss();document.getElementById("bossGo").click();const r2=juga(true);if(r2!==true)return r2||"el combat no s'acaba (2a victòria)";
+  if(S.punts!==p1)return "la 2a victòria del dia no hauria de donar estrelles";
   // Victòria amb 1 cor (restablint e.boss=0): +11 ⭐
   e.boss=0;boss();document.getElementById("bossGo").click();bossDolor();bossDolor();
-  if(!juga(true))return "el combat no s'acaba (victòria 1 cor)";
+  const r3=juga(true);if(r3!==true)return r3||"el combat no s'acaba (victòria 1 cor)";
   if(S.punts!==p1+BOSS_ESTRELLES+1)return `victòria amb 1 cor: +${S.punts-p1} ⭐ i havien de ser +${BOSS_ESTRELLES+1}`;
+  // Comprovar COP FINAL: si a l'última ronda amb 0 errors encara queda vida, cau igualment
+  boss();document.getElementById("bossGo").click();BOSS.k=BOSS.rondes.length-1;BOSS.hp=50;bossPinta();
+  const rf=juga(true);if(rf!==true)return rf||"el COP FINAL no tanca el combat";
+  if(BOSS.hp>0||!/HAS VENÇUT/.test(app.textContent))return "amb 0 errors a l'última ronda el COP FINAL ha de tombar el boss";
   // Derrota (3 errors)
-  boss();document.getElementById("bossGo").click();if(!juga(false))return "el combat no s'acaba (derrota)";
+  boss();document.getElementById("bossGo").click();const r4=juga(false);if(r4!==true)return r4||"el combat no s'acaba (derrota)";
   errHP=senseHP("derrota");if(errHP)return errHP;
-  if(BOSS.cors!==0||BOSS.hp<=0)return `amb tot fallat hauria de perdre (cors ${BOSS.cors}, vida ${BOSS.hp})`;if(!/GUANYAT AQUESTA VEGADA/.test(app.textContent))return "no surt la pantalla de derrota";
+  if(BOSS.cors!==0||BOSS.hp<=0)return `amb tot fallat hauria de perdre (cors ${BOSS.cors}, vida ${BOSS.hp})`;
+  if(!/GUANYAT AQUESTA VEGADA/.test(app.textContent))return "no surt la pantalla de derrota";
+  if(!app.querySelector(".boss-resum .br-err"))return "a la derrota ha de sortir la franja amb icones d'error (.br-err)";
   await new Promise(r=>setTimeout(r,1500));return true
  }finally{bossEsborraEstat();tancaBossFesta();S.rep=JSON.parse(repAbans);const b=JSON.parse(bossAbans);if(b)S.boss=b;else delete S.boss;e.boss=avuiAbans;e.mf=JSON.parse(mfAbans);e.mt=mtAbans;desa();aturaSeg()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaBoss");
-// prova (n2897 · n2899): persistència per món i nom, reprendre sense resortejar, caducitat 30 min / canvi de dia (abandonat:1), cop crític, fúria visible, atac i cors
+// prova (n2897 · n2899 · n2903): persistència per món i nom, reprendre sense resortejar, caducitat 30 min / canvi de dia (abandonat:1), cop crític ×1,5 real, fúria visible, atac i cors
 function bnProvaBossCombat(){const rep0=JSON.stringify(S.rep||{}),suau0=SUAU,reg0=registra,logs=[];
  const jugaRonda=be=>{const r=BOSS.rondes[BOSS.k];
   if(r.tipus==="test")[...app.querySelectorAll(".bo")].find(o=>be?+o.dataset.i===r.q[2]:+o.dataset.i!==r.q[2]).click();
-  else if(r.tipus==="ordena"){if(!be){const mal=[...app.querySelectorAll(".bo-o")].find(o=>+o.dataset.k!==0);if(mal&&!r.fallat)mal.click()}
-   for(let k=r.ok;k<r.items.length;k++){const el=app.querySelector(`.bo-o[data-k="${k}"]`);if(el&&!el.disabled)el.click()}}
-  else{document.getElementById("boResp").value=be?(r.o.m+" "+r.o.p.join(". ")).split(/\s+/).reverse().join(" "):"aquest perque quan sense sobre entre durant despres";document.getElementById("bossCop").click()}};
+  else{if(!be){const mal=[...app.querySelectorAll(".bo-o")].find(o=>+o.dataset.k!==0);if(mal&&!r.fallat)mal.click()}
+   for(let k=r.ok;k<r.items.length;k++){const el=app.querySelector(`.bo-o[data-k="${k}"]`);if(el&&!el.disabled)el.click()}}};
  try{bossEsborraEstat();SUAU=false;aplicaSuau();
   const cl=bossClau();if(!cl||!cl.includes(S.nom.trim().toLowerCase()))return "bossClau() ha d'incloure món i nom";
   // 1) Iniciar combat, fer 1 ronda i comprovar desat + targeta «Continua el combat»
   boss();document.getElementById("bossGo").click();
-  const q0=BOSS.rondes.map(r=>r.tipus==="test"?r.q[0]:r.tipus==="ordena"?r.j.titol:r.o.q);
+  const q0=BOSS.rondes.map(r=>r.tipus==="test"?r.q[0]:r.j.titol);
   jugaRonda(true);
   const vidaDespres1=BOSS.hp,vidaIni=BOSS.hp0;
   if(!localStorage.getItem(cl))return "no s'ha desat l'estat del combat a localStorage";
@@ -2720,15 +2742,16 @@ function bnProvaBossCombat(){const rep0=JSON.stringify(S.rep||{}),suau0=SUAU,reg
   // 2) Simular recàrrega (BOSS=null) i reprendre: mateixes rondes, ronda 2, mateixa vida
   BOSS=null;boss();
   if(!BOSS||BOSS.k!==1||BOSS.hp!==vidaDespres1)return `en reprendre havia d'estar a k=1 i vida ${vidaDespres1} (és k=${BOSS&&BOSS.k}, vida=${BOSS&&BOSS.hp})`;
-  const q1=BOSS.rondes.map(r=>r.tipus==="test"?r.q[0]:r.tipus==="ordena"?r.j.titol:r.o.q);
+  const q1=BOSS.rondes.map(r=>r.tipus==="test"?r.q[0]:r.j.titol);
   if(JSON.stringify(q0)!==JSON.stringify(q1))return "en reprendre s'han tornat a sortejar les preguntes";
-  // 3) 2 encerts més seguits (ratxa=3) → COP CRÍTIC amb doble dany visual
+  // 3) 2 encerts més seguits (ratxa=3) → COP CRÍTIC ×1,5 real (el número mostrat = dany restat)
   jugaRonda(true);document.getElementById("bossSeg").click();
-  const dmg3=BOSS.rondes[BOSS.k].dmg;
+  const hpAbans3=BOSS.hp,dmg3=Math.round(BOSS.rondes[BOSS.k].dmg*1.5);
   jugaRonda(true);
   if(!app.querySelector(".boss-crit-tag")||!/COP CRÍTIC/.test(app.textContent))return "amb 3 encerts seguits ha de sortir COP CRÍTIC";
   const dmgEl=app.querySelector(".boss-dmg.crit");
-  if(!dmgEl||dmgEl.textContent!==`-${dmg3*2}!`)return `el cop crític ha de mostrar doble dany visual (-${dmg3*2}!)`;
+  if(!dmgEl||dmgEl.textContent!==`-${dmg3}!`)return `el cop crític ha de mostrar -${dmg3}! (surt ${dmgEl&&dmgEl.textContent})`;
+  if(hpAbans3-BOSS.hp!==dmg3)return `el cop crític ha de restar ${dmg3} reals (ha restat ${hpAbans3-BOSS.hp})`;
   // 4) Fase de fúria per sota del 30 % de vida i el sprite es manté visible
   BOSS.hp=Math.max(1,Math.floor(BOSS.hp0*.25));bossPinta();
   if(!app.querySelector(".boss.furia")||!/FASE DE FÚRIA/.test(app.textContent))return "amb menys del 30 % de vida ha d'activar-se la fase de fúria";
