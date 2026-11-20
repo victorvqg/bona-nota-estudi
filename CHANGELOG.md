@@ -5,6 +5,12 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.60.1 · 2026-11-20
+
+### Corregit
+- **Pantalla final del Boss (`#bossFi`):** l'sprite KO tombat (`.boss-spr.ko`) ja no es desplaça cap avall ni tapa el títol, ni al mòbil ni a l'ordinador.
+- **Resum de rondes (`.boss-resum`):** només mostra les rondes jugades (sense buits «· —») i afegeix al final el rètol «🏁 KO a la ronda N» quan cau el Boss.
+
 ## 2.60.0 · 2026-11-20
 
 ### Canviat

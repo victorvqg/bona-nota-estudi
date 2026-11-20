@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="81c4502a9e",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="86613450a4",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -295,22 +295,21 @@ body.boss-mal{box-shadow:inset 0 0 0 6px #ef4444}
 .bo-fet{text-align:right;font-weight:800;color:var(--suau);margin-top:4px}
 .boss-intro{text-align:center;padding:10px 4px}.boss-intro h2{font-family:'Press Start 2P',monospace;font-size:15px;line-height:1.6;color:#fde047;text-shadow:2px 2px 0 #7c2d12;margin:8px 0}
 .boss-intro p{font-weight:700;font-size:16px;margin:6px 0}.boss-intro p.petit{font-size:14px;color:#c7d2fe}
-.boss-intro .boss-spr.gran{width:150px;height:150px;margin:0 auto;animation:bossFlota 2.4s ease-in-out infinite}
-.boss-intro .boss-spr.ko{animation:none;transform:rotate(90deg) translateX(20px);filter:grayscale(.7) drop-shadow(0 6px 0 #0006)}
+.boss-intro .boss-spr.gran{width:150px;height:150px;margin:0 auto 10px;animation:bossFlota 2.4s ease-in-out infinite}
+.boss-intro .boss-spr.ko{animation:none;transform:rotate(90deg);margin:0 auto 16px;filter:grayscale(.7) drop-shadow(0 6px 0 #0006)}
 .boss-intro .boss-spr.riu{animation:bossFlota .8s ease-in-out infinite}
 .boss-resum{margin:12px auto 6px;padding:10px;border-radius:14px;background:#0f172a88;border:1.5px solid #6366f155;max-width:560px}
-.br-fila{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}
-.br-r{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;border-radius:9px;background:#1e293bcc;border:1.5px solid #475569;font-size:12px;line-height:1.1}
+.br-fila{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.br-r{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:44px;padding:5px 4px;border-radius:9px;background:#1e293bcc;border:1.5px solid #475569;font-size:12px;line-height:1.1}
 .br-r i{font-style:normal;font-size:16px;font-weight:900}
 .br-r b{font-family:'Press Start 2P',monospace;font-size:9px;color:#e2e8f0}
 .br-r.br-ok{border-color:#4ade8088;background:#14532d66}
 .br-r.br-crit{border-color:#fde047;background:#7c2d12aa}.br-r.br-crit b{color:#fde047}
 .br-r.br-mig{border-color:#fb923c;background:#7c2d1266}.br-r.br-mig i{color:#fdba74}
 .br-r.br-err{border-color:#f8717188;background:#7f1d1d66}.br-r.br-err b{color:#fca5a5}
-.br-r.br-no{opacity:.42}
+.br-ko{display:inline-flex;align-items:center;padding:6px 10px;border-radius:9px;background:#facc1526;border:1.5px solid #fde047;font-family:'Press Start 2P',monospace;font-size:10px;color:#fde047;line-height:1.4}
 .br-tot{margin-top:8px;font-size:13.5px;font-weight:800;color:#e0e7ff}
 .br-tot small{display:block;font-size:12px;font-weight:700;color:#a5b4fc;margin-top:3px}
-@media(max-width:540px){.br-fila{grid-template-columns:repeat(5,minmax(0,1fr))}}
 /* celebració audiovisual en vèncer el boss de cada món (g27 · n2899) */
 .boss-festa{position:absolute;inset:0;z-index:8;border-radius:17px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px 12px;text-align:center;cursor:pointer;background:radial-gradient(circle at 50% 42%,var(--bf1,#312e81f2),#090d1ef6 80%);animation:bfEntra .26s ease-out both}
 .boss-festa.surt{opacity:0;transition:opacity .35s ease;pointer-events:none}
@@ -739,7 +738,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.60.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.60.1</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -3747,9 +3746,9 @@ function bossResol(ok,dmg,txt,jaComptat,mig){const B=BOSS;if(ok){B.enc++;B.ratxa
  document.getElementById("boFb").innerHTML=`<div class="fb ${ok&&realDmg>0?"ok":"ko"}">${tagFb}${txt}</div><div class="fila"><button class="btn" id="bossSeg">${fi?"Veure el resultat 🏁":"Següent ronda ▶"}</button></div>`;
  document.getElementById("bossSeg").onclick=()=>{if(fi)return bossFi();B.k++;bossPinta()}}
 function bossResumHtml(B){const h=B.hist||[],ic={ok:"✅",crit:"⚡",mig:"½",err:"❌"},tot=h.reduce((a,x)=>a+(x.d||0),0);
- const cel=B.rondes.map((r,i)=>{const x=h[i];if(!x)return `<span class="br-r br-no" title="Ronda ${i+1}: no jugada"><i>·</i><b>—</b></span>`;
-  return `<span class="br-r br-${x.t}" title="Ronda ${i+1}: ${x.d?`-${x.d}`:"0"}"><i>${ic[x.t]||"✅"}</i><b>${x.d?`-${x.d}`:"0"}</b></span>`}).join("");
- return `<div class="boss-resum" aria-label="Resum de rondes"><div class="br-fila">${cel}</div><div class="br-tot">Has tret <b>${tot}</b> de <b>${B.hp0}</b><small>✅ cop sencer · ⚡ crític · ½ mig cop · ❌ error</small></div></div>`}
+ const cel=h.map((x,i)=>`<span class="br-r br-${x.t}" title="Ronda ${i+1}: ${x.d?`-${x.d}`:"0"}"><i>${ic[x.t]||"✅"}</i><b>${x.d?`-${x.d}`:"0"}</b></span>`).join("");
+ const koTag=B.hp<=0&&h.length?`<span class="br-ko">🏁 KO a la ronda ${h.length}</span>`:"";
+ return `<div class="boss-resum" aria-label="Resum de rondes"><div class="br-fila">${cel}${koTag}</div><div class="br-tot">Has tret <b>${tot}</b> de <b>${B.hp0}</b><small>✅ cop sencer · ⚡ crític · ½ mig cop · ❌ error</small></div></div>`}
 function bossFi(){const B=BOSS;if(!B||B.fet)return;B.fet=true;bossEsborraEstat();tancaBossFesta();const guanya=B.hp<=0,n=B.enc+B.err,pc=n?Math.round(B.enc*100/n):0;window.scrollTo(0,0);
  let premiBase=0,premiCors=0,premi=0;const corsExtra=Math.min(3,Math.max(0,B.cors||0));
  if(guanya){const e=diaEst();if(!e.boss){e.boss=1;premiBase=BOSS_ESTRELLES;premiCors=corsExtra;premi=premiBase+premiCors;const f=FONT;FONT=["boss"];suma(premi);FONT=f}S.boss=S.boss||{};S.boss.v=(S.boss.v||0)+1;S.boss.d=avui();S.boss.cors=Math.max(S.boss.cors||0,B.cors);desa();confeti();
@@ -3790,6 +3789,10 @@ async function bnProvaBoss(){const repAbans=JSON.stringify(S.rep||{}),bossAbans=
   if(S.punts!==p0+BOSS_ESTRELLES+3)return `victòria amb 3 cors: +${S.punts-p0} ⭐ i havien de ser +${BOSS_ESTRELLES+3}`;
   if(!diaEst().boss||!S.boss||!S.boss.v)return "la victòria no ha quedat apuntada";
   if(!app.querySelector(".boss-resum")||!/Has tret \d+ de \d+/.test(app.textContent))return "falta la franja de resum de rondes a #bossFi";
+  if(app.querySelector(".boss-resum .br-no"))return "no han de sortir rondes no jugades al resum";
+  if(!app.querySelector(".boss-resum .br-ko")||!/🏁 KO a la ronda \d+/.test(app.textContent))return "en vèncer ha de sortir «🏁 KO a la ronda N» al resum";
+  const koEl=app.querySelector("#bossFi .boss-spr.ko"),h2El=app.querySelector("#bossFi h2");
+  if(koEl&&h2El&&koEl.getBoundingClientRect().bottom>h2El.getBoundingClientRect().top+1)return "el drac KO no ha de tapar el títol de #bossFi";
   // 2a victòria del dia: +0 ⭐
   const p1=S.punts;boss();document.getElementById("bossGo").click();const r2=juga(true);if(r2!==true)return r2||"el combat no s'acaba (2a victòria)";
   if(S.punts!==p1)return "la 2a victòria del dia no hauria de donar estrelles";
