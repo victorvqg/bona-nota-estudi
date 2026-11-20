@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.61.0 · 2026-11-20
+
+### Canviat
+- **Celebració del Boss a pantalla completa en 5 fases** (`motor/plantilla-estudi-interactiu.html`): ocupa tot el viewport (`position: fixed`, per sobre dels menús i bloquejant l'scroll) amb els colors del món i animacions fluides amb `transform` i `opacity`: (1) KO amb flaix blanc, sacsejada, caiguda girant amb bot i pols; (2) rètol entrant des de lluny amb rebot, lletres una a una i brillantor + música del món; (3) estrelles volant en corba fins al marcador amb «pop» i so; (4) cors restants bategant i esclatant en `+1 ⭐` volant al marcador; (5) medalla `🏆 N` baixant girant amb rebot i pluja de confeti del món (`em`). Tocar en qualsevol moment tanca i torna a `#bossFi`; en mode suau o `prefers-reduced-motion` surt només la banda quieta.
+- **Premi del Boss apujat a `+20 ⭐` + `+1 ⭐` per cada cor que queda (fins a `+23 ⭐`)** a la primera victòria del dia als 8 mons (les victòries següents del dia continuen donant `+0 ⭐`). Actualitzats `COM_GUANYAR` («boss +20 · +1 per cor»), `docs/PUNTUACIO.md`, `docs/BOSS-I-EFECTES.md` i `docs/MONS.md`.
+- `motor/prova-visual.js` captura també les 5 fases de la celebració a 390 px (`?demoBoss=1&fase=1..5`).
+
 ## 2.60.2 · 2026-11-20
 
 ### Canviat

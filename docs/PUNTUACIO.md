@@ -29,7 +29,7 @@ Si només vols la taula, és a l'apartat 2. Si el que vols saber és si l'ús é
 | 🔁 **Error corregit** al repàs | +1 ⭐ | Cada error, un cop al dia; 10 al dia per món |
 | 🔁 **Error après** (encertat 3 cops en dies separats) | +2 ⭐ | Un cop per error |
 | 🎯 **Missió del dia** | +3 ⭐ cada una · +5 ⭐ si fas les 3 | 14 ⭐ al dia per món |
-| 👾 **Boss del món** vençut | +10 ⭐ (+1 ⭐ per cada cor que et queda, fins a +13 ⭐) | Un cop al dia |
+| 👾 **Boss del món** vençut | +20 ⭐ (+1 ⭐ per cada cor que et queda, fins a +23 ⭐) | Un cop al dia |
 
 Aquesta mateixa llista surt al joc, a la targeta «On guanyes les estrelles» (es toca la insígnia d'estrelles).
 

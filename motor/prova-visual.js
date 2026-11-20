@@ -73,7 +73,8 @@ function capcalera(ordinador) {
     for (const w of AMPLADES) {
       const p = await nav.newPage({ viewport: { width: w, height: 820 } }), errs = [];
       p.on("pageerror", e => errs.push(e.message));
-      for (const [nom, url, espera] of vistes) {
+      const llista = w === 390 ? [...vistes, ...[1, 2, 3, 4, 5].map(f => [`boss-f${f}`, `?demoBoss=1&fase=${f}`, 450])] : vistes;
+      for (const [nom, url, espera] of llista) {
         await p.goto(url.startsWith("file://") ? url : "file://" + path.join(arrel, carpeta, "index.html") + url);
         await p.waitForTimeout(espera);
         if (nom === "portada") await p.evaluate(i => { const c = document.querySelector(`.as[data-id="${i}"]`); if (c) c.scrollIntoView({ block: "center" }); }, id);
