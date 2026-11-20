@@ -69,7 +69,7 @@ function capcalera(ordinador) {
     const { id, jocs } = jocsVisuals(carpeta), dir = path.join(__dirname, ".captures", id), mal0 = mal;
     fs.mkdirSync(dir, { recursive: true });
     const vistes = [["portada", "file://" + path.join(arrel, "index.html"), 600], ["tema0", "?tema=0", 800],
-      ...jocs.map(j => [`joc-${j}`, `?joc=${j}`, 800]), ["boss", "?demoBoss=1", 1500]];
+      ...jocs.map(j => [`joc-${j}`, `?joc=${j}`, 800]), ["boss-combat", "?demoCombat=1", 900], ["boss", "?demoBoss=1", 1500]];
     for (const w of AMPLADES) {
       const p = await nav.newPage({ viewport: { width: w, height: 820 } }), errs = [];
       p.on("pageerror", e => errs.push(e.message));

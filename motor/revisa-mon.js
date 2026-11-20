@@ -3,7 +3,20 @@
 // També es fa servir com a mòdul: revisaFont(src) i revisaMon(id) → {errors: [...], avisos: [...]}.
 const fs = require("fs"), path = require("path");
 const PALETA_BOSS = /^[.KWRYGgOCDdMm]{16}$/;
+const BOSS_PECES_CAT = { tret: ["estrella", "rosa", "llapis"], atac: ["embat", "taca", "ensurt"], mort: ["pixels", "goma", "esvaeix"] };
 const net = s => String(s).replace(/<[^>]+>/g, "");
+
+function bossPecesMon(ASSIG) {
+  const b = (ASSIG && ASSIG.boss) || {};
+  const tePix = Array.isArray(b.pix) && b.pix.length === 16;
+  const spr = b.spr || (tePix ? "" : "monstre");
+  const fx = b.fx || "explosio";
+  const mort = BOSS_PECES_CAT.mort.includes(b.mort) ? b.mort : ((fx === "esborra" || fx === "espiral") ? "goma" : (fx === "focus" || fx === "tempesta") ? "esvaeix" : "pixels");
+  const esLlengua = /^(catala|castellano|angles)/i.test((ASSIG && ASSIG.id) || "");
+  const tret = BOSS_PECES_CAT.tret.includes(b.tret) ? b.tret : (esLlengua ? "llapis" : "estrella");
+  const atac = BOSS_PECES_CAT.atac.includes(b.atac) ? b.atac : ((spr === "fantasma" || spr === "borrasca") ? "ensurt" : (spr === "monstre" || spr === "signes" || spr === "faltas") ? "taca" : "embat");
+  return { tret, atac, mort };
+}
 
 // Avalua el fitxer de dades del repo (motor/dades/<id>.js), igual que fan tot.py i qids.py: és codi del projecte, no entrada externa.
 function carrega(src) {
@@ -88,7 +101,11 @@ function revisaFont(src) {
     if (!Array.isArray(b.pix) || b.pix.length !== 16 || b.pix.some(f => typeof f !== "string" || f.length !== 16)) errors.push("boss: el pix ha de fer 16×16");
     else b.pix.forEach((f, i) => { if (!PALETA_BOSS.test(f)) errors.push(`boss: pix fila ${i} amb un color que no és de la paleta (K W R Y G g O C D d M m)`); });
   }
-  return { errors, avisos };
+  for (const [k, vals] of Object.entries(BOSS_PECES_CAT)) {
+    if (b[k] !== undefined && b[k] !== "" && !vals.includes(b[k])) errors.push(`boss: ${k} «${b[k]}» no és al catàleg (${vals.join(" · ")})`);
+  }
+  const bossPeces = bossPecesMon(ASSIG);
+  return { errors, avisos, bossPeces };
 }
 
 const revisaMon = id => revisaFont(fs.readFileSync(path.join(__dirname, "dades", `${id}.js`), "utf8"));
@@ -99,11 +116,12 @@ if (require.main === module) {
   for (const id of ids) {
     const r = revisaMon(id);
     n += r.errors.length;
-    console.log(`${r.errors.length ? "✗" : "✓"} ${id}: ${r.errors.length} errors, ${r.avisos.length} avisos`);
+    const p = r.bossPeces ? ` [boss: ${r.bossPeces.tret} · ${r.bossPeces.atac} · ${r.bossPeces.mort}]` : "";
+    console.log(`${r.errors.length ? "✗" : "✓"} ${id}: ${r.errors.length} errors, ${r.avisos.length} avisos${p}`);
     r.errors.forEach(e => console.log("    ✗ " + e));
     r.avisos.forEach(a => console.log("    · " + a));
   }
   console.log(`\n${ids.length} mons revisats · ${n} errors`);
   process.exit(n ? 1 : 0);
 }
-module.exports = { revisaFont, revisaMon };
+module.exports = { revisaFont, revisaMon, BOSS_PECES_CAT, bossPecesMon };

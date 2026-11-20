@@ -23,9 +23,10 @@ Ja **no cal** tocar l'admin, `sprites.js`, l'SQL de `bn_control.sql` ni les prov
 1. **`ASSIG`**:
    - Identitat: `id`, `nom`, `tema`, `curs`, `ic`, `color` (`[c1, c2, c3]`), `peu`, `blocs` (la suma de `n` = nombre de temes).
    - `jocs`: `ordena`, `parelles`, `classifica`, `figura` (amb una funció que torna un `<svg>`), `error` («Troba l'error»), `frases`…
-   - **`boss`**: segueix [`BOSS-I-EFECTES.md`](BOSS-I-EFECTES.md) §3:
+   - **`boss`**: segueix [`BOSS-I-EFECTES.md`](BOSS-I-EFECTES.md) §2–3:
      - **Opció A (1 línia):** tria `spr`, `fx` i `mus` del catàleg i defineix `nom`, `rotul` i `em`. Si la icona central de l'`fx` no lliga amb el món (per exemple, la rosa de Sant Jordi d'`explosio`), canvia-la amb `ic`.
      - **Opció B (a mida):** sprite 16×16 propi (`pix`) i/o melodia WebAudio (`notes`, `bpm`, `timbre`) dins `ASSIG.boss`.
+     - **Peces de combat i celebració (`tret`, `atac`, `mort`):** el motor les tria sol de manera determinista (`estrella`/`llapis`, `embat`/`taca`/`ensurt`, `pixels`/`goma`/`esvaeix`). Només si el món en necessita una concreta (p. ex. `tret:"rosa"` a Comarques), fixa-la a `ASSIG.boss`; `revisa-mon.js` valida que sigui al catàleg i mostra les peces escollides. Prova-ho amb `?demoCombat=1` i `?demoBoss=1`.
 2. **`T` (temes)**: cada tema amb `id`, `ic`, `col`, `titol`, `font`, `idea`, `pts`, `truc`, `compte`, `fc` (targetes) i `q` (preguntes). **Mínim 8 preguntes per tema**, 3 opcions amb una sola correcta, distractors amb els errors típics i la correcta com a opció més llarga entre el 15 % i el 40 % de les vegades ([`CONVENCIONS.md`](CONVENCIONS.md)).
 3. **`OB` (preguntes obertes)**: `t` (etiqueta), `q`, `p` (idees clau que detecta el corrector) i `m` (resposta model).
 4. Opcional: il·lustració animada a `motor/ilu/<id>.svg` (200×130; si no n'hi ha, la portada mostra `ic`) i preguntes difícils a `motor/dificultat.json` + `motor/dificultat-motius.json` (després, `python3 motor/dificultat.py`).

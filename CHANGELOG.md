@@ -5,6 +5,18 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.62.0 · 2026-11-20
+
+### Afegit
+- **GSAP 3.13 en local (`lib/gsap/`):** nucli + `MotionPathPlugin`, `SplitText`, `Physics2DPlugin` i `CustomEase` (`110,7 KB` / `45,1 KB` gzip, sense CDN), desats a la memòria de `sw.js` i amb càrrega diferida només en entrar al Boss (`carregaGsap()`). Referència del Laboratori arxivada a `docs/referencia/laboratori-boss.html`.
+- **Catàleg de peces del Boss (`BOSS_PECES_CAT`) i selecció determinista (`bossPeces()`):** 3 peces × 3 opcions (`tret`: `estrella | rosa | llapis`; `atac`: `embat | taca | ensurt`; `mort`: `pixels | goma | esvaeix`). El motor tria automàticament segons `fx`, matèria i `spr` (sense atzar); Comarques fixa `tret:"rosa"`.
+- **Vistes prèvies sense guardar ni sumar ⭐:** `?demoCombat=1` (combat en viu) i `?demoBoss=1&tret=…&atac=…&mort=…`.
+- Validació de peces a `motor/revisa-mon.js` (falla si alguna peça no és al catàleg i mostra les peces triades per a cada món) i captura de `?demoCombat=1` a `motor/prova-visual.js`.
+
+### Canviat
+- **Combat Pro del Boss (`motor/plantilla-estudi-interactiu.html`):** projectils corbats amb estela reciclada, aturada d'impacte (`70 ms` / `150 ms` al crític), flaix blanc (`.wh`), aixafar i estirar, retrocés, número d'encert en positiu (`+12`, `+18!`), barra de vida animada amb `transform` (`xPercent`), atacs amb anticipació (`embat`, `taca`, `ensurt`), cor partit en dues meitats, doble batec a l'últim cor i entrada en memòria. Tots els sons pels busos `SB`/`BG` del motor; zero animacions en mode suau i `prefers-reduced-motion`.
+- **Celebració D a pantalla completa (`bossFesta()`):** seqüència GSAP escrita amb etiquetes (`cop`, `agonia`, `trenca` amb càmera lenta i peça `mort`, `boti` de 20 estrelles, `segell` amb la música pròpia del món, `recompte`, `cors` girant-se en estrelles i `medalla` amb canons de confeti del món).
+
 ## 2.61.0 · 2026-11-20
 
 ### Canviat

@@ -189,7 +189,8 @@ print(f"✓ versió {trobat.group(1)} al peu de la portada i dels mons, al taule
 # 4) versió publicada: una empremta del contingut (portada, sprites i mons, calculada amb el buit «__BN_VERSIO__» encara
 #    sense omplir, perquè no depengui d'ella mateixa). Va a: cada pàgina (actualitza.js la compara amb versio.json en obrir-la
 #    i, si no coincideixen, es recarrega sola), versio.json i el service worker (app instal·lable i sense connexió).
-fitxers_sw = ["./", "index.html", f"sprites.js?v={v_spr}", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "perfil/", "pares/"] + [m["carpeta"] + "/" for m in mons]
+gsap_sw = [f"lib/gsap/{f}" for f in ["gsap.min.js", "MotionPathPlugin.min.js", "SplitText.min.js", "Physics2DPlugin.min.js", "CustomEase.min.js"]]
+fitxers_sw = ["./", "index.html", f"sprites.js?v={v_spr}", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "perfil/", "pares/"] + gsap_sw + [m["carpeta"] + "/" for m in mons]
 pagines = ["index.html", "perfil/index.html", "pares/index.html"] + [m["carpeta"] + "/index.html" for m in mons]
 h = hashlib.sha1()
 for f in ["index.html", "sprites.js"] + pagines[1:]:

@@ -498,4 +498,4 @@ function mpDemLlum(el,n){const w=el.closest(".mpdem");if(!w)return;const ja=w.da
 window.mpDemLlum=mpDemLlum;
 
 // 👾 Boss del món (Bona Nota 2.0): nom i monstre del repte final
-ASSIG.boss={nom:"El Drac de les Comarques",spr:"drac",fx:"explosio",mus:"epica",rotul:"FOC DE SANT JORDI!",em:["🐉","🌹","🔥","🛡️"]};
+ASSIG.boss={nom:"El Drac de les Comarques",spr:"drac",fx:"explosio",mus:"epica",rotul:"FOC DE SANT JORDI!",em:["🐉","🌹","🔥","🛡️"],tret:"rosa"};
