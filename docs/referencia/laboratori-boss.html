@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Laboratori del Boss · GSAP + pixel art</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Physics2DPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
+<style>
+:root{--bg:#f1f5f9;--ink:#0f172a;--mut:#64748b;--card:#fff;--line:#e2e8f0;--pix:'Press Start 2P',monospace}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header{max-width:1100px;margin:0 auto;padding:22px 18px 6px}
+h1{font-family:var(--pix);font-size:15px;line-height:1.6;margin:0 0 6px}
+header p{margin:4px 0;color:var(--mut);font-weight:600;max-width:760px}
+.wrap{max-width:1100px;margin:0 auto;padding:12px 18px 40px;display:grid;grid-template-columns:1fr 400px;gap:22px;align-items:start}
+.phone-col{position:sticky;top:12px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}.phone-col{order:-1;top:0;z-index:30;background:var(--bg);padding:6px 0 8px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.card.pro{border:2px solid #f59e0b;background:#fffbeb}
+.card h2{font-size:15px;margin:0 0 4px;font-weight:900}
+.card p{margin:2px 0 10px;color:var(--mut);font-weight:600;font-size:14px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-weight:800;font-size:14px;border:0;border-radius:12px;padding:10px 14px;cursor:pointer;color:#fff;box-shadow:0 3px 0 #0003;transition:transform .08s}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 #0003}
+.b-ok{background:#16a34a}.b-crit{background:#d97706}.b-err{background:#dc2626}.b-sec{background:#475569}
+.b-a{background:#7c3aed}.b-b{background:#db2777}.b-c{background:#0f766e}.b-d{background:#b45309}
+.var{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;padding:10px;border-radius:12px;border:1px solid var(--line);margin-bottom:8px}
+.var small{display:block;color:var(--mut);font-weight:600;font-size:13px;line-height:1.35}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.tags span{font-size:11px;font-weight:800;background:#eef2ff;color:#4338ca;border-radius:6px;padding:2px 6px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cmp div{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.cmp b{display:block;font-size:12px;color:var(--mut);margin-bottom:6px}
+.cmp .row{display:flex;justify-content:center;gap:6px;align-items:center;font-size:30px;min-height:44px;border:0;padding:0}
+.cmp svg{width:36px;height:36px}
+.opts{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px}
+.opts label{display:flex;gap:6px;align-items:center;font-weight:800;font-size:14px}
+.note{font-size:13px;color:var(--mut);font-weight:600;line-height:1.45}
+ol.trucs{margin:6px 0 0;padding-left:20px}
+ol.trucs li{margin-bottom:7px;font-size:14px;font-weight:600;color:#334155;line-height:1.4}
+ol.trucs b{color:var(--ink)}
+
+/* ---------- mòbil simulat (mida lògica 390 × 760, escalat amb JS) ---------- */
+.fit{position:relative;margin:0 auto}
+.phone{position:absolute;left:0;top:0;width:390px;height:760px;transform-origin:0 0;border-radius:30px;overflow:hidden;background:#0b1024;border:8px solid #111827;box-shadow:0 18px 40px #0f172a40;user-select:none}
+.scene{position:absolute;inset:0;background:radial-gradient(circle at 50% 34%,#312e81,#0b1024 75%);overflow:hidden}
+.cam{position:absolute;inset:0;padding:18px 14px 14px;display:flex;flex-direction:column;will-change:transform}
+.bname{font-family:var(--pix);font-size:10px;color:#fde047;line-height:1.6;text-shadow:2px 2px 0 #7c2d12}
+.hp{position:relative;overflow:hidden;height:34px;margin-top:8px;background:#1e1b4b;border:3px solid #fff;box-shadow:0 0 0 3px #0b1024,0 4px 0 3px #0006}
+.hp i{position:absolute;inset:0 auto 0 0;width:100%}
+.hp .lag{background:#fff}
+.hp .fill{background:repeating-linear-gradient(90deg,#ef4444 0 10px,#f97316 10px 20px);box-shadow:inset 0 -6px 0 #0003,inset 0 4px 0 #fff4}
+.hp .seg{background:repeating-linear-gradient(90deg,#0000 0 9.2%,#0b102499 9.2% 10%)}
+.hp span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--pix);font-size:11px;color:#fff;text-shadow:2px 2px 0 #000;letter-spacing:1px}
+.arena{position:relative;flex:1;min-height:0}
+.aura{position:absolute;left:50%;top:50%;width:270px;height:270px;margin:-135px 0 0 -135px;background:radial-gradient(circle,#ef4444b0,#ef444400 65%);opacity:0;transition:opacity .4s}
+.scene.furia .aura{opacity:1;animation:aura .7s ease-in-out infinite}
+.scene.suau .aura{animation:none}
+@keyframes aura{50%{transform:scale(1.14)}}
+.shadow{position:absolute;left:50%;top:calc(50% + 80px);width:124px;height:18px;margin-left:-62px;background:#000;border-radius:50%;opacity:.45}
+.monHold{position:absolute;left:50%;top:50%;width:160px;height:160px;margin:-80px 0 0 -80px}
+.monSq{width:100%;height:100%}
+.spr{position:relative;width:100%;height:100%;will-change:transform}
+.spr svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.spr .wh{opacity:0}
+.hud{display:flex;justify-content:space-between;align-items:flex-end;margin:4px 0 10px}
+.hearts{display:flex;gap:6px}
+.hc{width:45px;height:40px}.hc svg{width:100%;height:100%;display:block}
+.ronda{font-family:var(--pix);font-size:9px;color:#a5b4fc;text-align:right;line-height:1.5}
+.qcard{background:#fff;border-radius:14px;padding:12px;color:#0f172a}
+.qcard .q{font-weight:900;font-size:15px;margin-bottom:2px}
+.op{display:block;width:100%;text-align:left;background:#f1f5f9;color:#0f172a;border:2px solid #cbd5e1;border-radius:10px;padding:8px 10px;margin-top:6px;font-weight:800;font-size:14px;box-shadow:none}
+.op:active{transform:none;box-shadow:none}
+.op.ok{background:#dcfce7;border-color:#16a34a}.op.ko{background:#fee2e2;border-color:#dc2626}
+.vig{position:absolute;inset:0;box-shadow:inset 0 0 50px 14px #ef4444;opacity:0;pointer-events:none;z-index:7}
+.wflash{position:absolute;inset:0;opacity:0;pointer-events:none;z-index:8}
+.lines{position:absolute;inset:-20%;background:repeating-conic-gradient(from 0deg at 50% 40%,#fff0 0 6deg,#ffffff66 6deg 8deg);opacity:0;pointer-events:none;z-index:8}
+.tag-crit{position:absolute;top:12.5%;left:50%;font-family:var(--pix);font-size:15px;color:#fef08a;background:#dc2626;border:3px solid #fde047;padding:8px 10px;white-space:nowrap;z-index:9}
+.dmg{position:absolute;left:0;top:0;font-family:var(--pix);font-size:18px;color:#fde047;text-shadow:3px 3px 0 #b91c1c;z-index:9;pointer-events:none;white-space:nowrap}
+.dmg.crit{font-size:22px;color:#fff;text-shadow:0 0 10px #facc15,3px 3px 0 #dc2626}
+.px{position:absolute;left:0;top:0;width:8px;height:8px;pointer-events:none;z-index:6}
+.proj{position:absolute;left:0;top:0;width:27px;height:27px;z-index:8;pointer-events:none}.proj svg{width:100%;height:100%;display:block}
+.mig{position:absolute;left:0;top:0;width:45px;height:40px;z-index:9;pointer-events:none}.mig svg{width:100%;height:100%;display:block}
+.spark{position:absolute;left:0;top:0;width:64px;height:64px;z-index:8;pointer-events:none}
+.spark:before,.spark:after{content:"";position:absolute;left:50%;top:50%;background:#fff}
+.spark:before{width:64px;height:8px;margin:-4px 0 0 -32px}.spark:after{width:8px;height:64px;margin:-32px 0 0 -4px}
+.ring{position:absolute;left:0;top:0;width:60px;height:60px;border:6px solid #fff;border-radius:50%;z-index:5;pointer-events:none}
+
+/* ---------- celebració (comú) ---------- */
+.fx{position:absolute;inset:0;z-index:20;visibility:hidden;overflow:hidden;cursor:pointer}
+.fx .in{position:absolute;inset:0;will-change:transform}
+.fx .bg{position:absolute;inset:-20%}
+.fx .rays{position:absolute;left:50%;top:42%;width:900px;height:900px;margin:-450px 0 0 -450px;background:repeating-conic-gradient(#fff2 0 8deg,#fff0 8deg 20deg);border-radius:50%;opacity:0}
+.fx .bar{position:absolute;left:0;right:0;height:11%;background:#000;z-index:4}
+.fx .bar.t{top:0;transform:translateY(-100%)}.fx .bar.b{bottom:0;transform:translateY(100%)}
+.fx .flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:12;pointer-events:none}
+.fx .cnt{position:absolute;top:7%;left:50%;transform:translateX(-50%);font-family:var(--pix);font-size:22px;color:#fff;text-shadow:3px 3px 0 #000;display:flex;align-items:center;gap:8px;z-index:6;white-space:nowrap}
+.fx .cnt svg{width:27px;height:27px}
+.fx .fmon{position:absolute;left:50%;top:40%;width:144px;height:144px;margin:-72px 0 0 -72px;z-index:3}
+.fx .rot{position:absolute;left:6%;right:6%;top:63%;text-align:center;font-family:var(--pix);font-size:21px;line-height:1.5;color:#fde047;text-shadow:3px 3px 0 #b45309;z-index:6}
+.fx .sub{position:absolute;left:0;right:0;top:74.5%;text-align:center;font-weight:900;color:#e0e7ff;font-size:15px;opacity:0;z-index:6}
+.fx .fh{position:absolute;left:0;right:0;top:80%;display:flex;justify-content:center;gap:10px;z-index:6}
+.fx .fh svg{width:45px;height:40px}
+.fx .med{position:absolute;left:50%;top:40%;width:117px;height:117px;margin:-58.5px 0 0 -58.5px;z-index:7;opacity:0}
+.fx .salta{position:absolute;bottom:3%;left:0;right:0;text-align:center;font-weight:800;color:#e0e7ff;font-size:12px;opacity:0;z-index:8}
+.fx .st{position:absolute;width:27px;height:27px;margin:-13.5px 0 0 -13.5px;z-index:8;pointer-events:none}
+.fx.quiet .in{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#1e1b4b;padding:20px;text-align:center}
+.fx.quiet .qr{font-family:var(--pix);font-size:15px;color:#fde047;line-height:1.6}
+.fx.quiet .qs{color:#e0e7ff;font-weight:800}
+/* ---------- celebració D (proposta pro) ---------- */
+.d-bg0,.d-bg1,.d-neg{position:absolute;inset:-12%}
+.d-bg0{background:radial-gradient(circle at 50% 36%,#312e81,#0b1024 75%)}
+.d-bg1{background:radial-gradient(circle at 50% 38%,#dc2626,#9a3412 42%,#1c0a05 88%);opacity:0}
+.fx .d-rays{top:38%}
+.d-neg{background:#000;opacity:0;z-index:2}
+.d-slash{position:absolute;left:-25%;top:38%;width:150%;height:12px;margin-top:-6px;background:#fff;transform-origin:0 50%;z-index:5;opacity:0}
+.d-mon{position:absolute;left:50%;top:38%;width:160px;height:160px;margin:-80px 0 0 -80px;z-index:3}
+.d-rot{position:absolute;left:5%;right:5%;top:8%;text-align:center;font-family:var(--pix);font-size:19px;line-height:1.55;color:#fde047;text-shadow:3px 3px 0 #7c2d12;z-index:7}
+.d-sub{position:absolute;left:0;right:0;top:20.5%;text-align:center;font-weight:900;color:#ffedd5;font-size:14px;opacity:0;z-index:7}
+.d-med{position:absolute;left:50%;top:38%;width:135px;height:135px;margin:-67.5px 0 0 -67.5px;z-index:7;visibility:hidden}
+.d-vic{position:absolute;left:0;right:0;top:50.5%;text-align:center;font-family:var(--pix);font-size:10px;color:#fef3c7;text-shadow:2px 2px 0 #000;z-index:7}
+.d-tally{position:absolute;left:0;right:0;top:67%;display:flex;flex-direction:column;align-items:center;gap:7px;z-index:7}
+.d-tally small{font-family:var(--pix);font-size:9px;color:#fed7aa;text-shadow:1px 1px 0 #000}
+.d-tally .row{display:flex;gap:10px}
+.d-cnt{position:absolute;left:50%;top:85%;z-index:8;display:flex;align-items:center;gap:8px;font-family:var(--pix);font-size:22px;color:#fff;text-shadow:3px 3px 0 #000;white-space:nowrap}
+.d-cnt .ic{width:27px;height:27px}.d-cnt .ic svg{width:100%;height:100%;display:block}
+.d-star{position:absolute;left:0;top:0;width:27px;height:27px;z-index:6;pointer-events:none}.d-star svg{width:100%;height:100%;display:block}
+.bola{position:absolute;left:0;top:0;width:30px;height:30px;background:#14102b;z-index:9;pointer-events:none}
+.taca{position:absolute;inset:0;z-index:9;pointer-events:none}
+.taca i{position:absolute;left:0;top:0;background:#14102b}
+.taca i.llum{background:#fff;opacity:.45}
+.d-goma{position:absolute;left:0;top:0;width:54px;height:30px;z-index:6;pointer-events:none}.d-goma svg{width:100%;height:100%;display:block}
+.bbtns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.bb{background:#fff;color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.bb.on{border-color:#f59e0b;background:#fffbeb}
+.peces{display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:center;font-size:14px;font-weight:800}
+.peces select{font:inherit;font-weight:800;padding:7px 8px;border-radius:10px;border:2px solid var(--line);background:#fff;color:var(--ink);min-width:0;width:100%}
+@media(max-width:520px){.peces{grid-template-columns:1fr;gap:4px}.peces select{margin-bottom:6px}}
+code.dades{display:block;margin-top:12px;padding:10px;border-radius:10px;background:#0f172a;color:#e2e8f0;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+</style>
+</head>
+<body>
+<header>
+  <h1>👾 Laboratori del Boss · GSAP + pixel art</h1>
+  <p>Demo per decidir com ha de moure's el Boss. Toca els botons: tot passa dins del mòbil. També pots tocar les respostes de dins del mòbil.</p>
+</header>
+
+<div class="wrap">
+  <div>
+    <div class="card pro">
+      <h2>★ Proposta pro (recomanada)</h2>
+      <p>Mateixes eines (GSAP + pixel art), però amb sis trucs d'ofici de l'animació de jocs. Prova primer el combat en mode Pro i després el cop final.</p>
+      <div class="btns">
+        <button class="b-d" onclick="celebra('D')">▶ Celebració D · Cop final</button>
+        <button class="b-sec" onclick="aPunt()">⚔ Deixa el drac a punt de caure</button>
+      </div>
+      <div class="opts">
+        <label><input type="radio" name="mode" value="pro" checked> Combat Pro</label>
+        <label><input type="radio" name="mode" value="basic"> Combat bàsic (el d'abans)</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Cada món, el seu Boss</h2>
+      <p>El motor és el mateix per a tots. Cada Boss només tria tres peces. Prova els tres exemples o barreja les peces tu mateix.</p>
+      <div class="bbtns">
+        <button class="bb" data-b="drac">🐉 Drac · Comarques</button>
+        <button class="bb" data-b="faltas">✏️ Monstruo · Castellano</button>
+        <button class="bb" data-b="fantasma">🎬 Fantasma · Anglès</button>
+      </div>
+      <div class="peces">
+        <label for="s-tret">Quan el nen encerta, llança</label>
+        <select id="s-tret"><option value="estrella">una estrella</option><option value="rosa">una rosa</option><option value="llapis">un llapis</option></select>
+        <label for="s-atac">Quan falla, el Boss</label>
+        <select id="s-atac"><option value="embat">s'abalança (embat)</option><option value="taca">escup una taca de tinta</option><option value="ensurt">desapareix i fa un ensurt</option></select>
+        <label for="s-mort">Al final, el Boss</label>
+        <select id="s-mort"><option value="pixels">esclata en píxels</option><option value="goma">l'esborra una goma</option><option value="esvaeix">s'apaga com un projector</option></select>
+      </div>
+      <code class="dades" id="dades"></code>
+      <p class="note" style="margin-top:8px">Aquesta línia és tot el que caldria escriure a les dades d'un món nou. La resta ho fa el motor. Per veure la peça del final, toca «Celebració D».</p>
+    </div>
+
+    <div class="card">
+      <h2>El combat</h2>
+      <p>Canvia entre Pro i bàsic a la targeta de dalt i repeteix el mateix cop per comparar.</p>
+      <div class="btns">
+        <button class="b-ok" onclick="encert(12)">✅ Encert +12</button>
+        <button class="b-crit" onclick="encert(18,true)">⚡ Crític +18</button>
+        <button class="b-err" onclick="error()">❌ Error</button>
+        <button class="b-sec" onclick="reinicia()">↺ Reinicia</button>
+      </div>
+      <div class="opts">
+        <label><input type="checkbox" id="suau"> Mode suau (sense animacions)</label>
+        <label><input type="checkbox" id="so" checked> So</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Què canvia a la proposta pro</h2>
+      <ol class="trucs">
+        <li><b>Causa i efecte.</b> La resposta correcta dispara una estrella que vola fins al drac. El nen veu que el cop és seu.</li>
+        <li><b>Anticipació.</b> Abans d'atacar, el drac es tira enrere un instant. L'ull ja sap què vindrà.</li>
+        <li><b>Aturada d'impacte.</b> Quan el cop toca, tot es congela una dècima de segon i el drac es torna blanc. Això dona pes al cop.</li>
+        <li><b>Aixafar i estirar.</b> El drac s'aixafa quan rep i s'estira quan torna. Sembla viu, no un adhesiu.</li>
+        <li><b>Cada Boss cau a la seva manera.</b> El drac esclata en els seus propis píxels, al monstre de les faltes l'esborra una goma i el fantasma s'apaga com un projector.</li>
+        <li><b>Botí que es recull.</b> Les estrelles cauen a terra i després volen al marcador d'una en una. Comptar-les és el premi.</li>
+      </ol>
+      <p class="note" style="margin-top:8px">A més: el cor es parteix en dues meitats que cauen, l'últim cor batega de veritat (doble batec) i, per sota del 30 % de vida, el drac respira més de pressa i té una aura vermella. La celebració D dura uns 9 segons, com l'actual.</p>
+    </div>
+
+    <div class="card">
+      <h2>Dels recursos que has afegit, ja aplicat</h2>
+      <ol class="trucs">
+        <li><b>Només transform i opacity.</b> La barra de vida ja no canvia d'amplada: es desplaça. Res de la demo recalcula la pàgina mentre s'anima.</li>
+        <li><b>Entrada en memòria.</b> Si toques una resposta mentre encara dura l'animació anterior, es guarda i surt just després. Prova-ho tocant dos cops seguits.</li>
+        <li><b>Aturada d'impacte mesurada.</b> 70 ms en un cop normal (les fonts diuen entre 40 i 80) i 150 ms en el crític.</li>
+        <li><b>Càmera lenta al cop final.</b> Quan el drac es trenca, tot va al 30 % de velocitat un instant.</li>
+        <li><b>Píxels nítids.</b> Cada sprite es mostra a un múltiple enter de la seva mida (el Boss, ×10). Els cors i les estrelles tenen les llums càlides i les ombres fredes.</li>
+        <li><b>Partícules reciclades.</b> Els quadrets es reutilitzen en lloc de crear-se i destruir-se cada cop.</li>
+        <li><b>Timeline amb etiquetes.</b> La celebració D està escrita per trams amb nom (cop, agonia, trenca, botí, segell, recompte, cors, medalla). Canviar una durada no desquadra la resta.</li>
+      </ol>
+      <p class="note" style="margin-top:8px">No hi he posat el «parry» (aturar l'atac del drac): canvia les regles del joc i ho has de decidir tu. Tampoc GSAP Flip: serveix per passar de la capsa del combat a pantalla completa, i això es farà a la web real.</p>
+    </div>
+
+    <div class="card">
+      <h2>Altres variants de celebració</h2>
+      <p>Les tres primeres propostes, per comparar amb la D.</p>
+      <div class="var"><button class="b-a" onclick="celebra('A')">▶ A</button><div><b>Arcade clàssic</b><small>El drac cau girant i bota, les lletres cauen d'una en una, les estrelles volen en corba.</small></div></div>
+      <div class="var"><button class="b-b" onclick="celebra('B')">▶ B</button><div><b>Super combo</b><small>Més ràpida: zoom de cop a cada fase, flaixos de colors i pluja d'estrelles.</small></div></div>
+      <div class="var"><button class="b-c" onclick="celebra('C')">▶ C</button><div><b>Èpica de cinema</b><small>Bandes negres, raigs de llum, càmera lenta i estrelles en espiral.</small></div></div>
+    </div>
+
+    <div class="card">
+      <h2>Abans i ara</h2>
+      <div class="cmp">
+        <div><b>Ara (emojis)</b><div class="row">❤️❤️🤍</div><div class="row">⭐🏆</div></div>
+        <div><b>Pixel art</b><div class="row" id="cmpH"></div><div class="row" id="cmpS"></div></div>
+      </div>
+      <p class="note" style="margin-top:10px">Els tres Bosses són els sprites reals de bonanota.net. Els cors, les estrelles, la copa, la rosa, el llapis i la goma els he dibuixat a mà, en quadrícula de píxels. A la versió real es podrien canviar pels paquets CC0 de Kenney.</p>
+    </div>
+  </div>
+
+  <div class="phone-col">
+    <div class="fit" id="fit">
+      <div class="phone" id="phone">
+        <div class="scene" id="scene">
+          <div class="cam" id="cam">
+            <div class="bname">EL DRAC DE LES COMARQUES</div>
+            <div class="hp" id="hp"><i class="lag"></i><i class="fill"></i><i class="seg"></i><span id="hpTxt">👾 VIDA 119 / 119</span></div>
+            <div class="arena" id="arena">
+              <div class="aura"></div>
+              <div class="shadow" id="shadow"></div>
+              <div class="monHold" id="monHold"><div class="monSq" id="monSq"><div class="spr" id="mon"></div></div></div>
+            </div>
+            <div class="hud"><div class="hearts" id="hearts"></div><div class="ronda" id="ronda">Ronda 1 de 10</div></div>
+            <div class="qcard">
+              <div class="q">Quina és la capital de l'Anoia?</div>
+              <button class="op" data-ok="0">A · Manresa</button>
+              <button class="op" data-ok="1">B · Igualada</button>
+              <button class="op" data-ok="0">C · Vic</button>
+            </div>
+          </div>
+          <div class="lines" id="lines"></div>
+          <div class="vig" id="vig"></div>
+          <div class="wflash" id="wflash"></div>
+        </div>
+        <div class="fx" id="fx"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+gsap.registerPlugin(...[window.MotionPathPlugin,window.SplitText,window.Physics2DPlugin,window.CustomEase].filter(Boolean));
+if(window.CustomEase)CustomEase.create("cop","M0,0 C0.1,0.9 0.2,1.25 0.35,1.1 0.5,0.95 0.7,1 1,1");
+const COP=window.CustomEase?"cop":"back.out(2)",FIS=!!window.Physics2DPlugin;
+
+/* ---------- sprites pixel (dibuixats a mà) ---------- */
+const PAL={K:"#1d1631",W:"#ffffff",R:"#e8442e",r:"#ff9d6e",M:"#b4235a",Y:"#ffd23f",O:"#f08c1a",o:"#c2410c",G:"#64748b",g:"#94a3b8",D:"#22c55e",L:"#a3e635",S:"#12907a",d:"#bbf7d0",B:"#38bdf8"};
+const SPR={
+ heart:[".KK...KK.","KrRK.KRRK","KrWRKRRMK","KRRRRRRMK",".KRRRRMK.","..KRRMK..","...KMK...","....K...."],
+ heartG:[".KK...KK.","KgGK.KGGK","KgWGKGGGK","KGGGGGGGK",".KGGGGGK.","..KGGGK..","...KGK...","....K...."],
+ star:["....K....","...KYK...","KKKYYYKKK","KYYWYYYOK",".KYYYYOK.","..KYYOK..",".KYYKYOK.",".KYK.KOK.",".KK...KK."],
+ trophy:["KKKKKKKKK","KYWYYYYOK","KYYYYYYOK",".KYYYYOK.","..KYYOK..","...KYK...","...KYK...","..KYYYK..","..KKKKK.."],
+ rosa:["..KKKK...",".KRRrRK..","KRRRRrRK.","KRMRRRRK.",".KRRRRK..","..KKDK...",".KDKDK...","..KKDK...","....K...."],
+ llapis:[".KKKKKK..","KrYYYYWK.","KrYYYYWGK","KrYYYYWK.",".KKKKKK.."],
+ goma:[".KKKKKKK.","KrrrrBBBK","KrrrrBBBK","KrrrrBBBK",".KKKKKKK."]
+};
+// Bosses reals de bonanota.net (sprites i colors del repo). M i m són els colors del món.
+const BPAL0={K:"#1d1631",W:"#ffffff",R:"#e8442e",Y:"#ffd23f",G:"#475569",g:"#94a3b8",O:"#fb923c",C:"#38bdf8",D:"#22c55e",d:"#86efac"};
+const BOSSOS={
+ drac:{id:"drac",nom:"EL DRAC DE LES COMARQUES",curt:"El Drac de les Comarques",sub:"El Drac de les Comarques, vençut!",rotul:"FOC DE SANT JORDI!",color:["#7c2d12","#c2410c","#f59e0b"],tret:"rosa",atac:"embat",mort:"pixels",
+  q:["Quina és la capital de l'Anoia?",["Manresa","Igualada","Vic"]],spr:["..Y....KK....Y..","..YY..KDDK..YY..",".K..KKDDDDKK..K.","KDK.KDDDDDDK.KDK","KDDKKDKWWKDKKDDK","KDDDKDKRRKDKDDDK",".KKKDDDDDDDDKKK.","...KDDKKKKDDK...","..RORKWWWWKROR..",".ROYYKRRRRKYYOR.","..OO.KddddK.OO..","....KDDddDDK....","...KDDDDDDDDK...","...KDDK..KDDK...","...KYYK..KYYK...","...KKKK..KKKK..."]},
+ faltas:{id:"faltas",nom:"EL MONSTRUO DE LAS FALTAS",curt:"El Monstruo de las Faltas",sub:"¡El Monstruo de las Faltas, vencido!",rotul:"¡NI UNA FALTA!",color:["#7f1d1d","#dc2626","#f59e0b"],tret:"llapis",atac:"taca",mort:"goma",
+  q:["¿Cuál está bien escrita?",["Haber si vienes","A ver si vienes","Aver si vienes"]],spr:["......KKKK......",".....KRRRRK.....","....KRRRRRRK....","....KKKKKKKK....","...KYYYYYYYYK...","..KYYKKYYKKYYK..","..KYWWKYYKWWYK..","..KYRRKYYKRRYK..","..KYYYYYYYYYYK..","..KYYKKKKKKYYK..","..KYYKRRRRKYYK..","...KYYYYYYYYK...","....KKKKKKKK....",".....KggggK.....","......KKKK......",".......KK......."]},
+ fantasma:{id:"fantasma",nom:"EL FANTASMA DEL CINEMA",curt:"El Fantasma del Cinema",sub:"El Fantasma del Cinema, vençut!",rotul:"THAT'S A WRAP!",color:["#831843","#db2777","#fbbf24"],tret:"estrella",atac:"ensurt",mort:"esvaeix",flaix:"#67e8f9",
+  q:["She ___ to the cinema every Friday.",["go","goes","going"]],spr:["....KKKKKKKK....","..KKWWWWWWWWKK..",".KWWWWWWWWWWWWK.",".KWWKKKKKKKKWWK.","KWWKRRRRKCCCCKWK","KWWKRRRRKCCCCKWK","KWWKKKKKKKKKKWWK","KWWWWWWWWWWWWWWK","KWWWWKKKKKKWWWWK","KWWWKYYYYYYKWWWK","KWWWWKKKKKKWWWWK","KWWWWWWWWWWWWWWK","KWWWWWWWWWWWWWWK","KWWKWWWKWWWKWWWK","KWK.KWK.KWK.KWK.","KK...K...K...KK."]}
+};
+let boss=BOSSOS.drac;SPR.mon=boss.spr;
+// les tres peces que tria cada Boss
+const PECES={tret:"rosa",atac:"embat",mort:"pixels"};
+const TRETS={estrella:{spr:"star",col:"#fde047"},rosa:{spr:"rosa",col:"#fb7185"},llapis:{spr:"llapis",col:"#fde047",dard:true}};
+const palDe=name=>name==="mon"?Object.assign({},BPAL0,{M:boss.color[1],m:boss.color[2]}):PAL;
+function svg(name,cls,o){o=o||{};const rows=SPR[name],h=rows.length,w=rows[0].length,P=palDe(name);let r="";
+ rows.forEach((row,y)=>[...row].forEach((c,x)=>{if(c==="."||(o.only&&!o.only(x,y)))return;r+=`<rect x="${x}" y="${y}" width="1.03" height="1.03" fill="${o.fill||P[c]}"/>`}));
+ return `<svg class="${cls||""}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">${r}</svg>`}
+const pix=svg;
+const spr=(name,white)=>svg(name)+(white?svg(name,"wh",{fill:(name==="mon"&&boss.flaix)||"#fff"}):"");
+
+/* ---------- utilitats ---------- */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const suau=()=>$("#suau").checked,so=()=>$("#so").checked,cam=$("#cam");
+const K=()=>{const p=$("#phone");return p.getBoundingClientRect().width/p.offsetWidth||1};
+function centre(el,host){const a=el.getBoundingClientRect(),b=host.getBoundingClientRect(),k=K();return {x:(a.left-b.left+a.width/2)/k,y:(a.top-b.top+a.height/2)/k}}
+function lletres(el){if(window.SplitText){try{return new SplitText(el,{type:"words,chars"}).chars}catch(e){}}
+ const t=el.textContent;el.textContent="";return [...t].map(c=>{const s=document.createElement("span");s.style.display="inline-block";s.textContent=c===" "?" ":c;el.appendChild(s);return s})}
+const POOL=[];
+function pren(host){const p=POOL.pop()||document.createElement("i");p.className="px";gsap.set(p,{clearProps:"all"});host.appendChild(p);return p}
+function torna(p){gsap.killTweensOf(p);p.remove();if(POOL.length<300)POOL.push(p)}
+function particules(host,x,y,n,cols,o){o=o||{};if(suau())return;for(let i=0;i<n;i++){const p=pren(host);
+ const s=o.size||gsap.utils.random(5,10,1),dur=o.dur||1;
+ gsap.set(p,{x,y,xPercent:-50,yPercent:-50,width:s,height:s,background:cols[i%cols.length]});
+ if(FIS)gsap.to(p,{duration:dur,physics2D:{velocity:gsap.utils.random(o.v0||180,o.v1||420),angle:gsap.utils.random(o.a0??-170,o.a1??-10),gravity:o.g??700},rotation:gsap.utils.random(-360,360),ease:"none"});
+ else gsap.to(p,{duration:dur,x:x+gsap.utils.random(-120,120),y:y+gsap.utils.random(-160,80),ease:"power2.out"});
+ gsap.to(p,{opacity:0,duration:.25,delay:Math.max(0,dur-.25),onComplete:()=>torna(p)})}}
+function sacseja(el,f){if(suau())return;const tl=gsap.timeline(),n=7;for(let i=0;i<n;i++){const d=f*(1-i/n);tl.to(el,{x:gsap.utils.random(-d,d),y:gsap.utils.random(-d,d)*.7,duration:.035,ease:"none"})}tl.to(el,{x:0,y:0,duration:.05})}
+const shake=f=>sacseja(cam,f);
+function anell(host,x,y,k,d){const r=document.createElement("div");r.className="ring";host.appendChild(r);gsap.set(r,{x,y,xPercent:-50,yPercent:-50,scale:.1});gsap.to(r,{scale:k,opacity:0,duration:d||.6,ease:"power2.out",onComplete:()=>r.remove()})}
+const blanc=(sel,on)=>gsap.set(sel+" .wh",{opacity:on?1:0});
+
+/* ---------- so (WebAudio, només després d'un clic) ---------- */
+let AC=null;function ac(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume()}catch(e){}return AC}
+function to(f,t,d,type,v){const a=ac();if(!a||!so())return;const o=a.createOscillator(),g=a.createGain();o.type=type||"square";o.frequency.setValueAtTime(f,a.currentTime+t);g.gain.setValueAtTime(v||.06,a.currentTime+t);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+t+d);o.connect(g).connect(a.destination);o.start(a.currentTime+t);o.stop(a.currentTime+t+d+.02)}
+function slide(f1,f2,t,d,type,v){const a=ac();if(!a||!so())return;const o=a.createOscillator(),g=a.createGain();o.type=type||"square";o.frequency.setValueAtTime(f1,a.currentTime+t);o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t+d);g.gain.setValueAtTime(v||.06,a.currentTime+t);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+t+d);o.connect(g).connect(a.destination);o.start(a.currentTime+t);o.stop(a.currentTime+t+d+.02)}
+function soroll(d,v,f){const a=ac();if(!a||!so())return;try{const len=Math.floor(a.sampleRate*d),buf=a.createBuffer(1,len,a.sampleRate),ch=buf.getChannelData(0);for(let i=0;i<len;i++)ch[i]=(Math.random()*2-1)*(1-i/len);
+ const n=a.createBufferSource(),g=a.createGain(),fl=a.createBiquadFilter();n.buffer=buf;g.gain.value=v||.12;fl.type="lowpass";fl.frequency.value=f||1200;n.connect(fl).connect(g).connect(a.destination);n.start()}catch(e){}}
+const SFX={
+ sel:()=>to(700,0,.05,"square",.04),
+ whoosh:()=>slide(300,950,0,.2,"triangle",.05),
+ hit:()=>{soroll(.12,.2,1800);slide(520,140,0,.14,"square",.07)},
+ crit:()=>{soroll(.24,.28,2600);slide(900,120,0,.25,"sawtooth",.07);to(1320,.05,.12,"square",.05)},
+ buzz:()=>slide(180,120,0,.18,"sawtooth",.06),
+ charge:()=>slide(110,430,0,.26,"sawtooth",.05),
+ err:()=>{soroll(.3,.32,700);slide(220,60,0,.35,"sawtooth",.08)},
+ heavy:()=>{soroll(.5,.38,900);slide(200,40,0,.5,"square",.09)},
+ blip:i=>{soroll(.08,.12,3000);to(620-(i||0)*40,0,.09,"square",.05)},
+ boom:()=>{soroll(.9,.45,1400);slide(160,30,0,.9,"sawtooth",.1)},
+ stamp:()=>{soroll(.15,.3,600);to(90,0,.2,"square",.1)},
+ ko:()=>slide(300,40,0,.8,"sawtooth",.09),
+ escup:()=>slide(520,200,0,.12,"square",.05),
+ esquitx:()=>{soroll(.35,.32,500);slide(180,70,0,.25,"sawtooth",.07)},
+ uuu:()=>slide(520,170,0,.32,"sine",.07),
+ frega:()=>soroll(.3,.1,3200),
+ puf:()=>{soroll(.4,.25,1800);to(520,0,.1,"square",.05)},
+ apaga:()=>slide(700,50,0,.35,"triangle",.08),
+ star:i=>to(700+((i||0)%20)*45,0,.07,"square",.035),
+ heart:()=>{to(660,0,.08);to(990,.08,.12)},
+ fan:()=>{[523,659,784,1047,784,1047].forEach((f,i)=>to(f,i*.12,i===5?.5:.11,"square",.06))},
+ med:()=>{[784,988,1175,1568].forEach((f,i)=>to(f,i*.07,.25,"triangle",.07))}
+};
+
+/* ---------- estat del combat ---------- */
+const HP0=119,hpN={v:HP0};let hp=HP0,cors=3,ronda=1,busy=false,mode="pro",idleTl=null,beat=null,lowTw=null,buf=null,hitId=0;
+// accions en marxa (projectil, aturada, atac): «Reinicia» les ha de poder tallar
+const ACTS=[],acte=t=>{ACTS.push(t);if(ACTS.length>40)ACTS.splice(0,20);return t};
+// entrada en memòria: un toc fet mentre dura l'animació es guarda i surt just després
+const desa=fn=>{buf={fn,t:performance.now()}};
+function lliure(){busy=false;const b=buf;buf=null;if(b&&performance.now()-b.t<600)b.fn()}
+$("#cmpH").innerHTML=svg("heart")+svg("heart")+svg("heartG");
+$("#cmpS").innerHTML=svg("star")+svg("trophy");
+
+function idle(){if(idleTl){idleTl.kill();idleTl=null}gsap.set(["#monHold","#monSq","#mon","#shadow"],{clearProps:"transform,opacity"});
+ if(!suau()){
+  if(mode==="pro")idleTl=gsap.timeline({repeat:-1,yoyo:true,defaults:{ease:"sine.inOut",duration:1.1}}).to("#monHold",{y:-10},0).to("#monSq",{scaleY:1.045,scaleX:.965,transformOrigin:"50% 100%"},0).to("#shadow",{scaleX:.8,opacity:.3},0);
+  else idleTl=gsap.timeline({repeat:-1,yoyo:true}).to("#monHold",{y:-8,duration:1.2,ease:"sine.inOut"})}
+ furia()}
+function furia(){const f=hp>0&&hp/HP0<.3;$("#scene").classList.toggle("furia",f&&mode==="pro");if(idleTl)idleTl.timeScale(f&&mode==="pro"?1.9:1);
+ if(lowTw){lowTw.kill();lowTw=null}gsap.set("#hp .fill",{opacity:1});
+ if(f&&!suau())lowTw=gsap.to("#hp .fill",{opacity:.55,duration:.28,yoyo:true,repeat:-1})}
+function batec(){if(beat){beat.kill();beat=null}gsap.set("#vig",{opacity:0});if(cors!==1||suau())return;const h=$("#hearts .h0");
+ if(mode==="pro")beat=gsap.timeline({repeat:-1,repeatDelay:.5}).to(h,{scale:1.3,duration:.1,ease:"power2.out"}).to(h,{scale:1,duration:.12}).to(h,{scale:1.18,duration:.09}).to(h,{scale:1,duration:.18}).fromTo("#vig",{opacity:.45},{opacity:0,duration:.5},0);
+ else beat=gsap.to(h,{scale:1.18,duration:.32,yoyo:true,repeat:-1,ease:"power1.inOut"})}
+function pintaCors(){$("#hearts").innerHTML=[0,1,2].map(i=>`<div class="hc h${i}">${svg(i<cors?"heart":"heartG")}</div>`).join("");batec()}
+function pintaHp(lag){const pc=hp/HP0*100,txt=$("#hpTxt"),posa=()=>{txt.textContent=`👾 VIDA ${Math.round(hpN.v)} / ${HP0}`};
+ if(suau()){gsap.set("#hp .fill,#hp .lag",{xPercent:pc-100});hpN.v=hp;posa()}
+ else{gsap.to("#hp .fill",{xPercent:pc-100,duration:.12,ease:"power2.out"});gsap.to("#hp .lag",{xPercent:pc-100,duration:.5,delay:lag?.45:0,ease:"power2.inOut"});gsap.to(hpN,{v:hp,duration:.4,ease:"power1.out",onUpdate:posa})}
+ furia()}
+function numero(x,y,txt,crit){const d=document.createElement("b");d.className="dmg"+(crit?" crit":"");d.textContent=txt;cam.appendChild(d);gsap.set(d,{x,y,xPercent:-50,yPercent:-50});
+ if(suau()){setTimeout(()=>d.remove(),900);return}
+ gsap.timeline({onComplete:()=>d.remove()}).fromTo(d,{scale:0,rotation:crit?-14:0},{scale:crit?1.5:1.2,rotation:0,duration:.14,ease:"back.out(4)"}).to(d,{scale:1,duration:.12}).to(d,{y:y-70,duration:.75,ease:"power2.out"},0).to(d,{opacity:0,duration:.25},.6)}
+function marcaOp(ok,el){const op=el||$(`.op[data-ok='${ok?1:0}']`);$$(".op").forEach(o=>o.classList.remove("ok","ko"));op.classList.add(ok?"ok":"ko");
+ if(!suau()){if(ok)gsap.fromTo(op,{scale:.94},{scale:1,duration:.3,ease:"back.out(4)"});else gsap.fromTo(op,{x:-7},{x:0,duration:.4,ease:"elastic.out(1.2,.3)"})}
+ clearTimeout(marcaOp.t);marcaOp.t=setTimeout(()=>$$(".op").forEach(o=>o.classList.remove("ok","ko")),900);return op}
+function critTag(){const t=document.createElement("div");t.className="tag-crit";t.textContent="⚡ COP CRÍTIC!";cam.appendChild(t);gsap.set(t,{xPercent:-50});const ch=lletres(t);
+ gsap.timeline({onComplete:()=>t.remove()}).from(ch,{y:-40,scale:2.5,opacity:0,stagger:.03,ease:"back.out(3)",duration:.35}).to(t,{opacity:0,y:-20,duration:.3,delay:.45})}
+function espurna(x,y,crit){const s=document.createElement("div");s.className="spark";cam.appendChild(s);gsap.set(s,{x,y,xPercent:-50,yPercent:-50,scale:.2,rotation:crit?45:0});
+ gsap.timeline({onComplete:()=>s.remove()}).to(s,{scale:crit?2:1.3,duration:.07,ease:"power2.out"}).to(s,{scale:0,rotation:"+=45",duration:.16,ease:"power2.in"});if(crit)anell(cam,x,y,3,.4)}
+
+/* ---------- encert ---------- */
+function encert(dmg,crit,el){ac();if(hp<=0)return;if(busy){desa(()=>encert(dmg,crit,el));return}ronda=Math.min(10,ronda+1);$("#ronda").textContent=`Ronda ${ronda} de 10`;const op=marcaOp(true,el);SFX.sel();
+ if(suau()){const b=centre($("#mon"),cam);hp=Math.max(0,hp-dmg);pintaHp();numero(b.x,b.y-90,"+"+dmg+(crit?"!":""),crit);if(hp<=0)celebra(mode==="pro"?"D":"A");return}
+ if(mode==="pro")encertPro(dmg,crit,op);else encertBasic(dmg,crit)}
+function encertBasic(dmg,crit){hp=Math.max(0,hp-dmg);if(crit)SFX.crit();else SFX.hit();const b=centre($("#mon"),cam);
+ numero(b.x+34,b.y-70,"+"+dmg+(crit?"!":""),crit);pintaHp(true);
+ blanc("#mon",true);gsap.delayedCall(.06,()=>blanc("#mon",false));
+ gsap.timeline().to("#mon",{x:16,duration:.06}).to("#mon",{x:-8,duration:.12}).to("#mon",{x:0,duration:.25,ease:"elastic.out(1,.4)"});
+ particules(cam,b.x,b.y,crit?18:10,crit?["#fde047","#fff","#fb923c","#ef4444"]:["#fde047","#38bdf8","#fff"]);
+ if(crit){shake(10);critTag()}
+ if(hp<=0)setTimeout(()=>celebra("A"),700)}
+function encertPro(dmg,crit,op){busy=true;const a=centre(op,cam),b=centre($("#mon"),cam),side=Math.random()<.5?-1:1;
+ const T=TRETS[PECES.tret],pr=document.createElement("div");pr.className="proj";pr.innerHTML=svg(T.spr);cam.appendChild(pr);
+ gsap.set(pr,{x:a.x,y:a.y,xPercent:-50,yPercent:-50,scale:.5,rotation:T.dard?-90:0});
+ let n=0;const trail=()=>{if(++n%2)return;const p=pren(cam);
+  gsap.set(p,{x:gsap.getProperty(pr,"x"),y:gsap.getProperty(pr,"y"),xPercent:-50,yPercent:-50,width:7,height:7,background:crit?"#fff":T.col});
+  gsap.to(p,{scale:0,opacity:0,duration:.28,onComplete:()=>torna(p)})};
+ acte(gsap.timeline())
+  .to(pr,{y:a.y+14,scale:.42,duration:.09,ease:"power2.out"})
+  .add(()=>SFX.whoosh())
+  .to(pr,Object.assign({motionPath:{path:[{x:a.x+(b.x-a.x)*.5+side*60,y:a.y+(b.y-a.y)*.5},{x:b.x,y:b.y+10}],curviness:1.3,autoRotate:!!T.dard},scale:crit?1.6:1.1,duration:crit?.3:.24,ease:"power2.in",onUpdate:trail},T.dard?{}:{rotation:540}))
+  .add(()=>{pr.remove();impacte(b,dmg,crit,side)})}
+function impacte(b,dmg,crit,side){const letal=hp-dmg<=0,stop=crit?.15:.07,my=++hitId;
+ if(idleTl)idleTl.pause();gsap.killTweensOf("#mon");
+ if(letal){hp=0;ronda=10;pintaHp(false);busy=false;buf=null;celebra("D");return}
+ blanc("#mon",true);gsap.set("#mon",{x:0,y:0,rotation:0,scale:1.07,transformOrigin:"50% 100%"});espurna(b.x,b.y,crit);
+ if(crit){SFX.crit();gsap.fromTo("#lines",{opacity:.8,scale:1},{opacity:0,scale:1.2,duration:.4,ease:"power2.out"})}else SFX.hit();
+ acte(gsap.delayedCall(stop,()=>{blanc("#mon",false);hp-=dmg;pintaHp(true);
+  gsap.fromTo("#hp",{x:-6},{x:0,duration:.4,ease:"elastic.out(1.4,.25)"});
+  numero(b.x-side*34,b.y-64,"+"+dmg+(crit?"!":""),crit);
+  particules(cam,b.x,b.y,crit?22:12,crit?["#fde047","#fff","#fb923c","#ef4444"]:["#fde047","#38bdf8","#fff"],{a0:-150,a1:-30});
+  shake(crit?12:6);if(crit){gsap.fromTo(cam,{scale:1.07},{scale:1,duration:.4,ease:"power2.out"});critTag()}
+  acte(gsap.timeline({onComplete:()=>{if(my===hitId&&idleTl)idleTl.resume()}}))
+   .to("#mon",{scaleX:1.3,scaleY:.7,y:-14,x:side*12,rotation:side*6,duration:.07,ease:"power2.out"})
+   .to("#mon",{scaleX:.9,scaleY:1.12,duration:.1,ease:"power1.inOut"})
+   .to("#mon",{scaleX:1,scaleY:1,x:0,y:0,rotation:0,duration:.45,ease:"elastic.out(1,.45)"});
+  lliure()}))}  // el cop ja ha comptat: la recuperació es pot interrompre amb el toc següent
+
+/* ---------- error ---------- */
+function error(el){ac();if(cors<=0||hp<=0)return;if(busy){desa(()=>error(el));return}ronda=Math.min(10,ronda+1);$("#ronda").textContent=`Ronda ${ronda} de 10`;marcaOp(false,el);SFX.buzz();
+ if(suau()){cors--;pintaCors();if(cors<=0)recupera();return}
+ if(mode==="pro")errorPro();else errorBasic()}
+function recupera(){busy=true;$("#ronda").textContent="Sense cors! Te'ls torno…";setTimeout(()=>{cors=3;pintaCors();if(!suau())gsap.from("#hearts .hc",{scale:0,duration:.35,stagger:.08,ease:"back.out(3)"});$("#ronda").textContent=`Ronda ${ronda} de 10`;lliure()},1000)}
+function errorBasic(){SFX.err();const h=$("#hearts .h"+(cors-1));cors--;
+ gsap.timeline().to("#mon",{scale:1.3,y:30,duration:.14,ease:"power3.in"}).to("#mon",{scale:1,y:0,duration:.35,ease:"back.out(2)"});
+ gsap.fromTo("#vig",{opacity:.9},{opacity:0,duration:.5});shake(8);
+ gsap.timeline({onComplete:()=>{pintaCors();if(cors<=0)recupera()}}).to(h,{scale:1.5,rotation:-15,duration:.12}).to(h,{rotation:15,duration:.08,repeat:3,yoyo:true})
+  .to(h,{scale:0,rotation:40,duration:.15,ease:"power2.in",onStart:()=>{const c=centre(h,cam);particules(cam,c.x,c.y,14,["#e8442e","#ff8a73","#1d1631"],{a0:-180,a1:0,v0:120,v1:300})}})}
+function trencaCor(h,c){h.innerHTML=svg("heartG");gsap.fromTo(h,{scale:.5},{scale:1,duration:.4,ease:"back.out(3)"});
+ [[(x,y)=>x<4||(x===4&&y%2===0),-1],[(x,y)=>x>4||(x===4&&y%2===1),1]].forEach(([only,dir])=>{const m=document.createElement("div");m.className="mig";m.innerHTML=svg("heart",null,{only});cam.appendChild(m);
+  gsap.set(m,{x:c.x,y:c.y,xPercent:-50,yPercent:-50});
+  if(FIS)gsap.to(m,{duration:1,physics2D:{velocity:gsap.utils.random(170,240),angle:dir<0?gsap.utils.random(-130,-110):gsap.utils.random(-70,-50),gravity:900},rotation:dir*gsap.utils.random(120,260),ease:"none"});
+  else gsap.to(m,{duration:1,x:c.x+dir*60,y:c.y+200,rotation:dir*200,ease:"power1.in"});
+  gsap.to(m,{opacity:0,duration:.25,delay:.75,onComplete:()=>m.remove()})});
+ particules(cam,c.x,c.y,8,["#e8442e","#ff8a73","#fff"],{a0:-180,a1:0,v0:100,v1:240})}
+function errorPro(){busy=true;hitId++;gsap.killTweensOf("#mon");if(idleTl)idleTl.pause();const h=$("#hearts .h"+(cors-1)),c=centre(h,cam);
+ const dany=()=>{gsap.to("#wflash",{opacity:0,duration:.35});shake(15);trencaCor(h,c);cors--;
+  const viu=$$("#hearts .hc").slice(0,cors);if(viu.length)gsap.to(viu,{y:-14,duration:.11,yoyo:true,repeat:1,stagger:.06,ease:"power2.out"})};
+ const fi=()=>{batec();if(idleTl)idleTl.resume();if(cors<=0){busy=false;buf=null;recupera()}else lliure()};
+ ATAC[PECES.atac](acte(gsap.timeline()),dany,fi)}
+// taca de tinta feta de quadrats (sense corbes), amb regalims que baixen
+function fesTaca(x,y){const t=document.createElement("div");t.className="taca";cam.appendChild(t);const q=v=>Math.round(v/10)*10,parts=[];
+ const add=(cx,cy,w,h,cls)=>{const b=document.createElement("i");if(cls)b.className=cls;t.appendChild(b);gsap.set(b,{x:q(cx),y:q(cy),xPercent:-50,yPercent:-50,width:w,height:h});return b};
+ parts.push(add(x,y,160,100),add(x,y,100,160),add(x,y,130,130));
+ for(let i=0;i<12;i++){const a=i/12*Math.PI*2+gsap.utils.random(-.2,.2),r=gsap.utils.random(80,150),sz=q(gsap.utils.random(20,70));parts.push(add(x+Math.cos(a)*r,y+Math.sin(a)*r*.9,sz,sz))}
+ gsap.from(parts,{scale:0,duration:.16,ease:"back.out(2.5)",stagger:.008});
+ for(let i=0;i<5;i++){const d=add(x+gsap.utils.random(-110,110),y+gsap.utils.random(30,90),10+10*(i%2),q(gsap.utils.random(70,170)));gsap.set(d,{yPercent:0,transformOrigin:"50% 0%",scaleY:0});gsap.to(d,{scaleY:1,duration:gsap.utils.random(.5,.9),ease:"power1.out",delay:.1})}
+ add(x-40,y-40,20,20,"llum");return t}
+const ATAC={
+ // s'abalança: es tira enrere (anticipació) i es llança cap al nen
+ embat(tl,dany,fi){tl.add(()=>SFX.charge())
+  .to("#mon",{scale:.86,y:-24,rotation:-8,duration:.26,ease:"power2.out",transformOrigin:"50% 100%"})
+  .to("#mon",{scale:1.85,y:120,rotation:5,duration:.11,ease:"power4.in"})
+  .add(()=>{SFX.err();gsap.set("#wflash",{background:"#ef4444",opacity:.6})})
+  .to({},{duration:.09}).add(dany)
+  .to("#mon",{scale:1,y:0,rotation:0,duration:.5,ease:"back.out(1.6)"}).add(fi)},
+ // taca: s'infla (anticipació), escup una bola de tinta i la pantalla queda esquitxada
+ taca(tl,dany,fi){const m=centre($("#mon"),cam),W=374,H=744;let bola=null,taca=null;
+  tl.add(()=>SFX.charge())
+  .to("#mon",{scaleX:1.2,scaleY:.82,y:6,duration:.24,ease:"power2.out",transformOrigin:"50% 100%"})
+  .to("#mon",{scaleX:.88,scaleY:1.16,y:-12,duration:.07,ease:"power2.in"})
+  .add(()=>{SFX.escup();bola=document.createElement("div");bola.className="bola";cam.appendChild(bola);gsap.set(bola,{x:m.x,y:m.y+14,xPercent:-50,yPercent:-50,scale:.3});
+   gsap.to(bola,{x:W/2,y:H*.42,scale:7,duration:.2,ease:"power2.in"})})
+  .to({},{duration:.2})
+  .add(()=>{if(bola)bola.remove();taca=fesTaca(W/2,H*.42);SFX.esquitx()})
+  .to({},{duration:.08}).add(dany)
+  .to("#mon",{scaleX:1,scaleY:1,y:0,duration:.45,ease:"elastic.out(1,.5)"}).add(fi)
+  .add(()=>{if(taca)gsap.to(taca,{y:80,opacity:0,duration:.55,ease:"power1.in",onComplete:()=>taca.remove()})},"+=.3")},
+ // ensurt: desapareix, la sala s'enfosqueix un instant i torna de cop, molt a prop
+ ensurt(tl,dany,fi){tl.set("#wflash",{background:"#000",opacity:0}).add(()=>SFX.uuu())
+  .to("#mon",{keyframes:{opacity:[1,.3,.8,.1,0]},duration:.26,ease:"none"})
+  .to("#mon",{scale:.85,duration:.26,transformOrigin:"50% 100%"},"<")
+  .to("#shadow",{opacity:0,duration:.2},"<")
+  .to("#wflash",{opacity:.5,duration:.2},"<")
+  .to({},{duration:.22})
+  .add(()=>{SFX.err();gsap.set("#mon",{scale:2.3,y:120,opacity:1});gsap.set("#wflash",{background:"#fff",opacity:.55})})
+  .to({},{duration:.09}).add(dany)
+  .to("#mon",{scale:1,y:0,duration:.5,ease:"back.out(1.6)"})
+  .to("#shadow",{opacity:.45,duration:.3},"<").add(fi)}
+};
+
+/* ---------- controls ---------- */
+function reinicia(){ACTS.forEach(t=>t.kill());ACTS.length=0;tancaFx();gsap.killTweensOf(["#mon","#cam","#hp","#hp .fill","#hp .lag",hpN]);hp=HP0;cors=3;ronda=1;busy=false;buf=null;hpN.v=HP0;$("#ronda").textContent="Ronda 1 de 10";
+ gsap.set("#hp .fill,#hp .lag",{xPercent:0});$("#hpTxt").textContent=`👾 VIDA ${HP0} / ${HP0}`;$$("#cam .taca,#cam .bola,#cam .proj,#cam .mig,#cam .dmg,#cam .spark,#cam .tag-crit").forEach(e=>{gsap.killTweensOf(e);e.remove()});gsap.killTweensOf(["#shadow","#wflash"]);gsap.set("#wflash",{opacity:0});
+ gsap.set(["#cam","#hp"],{clearProps:"transform"});blanc("#mon",false);pintaCors();idle()}
+function aPunt(){if(busy)return;if(hp<=0)reinicia();hp=12;pintaHp(false)}
+$$("input[name=mode]").forEach(r=>r.onchange=()=>{mode=r.value;reinicia()});
+$("#suau").onchange=()=>{$("#scene").classList.toggle("suau",suau());idle();batec()};
+$$(".op").forEach(o=>o.onclick=()=>{if(o.dataset.ok==="1")encert(12,false,o);else error(o)});
+
+/* ---------- celebracions ---------- */
+let TL=null,lentT=null;
+function lent(f,ms){gsap.globalTimeline.timeScale(f);clearTimeout(lentT);lentT=setTimeout(()=>gsap.globalTimeline.timeScale(1),ms)}
+function tancaFx(){clearTimeout(lentT);gsap.globalTimeline.timeScale(1);if(TL){TL.kill();TL=null}const fx=$("#fx");gsap.killTweensOf(fx.querySelectorAll("*"));fx.innerHTML="";fx.className="fx";gsap.set(fx,{autoAlpha:0})}
+function tanca(){tancaFx();if(hp<=0)reinicia()}
+function celebra(v){ac();tancaFx();const fx=$("#fx"),total=20+cors;
+ if(suau()){fx.className="fx quiet";fx.innerHTML=`<div class="in">${svg("trophy").replace("<svg","<svg style='width:90px;height:90px'")}<div class="qr">${boss.rotul}</div><div class="qs">🏆 ${boss.sub} · +${total} ⭐ (20 + ${cors} per cors)</div><div class="qs" style="opacity:.7">Toca per continuar</div></div>`;gsap.set(fx,{autoAlpha:1});fx.onclick=tanca;return}
+ if(v==="D")celebraD();else celebraABC(v)}
+
+/* ----- D · proposta pro: cop final → el drac es trenca → botí → recompte → medalla ----- */
+function esclat(host,x,y,i){SFX.blip(i);anell(host,x,y,1.4,.3);particules(host,x,y,7,["#fff","#fde047","#fb923c"],{a0:-180,a1:180,v0:80,v1:200,g:300,dur:.5})}
+function trenca(host,wrap,name){const c=centre(wrap,host),S=wrap.getBoundingClientRect().width/K()||160,rows=SPR[name],cell=S/rows.length,max=S*.71;
+ rows.forEach((row,y)=>[...row].forEach((ch,x)=>{if(ch===".")return;const p=pren(host);
+  const px=c.x-S/2+(x+.5)*cell,py=c.y-S/2+(y+.5)*cell,ang=Math.atan2(py-c.y,px-c.x)*180/Math.PI+gsap.utils.random(-25,25),d=Math.hypot(px-c.x,py-c.y),dur=gsap.utils.random(.9,1.4),ona=d/max*.1;
+  gsap.set(p,{x:px,y:py,xPercent:-50,yPercent:-50,width:cell+.5,height:cell+.5,background:palDe(name)[ch]});
+  if(FIS)gsap.to(p,{duration:dur,delay:ona,physics2D:{velocity:140+d*4+gsap.utils.random(0,260),angle:ang,gravity:800},rotation:gsap.utils.random(-540,540),ease:"none"});
+  else gsap.to(p,{duration:dur,delay:ona,x:px+(px-c.x)*4,y:py+(py-c.y)*4+200,ease:"power1.out"});
+  gsap.to(p,{opacity:0,scale:.3,duration:.3,delay:ona+dur-.3,onComplete:()=>torna(p)})}))}
+function canons(host,W,H){const cols=["#fde047","#22c55e","#38bdf8","#f472b6","#fb923c","#fff"];
+ particules(host,10,H-10,34,cols,{a0:-80,a1:-45,v0:450,v1:820,g:620,dur:2.2,size:8});
+ particules(host,W-10,H-10,34,cols,{a0:-135,a1:-100,v0:450,v1:820,g:620,dur:2.2,size:8})}
+// peça «mort»: com cau cada Boss entre «agonia» i «trenca»
+const MORT={
+ // tremola cada cop més, parpelleja, li esclaten petites explosions i es trenca en els seus píxels
+ pixels({tl,L,IN,mon,wh,c,flash}){
+  tl.to(mon,{keyframes:{x:[-3,3,-5,5,-7,7,-9,9,-11,11,-12,12,0]},duration:1.3,ease:"none"},"agonia")
+    .to(mon,{scale:1.2,duration:1.3,ease:"power1.in"},"agonia");
+  [.15,.37,.57,.75,.91,1.05,1.17,1.25].forEach(t=>tl.set(wh,{opacity:1},L("agonia",t)).set(wh,{opacity:0},L("agonia",t+.05)));
+  for(let i=0;i<6;i++)tl.add(()=>{const a=gsap.utils.random(0,Math.PI*2),r=gsap.utils.random(30,80);esclat(IN,c.x+Math.cos(a)*r,c.y+Math.sin(a)*r,i)},L("agonia",.1+i*.2));
+  tl.add(()=>{SFX.boom();lent(.3,420);trenca(IN,mon,"mon");gsap.set(mon,{autoAlpha:0});anell(IN,c.x,c.y,7);sacseja(IN,18)},"trenca")
+    .fromTo(flash,{opacity:1},{opacity:0,duration:.5,immediateRender:false},"trenca")},
+ // una goma el va esborrant en tres passades en ziga-zaga, deixant molles
+ goma({tl,L,IN,mon,c,flash}){const S=160,cell=S/16,vora=S/2+36,dur=.3,cols=["#fda4af","#f1f5f9","#94a3b8"],g=document.createElement("div");g.className="d-goma";g.innerHTML=svg("goma");IN.appendChild(g);
+  const rects=[...mon.querySelectorAll("svg:not(.wh) rect")];
+  gsap.set(g,{x:c.x-vora,y:c.y-S/2+3*cell,xPercent:-50,yPercent:-50,rotation:-16,scale:0});
+  tl.to(g,{scale:1,duration:.14,ease:"back.out(3)"},"agonia")
+    .to(mon,{keyframes:{x:[-4,4,-4,4,-3,3,0]},duration:1.1,ease:"none"},"agonia");
+  [[0,5],[6,10],[11,15]].forEach(([y0,y1],i)=>{const t0=.14+i*.34,dir=i%2?-1:1,yy=c.y-S/2+(y0+y1+1)/2*cell;
+   if(i)tl.to(g,{y:yy,duration:.03},L("agonia",t0-.03));
+   tl.add(()=>SFX.frega(),L("agonia",t0))
+     .to(g,{x:c.x+dir*vora,duration:dur,ease:"sine.inOut"},L("agonia",t0))
+     .to(g,{rotation:"+=14",duration:.05,yoyo:true,repeat:5,ease:"none"},L("agonia",t0));
+   rects.forEach(r=>{const x=+r.getAttribute("x"),y=+r.getAttribute("y");if(y<y0||y>y1)return;const f=dir>0?(x+.5)/16:1-(x+.5)/16,p=(36+f*S)/(2*vora);
+    tl.set(r,{opacity:0},L("agonia",t0+dur*Math.acos(1-2*p)/Math.PI))});
+   for(let k=1;k<4;k++)tl.add(()=>particules(IN,gsap.getProperty(g,"x"),gsap.getProperty(g,"y")+12,3,cols,{a0:50,a1:130,v0:40,v1:130,g:600,dur:.6,size:5}),L("agonia",t0+dur*k/4))});
+  tl.to(g,{scale:1.5,rotation:"+=160",duration:.14,ease:"power2.in"},L("trenca",-.16))
+    .add(()=>{SFX.puf();lent(.4,300);gsap.set([mon,g],{autoAlpha:0});anell(IN,c.x,c.y,5);particules(IN,c.x,c.y,26,cols.concat("#fff"),{a0:-180,a1:180,v0:120,v1:380,g:400,dur:1,size:6});sacseja(IN,8)},"trenca")
+    .fromTo(flash,{opacity:.7},{opacity:0,duration:.45,immediateRender:false},"trenca")},
+ // parpelleja i puja estirant-se; després s'apaga com un projector: una ratlla i un punt
+ esvaeix({tl,L,IN,mon,c,flash}){
+  tl.to(mon,{keyframes:{opacity:[1,.35,.9,.25,.8,.3,.75,.4,.9]},duration:1.05,ease:"none"},"agonia")
+    .to(mon,{y:-34,scaleY:1.22,scaleX:.86,duration:1.05,ease:"sine.inOut"},"agonia")
+    .to(mon,{keyframes:{x:[-8,8,-6,6,-4,4,0]},duration:1.05,ease:"sine.inOut"},"agonia");
+  for(let i=0;i<6;i++)tl.add(()=>particules(IN,c.x+gsap.utils.random(-60,60),c.y+gsap.utils.random(-20,60),3,["#fff","#e0f2fe","#fde68a"],{a0:-110,a1:-70,v0:40,v1:110,g:-60,dur:.8,size:5}),L("agonia",.1+i*.17));
+  tl.to(mon,{opacity:1,scaleY:.04,scaleX:1.6,duration:.13,ease:"power3.in"},L("trenca",-.25))
+    .to(mon,{scaleX:0,duration:.12,ease:"power2.in"},L("trenca",-.12))
+    .add(()=>{SFX.apaga();lent(.4,300);gsap.set(mon,{autoAlpha:0});anell(IN,c.x,c.y-34,5);particules(IN,c.x,c.y-34,18,["#fff","#fde68a","#e0f2fe"],{a0:-180,a1:180,v0:150,v1:420,g:200,dur:.9,size:6});sacseja(IN,8)},"trenca")
+    .fromTo(flash,{opacity:.75},{opacity:0,duration:.45,immediateRender:false},"trenca")}
+};
+function celebraD(){const fx=$("#fx"),W=374,H=744,bonus=cors;
+ fx.innerHTML=`<div class="in"><div class="d-bg0"></div><div class="d-bg1" style="background:radial-gradient(circle at 50% 38%,${boss.color[1]},${boss.color[0]} 45%,#140a05 88%)"></div><div class="rays d-rays"></div><div class="d-neg"></div><div class="d-slash"></div>
+  <div class="d-mon spr">${spr("mon",true)}</div>
+  <div class="d-rot">${boss.rotul}</div><div class="d-sub">${boss.sub}</div>
+  <div class="d-med spr">${svg("trophy")}</div><div class="d-vic">3a VICTÒRIA</div>
+  <div class="d-tally"><small>CORS DE SOBRES</small><div class="row">${[0,1,2].map(i=>`<div class="hc dh${i}">${svg(i<bonus?"heart":"heartG")}</div>`).join("")}</div></div>
+  <div class="d-cnt"><span class="cn">+0</span><div class="ic">${svg("star")}</div></div>
+  <div class="salta">Toca per continuar ✕</div><div class="flash"></div></div>`;
+ gsap.set(fx,{autoAlpha:1});fx.onclick=tanca;
+ const q=s=>fx.querySelector(s),IN=q(".in"),mon=q(".d-mon"),wh=q(".d-mon .wh"),neg=q(".d-neg"),slash=q(".d-slash"),flash=q(".flash"),rot=q(".d-rot"),sub=q(".d-sub"),med=q(".d-med"),vic=q(".d-vic"),tally=q(".d-tally"),cnt=q(".d-cnt"),cn=q(".cn"),rays=q(".d-rays"),bg1=q(".d-bg1");
+ gsap.set(cnt,{xPercent:-50,yPercent:-50,autoAlpha:0});gsap.set([rot,tally,vic],{autoAlpha:0});gsap.set(slash,{rotation:-24,scaleX:0});gsap.set(med,{transformOrigin:"50% 100%"});
+ const c=centre(mon,IN),tg=centre(q(".d-cnt .ic"),IN);
+ let n=0;const suma=()=>{n++;cn.textContent="+"+n;gsap.fromTo(cnt,{scale:1.3},{scale:1,duration:.22,ease:"back.out(4)",overwrite:"auto"})};
+ const tl=gsap.timeline();TL=tl;const L=(l,d)=>l+(d<0?"-=":"+=")+Math.abs(d).toFixed(3);
+ // etiquetes: si canvia una durada, la resta no es desquadra
+ tl.addLabel("cop",0).addLabel("agonia",.45).addLabel("trenca",1.75).addLabel("boti",2).addLabel("segell",3).addLabel("recompte",3.9).addLabel("cors",5.4).addLabel("medalla",5.8+Math.max(bonus,.5)*.38+.6);
+ // COP · imatge d'impacte (negre i blanc) i aturada
+ tl.add(()=>SFX.heavy(),"cop")
+   .set([neg,wh],{opacity:1},"cop")
+   .fromTo(slash,{scaleX:0,opacity:1},{scaleX:1,duration:.08,ease:"power4.out"},"cop")
+   .fromTo(IN,{scale:1.14},{scale:1,duration:.55,ease:"power2.out"},"cop")
+   .to(slash,{opacity:0,duration:.15},L("cop",.3))
+   .set([neg,wh],{opacity:0},"agonia")
+   .fromTo(flash,{opacity:.85},{opacity:0,duration:.3,immediateRender:false},"agonia");
+ // AGONIA i TRENCA · cada Boss cau a la seva manera (peça «mort»)
+ MORT[PECES.mort]({tl,L,IN,mon,wh,c,flash});
+ tl.to(bg1,{opacity:1,duration:.5},"trenca")
+   .to(rays,{opacity:.55,duration:.8},L("trenca",.15))
+   .to(rays,{rotation:360,duration:26,repeat:-1,ease:"none"},L("trenca",.15));
+ // BOTÍ · 20 estrelles salten i reboten a terra, en dues files
+ const stars=[],GY=H*.575,slots=gsap.utils.shuffle([...Array(20).keys()]);
+ for(let i=0;i<20;i++){const s=document.createElement("div");s.className="d-star";s.innerHTML=svg("star");IN.appendChild(s);stars.push(s);
+  const k=slots[i],fila=k%2,gx=28+(W-56)*(Math.floor(k/2)+.5)/10+(fila?9:-7)+gsap.utils.random(-2,2),gy=GY+(fila?20:0),t=i*.02;s._g={x:gx,y:gy};
+  gsap.set(s,{x:c.x,y:c.y,xPercent:-50,yPercent:-50,scale:0});
+  tl.to(s,{x:gx,scale:1,rotation:gsap.utils.random(-180,180),duration:.8,ease:"power1.out"},L("boti",t))
+    .to(s,{y:c.y-gsap.utils.random(60,170),duration:.3,ease:"power2.out"},L("boti",t))
+    .to(s,{y:gy,duration:.5,ease:"bounce.out"},L("boti",t+.3))
+    .to(s,{rotation:0,duration:.2},L("boti",t+.8))}
+ const ord=stars.slice().sort((a,b)=>a._g.x-b._g.x);
+ // SEGELL · el rètol cau com un segell i fa saltar les estrelles
+ const ch=lletres(rot);
+ tl.set(rot,{autoAlpha:1},"segell")
+   .fromTo(rot,{scale:3.4},{scale:1,duration:.2,ease:"power4.in",immediateRender:false},"segell")
+   .add(()=>{SFX.stamp();SFX.fan();sacseja(IN,10)},L("segell",.2))
+   .fromTo(rot,{scaleX:1.14,scaleY:.84},{scaleX:1,scaleY:1,duration:.45,ease:"elastic.out(1,.4)",immediateRender:false},L("segell",.2))
+   .to(ord,{y:"-=16",duration:.1,yoyo:true,repeat:1,ease:"power2.out",stagger:{each:.012,from:"center"}},L("segell",.2))
+   .to(sub,{opacity:1,duration:.3},L("segell",.5))
+   .to(ch,{y:-6,duration:.28,yoyo:true,repeat:9,stagger:.04,ease:"sine.inOut"},L("segell",.8))
+ // RECOMPTE · les estrelles volen al marcador d'una en una
+   .to(cnt,{autoAlpha:1,duration:.2},"recompte").fromTo(cnt,{y:30},{y:0,duration:.3,ease:"back.out(3)",immediateRender:false},"recompte");
+ ord.forEach((s,i)=>{const g=s._g,t=.2+i*.06,side=g.x<tg.x?-1:1;
+  tl.to(s,{y:g.y-18,duration:.1,ease:"power2.out"},L("recompte",t))
+    .to(s,{motionPath:{path:[{x:g.x+side*34,y:g.y-10+(tg.y-g.y)*.35},{x:tg.x,y:tg.y}],curviness:1.4},scale:.7,rotation:360,duration:.4,ease:"power2.in"},L("recompte",t+.1))
+    .add(()=>{s.remove();suma();SFX.star(i)},L("recompte",t+.5))});
+ // CORS · els cors de sobres salten, es giren com una moneda i es tornen estrelles
+ tl.to(tally,{autoAlpha:1,duration:.25},"cors");
+ for(let k=0;k<bonus;k++){const h=q(".dh"+k),hc=centre(h,IN),t=.4+k*.38;
+  tl.to(h,{y:-20,duration:.12,ease:"power2.out"},L("cors",t)).to(h,{y:0,duration:.12,ease:"power2.in"},L("cors",t+.12))
+    .to(h,{scaleX:0,duration:.08,ease:"power1.in"},L("cors",t+.24))
+    .add(()=>{h.innerHTML=svg("star");SFX.heart()},L("cors",t+.32))
+    .to(h,{scaleX:1,duration:.08,ease:"power1.out"},L("cors",t+.32))
+    .to(h,{x:tg.x-hc.x,y:tg.y-hc.y,scale:.6,duration:.28,ease:"back.in(1.6)"},L("cors",t+.44))
+    .add(()=>{gsap.set(h,{autoAlpha:0});suma()},L("cors",t+.72))}
+ // MEDALLA · cau, s'aixafa i dispara els canons de confeti
+ tl.to(tally,{autoAlpha:0,duration:.2},"medalla-=0.2")
+   .set(med,{autoAlpha:1},"medalla")
+   .fromTo(med,{y:-480,scaleX:.82,scaleY:1.3},{y:0,duration:.32,ease:"power3.in",immediateRender:false},"medalla")
+   .add(()=>{SFX.stamp();SFX.med();sacseja(IN,13);anell(IN,c.x,c.y+50,6);canons(IN,W,H)},L("medalla",.32))
+   .to(med,{scaleX:1.32,scaleY:.72,duration:.07,ease:"power2.out"},L("medalla",.32))
+   .to(med,{scaleX:1,scaleY:1,duration:.6,ease:"elastic.out(1,.35)"},L("medalla",.39))
+   .to(vic,{autoAlpha:1,duration:.3},L("medalla",.6))
+   .to(cnt,{y:-H*.2,scale:1.5,duration:.5,ease:"back.out(2)"},L("medalla",.75))
+   .to(q(".salta"),{opacity:1,duration:.4},L("medalla",1.1))
+   .to(med,{y:-8,duration:1,yoyo:true,repeat:-1,ease:"sine.inOut"},L("medalla",1.2))}
+
+/* ----- A, B i C · les tres primeres propostes ----- */
+const VAR={
+ A:{bg:"radial-gradient(circle at 50% 42%,#4c1d95,#0b1024 75%)",speed:1,stg:.09,zoom:false,epic:false,flashCols:["#fff"]},
+ B:{bg:"radial-gradient(circle at 50% 42%,#be185d,#1e0b24 75%)",speed:1.6,stg:.03,zoom:true,epic:false,flashCols:["#fff","#fde047","#22d3ee","#f472b6"]},
+ C:{bg:"radial-gradient(circle at 50% 42%,#0f766e,#020617 78%)",speed:.85,stg:.07,zoom:false,epic:true,flashCols:["#fff"]}
+};
+function celebraABC(v){const fx=$("#fx"),cfg=VAR[v];
+ fx.innerHTML=`<div class="in"><div class="bg" style="background:${cfg.bg}"></div><div class="rays"></div>
+  <div class="bar t"></div><div class="bar b"></div>
+  <div class="cnt"><span id="cn">+0</span>${pix("star")}</div>
+  ${pix("mon","fmon")}
+  <div class="rot" id="rot">${boss.rotul}</div>
+  <div class="sub" id="sub">🏆 ${boss.sub}</div>
+  <div class="fh" id="fh">${[0,1,2].map(i=>pix(i<cors?"heart":"heartG","fh"+i)).join("")}</div>
+  ${pix("trophy","med")}
+  <div class="salta">Toca per continuar ✕</div><div class="flash"></div></div>`;
+ gsap.set(fx,{autoAlpha:1});fx.onclick=tanca;
+ const IN=fx.querySelector(".in"),mon=fx.querySelector(".fmon"),rot=$("#rot"),cnt=fx.querySelector(".cnt"),cn=$("#cn"),flash=fx.querySelector(".flash"),med=fx.querySelector(".med"),host=IN;
+ gsap.set([rot,cnt,"#fh"],{autoAlpha:0});gsap.set([mon,med],{transformOrigin:"50% 50%"});
+ const comp={n:0},posa=()=>{cn.textContent="+"+Math.round(comp.n)};
+ const pop=()=>gsap.fromTo(cnt,{scale:1.35},{scale:1,duration:.25,ease:"back.out(4)",overwrite:"auto"});
+ const tl=gsap.timeline();TL=tl;tl.timeScale(cfg.speed);
+ const zoom=at=>{if(cfg.zoom)tl.fromTo(IN,{scale:1.18},{scale:1,duration:.35,ease:COP},at)};
+ if(cfg.epic){tl.to(fx.querySelectorAll(".bar"),{y:0,duration:.6,ease:"power2.out"},0);tl.to(fx.querySelector(".rays"),{opacity:1,duration:.8},.3);tl.to(fx.querySelector(".rays"),{rotation:360,duration:24,repeat:-1,ease:"none"},0)}
+ tl.add(()=>SFX.ko(),0);
+ cfg.flashCols.forEach((c,i)=>tl.fromTo(flash,{opacity:.95,background:c},{opacity:0,duration:.22},i*.09));
+ tl.to(IN,{keyframes:{x:[-14,14,-10,10,-5,0]},duration:.45,ease:"none"},0);
+ zoom(0);
+ const caiguda=cfg.epic?1.8:.9;
+ tl.to(mon,{rotation:cfg.epic?380:560,y:70,scale:.85,duration:caiguda,ease:"power2.in"},.1)
+   .to(mon,{y:46,duration:.18,ease:"power1.out"})
+   .to(mon,{y:70,duration:.3,ease:"bounce.out",onStart:()=>{const c=centre(mon,fx);particules(IN,c.x,c.y+40,22,["#cbd5e1","#94a3b8","#fde047"],{a0:-175,a1:-5,v0:90,v1:260,g:500,dur:.9})}});
+ const t2=caiguda+.75;tl.set(rot,{autoAlpha:1},t2);zoom(t2);tl.add(()=>SFX.fan(),t2);
+ const ch=lletres(rot);
+ if(cfg.epic)tl.from(ch,{opacity:0,scale:.3,stagger:.05,duration:.6,ease:"power2.out"},t2);
+ else tl.from(ch,{y:-120,scale:3,opacity:0,rotation:()=>gsap.utils.random(-40,40),stagger:.045,duration:.5,ease:"back.out(2.5)"},t2);
+ tl.to("#sub",{opacity:1,y:-6,duration:.4},t2+.9);
+ const t3=t2+1.6;tl.to(cnt,{autoAlpha:1,duration:.25},t3-.2);zoom(t3);
+ for(let i=0;i<20;i++){tl.add(()=>{const a=centre(mon,fx),b=centre(cnt.querySelector("svg"),fx),s=document.createElement("div");s.className="st";s.innerHTML=pix("star");s.style.left=a.x+"px";s.style.top=a.y+"px";host.appendChild(s);
+   const dx=b.x-a.x,dy=b.y-a.y,side=(i%2?1:-1);
+   const path=cfg.epic?[{x:side*90,y:-30},{x:-side*60,y:dy*.5},{x:side*30,y:dy*.8},{x:dx,y:dy}]:[{x:side*gsap.utils.random(60,130),y:dy*.35},{x:dx,y:dy}];
+   gsap.to(s,{duration:cfg.epic?1.1:.7,motionPath:{path,curviness:1.5},rotation:360,scale:.8,ease:"power1.in",onComplete:()=>{s.remove();comp.n+=1;posa();pop();SFX.star(i)}})},t3+i*cfg.stg)}
+ const t4=t3+20*cfg.stg+(cfg.epic?1.2:.8);tl.to("#fh",{autoAlpha:1,duration:.3},t4-.3);
+ for(let i=0;i<cors;i++){const h=fx.querySelector(".fh"+i),at=t4+i*.6;
+  tl.to(h,{scale:1.35,duration:.12,yoyo:true,repeat:3,transformOrigin:"50% 60%",ease:"power1.inOut"},at);
+  tl.add(()=>{SFX.heart();const a=centre(h,fx),b=centre(cnt.querySelector("svg"),fx),s=document.createElement("div");s.className="st";s.innerHTML=pix("star");s.style.left=a.x+"px";s.style.top=a.y+"px";host.appendChild(s);
+   particules(IN,a.x,a.y,10,["#e8442e","#ff8a73","#ffd23f"],{a0:-180,a1:0,v0:100,v1:240});
+   gsap.to(s,{duration:.7,motionPath:{path:[{x:(i-1)*80,y:(b.y-a.y)*.5},{x:b.x-a.x,y:b.y-a.y}],curviness:1.4},scale:1.3,ease:"power1.in",onComplete:()=>{s.remove();comp.n+=1;posa();pop()}})},at+.48);
+  tl.to(h,{scale:0,rotation:90,duration:.18,ease:"back.in(2)"},at+.48)}
+ const t5=t4+Math.max(1,cors)*.6+.7;zoom(t5);
+ tl.to([mon,rot,"#sub"],{autoAlpha:0,duration:.3},t5-.2);
+ tl.fromTo(med,{opacity:1,y:-420,rotationY:0,scale:1},{y:0,rotationY:1080,duration:1.1,ease:"bounce.out"},t5);
+ tl.add(()=>{SFX.med();const c=centre(med,fx);particules(IN,c.x,c.y,70,["#fde047","#22c55e","#38bdf8","#f472b6","#fb923c","#fff"],{a0:-160,a1:-20,v0:300,v1:650,g:520,dur:2.2,size:8})},t5+.9);
+ tl.to(cnt,{y:400,scale:1.5,duration:.6,ease:"back.out(2)"},t5+1.1);
+ tl.to(fx.querySelector(".salta"),{opacity:1,duration:.4},t5+1.4)}
+
+/* ---------- mida del mòbil i arrencada ---------- */
+function fit(){const f=$("#fit"),p=$("#phone"),col=f.parentElement.clientWidth||390,vh=window.innerHeight||800;
+ let k=Math.min(1,col/390,(window.innerWidth<=900?vh*.6:vh-24)/760);k=Math.max(.45,k);
+ p.style.transform=`scale(${k})`;f.style.width=390*k+"px";f.style.height=760*k+"px"}
+function liniaDades(){$("#dades").textContent=`ASSIG.boss = { nom:"${boss.curt}", spr:"${boss.id}", rotul:"${boss.rotul}",\n  tret:"${PECES.tret}", atac:"${PECES.atac}", mort:"${PECES.mort}" }`}
+function posaBoss(id){boss=BOSSOS[id];SPR.mon=boss.spr;Object.assign(PECES,{tret:boss.tret,atac:boss.atac,mort:boss.mort});
+ $("#mon").innerHTML=spr("mon",true);$(".bname").textContent=boss.nom;$(".qcard .q").textContent=boss.q[0];$$(".op").forEach((o,i)=>{o.textContent="ABC"[i]+" · "+boss.q[1][i]});
+ ["tret","atac","mort"].forEach(k=>{$("#s-"+k).value=PECES[k]});$$(".bb").forEach(b=>b.classList.toggle("on",b.dataset.b===id));liniaDades();reinicia()}
+$$(".bb").forEach(b=>{b.onclick=()=>posaBoss(b.dataset.b)});
+["tret","atac","mort"].forEach(k=>{$("#s-"+k).onchange=e=>{PECES[k]=e.target.value;liniaDades()}});
+addEventListener("resize",fit);fit();posaBoss("drac");
+</script>
+</body>
+</html>

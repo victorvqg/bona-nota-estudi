@@ -6,39 +6,62 @@ Com funcionen els **efectes especials amb moviment i música WebAudio** de Bona 
 
 ## 1. Com funciona el combat i la celebració d'un Boss
 
-Cada combat té **10 rondes de test i jocs** (sense pregunta oberta; les obertes continuen a la seva pestanya). Cada encert resta vida al Boss, **3 encerts seguits** fan un **⚡ COP CRÍTIC** amb dany real **×1,5** (el número mostrat és sempre el que es resta) i un combat sense cap error (0 cors perduts) venç el Boss sempre (amb un **⚡ COP FINAL** si encara li quedava vida a l'última ronda). Al final (`#bossFi`) surt una franja amb les 10 rondes (`✅` cop sencer · `⚡` crític · `½` mig cop · `❌` error), el dany de cada una i la suma total.
+Cada combat té **10 rondes de test i jocs** (sense pregunta oberta; les obertes continuen a la seva pestanya). Cada encert dispara un projectil fins al Boss (**Combat Pro** amb GSAP 3.13 en local), amb aturada d'impacte (`70 ms` normal; `150 ms` al crític), flaix blanc, aixafar/estirar, retrocés, número en positiu (`+12`, `+18!`) i barra de vida animada només amb `transform`. **3 encerts seguits** fan un **⚡ COP CRÍTIC** amb dany real **×1,5** (el número mostrat és sempre el que es resta) i un combat sense cap error (0 cors perduts) venç el Boss sempre (amb un **⚡ COP FINAL** si encara li quedava vida a l'última ronda). Quan el nen falla, el Boss s'anticipa i executa la seva peça d'atac, el cor perdut es parteix en dues meitats i, quan només en queda 1, fa doble batec. Al final (`#bossFi`) surt una franja amb les rondes jugades (`✅` cop sencer · `⚡` crític · `½` mig cop · `❌` error), el dany en `+` i la suma total («Has fet +X de Y»).
 
+### Motor d'animació: GSAP 3.13 local (`lib/gsap/`)
+- Fitxers servits en local (sense CDN) i desats a la memòria de `sw.js` per funcionar sense connexió: `gsap.min.js`, `MotionPathPlugin.min.js`, `SplitText.min.js`, `Physics2DPlugin.min.js` i `CustomEase.min.js`.
+- **Pes total:** `110,7 KB` sense comprimir (`45,1 KB` gzip). **Només es carrega en entrar al Boss** (càrrega diferida a `carregaGsap()`): zero pes a la portada, fitxes, targetes, tests o altres jocs.
+- **Llicència:** Standard «No Charge» GSAP License (des de GSAP 3.13.0, inclòs tot el nucli i els plugins de moviment/física/text per a web educativa gratuïta i sense pagament d'accés; https://gsap.com/community/standard-license/).
+
+### Celebració D (pantalla completa)
 Quan l'alumne venç el Boss d'un món (`B.hp <= 0` a `bossFi()`, a `motor/plantilla-estudi-interactiu.html`):
 
 1. Es desa la victòria (`+20 ⭐` + `+1 ⭐` per cada cor que queda, fins a `+23 ⭐` com a màxim un cop al dia, `S.boss.v++`, medalla `🏆 N` a `.boss-carta`) i s'escriu `#bossFi` al DOM.
-2. A **pantalla completa** (`position: fixed`, damunt de tota la web, bloquejant l'scroll i amb els colors del món) s'obre durant **~9 segons** la capa `.boss-festa` en 5 fases: (1) cop final amb flaix blanc, sacsejada, caiguda girant amb bot i pols/espurnes del **sprite 16×16** del Boss (`spr` o `pix`) amb el **motion temàtic** (`fx`); (2) el **rètol arcade** (`rotul`) entrant des de lluny amb rebot, lletres una a una i brillantor + la **fanfara musical sintetitzada amb WebAudio** (`mus` o `notes`, pel canal `BG`); (3) les **20 estrelles** surten del Boss i volen en corba fins al marcador (amb «pop» i so); (4) els cors que queden bateguen, creixen i esclaten en `+1 ⭐` extra que també volen al marcador; i (5) la medalla `🏆 N` baixa girant amb rebot i pluja de confeti del món (`em`).
+2. A **pantalla completa** (`position: fixed`, damunt de tota la web, bloquejant l'scroll i amb els colors del món) s'obre durant **~9 segons** la capa `.boss-festa` escrita amb etiquetes GSAP: **`cop`** (imatge d'impacte blanc i negre + tall diagonal) → **`agonia`** → **`trenca`** (càmera lenta i la peça `mort` del món: `pixels`, `goma` o `esvaeix`) → **`boti`** (20 estrelles pixel-art reboten a terra) → **`segell`** (el rètol `rotul` cau com un segell + fanfara WebAudio `mus`/`notes` pel canal `BG`) → **`recompte`** (les 20 estrelles volen al marcador) → **`cors`** (els cors que queden es giren com una moneda i es tornen estrelles) → **`medalla`** (la copa cau amb aixafament + canons de confeti amb les partícules `em` del món).
 3. En tocar qualsevol punt de `.boss-festa` (o en canviar de pantalla) la celebració i la música es tanquen a l'instant, es desbloqueja l'scroll i es torna exactament a `#bossFi`, amb el botó **`🎬 Celebració`** per tornar-la a veure sencera sense sumar estrelles.
-4. **Vista prèvia d'1 clic (sense jugar 10 rondes ni escriure res a Supabase):** afegeix **`?demoBoss=1`** a l'adreça de qualsevol món (o `?demoBoss=1&fase=1..5` per veure una fase concreta):
-   - `https://bonanota.net/bio-i-geo/univers/?demoBoss=1` (*El Cometa Rebel · SUPERNOVA!*)
-   - `https://bonanota.net/sociales/comarques/?demoBoss=1` (*El Drac de les Comarques · FOC DE SANT JORDI!*)
+4. **Vistes prèvies d'1 clic (sense guardar res, sense sumar ⭐ ni escriure a Supabase):**
+   - **`?demoCombat=1`**: entra directe al combat en viu del món (també accepta `&tret=…&atac=…&mort=…`).
+   - **`?demoBoss=1`**: dispara la Celebració D sencera (també accepta `&tret=…&atac=…&mort=…` i `&fase=1..5` per a una fase concreta).
+   - Exemple: `https://bonanota.net/sociales/comarques/?demoCombat=1` · `https://bonanota.net/sociales/comarques/?demoBoss=1`
 
 ### Filtre de Bon Ús (`docs/BON-US.md` §6)
-- **Zero atzar / zero caixes sorpresa:** cada món té la seva celebració fixa i previsible.
+- **Zero atzar / zero caixes sorpresa:** el motor tria les peces de manera determinista; cada món té el seu combat i la seva celebració fixos i previsibles.
 - **Topall diari intacte:** guanyar dóna `+20 ⭐` + `+1 ⭐` per cada cor que queda (màx. `+23 ⭐`) un sol cop al dia; repetir el Boss o prémer `🎬 Celebració` és lliure i no suma estrelles.
-- **Mode suau i nit (`SUAU` / `prefers-reduced-motion`):** no surt cap capa animada ni parpelleig; es mostra una banda estàtica i tranquil·la (`.boss-festa.quiet`) amb el resum d'estrelles i cors a dalt de `#bossFi`.
-- **Volum (`VOL === 0`):** silenci total si el so de l'app està apagat.
+- **Mode suau i nit (`SUAU` / `prefers-reduced-motion`):** zero animacions ni partícules al combat; a la victòria es mostra només la banda estàtica i tranquil·la (`.boss-festa.quiet`) amb el resum d'estrelles i cors a dalt de `#bossFi`.
+- **Volum (`VOL === 0`):** silenci total si el so de l'app està apagat (tots els efectes passen pels busos `SB` i `BG` del motor).
 
 ---
 
-## 2. Els 8 Bosses actuals
+## 2. Catàleg de peces i els 8 Bosses actuals
+
+El motor (`motor/plantilla-estudi-interactiu.html`, `BOSS_PECES_CAT`) té **3 peces × 3 opcions**. Quan es crea una peça nova, s'afegeix sempre al catàleg del motor, mai dins les dades d'un món:
+
+| Peça | Opcions al catàleg | Què fa |
+|---|---|---|
+| `tret` | `estrella` · `rosa` · `llapis` | Projectil que surt de la resposta correcta cap al Boss |
+| `atac` | `embat` · `taca` · `ensurt` | Atac del Boss quan el nen falla i perd un cor |
+| `mort` | `pixels` · `goma` · `esvaeix` | Com cau el Boss entre `agonia` i `trenca` a la Celebració D |
+
+### Regla determinista del motor (`bossPeces(c)`)
+Si un món no fixa cap peça a `ASSIG.boss`, el motor les tria sol (sense atzar):
+- **`mort`** segons `fx`: `explosio | blocs | orbites` → **`pixels`** · `esborra | espiral` → **`goma`** · `focus | tempesta` → **`esvaeix`**.
+- **`tret`** segons la matèria: llengües (`catala`, `castellano`, `angles`) → **`llapis`** · la resta → **`estrella`**.
+- **`atac`** segons `spr`: `fantasma | borrasca` → **`ensurt`** · `monstre | signes | faltas` → **`taca`** · la resta (inclòs `pix` propi) → **`embat`**.
+
+Si un món vol fixar alguna peça concreta (com Comarques amb `tret:"rosa"`), només cal posar `tret`, `atac` i/o `mort` dins `ASSIG.boss`. `node motor/revisa-mon.js` falla si el valor no és al catàleg i imprimeix les peces finals de cada món.
 
 Definits a l'última línia de cada `motor/dades/<mon>.js`:
 
-| Món | Fitxer | Nom (`nom`) | Sprite (`spr`) | Motion (`fx`) | Música (`mus`) | Rètol (`rotul`) | Partícules (`em`) |
-|---|---|---|---|---|---|---|---|
-| Comarques | `comarques.js` | El Drac de les Comarques | `drac` | `explosio` | `epica` (fanfara heroica + timbales) | `FOC DE SANT JORDI!` | `🐉 🌹 🔥 🛡️` |
-| Biologia i Geologia | `biogeo.js` | El Cometa Rebel | `cometa` | `orbites` | `cosmos` (*Zarathustra* + campanetes) | `SUPERNOVA!` | `☄️ 🪐 🚀 ✨` |
-| Socials (Clima) | `socials.js` | La Gran Borrasca | `borrasca` | `tempesta` | `primavera` (*La Primavera*, Vivaldi) | `SURT EL SOL!` | `🌈 ☀️ 🌤️ 🍃` |
-| Matemàtiques | `divisibilitat.js` | El Gegant Primer | `gegant` | `blocs` | `chiptune` (fanfara 8-bit) | `FACTORITZAT!` | `💎 🧱 🔢 ⚡` |
-| Català | `catala.js` | El Monstre dels Signes | `signes` | `espiral` | `alegria` (*Himne a l'Alegria*, Beethoven) | `PUNT I FINAL!` | `📖 ✨ 🎭 🖋️` |
-| Castellano | `castellano.js` | El Monstruo de las Faltas | `faltas` | `esborra` | `toreador` (*Toreador*, Bizet) | `¡NI UNA FALTA!` | `✏️ ✨ 📚 🎯` |
-| Anglès | `angles.js` | El Fantasma del Cinema | `fantasma` | `focus` | `estrena` (claqueta + estrena Hollywood) | `THAT'S A WRAP!` | `🎬 🍿 🎥 🌟` |
-| Geosfera | `geosfera.js` | El Gegant de Magma | propi (`pix`: volcà amb cara) | `explosio` amb `ic:"🌋"` | pròpia (`notes`, `metall`, 118 bpm) | `MAGMA REFREDAT!` | `💎 🪨 🔥 ✨` |
+| Món | Fitxer | Nom (`nom`) | Sprite (`spr`) | Motion (`fx`) | Peces (`tret · atac · mort`) | Música (`mus`) | Rètol (`rotul`) | Partícules (`em`) |
+|---|---|---|---|---|---|---|---|---|
+| Comarques | `comarques.js` | El Drac de les Comarques | `drac` | `explosio` | **`rosa`** (fixat) · `embat` · `pixels` | `epica` (fanfara heroica + timbales) | `FOC DE SANT JORDI!` | `🐉 🌹 🔥 🛡️` |
+| Biologia i Geologia | `biogeo.js` | El Cometa Rebel | `cometa` | `orbites` | `estrella` · `embat` · `pixels` | `cosmos` (*Zarathustra* + campanetes) | `SUPERNOVA!` | `☄️ 🪐 🚀 ✨` |
+| Socials (Clima) | `socials.js` | La Gran Borrasca | `borrasca` | `tempesta` | `estrella` · `ensurt` · `esvaeix` | `primavera` (*La Primavera*, Vivaldi) | `SURT EL SOL!` | `🌈 ☀️ 🌤️ 🍃` |
+| Matemàtiques | `divisibilitat.js` | El Gegant Primer | `gegant` | `blocs` | `estrella` · `embat` · `pixels` | `chiptune` (fanfara 8-bit) | `FACTORITZAT!` | `💎 🧱 🔢 ⚡` |
+| Català | `catala.js` | El Monstre dels Signes | `signes` | `espiral` | `llapis` · `taca` · `goma` | `alegria` (*Himne a l'Alegria*, Beethoven) | `PUNT I FINAL!` | `📖 ✨ 🎭 🖋️` |
+| Castellano | `castellano.js` | El Monstruo de las Faltas | `faltas` | `esborra` | `llapis` · `taca` · `goma` | `toreador` (*Toreador*, Bizet) | `¡NI UNA FALTA!` | `✏️ ✨ 📚 🎯` |
+| Anglès | `angles.js` | El Fantasma del Cinema | `fantasma` | `focus` | `llapis` · `ensurt` · `esvaeix` | `estrena` (claqueta + estrena Hollywood) | `THAT'S A WRAP!` | `🎬 🍿 🎥 🌟` |
+| Geosfera | `geosfera.js` | El Gegant de Magma | propi (`pix`: volcà amb cara) | `explosio` amb `ic:"🌋"` | `estrella` · `embat` · `pixels` | pròpia (`notes`, `metall`, 118 bpm) | `MAGMA REFREDAT!` | `💎 🪨 🔥 ✨` |
 
 ---
 
