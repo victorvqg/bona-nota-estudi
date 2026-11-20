@@ -23,7 +23,8 @@ self.addEventListener("fetch", e => {
       // una carpeta sense «/» al final (p. ex. …/admin) torna una redirecció: el navegador no accepta aquesta resposta en una
       // navegació (pàgina en blanc / ERR_FAILED), així que se li torna una redirecció neta cap a l'adreça bona
       if (resp.redirected) return Response.redirect(resp.url, 302);
-      const cp = resp.clone(); caches.open(VERSIO).then(c => c.put(r, cp)); return resp; })
+      if (resp.ok) { const cp = resp.clone(); caches.open(VERSIO).then(c => c.put(r, cp)); }
+      return resp; })
       .catch(() => caches.match(r).then(m => m || caches.match(u.pathname.endsWith("/") ? u.pathname + "index.html" : r))));
     return;
   }

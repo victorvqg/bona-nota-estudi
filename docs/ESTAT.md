@@ -61,6 +61,7 @@ Data: 2026-11-17
 
 - **Bloc `g6` (`2.22.0`, guia per a les famílies, `bn-corregeix` i neteja)**:
   - Pàgina pública `https://bonanota.net/pares/` (`pares/index.html`, especificada a `docs/superpowers/specs/2026-11-11-pagina-pares-design.md`), enllaçada des de la portada i verificada amb `motor/prova-pares.js`.
+  - Pàgina pròpia `404.html` a l'arrel (autocontinguda i amb totes les rutes absolutes `/` perquè es serveix a qualsevol profunditat), suport a `motor/local.py`, filtre `resp.ok` a `sw.js` i prova `motor/prova-404.js`.
   - Aplicat `supabase/bn_fotos.sql` i desplegada l'Edge Function `bn-corregeix` (`--no-verify-jwt`) a Supabase `agippwtqvhpxdockuigl` amb CORS actiu per a `https://bonanota.net` i prova `motor/prova-fotos-sql.js` (només falta definir el secret `ANTHROPIC_API_KEY` a Supabase quan es vulgui activar la lectura d'imatges amb Claude).
   - Esborrat `motor/jocs_generics.js` (còpia antiga que no carregava cap pàgina).
 - **`n2564` — Frases amb buits (`2.25.0`)**:
