@@ -5,6 +5,17 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.60.0 · 2026-11-20
+
+### Canviat
+- **Combat del Boss sense pregunta oberta** (`motor/plantilla-estudi-interactiu.html`): les 10 rondes són només de test i jocs (la ronda 6 passa a ser de classificació o test; les obertes de la pestanya «Obertes» no canvien).
+- **COP CRÍTIC real (×1,5):** el número que surt en pantalla és sempre exactament el que es resta de la vida del Boss, amb la vida inicial recalculada (`90 %` del dany base) perquè el combat mantingui l'equilibri.
+- **Sense errors, el Boss cau sempre:** si després de l'última ronda amb 0 cors perduts encara li quedava vida, salta un «⚡ COP FINAL!» que el tomba.
+
+### Afegit
+- **Resum de les 10 rondes a `#bossFi`:** franja amb icones (`✅` cop sencer · `⚡` crític · `½` mig cop · `❌` error), dany de cada ronda i suma total («Has tret X de Y») perquè el nen entengui per què ha guanyat o perdut.
+- Comprovacions noves a `bnProvaBoss` (cap ronda oberta, tot bé guanya sempre inclòs el COP FINAL, dany mostrat = dany restat i resum final).
+
 ## 2.59.0 · 2026-11-20
 
 ### Afegit

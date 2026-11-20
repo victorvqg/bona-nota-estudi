@@ -4,7 +4,9 @@ Com funcionen els **efectes especials amb moviment i música WebAudio** de Bona 
 
 ---
 
-## 1. Com funciona la celebració d'un Boss
+## 1. Com funciona el combat i la celebració d'un Boss
+
+Cada combat té **10 rondes de test i jocs** (sense pregunta oberta; les obertes continuen a la seva pestanya). Cada encert resta vida al Boss, **3 encerts seguits** fan un **⚡ COP CRÍTIC** amb dany real **×1,5** (el número mostrat és sempre el que es resta) i un combat sense cap error (0 cors perduts) venç el Boss sempre (amb un **⚡ COP FINAL** si encara li quedava vida a l'última ronda). Al final (`#bossFi`) surt una franja amb les 10 rondes (`✅` cop sencer · `⚡` crític · `½` mig cop · `❌` error), el dany de cada una i la suma total.
 
 Quan l'alumne venç el Boss d'un món (`B.hp <= 0` a `bossFi()`, a `motor/plantilla-estudi-interactiu.html`):
 
