@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.59.0 · 2026-11-20
+
+### Afegit
+- **El combat del Boss sobreviu a recarregar** (`motor/plantilla-estudi-interactiu.html`): a cada ronda es desa l'estat (ronda, vida, cors, rondes sortejades i hora d'inici) a l'aparell, amb una clau per món i per nom. En tornar a entrar surt «⚔️ Continua el combat (ronda X, Y HP)» sense tornar a sortejar les preguntes; caduca al cap de 30 minuts o en canviar de dia.
+- **Un combat abandonat i caducat es registra com a derrota** (`abandonat: 1` al registre), mantenint intacte el topall d'estrelles (+10 ⭐ com a molt un cop al dia).
+- **Combat del Boss més viu i llegible al mòbil**: barra de vida de 36 px amb número a 14 px i tros blanc amb retard en rebre un cop, cors de 48 px (el que es perd esclata i l'últim batega), sprite del Boss a 140 px, sacsejada i espurnes en encertar, atac del Boss quan es falla, «⚡ COP CRÍTIC!» amb doble dany visual als 3 encerts seguits i «🔥 FASE DE FÚRIA» per sota del 30 % de vida (més vermell i més ràpid). Tot respecta `docs/BON-US.md` §6 i queda sense animacions en mode suau o `prefers-reduced-motion`.
+- Prova automàtica `bnProvaBossCombat` a tots els mons.
+
 ## 2.58.3 · 2026-11-18
 
 ### Corregit

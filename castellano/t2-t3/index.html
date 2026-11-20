@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5c0d612dab",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="98cdddb3c2",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -244,27 +244,49 @@ ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;heig
 .mi.fet{background:var(--verd-cl);border-color:#86efac}.mi.fet .mi-p{color:#15803d}.mi.fet .mi-t{color:#166534}.mi.fet .mi-b{background:#22c55e}
 .combo.missio{color:#4ade80;text-shadow:3px 3px 0 #14532d,0 0 18px #86efac}
 /* 👾 boss del món */
-.boss-carta{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:12px 14px;border-radius:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1e1b4b,#4c1d95 60%,#831843);border:3px solid #a78bfa;box-shadow:0 0 18px #a78bfa55}
+.boss-carta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px;padding:12px 14px;border-radius:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1e1b4b,#4c1d95 60%,#831843);border:3px solid #a78bfa;box-shadow:0 0 18px #a78bfa55}
 .boss-carta.tancat{cursor:default;filter:saturate(.35);border-color:#64748b;box-shadow:none}
 .boss-carta .boss-mini{width:52px;height:52px;flex:none}
-.bc-t{flex:1;min-width:0}.bc-t b{display:block;font-family:'Press Start 2P',monospace;font-size:12px;line-height:1.6;color:#fde047}.bc-t small{display:block;font-weight:700;font-size:13.5px;color:#e9d5ff;margin-top:2px}
+.bc-t{flex:1 1 170px;min-width:0}.bc-t b{display:block;font-family:'Press Start 2P',monospace;font-size:12px;line-height:1.6;color:#fde047}.bc-t small{display:block;font-weight:700;font-size:13.5px;color:#e9d5ff;margin-top:2px}
 .bc-med{display:inline-block;font-family:'Nunito',sans-serif;font-size:11.5px;font-weight:900;background:#facc1533;border:1.5px solid #fde047;color:#fef08a;padding:1px 7px;border-radius:99px;vertical-align:middle;margin-left:4px}
 .bc-b{display:block;height:7px;margin-top:7px;background:#ffffff26;border-radius:5px;overflow:hidden}.bc-b i{display:block;height:100%;background:#a78bfa;border-radius:5px}
-.boss{position:relative;overflow:hidden;background:radial-gradient(circle at 50% 20%,#312e81,#0f172a 70%);border-radius:20px;padding:14px;margin:4px 0 10px;border:3px solid #a78bfa;color:#e2e8f0}
+.boss{position:relative;overflow:hidden;background:radial-gradient(circle at 50% 20%,#312e81,#0f172a 70%);border-radius:20px;padding:14px;margin:4px 0 10px;border:3px solid #a78bfa;color:#e2e8f0;transition:border-color .35s,background .35s}
+.boss.sacseja{animation:bossSacseja .32s ease-out}
+@keyframes bossSacseja{0%,100%{transform:none}20%{transform:translateX(-5px) translateY(2px)}45%{transform:translateX(5px) translateY(-2px)}70%{transform:translateX(-3px)}}
+.boss.furia{border-color:#ef4444;background:radial-gradient(circle at 50% 18%,#7f1d1d,#0f172a 72%);box-shadow:0 0 22px #ef444455}
+.boss-furia-tag{display:inline-block;font-family:'Press Start 2P',monospace;font-size:9px;background:#dc2626;color:#fef08a;padding:3px 7px;border-radius:7px;border:1.5px solid #fca5a5;margin-left:6px;vertical-align:middle;animation:bossCorBatec .9s ease-in-out infinite}
 .boss-cap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.boss-nom{font-family:'Press Start 2P',monospace;font-size:11px;color:#fde047;line-height:1.6;flex:1 1 140px}
-.boss-hp{position:relative;flex:2 1 180px;height:20px;background:#00000066;border:2px solid #fca5a5;border-radius:8px;overflow:hidden}
-.boss-hp i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#dc2626,#f97316,#facc15);transition:width .6s cubic-bezier(.2,1,.3,1)}
-.boss-hp span{position:relative;display:block;text-align:center;font-family:'Press Start 2P',monospace;font-size:9px;line-height:16px;color:#fff;text-shadow:1px 1px 0 #000}
-.boss-esc{display:flex;align-items:center;justify-content:space-between;margin:8px 0 2px}
-.boss-spr-w{position:relative;width:96px;height:96px}.boss-spr{width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 6px 0 #0006)}
+.boss-nom{font-family:'Press Start 2P',monospace;font-size:11px;color:#fde047;line-height:1.6;flex:1 1 150px}
+.boss-hp{position:relative;flex:2 1 200px;height:36px;background:#00000077;border:2.5px solid #fca5a5;border-radius:12px;overflow:hidden}
+.boss-hp .boss-hp-d{position:absolute;inset:0 auto 0 0;z-index:1;background:#ffffff;transition:width .55s cubic-bezier(.2,1,.3,1) .38s}
+.boss-hp .boss-hp-v{position:absolute;inset:0 auto 0 0;z-index:2;background:linear-gradient(90deg,#dc2626,#f97316,#facc15);transition:width .24s ease-out}
+.boss.furia .boss-hp .boss-hp-v{background:linear-gradient(90deg,#991b1b,#ef4444,#fb923c)}
+.boss-hp span{position:relative;z-index:3;display:block;text-align:center;font-family:'Press Start 2P',monospace;font-size:14px;line-height:31px;color:#fff;text-shadow:2px 2px 0 #000}
+.boss-esc{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 4px}
+.boss-spr-w{position:relative;width:140px;height:140px;flex:none}.boss-spr{width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 6px 0 #0006)}
 .boss-spr-w .boss-spr{animation:bossFlota 2.4s ease-in-out infinite}
+.boss.furia .boss-spr-w .boss-spr{animation:bossFlotaFuria .85s ease-in-out infinite;filter:drop-shadow(0 0 12px #ef4444) saturate(1.8) hue-rotate(-14deg) brightness(1.08)}
 @keyframes bossFlota{50%{transform:translateY(-6px)}}
+@keyframes bossFlotaFuria{50%{transform:translateY(-9px) scale(1.04)}}
 .boss-spr-w.cop .boss-spr{animation:bossCop .45s}
 @keyframes bossCop{0%,100%{transform:none;filter:none}20%{transform:translateX(-8px) rotate(-6deg);filter:brightness(3)}50%{transform:translateX(6px) rotate(4deg)}75%{transform:translateX(-3px)}}
-.boss-dmg{position:absolute;left:62%;top:0;font-family:'Press Start 2P',monospace;font-size:16px;color:#fde047;text-shadow:2px 2px 0 #b91c1c;animation:bossDmg 1s forwards;pointer-events:none}
-@keyframes bossDmg{to{transform:translateY(-40px);opacity:0}}
-.boss-cors{font-size:26px;letter-spacing:2px}.boss-cors.tremola{animation:bossCop .45s}
+.boss-spr-w.ataca .boss-spr{animation:bossAtaca .52s cubic-bezier(.22,1,.36,1)}
+@keyframes bossAtaca{0%,100%{transform:none}18%{transform:translateX(-10px) scale(.94)}48%{transform:translateX(34px) translateY(8px) scale(1.22) rotate(10deg);filter:brightness(1.35) drop-shadow(0 0 12px #ef4444)}78%{transform:translateX(-4px)}}
+.boss-dmg{position:absolute;left:58%;top:4px;z-index:4;font-family:'Press Start 2P',monospace;font-size:18px;color:#fde047;text-shadow:2px 2px 0 #b91c1c;animation:bossDmg 1s forwards;pointer-events:none;white-space:nowrap}
+.boss-dmg.crit{font-size:22px;color:#fff;text-shadow:0 0 12px #facc15,2px 2px 0 #dc2626}
+.boss-crit-tag{position:absolute;left:50%;top:-6px;z-index:5;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:11px;color:#fef08a;background:#dc2626;border:2px solid #fde047;border-radius:8px;padding:3px 7px;white-space:nowrap;pointer-events:none;animation:bossCritTag 1.15s ease-out forwards}
+@keyframes bossCritTag{0%{opacity:0;transform:translate(-50%,8px) scale(.6)}20%{opacity:1;transform:translate(-50%,-8px) scale(1.12)}80%{opacity:1;transform:translate(-50%,-18px) scale(1)}100%{opacity:0;transform:translate(-50%,-28px) scale(.95)}}
+@keyframes bossDmg{to{transform:translateY(-44px);opacity:0}}
+.boss-esp{position:absolute;left:50%;top:50%;z-index:4;width:9px;height:9px;border-radius:50%;pointer-events:none;animation:bossEsp .55s ease-out forwards}
+@keyframes bossEsp{0%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(calc(-50% + var(--dx,0px)),calc(-50% + var(--dy,0px))) scale(.2)}}
+.boss-cors{display:flex;align-items:center;gap:4px;font-size:48px;line-height:1}.boss-cors.tremola{animation:bossCop .45s}
+.boss-cor{display:inline-block;line-height:1;transform-origin:center}
+.boss-cor.buit{opacity:.42}
+.boss-cor.esclata{animation:bossCorEsclata .55s ease-out forwards}
+@keyframes bossCorEsclata{0%{transform:scale(1);filter:brightness(1.8)}35%{transform:scale(1.5) rotate(-12deg);opacity:1}70%{transform:scale(1.8) rotate(14deg);opacity:.3}100%{transform:scale(1);opacity:.42}}
+.boss-cor.ultim{animation:bossCorBatec .85s ease-in-out infinite}
+@keyframes bossCorBatec{0%,100%{transform:scale(1)}25%{transform:scale(1.22)}45%{transform:scale(1.04)}65%{transform:scale(1.16)}}
+@media(max-width:380px){.boss-spr-w{width:124px;height:124px}.boss-cors{font-size:40px;gap:2px}.boss-hp span{font-size:13px}}
 body.boss-mal{box-shadow:inset 0 0 0 6px #ef4444}
 .boss-ronda{font-family:'Press Start 2P',monospace;font-size:9px;color:#a5b4fc;text-align:right;margin-bottom:8px}
 .boss-box{color:var(--txt)}.boss-fig{text-align:center;margin-bottom:8px}.boss-fig svg{max-width:100%;height:auto}
@@ -654,8 +676,9 @@ svg .fgL{stroke-dasharray:900;stroke-dashoffset:900;animation:fgLinia 1.2s ease-
 @keyframes fgLinia{to{stroke-dashoffset:0}}
 svg .fgP{animation:vEntra .3s ease-out both}
 /* sense moviment: si el sistema ho demana o amb «efectes suaus» */
-@media(prefers-reduced-motion:reduce){#app>*,#zona>*,.grid>.tile,.kpi,.fb,.masc *,.masc-benv,.arc .masc-arc,.continua>span:first-child,.nivell .nic,.hero .av,.cap-tema .ic,.opt.ok,.opt.ok .ll,.chip.ok,nav button.on i,.mus-btn.on .ico,svg .fgB,svg .fgP,.boss-festa,.boss-festa *{animation:none!important}svg .fgL{animation:none!important;stroke-dashoffset:0}}
-body.suau #app>*,body.suau #zona>*,body.suau .grid>.tile,body.suau .kpi,body.suau .masc *,body.suau .masc-benv,body.suau .arc .masc-arc,body.suau .continua>span:first-child,body.suau .nivell .nic,body.suau .hero .av,body.suau .opt.ok,body.suau .opt.ok .ll,body.suau .mus-btn.on .ico,body.suau svg .fgB,body.suau .boss-festa,body.suau .boss-festa *{animation:none!important}
+@media(prefers-reduced-motion:reduce){#app>*,#zona>*,.grid>.tile,.kpi,.fb,.masc *,.masc-benv,.arc .masc-arc,.continua>span:first-child,.nivell .nic,.hero .av,.cap-tema .ic,.opt.ok,.opt.ok .ll,.chip.ok,nav button.on i,.mus-btn.on .ico,svg .fgB,svg .fgP,.boss,.boss *,.boss-festa,.boss-festa *{animation:none!important}.boss-hp i{transition:none!important}.boss-esp{display:none!important}svg .fgL{animation:none!important;stroke-dashoffset:0}}
+body.suau #app>*,body.suau #zona>*,body.suau .grid>.tile,body.suau .kpi,body.suau .masc *,body.suau .masc-benv,body.suau .arc .masc-arc,body.suau .continua>span:first-child,body.suau .nivell .nic,body.suau .hero .av,body.suau .opt.ok,body.suau .opt.ok .ll,body.suau .mus-btn.on .ico,body.suau svg .fgB,body.suau .boss,body.suau .boss *,body.suau .boss-festa,body.suau .boss-festa *{animation:none!important}
+body.suau .boss-hp i{transition:none!important}body.suau .boss-esp{display:none!important}
 body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 /* mode tast anònim */
 .bt-tast{margin-top:10px;width:100%;padding:11px 14px;font-size:15.5px;background:#f8fafc;border-color:#cbd5e1;color:#334155}
@@ -686,7 +709,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versión 2.58.3</small></div>
+<div class="peu-pag"><small class="bn-versio">versión 2.59.0</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -2724,11 +2747,47 @@ function bossFesta(forca){const host=app.querySelector(".boss");if(!host)return;
  d.onclick=e=>{e.stopPropagation();tancaBossFesta()};
  host.appendChild(d);
  BF_T=setTimeout(()=>{d.classList.add("surt");BF_T=setTimeout(tancaBossFesta,360)},4250)}
+const BOSS_CADUCA_MS=30*60*1000;
+function bossClau(){if(MODE_TAST||!S.nom)return "";return CL+"boss_"+S.nom.trim().toLowerCase()}
+function bossQuiet(){return SUAU||(typeof matchMedia==="function"&&matchMedia("(prefers-reduced-motion:reduce)").matches)}
+function bossEsFuria(B){return !!(B&&B.hp>0&&B.hp0>0&&(B.hp/B.hp0)<0.3)}
+function bossSerRonda(r){
+ if(r.tipus==="test")return {tipus:"test",q:[r.q[0],r.q[1],r.q[2],r.q[3]],qid:r.q.id,qd:r.q.d,qtid:r.q.tid,qtema:r.q.tema,svg:r.svg||"",joc:r.joc||"",dmg:r.dmg};
+ if(r.tipus==="ordena")return {tipus:"ordena",j:{titol:r.j.titol,instr:r.j.instr||"",base:r.j.base||""},items:r.items,dmg:r.dmg};
+ return {tipus:"oberta",o:r.o,dmg:r.dmg}}
+function bossDeserRonda(r){
+ if(r.tipus==="test"){const q=Object.assign(r.q.slice(),{id:r.qid,d:r.qd,tid:r.qtid,tema:r.qtema});return {tipus:"test",q,svg:r.svg||"",joc:r.joc||"",dmg:r.dmg}}
+ return r}
+function bossDesaEstat(kSeg,fi){
+ const cl=bossClau(),B=BOSS;if(!cl||!B||B.fet)return;
+ try{localStorage.setItem(cl,JSON.stringify({v:1,dia:avui(),t0:B.t0,k:kSeg!==undefined?kSeg:B.k,hp:B.hp,hp0:B.hp0,cors:B.cors,enc:B.enc,err:B.err,ratxa:B.ratxa||0,fi:!!fi,tq:TQ.slice(),rondes:B.rondes.map(bossSerRonda)}))}catch(e){}}
+function bossEsborraEstat(){const cl=bossClau();if(!cl)return;try{localStorage.removeItem(cl)}catch(e){}}
+function bossEstatDesat(){
+ const cl=bossClau();if(!cl)return null;
+ let raw=null;try{raw=localStorage.getItem(cl)}catch(e){return null}
+ if(!raw)return null;
+ let s=null;try{s=JSON.parse(raw)}catch(e){bossEsborraEstat();return null}
+ if(!s||typeof s!=="object"||!Array.isArray(s.rondes)||!s.rondes.length){bossEsborraEstat();return null}
+ if(s.dia!==avui()||(Date.now()-(s.t0||0))>=BOSS_CADUCA_MS){
+  bossEsborraEstat();
+  const n=(s.enc||0)+(s.err||0),pc=n?Math.round((s.enc||0)*100/n):0;
+  registra("joc",{joc:"boss",titol:bossNom(),pc,enc:s.enc||0,err:s.err||0,guanya:0,abandonat:1,cors:s.cors||0,hp:Math.max(0,s.hp||0),s:Math.min(3600,Math.max(1,Math.round((Date.now()-(s.t0||Date.now()))/1000))),q:Array.isArray(s.tq)?s.tq.slice():[]});
+  return null}
+ return s}
+function bossCorsHtml(cors,perdutIdx){return [0,1,2].map(i=>{const viu=i<cors,cls="boss-cor"+(viu?(cors===1&&i===0?" ultim":""):(i===perdutIdx?" esclata":" buit"));return `<span class="${cls}" aria-hidden="true">${viu?"❤️":"🤍"}</span>`}).join("")}
+function bossEspurnes(host,crit){if(!host||bossQuiet())return;
+ const cols=crit?["#fde047","#fff","#fb923c","#ef4444"]:["#fde047","#fb923c","#38bdf8","#fff"],n=crit?14:8;
+ for(let i=0;i<n;i++){const e=document.createElement("i");e.className="boss-esp";
+  const a=Math.PI*2*i/n+(Math.random()-.5)*.35,dist=(crit?44:30)+Math.random()*(crit?36:24);
+  e.style.background=cols[i%cols.length];e.style.setProperty("--dx",Math.round(Math.cos(a)*dist)+"px");e.style.setProperty("--dy",Math.round(Math.sin(a)*dist)+"px");
+  host.appendChild(e);setTimeout(()=>e.remove(),600)}}
 function bossEstat(){const n=T.length,ap=T.filter(t=>{const m=millor(t.id);return m!==null&&m>=APROVA}).length,cal=Math.max(1,Math.ceil(n*BOSS_DESBLOQ)),
   exam=(S.examens||[]).some(x=>x&&x.pc>=APROVA);
  return {ap,n,cal,exam,obert:ap>=cal||exam,guanyat:!!(S.boss&&S.boss.v),avui:!!diaEst().boss}}
-function bossCarta(enInici){if(!S.nom||!T.length)return "";if(MODE_TAST){if(enInici)return "";return `<div class="boss-carta tancat" onclick="boss()" role="button" tabindex="0">${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}</b><small>🔒 El repte final del món s'obre entrant amb nom i PIN i aprovant els temes</small></div></div>`}const e=bossEstat();if(enInici&&(!e.obert||e.avui))return "";
- return `<div class="boss-carta${e.obert?"":" tancat"}" ${e.obert?`onclick="boss()" role="button" tabindex="0"`:""}>${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}${e.guanyat?` <span class="bc-med" title="Ja l'has vençut ${S.boss.v} ${S.boss.v>1?"vegades":"vegada"}">🏆 ${S.boss.v}</span>`:""}</b><small>${e.obert?(e.avui?"L'has vençut avui! Pots tornar-hi per practicar.":`El repte final del món. Guanya'l: +${BOSS_ESTRELLES} ⭐${e.guanyat?" · ja l'has vençut "+S.boss.v+(S.boss.v>1?" vegades":" vegada"):""}`):`🔒 Per obrir-lo: aprova ${e.cal} dels ${e.n} temes (ara: ${e.ap}) o treu un ${APROVA} % en un examen`}</small>${e.obert?"":`<i class="bc-b"><i style="width:${Math.round(e.ap*100/e.cal)}%"></i></i>`}</div>${e.obert?`<span class="btn verd">Lluita ⚔️</span>`:""}</div>`}
+function bossCarta(enInici){if(!S.nom||!T.length)return "";if(MODE_TAST){if(enInici)return "";return `<div class="boss-carta tancat" onclick="boss()" role="button" tabindex="0">${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}</b><small>🔒 El repte final del món s'obre entrant amb nom i PIN i aprovant els temes</small></div></div>`}
+ const e=bossEstat(),desat=bossEstatDesat();if(enInici&&(!e.obert||(e.avui&&!desat)))return "";
+ const rNum=desat?Math.min(desat.rondes.length,(desat.k||0)+1):0,hpAra=desat?Math.max(0,desat.hp):0;
+ return `<div class="boss-carta${e.obert?"":" tancat"}" ${e.obert?`onclick="boss()" role="button" tabindex="0"`:""}>${bossSpr("boss-mini")}<div class="bc-t"><b>👾 ${bossNom()}${e.guanyat?` <span class="bc-med" title="Ja l'has vençut ${S.boss.v} ${S.boss.v>1?"vegades":"vegada"}">🏆 ${S.boss.v}</span>`:""}</b><small>${e.obert?(desat?`Combat en marxa · ${"❤️".repeat(Math.max(0,desat.cors||0))}${"🤍".repeat(Math.max(0,3-(desat.cors||0)))}`:e.avui?"L'has vençut avui! Pots tornar-hi per practicar.":`El repte final del món. Guanya'l: +${BOSS_ESTRELLES} ⭐${e.guanyat?" · ja l'has vençut "+S.boss.v+(S.boss.v>1?" vegades":" vegada"):""}`):`🔒 Per obrir-lo: aprova ${e.cal} dels ${e.n} temes (ara: ${e.ap}) o treu un ${APROVA} % en un examen`}</small>${e.obert?"":`<i class="bc-b"><i style="width:${Math.round(e.ap*100/e.cal)}%"></i></i>`}</div>${e.obert?`<span class="btn verd">${desat?`⚔️ Continua el combat (ronda ${rNum}, ${hpAra} HP)`:"Lluita ⚔️"}</span>`:""}</div>`}
 // rondes: ~10, amb les especials repartides; si el món no té un tipus de joc, s'hi posa una pregunta de test
 function bossRondes(){const temes=barreja(T.slice()),tests=[];
  for(let i=0;tests.length<9&&i<temes.length*4;i++){const t=temes[i%temes.length],q=barreja(t.q.filter(x=>!tests.some(y=>y[0]===x[0])))[0];if(q){const c=cpQ(q);c.tid=t.id;c.tema=t.titol;tests.push(c)}}
@@ -2742,22 +2801,28 @@ function bossRondes(){const temes=barreja(T.slice()),tests=[];
  [test(),test(),ord||test(),test(),fig||test(),ob||test(),test(),par||test(),test(),test()].forEach(x=>{if(x)R.push(x)});return R}
 function boss(){tancaBossFesta();if(MODE_TAST){convidaPin(`«${bossNom()}» és el repte final del món i s'obre entrant amb nom i PIN.`);return}aturaSeg();tancaActivitat();iniciActivitat();REPAS=false;COMBO=0;FONT=["boss"];marcaNav("jocs");window.scrollTo(0,0);const e=bossEstat();
  if(!e.obert){app.innerHTML=`<h2 class="sec">👾 ${bossNom()}</h2>${bossCarta()}<div class="fila"><button class="btn sec" onclick="vista('jocs')">Torna als jocs</button></div>`;return}
+ const desat=bossEstatDesat();
+ if(desat){
+  BOSS={rondes:desat.rondes.map(bossDeserRonda),k:desat.k||0,hp:desat.hp,hp0:desat.hp0,cors:desat.cors,enc:desat.enc||0,err:desat.err||0,ratxa:desat.ratxa||0,t0:desat.t0||Date.now(),fet:false};
+  TQ=Array.isArray(desat.tq)?desat.tq.slice():[];
+  if(desat.fi||BOSS.hp<=0||BOSS.cors<=0||BOSS.k>=BOSS.rondes.length)return bossFi();
+  return bossPinta()}
  const rondes=bossRondes(),max=rondes.reduce((a,r)=>a+r.dmg,0),hp=Math.round(max*.8);
- BOSS={rondes,k:0,hp,hp0:hp,cors:3,enc:0,err:0,t0:Date.now(),fet:false};TQ=[];
+ BOSS={rondes,k:0,hp,hp0:hp,cors:3,enc:0,err:0,ratxa:0,t0:Date.now(),fet:false};TQ=[];
  app.innerHTML=`<div class="boss"><div class="boss-intro">${bossSpr("boss-spr gran")}<h2>${bossNom()}</h2><p>Té <b>${hp}</b> punts de vida. Tu tens <b style="white-space:nowrap">3 cors ❤️❤️❤️</b></p><p class="petit">Cada encert li treu vida. Cada error et treu un cor. ${rondes.length} rondes: test, jocs i una pregunta oberta.</p><button class="btn verd gran" id="bossGo">⚔️ Lluita!</button></div></div>`;
  document.getElementById("bossGo").onclick=()=>{so("clic");bossPinta()}}
-function bossCap(){const B=BOSS,pc=Math.max(0,Math.round(B.hp*100/B.hp0));
- return `<div class="boss-cap"><div class="boss-nom">${bossNom()}</div><div class="boss-hp" title="Vida del boss"><i style="width:${pc}%"></i><span>${Math.max(0,B.hp)} HP</span></div></div>
- <div class="boss-esc"><div class="boss-spr-w" id="bossSprW">${bossSpr("boss-spr")}</div><div class="boss-cors" aria-label="${B.cors} cors">${"❤️".repeat(B.cors)}${"🤍".repeat(3-B.cors)}</div></div>
+function bossCap(){const B=BOSS,pc=Math.max(0,Math.round(B.hp*100/B.hp0)),fur=bossEsFuria(B);
+ return `<div class="boss-cap"><div class="boss-nom">${bossNom()}${fur?` <span class="boss-furia-tag">🔥 FASE DE FÚRIA</span>`:""}</div><div class="boss-hp" title="Vida del boss"><i class="boss-hp-d" style="width:${pc}%"></i><i class="boss-hp-v" style="width:${pc}%"></i><span>${Math.max(0,B.hp)} HP</span></div></div>
+ <div class="boss-esc"><div class="boss-spr-w" id="bossSprW">${bossSpr("boss-spr")}</div><div class="boss-cors" aria-label="${B.cors} cors">${bossCorsHtml(B.cors,-1)}</div></div>
  <div class="boss-ronda">Ronda ${B.k+1} de ${B.rondes.length}</div>`}
-function bossPinta(){const B=BOSS,r=B.rondes[B.k];window.scrollTo(0,0);TQ0=Date.now();
+function bossPinta(){const B=BOSS,r=B.rondes[B.k];window.scrollTo(0,0);TQ0=Date.now();bossDesaEstat(B.k,false);
  let cos="";
  if(r.tipus==="test"){const ops=barreja(r.q[1].map((o,i)=>[o,i]));r.ops=ops;
   cos=`${r.svg?`<div class="boss-fig">${r.svg}</div>`:""}<div class="prog">${r.q.tema||r.joc||"Repte"}</div><div class="pregunta">${r.q[0]}</div><div>${ops.map(([o,i],j)=>`<button class="opt bo" data-i="${i}"><span class="ll">${"ABC"[j]}</span><span>${o}</span></button>`).join("")}</div>`}
  else if(r.tipus==="ordena"){r.ok=0;r.fallat=false;const ix=barreja(r.items.map((x,i)=>i));
   cos=`<div class="prog">⚡ Cop doble · ${r.j.titol}</div><div class="pregunta">${r.j.instr||"Toca'ls en ordre."}${r.j.base?` <small>(a sota: ${r.j.base})</small>`:""}</div><div class="bo-ord">${ix.map(i=>`<button class="opt bo-o" data-k="${i}" style="${r.items[i][2]?`background:${r.items[i][2]}`:""}"><b>${r.items[i][0]}</b>${r.items[i][1]?`<small>${r.items[i][1]}</small>`:""}</button>`).join("")}</div><div class="bo-fet" id="boFet"></div>`}
  else{cos=`<div class="prog">⚡ Cop final · ${r.o.t}</div><div class="pregunta">${r.o.q}</div><textarea id="boResp" rows="5" placeholder="Explica-ho amb les teves paraules: cada idea clau li treu vida…"></textarea><div class="fila"><button class="btn" id="bossCop">Llança el cop ⚡</button></div>`}
- app.innerHTML=`<div class="boss">${bossCap()}<div class="box boss-box">${cos}<div id="boFb"></div></div></div>`;
+ app.innerHTML=`<div class="boss${bossEsFuria(B)?" furia":""}">${bossCap()}<div class="box boss-box">${cos}<div id="boFb"></div></div></div>`;
  if(r.tipus==="test")app.querySelectorAll(".bo").forEach(b=>b.onclick=()=>{const ok=+b.dataset.i===r.q[2];anotaQ(r.q,ok,+b.dataset.i);
    app.querySelectorAll(".bo").forEach(x=>{x.disabled=true;if(+x.dataset.i===r.q[2])x.classList.add("ok")});if(!ok)b.classList.add("ko");
    if(r.q.tid){repAnota(r.q.tid,r.q[0],ok);if(!ok){const e=ET(r.q.tid);e.fallades[r.q[0]]=(e.fallades[r.q[0]]||0)+1;desa()}}
@@ -2774,14 +2839,30 @@ function bossPinta(){const B=BOSS,r=B.rondes[B.k];window.scrollTo(0,0);TQ0=Date.
    const det=r.o.p.filter(pt=>ideaDetectada(pt,txt,r.o.q)).length,tot=r.o.p.length,dmg=Math.round(r.dmg*det/Math.max(1,tot));
    bossResol(det>0,dmg,`${det?`⚡ <b>${det} de ${tot} idees clau!</b>`:"🤔 <b>No hi he trobat cap idea clau.</b>"} <details style="margin-top:6px"><summary>👀 Resposta model</summary><p>${r.o.m}</p></details>`,true)}}}
 // un error: perds un cor (només un per ronda)
-function bossDolor(){const B=BOSS;B.cors=Math.max(0,B.cors-1);B.err++;so("ko");const c=app.querySelector(".boss-cors");if(c){c.innerHTML="❤️".repeat(B.cors)+"🤍".repeat(3-B.cors);c.classList.remove("tremola");void c.offsetWidth;c.classList.add("tremola")}document.body.classList.add("boss-mal");setTimeout(()=>document.body.classList.remove("boss-mal"),350)}
-function bossResol(ok,dmg,txt,jaComptat){const B=BOSS;if(ok){B.enc++;missio("enc")}else if(!jaComptat)bossDolor();
- if(dmg>0){B.hp-=dmg;so("super");const w=document.getElementById("bossSprW");if(w){w.classList.remove("cop");void w.offsetWidth;w.classList.add("cop");const d=document.createElement("b");d.className="boss-dmg";d.textContent="-"+dmg;w.appendChild(d)}
-  const h=app.querySelector(".boss-hp");if(h){h.querySelector("i").style.width=Math.max(0,Math.round(B.hp*100/B.hp0))+"%";h.querySelector("span").textContent=Math.max(0,B.hp)+" HP"}}
+function bossDolor(){const B=BOSS;B.cors=Math.max(0,B.cors-1);B.err++;B.ratxa=0;so("ko");
+ const c=app.querySelector(".boss-cors");if(c){c.setAttribute("aria-label",`${B.cors} cors`);c.innerHTML=bossCorsHtml(B.cors,B.cors);c.classList.remove("tremola");void c.offsetWidth;c.classList.add("tremola")}
+ const w=document.getElementById("bossSprW");if(w){w.classList.remove("cop","ataca");void w.offsetWidth;w.classList.add("ataca")}
+ document.body.classList.add("boss-mal");setTimeout(()=>document.body.classList.remove("boss-mal"),350);
+ bossDesaEstat(B.k,B.cors<=0)}
+function bossResol(ok,dmg,txt,jaComptat){const B=BOSS;if(ok){B.enc++;B.ratxa=(B.ratxa||0)+1;missio("enc")}else{B.ratxa=0;if(!jaComptat)bossDolor()}
+ const crit=ok&&dmg>0&&B.ratxa>=3&&B.ratxa%3===0;
+ if(dmg>0){B.hp-=dmg;so("super");
+  const box=app.querySelector(".boss");
+  if(box&&!bossQuiet()){box.classList.remove("sacseja");void box.offsetWidth;box.classList.add("sacseja")}
+  const w=document.getElementById("bossSprW");
+  if(w){w.classList.remove("cop","ataca");void w.offsetWidth;w.classList.add("cop");
+   const d=document.createElement("b");d.className="boss-dmg"+(crit?" crit":"");d.textContent="-"+(crit?dmg*2:dmg)+(crit?"!":"");w.appendChild(d);
+   if(crit){const ct=document.createElement("b");ct.className="boss-crit-tag";ct.textContent="⚡ COP CRÍTIC!";w.appendChild(ct)}
+   bossEspurnes(w,crit)}
+  const h=app.querySelector(".boss-hp"),pc=Math.max(0,Math.round(B.hp*100/B.hp0));
+  if(h){const v=h.querySelector(".boss-hp-v"),dl=h.querySelector(".boss-hp-d");if(v)v.style.width=pc+"%";if(dl)dl.style.width=pc+"%";h.querySelector("span").textContent=Math.max(0,B.hp)+" HP"}
+  if(box&&bossEsFuria(B)&&!box.classList.contains("furia")){box.classList.add("furia");const nm=box.querySelector(".boss-nom");if(nm&&!nm.querySelector(".boss-furia-tag"))nm.insertAdjacentHTML("beforeend",` <span class="boss-furia-tag">🔥 FASE DE FÚRIA</span>`)}}
  const fi=B.hp<=0||B.cors<=0||B.k>=B.rondes.length-1;
- document.getElementById("boFb").innerHTML=`<div class="fb ${ok&&dmg>0?"ok":"ko"}">${txt}</div><div class="fila"><button class="btn" id="bossSeg">${fi?"Veure el resultat 🏁":"Següent ronda ▶"}</button></div>`;
+ bossDesaEstat(fi?B.k:B.k+1,fi);
+ const critFb=crit?`<b>⚡ COP CRÍTIC!</b> `:"";
+ document.getElementById("boFb").innerHTML=`<div class="fb ${ok&&dmg>0?"ok":"ko"}">${critFb}${txt}</div><div class="fila"><button class="btn" id="bossSeg">${fi?"Veure el resultat 🏁":"Següent ronda ▶"}</button></div>`;
  document.getElementById("bossSeg").onclick=()=>{if(fi)return bossFi();B.k++;bossPinta()}}
-function bossFi(){const B=BOSS;if(!B||B.fet)return;B.fet=true;tancaBossFesta();const guanya=B.hp<=0,n=B.enc+B.err,pc=n?Math.round(B.enc*100/n):0;window.scrollTo(0,0);
+function bossFi(){const B=BOSS;if(!B||B.fet)return;B.fet=true;bossEsborraEstat();tancaBossFesta();const guanya=B.hp<=0,n=B.enc+B.err,pc=n?Math.round(B.enc*100/n):0;window.scrollTo(0,0);
  let premi=0;if(guanya){const e=diaEst();if(!e.boss){e.boss=1;premi=BOSS_ESTRELLES;const f=FONT;FONT=["boss"];suma(premi);FONT=f}S.boss=S.boss||{};S.boss.v=(S.boss.v||0)+1;S.boss.d=avui();S.boss.cors=Math.max(S.boss.cors||0,B.cors);desa();confeti()}else so("ko");
  missio("jocs","boss");registra("joc",{joc:"boss",titol:bossNom(),pc,enc:B.enc,err:B.err,guanya:guanya?1:0,cors:B.cors,hp:Math.max(0,B.hp),s:segs(B.t0),q:TQ.slice()});
  const fall=[...new Set(B.rondes.slice(0,B.k+1).filter((r,i)=>r.tipus==="test"&&r.q.tid&&TQ.some(x=>x.startsWith((r.q.id||"?")+":0"))).map(r=>r.q.tema))];
@@ -2812,8 +2893,66 @@ async function bnProvaBoss(){const repAbans=JSON.stringify(S.rep||{}),bossAbans=
   boss();document.getElementById("bossGo").click();if(!juga(false))return "el combat no s'acaba (derrota)";
   if(BOSS.cors!==0||BOSS.hp<=0)return `amb tot fallat hauria de perdre (cors ${BOSS.cors}, HP ${BOSS.hp})`;if(!/GUANYAT AQUESTA VEGADA/.test(app.textContent))return "no surt la pantalla de derrota";
   await new Promise(r=>setTimeout(r,1500));return true
- }finally{tancaBossFesta();S.rep=JSON.parse(repAbans);const b=JSON.parse(bossAbans);if(b)S.boss=b;else delete S.boss;e.boss=avuiAbans;e.mf=JSON.parse(mfAbans);e.mt=mtAbans;desa();aturaSeg()}}
+ }finally{bossEsborraEstat();tancaBossFesta();S.rep=JSON.parse(repAbans);const b=JSON.parse(bossAbans);if(b)S.boss=b;else delete S.boss;e.boss=avuiAbans;e.mf=JSON.parse(mfAbans);e.mt=mtAbans;desa();aturaSeg()}}
 (window.BN_PROVES=window.BN_PROVES||[]).push("bnProvaBoss");
+// prova (n2897): persistència per món i nom, reprendre sense resortejar, caducitat 30 min / canvi de dia (abandonat:1), cop crític, fúria, atac i cors
+function bnProvaBossCombat(){const rep0=JSON.stringify(S.rep||{}),suau0=SUAU,reg0=registra,logs=[];
+ const jugaRonda=be=>{const r=BOSS.rondes[BOSS.k];
+  if(r.tipus==="test")[...app.querySelectorAll(".bo")].find(o=>be?+o.dataset.i===r.q[2]:+o.dataset.i!==r.q[2]).click();
+  else if(r.tipus==="ordena"){if(!be){const mal=[...app.querySelectorAll(".bo-o")].find(o=>+o.dataset.k!==0);if(mal&&!r.fallat)mal.click()}
+   for(let k=r.ok;k<r.items.length;k++){const el=app.querySelector(`.bo-o[data-k="${k}"]`);if(el&&!el.disabled)el.click()}}
+  else{document.getElementById("boResp").value=be?(r.o.m+" "+r.o.p.join(". ")).split(/\s+/).reverse().join(" "):"aquest perque quan sense sobre entre durant despres";document.getElementById("bossCop").click()}};
+ try{bossEsborraEstat();SUAU=false;aplicaSuau();
+  const cl=bossClau();if(!cl||!cl.includes(S.nom.trim().toLowerCase()))return "bossClau() ha d'incloure món i nom";
+  // 1) Iniciar combat, fer 1 ronda i comprovar desat + targeta «Continua el combat»
+  boss();document.getElementById("bossGo").click();
+  const q0=BOSS.rondes.map(r=>r.tipus==="test"?r.q[0]:r.tipus==="ordena"?r.j.titol:r.o.q);
+  jugaRonda(true);
+  const hpDespres1=BOSS.hp;
+  if(!localStorage.getItem(cl))return "no s'ha desat l'estat del combat a localStorage";
+  if(!app.querySelector(".boss-hp-d")||!app.querySelector(".boss-hp-v"))return "falten les dues barres de vida (.boss-hp-d i .boss-hp-v)";
+  vista("jocs");
+  const carta=app.querySelector(".boss-carta");
+  if(!carta||!carta.textContent.includes(`⚔️ Continua el combat (ronda 2, ${hpDespres1} HP)`))return `la targeta no mostra '⚔️ Continua el combat (ronda 2, ${hpDespres1} HP)'`;
+  // 2) Simular recàrrega (BOSS=null) i reprendre: mateixes rondes, ronda 2, mateix HP
+  BOSS=null;boss();
+  if(!BOSS||BOSS.k!==1||BOSS.hp!==hpDespres1)return `en reprendre havia d'estar a k=1 i ${hpDespres1} HP (és k=${BOSS&&BOSS.k}, hp=${BOSS&&BOSS.hp})`;
+  const q1=BOSS.rondes.map(r=>r.tipus==="test"?r.q[0]:r.tipus==="ordena"?r.j.titol:r.o.q);
+  if(JSON.stringify(q0)!==JSON.stringify(q1))return "en reprendre s'han tornat a sortejar les preguntes";
+  // 3) 2 encerts més seguits (ratxa=3) → COP CRÍTIC amb doble dany visual
+  jugaRonda(true);document.getElementById("bossSeg").click();
+  const dmg3=BOSS.rondes[BOSS.k].dmg;
+  jugaRonda(true);
+  if(!app.querySelector(".boss-crit-tag")||!/COP CRÍTIC/.test(app.textContent))return "amb 3 encerts seguits ha de sortir COP CRÍTIC";
+  const dmgEl=app.querySelector(".boss-dmg.crit");
+  if(!dmgEl||dmgEl.textContent!==`-${dmg3*2}!`)return `el cop crític ha de mostrar doble dany visual (-${dmg3*2}!)`;
+  // 4) Fase de fúria per sota del 30 % de vida
+  BOSS.hp=Math.max(1,Math.floor(BOSS.hp0*.25));bossPinta();
+  if(!app.querySelector(".boss.furia")||!/FASE DE FÚRIA/.test(app.textContent))return "amb menys del 30 % de vida ha d'activar-se la fase de fúria";
+  // 5) Errada: el drac ataca (.ataca), el cor esclata (.esclata) i en quedar-ne 1 batega (.ultim)
+  bossDolor();
+  if(!app.querySelector("#bossSprW.ataca"))return "en fallar, el drac s'ha d'abalançar (#bossSprW.ataca)";
+  if(!app.querySelector(".boss-cor.esclata"))return "el cor perdut ha d'esclatar (.boss-cor.esclata)";
+  bossDolor();
+  if(BOSS.cors!==1||!app.querySelector(".boss-cor.ultim"))return "quan queda 1 cor ha de bategar (.boss-cor.ultim)";
+  // 6) Mode suau: no crea espurnes
+  SUAU=true;aplicaSuau();
+  const w=document.getElementById("bossSprW");w.querySelectorAll(".boss-esp").forEach(x=>x.remove());
+  bossEspurnes(w,true);
+  if(w.querySelector(".boss-esp"))return "en mode suau no s'han de crear espurnes";
+  // 7) Caducitat als 30 min i en canviar de dia → registra derrota amb abandonat:1
+  registra=(ev,d)=>{logs.push({ev,d})};
+  const s1=JSON.parse(localStorage.getItem(cl));s1.t0=Date.now()-BOSS_CADUCA_MS-1000;localStorage.setItem(cl,JSON.stringify(s1));
+  if(bossEstatDesat()!==null)return "un combat de fa >30 min ha de caducar";
+  if(localStorage.getItem(cl)!==null)return "en caducar s'ha d'esborrar de localStorage";
+  if(!logs.length||logs[0].ev!=="joc"||logs[0].d.joc!=="boss"||logs[0].d.guanya!==0||logs[0].d.abandonat!==1)return "un combat caducat s'ha de registrar com a derrota amb abandonat:1";
+  // Canvi de dia
+  logs.length=0;s1.t0=Date.now();s1.dia="2000-01-01";localStorage.setItem(cl,JSON.stringify(s1));
+  if(bossEstatDesat()!==null)return "un combat d'un altre dia ha de caducar";
+  if(!logs.length||logs[0].d.abandonat!==1||logs[0].d.guanya!==0)return "un combat d'un altre dia s'ha de registrar amb abandonat:1";
+  return true
+ }finally{registra=reg0;bossEsborraEstat();SUAU=suau0;aplicaSuau();S.rep=JSON.parse(rep0);BOSS=null;vista("inici")}}
+window.BN_PROVES.push("bnProvaBossCombat");
 // prova: un examen aprovat (70 % o més) obre el boss encara que no hi hagi prou temes aprovats; un de suspès, no
 function bnProvaBossExamen(){const t0=S.temes,x0=S.examens;
  try{S.temes={};S.examens=[{d:avui(),pc:APROVA-10}];if(bossEstat().obert)return `amb 0 temes i un examen del ${APROVA-10} % el boss no s'hauria d'obrir`;
