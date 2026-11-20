@@ -377,5 +377,43 @@
    "mineral",
    "err-geo"
   ]
+ },
+ {
+  "dades": "enters",
+  "carpeta": "matematiques/enters",
+  "mon": "9",
+  "neix": "2026-11-20",
+  "materia": "Matemàtiques",
+  "titol": "Tema 3: Els nombres enters",
+  "desc": "Positius i negatius, la recta, sumes i restes, la regla dels signes, PA·MU·SU, potències i arrels.",
+  "colors": [
+   "#0c4a6e",
+   "#2563eb",
+   "#38bdf8"
+  ],
+  "ic": "🌡️",
+  "curt": "Mates (enters)",
+  "spr": "termometre",
+  "xat": [
+   [
+    70,
+    "els nombres negatius"
+   ],
+   [
+    71,
+    "la regla dels signes"
+   ],
+   [
+    72,
+    "el valor absolut"
+   ]
+  ],
+  "xmon": "Mates · Enters",
+  "demo_jocs": [
+   "salts",
+   "signeres",
+   "pamusu",
+   "err-enters"
+  ]
  }
 ]

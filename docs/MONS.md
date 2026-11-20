@@ -18,6 +18,7 @@ Després, aquí es comprova si se sap de veritat.
 | 6 | Català | Tema 2: La literatura, el nom i la puntuació | 12 | 109 | 15 | 16 | El Monstre dels Signes | [obre'l](https://bonanota.net/catala/t2/) |
 | 7 | Anglès | Tema 2: That's Entertainment | 8 | 85 | 12 | 15 | El Fantasma del Cinema | [obre'l](https://bonanota.net/angles/t2/) |
 | 8 | Biologia i Geologia | Geosfera | 16 | 129 | 16 | 16 | El Gegant de Magma | [obre'l](https://bonanota.net/bio-i-geo/geosfera/) |
+| 9 | Matemàtiques | Tema 3: Els nombres enters | 7 | 62 | 13 | 9 | El Rei Sota Zero | [obre'l](https://bonanota.net/matematiques/enters/) |
 
 ---
 
@@ -248,3 +249,27 @@ l'**examen** i el **full de respostes**. Les dades són a `motor/dades/geosfera.
 - Les tres dades dubtoses de les diapositives no es pregunten i surten a la fitxa com a «pregunta-ho al profe»: la perforació de Kola
   (la diapositiva diu 13 km i que encara es perfora), la profunditat de Lehmann (5.100 km al text i 5.150 km al dibuix) i la diapositiva 6,
   que diu «mantell» quan parla del nucli.
+
+---
+## 🌡️ Món 9 · Matemàtiques: Tema 3, els nombres enters
+
+Fet a partir dels 6 PDF del pack de Bona Nota (resum, esquema, examen, full de respostes, exercicis i solucions) del llibre de
+Matemàtiques de 1r d'ESO (Barcanova), unitat 3, pàgines 66 a 83. Les dades són a `motor/dades/enters.js`.
+
+**7 temes en 4 blocs** (les 4 parts del resum, un tema per secció del llibre):
+
+| Bloc | Temes |
+|---|---|
+| 🌡️ Què són els enters? | Nombres positius i negatius · El conjunt dels enters: ordre, valor absolut i oposat |
+| ➕ Sumar i restar | Sumes i restes d'enters · Sumes i restes amb parèntesis |
+| ✖️ Multiplicar, dividir i combinar | Multiplicació i divisió · Operacions combinades |
+| ⚡ Potències i arrels | Potències i arrels d'enters |
+
+- **62 preguntes de test.** Les falses són els errors típics del full de respostes (−4 − 8 = +12, −9 > −2, −3² = +9, (−3)² = 6,
+  restar abans de multiplicar a 20 − (−3) · (+4)…).
+- **13 preguntes obertes**, entre elles les dues de l'examen (la regla dels signes amb factures i el problema de l'Arnau).
+- **9 jocs:** llegir la recta (lletres A-D) · salts a la recta (−7 + 4) · Més o menys? · Quin signe surt? · Del més petit al més gran ·
+  PA · MU · SU · Operació i resultat · Paraules del tema · 🔍 Troba l'error (6 exercicis).
+- 👾 Boss: **El Rei Sota Zero** (`gegant` · `blocs` · `chiptune`, icona 🌡️, rètol `SIGNE CORRECTE!`).
+- Dada dubtosa: l'«Ajuda» de l'F25 (pàg. 79) diu «+4 < √20 + 5»; surt a la fitxa com a «pregunta-ho al profe» i no es pregunta.
+- Sense taller de generadors (`MXG`): els generadors actuals són de divisibilitat. Queda pendent afegir-ne d'enters (`docs/MON-MATES.md` §3).
