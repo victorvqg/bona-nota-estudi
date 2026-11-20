@@ -8,17 +8,17 @@ Com funcionen els **efectes especials amb moviment i música WebAudio** de Bona 
 
 Quan l'alumne venç el Boss d'un món (`B.hp <= 0` a `bossFi()`, a `motor/plantilla-estudi-interactiu.html`):
 
-1. Es desa la victòria (`+10 ⭐` com a màxim un cop al dia, `S.boss.v++`, medalla `🏆 N` a `.boss-carta`) i s'escriu `#bossFi` al DOM.
-2. Damunt de `.boss` s'obre durant **~4,3 segons** la capa `.boss-festa` amb el **motion temàtic** (`fx`), l'**sprite 16×16** del Boss (`spr` o `pix`), les **partícules** (`em`), el **rètol arcade** (`rotul`) i la **fanfara musical sintetitzada amb WebAudio** (`mus` o `notes`, pel canal `BG` amb reverberació i abaixant suaument la música de fons).
-3. En tocar qualsevol punt de `.boss-festa` (o en canviar de pantalla) la celebració i la música es tanquen a l'instant i queda a la vista `#bossFi`, amb el botó **`🎬 Celebració`** per tornar-la a veure quan es vulgui.
+1. Es desa la victòria (`+10 ⭐` + `+1 ⭐` per cada cor que queda, fins a `+13 ⭐` com a màxim un cop al dia, `S.boss.v++`, medalla `🏆 N` a `.boss-carta`) i s'escriu `#bossFi` al DOM.
+2. Damunt de `.boss` s'obre durant **~8,5-9 segons** la capa `.boss-festa` en 5 fases: (1) cop final i KO de l'**sprite 16×16** del Boss (`spr` o `pix`) amb el **motion temàtic** (`fx`) i les **partícules** (`em`); (2) el **rètol arcade** (`rotul`) amb la **fanfara musical sintetitzada amb WebAudio** (`mus` o `notes`, pel canal `BG` amb reverberació i abaixant suaument la música de fons); (3) recompte d'estrelles una a una amb so; (4) els cors que queden s'omplen i es converteixen en estrelles extra (`+1 ⭐` cadascun); i (5) la medalla `🏆 N` amb el total.
+3. En tocar qualsevol punt de `.boss-festa` (o en canviar de pantalla) la celebració i la música es tanquen a l'instant i queda a la vista `#bossFi`, amb el botó **`🎬 Celebració`** per tornar-la a veure sencera sense sumar estrelles.
 4. **Vista prèvia d'1 clic (sense jugar 10 rondes ni escriure res a Supabase):** afegeix **`?demoBoss=1`** a l'adreça de qualsevol món:
    - `https://bonanota.net/bio-i-geo/univers/?demoBoss=1` (*El Cometa Rebel · SUPERNOVA!*)
    - `https://bonanota.net/sociales/comarques/?demoBoss=1` (*El Drac de les Comarques · FOC DE SANT JORDI!*)
 
 ### Filtre de Bon Ús (`docs/BON-US.md` §6)
 - **Zero atzar / zero caixes sorpresa:** cada món té la seva celebració fixa i previsible.
-- **Topall diari intacte:** guanyar dóna `+10 ⭐` un sol cop al dia; repetir el Boss o prémer `🎬 Celebració` és lliure i no suma estrelles.
-- **Mode suau i nit (`SUAU` / `prefers-reduced-motion`):** no surt cap capa animada ni parpelleig; es mostra una banda estàtica i tranquil·la (`.boss-festa.quiet`) a dalt de `#bossFi`.
+- **Topall diari intacte:** guanyar dóna `+10 ⭐` + `+1 ⭐` per cada cor que queda (màx. `+13 ⭐`) un sol cop al dia; repetir el Boss o prémer `🎬 Celebració` és lliure i no suma estrelles.
+- **Mode suau i nit (`SUAU` / `prefers-reduced-motion`):** no surt cap capa animada ni parpelleig; es mostra una banda estàtica i tranquil·la (`.boss-festa.quiet`) amb el resum d'estrelles i cors a dalt de `#bossFi`.
 - **Volum (`VOL === 0`):** silenci total si el so de l'app està apagat.
 
 ---
