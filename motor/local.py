@@ -36,6 +36,24 @@ class Pagina(http.server.SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")  # sempre l'última versió, sense memòria cau
         super().end_headers()
 
+    def list_directory(self, path):
+        # Com GitHub Pages: una carpeta sense index.html (p. ex. /sociales/) torna 404.html, no un llistat de fitxers
+        self.send_error(404, "File not found")
+        return None
+
+    def send_error(self, code, message=None, explain=None):
+        f404 = arrel / "404.html"
+        if code == 404 and f404.is_file():
+            body = f404.read_bytes()
+            self.send_response(404)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(body)
+            return
+        super().send_error(code, message, explain)
+
     def log_message(self, *a):
         pass
 

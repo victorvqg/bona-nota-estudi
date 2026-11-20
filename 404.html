@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Aquest món no existeix · Bona Nota</title>
+<link rel="icon" href="/icones/icona-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--groc:#facc15;--fons:#0b1033;--txt:#e2e8f0}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;text-align:center;
+ font-family:Nunito,system-ui,Arial,sans-serif;color:var(--txt);overflow-x:hidden;
+ background:radial-gradient(1200px 700px at 50% -10%,#3b2a8c 0%,#1a1660 35%,var(--fons) 70%) fixed,var(--fons)}
+
+/* ---- cel d'estrelles i graella: igual que la portada (index.html) ---- */
+.cel{position:fixed;inset:0;pointer-events:none;z-index:0}
+.cel i{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;opacity:.7;animation:pampalluga 3s ease-in-out infinite}
+@keyframes pampalluga{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+.graella{position:fixed;left:-50%;right:-50%;bottom:0;height:42vh;z-index:0;pointer-events:none;
+ background-image:linear-gradient(#a855f755 2px,transparent 2px),linear-gradient(90deg,#a855f755 2px,transparent 2px);
+ background-size:60px 60px;transform:perspective(320px) rotateX(62deg);transform-origin:bottom;
+ mask-image:linear-gradient(to top,#000 10%,transparent 90%);-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 90%);
+ animation:avanca 2.4s linear infinite}
+@keyframes avanca{to{background-position:0 60px,0 0}}
+
+/* ---- capçalera: etiqueta i títol de la portada ---- */
+header{position:relative;z-index:1;padding:48px 18px 0;display:flex;flex-direction:column;align-items:center;gap:24px}
+.etiqueta{display:inline-flex;align-items:center;gap:8px;background:#ffffff14;border:1px solid #ffffff26;backdrop-filter:blur(6px);
+ padding:7px 14px;border-radius:999px;font-weight:800;font-size:14px;letter-spacing:.3px}
+.etiqueta b{color:var(--groc)}
+.marca{display:inline-block;font-family:'Press Start 2P',monospace;font-size:clamp(19px,7.4vw,72px);white-space:nowrap;line-height:1.15;
+ color:var(--groc);text-decoration:none;letter-spacing:2px;
+ text-shadow:4px 4px 0 #b91c1c,8px 8px 0 #7f1d1d,0 0 34px #facc1588;animation:sura 4s ease-in-out infinite}
+@keyframes sura{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* ---- missatge ---- */
+main{position:relative;z-index:1;width:100%;max-width:660px;padding:32px 20px 0;display:flex;flex-direction:column;align-items:center;gap:20px}
+.perdut{position:relative;animation:flota 6s ease-in-out infinite}
+.perdut svg{display:block;width:clamp(112px,12vw,144px);height:auto;filter:drop-shadow(0 6px 10px #0008)}
+.dubte{position:absolute;top:-14px;right:-44px;padding:8px 12px;border:4px solid #e2e8f0;border-radius:12px;background:var(--fons);
+ font-family:'Press Start 2P',monospace;font-size:20px;line-height:1.2;color:var(--groc)}
+@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.codi{padding:8px 12px;border-radius:8px;background:#b91c1c;color:#fff;font-family:'Press Start 2P',monospace;font-size:12px;line-height:1.4}
+h1{margin:0;font-family:'Press Start 2P',monospace;font-size:clamp(16px,4.2vw,26px);line-height:1.6;color:#fff}
+p{margin:0;max-width:560px;font-size:18px;font-weight:800;line-height:1.6;color:#e0e7ff}
+.adreca{padding:2px 8px;border:2px solid #6366f1;border-radius:6px;background:#1e1b4b;color:#fff;
+ font-family:ui-monospace,Menlo,monospace;font-size:16px;font-weight:700;overflow-wrap:anywhere}
+
+/* ---- botons: com els de la portada ---- */
+.botons{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.bt{min-height:48px;padding:10px 22px;display:inline-flex;align-items:center;gap:10px;border:2px solid #ffffff33;border-radius:999px;
+ background:#ffffff14;backdrop-filter:blur(6px);color:#fff;font:inherit;font-size:16px;font-weight:900;text-decoration:none;cursor:pointer;
+ transition:transform .12s,border-color .2s}
+.bt:hover{border-color:var(--groc);transform:translateY(-2px)}
+.bt[hidden]{display:none}
+.bt-pral{border-color:#b91c1c;background:var(--groc);color:#1e1b4b;box-shadow:0 4px 0 #b91c1c}
+.bt-pral:hover{border-color:#b91c1c}
+.bt svg{flex:none}
+a:focus-visible,button:focus-visible{outline:3px solid #22d3ee;outline-offset:3px}
+
+footer{position:relative;z-index:1;margin-top:auto;padding:32px 20px 24px;font-size:14px;font-weight:700;color:#c7d2fe}
+
+@media (max-width:520px){header{padding-top:40px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="cel" id="cel" aria-hidden="true"></div>
+<div class="graella" aria-hidden="true"></div>
+
+<header>
+ <span class="etiqueta">🎓 <b>1r ESO</b> · estudia jugant</span>
+ <a class="marca" href="/" aria-label="Bona Nota: torna a la portada">BONA NOTA</a>
+</header>
+
+<main>
+ <div class="perdut">
+  <span class="dubte" aria-hidden="true">?</span>
+  <svg viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="El monstre de Bona Nota, perdut"><rect x="2" y="0" width="1" height="1" fill="#ffd23f"/><rect x="13" y="0" width="1" height="1" fill="#ffd23f"/><rect x="2" y="1" width="2" height="1" fill="#ffd23f"/><rect x="12" y="1" width="2" height="1" fill="#ffd23f"/><rect x="3" y="2" width="1" height="1" fill="#ffd23f"/><rect x="4" y="2" width="8" height="1" fill="#1d1631"/><rect x="12" y="2" width="1" height="1" fill="#ffd23f"/><rect x="2" y="3" width="1" height="1" fill="#1d1631"/><rect x="3" y="3" width="10" height="1" fill="#8b5cf6"/><rect x="13" y="3" width="1" height="1" fill="#1d1631"/><rect x="1" y="4" width="1" height="1" fill="#1d1631"/><rect x="2" y="4" width="12" height="1" fill="#8b5cf6"/><rect x="14" y="4" width="1" height="1" fill="#1d1631"/><rect x="1" y="5" width="1" height="1" fill="#1d1631"/><rect x="2" y="5" width="1" height="1" fill="#8b5cf6"/><rect x="3" y="5" width="2" height="1" fill="#1d1631"/><rect x="5" y="5" width="6" height="1" fill="#8b5cf6"/><rect x="11" y="5" width="2" height="1" fill="#1d1631"/><rect x="13" y="5" width="1" height="1" fill="#8b5cf6"/><rect x="14" y="5" width="1" height="1" fill="#1d1631"/><rect x="1" y="6" width="1" height="1" fill="#1d1631"/><rect x="2" y="6" width="1" height="1" fill="#8b5cf6"/><rect x="3" y="6" width="2" height="1" fill="#ffffff"/><rect x="5" y="6" width="1" height="1" fill="#1d1631"/><rect x="6" y="6" width="4" height="1" fill="#8b5cf6"/><rect x="10" y="6" width="1" height="1" fill="#1d1631"/><rect x="11" y="6" width="2" height="1" fill="#ffffff"/><rect x="13" y="6" width="1" height="1" fill="#8b5cf6"/><rect x="14" y="6" width="1" height="1" fill="#1d1631"/><rect x="1" y="7" width="1" height="1" fill="#1d1631"/><rect x="2" y="7" width="1" height="1" fill="#8b5cf6"/><rect x="3" y="7" width="1" height="1" fill="#ffffff"/><rect x="4" y="7" width="2" height="1" fill="#1d1631"/><rect x="6" y="7" width="4" height="1" fill="#8b5cf6"/><rect x="10" y="7" width="2" height="1" fill="#1d1631"/><rect x="12" y="7" width="1" height="1" fill="#ffffff"/><rect x="13" y="7" width="1" height="1" fill="#8b5cf6"/><rect x="14" y="7" width="1" height="1" fill="#1d1631"/><rect x="1" y="8" width="1" height="1" fill="#1d1631"/><rect x="2" y="8" width="4" height="1" fill="#8b5cf6"/><rect x="6" y="8" width="4" height="1" fill="#ddd6fe"/><rect x="10" y="8" width="4" height="1" fill="#8b5cf6"/><rect x="14" y="8" width="1" height="1" fill="#1d1631"/><rect x="1" y="9" width="1" height="1" fill="#1d1631"/><rect x="2" y="9" width="1" height="1" fill="#8b5cf6"/><rect x="3" y="9" width="10" height="1" fill="#1d1631"/><rect x="13" y="9" width="1" height="1" fill="#8b5cf6"/><rect x="14" y="9" width="1" height="1" fill="#1d1631"/><rect x="1" y="10" width="1" height="1" fill="#1d1631"/><rect x="2" y="10" width="1" height="1" fill="#8b5cf6"/><rect x="3" y="10" width="1" height="1" fill="#1d1631"/><rect x="4" y="10" width="1" height="1" fill="#ffffff"/><rect x="5" y="10" width="1" height="1" fill="#e8442e"/><rect x="6" y="10" width="1" height="1" fill="#ffffff"/><rect x="7" y="10" width="1" height="1" fill="#e8442e"/><rect x="8" y="10" width="1" height="1" fill="#ffffff"/><rect x="9" y="10" width="1" height="1" fill="#e8442e"/><rect x="10" y="10" width="1" height="1" fill="#ffffff"/><rect x="11" y="10" width="1" height="1" fill="#e8442e"/><rect x="12" y="10" width="1" height="1" fill="#1d1631"/><rect x="13" y="10" width="1" height="1" fill="#8b5cf6"/><rect x="14" y="10" width="1" height="1" fill="#1d1631"/><rect x="1" y="11" width="1" height="1" fill="#1d1631"/><rect x="2" y="11" width="1" height="1" fill="#8b5cf6"/><rect x="3" y="11" width="1" height="1" fill="#1d1631"/><rect x="4" y="11" width="8" height="1" fill="#e8442e"/><rect x="12" y="11" width="1" height="1" fill="#1d1631"/><rect x="13" y="11" width="1" height="1" fill="#8b5cf6"/><rect x="14" y="11" width="1" height="1" fill="#1d1631"/><rect x="1" y="12" width="1" height="1" fill="#1d1631"/><rect x="2" y="12" width="2" height="1" fill="#8b5cf6"/><rect x="4" y="12" width="8" height="1" fill="#1d1631"/><rect x="12" y="12" width="2" height="1" fill="#8b5cf6"/><rect x="14" y="12" width="1" height="1" fill="#1d1631"/><rect x="2" y="13" width="1" height="1" fill="#1d1631"/><rect x="3" y="13" width="10" height="1" fill="#8b5cf6"/><rect x="13" y="13" width="1" height="1" fill="#1d1631"/><rect x="2" y="14" width="1" height="1" fill="#1d1631"/><rect x="3" y="14" width="2" height="1" fill="#8b5cf6"/><rect x="5" y="14" width="1" height="1" fill="#1d1631"/><rect x="10" y="14" width="1" height="1" fill="#1d1631"/><rect x="11" y="14" width="2" height="1" fill="#8b5cf6"/><rect x="13" y="14" width="1" height="1" fill="#1d1631"/><rect x="2" y="15" width="4" height="1" fill="#1d1631"/><rect x="10" y="15" width="4" height="1" fill="#1d1631"/></svg>
+ </div>
+ <span class="codi">ERROR 404</span>
+ <h1>AQUEST MÓN NO EXISTEIX</h1>
+ <p>L'adreça <span class="adreca" id="adreca">que has obert</span> no porta enlloc. Potser hi falta un tros o s'ha escrit malament.</p>
+ <div class="botons">
+  <a class="bt bt-pral" href="/">
+   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+   <span>Torna a la portada</span>
+  </a>
+  <button class="bt" id="enrere" type="button" hidden>
+   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+   <span>Torna enrere</span>
+  </button>
+ </div>
+</main>
+
+<footer>Bona Nota · bonanota.net</footer>
+
+<script>
+(function(){
+  // 1) estrelles: el mateix codi que la portada (només marcatge propi, res que vingui de l'adreça)
+  var c=document.getElementById('cel'),h='';
+  for(var i=0;i<90;i++){var s=Math.random()<.15?4:Math.random()<.5?2:3;
+    h+='<i style="left:'+Math.random()*100+'%;top:'+Math.random()*70+'%;width:'+s+'px;height:'+s+'px;animation-delay:'+(-Math.random()*3).toFixed(2)+'s;animation-duration:'+(2+Math.random()*3).toFixed(2)+'s"></i>'}
+  c.innerHTML=h;
+  // 2) l'adreça equivocada, sempre amb textContent; sense JavaScript queda «que has obert»
+  var t=location.host+location.pathname;
+  try{t=decodeURIComponent(t)}catch(e){}
+  if(t.length>60)t=t.slice(0,57)+'…';
+  document.getElementById('adreca').textContent=t;
+  // 3) «Torna enrere» només si hi ha pàgina anterior
+  var b=document.getElementById('enrere');
+  if(history.length>1){b.hidden=false;b.addEventListener('click',function(){history.back()})}
+})();
+</script>
+</body>
+</html>

@@ -116,6 +116,8 @@ jobs:
         run: node motor/prova-pares.js
       - name: Prova del mode tast anònim (portada, pares i mons)
         run: node motor/prova-tast.js
+      - name: Prova de la pàgina 404 (404.html i sw.js)
+        run: node motor/prova-404.js
       - name: Prova del xat de la colla a la portada
         run: node motor/prova-xat.js
       - name: Prova de la pestanya Xat de l'admin
