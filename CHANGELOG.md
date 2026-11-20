@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.63.0 · 2026-11-20
+
+### Afegit
+- **Món 9 · Matemàtiques: Tema 3, els nombres enters** (`matematiques/enters`, `motor/dades/enters.js`), fet a partir del pack de Bona Nota del llibre de 1r d'ESO (Barcanova, unitat 3, pàg. 66-83): 7 temes en 4 blocs (un per secció del llibre), 62 preguntes de test, 13 obertes i 9 jocs (dues figures de la recta numèrica, classificar, ordenar, parelles, PA · MU · SU i 🔍 Troba l'error amb 6 exercicis). Boss «El Rei Sota Zero», il·lustració `motor/ilu/enters.svg`, sprite `termometre` per al rànquing i les 3 peces del xat (70-72) aplicades a Supabase.
+
 ## 2.62.0 · 2026-11-20
 
 ### Afegit
