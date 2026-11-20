@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.60.2 · 2026-11-20
+
+### Canviat
+- **Resum final del Boss (`.boss-resum`):** les rondes amb dany mostren el signe `+` («+12», «+18», «+36»), els errors continuen mostrant «0» i la suma diu «Has fet +X de Y» (durant el combat, el dany que salta damunt del Boss continua amb `-`).
+
 ## 2.60.1 · 2026-11-20
 
 ### Corregit

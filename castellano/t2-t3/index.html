@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="86613450a4",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a886a33f11",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -738,7 +738,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versión 2.60.1</small></div>
+<div class="peu-pag"><small class="bn-versio">versión 2.60.2</small></div>
 
 <script src="../../sprites.js?v=f49f0152"></script>
 <script>
@@ -2930,9 +2930,9 @@ function bossResol(ok,dmg,txt,jaComptat,mig){const B=BOSS;if(ok){B.enc++;B.ratxa
  document.getElementById("boFb").innerHTML=`<div class="fb ${ok&&realDmg>0?"ok":"ko"}">${tagFb}${txt}</div><div class="fila"><button class="btn" id="bossSeg">${fi?"Veure el resultat 🏁":"Següent ronda ▶"}</button></div>`;
  document.getElementById("bossSeg").onclick=()=>{if(fi)return bossFi();B.k++;bossPinta()}}
 function bossResumHtml(B){const h=B.hist||[],ic={ok:"✅",crit:"⚡",mig:"½",err:"❌"},tot=h.reduce((a,x)=>a+(x.d||0),0);
- const cel=h.map((x,i)=>`<span class="br-r br-${x.t}" title="Ronda ${i+1}: ${x.d?`-${x.d}`:"0"}"><i>${ic[x.t]||"✅"}</i><b>${x.d?`-${x.d}`:"0"}</b></span>`).join("");
+ const cel=h.map((x,i)=>`<span class="br-r br-${x.t}" title="Ronda ${i+1}: ${x.d?`+${x.d}`:"0"}"><i>${ic[x.t]||"✅"}</i><b>${x.d?`+${x.d}`:"0"}</b></span>`).join("");
  const koTag=B.hp<=0&&h.length?`<span class="br-ko">🏁 KO a la ronda ${h.length}</span>`:"";
- return `<div class="boss-resum" aria-label="Resum de rondes"><div class="br-fila">${cel}${koTag}</div><div class="br-tot">Has tret <b>${tot}</b> de <b>${B.hp0}</b><small>✅ cop sencer · ⚡ crític · ½ mig cop · ❌ error</small></div></div>`}
+ return `<div class="boss-resum" aria-label="Resum de rondes"><div class="br-fila">${cel}${koTag}</div><div class="br-tot">Has fet <b>+${tot}</b> de <b>${B.hp0}</b><small>✅ cop sencer · ⚡ crític · ½ mig cop · ❌ error</small></div></div>`}
 function bossFi(){const B=BOSS;if(!B||B.fet)return;B.fet=true;bossEsborraEstat();tancaBossFesta();const guanya=B.hp<=0,n=B.enc+B.err,pc=n?Math.round(B.enc*100/n):0;window.scrollTo(0,0);
  let premiBase=0,premiCors=0,premi=0;const corsExtra=Math.min(3,Math.max(0,B.cors||0));
  if(guanya){const e=diaEst();if(!e.boss){e.boss=1;premiBase=BOSS_ESTRELLES;premiCors=corsExtra;premi=premiBase+premiCors;const f=FONT;FONT=["boss"];suma(premi);FONT=f}S.boss=S.boss||{};S.boss.v=(S.boss.v||0)+1;S.boss.d=avui();S.boss.cors=Math.max(S.boss.cors||0,B.cors);desa();confeti();
@@ -2972,7 +2972,8 @@ async function bnProvaBoss(){const repAbans=JSON.stringify(S.rep||{}),bossAbans=
   if(BOSS.hp>0)return `amb tot encertat el boss hauria de caure (li queda ${BOSS.hp} de vida)`;
   if(S.punts!==p0+BOSS_ESTRELLES+3)return `victòria amb 3 cors: +${S.punts-p0} ⭐ i havien de ser +${BOSS_ESTRELLES+3}`;
   if(!diaEst().boss||!S.boss||!S.boss.v)return "la victòria no ha quedat apuntada";
-  if(!app.querySelector(".boss-resum")||!/Has tret \d+ de \d+/.test(app.textContent))return "falta la franja de resum de rondes a #bossFi";
+  if(!app.querySelector(".boss-resum")||!/Has fet \+\d+ de \d+/.test(app.textContent))return "falta la franja de resum de rondes («Has fet +X de Y») a #bossFi";
+  if(![...app.querySelectorAll(".boss-resum .br-r b")].some(b=>/^\+\d+$/.test(b.textContent)))return "les rondes amb dany del resum han de portar signe +";
   if(app.querySelector(".boss-resum .br-no"))return "no han de sortir rondes no jugades al resum";
   if(!app.querySelector(".boss-resum .br-ko")||!/🏁 KO a la ronda \d+/.test(app.textContent))return "en vèncer ha de sortir «🏁 KO a la ronda N» al resum";
   const koEl=app.querySelector("#bossFi .boss-spr.ko"),h2El=app.querySelector("#bossFi h2");
