@@ -44,9 +44,7 @@ Després, aquí es comprova si se sap de veritat.
   encerta 10 preguntes, repassa errors, juga 2 jocs, fes un combo de ×5, una oberta o un examen). Són les mateixes tot el dia
   i surten del dia i del món. Cada missió feta: **+3 ⭐**; les 3: **+5 ⭐** més. Cada missió només premia un cop.
 - **👾 Boss del món** (a Jocs, i a l'inici quan està obert): el repte final abans de l'examen. S'obre quan has aprovat el 70 %
-  dels temes o quan treus un 70 % o més en un examen (sorpresa o de veritat). 10 rondes amb contingut que ja és al món: preguntes de test de tots els temes, una de figura, una de parelles
-  o de classificar, una d'ordenar (cop doble) i una oberta (treu vida segons les idees clau). Cada error treu un cor (n'hi ha 3);
-  el boss té el 80 % de la vida que poden treure totes les rondes. Guanyar: **+10 ⭐** un cop al dia, medalla `🏆` a la targeta i una **celebració amb moviment i música pròpia per a cada Boss** (com `SUPERNOVA!` amb *El Cometa Rebel* o `FOC DE SANT JORDI!` amb *El Drac de les Comarques*; vegeu [`BOSS-I-EFECTES.md`](BOSS-I-EFECTES.md)). Els errors van al repàs.
+  dels temes o quan treus un 70 % o més en un examen (sorpresa o de veritat). 10 rondes de test i jocs del món (tests, figura, classifica, parelles i ordenar com a cop doble; sense oberta). 3 encerts seguits fan un **⚡ COP CRÍTIC ×1,5** real; cada error treu un cor (n'hi ha 3); la vida inicial és el **90 %** del dany base i amb 0 errors el Boss cau sempre (**⚡ COP FINAL**). Guanyar: **+20 ⭐ + 1 ⭐ per cada cor que et queda (fins a +23 ⭐)** un cop al dia, medalla `🏆` a la targeta i una **celebració a pantalla completa en 5 fases amb moviment i música pròpia per a cada Boss** (com `SUPERNOVA!` amb *El Cometa Rebel* o `FOC DE SANT JORDI!` amb *El Drac de les Comarques*; vegeu [`BOSS-I-EFECTES.md`](BOSS-I-EFECTES.md)). Els errors van al repàs.
 - **🛡️ Escut del combo:** si falles amb un combo de 3 o més, pots respondre una pregunta germana del mateix tema
   (una que el test no ha tret). Si l'encertes, continues amb la meitat del combo.
 - **Jocs:** ordenar, fer parelles, classificar, llegir un dibuix, i jocs propis de cada món (per exemple, el mapa de
