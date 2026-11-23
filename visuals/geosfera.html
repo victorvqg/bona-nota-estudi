@@ -1,0 +1,3780 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Geosfera — Visuals interactius (1r d'ESO)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================================
+       TOKENS DEL SISTEMA DE DISSENY (Obsidian Space / Volcanic Explorer)
+       ========================================================================= */
+    :root {
+      color-scheme: dark;
+
+      /* Fons i superfícies */
+      --bg-app: #0f141e;
+      --bg-card: #171e2e;
+      --bg-card-hover: #1e283d;
+      --bg-card-elevated: #212c42;
+      --bg-stage: #0a0e17;
+      --bg-nav: rgba(15, 20, 30, 0.86);
+
+      /* Text */
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --text-subtle: #94a3b8;
+
+      /* Colors geològics i accents */
+      --primary: #fb923c;        /* Molten orange */
+      --primary-bright: #fdba74;
+      --primary-tint: rgba(251, 146, 60, 0.16);
+      --lava: #ef4444;           /* Lava red */
+      --lava-tint: rgba(239, 68, 68, 0.18);
+      --cyan: #38bdf8;           /* Ocean cyan */
+      --cyan-tint: rgba(56, 189, 248, 0.16);
+      --purple: #c084fc;         /* Crystal purple */
+      --purple-tint: rgba(192, 132, 252, 0.16);
+      --emerald: #34d399;        /* Positive emerald */
+      --emerald-tint: rgba(52, 211, 153, 0.16);
+      --gold: #fbbf24;           /* Gold highlight */
+      --gold-tint: rgba(251, 191, 36, 0.18);
+
+      /* Colors de capes i roques */
+      --geo-crust: #94a3b8;
+      --geo-crust-land: #64748b;
+      --geo-mantle-up: #f97316;
+      --geo-mantle-low: #dc2626;
+      --geo-core-ext: #fb923c;
+      --geo-core-int: #fef08a;
+      --geo-sediment: #e2c290;
+      --geo-rock-dark: #293347;
+      --geo-rock-mid: #475569;
+
+      /* Vores i ombres */
+      --border-subtle: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.3);
+      --card-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      --card-shadow: 0 14px 36px -12px rgba(2, 6, 23, 0.72);
+      --card-glow: radial-gradient(circle at 88% 0%, rgba(251, 146, 60, 0.11), transparent 46%),
+                   radial-gradient(circle at 12% 100%, rgba(56, 189, 248, 0.07), transparent 42%);
+
+      /* Tipografia */
+      --font-display: 'Outfit', system-ui, sans-serif;
+      --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Moviment */
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-sm: 0.625rem;
+      --radius-md: 0.9rem;
+      --radius-lg: 1.25rem;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 4.75rem;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: clip;
+      background-color: var(--bg-app);
+      background-image:
+        radial-gradient(circle at 15% 8%, rgba(251, 146, 60, 0.08), transparent 34%),
+        radial-gradient(circle at 85% 22%, rgba(56, 189, 248, 0.07), transparent 36%),
+        radial-gradient(circle at 50% 80%, rgba(192, 132, 252, 0.05), transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: clamp(0.95rem, 0.92rem + 0.16vw, 1.03rem);
+      line-height: 1.58;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* =========================================================================
+       BARRA SUPERIOR FIXA DE NAVEGACIÓ RÀPIDA + PROGRÉS
+       ========================================================================= */
+    .quick-nav {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: var(--bg-nav);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.65);
+    }
+
+    .quick-nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0.55rem 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+    }
+
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 0.15rem 0.1rem;
+      flex: 1 1 auto;
+    }
+
+    .nav-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-pill {
+      flex: 0 0 auto;
+      min-height: 44px;
+      padding: 0.35rem 0.78rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background: rgba(23, 30, 46, 0.85);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.38rem;
+      transition: transform 180ms var(--ease-spring), background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+    }
+
+    .nav-pill:hover {
+      background: var(--bg-card-elevated);
+      color: var(--text-main);
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+
+    .nav-pill:active {
+      transform: scale(0.96);
+    }
+
+    .nav-pill:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .nav-pill.is-done {
+      border-color: rgba(52, 211, 153, 0.5);
+      background: rgba(52, 211, 153, 0.12);
+      color: #a7f3d0;
+    }
+
+    .nav-pill-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-bright);
+    }
+
+    .nav-pill.is-done .nav-pill-num {
+      background: var(--emerald);
+      color: #06281c;
+      font-weight: 700;
+    }
+
+    .progress-pill {
+      flex: 0 0 auto;
+      min-height: 44px;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.18), rgba(251, 146, 60, 0.16));
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      color: var(--gold);
+      font-family: var(--font-display);
+      font-size: 0.84rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.38rem;
+      white-space: nowrap;
+      box-shadow: 0 0 18px rgba(251, 191, 36, 0.12);
+      transition: transform 280ms var(--ease-spring), box-shadow 280ms ease;
+    }
+
+    .progress-pill.is-celebrating {
+      animation: progressPulse 650ms var(--ease-spring);
+    }
+
+    .progress-pill.is-complete {
+      background: linear-gradient(135deg, rgba(52, 211, 153, 0.24), rgba(251, 191, 36, 0.24));
+      border-color: var(--emerald);
+      color: #ecfdf5;
+      box-shadow: 0 0 24px rgba(52, 211, 153, 0.32);
+    }
+
+    @keyframes progressPulse {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.12); box-shadow: 0 0 28px rgba(251, 191, 36, 0.55); }
+      100% { transform: scale(1); }
+    }
+
+    /* =========================================================================
+       CONTENIDOR PRINCIPAL I CAPÇALERA
+       ========================================================================= */
+    .page-shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.25rem 1rem 3.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .hero-banner {
+      background: var(--bg-card);
+      background-image:
+        radial-gradient(circle at 92% 18%, rgba(251, 146, 60, 0.2), transparent 44%),
+        radial-gradient(circle at 10% 85%, rgba(56, 189, 248, 0.14), transparent 40%);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--card-highlight), var(--card-shadow);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+
+    .hero-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.65rem, 1.3rem + 1.5vw, 2.35rem);
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      background: linear-gradient(120deg, #ffffff 30%, #fdba74 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.94rem;
+      max-width: 56ch;
+    }
+
+    .hero-badge-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .mini-tag {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.35rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: rgba(10, 14, 23, 0.65);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    /* =========================================================================
+       TARGETES DE FITXA
+       ========================================================================= */
+    .fitxa-card {
+      background: var(--bg-card);
+      background-image: var(--card-glow);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-highlight), var(--card-shadow);
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fitxa-card.is-explored {
+      border-color: rgba(52, 211, 153, 0.36);
+    }
+
+    .fitxa-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .fitxa-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .fitxa-num-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--lava));
+      color: #0f141e;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(251, 146, 60, 0.35);
+      flex-shrink: 0;
+    }
+
+    .fitxa-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.22rem, 1.05rem + 0.75vw, 1.6rem);
+      letter-spacing: -0.015em;
+      line-height: 1.18;
+      color: var(--text-main);
+    }
+
+    .fitxa-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .type-badge {
+      font-family: var(--font-display);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.68rem;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(251, 146, 60, 0.45);
+      background: var(--primary-tint);
+      color: var(--primary-bright);
+    }
+
+    .type-badge--step {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: var(--cyan-tint);
+      color: #7dd3fc;
+    }
+
+    .type-badge--duel {
+      border-color: rgba(192, 132, 252, 0.45);
+      background: var(--purple-tint);
+      color: #e9d5ff;
+    }
+
+    .fitxa-check-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.26rem 0.6rem;
+      border-radius: var(--radius-full);
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-subtle);
+      transition: all 240ms var(--ease-spring);
+    }
+
+    .fitxa-check-badge.is-done {
+      background: var(--emerald-tint);
+      border-color: rgba(52, 211, 153, 0.5);
+      color: var(--emerald);
+    }
+
+    /* Indicador d'acció superior */
+    .action-cue {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.62rem 0.9rem;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(90deg, rgba(251, 146, 60, 0.14), rgba(251, 146, 60, 0.03));
+      border: 1px solid rgba(251, 146, 60, 0.28);
+      border-left: 4px solid var(--primary);
+      font-size: 0.93rem;
+      font-weight: 600;
+      color: #ffedd5;
+    }
+
+    .cue-pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.7);
+      animation: cueBeacon 2.2s infinite;
+    }
+
+    @keyframes cueBeacon {
+      0% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(251, 146, 60, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0); }
+    }
+
+    /* =========================================================================
+       ESCENARI VISUAL SVG I CONTROLS TÀCTILS
+       ========================================================================= */
+    .visual-stage {
+      background: var(--bg-stage);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.55);
+    }
+
+    .svg-frame {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .svg-frame svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-width: 700px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      overflow: visible;
+    }
+
+    /* Elements clicables dins SVG */
+    .svg-hit {
+      cursor: pointer;
+      outline: none;
+      transition: transform 280ms var(--ease-spring), opacity 220ms var(--ease-smooth), filter 220ms ease;
+    }
+
+    .svg-hit:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .svg-hit.is-dimmed {
+      opacity: 0.42;
+    }
+
+    .svg-hit.is-active {
+      opacity: 1;
+      filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.55));
+    }
+
+    .svg-hit.is-related {
+      opacity: 0.96;
+      filter: drop-shadow(0 0 7px rgba(56, 189, 248, 0.45));
+    }
+
+    /* Xips tàctils >= 44px */
+    .touch-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.48rem;
+    }
+
+    .touch-chip {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.42rem;
+      position: relative;
+      transition: transform 180ms var(--ease-spring), background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .touch-chip:hover {
+      background: var(--bg-card-elevated);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    .touch-chip:active {
+      transform: scale(0.96);
+    }
+
+    .touch-chip:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .touch-chip.is-active {
+      background: linear-gradient(135deg, var(--primary), #f97316);
+      color: #0f141e;
+      border-color: var(--primary-bright);
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(251, 146, 60, 0.38);
+      transform: translateY(-1px);
+    }
+
+    .touch-chip--discont {
+      border-style: dashed;
+      border-color: rgba(239, 68, 68, 0.6);
+      color: #fca5a5;
+    }
+
+    .touch-chip--discont.is-active {
+      background: linear-gradient(135deg, var(--lava), #dc2626);
+      color: #ffffff;
+      border-style: solid;
+      border-color: #fca5a5;
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.42);
+    }
+
+    .chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(148, 163, 184, 0.35);
+      transition: background-color 200ms ease, transform 200ms var(--ease-spring);
+      flex-shrink: 0;
+    }
+
+    .touch-chip.is-visited .chip-dot {
+      background: var(--emerald);
+      box-shadow: 0 0 6px var(--emerald);
+    }
+
+    .touch-chip.is-active .chip-dot {
+      background: #0f141e;
+      box-shadow: none;
+      transform: scale(1.2);
+    }
+
+    .touch-chip--discont.is-active .chip-dot {
+      background: #ffffff;
+    }
+
+    /* Botons d'acció principals (>= 44px) */
+    .btn-action {
+      min-height: 44px;
+      padding: 0.5rem 1.05rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card-elevated);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      transition: transform 180ms var(--ease-spring), background-color 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+    }
+
+    .btn-action:hover:not(:disabled) {
+      background: #2b3854;
+      transform: translateY(-1px);
+    }
+
+    .btn-action:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    .btn-action:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .btn-action:disabled {
+      opacity: 0.36;
+      cursor: not-allowed;
+    }
+
+    .btn-action--primary {
+      background: linear-gradient(135deg, var(--primary), var(--lava));
+      border-color: rgba(253, 186, 116, 0.55);
+      color: #0f141e;
+      box-shadow: 0 6px 18px -4px rgba(251, 146, 60, 0.48);
+    }
+
+    .btn-action--primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #fdba74, var(--primary));
+      box-shadow: 0 8px 22px -4px rgba(251, 146, 60, 0.62);
+    }
+
+    .btn-action--cyan {
+      background: rgba(56, 189, 248, 0.14);
+      border-color: rgba(56, 189, 248, 0.48);
+      color: #bae6fd;
+    }
+
+    .btn-action--cyan:hover:not(:disabled),
+    .btn-action--cyan.is-playing {
+      background: var(--cyan);
+      color: #082f49;
+      box-shadow: 0 6px 18px -4px rgba(56, 189, 248, 0.5);
+    }
+
+    .btn-action--purple {
+      background: rgba(192, 132, 252, 0.14);
+      border-color: rgba(192, 132, 252, 0.48);
+      color: #e9d5ff;
+    }
+
+    .btn-action--purple:hover:not(:disabled),
+    .btn-action--purple.is-active {
+      background: var(--purple);
+      color: #1e1033;
+      box-shadow: 0 6px 18px -4px rgba(192, 132, 252, 0.5);
+    }
+
+    /* =========================================================================
+       QUADRE DE LECTURA ANIMAT (READOUT)
+       ========================================================================= */
+    .readout-box {
+      background: linear-gradient(180deg, rgba(23, 30, 46, 0.95), rgba(18, 24, 38, 0.98));
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      min-height: 112px;
+      position: relative;
+    }
+
+    .readout-anim {
+      animation: fadeSlideUp 280ms var(--ease-smooth);
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(7px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .readout-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .readout-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.08rem, 1rem + 0.35vw, 1.28rem);
+      color: var(--primary-bright);
+    }
+
+    .readout-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.42rem;
+    }
+
+    .readout-pill {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.24rem 0.6rem;
+      border-radius: var(--radius-full);
+      background: rgba(10, 14, 23, 0.75);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .readout-pill strong {
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .readout-text {
+      margin: 0;
+      color: var(--text-main);
+      font-size: 0.98rem;
+      max-width: 68ch;
+    }
+
+    .warn-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-sm);
+      background: var(--lava-tint);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #fecaca;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 0.2rem;
+    }
+
+    /* =========================================================================
+       FITXA 1: MESURADOR DE PROFUNDITAT I TEMPERATURA + ANIMACIONS TERRA
+       ========================================================================= */
+    .depth-meter-panel {
+      background: rgba(15, 20, 30, 0.8);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .depth-meter-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .depth-meter-highlight {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .depth-track {
+      position: relative;
+      height: 14px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(90deg, #64748b 0%, #f97316 14%, #dc2626 46%, #fb923c 80%, #fef08a 100%);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55);
+      overflow: hidden;
+    }
+
+    .depth-track-dim {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 23, 0.62);
+    }
+
+    .depth-active-range {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0%;
+      width: 4%;
+      border-radius: var(--radius-full);
+      background: linear-gradient(90deg, var(--gold), #ffffff);
+      box-shadow: 0 0 14px rgba(251, 191, 36, 0.9);
+      transition: left 420ms var(--ease-spring), width 420ms var(--ease-spring);
+    }
+
+    .depth-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-subtle);
+    }
+
+    /* Animacions SVG Fitxa 1 */
+    .v1-layer-group {
+      transform-origin: 80px 290px;
+      transition: transform 320ms var(--ease-spring), opacity 220ms ease, filter 220ms ease;
+    }
+
+    .v1-layer-group.is-active {
+      transform: translate(6px, -6px) scale(1.018);
+      filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.65));
+    }
+
+    .v1-core-pulse {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: corePulse 3.2s ease-in-out infinite;
+    }
+
+    @keyframes corePulse {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; filter: drop-shadow(0 0 14px rgba(254, 240, 138, 0.75)); }
+    }
+
+    .v1-discont-dash {
+      stroke-dasharray: 6 5;
+      animation: dashMarch 18s linear infinite;
+    }
+
+    @keyframes dashMarch {
+      to { stroke-dashoffset: -110; }
+    }
+
+    /* =========================================================================
+       FITXA 2: TIMELINE + ANIMACIONS FORMACIÓ DE LA TERRA
+       ========================================================================= */
+    .step-timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .step-timeline--4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .timeline-btn {
+      min-height: 46px;
+      padding: 0.5rem 0.65rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      text-align: center;
+      transition: transform 180ms var(--ease-spring), background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+    }
+
+    .timeline-btn:hover {
+      background: var(--bg-card-elevated);
+      color: var(--text-main);
+    }
+
+    .timeline-btn:active {
+      transform: scale(0.96);
+    }
+
+    .timeline-btn:focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    .timeline-btn.is-active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(251, 146, 60, 0.22));
+      border-color: var(--cyan);
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.22);
+    }
+
+    .step-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+    }
+
+    .step-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .step-counter {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--cyan);
+    }
+
+    /* Animacions SVG Fitxa 2 */
+    .v2-scene {
+      display: none;
+    }
+    .v2-scene.is-active {
+      display: block;
+      animation: fadeSlideUp 320ms var(--ease-smooth);
+    }
+
+    .v2-meteor-1 { animation: meteorHit1 2.2s cubic-bezier(0.55, 0.05, 0.9, 0.3) infinite; }
+    .v2-meteor-2 { animation: meteorHit2 2.6s cubic-bezier(0.55, 0.05, 0.9, 0.3) 0.7s infinite; }
+    .v2-meteor-3 { animation: meteorHit3 2.4s cubic-bezier(0.55, 0.05, 0.9, 0.3) 1.3s infinite; }
+
+    @keyframes meteorHit1 {
+      0% { transform: translate(-115px, -68px) scale(1.1); opacity: 0; }
+      18% { opacity: 1; }
+      68% { transform: translate(0px, 0px) scale(0.7); opacity: 1; }
+      78%, 100% { transform: translate(6px, 4px) scale(0.1); opacity: 0; }
+    }
+    @keyframes meteorHit2 {
+      0% { transform: translate(120px, -55px) scale(1.05); opacity: 0; }
+      18% { opacity: 1; }
+      68% { transform: translate(0px, 0px) scale(0.7); opacity: 1; }
+      78%, 100% { transform: translate(-6px, 4px) scale(0.1); opacity: 0; }
+    }
+    @keyframes meteorHit3 {
+      0% { transform: translate(-95px, 72px) scale(1); opacity: 0; }
+      18% { opacity: 1; }
+      68% { transform: translate(0px, 0px) scale(0.7); opacity: 1; }
+      78%, 100% { transform: translate(4px, -4px) scale(0.1); opacity: 0; }
+    }
+
+    .v2-shock {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: shockRipple 2.2s ease-out infinite;
+    }
+    .v2-shock--delay {
+      animation-delay: 0.75s;
+    }
+    @keyframes shockRipple {
+      0%, 60% { transform: scale(0.6); opacity: 0; }
+      68% { transform: scale(0.95); opacity: 0.9; }
+      100% { transform: scale(1.48); opacity: 0; }
+    }
+
+    .v2-sink-top { animation: sinkDown 2.4s ease-in-out infinite; }
+    .v2-sink-left { animation: sinkRight 2.4s ease-in-out 0.4s infinite; }
+    .v2-sink-right { animation: sinkLeft 2.4s ease-in-out 0.8s infinite; }
+    .v2-sink-bot { animation: sinkUp 2.4s ease-in-out 1.2s infinite; }
+
+    @keyframes sinkDown {
+      0% { transform: translateY(-48px); opacity: 0; }
+      20% { opacity: 1; }
+      85% { transform: translateY(0px); opacity: 1; }
+      100% { transform: translateY(4px); opacity: 0; }
+    }
+    @keyframes sinkUp {
+      0% { transform: translateY(48px); opacity: 0; }
+      20% { opacity: 1; }
+      85% { transform: translateY(0px); opacity: 1; }
+      100% { transform: translateY(-4px); opacity: 0; }
+    }
+    @keyframes sinkRight {
+      0% { transform: translateX(-52px); opacity: 0; }
+      20% { opacity: 1; }
+      85% { transform: translateX(0px); opacity: 1; }
+      100% { transform: translateX(4px); opacity: 0; }
+    }
+    @keyframes sinkLeft {
+      0% { transform: translateX(52px); opacity: 0; }
+      20% { opacity: 1; }
+      85% { transform: translateX(0px); opacity: 1; }
+      100% { transform: translateX(-4px); opacity: 0; }
+    }
+
+    .v2-rise-bubble {
+      animation: riseOut 2.8s ease-out infinite;
+    }
+    @keyframes riseOut {
+      0% { transform: translateY(10px) scale(0.7); opacity: 0; }
+      30% { opacity: 0.9; }
+      100% { transform: translateY(-22px) scale(1.1); opacity: 0; }
+    }
+
+    .v2-twinkle {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: twinkleStar 2.6s ease-in-out infinite;
+    }
+    .v2-twinkle--2 { animation-delay: 0.9s; }
+    .v2-twinkle--3 { animation-delay: 1.7s; }
+    @keyframes twinkleStar {
+      0%, 100% { transform: scale(0.75) rotate(0deg); opacity: 0.45; }
+      50% { transform: scale(1.22) rotate(22deg); opacity: 1; }
+    }
+
+    /* =========================================================================
+       FITXA 3: CICLE DE LES ROQUES (FLUX ANIMAT)
+       ========================================================================= */
+    .v3-flow-line {
+      stroke-dasharray: 9 7;
+      animation: rockFlow 3.2s linear infinite;
+    }
+
+    .v3-arrow-group.is-active .v3-flow-line {
+      stroke-width: 4.5px;
+      animation-duration: 0.85s;
+      filter: drop-shadow(0 0 8px rgba(251, 146, 60, 0.9));
+    }
+
+    .v3-node-group {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .v3-node-group.is-active {
+      transform: scale(1.06);
+    }
+
+    @keyframes rockFlow {
+      to { stroke-dashoffset: -32; }
+    }
+
+    .stage-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    /* =========================================================================
+       FITXA 4: ESCALA DE MOHS + MODE DUEL DE DURESA
+       ========================================================================= */
+    .v4-col {
+      transform-box: fill-box;
+      transform-origin: bottom center;
+      transition: transform 280ms var(--ease-spring), opacity 220ms ease, filter 220ms ease;
+    }
+
+    .v4-col.is-selected {
+      transform: translateY(-9px) scale(1.05);
+      filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.8));
+      opacity: 1;
+    }
+
+    .v4-col.is-scratched {
+      opacity: 0.92;
+      filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.45));
+    }
+
+    .v4-col.is-harder {
+      opacity: 0.85;
+      filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.42));
+    }
+
+    .v4-glint {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: diamondGlint 2.5s ease-in-out infinite;
+    }
+
+    @keyframes diamondGlint {
+      0%, 100% { transform: scale(0.7) rotate(0deg); opacity: 0.4; }
+      50% { transform: scale(1.3) rotate(45deg); opacity: 1; }
+    }
+
+    .mohs-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Panell Mode Duel de Mohs */
+    .duel-panel {
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(251, 146, 60, 0.08));
+      border: 1px solid rgba(192, 132, 252, 0.38);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      animation: fadeSlideUp 260ms var(--ease-smooth);
+    }
+
+    .duel-panel[hidden] {
+      display: none;
+    }
+
+    .duel-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    .duel-select-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .duel-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+
+    .duel-select {
+      min-height: 44px;
+      width: 100%;
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-stage);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .duel-select:focus-visible {
+      outline: 3px solid var(--purple);
+      outline-offset: 2px;
+    }
+
+    .duel-vs {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--gold);
+      padding-bottom: 0.55rem;
+      text-align: center;
+    }
+
+    .duel-arena {
+      background: var(--bg-stage);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      overflow: hidden;
+    }
+
+    .duel-fighters {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      min-height: 58px;
+    }
+
+    .duel-fighter {
+      padding: 0.48rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card-elevated);
+      border: 2px solid var(--border-strong);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.94rem;
+      color: var(--text-main);
+      transition: transform 260ms var(--ease-spring), border-color 220ms ease, box-shadow 220ms ease;
+      z-index: 2;
+    }
+
+    .duel-fighter.is-winner {
+      border-color: var(--emerald);
+      box-shadow: 0 0 18px rgba(52, 211, 153, 0.45);
+      color: #a7f3d0;
+    }
+
+    .duel-fighter.is-loser {
+      border-color: rgba(239, 68, 68, 0.65);
+      opacity: 0.72;
+    }
+
+    .duel-spark {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 1.65rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .duel-arena.is-clashing .duel-fighter--a {
+      animation: clashLeft 460ms var(--ease-spring);
+    }
+    .duel-arena.is-clashing .duel-fighter--b {
+      animation: clashRight 460ms var(--ease-spring);
+    }
+    .duel-arena.is-clashing .duel-spark {
+      animation: sparkPop 520ms ease-out;
+    }
+
+    @keyframes clashLeft {
+      0% { transform: translateX(0); }
+      45% { transform: translateX(52px) rotate(6deg); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes clashRight {
+      0% { transform: translateX(0); }
+      45% { transform: translateX(-52px) rotate(-6deg); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes sparkPop {
+      0%, 25% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.45) rotate(18deg); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(0.4) rotate(-12deg); opacity: 0; }
+    }
+
+    .duel-result-text {
+      margin: 0;
+      font-size: 0.94rem;
+      font-weight: 600;
+      text-align: center;
+      color: var(--text-main);
+    }
+
+    /* =========================================================================
+       FITXA 5: LÍMITS ENTRE PLAQUES (ANIMACIÓ TECTÒNICA CONTÍNUA)
+       ========================================================================= */
+    .plate-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+
+    .plate-card-btn {
+      min-height: 68px;
+      padding: 0.65rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2rem;
+      text-align: center;
+      transition: transform 200ms var(--ease-spring), background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .plate-card-btn:hover {
+      background: var(--bg-card-elevated);
+      color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    .plate-card-btn:active {
+      transform: scale(0.96);
+    }
+
+    .plate-card-btn:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .plate-card-btn.is-active {
+      background: linear-gradient(135deg, rgba(251, 146, 60, 0.22), rgba(239, 68, 68, 0.16));
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 6px 20px -6px rgba(251, 146, 60, 0.45);
+    }
+
+    .plate-card-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .plate-card-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .plate-card-sub {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-subtle);
+    }
+
+    .plate-card-btn.is-active .plate-card-sub {
+      color: var(--primary-bright);
+    }
+
+    .v5-scene {
+      display: none;
+    }
+    .v5-scene.is-active {
+      display: block;
+      animation: fadeSlideUp 300ms var(--ease-smooth);
+    }
+
+    /* Moviments tectònics SVG Fitxa 5 */
+    .v5-plate-left { animation: divergeLeft 3.4s ease-in-out infinite; }
+    .v5-plate-right { animation: divergeRight 3.4s ease-in-out infinite; }
+    @keyframes divergeLeft {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(-16px); }
+    }
+    @keyframes divergeRight {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(16px); }
+    }
+
+    .v5-magma-bubble-1 { animation: magmaRise 2.2s ease-out infinite; }
+    .v5-magma-bubble-2 { animation: magmaRise 2.5s ease-out 0.7s infinite; }
+    .v5-magma-bubble-3 { animation: magmaRise 2.1s ease-out 1.4s infinite; }
+    @keyframes magmaRise {
+      0% { transform: translateY(38px) scale(0.6); opacity: 0; }
+      25% { opacity: 0.95; }
+      85% { opacity: 0.85; }
+      100% { transform: translateY(-28px) scale(1.15); opacity: 0; }
+    }
+
+    .v5-subduct-flow {
+      stroke-dasharray: 12 10;
+      animation: subductMove 1.6s linear infinite;
+    }
+    @keyframes subductMove {
+      to { stroke-dashoffset: -44; }
+    }
+
+    .v5-mountain-pulse {
+      transform-box: fill-box;
+      transform-origin: bottom center;
+      animation: mountainLift 3.2s ease-in-out infinite;
+    }
+    @keyframes mountainLift {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.07); }
+    }
+
+    .v5-pass-left { animation: transformSlideUp 3.2s ease-in-out infinite; }
+    .v5-pass-right { animation: transformSlideDown 3.2s ease-in-out infinite; }
+    @keyframes transformSlideUp {
+      0%, 100% { transform: translateY(10px); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes transformSlideDown {
+      0%, 100% { transform: translateY(-10px); }
+      50% { transform: translateY(12px); }
+    }
+
+    .v5-quake-ring {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: quakePulse 2.4s ease-out infinite;
+    }
+    .v5-quake-ring--2 { animation-delay: 0.8s; }
+    @keyframes quakePulse {
+      0% { transform: scale(0.25); opacity: 0.9; }
+      100% { transform: scale(1.75); opacity: 0; }
+    }
+
+    /* =========================================================================
+       FITXA 6: AGENTS EXTERNS I QUATRE FASES (PAISATGE ANIMAT)
+       ========================================================================= */
+    .v6-sun-rays {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: spinSlow 18s linear infinite;
+    }
+    @keyframes spinSlow {
+      to { transform: rotate(360deg); }
+    }
+
+    .v6-rain-1 { animation: rainFall 1.3s linear infinite; }
+    .v6-rain-2 { animation: rainFall 1.5s linear 0.45s infinite; }
+    .v6-rain-3 { animation: rainFall 1.2s linear 0.85s infinite; }
+    @keyframes rainFall {
+      0% { transform: translate(6px, -16px); opacity: 0; }
+      20% { opacity: 0.9; }
+      85% { opacity: 0.9; }
+      100% { transform: translate(-10px, 28px); opacity: 0; }
+    }
+
+    .v6-wind {
+      stroke-dasharray: 18 28;
+      animation: windBlow 2.2s linear infinite;
+    }
+    @keyframes windBlow {
+      to { stroke-dashoffset: -46; }
+    }
+
+    /* Animacions específiques de cada fase (s'activen en pas actiu) */
+    .v6-crack-glow {
+      opacity: 0.35;
+      transition: opacity 250ms ease;
+    }
+    .v6-phase.is-active .v6-crack-glow {
+      opacity: 1;
+      animation: crackFlash 1.2s ease-in-out infinite;
+    }
+    @keyframes crackFlash {
+      0%, 100% { stroke-width: 2.5px; filter: drop-shadow(0 0 2px #ef4444); }
+      50% { stroke-width: 4px; filter: drop-shadow(0 0 10px #fb923c); }
+    }
+
+    .v6-erode-rock-1 { animation: none; }
+    .v6-erode-rock-2 { animation: none; }
+    .v6-phase.is-active .v6-erode-rock-1 { animation: rockTumble1 1.7s ease-in infinite; }
+    .v6-phase.is-active .v6-erode-rock-2 { animation: rockTumble2 1.9s ease-in 0.55s infinite; }
+    @keyframes rockTumble1 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translate(38px, 24px) rotate(140deg); opacity: 0; }
+    }
+    @keyframes rockTumble2 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translate(44px, 28px) rotate(-130deg); opacity: 0; }
+    }
+
+    .v6-transport-pebble-1,
+    .v6-transport-pebble-2,
+    .v6-transport-pebble-3 {
+      opacity: 0.45;
+    }
+    .v6-phase.is-active .v6-transport-pebble-1 { animation: riverCarry 1.9s linear infinite; opacity: 1; }
+    .v6-phase.is-active .v6-transport-pebble-2 { animation: riverCarry 1.9s linear 0.62s infinite; opacity: 1; }
+    .v6-phase.is-active .v6-transport-pebble-3 { animation: riverCarry 1.9s linear 1.24s infinite; opacity: 1; }
+    @keyframes riverCarry {
+      0% { transform: translate(0px, 0px); opacity: 0; }
+      15% { opacity: 1; }
+      50% { transform: translate(48px, 18px); }
+      85% { opacity: 1; }
+      100% { transform: translate(96px, 40px); opacity: 0; }
+    }
+
+    .v6-sink-sed-1, .v6-sink-sed-2, .v6-sink-sed-3 {
+      opacity: 0.35;
+    }
+    .v6-phase.is-active .v6-sink-sed-1 { animation: sedSettle 2.1s ease-in-out infinite; opacity: 1; }
+    .v6-phase.is-active .v6-sink-sed-2 { animation: sedSettle 2.1s ease-in-out 0.7s infinite; opacity: 1; }
+    .v6-phase.is-active .v6-sink-sed-3 { animation: sedSettle 2.1s ease-in-out 1.4s infinite; opacity: 1; }
+    @keyframes sedSettle {
+      0% { transform: translateY(-20px); opacity: 0; }
+      25% { opacity: 1; }
+      85% { transform: translateY(10px); opacity: 1; }
+      100% { transform: translateY(12px); opacity: 0; }
+    }
+
+    .v6-strata {
+      transition: transform 380ms var(--ease-spring), filter 250ms ease;
+      transform-box: fill-box;
+      transform-origin: bottom center;
+    }
+    .v6-phase.is-active .v6-strata {
+      transform: scaleY(1.16);
+      filter: drop-shadow(0 0 8px rgba(226, 194, 144, 0.65));
+    }
+
+    /* =========================================================================
+       ACORDIÓ COL·LAPSABLE DE DADES DEL VISUAL (100% FIDEL A LES FONTS)
+       ========================================================================= */
+    .study-details {
+      background: rgba(10, 14, 23, 0.55);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .study-details summary {
+      min-height: 44px;
+      padding: 0.65rem 0.95rem;
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      transition: background-color 180ms ease, color 180ms ease;
+    }
+
+    .study-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .study-details summary:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+
+    .study-details summary:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: -3px;
+    }
+
+    .details-chevron {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--primary);
+      transition: transform 240ms var(--ease-spring);
+    }
+
+    .study-details[open] .details-chevron {
+      transform: rotate(180deg);
+    }
+
+    .study-details-body {
+      padding: 0.2rem 1rem 1rem;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .study-data-summary {
+      margin: 0.65rem 0 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--primary-bright);
+    }
+
+    .study-data-list {
+      margin: 0 0 0.75rem;
+      padding-left: 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .study-data-list strong {
+      color: var(--text-main);
+    }
+
+    .study-source-ref {
+      margin: 0;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.82rem;
+      color: var(--text-subtle);
+    }
+
+    /* =========================================================================
+       SECCIÓ FINAL: ALTRES VISUALS POSSIBLES (GRAELLA ESCANEJABLE)
+       ========================================================================= */
+    .future-section {
+      background: var(--bg-card);
+      background-image: var(--card-glow);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-highlight), var(--card-shadow);
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .future-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .future-item {
+      background: rgba(10, 14, 23, 0.65);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: transform 200ms var(--ease-spring), border-color 200ms ease;
+    }
+
+    .future-item:hover {
+      transform: translateY(-2px);
+      border-color: rgba(251, 146, 60, 0.42);
+    }
+
+    .future-item-head {
+      display: flex;
+      align-items: center;
+      gap: 0.48rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.96rem;
+      color: var(--primary-bright);
+    }
+
+    .future-item p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.48;
+    }
+
+    .future-ref {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-subtle);
+      margin-top: auto;
+      padding-top: 0.35rem;
+    }
+
+    /* =========================================================================
+       UTILITATS SVG
+       ========================================================================= */
+    .svg-txt { font-family: var(--font-display); font-weight: 700; fill: #f8fafc; }
+    .svg-txt-dark { font-family: var(--font-display); font-weight: 700; fill: #0f141e; }
+    .svg-mono { font-family: var(--font-mono); font-weight: 600; fill: #94a3b8; }
+    .svg-accent { font-family: var(--font-mono); font-weight: 600; fill: #fdba74; }
+
+    /* =========================================================================
+       RESPONSIVE MÒBIL I IPAD
+       ========================================================================= */
+    @media (max-width: 640px) {
+      .quick-nav-inner {
+        padding: 0.45rem 0.6rem;
+        gap: 0.45rem;
+      }
+      .progress-pill {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.78rem;
+      }
+      .page-shell {
+        padding: 0.85rem 0.65rem 2.75rem;
+        gap: 1.25rem;
+      }
+      .hero-banner,
+      .fitxa-card,
+      .future-section {
+        padding: 1rem;
+      }
+      .visual-stage {
+        padding: 0.75rem;
+      }
+      .step-timeline {
+        grid-template-columns: 1fr;
+      }
+      .step-timeline--4 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .duel-grid {
+        grid-template-columns: 1fr;
+      }
+      .duel-vs {
+        padding-bottom: 0;
+      }
+      .plate-selector-grid {
+        grid-template-columns: 1fr;
+      }
+      .step-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .step-btn-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* =========================================================================
+       MODE EMBED (?embed=1 dins del modal de Bona Nota)
+       ========================================================================= */
+    body.is-embed .future-section {
+      display: none;
+    }
+
+    body.is-embed .hero-banner {
+      padding: 0.95rem 1.15rem;
+    }
+
+    body.is-embed .page-shell {
+      padding-top: 0.85rem;
+    }
+
+    @media (max-width: 640px) {
+      body.is-embed .hero-banner {
+        padding: 0.8rem 0.9rem;
+      }
+    }
+
+    /* =========================================================================
+       MODE FITXA ÚNICA (?embed=1&fitxa=1..6 dins d'un tema de Bona Nota)
+       ========================================================================= */
+    html.is-single-fitxa,
+    body.is-single-fitxa {
+      background: transparent !important;
+      background-image: none !important;
+      height: auto !important;
+      min-height: 0 !important;
+      overflow-x: clip;
+      overflow-y: auto;
+    }
+
+    body.is-single-fitxa .quick-nav,
+    body.is-single-fitxa .hero-banner,
+    body.is-single-fitxa .future-section,
+    body.is-single-fitxa .fitxa-card:not(.is-single-active) {
+      display: none !important;
+    }
+
+    body.is-single-fitxa .page-shell {
+      max-width: none;
+      padding: 0.25rem 0;
+      gap: 0;
+    }
+
+    body.is-single-fitxa .fitxa-card.is-single-active {
+      box-shadow: var(--card-highlight), 0 8px 24px -10px rgba(15, 23, 42, 0.35);
+    }
+
+    /* =========================================================================
+       ACCESSIBILITAT: MOVIMENT REDUÏT
+       ========================================================================= */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- =========================================================================
+       BARRA SUPERIOR FIXA DE NAVEGACIÓ RÀPIDA I PROGRÉS D'EXPLORACIÓ
+       ========================================================================= -->
+  <nav class="quick-nav" aria-label="Navegació ràpida de les 6 fitxes">
+    <div class="quick-nav-inner">
+      <div class="nav-pills">
+        <a href="#fitxa-1" class="nav-pill" id="nav-pill-1"><span class="nav-pill-num">1</span> Capes</a>
+        <a href="#fitxa-2" class="nav-pill" id="nav-pill-2"><span class="nav-pill-num">2</span> Formació</a>
+        <a href="#fitxa-3" class="nav-pill" id="nav-pill-3"><span class="nav-pill-num">3</span> Roques</a>
+        <a href="#fitxa-4" class="nav-pill" id="nav-pill-4"><span class="nav-pill-num">4</span> Mohs</a>
+        <a href="#fitxa-5" class="nav-pill" id="nav-pill-5"><span class="nav-pill-num">5</span> Plaques</a>
+        <a href="#fitxa-6" class="nav-pill" id="nav-pill-6"><span class="nav-pill-num">6</span> Fases</a>
+      </div>
+      <div class="progress-pill" id="global-progress" aria-live="polite">
+        <span aria-hidden="true">⭐</span>
+        <span id="global-progress-text">Explorat: 0 / 6 fitxes</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+    <!-- CAPÇALERA PRINCIPAL COMPACTA -->
+    <header class="hero-banner">
+      <div class="hero-copy">
+        <span class="hero-kicker">🌋 BONA NOTA · BIOLOGIA I GEOLOGIA · 1R D'ESO</span>
+        <h1 class="hero-title">La Geosfera — Visuals interactius</h1>
+        <p class="hero-sub">Explora l'interior de la Terra, posa a prova la duresa dels minerals i observa com es mouen les plaques tectòniques en directe.</p>
+      </div>
+      <div class="hero-badge-cluster">
+        <span class="mini-tag">6 fitxes interactives</span>
+        <span class="mini-tag">Toca i experimenta</span>
+      </div>
+    </header>
+
+    <!-- =======================================================================
+         FITXA 1: LA GEOSFERA I LES SEVES CAPES (EXPLORA)
+         ======================================================================= -->
+    <section class="fitxa-card" id="fitxa-1" aria-labelledby="fitxa-1-title">
+      <div class="fitxa-header">
+        <div class="fitxa-title-group">
+          <span class="fitxa-num-badge" aria-hidden="true">1</span>
+          <h2 class="fitxa-title" id="fitxa-1-title">Fitxa «La geosfera i les seves capes»</h2>
+        </div>
+        <div class="fitxa-badges">
+          <span class="type-badge">EXPLORA</span>
+          <span class="fitxa-check-badge" id="badge-fitxa-1">0 / 8 tocats</span>
+        </div>
+      </div>
+
+      <div class="action-cue">
+        <span class="cue-pulse" aria-hidden="true"></span>
+        <span>Toca cada capa o discontinuïtat del tall de la Terra</span>
+      </div>
+
+      <div class="visual-stage">
+        <div class="svg-frame">
+          <svg viewBox="0 0 490 330" role="img" aria-label="Tall interactiu de l'interior de la Terra amb capes i discontinuïtats">
+            <defs>
+              <radialGradient id="g-core-int" cx="15%" cy="85%" r="80%">
+                <stop offset="0%" stop-color="#ffffff" />
+                <stop offset="45%" stop-color="#fef08a" />
+                <stop offset="100%" stop-color="#facc15" />
+              </radialGradient>
+              <radialGradient id="g-core-ext" cx="15%" cy="85%" r="85%">
+                <stop offset="0%" stop-color="#fbbf24" />
+                <stop offset="65%" stop-color="#fb923c" />
+                <stop offset="100%" stop-color="#ea580c" />
+              </radialGradient>
+              <radialGradient id="g-mantle-low" cx="15%" cy="85%" r="90%">
+                <stop offset="0%" stop-color="#ef4444" />
+                <stop offset="65%" stop-color="#dc2626" />
+                <stop offset="100%" stop-color="#991b1b" />
+              </radialGradient>
+              <radialGradient id="g-mantle-up" cx="15%" cy="85%" r="92%">
+                <stop offset="0%" stop-color="#fb923c" />
+                <stop offset="60%" stop-color="#ea580c" />
+                <stop offset="100%" stop-color="#c2410c" />
+              </radialGradient>
+              <linearGradient id="g-crust" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8" />
+                <stop offset="38%" stop-color="#94a3b8" />
+                <stop offset="72%" stop-color="#64748b" />
+                <stop offset="100%" stop-color="#38bdf8" />
+              </linearGradient>
+              <radialGradient id="g-space-glow" cx="18%" cy="86%" r="65%">
+                <stop offset="0%" stop-color="rgba(251, 146, 60, 0.25)" />
+                <stop offset="100%" stop-color="rgba(10, 14, 23, 0)" />
+              </radialGradient>
+            </defs>
+
+            <!-- Estrelles de fons i brillantor espacial -->
+            <rect x="0" y="0" width="490" height="330" fill="url(#g-space-glow)" rx="10" />
+            <circle cx="34" cy="40" r="1.4" fill="#94a3b8" opacity="0.6" />
+            <circle cx="445" cy="36" r="1.6" fill="#38bdf8" opacity="0.65" />
+            <circle cx="310" cy="48" r="1.2" fill="#fef08a" opacity="0.55" />
+            <circle cx="462" cy="82" r="1.1" fill="#f8fafc" opacity="0.5" />
+
+            <!-- Escorça (radi 230 a 256) -->
+            <g id="v1-svg-escorca" class="svg-hit v1-layer-group" role="button" tabindex="0" aria-label="Escorça" onclick="v1Select('escorca', true)" onkeydown="handleKey(event, () => v1Select('escorca', true))">
+              <path d="M 80 60 L 80 34 A 256 256 0 0 1 336 290 L 310 290 A 230 230 0 0 0 80 60 Z" fill="url(#g-crust)" stroke="#0f141e" stroke-width="1.8" />
+              <!-- Petits relleus de muntanyes i mar sobre l'escorça -->
+              <path d="M 184 55 L 194 42 L 204 51 L 214 39 L 226 62 Z" fill="#475569" stroke="#cbd5e1" stroke-width="0.9" />
+              <path d="M 278 134 L 292 128 L 298 144 Z" fill="#34d399" opacity="0.7" />
+              <text x="196" y="75" font-size="12" class="svg-txt-dark">Escorça</text>
+            </g>
+
+            <!-- Mantell superior / astenosfera (radi 176 a 230) -->
+            <g id="v1-svg-mantell_superior" class="svg-hit v1-layer-group" role="button" tabindex="0" aria-label="Mantell superior (astenosfera)" onclick="v1Select('mantell_superior', true)" onkeydown="handleKey(event, () => v1Select('mantell_superior', true))">
+              <path d="M 80 114 L 80 60 A 230 230 0 0 1 310 290 L 256 290 A 176 176 0 0 0 80 114 Z" fill="url(#g-mantle-up)" stroke="#0f141e" stroke-width="1.8" />
+              <text x="166" y="130" font-size="11.5" class="svg-txt-dark">Mantell superior</text>
+              <text x="180" y="144" font-size="10" class="svg-txt-dark">(astenosfera)</text>
+            </g>
+
+            <!-- Mantell inferior (radi 112 a 176) -->
+            <g id="v1-svg-mantell_inferior" class="svg-hit v1-layer-group" role="button" tabindex="0" aria-label="Mantell inferior" onclick="v1Select('mantell_inferior', true)" onkeydown="handleKey(event, () => v1Select('mantell_inferior', true))">
+              <path d="M 80 178 L 80 114 A 176 176 0 0 1 256 290 L 192 290 A 112 112 0 0 0 80 178 Z" fill="url(#g-mantle-low)" stroke="#0f141e" stroke-width="1.8" />
+              <text x="142" y="188" font-size="12" class="svg-txt">Mantell inferior</text>
+            </g>
+
+            <!-- Nucli extern (radi 58 a 112) -->
+            <g id="v1-svg-nucli_extern" class="svg-hit v1-layer-group" role="button" tabindex="0" aria-label="Nucli extern" onclick="v1Select('nucli_extern', true)" onkeydown="handleKey(event, () => v1Select('nucli_extern', true))">
+              <path d="M 80 232 L 80 178 A 112 112 0 0 1 192 290 L 138 290 A 58 58 0 0 0 80 232 Z" fill="url(#g-core-ext)" stroke="#0f141e" stroke-width="1.8" />
+              <text x="110" y="238" font-size="11" class="svg-txt-dark">Nucli extern</text>
+            </g>
+
+            <!-- Nucli intern (radi 58) -->
+            <g id="v1-svg-nucli_intern" class="svg-hit v1-layer-group" role="button" tabindex="0" aria-label="Nucli intern" onclick="v1Select('nucli_intern', true)" onkeydown="handleKey(event, () => v1Select('nucli_intern', true))">
+              <path d="M 80 290 L 80 232 A 58 58 0 0 1 138 290 Z" fill="url(#g-core-int)" stroke="#0f141e" stroke-width="1.8" class="v1-core-pulse" />
+              <text x="89" y="275" font-size="10" class="svg-txt-dark">Nucli int.</text>
+            </g>
+
+            <!-- Discontinuïtat de Mohorovicic (arc radi 230) -->
+            <g id="v1-svg-mohorovicic" class="svg-hit" role="button" tabindex="0" aria-label="Discontinuïtat de Mohorovicic" onclick="v1Select('mohorovicic', true)" onkeydown="handleKey(event, () => v1Select('mohorovicic', true))">
+              <path d="M 80 60 A 230 230 0 0 1 310 290" fill="none" stroke="transparent" stroke-width="18" />
+              <path d="M 80 60 A 230 230 0 0 1 310 290" fill="none" stroke="#f8fafc" stroke-width="2.5" class="v1-discont-dash" />
+              <line x1="256" y1="142" x2="352" y2="112" stroke="#38bdf8" stroke-width="2" />
+              <circle cx="256" cy="142" r="4" fill="#38bdf8" />
+              <rect x="352" y="92" width="128" height="40" rx="8" fill="#171e2e" stroke="#38bdf8" stroke-width="1.6" />
+              <text x="362" y="110" font-size="11.5" class="svg-txt">Mohorovicic</text>
+              <text x="362" y="124" font-size="10" class="svg-accent">5–70 km</text>
+            </g>
+
+            <!-- Discontinuïtat de Gutenberg (arc radi 112) -->
+            <g id="v1-svg-gutenberg" class="svg-hit" role="button" tabindex="0" aria-label="Discontinuïtat de Gutenberg" onclick="v1Select('gutenberg', true)" onkeydown="handleKey(event, () => v1Select('gutenberg', true))">
+              <path d="M 80 178 A 112 112 0 0 1 192 290" fill="none" stroke="transparent" stroke-width="18" />
+              <path d="M 80 178 A 112 112 0 0 1 192 290" fill="none" stroke="#fbbf24" stroke-width="2.6" class="v1-discont-dash" />
+              <line x1="168" y1="222" x2="352" y2="180" stroke="#fbbf24" stroke-width="2" />
+              <circle cx="168" cy="222" r="4" fill="#fbbf24" />
+              <rect x="352" y="160" width="128" height="40" rx="8" fill="#171e2e" stroke="#fbbf24" stroke-width="1.6" />
+              <text x="362" y="178" font-size="11.5" class="svg-txt">Gutenberg</text>
+              <text x="362" y="192" font-size="10" class="svg-accent">2.900 km</text>
+            </g>
+
+            <!-- Discontinuïtat de Lehmann (arc radi 58) -->
+            <g id="v1-svg-lehmann" class="svg-hit" role="button" tabindex="0" aria-label="Discontinuïtat de Lehmann" onclick="v1Select('lehmann', true)" onkeydown="handleKey(event, () => v1Select('lehmann', true))">
+              <path d="M 80 232 A 58 58 0 0 1 138 290" fill="none" stroke="transparent" stroke-width="18" />
+              <path d="M 80 232 A 58 58 0 0 1 138 290" fill="none" stroke="#ef4444" stroke-width="3" class="v1-discont-dash" />
+              <line x1="126" y1="256" x2="352" y2="246" stroke="#ef4444" stroke-width="2" />
+              <circle cx="126" cy="256" r="4" fill="#ef4444" />
+              <rect x="352" y="226" width="128" height="40" rx="8" fill="#171e2e" stroke="#ef4444" stroke-width="1.6" />
+              <text x="362" y="244" font-size="11.5" class="svg-txt">Lehmann</text>
+              <text x="362" y="258" font-size="9.5" class="svg-accent">5.100 / 5.150 km</text>
+            </g>
+
+            <!-- Centre de la Terra i nota d'escala -->
+            <circle cx="80" cy="290" r="5" fill="#ef4444" stroke="#fef08a" stroke-width="1.8" />
+            <text x="14" y="294" font-size="10.5" class="svg-mono">Centre</text>
+            <text x="14" y="310" font-size="10.5" class="svg-accent">6.371 km</text>
+            <text x="352" y="310" font-size="10" class="svg-mono">(gruixos no a escala)</text>
+          </svg>
+        </div>
+
+        <!-- Mesurador visual animat de profunditat i temperatura -->
+        <div class="depth-meter-panel" aria-label="Indicador de profunditat de 0 a 6.371 km">
+          <div class="depth-meter-top">
+            <span>📍 Profunditat: <span class="depth-meter-highlight" id="v1-meter-label">0 – 70 km</span></span>
+            <span>🌡️ Calor: <span class="depth-meter-highlight" id="v1-temp-label">Superficial</span></span>
+          </div>
+          <div class="depth-track">
+            <div class="depth-track-dim"></div>
+            <div class="depth-active-range" id="v1-depth-bar"></div>
+          </div>
+          <div class="depth-ticks">
+            <span>0 km</span>
+            <span>2.900 km</span>
+            <span>5.100 km</span>
+            <span>6.371 km</span>
+          </div>
+        </div>
+
+        <!-- Xips tàctils >= 44px -->
+        <div class="touch-chip-row" aria-label="Selector directe de capes i discontinuïtats">
+          <button type="button" class="touch-chip is-active" id="v1-btn-escorca" onclick="v1Select('escorca', true)"><span class="chip-dot"></span>Escorça</button>
+          <button type="button" class="touch-chip touch-chip--discont" id="v1-btn-mohorovicic" onclick="v1Select('mohorovicic', true)"><span class="chip-dot"></span>Mohorovicic</button>
+          <button type="button" class="touch-chip" id="v1-btn-mantell_superior" onclick="v1Select('mantell_superior', true)"><span class="chip-dot"></span>Mantell superior</button>
+          <button type="button" class="touch-chip" id="v1-btn-mantell_inferior" onclick="v1Select('mantell_inferior', true)"><span class="chip-dot"></span>Mantell inferior</button>
+          <button type="button" class="touch-chip touch-chip--discont" id="v1-btn-gutenberg" onclick="v1Select('gutenberg', true)"><span class="chip-dot"></span>Gutenberg</button>
+          <button type="button" class="touch-chip" id="v1-btn-nucli_extern" onclick="v1Select('nucli_extern', true)"><span class="chip-dot"></span>Nucli extern</button>
+          <button type="button" class="touch-chip touch-chip--discont" id="v1-btn-lehmann" onclick="v1Select('lehmann', true)"><span class="chip-dot"></span>Lehmann</button>
+          <button type="button" class="touch-chip" id="v1-btn-nucli_intern" onclick="v1Select('nucli_intern', true)"><span class="chip-dot"></span>Nucli intern</button>
+        </div>
+
+        <div class="readout-box" id="v1-readout" aria-live="polite">
+          <div class="readout-header">
+            <h3 class="readout-title" id="v1-title">Escorça</h3>
+            <div class="readout-meta-row">
+              <span class="readout-pill"><strong>Profunditat:</strong> <span id="v1-depth">5–70 km (oceànica 5–10 km; continental 25–70 km)</span></span>
+              <span class="readout-pill"><strong>Estat:</strong> <span id="v1-state">Sòlid</span></span>
+            </div>
+          </div>
+          <p class="readout-text" id="v1-desc">Capa superficial, prima i menys densa, formada per oxigen, carboni i silici.</p>
+          <div class="warn-banner" id="v1-warn" hidden></div>
+        </div>
+      </div>
+
+      <details class="study-details">
+        <summary>
+          <span>📚 Dades i fonts per repassar</span>
+          <span class="details-chevron" aria-hidden="true">▼</span>
+        </summary>
+        <div class="study-details-body">
+          <p class="study-data-summary">Fitxa «La geosfera i les seves capes» · Tipus: EXPLORA</p>
+          <ol class="study-data-list">
+            <li><strong>Escorça</strong> · Profunditat: 5–70 km (oceànica 5–10 km; continental 25–70 km). Estat: Sòlid. «Capa superficial, prima i menys densa, formada per oxigen, carboni i silici.»</li>
+            <li><strong>Discontinuïtat de Mohorovicic</strong> · Profunditat: 5–70 km. Estat: No surt a la font. «Frontera que separa l'escorça del mantell, on els materials canvien de cop.»</li>
+            <li><strong>Mantell superior (astenosfera)</strong> · Profunditat: des de 5–70 km; límit inferior: no surt a la font. Estat: Sòlid molt viscós (plàstic). «Inclou l'astenosfera, que flueix lentament i permet moure les plaques tectòniques.»</li>
+            <li><strong>Mantell inferior</strong> · Profunditat: fins a 2.900 km; límit superior: no surt a la font. Estat: Sòlid (amb certa plasticitat). «Capa molt gruixuda de ferro, magnesi i silici; arriba als 3.000 °C.»</li>
+            <li><strong>Discontinuïtat de Gutenberg</strong> · Profunditat: 2.900 km. Estat: No surt a la font. «Frontera que separa el mantell del nucli, on els materials canvien de cop.»</li>
+            <li><strong>Nucli extern</strong> · Profunditat: 2.900 a 5.100 km (5.150 km al dibuix). Estat: Líquid. «Molt dens, de ferro i níquel; genera el camp magnètic terrestre.» Avís: Pregunta-ho al profe.</li>
+            <li><strong>Discontinuïtat de Lehmann</strong> · Profunditat: 5.100 km (text) o 5.150 km (dibuix). Estat: No surt a la font. «Frontera entre el nucli extern líquid i el nucli intern sòlid.» Avís: Pregunta-ho al profe.</li>
+            <li><strong>Nucli intern</strong> · Profunditat: 5.100 km (o 5.150 km) a 6.371 km. Estat: Sòlid (suposat). «Capa més densa i central de ferro i níquel, fins a 6.000 °C.» Avís: Pregunta-ho al profe.</li>
+          </ol>
+          <p class="study-source-ref"><strong>Origen:</strong> La Geosfera.pptx.pdf (apartat 1.2, diapositives 3–7); biogeo_geosfera_dibuixos.pdf (dibuix 1); biogeo_geosfera_esquema.pdf (Full 1, apartat 1.2 i nota sobre diapositives 6–7).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- =======================================================================
+         FITXA 2: COM ES VAN FORMAR LES CAPES (PAS A PAS)
+         ======================================================================= -->
+    <section class="fitxa-card" id="fitxa-2" aria-labelledby="fitxa-2-title">
+      <div class="fitxa-header">
+        <div class="fitxa-title-group">
+          <span class="fitxa-num-badge" aria-hidden="true">2</span>
+          <h2 class="fitxa-title" id="fitxa-2-title">Fitxa «Com es van formar les capes»</h2>
+        </div>
+        <div class="fitxa-badges">
+          <span class="type-badge type-badge--step">PAS A PAS</span>
+          <span class="fitxa-check-badge" id="badge-fitxa-2">Etapa 1 / 3</span>
+        </div>
+      </div>
+
+      <div class="action-cue">
+        <span class="cue-pulse" aria-hidden="true"></span>
+        <span>Prem Següent o toca cada etapa per veure com va néixer la Terra</span>
+      </div>
+
+      <div class="visual-stage">
+        <!-- Línia de temps interactiva -->
+        <div class="step-timeline" role="tablist" aria-label="Etapes de formació de les capes">
+          <button type="button" class="timeline-btn is-active" id="v2-tab-0" onclick="v2GoTo(0, true)">☄️ 1. Xocs i calor</button>
+          <button type="button" class="timeline-btn" id="v2-tab-1" onclick="v2GoTo(1, true)">🧲 2. Separació</button>
+          <button type="button" class="timeline-btn" id="v2-tab-2" onclick="v2GoTo(2, true)">🌍 3. Refredament</button>
+        </div>
+
+        <!-- Gran escenari central animat -->
+        <div class="svg-frame">
+          <svg viewBox="0 0 500 250" role="img" aria-label="Animació en tres etapes de la formació de les capes de la Terra">
+            <defs>
+              <radialGradient id="v2-molten" cx="42%" cy="38%" r="65%">
+                <stop offset="0%" stop-color="#fef08a" />
+                <stop offset="45%" stop-color="#fb923c" />
+                <stop offset="82%" stop-color="#dc2626" />
+                <stop offset="100%" stop-color="#7f1d1d" />
+              </radialGradient>
+              <radialGradient id="v2-sep-mantle" cx="50%" cy="50%" r="55%">
+                <stop offset="0%" stop-color="#fb923c" />
+                <stop offset="70%" stop-color="#ea580c" />
+                <stop offset="100%" stop-color="#7c2d12" />
+              </radialGradient>
+              <radialGradient id="v2-halo-hot" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(251, 146, 60, 0.45)" />
+                <stop offset="100%" stop-color="rgba(251, 146, 60, 0)" />
+              </radialGradient>
+              <radialGradient id="v2-halo-cool" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(56, 189, 248, 0.28)" />
+                <stop offset="100%" stop-color="rgba(56, 189, 248, 0)" />
+              </radialGradient>
+            </defs>
+
+            <!-- Estrelles de fons -->
+            <circle cx="46" cy="36" r="1.5" fill="#cbd5e1" opacity="0.6" />
+            <circle cx="448" cy="48" r="1.8" fill="#fef08a" opacity="0.7" />
+            <circle cx="88" cy="212" r="1.4" fill="#38bdf8" opacity="0.6" />
+            <circle cx="420" cy="206" r="1.5" fill="#cbd5e1" opacity="0.55" />
+            <circle cx="152" cy="30" r="1.2" fill="#f8fafc" opacity="0.45" />
+
+            <!-- ESCENA 1: XOCS I CALOR -->
+            <g id="v2-scene-0" class="v2-scene is-active">
+              <circle cx="250" cy="126" r="108" fill="url(#v2-halo-hot)" />
+              <!-- Ones d'impacte -->
+              <circle cx="250" cy="126" r="74" fill="none" stroke="#fbbf24" stroke-width="2.5" class="v2-shock" />
+              <circle cx="250" cy="126" r="74" fill="none" stroke="#ef4444" stroke-width="2" class="v2-shock v2-shock--delay" />
+              <!-- Proto-Terra incandescent -->
+              <circle cx="250" cy="126" r="68" fill="url(#v2-molten)" stroke="#fef08a" stroke-width="2" class="v1-core-pulse" />
+              <!-- Petits cràters de magma -->
+              <ellipse cx="228" cy="108" rx="14" ry="8" fill="#fef08a" opacity="0.45" />
+              <ellipse cx="274" cy="144" rx="18" ry="10" fill="#7f1d1d" opacity="0.4" />
+              <!-- Planetesimals impactant -->
+              <g class="v2-meteor-1">
+                <line x1="172" y1="78" x2="206" y2="98" stroke="#fb923c" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+                <polygon points="204,88 218,96 212,110 198,104" fill="#94a3b8" stroke="#fef08a" stroke-width="1.5" />
+              </g>
+              <g class="v2-meteor-2">
+                <line x1="330" y1="84" x2="296" y2="100" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+                <polygon points="292,92 308,96 302,110 288,104" fill="#cbd5e1" stroke="#fb923c" stroke-width="1.5" />
+              </g>
+              <g class="v2-meteor-3">
+                <line x1="176" y1="176" x2="208" y2="152" stroke="#ef4444" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+                <polygon points="202,146 216,150 212,164 196,158" fill="#64748b" stroke="#fbbf24" stroke-width="1.5" />
+              </g>
+              <text x="250" y="232" text-anchor="middle" font-size="13" class="svg-accent">Planetesimals xocant → Cos incandescent fos</text>
+            </g>
+
+            <!-- ESCENA 2: SEPARACIÓ PER DENSITAT -->
+            <g id="v2-scene-1" class="v2-scene">
+              <circle cx="250" cy="126" r="106" fill="url(#v2-halo-hot)" />
+              <circle cx="250" cy="126" r="76" fill="url(#v2-sep-mantle)" stroke="#fb923c" stroke-width="2" />
+              <!-- Nucli creixent al centre -->
+              <circle cx="250" cy="126" r="32" fill="url(#g-core-int)" stroke="#ef4444" stroke-width="2.5" class="v1-core-pulse" />
+              <text x="250" y="130" text-anchor="middle" font-size="12" class="svg-txt-dark">Fe + Ni</text>
+              <!-- Gotes metàl·liques denses baixant al centre -->
+              <g class="v2-sink-top">
+                <circle cx="250" cy="106" r="6" fill="#fef08a" stroke="#ef4444" stroke-width="1.5" />
+                <path d="M 250 74 L 250 96" stroke="#fef08a" stroke-width="2.5" />
+              </g>
+              <g class="v2-sink-bot">
+                <circle cx="250" cy="146" r="6" fill="#fef08a" stroke="#ef4444" stroke-width="1.5" />
+                <path d="M 250 178 L 250 156" stroke="#fef08a" stroke-width="2.5" />
+              </g>
+              <g class="v2-sink-left">
+                <circle cx="230" cy="126" r="6" fill="#fef08a" stroke="#ef4444" stroke-width="1.5" />
+                <path d="M 196 126 L 220 126" stroke="#fef08a" stroke-width="2.5" />
+              </g>
+              <g class="v2-sink-right">
+                <circle cx="270" cy="126" r="6" fill="#fef08a" stroke="#ef4444" stroke-width="1.5" />
+                <path d="M 304 126 L 280 126" stroke="#fef08a" stroke-width="2.5" />
+              </g>
+              <!-- Materials menys densos pujant -->
+              <g class="v2-rise-bubble">
+                <circle cx="198" cy="78" r="5" fill="#94a3b8" />
+                <circle cx="304" cy="84" r="4.5" fill="#cbd5e1" />
+              </g>
+              <!-- Etiquetes explicatives -->
+              <rect x="26" y="88" width="124" height="44" rx="8" fill="#171e2e" stroke="#ef4444" stroke-width="1.4" />
+              <text x="88" y="107" text-anchor="middle" font-size="11" class="svg-txt">Més densos</text>
+              <text x="88" y="122" text-anchor="middle" font-size="10" class="svg-accent">Fe i Ni cap al nucli</text>
+
+              <rect x="350" y="88" width="128" height="44" rx="8" fill="#171e2e" stroke="#38bdf8" stroke-width="1.4" />
+              <text x="414" y="107" text-anchor="middle" font-size="11" class="svg-txt">Menys densos</text>
+              <text x="414" y="122" text-anchor="middle" font-size="10" class="svg-accent">Pugen a fora</text>
+              <text x="250" y="232" text-anchor="middle" font-size="13" class="svg-accent">Els materials s'ordenen per densitat</text>
+            </g>
+
+            <!-- ESCENA 3: REFREDAMENT FINAL -->
+            <g id="v2-scene-2" class="v2-scene">
+              <circle cx="250" cy="126" r="106" fill="url(#v2-halo-cool)" />
+              <!-- Planeta amb 3 capes clares -->
+              <circle cx="250" cy="126" r="78" fill="#38bdf8" stroke="#94a3b8" stroke-width="5" />
+              <!-- Continents al costat esquerre -->
+              <path d="M 192 92 Q 214 78 232 96 Q 222 122 204 128 Q 186 116 192 92 Z" fill="#34d399" opacity="0.82" />
+              <path d="M 196 146 Q 218 140 232 166 Q 212 184 196 168 Z" fill="#34d399" opacity="0.78" />
+              <!-- Tall de 3 capes a la meitat dreta -->
+              <path d="M 250 48 A 78 78 0 0 1 328 126 A 78 78 0 0 1 250 204 Z" fill="#94a3b8" stroke="#0f141e" stroke-width="1.5" />
+              <path d="M 250 60 A 66 66 0 0 1 316 126 A 66 66 0 0 1 250 192 Z" fill="#dc2626" stroke="#0f141e" stroke-width="1.5" />
+              <path d="M 250 94 A 32 32 0 0 1 282 126 A 32 32 0 0 1 250 158 Z" fill="#fef08a" stroke="#fb923c" stroke-width="3" />
+              <!-- Línies guia -->
+              <line x1="306" y1="74" x2="364" y2="66" stroke="#94a3b8" stroke-width="1.8" />
+              <text x="370" y="70" font-size="12" class="svg-txt">1. Escorça sòlida</text>
+              <line x1="300" y1="126" x2="364" y2="126" stroke="#ef4444" stroke-width="1.8" />
+              <text x="370" y="130" font-size="12" class="svg-txt">2. Mantell</text>
+              <line x1="274" y1="146" x2="364" y2="180" stroke="#fbbf24" stroke-width="1.8" />
+              <text x="370" y="184" font-size="12" class="svg-txt">3. Nucli</text>
+              <!-- Espurnes orbitals -->
+              <path d="M 148 64 L 152 72 L 160 76 L 152 80 L 148 88 L 144 80 L 136 76 L 144 72 Z" fill="#fef08a" class="v2-twinkle" />
+              <path d="M 122 152 L 125 158 L 131 161 L 125 164 L 122 170 L 119 164 L 113 161 L 119 158 Z" fill="#38bdf8" class="v2-twinkle v2-twinkle--2" />
+              <text x="250" y="232" text-anchor="middle" font-size="13" class="svg-accent">La Terra es refreda → 3 capes diferenciades</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="readout-box" id="v2-readout" aria-live="polite">
+          <div class="readout-header">
+            <h3 class="readout-title" id="v2-title">1. Xocs i calor</h3>
+            <span class="step-counter" id="v2-counter">Pas 1 de 3</span>
+          </div>
+          <p class="readout-text" id="v2-desc">Els planetesimals xoquen, la temperatura puja i les roques es fonen en un cos incandescent.</p>
+        </div>
+
+        <div class="step-controls">
+          <button type="button" class="btn-action btn-action--cyan" id="v2-play" onclick="v2TogglePlay()">▶ Reproduir</button>
+          <div class="step-btn-group">
+            <button type="button" class="btn-action" id="v2-prev" onclick="v2Step(-1)" disabled>← Enrere</button>
+            <button type="button" class="btn-action btn-action--primary" id="v2-next" onclick="v2Step(1)">Següent →</button>
+          </div>
+        </div>
+      </div>
+
+      <details class="study-details">
+        <summary>
+          <span>📚 Dades i fonts per repassar</span>
+          <span class="details-chevron" aria-hidden="true">▼</span>
+        </summary>
+        <div class="study-details-body">
+          <p class="study-data-summary">Fitxa «Com es van formar les capes» · Tipus: PAS A PAS</p>
+          <ol class="study-data-list">
+            <li><strong>1. Xocs i calor:</strong> «Els planetesimals xoquen, la temperatura puja i les roques es fonen en un cos incandescent.»</li>
+            <li><strong>2. Separació per densitat:</strong> «El ferro i el níquel, més densos, baixen al nucli; els menys densos pugen.»</li>
+            <li><strong>3. Refredament final:</strong> «La Terra es refreda i es forma l'escorça sòlida sobre el mantell: tres capes.»</li>
+          </ol>
+          <p class="study-source-ref"><strong>Origen:</strong> La Geosfera.pptx.pdf (apartat 1.2, Origen de la geosfera); biogeo_geosfera_dibuixos.pdf (dibuix 2); biogeo_geosfera_esquema.pdf (Full 1, apartat 1.3).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- =======================================================================
+         FITXA 3: EL CICLE DE LES ROQUES (EXPLORA)
+         ======================================================================= -->
+    <section class="fitxa-card" id="fitxa-3" aria-labelledby="fitxa-3-title">
+      <div class="fitxa-header">
+        <div class="fitxa-title-group">
+          <span class="fitxa-num-badge" aria-hidden="true">3</span>
+          <h2 class="fitxa-title" id="fitxa-3-title">Fitxa «El cicle de les roques»</h2>
+        </div>
+        <div class="fitxa-badges">
+          <span class="type-badge">EXPLORA</span>
+          <span class="fitxa-check-badge" id="badge-fitxa-3">0 / 10 tocats</span>
+        </div>
+      </div>
+
+      <div class="action-cue">
+        <span class="cue-pulse" aria-hidden="true"></span>
+        <span>Toca cada fletxa del cicle o tipus de roca per activar el flux</span>
+      </div>
+
+      <div class="visual-stage">
+        <div class="stage-toolbar">
+          <span class="step-counter">Flux continu del cicle geològic</span>
+          <button type="button" class="btn-action btn-action--cyan" id="v3-tour-btn" onclick="v3ToggleTour()">▶ Recorre el cicle</button>
+        </div>
+
+        <div class="svg-frame">
+          <svg viewBox="0 0 540 345" role="img" aria-label="Diagrama interactiu del cicle de les roques amb flux animat">
+            <defs>
+              <marker id="v3-arr-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="#fb923c" />
+              </marker>
+              <marker id="v3-arr-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8" />
+              </marker>
+              <marker id="v3-arr-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="#c084fc" />
+              </marker>
+              <marker id="v3-arr-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="#ef4444" />
+              </marker>
+              <marker id="v3-arr-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="#475569" />
+              </marker>
+            </defs>
+
+            <!-- Camins secundaris discontinus (fidel a la font) -->
+            <path d="M 380 128 L 286 78" fill="none" stroke="#475569" stroke-width="1.8" stroke-dasharray="4 5" marker-end="url(#v3-arr-muted)" />
+            <path d="M 378 228 L 288 82" fill="none" stroke="#475569" stroke-width="1.8" stroke-dasharray="4 5" marker-end="url(#v3-arr-muted)" />
+            <path d="M 158 178 L 352 234" fill="none" stroke="#475569" stroke-width="1.8" stroke-dasharray="4 5" marker-end="url(#v3-arr-muted)" />
+
+            <!-- Fletxa 1: Refredament (Magma -> Magmàtiques) -->
+            <g id="v3-svg-refredament" class="svg-hit v3-arrow-group" role="button" tabindex="0" aria-label="Fletxa Refredament" onclick="v3Select('refredament', true)" onkeydown="handleKey(event, () => v3Select('refredament', true))">
+              <path d="M 192 292 Q 92 272 86 196" fill="none" stroke="transparent" stroke-width="28" />
+              <path d="M 192 292 Q 92 272 86 196" fill="none" stroke="#fb923c" stroke-width="3.2" class="v3-flow-line" marker-end="url(#v3-arr-orange)" />
+              <rect x="18" y="232" width="106" height="28" rx="7" fill="#171e2e" stroke="#fb923c" stroke-width="1.6" />
+              <text x="71" y="250" text-anchor="middle" font-size="11.5" class="svg-accent">Refredament</text>
+            </g>
+
+            <!-- Fletxa 2: Erosió (Magmàtiques -> Sediments) -->
+            <g id="v3-svg-erosio" class="svg-hit v3-arrow-group" role="button" tabindex="0" aria-label="Fletxa Erosió" onclick="v3Select('erosio', true)" onkeydown="handleKey(event, () => v3Select('erosio', true))">
+              <path d="M 112 122 Q 144 64 196 52" fill="none" stroke="transparent" stroke-width="28" />
+              <path d="M 112 122 Q 144 64 196 52" fill="none" stroke="#38bdf8" stroke-width="3.2" class="v3-flow-line" marker-end="url(#v3-arr-cyan)" />
+              <rect x="66" y="54" width="76" height="28" rx="7" fill="#171e2e" stroke="#38bdf8" stroke-width="1.6" />
+              <text x="104" y="72" text-anchor="middle" font-size="11.5" class="svg-txt">Erosió</text>
+            </g>
+
+            <!-- Fletxa 3: Consolidació (Sediments -> Sedimentàries) -->
+            <g id="v3-svg-consolidacio" class="svg-hit v3-arrow-group" role="button" tabindex="0" aria-label="Fletxa Consolidació" onclick="v3Select('consolidacio', true)" onkeydown="handleKey(event, () => v3Select('consolidacio', true))">
+              <path d="M 338 52 Q 400 64 430 112" fill="none" stroke="transparent" stroke-width="28" />
+              <path d="M 338 52 Q 400 64 430 112" fill="none" stroke="#e2c290" stroke-width="3.2" class="v3-flow-line" marker-end="url(#v3-arr-orange)" />
+              <rect x="384" y="54" width="108" height="28" rx="7" fill="#171e2e" stroke="#e2c290" stroke-width="1.6" />
+              <text x="438" y="72" text-anchor="middle" font-size="11.5" class="svg-accent">Consolidació</text>
+            </g>
+
+            <!-- Fletxa 4: Metamorfisme (Sedimentàries -> Metamòrfiques) -->
+            <g id="v3-svg-metamorfisme" class="svg-hit v3-arrow-group" role="button" tabindex="0" aria-label="Fletxa Metamorfisme" onclick="v3Select('metamorfisme', true)" onkeydown="handleKey(event, () => v3Select('metamorfisme', true))">
+              <path d="M 442 178 L 442 212" fill="none" stroke="transparent" stroke-width="30" />
+              <path d="M 442 178 L 442 212" fill="none" stroke="#c084fc" stroke-width="3.2" class="v3-flow-line" marker-end="url(#v3-arr-purple)" />
+              <rect x="382" y="182" width="120" height="26" rx="7" fill="#171e2e" stroke="#c084fc" stroke-width="1.6" />
+              <text x="442" y="199" text-anchor="middle" font-size="11.5" class="svg-txt">Metamorfisme</text>
+            </g>
+
+            <!-- Fletxa 5: Fusió (Metamòrfiques -> Magma) -->
+            <g id="v3-svg-fusio" class="svg-hit v3-arrow-group" role="button" tabindex="0" aria-label="Fletxa Fusió" onclick="v3Select('fusio', true)" onkeydown="handleKey(event, () => v3Select('fusio', true))">
+              <path d="M 426 280 Q 396 298 338 298" fill="none" stroke="transparent" stroke-width="28" />
+              <path d="M 426 280 Q 396 298 338 298" fill="none" stroke="#ef4444" stroke-width="3.2" class="v3-flow-line" marker-end="url(#v3-arr-red)" />
+              <rect x="364" y="286" width="72" height="28" rx="7" fill="#171e2e" stroke="#ef4444" stroke-width="1.6" />
+              <text x="400" y="304" text-anchor="middle" font-size="11.5" class="svg-txt">Fusió</text>
+            </g>
+
+            <!-- Node 1: Sediments -->
+            <g id="v3-svg-sediments" class="svg-hit v3-node-group" role="button" tabindex="0" aria-label="Sediments" onclick="v3Select('sediments', true)" onkeydown="handleKey(event, () => v3Select('sediments', true))">
+              <rect x="202" y="18" width="132" height="54" rx="12" fill="#e2c290" stroke="#0f141e" stroke-width="2" />
+              <!-- Textura de granets -->
+              <circle cx="222" cy="36" r="3" fill="#92400e" opacity="0.65" />
+              <circle cx="230" cy="48" r="2.2" fill="#78350f" opacity="0.6" />
+              <circle cx="218" cy="54" r="2.5" fill="#92400e" opacity="0.55" />
+              <text x="278" y="49" text-anchor="middle" font-size="13.5" class="svg-txt-dark">Sediments</text>
+            </g>
+
+            <!-- Node 2: Roques sedimentàries -->
+            <g id="v3-svg-sedimentaries" class="svg-hit v3-node-group" role="button" tabindex="0" aria-label="Roques sedimentàries" onclick="v3Select('sedimentaries', true)" onkeydown="handleKey(event, () => v3Select('sedimentaries', true))">
+              <rect x="364" y="118" width="156" height="56" rx="12" fill="#94a3b8" stroke="#0f141e" stroke-width="2" />
+              <!-- Textura d'estrats -->
+              <line x1="374" y1="133" x2="394" y2="133" stroke="#334155" stroke-width="2.5" />
+              <line x1="374" y1="145" x2="394" y2="145" stroke="#475569" stroke-width="2.5" />
+              <line x1="374" y1="157" x2="394" y2="157" stroke="#334155" stroke-width="2.5" />
+              <text x="454" y="142" text-anchor="middle" font-size="12.5" class="svg-txt-dark">Roques</text>
+              <text x="454" y="159" text-anchor="middle" font-size="12.5" class="svg-txt-dark">sedimentàries</text>
+            </g>
+
+            <!-- Node 3: Roques metamòrfiques -->
+            <g id="v3-svg-metamorfiques" class="svg-hit v3-node-group" role="button" tabindex="0" aria-label="Roques metamòrfiques" onclick="v3Select('metamorfiques', true)" onkeydown="handleKey(event, () => v3Select('metamorfiques', true))">
+              <rect x="364" y="218" width="156" height="56" rx="12" fill="#c084fc" stroke="#0f141e" stroke-width="2" />
+              <!-- Textura de bandes ondulades -->
+              <path d="M 374 234 Q 382 228 390 234 T 400 234" fill="none" stroke="#581c87" stroke-width="2.2" />
+              <path d="M 374 247 Q 382 241 390 247 T 400 247" fill="none" stroke="#581c87" stroke-width="2.2" />
+              <path d="M 374 260 Q 382 254 390 260 T 400 260" fill="none" stroke="#581c87" stroke-width="2.2" />
+              <text x="455" y="242" text-anchor="middle" font-size="12.5" class="svg-txt-dark">Roques</text>
+              <text x="455" y="259" text-anchor="middle" font-size="12.5" class="svg-txt-dark">metamòrfiques</text>
+            </g>
+
+            <!-- Node 4: Magma -->
+            <g id="v3-svg-magma" class="svg-hit v3-node-group" role="button" tabindex="0" aria-label="Magma" onclick="v3Select('magma', true)" onkeydown="handleKey(event, () => v3Select('magma', true))">
+              <rect x="196" y="272" width="136" height="54" rx="12" fill="#dc2626" stroke="#fb923c" stroke-width="2.2" />
+              <circle cx="220" cy="296" r="5" fill="#fef08a" opacity="0.85" />
+              <circle cx="232" cy="306" r="3" fill="#fb923c" opacity="0.9" />
+              <text x="276" y="304" text-anchor="middle" font-size="14" class="svg-txt">MAGMA</text>
+            </g>
+
+            <!-- Node 5: Roques magmàtiques -->
+            <g id="v3-svg-magmatiques" class="svg-hit v3-node-group" role="button" tabindex="0" aria-label="Roques magmàtiques" onclick="v3Select('magmatiques', true)" onkeydown="handleKey(event, () => v3Select('magmatiques', true))">
+              <rect x="20" y="128" width="150" height="58" rx="12" fill="#fb7185" stroke="#0f141e" stroke-width="2" />
+              <!-- Icona de volca/cristalls -->
+              <polygon points="34,168 46,144 58,168" fill="#4c0519" opacity="0.7" />
+              <polygon points="43,144 46,138 49,144" fill="#fef08a" />
+              <text x="108" y="153" text-anchor="middle" font-size="12.5" class="svg-txt-dark">Roques</text>
+              <text x="108" y="170" text-anchor="middle" font-size="12.5" class="svg-txt-dark">magmàtiques</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="touch-chip-row" aria-label="Selector directe de fletxes i materials del cicle">
+          <button type="button" class="touch-chip is-active" id="v3-btn-refredament" onclick="v3Select('refredament', true)"><span class="chip-dot"></span>Refredament</button>
+          <button type="button" class="touch-chip" id="v3-btn-erosio" onclick="v3Select('erosio', true)"><span class="chip-dot"></span>Erosió</button>
+          <button type="button" class="touch-chip" id="v3-btn-consolidacio" onclick="v3Select('consolidacio', true)"><span class="chip-dot"></span>Consolidació</button>
+          <button type="button" class="touch-chip" id="v3-btn-metamorfisme" onclick="v3Select('metamorfisme', true)"><span class="chip-dot"></span>Metamorfisme</button>
+          <button type="button" class="touch-chip" id="v3-btn-fusio" onclick="v3Select('fusio', true)"><span class="chip-dot"></span>Fusió</button>
+          <button type="button" class="touch-chip" id="v3-btn-magmatiques" onclick="v3Select('magmatiques', true)"><span class="chip-dot"></span>Magmàtiques</button>
+          <button type="button" class="touch-chip" id="v3-btn-sediments" onclick="v3Select('sediments', true)"><span class="chip-dot"></span>Sediments</button>
+          <button type="button" class="touch-chip" id="v3-btn-sedimentaries" onclick="v3Select('sedimentaries', true)"><span class="chip-dot"></span>Sedimentàries</button>
+          <button type="button" class="touch-chip" id="v3-btn-metamorfiques" onclick="v3Select('metamorfiques', true)"><span class="chip-dot"></span>Metamòrfiques</button>
+          <button type="button" class="touch-chip" id="v3-btn-magma" onclick="v3Select('magma', true)"><span class="chip-dot"></span>Magma</button>
+        </div>
+
+        <div class="readout-box" id="v3-readout" aria-live="polite">
+          <div class="readout-header">
+            <h3 class="readout-title" id="v3-title">Refredament</h3>
+            <span class="readout-pill"><strong id="v3-kind">Fletxa del cicle</strong></span>
+          </div>
+          <p class="readout-text" id="v3-desc">El magma es refreda en volcans o a dins la Terra i forma roques magmàtiques.</p>
+        </div>
+      </div>
+
+      <details class="study-details">
+        <summary>
+          <span>📚 Dades i fonts per repassar</span>
+          <span class="details-chevron" aria-hidden="true">▼</span>
+        </summary>
+        <div class="study-details-body">
+          <p class="study-data-summary">Fitxa «El cicle de les roques» · Tipus: EXPLORA</p>
+          <ol class="study-data-list">
+            <li><strong>Refredament (fletxa):</strong> «El magma es refreda en volcans o a dins la Terra i forma roques magmàtiques.»</li>
+            <li><strong>Erosió (fletxa):</strong> «Pluja, gel, vent i ones desgasten les roques i formen sediments que van al mar.»</li>
+            <li><strong>Consolidació (fletxa):</strong> «Els sediments es compacten, perden aigua i, en milions d'anys, formen roques sedimentàries.»</li>
+            <li><strong>Metamorfisme (fletxa):</strong> «Roques enterrades suporten gran pressió i calor i es transformen sense fondre's en metamòrfiques.»</li>
+            <li><strong>Fusió (fletxa):</strong> «Les roques s'escalfen tant a profunditat que es fonen i es converteixen en magma.»</li>
+            <li><strong>Roques magmàtiques:</strong> «Es formen quan el magma es refreda, com la pedra fosca volcànica de la Garrotxa.»</li>
+            <li><strong>Sediments:</strong> «Trossets de roca transportats per rius, gel o vent i dipositats en conques.»</li>
+            <li><strong>Roques sedimentàries:</strong> «Neixen quan els sediments es compacten i perden aigua, com els còdols de Montserrat.»</li>
+            <li><strong>Roques metamòrfiques:</strong> «Roques transformades sense fondre's per pressió i calor molt endins de la Terra.»</li>
+            <li><strong>Magma:</strong> «Roca fosa de l'interior de la Terra; quan surt pels volcans s'anomena lava.»</li>
+          </ol>
+          <p class="study-source-ref"><strong>Origen:</strong> La Geosfera.pptx.pdf (apartats 3 i 4, diapositives 11–13); biogeo_geosfera_dibuixos.pdf (dibuix 3); biogeo_geosfera_esquema.pdf (Full 2, apartats 3 i 4).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- =======================================================================
+         FITXA 4: LA DURESA I L'ESCALA DE MOHS (EXPLORA + MODE DUEL)
+         ======================================================================= -->
+    <section class="fitxa-card" id="fitxa-4" aria-labelledby="fitxa-4-title">
+      <div class="fitxa-header">
+        <div class="fitxa-title-group">
+          <span class="fitxa-num-badge" aria-hidden="true">4</span>
+          <h2 class="fitxa-title" id="fitxa-4-title">Fitxa «La duresa i l'escala de Mohs»</h2>
+        </div>
+        <div class="fitxa-badges">
+          <span class="type-badge">EXPLORA</span>
+          <span class="type-badge type-badge--duel">⚔️ DUEL</span>
+          <span class="fitxa-check-badge" id="badge-fitxa-4">0 / 10 tocats</span>
+        </div>
+      </div>
+
+      <div class="action-cue">
+        <span class="cue-pulse" aria-hidden="true"></span>
+        <span>Toca cada mineral de l'1 al 10 o prova el duel per veure qui ratlla qui</span>
+      </div>
+
+      <div class="visual-stage">
+        <div class="stage-toolbar">
+          <span class="step-counter">El mineral més dur ratlla el més tou</span>
+          <button type="button" class="btn-action btn-action--purple" id="v4-duel-toggle" onclick="v4ToggleDuel()">⚔️ Mode Duel de duresa</button>
+        </div>
+
+        <!-- Panell interactiu Mode Duel -->
+        <div class="duel-panel" id="v4-duel-panel" hidden>
+          <div class="duel-grid">
+            <div class="duel-select-group">
+              <label for="duel-a" class="duel-label">Mineral A</label>
+              <select id="duel-a" class="duel-select" onchange="v4UpdateDuelPreview()">
+                <option value="1">1 · Talc</option>
+                <option value="2">2 · Guix</option>
+                <option value="3" selected>3 · Calcita</option>
+                <option value="4">4 · Fluorita</option>
+                <option value="5">5 · Apatita</option>
+                <option value="6">6 · Ortosa</option>
+                <option value="7">7 · Quars</option>
+                <option value="8">8 · Topazi</option>
+                <option value="9">9 · Corindó</option>
+                <option value="10">10 · Diamant</option>
+              </select>
+            </div>
+            <div class="duel-vs">VS</div>
+            <div class="duel-select-group">
+              <label for="duel-b" class="duel-label">Mineral B</label>
+              <select id="duel-b" class="duel-select" onchange="v4UpdateDuelPreview()">
+                <option value="1">1 · Talc</option>
+                <option value="2">2 · Guix</option>
+                <option value="3">3 · Calcita</option>
+                <option value="4">4 · Fluorita</option>
+                <option value="5">5 · Apatita</option>
+                <option value="6">6 · Ortosa</option>
+                <option value="7" selected>7 · Quars</option>
+                <option value="8">8 · Topazi</option>
+                <option value="9">9 · Corindó</option>
+                <option value="10">10 · Diamant</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="duel-arena" id="duel-arena">
+            <div class="duel-fighters">
+              <span class="duel-fighter duel-fighter--a" id="duel-fighter-a">3 · Calcita</span>
+              <span class="duel-spark" aria-hidden="true">💥</span>
+              <span class="duel-fighter duel-fighter--b" id="duel-fighter-b">7 · Quars</span>
+            </div>
+            <button type="button" class="btn-action btn-action--primary" onclick="v4RunDuel()">⚡ Fes la prova!</button>
+            <p class="duel-result-text" id="duel-result" aria-live="polite">Tria dos minerals i prem «Fes la prova!» per fer-los xocar.</p>
+          </div>
+        </div>
+
+        <!-- SVG de 10 columnes cristal·lines facetades -->
+        <div class="svg-frame">
+          <svg viewBox="0 0 530 265" role="img" aria-label="Escala de Mohs de l'1 al 10 amb indicadors visuals de ratllat">
+            <text x="14" y="20" font-size="11" class="svg-mono">Més tou (1)</text>
+            <text x="516" y="20" text-anchor="end" font-size="11" class="svg-accent">Més dur (10) 💎</text>
+            <g id="v4-svg-columns"></g>
+          </svg>
+        </div>
+
+        <div class="mohs-legend">
+          <span class="legend-item"><span class="legend-dot" style="background: var(--emerald);"></span> ✓ Els ratlla (més tous)</span>
+          <span class="legend-item"><span class="legend-dot" style="background: var(--gold);"></span> ★ Seleccionat</span>
+          <span class="legend-item"><span class="legend-dot" style="background: var(--lava);"></span> ✕ El ratllen (més durs)</span>
+        </div>
+
+        <div class="touch-chip-row" aria-label="Selector directe de minerals de Mohs">
+          <button type="button" class="touch-chip is-active" id="v4-btn-1" onclick="v4Select(1, true)"><span class="chip-dot"></span>1 Talc</button>
+          <button type="button" class="touch-chip" id="v4-btn-2" onclick="v4Select(2, true)"><span class="chip-dot"></span>2 Guix</button>
+          <button type="button" class="touch-chip" id="v4-btn-3" onclick="v4Select(3, true)"><span class="chip-dot"></span>3 Calcita</button>
+          <button type="button" class="touch-chip" id="v4-btn-4" onclick="v4Select(4, true)"><span class="chip-dot"></span>4 Fluorita</button>
+          <button type="button" class="touch-chip" id="v4-btn-5" onclick="v4Select(5, true)"><span class="chip-dot"></span>5 Apatita</button>
+          <button type="button" class="touch-chip" id="v4-btn-6" onclick="v4Select(6, true)"><span class="chip-dot"></span>6 Ortosa</button>
+          <button type="button" class="touch-chip" id="v4-btn-7" onclick="v4Select(7, true)"><span class="chip-dot"></span>7 Quars</button>
+          <button type="button" class="touch-chip" id="v4-btn-8" onclick="v4Select(8, true)"><span class="chip-dot"></span>8 Topazi</button>
+          <button type="button" class="touch-chip" id="v4-btn-9" onclick="v4Select(9, true)"><span class="chip-dot"></span>9 Corindó</button>
+          <button type="button" class="touch-chip" id="v4-btn-10" onclick="v4Select(10, true)"><span class="chip-dot"></span>10 Diamant</button>
+        </div>
+
+        <div class="readout-box" id="v4-readout" aria-live="polite">
+          <div class="readout-header">
+            <h3 class="readout-title" id="v4-title">1 · Talc</h3>
+            <span class="readout-pill"><strong>Duresa:</strong> <span id="v4-num">1 / 10</span></span>
+          </div>
+          <p class="readout-text" id="v4-desc">El ratllen del 2 al 10. No ratlla cap mineral. Altres objectes: no surt a la font.</p>
+        </div>
+      </div>
+
+      <details class="study-details">
+        <summary>
+          <span>📚 Dades i fonts per repassar</span>
+          <span class="details-chevron" aria-hidden="true">▼</span>
+        </summary>
+        <div class="study-details-body">
+          <p class="study-data-summary">Fitxa «La duresa i l'escala de Mohs» · Tipus: EXPLORA</p>
+          <ol class="study-data-list">
+            <li><strong>1 · Talc:</strong> «El ratllen del 2 al 10. No ratlla cap mineral. Altres objectes: no surt a la font.»</li>
+            <li><strong>2 · Guix:</strong> «Ratlla el talc (1). El ratllen del 3 al 10. Altres objectes: no surt a la font.»</li>
+            <li><strong>3 · Calcita:</strong> «Ratlla l'1 i el 2. El ratllen del 4 al 10. Altres objectes: no surt a la font.»</li>
+            <li><strong>4 · Fluorita:</strong> «Ratlla de l'1 al 3. El ratllen del 5 al 10. Altres objectes: no surt a la font.»</li>
+            <li><strong>5 · Apatita:</strong> «Ratlla de l'1 al 4. El ratllen del 6 al 10. Altres objectes: no surt a la font.»</li>
+            <li><strong>6 · Ortosa:</strong> «Ratlla de l'1 al 5. El ratllen del 7 al 10. Altres objectes: no surt a la font.»</li>
+            <li><strong>7 · Quars:</strong> «Ratlla de l'1 al 6. El ratllen del 8 al 10. Altres objectes: no surt a la font.»</li>
+            <li><strong>8 · Topazi:</strong> «Ratlla de l'1 al 7. El ratllen el 9 i 10. Altres objectes: no surt a la font.»</li>
+            <li><strong>9 · Corindó:</strong> «Ratlla de l'1 al 8. Només el ratlla el diamant (10). Altres objectes: no surt a la font.»</li>
+            <li><strong>10 · Diamant:</strong> «Ho ratlla tot (1 al 9). Cap mineral el ratlla. Altres objectes: no surt a la font.»</li>
+          </ol>
+          <p class="study-source-ref"><strong>Origen:</strong> La Geosfera.pptx.pdf (apartat 5.1, diapositiva 18); biogeo_geosfera_dibuixos.pdf (dibuix 6); biogeo_geosfera_esquema.pdf (Full 2, apartat 5.1).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- =======================================================================
+         FITXA 5: ELS LÍMITS ENTRE PLAQUES (EXPLORA AMB MOVIMENT EN DIRECTE)
+         ======================================================================= -->
+    <section class="fitxa-card" id="fitxa-5" aria-labelledby="fitxa-5-title">
+      <div class="fitxa-header">
+        <div class="fitxa-title-group">
+          <span class="fitxa-num-badge" aria-hidden="true">5</span>
+          <h2 class="fitxa-title" id="fitxa-5-title">Fitxa «Els límits entre plaques»</h2>
+        </div>
+        <div class="fitxa-badges">
+          <span class="type-badge">EXPLORA</span>
+          <span class="fitxa-check-badge" id="badge-fitxa-5">0 / 3 tocats</span>
+        </div>
+      </div>
+
+      <div class="action-cue">
+        <span class="cue-pulse" aria-hidden="true"></span>
+        <span>Toca cada tipus de límit per veure les plaques en moviment</span>
+      </div>
+
+      <div class="visual-stage">
+        <!-- 3 targetes selectores -->
+        <div class="plate-selector-grid" role="tablist" aria-label="Tipus de límits entre plaques">
+          <button type="button" class="plate-card-btn is-active" id="v5-btn-constructiu" onclick="v5Select('constructiu', true)">
+            <span class="plate-card-icon" aria-hidden="true">⬅️🌋➡️</span>
+            <span class="plate-card-name">Constructiu</span>
+            <span class="plate-card-sub">Se separen</span>
+          </button>
+          <button type="button" class="plate-card-btn" id="v5-btn-destructiu" onclick="v5Select('destructiu', true)">
+            <span class="plate-card-icon" aria-hidden="true">➡️⛰️⬅️</span>
+            <span class="plate-card-name">Destructiu</span>
+            <span class="plate-card-sub">Xoquen i s'enfonsa</span>
+          </button>
+          <button type="button" class="plate-card-btn" id="v5-btn-passiu" onclick="v5Select('passiu', true)">
+            <span class="plate-card-icon" aria-hidden="true">⬆️⚡⬇️</span>
+            <span class="plate-card-name">Passiu</span>
+            <span class="plate-card-sub">Llisquen de costat</span>
+          </button>
+        </div>
+
+        <!-- Gran escenari tectònic en moviment continu -->
+        <div class="svg-frame">
+          <svg viewBox="0 0 520 240" role="img" aria-label="Animació tectònica del límit de plaques seleccionat">
+            <defs>
+              <linearGradient id="v5-ocean" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(56, 189, 248, 0.42)" />
+                <stop offset="100%" stop-color="rgba(14, 116, 144, 0.52)" />
+              </linearGradient>
+              <linearGradient id="v5-magma" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#991b1b" />
+                <stop offset="55%" stop-color="#ef4444" />
+                <stop offset="100%" stop-color="#fbbf24" />
+              </linearGradient>
+            </defs>
+
+            <!-- ESCENA A: CONSTRUCTIU (Dorsal oceànica) -->
+            <g id="v5-scene-constructiu" class="v5-scene is-active">
+              <!-- Mar -->
+              <rect x="16" y="42" width="488" height="72" rx="6" fill="url(#v5-ocean)" />
+              <!-- Mantell càlid sota les plaques -->
+              <rect x="16" y="136" width="488" height="86" rx="6" fill="#7f1d1d" />
+              <!-- Columna de magma pujant -->
+              <polygon points="260,82 210,222 310,222" fill="url(#v5-magma)" />
+              <!-- Bombolles de lava pujant -->
+              <circle cx="260" cy="142" r="7" fill="#fef08a" class="v5-magma-bubble-1" />
+              <circle cx="248" cy="158" r="5" fill="#fb923c" class="v5-magma-bubble-2" />
+              <circle cx="272" cy="154" r="5.5" fill="#fef08a" class="v5-magma-bubble-3" />
+
+              <!-- Placa esquerra separant-se -->
+              <g class="v5-plate-left">
+                <polygon points="24,104 236,104 248,94 248,142 24,142" fill="#64748b" stroke="#0f141e" stroke-width="2" />
+                <line x1="172" y1="74" x2="96" y2="74" stroke="#fb923c" stroke-width="4" stroke-linecap="round" />
+                <polygon points="104,66 86,74 104,82" fill="#fb923c" />
+                <text x="132" y="128" text-anchor="middle" font-size="12" class="svg-txt">Placa oceànica</text>
+              </g>
+
+              <!-- Placa dreta separant-se -->
+              <g class="v5-plate-right">
+                <polygon points="272,94 284,104 496,104 496,142 272,142" fill="#64748b" stroke="#0f141e" stroke-width="2" />
+                <line x1="348" y1="74" x2="424" y2="74" stroke="#fb923c" stroke-width="4" stroke-linecap="round" />
+                <polygon points="416,66 434,74 416,82" fill="#fb923c" />
+                <text x="388" y="128" text-anchor="middle" font-size="12" class="svg-txt">Placa oceànica</text>
+              </g>
+
+              <rect x="190" y="18" width="140" height="28" rx="7" fill="#171e2e" stroke="#fb923c" stroke-width="1.5" />
+              <text x="260" y="36" text-anchor="middle" font-size="11.5" class="svg-accent">Dorsal oceànica</text>
+              <text x="260" y="210" text-anchor="middle" font-size="11.5" class="svg-txt">Puja magma i crea nova escorça</text>
+            </g>
+
+            <!-- ESCENA B: DESTRUCTIU (Subducció) -->
+            <g id="v5-scene-destructiu" class="v5-scene">
+              <!-- Mar esquerre i fossa -->
+              <polygon points="16,74 268,74 268,120 226,120 198,96 16,96" fill="url(#v5-ocean)" />
+              <!-- Mantell -->
+              <rect x="16" y="124" width="488" height="98" rx="6" fill="#7f1d1d" />
+              <!-- Cambra magmàtica sota serralada -->
+              <ellipse cx="352" cy="184" rx="44" ry="20" fill="url(#v5-magma)" class="v1-core-pulse" />
+              <!-- Placa oceànica subduint -->
+              <polygon points="16,92 224,92 332,216 292,216 200,122 16,122" fill="#475569" stroke="#0f141e" stroke-width="2" />
+              <!-- Flux animat de subducció -->
+              <path d="M 38 107 L 212 107 L 306 206" fill="none" stroke="#38bdf8" stroke-width="3.5" class="v5-subduct-flow" />
+
+              <!-- Placa continental amb serralada que puja -->
+              <g class="v5-mountain-pulse">
+                <polygon points="246,96 286,44 316,76 346,36 382,82 412,62 438,90 504,90 504,132 246,132" fill="#94a3b8" stroke="#0f141e" stroke-width="2" />
+                <!-- Neu als cims -->
+                <polygon points="346,36 334,54 358,54" fill="#f8fafc" opacity="0.9" />
+                <polygon points="286,44 276,58 296,58" fill="#f8fafc" opacity="0.85" />
+              </g>
+
+              <!-- Fletxes de xoc -->
+              <line x1="62" y1="62" x2="148" y2="62" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+              <polygon points="140,54 158,62 140,70" fill="#ef4444" />
+              <line x1="474" y1="62" x2="416" y2="62" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+              <polygon points="424,54 406,62 424,70" fill="#ef4444" />
+
+              <rect x="174" y="16" width="102" height="26" rx="7" fill="#171e2e" stroke="#38bdf8" stroke-width="1.4" />
+              <text x="225" y="33" text-anchor="middle" font-size="11" class="svg-txt">Fossa marina</text>
+
+              <rect x="360" y="14" width="114" height="26" rx="7" fill="#171e2e" stroke="#fb923c" stroke-width="1.4" />
+              <text x="417" y="31" text-anchor="middle" font-size="11" class="svg-accent">Serralades</text>
+
+              <text x="150" y="196" text-anchor="middle" font-size="11.5" class="svg-txt">Subducció ↓</text>
+            </g>
+
+            <!-- ESCENA C: PASSIU (Falla de transformació vista des de dalt) -->
+            <g id="v5-scene-passiu" class="v5-scene">
+              <rect x="16" y="16" width="488" height="208" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+              <text x="260" y="36" text-anchor="middle" font-size="11" class="svg-mono">Vista des de dalt · Falla de transformació</text>
+
+              <!-- Placa esquerra lliscant amunt -->
+              <g class="v5-pass-left">
+                <rect x="78" y="56" width="174" height="142" rx="8" fill="#64748b" stroke="#0f141e" stroke-width="2" />
+                <path d="M 96 116 L 236 116" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" opacity="0.6" />
+                <line x1="164" y1="166" x2="164" y2="92" stroke="#fb923c" stroke-width="4.5" stroke-linecap="round" />
+                <polygon points="155,100 164,82 173,100" fill="#fb923c" />
+                <text x="164" y="184" text-anchor="middle" font-size="12" class="svg-txt">Placa A</text>
+              </g>
+
+              <!-- Placa dreta lliscant avall -->
+              <g class="v5-pass-right">
+                <rect x="268" y="56" width="174" height="142" rx="8" fill="#475569" stroke="#0f141e" stroke-width="2" />
+                <path d="M 284 142 L 424 142" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" opacity="0.6" />
+                <line x1="356" y1="88" x2="356" y2="162" stroke="#fb923c" stroke-width="4.5" stroke-linecap="round" />
+                <polygon points="347,154 356,172 365,154" fill="#fb923c" />
+                <text x="356" y="76" text-anchor="middle" font-size="12" class="svg-txt">Placa B</text>
+              </g>
+
+              <!-- Línia de falla i ones sísmiques -->
+              <line x1="260" y1="48" x2="260" y2="206" stroke="#ef4444" stroke-width="4" stroke-dasharray="8 4" />
+              <circle cx="260" cy="126" r="24" fill="none" stroke="#fbbf24" stroke-width="2.5" class="v5-quake-ring" />
+              <circle cx="260" cy="126" r="24" fill="none" stroke="#ef4444" stroke-width="2.2" class="v5-quake-ring v5-quake-ring--2" />
+              <circle cx="260" cy="126" r="6" fill="#fef08a" stroke="#ef4444" stroke-width="2" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="readout-box" id="v5-readout" aria-live="polite">
+          <div class="readout-header">
+            <h3 class="readout-title" id="v5-title">Límit constructiu</h3>
+            <span class="readout-pill"><strong>Moviment:</strong> <span id="v5-move">Se separen</span></span>
+          </div>
+          <p class="readout-text" id="v5-desc">Les plaques se separen, puja magma i es forma nova escorça marina en dorsals oceàniques.</p>
+        </div>
+      </div>
+
+      <details class="study-details">
+        <summary>
+          <span>📚 Dades i fonts per repassar</span>
+          <span class="details-chevron" aria-hidden="true">▼</span>
+        </summary>
+        <div class="study-details-body">
+          <p class="study-data-summary">Fitxa «Els límits entre plaques» · Tipus: EXPLORA</p>
+          <ol class="study-data-list">
+            <li><strong>Límit constructiu</strong> (Moviment: Se separen): «Les plaques se separen, puja magma i es forma nova escorça marina en dorsals oceàniques.»</li>
+            <li><strong>Límit destructiu</strong> (Moviment: Xoquen i una s'enfonsa): «Una placa baixa per subducció sota l'altra; es destrueix escorça i es formen fosses i serralades.»</li>
+            <li><strong>Límit passiu</strong> (Moviment: Llisquen de costat): «Les plaques llisquen lateralment una al costat de l'altra en falles de transformació.»</li>
+          </ol>
+          <p class="study-source-ref"><strong>Origen:</strong> La Geosfera.pptx.pdf (apartat 7.1, diapositiva 21); biogeo_geosfera_dibuixos.pdf (dibuix 4); biogeo_geosfera_esquema.pdf (Full 3, apartat 7.1).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- =======================================================================
+         FITXA 6: ELS AGENTS EXTERNS I LES QUATRE FASES (PAS A PAS)
+         ======================================================================= -->
+    <section class="fitxa-card" id="fitxa-6" aria-labelledby="fitxa-6-title">
+      <div class="fitxa-header">
+        <div class="fitxa-title-group">
+          <span class="fitxa-num-badge" aria-hidden="true">6</span>
+          <h2 class="fitxa-title" id="fitxa-6-title">Fitxa «Els agents externs i les quatre fases»</h2>
+        </div>
+        <div class="fitxa-badges">
+          <span class="type-badge type-badge--step">PAS A PAS</span>
+          <span class="fitxa-check-badge" id="badge-fitxa-6">Fase 1 / 4</span>
+        </div>
+      </div>
+
+      <div class="action-cue">
+        <span class="cue-pulse" aria-hidden="true"></span>
+        <span>Prem Següent o toca cada fase per seguir el viatge d'una roca fins al mar</span>
+      </div>
+
+      <div class="visual-stage">
+        <!-- Botons de les 4 fases -->
+        <div class="step-timeline step-timeline--4" role="tablist" aria-label="Les quatre fases de la geodinàmica externa">
+          <button type="button" class="timeline-btn is-active" id="v6-tab-0" onclick="v6GoTo(0, true)">1. Meteorització</button>
+          <button type="button" class="timeline-btn" id="v6-tab-1" onclick="v6GoTo(1, true)">2. Erosió</button>
+          <button type="button" class="timeline-btn" id="v6-tab-2" onclick="v6GoTo(2, true)">3. Transport</button>
+          <button type="button" class="timeline-btn" id="v6-tab-3" onclick="v6GoTo(3, true)">4. Sedimentació</button>
+        </div>
+
+        <!-- Paisatge SVG animat -->
+        <div class="svg-frame">
+          <svg viewBox="0 0 530 275" role="img" aria-label="Paisatge animat amb les quatre fases: meteorització, erosió, transport i sedimentació">
+            <defs>
+              <linearGradient id="v6-sky" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#0f172a" />
+                <stop offset="100%" stop-color="#172554" stop-opacity="0.45" />
+              </linearGradient>
+              <linearGradient id="v6-sea" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.58" />
+                <stop offset="100%" stop-color="#0369a1" stop-opacity="0.72" />
+              </linearGradient>
+            </defs>
+
+            <rect x="0" y="0" width="530" height="275" rx="10" fill="url(#v6-sky)" />
+
+            <!-- Agents externs capçalera -->
+            <text x="16" y="24" font-size="10.5" class="svg-mono">Agents: Aigua · Vent · Gravetat · Éssers vius</text>
+
+            <!-- Sol rotatiu -->
+            <g>
+              <g class="v6-sun-rays">
+                <line x1="468" y1="16" x2="468" y2="24" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+                <line x1="468" y1="68" x2="468" y2="76" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+                <line x1="438" y1="46" x2="446" y2="46" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+                <line x1="490" y1="46" x2="498" y2="46" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+                <line x1="447" y1="25" x2="453" y2="31" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+                <line x1="483" y1="61" x2="489" y2="67" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+                <line x1="489" y1="25" x2="483" y2="31" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+                <line x1="453" y1="61" x2="447" y2="67" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+              </g>
+              <circle cx="468" cy="46" r="16" fill="#fbbf24" />
+              <text x="468" y="88" text-anchor="middle" font-size="10" class="svg-accent">Energia solar</text>
+            </g>
+
+            <!-- Núvol i pluja animada -->
+            <path d="M 62 52 Q 62 38 78 38 Q 88 28 106 34 Q 124 34 126 48 Q 134 52 128 60 L 64 60 Q 56 58 62 52 Z" fill="#475569" opacity="0.85" />
+            <g class="v6-rain-1">
+              <line x1="76" y1="64" x2="70" y2="78" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+              <line x1="108" y1="62" x2="102" y2="76" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+            </g>
+            <g class="v6-rain-2">
+              <line x1="92" y1="64" x2="86" y2="78" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+              <line x1="120" y1="64" x2="114" y2="78" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+            </g>
+
+            <!-- Ràfegues de vent -->
+            <path d="M 152 72 Q 186 64 218 74" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" opacity="0.55" class="v6-wind" />
+            <path d="M 168 88 Q 204 82 238 92" fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-linecap="round" opacity="0.45" class="v6-wind" />
+
+            <!-- Muntanya, pendent i fons marí -->
+            <polygon points="14,250 14,112 104,92 178,128 268,166 356,204 516,204 516,250" fill="#293347" stroke="#475569" stroke-width="1.8" />
+            <!-- Riu blau corbat -->
+            <path d="M 228 148 Q 282 172 356 204" fill="none" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" opacity="0.7" />
+            <!-- Mar / Conca sedimentària -->
+            <rect x="348" y="192" width="168" height="44" rx="4" fill="url(#v6-sea)" />
+
+            <!-- FASE 1: METEORITZACIÓ -->
+            <g id="v6-svg-0" class="svg-hit v6-phase is-active" role="button" tabindex="0" aria-label="Fase 1: Meteorització" onclick="v6GoTo(0, true)" onkeydown="handleKey(event, () => v6GoTo(0, true))">
+              <circle cx="96" cy="96" r="28" fill="rgba(251, 146, 60, 0.16)" stroke="#fb923c" stroke-width="2.2" />
+              <polygon points="78,100 94,82 114,96 106,110 82,110" fill="#94a3b8" stroke="#0f141e" stroke-width="1.5" />
+              <path d="M 96 84 L 92 96 L 98 108" fill="none" stroke="#ef4444" stroke-width="2.8" class="v6-crack-glow" />
+              <rect x="26" y="130" width="124" height="26" rx="7" fill="#171e2e" stroke="#fb923c" stroke-width="1.5" />
+              <text x="88" y="147" text-anchor="middle" font-size="11" class="svg-txt">1. Meteorització</text>
+            </g>
+
+            <!-- FASE 2: EROSIÓ -->
+            <g id="v6-svg-1" class="svg-hit v6-phase is-dimmed" role="button" tabindex="0" aria-label="Fase 2: Erosió" onclick="v6GoTo(1, true)" onkeydown="handleKey(event, () => v6GoTo(1, true))">
+              <circle cx="192" cy="134" r="27" fill="rgba(251, 146, 60, 0.14)" stroke="#fb923c" stroke-width="2" />
+              <polygon points="178,132 188,124 194,136" fill="#e2c290" class="v6-erode-rock-1" />
+              <polygon points="190,140 200,134 202,146" fill="#cbd5e1" class="v6-erode-rock-2" />
+              <rect x="142" y="168" width="96" height="26" rx="7" fill="#171e2e" stroke="#94a3b8" stroke-width="1.5" />
+              <text x="190" y="185" text-anchor="middle" font-size="11" class="svg-txt">2. Erosió</text>
+            </g>
+
+            <!-- FASE 3: TRANSPORT -->
+            <g id="v6-svg-2" class="svg-hit v6-phase is-dimmed" role="button" tabindex="0" aria-label="Fase 3: Transport" onclick="v6GoTo(2, true)" onkeydown="handleKey(event, () => v6GoTo(2, true))">
+              <path d="M 236 150 L 336 192" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6 5" class="v3-flow-line" />
+              <circle cx="242" cy="152" r="5" fill="#e2c290" stroke="#0f141e" stroke-width="1" class="v6-transport-pebble-1" />
+              <circle cx="242" cy="152" r="4" fill="#cbd5e1" stroke="#0f141e" stroke-width="1" class="v6-transport-pebble-2" />
+              <circle cx="242" cy="152" r="5.5" fill="#fbbf24" stroke="#0f141e" stroke-width="1" class="v6-transport-pebble-3" />
+              <rect x="252" y="114" width="98" height="26" rx="7" fill="#171e2e" stroke="#38bdf8" stroke-width="1.5" />
+              <text x="301" y="131" text-anchor="middle" font-size="11" class="svg-txt">3. Transport</text>
+            </g>
+
+            <!-- FASE 4: SEDIMENTACIÓ -->
+            <g id="v6-svg-3" class="svg-hit v6-phase is-dimmed" role="button" tabindex="0" aria-label="Fase 4: Sedimentació" onclick="v6GoTo(3, true)" onkeydown="handleKey(event, () => v6GoTo(3, true))">
+              <!-- Còdols caient dins l'aigua -->
+              <circle cx="386" cy="212" r="4" fill="#e2c290" class="v6-sink-sed-1" />
+              <circle cx="428" cy="210" r="4.5" fill="#fbbf24" class="v6-sink-sed-2" />
+              <circle cx="468" cy="214" r="3.8" fill="#cbd5e1" class="v6-sink-sed-3" />
+              <!-- Estrats de sediments al fons marí -->
+              <g class="v6-strata">
+                <path d="M 354 226 Q 432 214 510 226 L 510 242 L 354 242 Z" fill="#e2c290" stroke="#0f141e" stroke-width="1.2" />
+                <path d="M 358 234 Q 432 225 506 234" fill="none" stroke="#92400e" stroke-width="1.6" opacity="0.65" />
+              </g>
+              <rect x="372" y="152" width="124" height="26" rx="7" fill="#171e2e" stroke="#e2c290" stroke-width="1.5" />
+              <text x="434" y="169" text-anchor="middle" font-size="11" class="svg-txt">4. Sedimentació</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="readout-box" id="v6-readout" aria-live="polite">
+          <div class="readout-header">
+            <h3 class="readout-title" id="v6-title">1. Meteorització</h3>
+            <span class="step-counter" id="v6-counter">Pas 1 de 4</span>
+          </div>
+          <p class="readout-text" id="v6-desc">La roca es trenca o s'altera al mateix lloc per aigua, gel, temperatura o éssers vius.</p>
+        </div>
+
+        <div class="step-controls">
+          <button type="button" class="btn-action btn-action--cyan" id="v6-play" onclick="v6TogglePlay()">▶ Animar les 4 fases</button>
+          <div class="step-btn-group">
+            <button type="button" class="btn-action" id="v6-prev" onclick="v6Step(-1)" disabled>← Enrere</button>
+            <button type="button" class="btn-action btn-action--primary" id="v6-next" onclick="v6Step(1)">Següent →</button>
+          </div>
+        </div>
+      </div>
+
+      <details class="study-details">
+        <summary>
+          <span>📚 Dades i fonts per repassar</span>
+          <span class="details-chevron" aria-hidden="true">▼</span>
+        </summary>
+        <div class="study-details-body">
+          <p class="study-data-summary">Fitxa «Els agents externs i les quatre fases» · Tipus: PAS A PAS</p>
+          <ol class="study-data-list">
+            <li><strong>1. Meteorització:</strong> «La roca es trenca o s'altera al mateix lloc per aigua, gel, temperatura o éssers vius.»</li>
+            <li><strong>2. Erosió:</strong> «Agents externs com aigua, vent, gravetat i éssers vius desgasten la roca i comencen a arrencar-la.»</li>
+            <li><strong>3. Transport:</strong> «L'aigua, el gel, el vent i la gravetat traslladen els trossos erosionats cap avall.»</li>
+            <li><strong>4. Sedimentació:</strong> «Els materials es dipositen en llacs o mars i poden compactar-se en roques sedimentàries.»</li>
+          </ol>
+          <p class="study-source-ref"><strong>Origen:</strong> La Geosfera.pptx.pdf (apartats 8 i 8.1–8.5, diapositives 23–28); biogeo_geosfera_dibuixos.pdf (dibuix 5); biogeo_geosfera_esquema.pdf (Full 4, apartats 8–8.5).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- =======================================================================
+         SECCIÓ FINAL: ALTRES VISUALS POSSIBLES (GRAELLA DE TARGETES)
+         ======================================================================= -->
+    <section class="future-section" aria-labelledby="future-title">
+      <div class="fitxa-header" style="padding-bottom: 0.65rem;">
+        <div class="fitxa-title-group">
+          <span class="fitxa-num-badge" style="background: linear-gradient(135deg, var(--cyan), var(--purple));" aria-hidden="true">+</span>
+          <h2 class="fitxa-title" id="future-title">Altres visuals possibles</h2>
+        </div>
+        <span class="mini-tag">Properes idees per a Bona Nota</span>
+      </div>
+
+      <div class="future-grid">
+        <article class="future-item">
+          <div class="future-item-head">📡 Mètodes d'estudi de la geosfera</div>
+          <p>Esquema comparant les perforacions directes (mines, pous i sondeig de Kola) amb la propagació de les ones sísmiques fins al centre.</p>
+          <span class="future-ref">La Geosfera.pptx.pdf (ap. 2) · Esquema Full 1</span>
+        </article>
+        <article class="future-item">
+          <div class="future-item-head">💎 Propietats dels minerals</div>
+          <p>Fitxa visual per explorar forma cristal·lina, color, ratlla, exfoliació, brillantor i duresa amb exemples reals de la font.</p>
+          <span class="future-ref">La Geosfera.pptx.pdf (ap. 5.1) · Esquema Full 2</span>
+        </article>
+        <article class="future-item">
+          <div class="future-item-head">🪨 Els tres tipus de roques</div>
+          <p>Esquema comparatiu de roques magmàtiques (Garrotxa), metamòrfiques i sedimentàries (Montserrat).</p>
+          <span class="future-ref">La Geosfera.pptx.pdf (ap. 3) · Esquema Full 2</span>
+        </article>
+        <article class="future-item">
+          <div class="future-item-head">🧩 La litosfera trencada en plaques</div>
+          <p>Dibuix de l'escorça i la part superior del mantell surant en trossos sobre l'astenosfera amb dorsals, fosses i serralades.</p>
+          <span class="future-ref">La Geosfera.pptx.pdf (ap. 6) · Esquema Full 3</span>
+        </article>
+        <article class="future-item">
+          <div class="future-item-head">🌋 Geodinàmica interna</div>
+          <p>Visual interactiu de volcans, terratrèmols en falles i orogènesi en plecs i serralades com els Pirineus o l'Himàlaia.</p>
+          <span class="future-ref">La Geosfera.pptx.pdf (ap. 7.2) · Esquema Full 3</span>
+        </article>
+        <article class="future-item">
+          <div class="future-item-head">❄️ Tipus de meteorització (in situ)</div>
+          <p>Tres quadres per comparar la meteorització física o mecànica (gel), la biològica (arrels) i la química (oxidació i dissolució).</p>
+          <span class="future-ref">La Geosfera.pptx.pdf (ap. 8.2) · Esquema Full 4</span>
+        </article>
+        <article class="future-item">
+          <div class="future-item-head">🌊 Acció i transport de l'aigua</div>
+          <p>Esquema dels cinc tipus d'aigua (fluvial, marina, glacial, subterrània, pluvial) i del transport (dissolts, suspensió, saltació, rodament, arrossegament) fins a deltes i dunes.</p>
+          <span class="future-ref">La Geosfera.pptx.pdf (ap. 8, 8.4–8.5) · Esquema Full 4</span>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // =========================================================================
+    // UTILITATS GENERALS, ACCESSIBILITAT I SEGUIMENT DE PROGRÉS GLOBAL
+    // =========================================================================
+    const _embedParams = new URLSearchParams(location.search);
+    const _worldParam = (_embedParams.get('world') || 'geosfera').trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '') || 'geosfera';
+    const _uidRaw = _embedParams.get('uid');
+    const _uidParam = (_uidRaw ? String(_uidRaw).trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) : '') || 'anon';
+    const PROVA_STORAGE_KEY = `bonanota_visual_${_uidParam}_${_worldParam}`;
+    const LEGACY_STORAGE_KEY = 'bonanota_prova_visual_geosfera';
+    const exploredFitxes = new Set();
+    const _fitxaParam = Number(_embedParams.get('fitxa'));
+    const SINGLE_FITXA = (Number.isInteger(_fitxaParam) && _fitxaParam >= 1 && _fitxaParam <= 6) ? _fitxaParam : null;
+
+    if (_embedParams.get('embed') === '1') {
+      document.body.classList.add('is-embed');
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'BONANOTA_VISUAL_CLOSE', world: 'geosfera' }, '*');
+        }
+      });
+    }
+
+    function notifyResize() {
+      if (!SINGLE_FITXA || !window.parent || window.parent === window) return;
+      const shell = document.querySelector('.page-shell');
+      const h = shell
+        ? Math.ceil(shell.getBoundingClientRect().height)
+        : Math.ceil(document.documentElement.scrollHeight);
+      window.parent.postMessage({
+        type: 'BONANOTA_VISUAL_RESIZE',
+        world: 'geosfera',
+        fitxa: SINGLE_FITXA,
+        height: h
+      }, '*');
+    }
+
+    if (SINGLE_FITXA) {
+      document.documentElement.classList.add('is-single-fitxa');
+      document.body.classList.add('is-single-fitxa');
+      const activeCard = document.getElementById(`fitxa-${SINGLE_FITXA}`);
+      if (activeCard) activeCard.classList.add('is-single-active');
+    }
+
+    function notifyBonaNota() {
+      if (!window.parent || window.parent === window) return;
+      window.parent.postMessage({
+        type: 'BONANOTA_VISUAL_PROGRESS',
+        world: 'geosfera',
+        explored: exploredFitxes.size,
+        total: 6,
+        completed: exploredFitxes.size === 6
+      }, '*');
+    }
+
+    function saveExploredLocal() {
+      try {
+        const merged = new Set(exploredFitxes);
+        const raw = localStorage.getItem(PROVA_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const prev = Array.isArray(parsed)
+            ? parsed
+            : (parsed && Array.isArray(parsed.fitxes) ? parsed.fitxes : []);
+          prev.forEach((n) => {
+            const num = Number(n);
+            if (num >= 1 && num <= 6) merged.add(num);
+          });
+        }
+        merged.forEach((n) => exploredFitxes.add(n));
+        localStorage.setItem(PROVA_STORAGE_KEY, JSON.stringify(Array.from(merged)));
+      } catch (e) {}
+    }
+
+    function restoreExploredLocal() {
+      try {
+        let raw = localStorage.getItem(PROVA_STORAGE_KEY);
+        if (!raw && _uidParam === 'anon') {
+          raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+        }
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        const list = Array.isArray(parsed)
+          ? parsed
+          : (parsed && Array.isArray(parsed.fitxes) ? parsed.fitxes : []);
+        list.forEach((n) => {
+          const num = Number(n);
+          if (num >= 1 && num <= 6) markFitxaExplored(num, { silent: true });
+        });
+      } catch (e) {}
+    }
+
+    function handleKey(event, callback) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        callback();
+      }
+    }
+
+    function animateReadout(boxId) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      box.classList.remove('readout-anim');
+      void box.offsetWidth;
+      box.classList.add('readout-anim');
+    }
+
+    function markFitxaExplored(fitxaNum, opts = {}) {
+      if (exploredFitxes.has(fitxaNum)) return;
+      exploredFitxes.add(fitxaNum);
+
+      const pill = document.getElementById(`nav-pill-${fitxaNum}`);
+      const card = document.getElementById(`fitxa-${fitxaNum}`);
+      const badge = document.getElementById(`badge-fitxa-${fitxaNum}`);
+      const globalPill = document.getElementById('global-progress');
+      const globalText = document.getElementById('global-progress-text');
+
+      if (pill) pill.classList.add('is-done');
+      if (card) card.classList.add('is-explored');
+      if (badge) badge.classList.add('is-done');
+
+      if (globalText) {
+        const count = exploredFitxes.size;
+        globalText.textContent = count === 6
+          ? 'Completat: 6 / 6 fitxes! 🎉'
+          : `Explorat: ${count} / 6 fitxes`;
+      }
+
+      if (globalPill) {
+        if (!opts.silent) {
+          globalPill.classList.remove('is-celebrating');
+          void globalPill.offsetWidth;
+          globalPill.classList.add('is-celebrating');
+        }
+        if (exploredFitxes.size === 6) {
+          globalPill.classList.add('is-complete');
+        }
+      }
+
+      if (!opts.silent) {
+        saveExploredLocal();
+        notifyBonaNota();
+      }
+    }
+
+    // =========================================================================
+    // FITXA 1: LA GEOSFERA I LES SEVES CAPES (EXPLORA)
+    // =========================================================================
+    const V1_DATA = {
+      escorca: {
+        title: 'Escorça',
+        depth: '5–70 km (oceànica 5–10 km; continental 25–70 km)',
+        state: 'Sòlid',
+        desc: 'Capa superficial, prima i menys densa, formada per oxigen, carboni i silici.',
+        warn: '',
+        meterLabel: '5 – 70 km',
+        tempLabel: 'Superficial',
+        barLeft: 0,
+        barWidth: 4
+      },
+      mohorovicic: {
+        title: 'Discontinuïtat de Mohorovicic',
+        depth: '5–70 km',
+        state: 'No surt a la font',
+        desc: "Frontera que separa l'escorça del mantell, on els materials canvien de cop.",
+        warn: '',
+        meterLabel: '5 – 70 km (frontera)',
+        tempLabel: 'Transició',
+        barLeft: 2,
+        barWidth: 3
+      },
+      mantell_superior: {
+        title: 'Mantell superior (astenosfera)',
+        depth: 'Des de 5–70 km; límit inferior: no surt a la font',
+        state: 'Sòlid molt viscós (plàstic)',
+        desc: "Inclou l'astenosfera, que flueix lentament i permet moure les plaques tectòniques.",
+        warn: '',
+        meterLabel: 'Des de 5–70 km',
+        tempLabel: 'Molt calent (plàstic)',
+        barLeft: 4,
+        barWidth: 16
+      },
+      mantell_inferior: {
+        title: 'Mantell inferior',
+        depth: 'Fins a 2.900 km; límit superior: no surt a la font',
+        state: 'Sòlid (amb certa plasticitat)',
+        desc: 'Capa molt gruixuda de ferro, magnesi i silici; arriba als 3.000 °C.',
+        warn: '',
+        meterLabel: 'Fins a 2.900 km',
+        tempLabel: 'Fins a 3.000 °C',
+        barLeft: 18,
+        barWidth: 28
+      },
+      gutenberg: {
+        title: 'Discontinuïtat de Gutenberg',
+        depth: '2.900 km',
+        state: 'No surt a la font',
+        desc: 'Frontera que separa el mantell del nucli, on els materials canvien de cop.',
+        warn: '',
+        meterLabel: '2.900 km (frontera)',
+        tempLabel: 'Canvi brusc',
+        barLeft: 44,
+        barWidth: 3.5
+      },
+      nucli_extern: {
+        title: 'Nucli extern',
+        depth: '2.900 a 5.100 km (5.150 km al dibuix)',
+        state: 'Líquid',
+        desc: 'Molt dens, de ferro i níquel; genera el camp magnètic terrestre.',
+        warn: '⚠️ Contradicció entre text (5.100 km) i dibuix (5.150 km): Pregunta-ho al profe.',
+        meterLabel: '2.900 – 5.100 / 5.150 km',
+        tempLabel: 'Molt elevat (líquid)',
+        barLeft: 45.5,
+        barWidth: 34.5
+      },
+      lehmann: {
+        title: 'Discontinuïtat de Lehmann',
+        depth: '5.100 km (text) o 5.150 km (dibuix)',
+        state: 'No surt a la font',
+        desc: 'Frontera entre el nucli extern líquid i el nucli intern sòlid.',
+        warn: '⚠️ Contradicció entre text (5.100 km) i dibuix (5.150 km): Pregunta-ho al profe.',
+        meterLabel: '5.100 / 5.150 km (frontera)',
+        tempLabel: 'Pressió extrema',
+        barLeft: 79,
+        barWidth: 3.5
+      },
+      nucli_intern: {
+        title: 'Nucli intern',
+        depth: '5.100 km (o 5.150 km) a 6.371 km',
+        state: 'Sòlid (suposat)',
+        desc: 'Capa més densa i central de ferro i níquel, fins a 6.000 °C.',
+        warn: '⚠️ Límit superior de 5.100 km o 5.150 km: Pregunta-ho al profe.',
+        meterLabel: '5.100 / 5.150 – 6.371 km',
+        tempLabel: 'Fins a 6.000 °C 🔥',
+        barLeft: 80.5,
+        barWidth: 19.5
+      }
+    };
+
+    const v1Visited = new Set();
+
+    function v1Select(id, userTriggered) {
+      const item = V1_DATA[id];
+      if (!item) return;
+
+      if (userTriggered) {
+        v1Visited.add(id);
+        const btn = document.getElementById(`v1-btn-${id}`);
+        if (btn) btn.classList.add('is-visited');
+        const badge = document.getElementById('badge-fitxa-1');
+        if (badge) badge.textContent = `${v1Visited.size} / 8 tocats`;
+        if (v1Visited.size >= 2) markFitxaExplored(1);
+      }
+
+      const keys = Object.keys(V1_DATA);
+      for (let i = 0; i < keys.length; i++) {
+        const k = keys[i];
+        const svgEl = document.getElementById(`v1-svg-${k}`);
+        const btnEl = document.getElementById(`v1-btn-${k}`);
+        if (svgEl) {
+          svgEl.classList.toggle('is-active', k === id);
+          svgEl.classList.toggle('is-dimmed', k !== id);
+        }
+        if (btnEl) {
+          btnEl.classList.toggle('is-active', k === id);
+        }
+      }
+
+      document.getElementById('v1-title').textContent = item.title;
+      document.getElementById('v1-depth').textContent = item.depth;
+      document.getElementById('v1-state').textContent = item.state;
+      document.getElementById('v1-desc').textContent = item.desc;
+
+      const warnEl = document.getElementById('v1-warn');
+      if (item.warn) {
+        warnEl.textContent = item.warn;
+        warnEl.hidden = false;
+      } else {
+        warnEl.textContent = '';
+        warnEl.hidden = true;
+      }
+
+      document.getElementById('v1-meter-label').textContent = item.meterLabel;
+      document.getElementById('v1-temp-label').textContent = item.tempLabel;
+      const bar = document.getElementById('v1-depth-bar');
+      if (bar) {
+        bar.style.left = `${item.barLeft}%`;
+        bar.style.width = `${item.barWidth}%`;
+      }
+
+      if (userTriggered) animateReadout('v1-readout');
+    }
+
+    // =========================================================================
+    // FITXA 2: COM ES VAN FORMAR LES CAPES (PAS A PAS + AUTO-PLAY)
+    // =========================================================================
+    const V2_STEPS = [
+      {
+        title: '1. Xocs i calor',
+        desc: 'Els planetesimals xoquen, la temperatura puja i les roques es fonen en un cos incandescent.'
+      },
+      {
+        title: '2. Separació per densitat',
+        desc: 'El ferro i el níquel, més densos, baixen al nucli; els menys densos pugen.'
+      },
+      {
+        title: '3. Refredament final',
+        desc: "La Terra es refreda i es forma l'escorça sòlida sobre el mantell: tres capes."
+      }
+    ];
+
+    let v2Index = 0;
+    let v2Timer = null;
+
+    function v2StopPlay() {
+      if (v2Timer) {
+        clearInterval(v2Timer);
+        v2Timer = null;
+      }
+      const playBtn = document.getElementById('v2-play');
+      if (playBtn) {
+        playBtn.textContent = '▶ Reproduir';
+        playBtn.classList.remove('is-playing');
+      }
+    }
+
+    function v2GoTo(index, userTriggered) {
+      if (index < 0 || index >= V2_STEPS.length) return;
+      if (userTriggered) v2StopPlay();
+      v2Index = index;
+
+      for (let i = 0; i < V2_STEPS.length; i++) {
+        const scene = document.getElementById(`v2-scene-${i}`);
+        const tab = document.getElementById(`v2-tab-${i}`);
+        if (scene) scene.classList.toggle('is-active', i === v2Index);
+        if (tab) tab.classList.toggle('is-active', i === v2Index);
+      }
+
+      document.getElementById('v2-title').textContent = V2_STEPS[v2Index].title;
+      document.getElementById('v2-desc').textContent = V2_STEPS[v2Index].desc;
+      document.getElementById('v2-counter').textContent = `Pas ${v2Index + 1} de ${V2_STEPS.length}`;
+      document.getElementById('badge-fitxa-2').textContent = `Etapa ${v2Index + 1} / 3`;
+      document.getElementById('v2-prev').disabled = v2Index === 0;
+      document.getElementById('v2-next').disabled = v2Index === V2_STEPS.length - 1;
+
+      animateReadout('v2-readout');
+      if (userTriggered && v2Index > 0) markFitxaExplored(2);
+    }
+
+    function v2Step(delta) {
+      v2GoTo(v2Index + delta, true);
+    }
+
+    function v2TogglePlay() {
+      const playBtn = document.getElementById('v2-play');
+      if (v2Timer) {
+        v2StopPlay();
+        return;
+      }
+      markFitxaExplored(2);
+      if (v2Index === V2_STEPS.length - 1) v2GoTo(0, false);
+      if (playBtn) {
+        playBtn.textContent = '⏸ Aturar';
+        playBtn.classList.add('is-playing');
+      }
+      v2Timer = setInterval(() => {
+        const next = (v2Index + 1) % V2_STEPS.length;
+        v2GoTo(next, false);
+      }, 3200);
+    }
+
+    // =========================================================================
+    // FITXA 3: EL CICLE DE LES ROQUES (EXPLORA + TOUR AUTOMÀTIC)
+    // =========================================================================
+    const V3_DATA = {
+      refredament: {
+        title: 'Refredament',
+        kind: 'Fletxa del cicle',
+        desc: 'El magma es refreda en volcans o a dins la Terra i forma roques magmàtiques.',
+        related: ['magma', 'magmatiques']
+      },
+      erosio: {
+        title: 'Erosió',
+        kind: 'Fletxa del cicle',
+        desc: 'Pluja, gel, vent i ones desgasten les roques i formen sediments que van al mar.',
+        related: ['magmatiques', 'sediments']
+      },
+      consolidacio: {
+        title: 'Consolidació',
+        kind: 'Fletxa del cicle',
+        desc: "Els sediments es compacten, perden aigua i, en milions d'anys, formen roques sedimentàries.",
+        related: ['sediments', 'sedimentaries']
+      },
+      metamorfisme: {
+        title: 'Metamorfisme',
+        kind: 'Fletxa del cicle',
+        desc: "Roques enterrades suporten gran pressió i calor i es transformen sense fondre's en metamòrfiques.",
+        related: ['sedimentaries', 'metamorfiques']
+      },
+      fusio: {
+        title: 'Fusió',
+        kind: 'Fletxa del cicle',
+        desc: "Les roques s'escalfen tant a profunditat que es fonen i es converteixen en magma.",
+        related: ['metamorfiques', 'magma']
+      },
+      magmatiques: {
+        title: 'Roques magmàtiques',
+        kind: 'Tipus de roca',
+        desc: 'Es formen quan el magma es refreda, com la pedra fosca volcànica de la Garrotxa.',
+        related: ['refredament', 'erosio']
+      },
+      sediments: {
+        title: 'Sediments',
+        kind: 'Material del cicle',
+        desc: 'Trossets de roca transportats per rius, gel o vent i dipositats en conques.',
+        related: ['erosio', 'consolidacio']
+      },
+      sedimentaries: {
+        title: 'Roques sedimentàries',
+        kind: 'Tipus de roca',
+        desc: 'Neixen quan els sediments es compacten i perden aigua, com els còdols de Montserrat.',
+        related: ['consolidacio', 'metamorfisme']
+      },
+      metamorfiques: {
+        title: 'Roques metamòrfiques',
+        kind: 'Tipus de roca',
+        desc: "Roques transformades sense fondre's per pressió i calor molt endins de la Terra.",
+        related: ['metamorfisme', 'fusio']
+      },
+      magma: {
+        title: 'Magma',
+        kind: 'Material del cicle',
+        desc: "Roca fosa de l'interior de la Terra; quan surt pels volcans s'anomena lava.",
+        related: ['fusio', 'refredament']
+      }
+    };
+
+    const V3_TOUR_ORDER = ['refredament', 'erosio', 'consolidacio', 'metamorfisme', 'fusio'];
+    const v3Visited = new Set();
+    let v3TourTimer = null;
+    let v3TourIdx = 0;
+
+    function v3StopTour() {
+      if (v3TourTimer) {
+        clearInterval(v3TourTimer);
+        v3TourTimer = null;
+      }
+      const btn = document.getElementById('v3-tour-btn');
+      if (btn) {
+        btn.textContent = '▶ Recorre el cicle';
+        btn.classList.remove('is-playing');
+      }
+    }
+
+    function v3Select(id, userTriggered) {
+      const item = V3_DATA[id];
+      if (!item) return;
+
+      if (userTriggered) {
+        v3StopTour();
+        v3Visited.add(id);
+        const btn = document.getElementById(`v3-btn-${id}`);
+        if (btn) btn.classList.add('is-visited');
+        const badge = document.getElementById('badge-fitxa-3');
+        if (badge) badge.textContent = `${v3Visited.size} / 10 tocats`;
+        if (v3Visited.size >= 2) markFitxaExplored(3);
+      }
+
+      const keys = Object.keys(V3_DATA);
+      for (let i = 0; i < keys.length; i++) {
+        const k = keys[i];
+        const svgEl = document.getElementById(`v3-svg-${k}`);
+        const btnEl = document.getElementById(`v3-btn-${k}`);
+        const isSelected = k === id;
+        const isRelated = item.related.includes(k);
+
+        if (svgEl) {
+          svgEl.classList.toggle('is-active', isSelected);
+          svgEl.classList.toggle('is-related', !isSelected && isRelated);
+          svgEl.classList.toggle('is-dimmed', !isSelected && !isRelated);
+        }
+        if (btnEl) {
+          btnEl.classList.toggle('is-active', isSelected);
+        }
+      }
+
+      document.getElementById('v3-title').textContent = item.title;
+      document.getElementById('v3-kind').textContent = item.kind;
+      document.getElementById('v3-desc').textContent = item.desc;
+
+      if (userTriggered) animateReadout('v3-readout');
+    }
+
+    function v3ToggleTour() {
+      const btn = document.getElementById('v3-tour-btn');
+      if (v3TourTimer) {
+        v3StopTour();
+        return;
+      }
+      markFitxaExplored(3);
+      v3TourIdx = 0;
+      v3Select(V3_TOUR_ORDER[v3TourIdx], false);
+      animateReadout('v3-readout');
+
+      if (btn) {
+        btn.textContent = '⏸ Atura el recorregut';
+        btn.classList.add('is-playing');
+      }
+
+      v3TourTimer = setInterval(() => {
+        v3TourIdx = (v3TourIdx + 1) % V3_TOUR_ORDER.length;
+        v3Select(V3_TOUR_ORDER[v3TourIdx], false);
+        animateReadout('v3-readout');
+      }, 2700);
+    }
+
+    // =========================================================================
+    // FITXA 4: LA DURESA I L'ESCALA DE MOHS (EXPLORA + MODE DUEL)
+    // =========================================================================
+    const V4_DATA = {
+      1: { name: 'Talc', color: '#94a3b8', darkTxt: true, desc: 'El ratllen del 2 al 10. No ratlla cap mineral. Altres objectes: no surt a la font.' },
+      2: { name: 'Guix', color: '#cbd5e1', darkTxt: true, desc: 'Ratlla el talc (1). El ratllen del 3 al 10. Altres objectes: no surt a la font.' },
+      3: { name: 'Calcita', color: '#e2c290', darkTxt: true, desc: "Ratlla l'1 i el 2. El ratllen del 4 al 10. Altres objectes: no surt a la font." },
+      4: { name: 'Fluorita', color: '#38bdf8', darkTxt: true, desc: "Ratlla de l'1 al 3. El ratllen del 5 al 10. Altres objectes: no surt a la font." },
+      5: { name: 'Apatita', color: '#34d399', darkTxt: true, desc: "Ratlla de l'1 al 4. El ratllen del 6 al 10. Altres objectes: no surt a la font." },
+      6: { name: 'Ortosa', color: '#fbbf24', darkTxt: true, desc: "Ratlla de l'1 al 5. El ratllen del 7 al 10. Altres objectes: no surt a la font." },
+      7: { name: 'Quars', color: '#fb923c', darkTxt: true, desc: "Ratlla de l'1 al 6. El ratllen del 8 al 10. Altres objectes: no surt a la font." },
+      8: { name: 'Topazi', color: '#f97316', darkTxt: false, desc: "Ratlla de l'1 al 7. El ratllen el 9 i 10. Altres objectes: no surt a la font." },
+      9: { name: 'Corindó', color: '#ef4444', darkTxt: false, desc: "Ratlla de l'1 al 8. Només el ratlla el diamant (10). Altres objectes: no surt a la font." },
+      10: { name: 'Diamant', color: '#fef08a', darkTxt: true, desc: 'Ho ratlla tot (1 al 9). Cap mineral el ratlla. Altres objectes: no surt a la font.' }
+    };
+
+    const v4Visited = new Set();
+
+    function v4BuildSvgColumns() {
+      const container = document.getElementById('v4-svg-columns');
+      if (!container) return;
+      let html = '';
+
+      for (let i = 1; i <= 10; i++) {
+        const m = V4_DATA[i];
+        const x = 14 + (i - 1) * 50.5;
+        const w = 44;
+        const h = 58 + (i - 1) * 14.5;
+        const y = 248 - h;
+        const cx = x + w / 2;
+        const tipY = y - 10;
+        const txtClass = m.darkTxt ? 'svg-txt-dark' : 'svg-txt';
+
+        html += `
+          <g id="v4-svg-${i}" class="svg-hit v4-col" role="button" tabindex="0" aria-label="${i} ${m.name}" onclick="v4Select(${i}, true)" onkeydown="handleKey(event, () => v4Select(${i}, true))">
+            <polygon points="${x},${y + 10} ${cx},${tipY} ${x + w},${y + 10} ${x + w},248 ${x},248" fill="${m.color}" stroke="#0f141e" stroke-width="1.8" />
+            <polygon points="${cx},${tipY} ${x + w},${y + 10} ${x + w},248 ${cx},248" fill="#000000" opacity="0.14" />
+            <circle id="v4-ind-bg-${i}" cx="${cx}" cy="${tipY - 11}" r="9" fill="#171e2e" stroke="#475569" stroke-width="1.4" />
+            <text id="v4-ind-${i}" x="${cx}" y="${tipY - 7.5}" text-anchor="middle" font-size="10.5" class="svg-txt">★</text>
+            <text x="${cx}" y="${y + 28}" text-anchor="middle" font-size="13" class="${txtClass}">${i}</text>
+            <text x="${cx}" y="236" text-anchor="middle" font-size="8.6" class="${txtClass}">${m.name}</text>
+            ${i === 10 ? `<path d="M ${cx} ${tipY - 2} L ${cx + 2} ${tipY + 4} L ${cx + 8} ${tipY + 6} L ${cx + 2} ${tipY + 8} L ${cx} ${tipY + 14} L ${cx - 2} ${tipY + 8} L ${cx - 8} ${tipY + 6} L ${cx - 2} ${tipY + 4} Z" fill="#ffffff" class="v4-glint" />` : ''}
+          </g>
+        `;
+      }
+      container.innerHTML = html;
+    }
+
+    function v4Select(num, userTriggered) {
+      const item = V4_DATA[num];
+      if (!item) return;
+
+      if (userTriggered) {
+        v4Visited.add(num);
+        const btn = document.getElementById(`v4-btn-${num}`);
+        if (btn) btn.classList.add('is-visited');
+        const badge = document.getElementById('badge-fitxa-4');
+        if (badge) badge.textContent = `${v4Visited.size} / 10 tocats`;
+        if (v4Visited.size >= 2) markFitxaExplored(4);
+      }
+
+      for (let i = 1; i <= 10; i++) {
+        const col = document.getElementById(`v4-svg-${i}`);
+        const indBg = document.getElementById(`v4-ind-bg-${i}`);
+        const indTxt = document.getElementById(`v4-ind-${i}`);
+        const btn = document.getElementById(`v4-btn-${i}`);
+
+        if (col) {
+          col.classList.remove('is-selected', 'is-scratched', 'is-harder');
+          if (i === num) {
+            col.classList.add('is-selected');
+            if (indBg) { indBg.setAttribute('fill', '#fbbf24'); indBg.setAttribute('stroke', '#ffffff'); }
+            if (indTxt) { indTxt.textContent = '★'; indTxt.setAttribute('fill', '#0f141e'); }
+          } else if (i < num) {
+            col.classList.add('is-scratched');
+            if (indBg) { indBg.setAttribute('fill', '#34d399'); indBg.setAttribute('stroke', '#a7f3d0'); }
+            if (indTxt) { indTxt.textContent = '✓'; indTxt.setAttribute('fill', '#06281c'); }
+          } else {
+            col.classList.add('is-harder');
+            if (indBg) { indBg.setAttribute('fill', '#ef4444'); indBg.setAttribute('stroke', '#fecaca'); }
+            if (indTxt) { indTxt.textContent = '✕'; indTxt.setAttribute('fill', '#ffffff'); }
+          }
+        }
+        if (btn) btn.classList.toggle('is-active', i === num);
+      }
+
+      document.getElementById('v4-title').textContent = `${num} · ${item.name}`;
+      document.getElementById('v4-num').textContent = `${num} / 10`;
+      document.getElementById('v4-desc').textContent = item.desc;
+
+      if (userTriggered) animateReadout('v4-readout');
+    }
+
+    function v4ToggleDuel() {
+      const panel = document.getElementById('v4-duel-panel');
+      const btn = document.getElementById('v4-duel-toggle');
+      const isOpening = panel.hidden;
+      panel.hidden = !isOpening;
+      if (btn) {
+        btn.classList.toggle('is-active', isOpening);
+        btn.textContent = isOpening ? '✕ Tancar Mode Duel' : '⚔️ Mode Duel de duresa';
+      }
+      if (isOpening) v4UpdateDuelPreview();
+      requestAnimationFrame(notifyResize);
+    }
+
+    function v4UpdateDuelPreview() {
+      const a = Number(document.getElementById('duel-a').value);
+      const b = Number(document.getElementById('duel-b').value);
+      const fa = document.getElementById('duel-fighter-a');
+      const fb = document.getElementById('duel-fighter-b');
+      fa.textContent = `${a} · ${V4_DATA[a].name}`;
+      fb.textContent = `${b} · ${V4_DATA[b].name}`;
+      fa.classList.remove('is-winner', 'is-loser');
+      fb.classList.remove('is-winner', 'is-loser');
+      document.getElementById('duel-result').textContent = 'Prem «Fes la prova!» per veure quin mineral ratlla l\'altre.';
+    }
+
+    function v4RunDuel() {
+      const a = Number(document.getElementById('duel-a').value);
+      const b = Number(document.getElementById('duel-b').value);
+      const arena = document.getElementById('duel-arena');
+      const fa = document.getElementById('duel-fighter-a');
+      const fb = document.getElementById('duel-fighter-b');
+      const res = document.getElementById('duel-result');
+
+      fa.classList.remove('is-winner', 'is-loser');
+      fb.classList.remove('is-winner', 'is-loser');
+      arena.classList.remove('is-clashing');
+      void arena.offsetWidth;
+      arena.classList.add('is-clashing');
+
+      markFitxaExplored(4);
+
+      if (a > b) {
+        fa.classList.add('is-winner');
+        fb.classList.add('is-loser');
+        res.textContent = `🏆 ${V4_DATA[a].name} (${a}) és més dur i ratlla ${V4_DATA[b].name} (${b})!`;
+        v4Select(a, false);
+      } else if (b > a) {
+        fb.classList.add('is-winner');
+        fa.classList.add('is-loser');
+        res.textContent = `🏆 ${V4_DATA[b].name} (${b}) és més dur i ratlla ${V4_DATA[a].name} (${a})!`;
+        v4Select(b, false);
+      } else {
+        res.textContent = `🤝 Empat! Tots dos són ${V4_DATA[a].name} (duresa ${a}): tenen la mateixa duresa.`;
+        v4Select(a, false);
+      }
+    }
+
+    // =========================================================================
+    // FITXA 5: ELS LÍMITS ENTRE PLAQUES (EXPLORA)
+    // =========================================================================
+    const V5_DATA = {
+      constructiu: {
+        title: 'Límit constructiu',
+        move: 'Se separen',
+        desc: 'Les plaques se separen, puja magma i es forma nova escorça marina en dorsals oceàniques.'
+      },
+      destructiu: {
+        title: 'Límit destructiu',
+        move: "Xoquen i una s'enfonsa",
+        desc: "Una placa baixa per subducció sota l'altra; es destrueix escorça i es formen fosses i serralades."
+      },
+      passiu: {
+        title: 'Límit passiu',
+        move: 'Llisquen de costat',
+        desc: "Les plaques llisquen lateralment una al costat de l'altra en falles de transformació."
+      }
+    };
+
+    const v5Visited = new Set();
+
+    function v5Select(id, userTriggered) {
+      const item = V5_DATA[id];
+      if (!item) return;
+
+      if (userTriggered) {
+        v5Visited.add(id);
+        const badge = document.getElementById('badge-fitxa-5');
+        if (badge) badge.textContent = `${v5Visited.size} / 3 tocats`;
+        if (v5Visited.size >= 2) markFitxaExplored(5);
+      }
+
+      const keys = Object.keys(V5_DATA);
+      for (let i = 0; i < keys.length; i++) {
+        const k = keys[i];
+        const scene = document.getElementById(`v5-scene-${k}`);
+        const btn = document.getElementById(`v5-btn-${k}`);
+        if (scene) scene.classList.toggle('is-active', k === id);
+        if (btn) btn.classList.toggle('is-active', k === id);
+      }
+
+      document.getElementById('v5-title').textContent = item.title;
+      document.getElementById('v5-move').textContent = item.move;
+      document.getElementById('v5-desc').textContent = item.desc;
+
+      if (userTriggered) animateReadout('v5-readout');
+    }
+
+    // =========================================================================
+    // FITXA 6: ELS AGENTS EXTERNS I LES QUATRE FASES (PAS A PAS + AUTO-PLAY)
+    // =========================================================================
+    const V6_STEPS = [
+      {
+        title: '1. Meteorització',
+        desc: "La roca es trenca o s'altera al mateix lloc per aigua, gel, temperatura o éssers vius."
+      },
+      {
+        title: '2. Erosió',
+        desc: 'Agents externs com aigua, vent, gravetat i éssers vius desgasten la roca i comencen a arrencar-la.'
+      },
+      {
+        title: '3. Transport',
+        desc: "L'aigua, el gel, el vent i la gravetat traslladen els trossos erosionats cap avall."
+      },
+      {
+        title: '4. Sedimentació',
+        desc: 'Els materials es dipositen en llacs o mars i poden compactar-se en roques sedimentàries.'
+      }
+    ];
+
+    let v6Index = 0;
+    let v6Timer = null;
+
+    function v6StopPlay() {
+      if (v6Timer) {
+        clearInterval(v6Timer);
+        v6Timer = null;
+      }
+      const btn = document.getElementById('v6-play');
+      if (btn) {
+        btn.textContent = '▶ Animar les 4 fases';
+        btn.classList.remove('is-playing');
+      }
+    }
+
+    function v6GoTo(index, userTriggered) {
+      if (index < 0 || index >= V6_STEPS.length) return;
+      if (userTriggered) v6StopPlay();
+      v6Index = index;
+
+      for (let i = 0; i < V6_STEPS.length; i++) {
+        const phase = document.getElementById(`v6-svg-${i}`);
+        const tab = document.getElementById(`v6-tab-${i}`);
+        if (phase) {
+          phase.classList.toggle('is-active', i === v6Index);
+          phase.classList.toggle('is-dimmed', i !== v6Index);
+        }
+        if (tab) tab.classList.toggle('is-active', i === v6Index);
+      }
+
+      document.getElementById('v6-title').textContent = V6_STEPS[v6Index].title;
+      document.getElementById('v6-desc').textContent = V6_STEPS[v6Index].desc;
+      document.getElementById('v6-counter').textContent = `Pas ${v6Index + 1} de ${V6_STEPS.length}`;
+      document.getElementById('badge-fitxa-6').textContent = `Fase ${v6Index + 1} / 4`;
+      document.getElementById('v6-prev').disabled = v6Index === 0;
+      document.getElementById('v6-next').disabled = v6Index === V6_STEPS.length - 1;
+
+      animateReadout('v6-readout');
+      if (userTriggered && v6Index > 0) markFitxaExplored(6);
+    }
+
+    function v6Step(delta) {
+      v6GoTo(v6Index + delta, true);
+    }
+
+    function v6TogglePlay() {
+      const btn = document.getElementById('v6-play');
+      if (v6Timer) {
+        v6StopPlay();
+        return;
+      }
+      markFitxaExplored(6);
+      if (v6Index === V6_STEPS.length - 1) v6GoTo(0, false);
+      if (btn) {
+        btn.textContent = '⏸ Aturar animació';
+        btn.classList.add('is-playing');
+      }
+      v6Timer = setInterval(() => {
+        const next = (v6Index + 1) % V6_STEPS.length;
+        v6GoTo(next, false);
+      }, 2800);
+    }
+
+    // =========================================================================
+    // INICIALITZACIÓ NETA
+    // =========================================================================
+    v4BuildSvgColumns();
+    v1Select('escorca', false);
+    v3Select('refredament', false);
+    v4Select(1, false);
+    v5Select('constructiu', false);
+    restoreExploredLocal();
+    notifyBonaNota();
+
+    if (SINGLE_FITXA) {
+      const shell = document.querySelector('.page-shell');
+      if (shell && typeof ResizeObserver === 'function') {
+        const ro = new ResizeObserver(() => notifyResize());
+        ro.observe(shell);
+      }
+      document.querySelectorAll(`#fitxa-${SINGLE_FITXA} details`).forEach((det) => {
+        det.addEventListener('toggle', () => requestAnimationFrame(notifyResize));
+      });
+      window.addEventListener('resize', notifyResize);
+      window.addEventListener('load', notifyResize);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(notifyResize).catch(() => {});
+      }
+      requestAnimationFrame(notifyResize);
+    }
+  </script>
+</body>
+</html>

@@ -42,8 +42,37 @@ mons_js += "\nconst QDIF=" + json.dumps(_dif, separators=(",", ":")) + ";"
 # sprites.js (els avatars de la salutació) amb «?v=<empremta>», la mateixa que tot.py posa a la portada
 import hashlib
 v_spr = hashlib.sha1((d.parent / "sprites.js").read_bytes()).hexdigest()[:8]
-html = plant.replace("/*DADES*/", dades, 1).replace("/*MONS*/", mons_js, 1).replace("{{TITOL}}", f"{nom}{tema} · {curs} | Bona Nota").replace("sprites.js?v=__SPR__", f"sprites.js?v={v_spr}")
-assert "{{" not in html and "/*DADES*/" not in html and "/*MONS*/" not in html and "__SPR__" not in html
+# laboratori visual interactiu (opcional): només s'injecta si ASSIG.visual està definit a dades/<assig>.js
+has_visual = bool(re.search(r'\bvisual\s*:\s*\{', dades.split("const T=")[0]))
+if has_visual:
+    v_vis = hashlib.sha1((d.parent / "assets" / "bonanota-visuals.js").read_bytes()).hexdigest()[:8]
+    vis_script = f'\n<script src="../../assets/bonanota-visuals.js?v={v_vis}"></script>'
+    vis_inici = '\n if(window.BonaNotaVisuals&&ASSIG.visual)h+=BonaNotaVisuals.cartaInici();'
+    vis_fitxa = '${window.BonaNotaVisuals&&ASSIG.visual?BonaNotaVisuals.inlineTemaHtml(t):""}'
+    vis_joc = ';if(window.BonaNotaVisuals&&ASSIG.visual)BonaNotaVisuals.insertaBotoJoc(j.id)'
+    vis_init = (
+        '\nif(window.BonaNotaVisuals&&ASSIG.visual){'
+        'BonaNotaVisuals.init(Object.assign({'
+        'getUserId:()=>{try{const u=new URLSearchParams(location.search).get("uid");if(u)return u}catch(e){}return(!MODE_TAST&&S&&S.nom)?S.nom:"anon"},'
+        'getProfileState:()=>S,'
+        'isDemoOrTast:()=>MODE_DEMO||MODE_TAST'
+        '},ASSIG.visual));}'
+    )
+else:
+    vis_script = vis_inici = vis_fitxa = vis_joc = vis_init = ""
+
+html = (
+    plant.replace("/*DADES*/", dades, 1)
+    .replace("/*MONS*/", mons_js, 1)
+    .replace("{{TITOL}}", f"{nom}{tema} · {curs} | Bona Nota")
+    .replace("sprites.js?v=__SPR__", f"sprites.js?v={v_spr}")
+    .replace("/*VISUAL_SCRIPT*/", vis_script, 1)
+    .replace("/*VISUAL_INICI*/", vis_inici, 1)
+    .replace("/*VISUAL_FITXA*/", vis_fitxa, 1)
+    .replace("/*VISUAL_JOC*/", vis_joc, 1)
+    .replace("/*VISUAL_INIT*/", vis_init, 1)
+)
+assert "{{" not in html and "/*DADES*/" not in html and "/*MONS*/" not in html and "__SPR__" not in html and "/*VISUAL_" not in html
 out = d.parent / (sys.argv[2] if len(sys.argv) > 2 else assig) / "index.html"
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(html)

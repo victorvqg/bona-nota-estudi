@@ -3,6 +3,20 @@ const ASSIG={
  nom:"Biologia i Geologia", tema:"Geosfera", curs:"1r ESO", ic:"🌋",
  color:["#1c1917","#dc2626","#fb923c"],
  peu:"Bona Nota · Biologia i Geologia: la geosfera · la Terra per dins, roques i minerals, la força de dins i la força de fora",
+ visual:{
+  world:"geosfera",
+  src:"../../visuals/geosfera.html",
+  total:6,
+  rewardStars:10,
+  icona:"🌋",
+  titol:"🌋 Laboratori Visual · 6 fitxes interactives",
+  subtitol:"Explora capes, roques, Mohs i plaques en moviment",
+  modalTitol:"🌋 La Geosfera · Laboratori Visual",
+  botoJoc:"🧪 Obre laboratori visual",
+  temes:{geosfera:1,nucli:1,origen:2,cicle:3,mohs:4,limits:5,agents:6},
+  jocs:{capes:1,tall:1,cicle:3,fletxes:3,mohs:4,limits:5,plaques:5,fases:6},
+  legacyFitxesKey:"bonanota_prova_visual_geosfera"
+ },
  blocs:[{titol:"🥚 La Terra per dins",n:5},{titol:"💎 Roques i minerals",n:5},{titol:"🌋 La força de dins",n:3},{titol:"🌊 La força de fora",n:3}],
  jocs:[
   {id:"capes",tipus:"ordena",ic:"🥚",titol:"Viatge al centre de la Terra",sub:"Capes i discontinuïtats en ordre",col:"#ffedd5",
