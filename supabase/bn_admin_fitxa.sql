@@ -198,7 +198,7 @@ end $$;
 -- ---------- 1) fitxa del nen amb l'estat real ----------
 create or replace function public.bn_admin_fitxa(p_email text, p_pass text, p_nom text)
 returns jsonb language plpgsql security definer set search_path = '' as $$
-declare kk text := lower(trim(coalesce(p_nom, ''))); pf jsonb; mons jsonb := '[]'; m jsonb; r record;
+declare kk text := lower(trim(coalesce(p_nom, ''))); pf jsonb; mons jsonb := '[]'; pv jsonb := '[]'; m jsonb; r record;
 begin
   perform bn_priv.admin_ok(p_email, p_pass);
   select jsonb_build_object('nom', p.nom, 'id', p.id, 'pin_v', p.pin_v, 'creat', bn_priv.fitxa_ms(p.creat),
@@ -213,8 +213,16 @@ begin
     end;
     mons := mons || jsonb_build_array(m);
   end loop;
+  -- premis únics dels laboratoris visuals (si la taula existeix)
+  if to_regclass('bn_priv.premis_visuals') is not null then
+    execute $q$
+      select coalesce(jsonb_agg(jsonb_build_object(
+        'reward_key', x.reward_key, 'stars', x.stars, 'ts', bn_priv.fitxa_ms(x.ts)) order by x.ts desc), '[]'::jsonb)
+      from bn_priv.premis_visuals x where x.k = $1
+    $q$ into pv using kk;
+  end if;
   return jsonb_build_object('k', kk, 'perfil', pf, 'amagat', exists (select 1 from bn_priv.amagats a where a.k = kk),
-                            'mons', mons);
+                            'mons', mons, 'premis_visuals', coalesce(pv, '[]'::jsonb));
 end $$;
 
 -- ---------- 2) altes: nens nous del període ----------
