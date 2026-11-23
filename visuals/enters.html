@@ -1,0 +1,3565 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="aurora">
+  <title>Els nombres enters · Mates 1r d'ESO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+
+      /* Superfícies blau nit */
+      --background: #0a1120;
+      --surface-container-low: #0f182c;
+      --surface-container: #142038;
+      --surface-container-high: #1b2b4a;
+
+      /* Text */
+      --on-surface: #eef4fb;
+      --on-surface-variant: #9fb2cc;
+
+      /* Vores */
+      --outline: #39507a;
+      --outline-variant: #223252;
+
+      /* Accents principals */
+      --primary: #4ad4e8;
+      --on-primary: #06141a;
+      --primary-container: #123647;
+      --on-primary-container: #c9f5fc;
+      --secondary: #687fa3;
+      --tertiary: #52d994;
+      --on-tertiary: #061c10;
+      --sun: #f6c945;
+      --on-sun: #1a1404;
+      --coral: #fb7676;
+      --on-coral: #1f0707;
+      --error: #fb7676;
+      --on-error: #1f0707;
+
+      /* Semàntica i dades */
+      --positive: #52d994;
+      --warning: #f6c945;
+      --focus: #4ad4e8;
+      --data-1: #4ad4e8;
+      --data-2: #52d994;
+      --data-3: #f6c945;
+      --data-4: #fb7676;
+      --data-context: #475e85;
+
+      /* Tipografia */
+      --font-headline: 'Instrument Sans', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-label: 'Geist Mono', monospace;
+
+      --display-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+      --headline-size: clamp(1.375rem, 1.15rem + 1vw, 1.875rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+      --body-size: clamp(0.96875rem, 0.94rem + 0.15vw, 1.0625rem);
+      --label-size: 0.78rem;
+
+      /* Formes */
+      --rounded: 0.5rem;
+      --rounded-lg: 0.875rem;
+      --rounded-full: 9999px;
+
+      /* Efectes i transparències */
+      --hairline: 1px solid var(--outline-variant);
+      --hairline-strong: 1px solid var(--outline);
+      --panel-gradient: linear-gradient(180deg, #16233d 0%, #10192e 100%);
+      --hero-glow: radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--primary) 12%, transparent), transparent 48%);
+      --nav-backdrop: color-mix(in srgb, var(--background) 88%, transparent);
+      --heading-tracking: -0.025em;
+      --label-tracking: 0.055em;
+      --cyan-tint: color-mix(in srgb, var(--primary) 14%, transparent);
+      --green-tint: color-mix(in srgb, var(--tertiary) 14%, transparent);
+      --sun-tint: color-mix(in srgb, var(--sun) 15%, transparent);
+      --coral-tint: color-mix(in srgb, var(--coral) 15%, transparent);
+
+      /* Espaiat */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+      --space-2xl: 3.5rem;
+
+      /* Moviment */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 110ms;
+      --dur-short: 200ms;
+      --dur-long: 380ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+    button, input { font-family: inherit; }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Barra superior fixa/enganxosa compacta */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--nav-backdrop);
+      backdrop-filter: blur(10px);
+      border-bottom: var(--hairline);
+    }
+    .topbar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: var(--heading-tracking);
+      color: var(--on-surface);
+      white-space: nowrap;
+    }
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 2px;
+    }
+    .topbar-nav::-webkit-scrollbar { display: none; }
+    .nav-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 40px;
+      min-width: 44px;
+      padding: 0 var(--space-sm);
+      border-radius: var(--rounded);
+      border: var(--hairline);
+      background: var(--surface-container);
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+      cursor: pointer;
+    }
+    .nav-pill:hover {
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+    .nav-pill.is-done {
+      background: var(--green-tint);
+      border-color: color-mix(in srgb, var(--tertiary) 40%, transparent);
+      color: var(--tertiary);
+    }
+    .nav-pill.is-active {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .progress-pill {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      min-height: 36px;
+      border-radius: var(--rounded-full);
+      background: var(--sun-tint);
+      border: 1px solid color-mix(in srgb, var(--sun) 40%, transparent);
+      color: var(--sun);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Contenidor principal */
+    .page-shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space-md) var(--space-2xl);
+      display: grid;
+      gap: var(--space-xl);
+    }
+    .page-shell * { min-width: 0; }
+
+    /* Portada compacta */
+    .hero-header {
+      background-color: var(--surface-container-low);
+      background-image: var(--hero-glow);
+      border: var(--hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .hero-kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+    .hero-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 700;
+      letter-spacing: var(--heading-tracking);
+      line-height: 1.08;
+      color: var(--on-surface);
+    }
+    .hero-subtitle {
+      margin: 0;
+      color: var(--on-surface-variant);
+      max-width: 62ch;
+    }
+    .hero-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-top: var(--space-xs);
+    }
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      border: var(--hairline);
+      background: var(--background);
+      color: var(--on-surface-variant);
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: var(--rounded-full);
+      display: inline-block;
+    }
+    .dot-cyan { background: var(--primary); }
+    .dot-coral { background: var(--coral); }
+    .dot-sun { background: var(--sun); }
+    .dot-green { background: var(--tertiary); }
+
+    /* Targetes de Fitxa */
+    .fitxa-card {
+      background: var(--panel-gradient);
+      border: var(--hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+      scroll-margin-top: 72px;
+      transition: border-color var(--dur-short) var(--ease-out);
+    }
+    .fitxa-card.is-completed {
+      border-color: color-mix(in srgb, var(--tertiary) 45%, transparent);
+    }
+
+    .fitxa-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding-bottom: var(--space-sm);
+      border-bottom: var(--hairline);
+    }
+    .fitxa-num {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--primary);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .fitxa-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 700;
+      letter-spacing: var(--heading-tracking);
+      line-height: 1.15;
+      color: var(--on-surface);
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      min-height: 36px;
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      background: var(--surface-container-high);
+      border: var(--hairline-strong);
+      color: var(--on-surface-variant);
+      white-space: nowrap;
+    }
+    .status-badge.is-won {
+      background: var(--green-tint);
+      border-color: color-mix(in srgb, var(--tertiary) 45%, transparent);
+      color: var(--tertiary);
+      animation: popWin var(--dur-long) var(--ease-out);
+    }
+
+    /* Idea en 15 segons + Truc fàcil */
+    .idea-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: var(--space-sm);
+    }
+    .idea-box, .truc-box {
+      background: var(--background);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+    }
+    .truc-box {
+      border-left: 3px solid var(--sun);
+      background: color-mix(in srgb, var(--sun) 5%, var(--background));
+    }
+    .box-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: 0 0 var(--space-xs) 0;
+      font-weight: 600;
+    }
+    .truc-box .box-label { color: var(--sun); }
+    .idea-box p, .truc-box p {
+      margin: 0;
+      color: var(--on-surface);
+      font-size: 0.95rem;
+      line-height: 1.48;
+    }
+
+    /* Laboratori interactiu (anti-oclusió: visual a dalt, controls a baix) */
+    .lab-shell {
+      background: var(--background);
+      border: var(--hairline-strong);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: grid;
+      gap: var(--space-md);
+    }
+    .lab-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    /* Botons segmentats (zero <select>) */
+    .seg-group {
+      display: inline-flex;
+      background: var(--surface-container-low);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: 3px;
+      gap: 4px;
+    }
+    .seg-btn {
+      min-height: 44px;
+      min-width: 48px;
+      padding: 0 var(--space-md);
+      border: none;
+      border-radius: calc(var(--rounded) - 2px);
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-family: var(--font-headline);
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .seg-btn:hover { color: var(--on-surface); }
+    .seg-btn.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .seg-btn.is-repte.is-active {
+      background: var(--sun);
+      color: var(--on-sun);
+    }
+
+    /* Barra de ronda del mini-repte */
+    .round-strip {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+    .round-dots {
+      display: inline-flex;
+      gap: 6px;
+    }
+    .round-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: var(--rounded-full);
+      background: var(--surface-container-high);
+      border: 1px solid var(--outline);
+    }
+    .round-dot.is-current {
+      border-color: var(--sun);
+      background: var(--sun-tint);
+    }
+    .round-dot.is-ok {
+      background: var(--tertiary);
+      border-color: var(--tertiary);
+    }
+
+    /* Consigna del repte */
+    .challenge-banner {
+      display: none;
+      background: var(--sun-tint);
+      border: 1px solid color-mix(in srgb, var(--sun) 40%, transparent);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      color: var(--on-surface);
+      font-weight: 600;
+      font-size: 0.98rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .challenge-banner.is-visible { display: flex; }
+    .challenge-banner.is-celebrate {
+      background: var(--green-tint);
+      border-color: color-mix(in srgb, var(--tertiary) 45%, transparent);
+      color: var(--tertiary);
+    }
+
+    /* Escenari SVG superior */
+    .visual-stage {
+      background: var(--surface-container-low);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .visual-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      user-select: none;
+      touch-action: none;
+    }
+    .readout-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-xs);
+    }
+    .readout-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      background: var(--surface-container);
+      border: var(--hairline);
+      font-family: var(--font-label);
+      font-size: 0.92rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+    .val-pos { color: var(--primary); }
+    .val-neg { color: var(--coral); }
+    .val-zero { color: var(--sun); }
+    .val-ok { color: var(--tertiary); }
+
+    /* Bafarada del professor */
+    .teacher-bubble {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      background: var(--surface-container);
+      border: var(--hairline);
+      border-left: 3px solid var(--primary);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.94rem;
+      color: var(--on-surface);
+      transition: border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+    }
+    .teacher-bubble.is-hint {
+      border-left-color: var(--sun);
+      background: color-mix(in srgb, var(--sun) 8%, var(--surface-container));
+    }
+    .teacher-bubble.is-success {
+      border-left-color: var(--tertiary);
+      background: color-mix(in srgb, var(--tertiary) 10%, var(--surface-container));
+    }
+    .teacher-avatar {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: var(--rounded-full);
+      background: var(--cyan-tint);
+      border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+    .teacher-text {
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    /* Controls tàctils inferiors (>=48px) */
+    .controls-dock {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding-top: var(--space-xs);
+    }
+    .ctrl-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .ctrl-group {
+      display: grid;
+      gap: 4px;
+    }
+    .ctrl-label {
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 48px;
+      min-width: 48px;
+      padding: 0 var(--space-md);
+      border-radius: var(--rounded);
+      border: var(--hairline-strong);
+      background: var(--surface-container);
+      color: var(--on-surface);
+      font-family: var(--font-headline);
+      font-size: 0.96rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .btn:hover { background: var(--surface-container-high); }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      background: color-mix(in srgb, var(--primary) 88%, var(--on-surface));
+    }
+    .btn-sun {
+      background: var(--sun);
+      border-color: var(--sun);
+      color: var(--on-sun);
+    }
+    .btn-sun:hover {
+      background: color-mix(in srgb, var(--sun) 88%, var(--on-surface));
+    }
+    .btn-green {
+      background: var(--tertiary);
+      border-color: var(--tertiary);
+      color: var(--on-tertiary);
+    }
+    .btn-coral {
+      background: var(--coral-tint);
+      border-color: color-mix(in srgb, var(--coral) 50%, transparent);
+      color: var(--coral);
+    }
+    .btn-cyan {
+      background: var(--cyan-tint);
+      border-color: color-mix(in srgb, var(--primary) 50%, transparent);
+      color: var(--primary);
+    }
+    .btn[hidden] { display: none; }
+
+    /* Fitxa 5: Blocs operatius clicables PA·MU·SU */
+    .expr-board {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-sm);
+      min-height: 112px;
+    }
+    .op-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: 1.05rem;
+      font-weight: 600;
+      border: var(--hairline-strong);
+      background: var(--surface-container);
+      color: var(--on-surface);
+      cursor: pointer;
+      transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .op-chip:hover {
+      background: var(--surface-container-high);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .op-chip.is-paren {
+      border-color: color-mix(in srgb, var(--sun) 55%, transparent);
+      background: var(--sun-tint);
+      color: var(--sun);
+    }
+    .op-chip.is-mul {
+      border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+      background: var(--cyan-tint);
+      color: var(--primary);
+    }
+    .op-chip.is-add {
+      border-color: color-mix(in srgb, var(--tertiary) 55%, transparent);
+      background: var(--green-tint);
+      color: var(--tertiary);
+    }
+    .op-chip.is-static {
+      cursor: default;
+      border-style: dashed;
+      color: var(--on-surface-variant);
+      background: transparent;
+    }
+    .op-chip.is-static:hover { transform: none; border-color: var(--outline); }
+    .expr-board {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .expr-main-line {
+      font-family: var(--font-display, var(--font-label));
+      font-size: clamp(1.22rem, 1.05rem + 0.8vw, 1.55rem);
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      text-align: center;
+      color: var(--on-surface);
+      padding: 8px 16px;
+      border-radius: 12px;
+      background: var(--surface-container-low);
+      border: var(--hairline);
+      max-width: 100%;
+    }
+    .expr-prompt {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      text-align: center;
+    }
+    .expr-choices {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+    }
+    .op-history {
+      display: grid;
+      gap: 4px;
+      padding: var(--space-sm) var(--space-md);
+      border-top: var(--hairline);
+      font-family: var(--font-label);
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Acordió Apunt de la font */
+    details.source-drawer {
+      background: var(--surface-container-low);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+    }
+    details.source-drawer summary {
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: 0.94rem;
+      color: var(--on-surface-variant);
+      list-style: none;
+    }
+    details.source-drawer summary::-webkit-details-marker { display: none; }
+    details.source-drawer summary::after {
+      content: '+';
+      font-family: var(--font-label);
+      font-size: 1.1rem;
+      color: var(--primary);
+    }
+    details.source-drawer[open] summary::after { content: '−'; }
+    .drawer-body {
+      padding: 0 var(--space-md) var(--space-md);
+      color: var(--on-surface-variant);
+      font-size: 0.9rem;
+      border-top: var(--hairline);
+      padding-top: var(--space-sm);
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      font-family: var(--font-label);
+    }
+    .mini-table th, .mini-table td {
+      padding: 6px 8px;
+      border-bottom: var(--hairline);
+      text-align: left;
+    }
+    .mini-table th {
+      color: var(--primary);
+      text-transform: uppercase;
+      font-size: 0.74rem;
+    }
+
+    /* Peu de pàgina */
+    .page-footer {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 var(--space-md) var(--space-xl);
+      color: var(--on-surface-variant);
+      font-size: 0.84rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    /* Wiggle inicial (affordance activa) */
+    @keyframes wigglePulse {
+      0%, 100% { transform: translateY(0) scale(1); }
+      30% { transform: translateY(-3px) scale(1.06); }
+      60% { transform: translateY(2px) scale(0.98); }
+    }
+    .wiggle-hint {
+      animation: wigglePulse 1.3s var(--ease-in-out) infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    @keyframes popWin {
+      0% { transform: scale(0.92); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    /* Modes d'incrustació (embed / fitxa única) */
+    body.is-embed .page-shell {
+      padding: var(--space-sm) var(--space-sm) var(--space-md);
+      gap: var(--space-md);
+    }
+    body.is-embed .page-footer { display: none; }
+
+    body.is-single-fitxa,
+    html.is-single-fitxa-root {
+      background: transparent;
+      height: auto !important;
+      min-height: 0 !important;
+      overflow-x: clip;
+      overflow-y: auto;
+    }
+    body.is-single-fitxa .topbar,
+    body.is-single-fitxa .hero-header,
+    body.is-single-fitxa .page-footer,
+    body.is-single-fitxa .fitxa-card {
+      display: none;
+    }
+    body.is-single-fitxa .fitxa-card.is-target-fitxa {
+      display: grid;
+    }
+    body.is-single-fitxa .page-shell {
+      padding: var(--space-xs);
+      max-width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .idea-grid { grid-template-columns: 1fr; }
+      .fitxa-card { padding: var(--space-md); }
+      .lab-shell { padding: var(--space-sm); }
+      .brand-title { display: none; }
+      .controls-dock { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topbar" aria-label="Navegació per fitxes">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <span class="brand-title">Nombres enters · 1r ESO</span>
+      </div>
+      <div class="topbar-nav" id="topbar-nav">
+        <a class="nav-pill" href="#fitxa-1" data-fitxa-nav="1">1. Termòmetre</a>
+        <a class="nav-pill" href="#fitxa-2" data-fitxa-nav="2">2. Recta ℤ</a>
+        <a class="nav-pill" href="#fitxa-3" data-fitxa-nav="3">3. Talons</a>
+        <a class="nav-pill" href="#fitxa-4" data-fitxa-nav="4">4. Signes</a>
+        <a class="nav-pill" href="#fitxa-5" data-fitxa-nav="5">5. PA·MU·SU</a>
+        <a class="nav-pill" href="#fitxa-6" data-fitxa-nav="6">6. Potències</a>
+      </div>
+      <div class="progress-pill" id="global-progress" aria-live="polite">⭐ 0 / 6 superades</div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+    <header class="hero-header">
+      <span class="hero-kicker">Matemàtiques 1r d'ESO · Unitat 3</span>
+      <h1 class="hero-title">Els nombres enters, tocant i veient</h1>
+      <p class="hero-subtitle">Sis laboratoris visuals per entendre els negatius, saltar per la recta i dominar la regla dels signes en reptes de 3 rondes.</p>
+      <div class="hero-legend">
+        <span class="legend-chip"><span class="dot dot-cyan"></span> Positius (+)</span>
+        <span class="legend-chip"><span class="dot dot-coral"></span> Negatius (−)</span>
+        <span class="legend-chip"><span class="dot dot-sun"></span> Zero / Focus</span>
+        <span class="legend-chip"><span class="dot dot-green"></span> Fitxa superada</span>
+      </div>
+    </header>
+
+    <!-- FITXA 1 -->
+    <section class="fitxa-card" id="fitxa-1" data-fitxa="1">
+      <div class="fitxa-header">
+        <div>
+          <span class="fitxa-num">Fitxa 1 · Positius i negatius</span>
+          <h2 class="fitxa-title">Per sota del zero!</h2>
+        </div>
+        <span class="status-badge" id="status-1">🔒 Per jugar</span>
+      </div>
+
+      <div class="idea-grid">
+        <div class="idea-box">
+          <h3 class="box-label">💡 La idea en 15 segons</h3>
+          <p>Els nombres negatius (−1, −2, −3…) viuen per sota del zero i mesuren fred, soterranis o deutes. El zero és la frontera: no és ni positiu ni negatiu.</p>
+        </div>
+        <div class="truc-box">
+          <h3 class="box-label">★ Truc fàcil</h3>
+          <p>Si et DONEN o PUGES → <strong>+</strong>. Si et TREUEN o BAIXES → <strong>−</strong>.</p>
+        </div>
+      </div>
+
+      <div class="lab-shell">
+        <div class="lab-topbar">
+          <div class="seg-group" role="tablist" aria-label="Mode Fitxa 1">
+            <button type="button" class="seg-btn is-active" id="f1-mode-explore">Explora</button>
+            <button type="button" class="seg-btn is-repte" id="f1-mode-game">Repte · 3 rondes</button>
+          </div>
+          <div class="round-strip" id="f1-rounds">
+            <span>Rondes:</span>
+            <span class="round-dots">
+              <span class="round-dot" id="f1-rd-0"></span>
+              <span class="round-dot" id="f1-rd-1"></span>
+              <span class="round-dot" id="f1-rd-2"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="challenge-banner" id="f1-challenge">
+          <span id="f1-challenge-text"></span>
+          <button type="button" class="btn btn-sun" id="f1-replay-btn" hidden>Torna a jugar</button>
+        </div>
+
+        <div class="visual-stage">
+          <div class="readout-bar">
+            <span class="readout-chip">Temperatura: <strong id="f1-val-badge" class="val-neg">−2 °C</strong></span>
+            <span class="readout-chip">Edifici: <strong id="f1-floor-badge">2n soterrani</strong></span>
+            <span class="readout-chip" id="f1-delta-chip" hidden>Variació: <strong id="f1-delta-badge">0</strong></span>
+          </div>
+          <svg class="visual-svg" id="f1-svg" viewBox="0 0 640 280" role="img" aria-label="Termòmetre interactiu de −10 a +10 graus">
+            <!-- Zona sota zero -->
+            <rect x="20" y="140" width="600" height="124" rx="10" fill="var(--coral-tint)" />
+            <!-- Zona sobre zero -->
+            <rect x="20" y="16" width="600" height="124" rx="10" fill="var(--cyan-tint)" />
+            <!-- Línia de zero -->
+            <line x1="20" y1="140" x2="620" y2="140" stroke="var(--sun)" stroke-width="2.5" stroke-dasharray="6 5" />
+            <text x="58" y="133" fill="var(--sun)" font-family="var(--font-label)" font-size="13" font-weight="600">0 °C · FRONTERA</text>
+
+            <!-- Etiquetes d'ambient -->
+            <text x="58" y="42" fill="var(--primary)" font-family="var(--font-label)" font-size="12" font-weight="600">SOBRE ZERO (+)</text>
+            <text x="58" y="250" fill="var(--coral)" font-family="var(--font-label)" font-size="12" font-weight="600">SOTA ZERO (−)</text>
+
+            <!-- Tub del termòmetre -->
+            <rect x="288" y="24" width="44" height="232" rx="22" fill="var(--background)" stroke="var(--outline-strong, var(--outline))" stroke-width="2.5" />
+            <!-- Marques d'escala -->
+            <g id="f1-ticks"></g>
+            <!-- Marcador d'inici (per reptes de variació) -->
+            <g id="f1-start-marker" opacity="0">
+              <line x1="242" y1="140" x2="345" y2="140" stroke="var(--sun)" stroke-width="2" stroke-dasharray="4 3" />
+              <text x="234" y="144" text-anchor="end" fill="var(--sun)" font-family="var(--font-label)" font-size="12" font-weight="600" id="f1-start-label">Inici: −2</text>
+            </g>
+            <!-- Fletxa de variació -->
+            <line id="f1-arrow" x1="362" y1="140" x2="362" y2="140" stroke="var(--sun)" stroke-width="3" opacity="0" />
+            <!-- Columna de mercuri -->
+            <rect id="f1-mercury" x="296" y="140" width="28" height="24" rx="10" fill="var(--coral)" />
+            <!-- Punt de tirador arrossegable -->
+            <g id="f1-handle" class="wiggle-hint" style="cursor: ns-resize;">
+              <circle cx="310" cy="164" r="18" fill="var(--on-surface)" stroke="var(--primary)" stroke-width="4" />
+              <text x="310" y="168" text-anchor="middle" fill="var(--background)" font-family="var(--font-label)" font-size="11" font-weight="700" id="f1-handle-txt">−2</text>
+            </g>
+
+            <!-- Panell lateral d'interpretació visual -->
+            <g transform="translate(415, 48)">
+              <rect x="0" y="0" width="185" height="184" rx="10" fill="var(--surface-container)" stroke="var(--outline-variant)" stroke-width="1.5" />
+              <text x="92" y="34" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="11">SITUACIÓ REAL</text>
+              <text x="92" y="84" text-anchor="middle" font-size="40" id="f1-scene-icon">❄️</text>
+              <text x="92" y="124" text-anchor="middle" fill="var(--on-surface)" font-family="var(--font-headline)" font-size="16" font-weight="700" id="f1-scene-title">Fred sota zero</text>
+              <text x="92" y="150" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="12" id="f1-scene-sub">Arrossega el cercle</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="teacher-bubble" id="f1-bubble" aria-live="polite">
+          <span class="teacher-avatar" aria-hidden="true">🧭</span>
+          <p class="teacher-text" id="f1-feedback">Estàs a −2 °C: dos graus per sota del zero. Arrossega el termòmetre o prem els botons!</p>
+        </div>
+
+        <div class="controls-dock">
+          <div class="ctrl-cluster">
+            <button type="button" class="btn btn-coral" id="f1-minus">−1 °C</button>
+            <button type="button" class="btn" id="f1-zero">0 °C</button>
+            <button type="button" class="btn btn-cyan" id="f1-plus">+1 °C</button>
+          </div>
+          <button type="button" class="btn btn-sun" id="f1-check" hidden>Comprova resposta</button>
+        </div>
+      </div>
+
+      <details class="source-drawer">
+        <summary>📚 Apunt de la font (Igualada, edificis i deutes)</summary>
+        <div class="drawer-body">
+          <p><strong>Exemple real:</strong> Un dissabte a Igualada el termòmetre marca <strong>−2 °C</strong> al matí i puja fins a <strong>+9 °C</strong> al migdia. No puja 7 graus: puja <strong>+11 °C</strong> (2 fins al zero + 9 per sobre).</p>
+          <p>A l'hivern pot glaçar a <strong>−3 °C</strong> i a l'estiu arribar a <strong>+38 °C</strong>. Un submarí a 25 m de profunditat és <strong>−25</strong>.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- FITXA 2 -->
+    <section class="fitxa-card" id="fitxa-2" data-fitxa="2">
+      <div class="fitxa-header">
+        <div>
+          <span class="fitxa-num">Fitxa 2 · El conjunt ℤ, ordre, |a| i oposat</span>
+          <h2 class="fitxa-title">A la recta, la dreta guanya!</h2>
+        </div>
+        <span class="status-badge" id="status-2">🔒 Per jugar</span>
+      </div>
+
+      <div class="idea-grid">
+        <div class="idea-box">
+          <h3 class="box-label">💡 La idea en 15 segons</h3>
+          <p>A la recta dels enters (ℤ), tot nombre que queda més a la dreta és més gran, fins i tot entre negatius (−2 &gt; −7). El valor absolut |a| és la distància al zero, i l'oposat és el seu simètric.</p>
+        </div>
+        <div class="truc-box">
+          <h3 class="box-label">★ Truc fàcil</h3>
+          <p>Qui deu menys, és més ric: <strong>−2 &gt; −9</strong>. I treure el signe dona el valor absolut!</p>
+        </div>
+      </div>
+
+      <div class="lab-shell">
+        <div class="lab-topbar">
+          <div class="seg-group" role="tablist" aria-label="Mode Fitxa 2">
+            <button type="button" class="seg-btn is-active" id="f2-mode-explore">Explora</button>
+            <button type="button" class="seg-btn is-repte" id="f2-mode-game">Repte · 3 rondes</button>
+          </div>
+          <div class="round-strip">
+            <span>Rondes:</span>
+            <span class="round-dots">
+              <span class="round-dot" id="f2-rd-0"></span>
+              <span class="round-dot" id="f2-rd-1"></span>
+              <span class="round-dot" id="f2-rd-2"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="challenge-banner" id="f2-challenge">
+          <span id="f2-challenge-text"></span>
+          <button type="button" class="btn btn-sun" id="f2-replay-btn" hidden>Torna a jugar</button>
+        </div>
+
+        <div class="visual-stage">
+          <div class="readout-bar">
+            <span class="readout-chip">A = <strong id="f2-a-val" class="val-neg">−5</strong></span>
+            <span class="readout-chip" id="f2-cmp-chip">Ordre: <strong id="f2-cmp-val">−5 &lt; +3</strong></span>
+            <span class="readout-chip">|A| = <strong id="f2-abs-val" class="val-pos">5</strong></span>
+            <span class="readout-chip">Oposat(A) = <strong id="f2-opp-val">+5</strong></span>
+          </div>
+          <svg class="visual-svg" id="f2-svg" viewBox="0 0 640 215" role="img" aria-label="Recta numèrica interactiva de −8 a +8">
+            <!-- Zones -->
+            <rect x="24" y="18" width="296" height="175" rx="8" fill="var(--coral-tint)" opacity="0.45" />
+            <rect x="320" y="18" width="296" height="175" rx="8" fill="var(--cyan-tint)" opacity="0.45" />
+            <text x="42" y="38" fill="var(--coral)" font-family="var(--font-label)" font-size="11" font-weight="600">← MÉS PETIT (ESQUERRA)</text>
+            <text x="598" y="38" text-anchor="end" fill="var(--primary)" font-family="var(--font-label)" font-size="11" font-weight="600">MÉS GRAN (DRETA) →</text>
+
+            <!-- Arc de valor absolut -->
+            <path id="f2-abs-arc" d="M 320 120 Q 240 60 160 120" fill="none" stroke="var(--sun)" stroke-width="2.5" stroke-dasharray="5 4" />
+            <text id="f2-abs-txt" x="240" y="76" text-anchor="middle" fill="var(--sun)" font-family="var(--font-label)" font-size="13" font-weight="700">|−5| = 5</text>
+
+            <!-- Línia principal de la recta -->
+            <line x1="34" y1="125" x2="606" y2="125" stroke="var(--outline)" stroke-width="3" />
+            <g id="f2-ticks"></g>
+
+            <!-- Punt B (comparació o oposat) -->
+            <g id="f2-point-b" style="cursor: pointer;">
+              <circle cx="416" cy="125" r="14" fill="var(--sun)" stroke="var(--background)" stroke-width="3" />
+              <text x="416" y="164" text-anchor="middle" fill="var(--sun)" font-family="var(--font-label)" font-size="13" font-weight="700" id="f2-b-label">B (+3)</text>
+            </g>
+
+            <!-- Punt A (arrossegable/clic) -->
+            <g id="f2-point-a" style="cursor: ew-resize;">
+              <circle cx="160" cy="125" r="16" fill="var(--coral)" stroke="var(--on-surface)" stroke-width="3" id="f2-a-circle" />
+              <text x="160" y="166" text-anchor="middle" fill="var(--on-surface)" font-family="var(--font-label)" font-size="13" font-weight="700" id="f2-a-label">A (−5)</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="teacher-bubble" id="f2-bubble" aria-live="polite">
+          <span class="teacher-avatar" aria-hidden="true">📏</span>
+          <p class="teacher-text" id="f2-feedback">Toca qualsevol número de la recta per moure el punt A. Ara −5 queda a l'esquerra de +3, per tant −5 &lt; +3.</p>
+        </div>
+
+        <div class="controls-dock">
+          <div class="ctrl-cluster">
+            <div class="seg-group" aria-label="Vista de la recta">
+              <button type="button" class="seg-btn is-active" id="f2-view-cmp">Comparar A i B</button>
+              <button type="button" class="seg-btn" id="f2-view-sym">Mirall (|A| i oposat)</button>
+            </div>
+            <button type="button" class="btn btn-coral" id="f2-a-minus">A −1</button>
+            <button type="button" class="btn btn-cyan" id="f2-a-plus">A +1</button>
+          </div>
+          <button type="button" class="btn btn-sun" id="f2-check" hidden>Comprova a la recta</button>
+        </div>
+      </div>
+
+      <details class="source-drawer">
+        <summary>📚 Apunt de la font (Conjunt ℤ i rècord de fred)</summary>
+        <div class="drawer-body">
+          <p><strong>ℤ</strong> agrupa els naturals positius (+1, +2…), el <strong>0</strong> i els negatius (−1, −2…). No confonguis <strong>|−3| = 3</strong> (distància) amb l'<strong>oposat</strong> de +3, que és −3.</p>
+          <p><em>Sabies que…?</em> La temperatura més baixa mesurada a la Terra és <strong>−89 °C</strong> a l'Antàrtida (base Vostok, 1983). Fins i tot −89 és molt més petit que −2!</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- FITXA 3 -->
+    <section class="fitxa-card" id="fitxa-3" data-fitxa="3">
+      <div class="fitxa-header">
+        <div>
+          <span class="fitxa-num">Fitxa 3 · Sumar, restar i parèntesis</span>
+          <h2 class="fitxa-title">Talons i factures</h2>
+        </div>
+        <span class="status-badge" id="status-3">🔒 Per jugar</span>
+      </div>
+
+      <div class="idea-grid">
+        <div class="idea-box">
+          <h3 class="box-label">💡 La idea en 15 segons</h3>
+          <p>Rebre un taló suma diners (+); rebre una factura en treu (−). Si t'anul·len una factura, guanyes diners: <strong>−(−5) = +5</strong>. Mira els dos signes seguits: iguals fan +, diferents fan −.</p>
+        </div>
+        <div class="truc-box">
+          <h3 class="box-label">★ Truc fàcil</h3>
+          <p><strong>Iguals → +. Diferents → −.</strong> Que et perdonin un deute és una bona notícia!</p>
+        </div>
+      </div>
+
+      <div class="lab-shell">
+        <div class="lab-topbar">
+          <div class="seg-group" role="tablist" aria-label="Mode Fitxa 3">
+            <button type="button" class="seg-btn is-active" id="f3-mode-explore">Explora</button>
+            <button type="button" class="seg-btn is-repte" id="f3-mode-game">Repte · 3 rondes</button>
+          </div>
+          <div class="round-strip">
+            <span>Rondes:</span>
+            <span class="round-dots">
+              <span class="round-dot" id="f3-rd-0"></span>
+              <span class="round-dot" id="f3-rd-1"></span>
+              <span class="round-dot" id="f3-rd-2"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="challenge-banner" id="f3-challenge">
+          <span id="f3-challenge-text"></span>
+          <button type="button" class="btn btn-sun" id="f3-replay-btn" hidden>Torna a jugar</button>
+        </div>
+
+        <div class="visual-stage">
+          <div class="readout-bar">
+            <span class="readout-chip">Operació: <strong id="f3-expr">(−2) − (−5)</strong></span>
+            <span class="readout-chip">Sense parèntesis: <strong id="f3-simp" class="val-pos">−2 + 5</strong></span>
+            <span class="readout-chip">Saldo final: <strong id="f3-res" class="val-pos">+3 €</strong></span>
+          </div>
+          <svg class="visual-svg" id="f3-svg" viewBox="0 0 640 215" role="img" aria-label="Salt del personatge sobre la recta dels enters">
+            <!-- Recta -->
+            <line x1="30" y1="150" x2="610" y2="150" stroke="var(--outline)" stroke-width="3" />
+            <g id="f3-ticks"></g>
+
+            <!-- Arc de salt -->
+            <path id="f3-jump-arc" d="M 254 134 Q 335 45 416 134" fill="none" stroke="var(--tertiary)" stroke-width="3" stroke-dasharray="6 4" />
+            <text id="f3-jump-label" x="335" y="54" text-anchor="middle" fill="var(--tertiary)" font-family="var(--font-label)" font-size="14" font-weight="700">+5 (anul·len factura)</text>
+
+            <!-- Punt de sortida -->
+            <circle id="f3-start-dot" cx="254" cy="150" r="8" fill="var(--sun)" />
+            <text id="f3-start-txt" x="254" y="190" text-anchor="middle" fill="var(--sun)" font-family="var(--font-label)" font-size="11" font-weight="600">Sortida</text>
+
+            <!-- Personatge saltador -->
+            <g id="f3-jumper" transform="translate(416, 128)" style="cursor: pointer;">
+              <circle cx="0" cy="-14" r="16" fill="var(--primary)" stroke="var(--background)" stroke-width="3" id="f3-jumper-head" />
+              <text x="0" y="-9" text-anchor="middle" fill="var(--background)" font-family="var(--font-label)" font-size="12" font-weight="700" id="f3-jumper-txt">+3</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="teacher-bubble" id="f3-bubble" aria-live="polite">
+          <span class="teacher-avatar" aria-hidden="true">🧾</span>
+          <p class="teacher-text" id="f3-feedback">Ets a −2 € i t'anul·len (−) una factura de 5 € (−5): és bo! Saltes 5 passos a la dreta fins a +3 €.</p>
+        </div>
+
+        <div class="controls-dock" id="f3-controls">
+          <div class="ctrl-cluster" id="f3-explore-ctrls">
+            <div class="ctrl-group">
+              <span class="ctrl-label">Acció</span>
+              <div class="seg-group">
+                <button type="button" class="seg-btn" id="f3-op-add">+ Afegeix</button>
+                <button type="button" class="seg-btn is-active" id="f3-op-sub">− Anul·la</button>
+              </div>
+            </div>
+            <div class="ctrl-group">
+              <span class="ctrl-label">Document</span>
+              <div class="seg-group">
+                <button type="button" class="seg-btn" id="f3-doc-pos">Taló (+)</button>
+                <button type="button" class="seg-btn is-active" id="f3-doc-neg">Factura (−)</button>
+              </div>
+            </div>
+            <div class="ctrl-group">
+              <span class="ctrl-label">Inici i quantitat</span>
+              <div class="ctrl-cluster">
+                <button type="button" class="btn" id="f3-start-step">Inici: −2</button>
+                <button type="button" class="btn" id="f3-val-step">Import: 5 €</button>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-sun" id="f3-check" hidden>Comprova on aterra</button>
+        </div>
+      </div>
+
+      <details class="source-drawer">
+        <summary>📚 Apunt de la font (Els 4 casos i regles de suma)</summary>
+        <div class="drawer-body">
+          <table class="mini-table">
+            <thead><tr><th>Cas</th><th>Història</th><th>Regla</th></tr></thead>
+            <tbody>
+              <tr><td>+(+5)</td><td>Ingresso un taló de 5 €</td><td>+5 (guanyo)</td></tr>
+              <tr><td>+(−5)</td><td>M'arriba una factura de 5 €</td><td>−5 (perdo)</td></tr>
+              <tr><td>−(+5)</td><td>Entrego un taló de 5 €</td><td>−5 (perdo)</td></tr>
+              <tr><td>−(−5)</td><td>Em perdonen una factura de 5 €</td><td>+5 (guanyo!)</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Sense parèntesis:</strong> Signes iguals → sumo i copio el signe (−4 − 8 = −12). Signes diferents → resto i mana el més gran (−3 + 10 = +7).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- FITXA 4 -->
+    <section class="fitxa-card" id="fitxa-4" data-fitxa="4">
+      <div class="fitxa-header">
+        <div>
+          <span class="fitxa-num">Fitxa 4 · Multiplicació i divisió</span>
+          <h2 class="fitxa-title">La màquina dels signes</h2>
+        </div>
+        <span class="status-badge" id="status-4">🔒 Per jugar</span>
+      </div>
+
+      <div class="idea-grid">
+        <div class="idea-box">
+          <h3 class="box-label">💡 La idea en 15 segons</h3>
+          <p>En multiplicar o dividir, si els dos nombres tenen el <strong>mateix signe</strong>, el resultat és positiu (+). Si tenen <strong>signe diferent</strong>, el resultat és negatiu (−).</p>
+        </div>
+        <div class="truc-box">
+          <h3 class="box-label">★ Truc fàcil</h3>
+          <p><strong>Iguals → MÉS (+). Diferents → MENYS (−).</strong> Però no ho confonguis amb sumar: −3 − 5 = −8!</p>
+        </div>
+      </div>
+
+      <div class="lab-shell">
+        <div class="lab-topbar">
+          <div class="seg-group" role="tablist" aria-label="Mode Fitxa 4">
+            <button type="button" class="seg-btn is-active" id="f4-mode-explore">Explora</button>
+            <button type="button" class="seg-btn is-repte" id="f4-mode-game">Repte · 3 rondes</button>
+          </div>
+          <div class="round-strip">
+            <span>Rondes:</span>
+            <span class="round-dots">
+              <span class="round-dot" id="f4-rd-0"></span>
+              <span class="round-dot" id="f4-rd-1"></span>
+              <span class="round-dot" id="f4-rd-2"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="challenge-banner" id="f4-challenge">
+          <span id="f4-challenge-text"></span>
+          <button type="button" class="btn btn-sun" id="f4-replay-btn" hidden>Torna a jugar</button>
+        </div>
+
+        <div class="visual-stage">
+          <div class="readout-bar">
+            <span class="readout-chip">Expressió: <strong id="f4-expr">(−4) · (−5) = +20</strong></span>
+            <span class="readout-chip">Regla: <strong id="f4-rule" class="val-pos">(−) · (−) = (+)</strong></span>
+          </div>
+          <svg class="visual-svg" id="f4-svg" viewBox="0 0 640 215" role="img" aria-label="Màquina de dos engranatges per multiplicar i dividir signes">
+            <!-- Conductes de transmissió -->
+            <rect x="135" y="95" width="365" height="24" rx="12" fill="var(--surface-container-high)" stroke="var(--outline-variant)" stroke-width="1.5" />
+
+            <!-- Engranatge A -->
+            <g id="f4-gear-a" transform="translate(130, 107)" style="cursor: pointer;">
+              <circle cx="0" cy="0" r="62" fill="var(--surface-container)" stroke="var(--coral)" stroke-width="5" stroke-dasharray="14 8" id="f4-gear-a-ring" />
+              <circle cx="0" cy="0" r="44" fill="var(--background)" stroke="var(--outline)" stroke-width="2" />
+              <text x="0" y="-12" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="11">FACTOR A</text>
+              <text x="0" y="18" text-anchor="middle" fill="var(--coral)" font-family="var(--font-headline)" font-size="30" font-weight="700" id="f4-gear-a-txt">−4</text>
+            </g>
+
+            <!-- Operador central -->
+            <g transform="translate(262, 107)">
+              <circle cx="0" cy="0" r="24" fill="var(--surface-container-high)" stroke="var(--primary)" stroke-width="2" />
+              <text x="0" y="8" text-anchor="middle" fill="var(--primary)" font-family="var(--font-headline)" font-size="26" font-weight="700" id="f4-op-txt">·</text>
+            </g>
+
+            <!-- Engranatge B -->
+            <g id="f4-gear-b" transform="translate(390, 107)" style="cursor: pointer;">
+              <circle cx="0" cy="0" r="62" fill="var(--surface-container)" stroke="var(--coral)" stroke-width="5" stroke-dasharray="14 8" id="f4-gear-b-ring" />
+              <circle cx="0" cy="0" r="44" fill="var(--background)" stroke="var(--outline)" stroke-width="2" />
+              <text x="0" y="-12" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="11">FACTOR B</text>
+              <text x="0" y="18" text-anchor="middle" fill="var(--coral)" font-family="var(--font-headline)" font-size="30" font-weight="700" id="f4-gear-b-txt">−5</text>
+            </g>
+
+            <!-- Visor de sortida -->
+            <g transform="translate(485, 45)">
+              <rect x="0" y="0" width="132" height="124" rx="14" fill="var(--surface-container)" stroke="var(--tertiary)" stroke-width="2.5" id="f4-out-box" />
+              <text x="66" y="28" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="11">RESULTAT</text>
+              <text x="66" y="76" text-anchor="middle" fill="var(--tertiary)" font-family="var(--font-headline)" font-size="34" font-weight="700" id="f4-out-txt">+20</text>
+              <text x="66" y="106" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="11" id="f4-out-note">Signes iguals → +</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="teacher-bubble" id="f4-bubble" aria-live="polite">
+          <span class="teacher-avatar" aria-hidden="true">⚙️</span>
+          <p class="teacher-text" id="f4-feedback">Anul·lar 4 factures de 5 € et fa guanyar 20 €! Toca els engranatges o els botons per canviar de signe.</p>
+        </div>
+
+        <div class="controls-dock">
+          <div class="ctrl-cluster">
+            <div class="seg-group" aria-label="Operació">
+              <button type="button" class="seg-btn is-active" id="f4-op-mul">· Multiplica</button>
+              <button type="button" class="seg-btn" id="f4-op-div">: Divideix</button>
+            </div>
+            <button type="button" class="btn btn-coral" id="f4-flip-a">Signe A (−)</button>
+            <button type="button" class="btn btn-coral" id="f4-flip-b">Signe B (−)</button>
+            <button type="button" class="btn" id="f4-cycle-nums">Canvia números</button>
+          </div>
+          <button type="button" class="btn btn-sun" id="f4-check" hidden>Comprova la màquina</button>
+        </div>
+      </div>
+
+      <details class="source-drawer">
+        <summary>📚 Apunt de la font (Múltiples factors i divisió)</summary>
+        <div class="drawer-body">
+          <p><strong>Amb tres o més factors:</strong> compta quants signes menys hi ha. Si n'hi ha un nombre <strong>parell</strong>, dona <strong>+</strong>; si és <strong>senar</strong>, dona <strong>−</strong>. Exemple: (−6) · (+5) · (−7) = +210.</p>
+          <p><strong>Compte:</strong> La divisió <em>no</em> és associativa i no sempre dona un enter (per exemple, (+21) : (−4) no té resultat enter).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- FITXA 5 -->
+    <section class="fitxa-card" id="fitxa-5" data-fitxa="5">
+      <div class="fitxa-header">
+        <div>
+          <span class="fitxa-num">Fitxa 5 · Jerarquia d'operacions</span>
+          <h2 class="fitxa-title">PA · MU · SU</h2>
+        </div>
+        <span class="status-badge" id="status-5">🔒 Per jugar</span>
+      </div>
+
+      <div class="idea-grid">
+        <div class="idea-box">
+          <h3 class="box-label">💡 La idea en 15 segons</h3>
+          <p>Una expressió combinada té un ordre estricte: primer els <strong>PA</strong>rèntesis, després les <strong>MU</strong>ltiplicacions i divisions (d'esquerra a dreta), i al final les <strong>SU</strong>mes i restes.</p>
+        </div>
+        <div class="truc-box">
+          <h3 class="box-label">★ Truc fàcil</h3>
+          <p><strong>PA · MU · SU!</strong> No facis mai una resta si encara queda una multiplicació pendent.</p>
+        </div>
+      </div>
+
+      <div class="lab-shell">
+        <div class="lab-topbar">
+          <div class="seg-group" role="tablist" aria-label="Mode Fitxa 5">
+            <button type="button" class="seg-btn is-active" id="f5-mode-explore">Explora</button>
+            <button type="button" class="seg-btn is-repte" id="f5-mode-game">Repte · 3 rondes</button>
+          </div>
+          <div class="round-strip">
+            <span>Rondes:</span>
+            <span class="round-dots">
+              <span class="round-dot" id="f5-rd-0"></span>
+              <span class="round-dot" id="f5-rd-1"></span>
+              <span class="round-dot" id="f5-rd-2"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="challenge-banner" id="f5-challenge">
+          <span id="f5-challenge-text"></span>
+          <button type="button" class="btn btn-sun" id="f5-replay-btn" hidden>Torna a jugar</button>
+        </div>
+
+        <div class="visual-stage">
+          <!-- Escala SVG de jerarquia -->
+          <svg class="visual-svg" id="f5-svg" viewBox="0 0 640 94" role="img" aria-label="Escala de prioritat PA MU SU">
+            <g id="f5-step-pa">
+              <rect x="20" y="14" width="186" height="64" rx="10" fill="var(--sun-tint)" stroke="var(--sun)" stroke-width="2" />
+              <text x="113" y="39" text-anchor="middle" fill="var(--sun)" font-family="var(--font-label)" font-size="13" font-weight="700">1r · PA</text>
+              <text x="113" y="60" text-anchor="middle" fill="var(--on-surface)" font-family="var(--font-body)" font-size="13" font-weight="600">Parèntesis ( )</text>
+            </g>
+            <text x="217" y="52" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="18">→</text>
+            <g id="f5-step-mu">
+              <rect x="228" y="14" width="186" height="64" rx="10" fill="var(--surface-container)" stroke="var(--outline)" stroke-width="1.5" />
+              <text x="321" y="39" text-anchor="middle" fill="var(--primary)" font-family="var(--font-label)" font-size="13" font-weight="700">2n · MU</text>
+              <text x="321" y="60" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-body)" font-size="13" font-weight="600">Mult. (·) i Div. (:)</text>
+            </g>
+            <text x="425" y="52" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="18">→</text>
+            <g id="f5-step-su">
+              <rect x="436" y="14" width="184" height="64" rx="10" fill="var(--surface-container)" stroke="var(--outline)" stroke-width="1.5" />
+              <text x="528" y="39" text-anchor="middle" fill="var(--tertiary)" font-family="var(--font-label)" font-size="13" font-weight="700">3r · SU</text>
+              <text x="528" y="60" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-body)" font-size="13" font-weight="600">Sumes (+) i Restes (−)</text>
+            </g>
+          </svg>
+
+          <div class="expr-board" id="f5-board" aria-live="polite"></div>
+          <div class="op-history" id="f5-history"></div>
+        </div>
+
+        <div class="teacher-bubble" id="f5-bubble" aria-live="polite">
+          <span class="teacher-avatar" aria-hidden="true">🪜</span>
+          <p class="teacher-text" id="f5-feedback">Clica directament sobre el bloc de l'operació que toca resoldre primer seguint PA · MU · SU.</p>
+        </div>
+
+        <div class="controls-dock">
+          <div class="ctrl-cluster">
+            <button type="button" class="btn" id="f5-ex-1">Exemple del llibre</button>
+            <button type="button" class="btn" id="f5-ex-2">Exemple amb divisió</button>
+            <button type="button" class="btn btn-cyan" id="f5-reset">Reinicia passos</button>
+          </div>
+        </div>
+      </div>
+
+      <details class="source-drawer">
+        <summary>📚 Apunt de la font (Exemples resolts pas a pas)</summary>
+        <div class="drawer-body">
+          <p><strong>Exemple 1:</strong> 20 − (9 − 12) · (+4) → Primer parèntesi: 20 − (−3) · (+4) → Multiplicació: 20 − (−12) → Suma: 20 + 12 = <strong>32</strong>.</p>
+          <p><strong>Exemple 2:</strong> (−20) : (10 − 6) − (−3) · (−3) = (−20) : 4 − 9 = −5 − 9 = <strong>−14</strong>.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- FITXA 6 -->
+    <section class="fitxa-card" id="fitxa-6" data-fitxa="6">
+      <div class="fitxa-header">
+        <div>
+          <span class="fitxa-num">Fitxa 6 · Potències i arrels d'enters</span>
+          <h2 class="fitxa-title">El parèntesi mana</h2>
+        </div>
+        <span class="status-badge" id="status-6">🔒 Per jugar</span>
+      </div>
+
+      <div class="idea-grid">
+        <div class="idea-box">
+          <h3 class="box-label">💡 La idea en 15 segons</h3>
+          <p>Amb base negativa, exponent <strong>parell → positiu</strong> i <strong>senar → negatiu</strong>. Però el parèntesi mana: <strong>(−3)² = +9</strong>, mentre que <strong>−3² = −9</strong>. I l'arrel quadrada d'un negatiu no existeix.</p>
+        </div>
+        <div class="truc-box">
+          <h3 class="box-label">★ Truc fàcil</h3>
+          <p><strong>Menys parell, positiu; menys senar, negatiu.</strong> Sense parèntesi, el menys es queda fora!</p>
+        </div>
+      </div>
+
+      <div class="lab-shell">
+        <div class="lab-topbar">
+          <div class="seg-group" role="tablist" aria-label="Mode Fitxa 6">
+            <button type="button" class="seg-btn is-active" id="f6-mode-explore">Explora</button>
+            <button type="button" class="seg-btn is-repte" id="f6-mode-game">Repte · 3 rondes</button>
+          </div>
+          <div class="round-strip">
+            <span>Rondes:</span>
+            <span class="round-dots">
+              <span class="round-dot" id="f6-rd-0"></span>
+              <span class="round-dot" id="f6-rd-1"></span>
+              <span class="round-dot" id="f6-rd-2"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="challenge-banner" id="f6-challenge">
+          <span id="f6-challenge-text"></span>
+          <button type="button" class="btn btn-sun" id="f6-replay-btn" hidden>Torna a jugar</button>
+        </div>
+
+        <div class="visual-stage">
+          <div class="readout-bar">
+            <span class="readout-chip">Expressió: <strong id="f6-expr">(−2)³</strong></span>
+            <span class="readout-chip">Desplegament: <strong id="f6-expand">(−2) · (−2) · (−2)</strong></span>
+            <span class="readout-chip">Resultat: <strong id="f6-res" class="val-neg">−8</strong></span>
+          </div>
+          <svg class="visual-svg" id="f6-svg" viewBox="0 0 640 205" role="img" aria-label="Visualitzador de potències amb parèntesis i arrels quadrades">
+            <!-- Panell de fórmula -->
+            <rect x="20" y="16" width="600" height="172" rx="12" fill="var(--surface-container)" stroke="var(--outline-variant)" stroke-width="1.5" />
+            <text x="44" y="44" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="11" id="f6-svg-kicker">DESPLEGAMENT DE FACTORS</text>
+            <g id="f6-svg-content"></g>
+          </svg>
+        </div>
+
+        <div class="teacher-bubble" id="f6-bubble" aria-live="polite">
+          <span class="teacher-avatar" aria-hidden="true">⚡</span>
+          <p class="teacher-text" id="f6-feedback">Com que hi ha parèntesi, multipliques (−2) tres vegades: dos menys fan +, i el tercer deixa el resultat negatiu (−8).</p>
+        </div>
+
+        <div class="controls-dock">
+          <div class="ctrl-cluster">
+            <div class="seg-group" aria-label="Tipus">
+              <button type="button" class="seg-btn is-active" id="f6-type-pow">Potències</button>
+              <button type="button" class="seg-btn" id="f6-type-sqrt">Arrels √</button>
+            </div>
+            <button type="button" class="btn btn-sun" id="f6-toggle-paren">Parèntesi: SÍ</button>
+            <button type="button" class="btn btn-coral" id="f6-base-btn">Base: −2</button>
+            <button type="button" class="btn btn-cyan" id="f6-exp-btn">Exponent: 3</button>
+          </div>
+          <button type="button" class="btn btn-sun" id="f6-check" hidden>Comprova resposta</button>
+        </div>
+      </div>
+
+      <details class="source-drawer">
+        <summary>📚 Apunt de la font (Potències de −2 i arrel quadrada)</summary>
+        <div class="drawer-body">
+          <p><strong>Exponent parell:</strong> (−2)⁰ = +1, (−2)² = +4, (−2)⁴ = +16. <strong>Exponent senar:</strong> (−2)¹ = −2, (−2)³ = −8.</p>
+          <p><strong>Arrel quadrada:</strong> √(+16) té dues arrels (+4 i −4), per conveni escrivim +4. <strong>√(−16) no existeix</strong> perquè cap enter al quadrat dona negatiu.</p>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <span>Matemàtiques 1r d'ESO · Els nombres enters (Unitat 3)</span>
+    <span>Manipulació visual directa · Sense penalitzacions</span>
+  </footer>
+
+  <api-shim></api-shim>
+  <script>
+    (function () {
+      'use strict';
+
+      var params = new URLSearchParams(window.location.search);
+      var world = params.get('world') || 'enters';
+      var isEmbed = params.get('embed') === '1';
+      var fitxaParam = params.get('fitxa');
+      var targetFitxa = fitxaParam ? Number(fitxaParam) : null;
+
+      if (isEmbed) {
+        document.body.classList.add('is-embed');
+      }
+      if (isEmbed && targetFitxa && targetFitxa >= 1 && targetFitxa <= 6) {
+        document.documentElement.classList.add('is-single-fitxa-root');
+        document.body.classList.add('is-single-fitxa');
+        var targetSection = document.getElementById('fitxa-' + targetFitxa);
+        if (targetSection) targetSection.classList.add('is-target-fitxa');
+      }
+
+      var uidRaw = params.get('uid');
+      var uid = (uidRaw ? String(uidRaw).trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) : '') || 'anon';
+      var lsKey = 'bonanota_visual_' + uid + '_' + world;
+      var legacyLsKey = 'bonanota_visual_' + world;
+      var appState = {
+        storageKey: lsKey,
+        world: world,
+        uid: uid,
+        explored: [],
+        completed: []
+      };
+
+      function mergeFitxaLists(a, b) {
+        var set = [];
+        [a, b].forEach(function (list) {
+          if (!Array.isArray(list)) return;
+          list.forEach(function (v) {
+            var n = Number(v);
+            if (Number.isInteger(n) && n >= 1 && n <= 6 && set.indexOf(n) === -1) {
+              set.push(n);
+            }
+          });
+        });
+        return set;
+      }
+
+      function readLocalProgress() {
+        try {
+          var raw = localStorage.getItem(lsKey);
+          if (!raw && uid === 'anon') {
+            raw = localStorage.getItem(legacyLsKey);
+          }
+          if (!raw) return null;
+          var parsed = JSON.parse(raw);
+          return parsed && typeof parsed === 'object' ? parsed : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function writeLocalProgress() {
+        try {
+          localStorage.setItem(lsKey, JSON.stringify({
+            world: world,
+            explored: appState.explored,
+            completed: appState.completed
+          }));
+        } catch (e) {}
+      }
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function fmtSigned(n) {
+        if (n > 0) return '+' + n;
+        if (n < 0) return '−' + Math.abs(n);
+        return '0';
+      }
+
+      function fmtParen(n) {
+        return n < 0 ? '(−' + Math.abs(n) + ')' : '(+' + n + ')';
+      }
+
+      function rndInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function emitResize() {
+        var shell = document.querySelector('.page-shell');
+        var h = (isEmbed && targetFitxa && shell)
+          ? Math.ceil(shell.getBoundingClientRect().height)
+          : Math.ceil(document.documentElement.scrollHeight);
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({
+              type: 'BONANOTA_VISUAL_RESIZE',
+              world: world,
+              fitxa: targetFitxa || null,
+              height: h
+            }, '*');
+          }
+        } catch (e) {}
+      }
+
+      function emitProgress() {
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({
+              type: 'BONANOTA_VISUAL_PROGRESS',
+              world: world,
+              explored: appState.completed.length,
+              total: 6,
+              completed: appState.completed.length >= 6,
+              score: null
+            }, '*');
+          }
+        } catch (e) {}
+      }
+
+      function saveProgress() {
+        var prevLocal = readLocalProgress();
+        if (prevLocal) {
+          appState.explored = mergeFitxaLists(appState.explored, prevLocal.explored);
+          appState.completed = mergeFitxaLists(appState.completed, prevLocal.completed);
+        }
+        writeLocalProgress();
+        updateProgressUI();
+        emitProgress();
+        if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === 'function') {
+          window.notebookAppApi.setAppState({
+            storageKey: lsKey,
+            world: world,
+            explored: appState.explored,
+            completed: appState.completed
+          }).catch(function () {});
+        }
+      }
+
+      function markExplored(num) {
+        if (appState.explored.indexOf(num) === -1) {
+          appState.explored.push(num);
+          saveProgress();
+        }
+      }
+
+      function markCompleted(num) {
+        markExplored(num);
+        if (appState.completed.indexOf(num) === -1) {
+          appState.completed.push(num);
+        }
+        saveProgress();
+      }
+
+      function updateProgressUI() {
+        var gp = byId('global-progress');
+        if (gp) gp.textContent = `⭐ ${appState.completed.length} / 6 superades`;
+        for (var i = 1; i <= 6; i++) {
+          var isDone = appState.completed.indexOf(i) !== -1;
+          var badge = byId('status-' + i);
+          var card = byId('fitxa-' + i);
+          var navPill = document.querySelector('[data-fitxa-nav="' + i + '"]');
+          if (badge) {
+            badge.textContent = isDone ? `⭐ Superada!` : `🔒 Per jugar`;
+            badge.classList.toggle('is-won', isDone);
+          }
+          if (card) card.classList.toggle('is-completed', isDone);
+          if (navPill) navPill.classList.toggle('is-done', isDone);
+        }
+      }
+
+      function setBubble(fitxaNum, text, tone) {
+        var bubble = byId('f' + fitxaNum + '-bubble');
+        var msg = byId('f' + fitxaNum + '-feedback');
+        if (msg) msg.textContent = text;
+        if (bubble) {
+          bubble.classList.remove('is-hint', 'is-success');
+          if (tone === 'hint') bubble.classList.add('is-hint');
+          if (tone === 'success') bubble.classList.add('is-success');
+        }
+      }
+
+      function updateRoundDots(prefix, roundIdx, wonAll) {
+        for (var i = 0; i < 3; i++) {
+          var d = byId(prefix + '-rd-' + i);
+          if (!d) continue;
+          d.classList.remove('is-current', 'is-ok');
+          if (wonAll || i < roundIdx) d.classList.add('is-ok');
+          else if (i === roundIdx) d.classList.add('is-current');
+        }
+      }
+
+      function clearWiggle(el) {
+        if (el && el.classList.contains('wiggle-hint')) {
+          el.classList.remove('wiggle-hint');
+        }
+      }
+
+      /* ---------------- FITXA 1: TERMÒMETRE ---------------- */
+      var f1 = {
+        mode: 'explore',
+        val: -2,
+        rounds: [],
+        roundIdx: 0,
+        won: false
+      };
+
+      function f1ValToY(v) {
+        // +10 -> y=34, 0 -> y=140, -10 -> y=246
+        return 140 - v * 10.6;
+      }
+
+      function f1YToVal(y) {
+        var v = Math.round((140 - y) / 10.6);
+        return Math.max(-10, Math.min(10, v));
+      }
+
+      function f1BuildTicks() {
+        var g = byId('f1-ticks');
+        if (!g) return;
+        var html = '';
+        for (var v = -10; v <= 10; v += 2) {
+          var y = f1ValToY(v);
+          var lbl = fmtSigned(v);
+          var color = v > 0 ? 'var(--primary)' : (v < 0 ? 'var(--coral)' : 'var(--sun)');
+          html += `<line x1="274" y1="${y}" x2="288" y2="${y}" stroke="${color}" stroke-width="${v === 0 ? 2.5 : 1.5}" />`;
+          html += `<text x="266" y="${y + 4}" text-anchor="end" fill="${color}" font-family="var(--font-label)" font-size="11" font-weight="600">${lbl}</text>`;
+        }
+        g.innerHTML = html;
+      }
+
+      function f1GenerateRounds() {
+        var r1Target = -rndInt(2, 8);
+        var r2Start = -rndInt(2, 5);
+        var r2Delta = rndInt(4, 9);
+        var r3Start = rndInt(2, 6);
+        var r3Delta = -rndInt(5, 9);
+        f1.rounds = [
+          {
+            type: 'pos',
+            target: r1Target,
+            start: 0,
+            prompt: `Ronda 1/3: Situa el termòmetre a ${Math.abs(r1Target)} graus sota zero (${fmtSigned(r1Target)} °C).`,
+            hint: `«Sota zero» vol dir per sota de la línia groga del 0, a la zona corall.`
+          },
+          {
+            type: 'delta',
+            start: r2Start,
+            delta: r2Delta,
+            target: r2Start + r2Delta,
+            prompt: `Ronda 2/3: Ets a ${fmtSigned(r2Start)} °C i la temperatura puja ${fmtSigned(r2Delta)} °C. On arribes?`,
+            hint: `Comença a ${fmtSigned(r2Start)} i compta ${r2Delta} graus cap amunt, passant pel zero!`
+          },
+          {
+            type: 'delta',
+            start: r3Start,
+            delta: r3Delta,
+            target: r3Start + r3Delta,
+            prompt: `Ronda 3/3: Ets a ${fmtSigned(r3Start)} °C i baixa ${Math.abs(r3Delta)} graus. Quin valor marca ara?`,
+            hint: `Baixar ${Math.abs(r3Delta)} graus des de ${fmtSigned(r3Start)} et fa travessar el 0 fins als negatius.`
+          }
+        ];
+        f1.roundIdx = 0;
+        f1.won = false;
+        f1.val = f1.rounds[0].start;
+      }
+
+      function f1Render() {
+        var v = f1.val;
+        var y = f1ValToY(v);
+        var color = v > 0 ? 'var(--primary)' : (v < 0 ? 'var(--coral)' : 'var(--sun)');
+
+        var merc = byId('f1-mercury');
+        if (merc) {
+          var topY = Math.min(y, 140);
+          var h = Math.max(10, Math.abs(y - 140));
+          merc.setAttribute('y', String(topY));
+          merc.setAttribute('height', String(h));
+          merc.setAttribute('fill', color);
+        }
+
+        var handle = byId('f1-handle');
+        var handleTxt = byId('f1-handle-txt');
+        if (handle) {
+          var c = handle.querySelector('circle');
+          if (c) {
+            c.setAttribute('cy', String(y));
+            c.setAttribute('stroke', color);
+          }
+          if (handleTxt) {
+            handleTxt.setAttribute('y', String(y + 4));
+            handleTxt.textContent = fmtSigned(v);
+          }
+        }
+
+        var vb = byId('f1-val-badge');
+        if (vb) {
+          vb.textContent = `${fmtSigned(v)} °C`;
+          vb.className = v > 0 ? 'val-pos' : (v < 0 ? 'val-neg' : 'val-zero');
+        }
+        var fb = byId('f1-floor-badge');
+        if (fb) {
+          if (v === 0) fb.textContent = `Planta baixa (0)`;
+          else if (v > 0) fb.textContent = `Pis +${v}`;
+          else fb.textContent = `Soterrani ${Math.abs(v)}`;
+        }
+
+        var icon = byId('f1-scene-icon');
+        var title = byId('f1-scene-title');
+        var sub = byId('f1-scene-sub');
+        if (icon && title && sub) {
+          if (v < 0) {
+            icon.textContent = '❄️';
+            title.textContent = `Fred sota zero`;
+            sub.textContent = `${Math.abs(v)} sota el 0`;
+          } else if (v === 0) {
+            icon.textContent = '⚖️';
+            title.textContent = `Frontera exacta`;
+            sub.textContent = `Ni + ni −`;
+          } else {
+            icon.textContent = '☀️';
+            title.textContent = `Sobre zero`;
+            sub.textContent = `${v} per sobre del 0`;
+          }
+        }
+
+        var startMark = byId('f1-start-marker');
+        var arrow = byId('f1-arrow');
+        var deltaChip = byId('f1-delta-chip');
+        var deltaBadge = byId('f1-delta-badge');
+        var isRepte = f1.mode === 'game';
+        var curRound = isRepte ? f1.rounds[f1.roundIdx] : null;
+
+        if (isRepte && curRound && curRound.type === 'delta' && !f1.won) {
+          var sy = f1ValToY(curRound.start);
+          if (startMark) {
+            startMark.setAttribute('opacity', '1');
+            var line = startMark.querySelector('line');
+            var stLbl = byId('f1-start-label');
+            if (line) { line.setAttribute('y1', String(sy)); line.setAttribute('y2', String(sy)); }
+            if (stLbl) { stLbl.setAttribute('y', String(sy + 4)); stLbl.textContent = `Inici: ${fmtSigned(curRound.start)}`; }
+          }
+          if (arrow) {
+            arrow.setAttribute('opacity', v === curRound.start ? '0' : '1');
+            arrow.setAttribute('y1', String(sy));
+            arrow.setAttribute('y2', String(y));
+          }
+          if (deltaChip && deltaBadge) {
+            deltaChip.hidden = false;
+            deltaBadge.textContent = `${fmtSigned(v - curRound.start)} °C`;
+          }
+        } else {
+          if (startMark) startMark.setAttribute('opacity', '0');
+          if (arrow) arrow.setAttribute('opacity', '0');
+          if (deltaChip) deltaChip.hidden = true;
+        }
+
+        var chall = byId('f1-challenge');
+        var challTxt = byId('f1-challenge-text');
+        var checkBtn = byId('f1-check');
+        var replayBtn = byId('f1-replay-btn');
+        if (chall && challTxt && checkBtn && replayBtn) {
+          chall.classList.toggle('is-visible', isRepte);
+          chall.classList.toggle('is-celebrate', f1.won);
+          checkBtn.hidden = !isRepte || f1.won;
+          replayBtn.hidden = !f1.won;
+          if (isRepte) {
+            challTxt.textContent = f1.won ? `⭐ Fitxa 1 superada! Ja domines el termòmetre dels enters.` : curRound.prompt;
+          }
+        }
+        updateRoundDots('f1', f1.roundIdx, f1.won);
+      }
+
+      function f1UpdateExploreFeedback() {
+        var v = f1.val;
+        if (v < 0) setBubble(1, `Estàs a ${fmtSigned(v)} °C: ${Math.abs(v)} graus per sota del zero (com al soterrani ${Math.abs(v)}).`);
+        else if (v === 0) setBubble(1, `El 0 és la frontera: no porta signe, no és ni positiu ni negatiu.`);
+        else setBubble(1, `Estàs a ${fmtSigned(v)} °C: ${v} graus per sobre del zero (pis +${v}).`);
+      }
+
+      function f1Wire() {
+        f1BuildTicks();
+        var svg = byId('f1-svg');
+        var handle = byId('f1-handle');
+        var dragging = false;
+
+        function pointerToVal(ev) {
+          if (!svg) return f1.val;
+          var rect = svg.getBoundingClientRect();
+          var y = ((ev.clientY - rect.top) / rect.height) * 280;
+          return f1YToVal(y);
+        }
+
+        if (svg) {
+          svg.addEventListener('pointerdown', function (ev) {
+            clearWiggle(handle);
+            dragging = true;
+            if (svg.setPointerCapture) svg.setPointerCapture(ev.pointerId);
+            f1.val = pointerToVal(ev);
+            markExplored(1);
+            if (f1.mode === 'explore') f1UpdateExploreFeedback();
+            f1Render();
+          });
+          svg.addEventListener('pointermove', function (ev) {
+            if (!dragging) return;
+            var nv = pointerToVal(ev);
+            if (nv !== f1.val) {
+              f1.val = nv;
+              if (f1.mode === 'explore') f1UpdateExploreFeedback();
+              f1Render();
+            }
+          });
+          svg.addEventListener('pointerup', function () { dragging = false; });
+          svg.addEventListener('pointercancel', function () { dragging = false; });
+        }
+
+        var btnMinus = byId('f1-minus');
+        var btnZero = byId('f1-zero');
+        var btnPlus = byId('f1-plus');
+        if (btnMinus) btnMinus.addEventListener('click', function () {
+          clearWiggle(handle);
+          f1.val = Math.max(-10, f1.val - 1);
+          markExplored(1);
+          if (f1.mode === 'explore') f1UpdateExploreFeedback();
+          f1Render();
+        });
+        if (btnZero) btnZero.addEventListener('click', function () {
+          clearWiggle(handle);
+          f1.val = 0;
+          markExplored(1);
+          if (f1.mode === 'explore') f1UpdateExploreFeedback();
+          f1Render();
+        });
+        if (btnPlus) btnPlus.addEventListener('click', function () {
+          clearWiggle(handle);
+          f1.val = Math.min(10, f1.val + 1);
+          markExplored(1);
+          if (f1.mode === 'explore') f1UpdateExploreFeedback();
+          f1Render();
+        });
+
+        var mExp = byId('f1-mode-explore');
+        var mGame = byId('f1-mode-game');
+        if (mExp) mExp.addEventListener('click', function () {
+          f1.mode = 'explore';
+          mExp.classList.add('is-active');
+          if (mGame) mGame.classList.remove('is-active');
+          f1UpdateExploreFeedback();
+          f1Render();
+        });
+        if (mGame) mGame.addEventListener('click', function () {
+          clearWiggle(handle);
+          f1.mode = 'game';
+          mGame.classList.add('is-active');
+          if (mExp) mExp.classList.remove('is-active');
+          f1GenerateRounds();
+          setBubble(1, `Llegeix l'enunciat i mou el termòmetre fins al valor correcte.`);
+          f1Render();
+        });
+
+        var chk = byId('f1-check');
+        if (chk) chk.addEventListener('click', function () {
+          var r = f1.rounds[f1.roundIdx];
+          if (!r) return;
+          if (f1.val === r.target) {
+            if (f1.roundIdx < 2) {
+              f1.roundIdx++;
+              f1.val = f1.rounds[f1.roundIdx].start;
+              setBubble(1, `Molt bé! Passem a la ronda següent.`, 'success');
+            } else {
+              f1.won = true;
+              markCompleted(1);
+              setBubble(1, `Brillant! Has completat les 3 rondes del termòmetre.`, 'success');
+            }
+            f1Render();
+          } else {
+            setBubble(1, r.hint, 'hint');
+          }
+        });
+
+        var rep = byId('f1-replay-btn');
+        if (rep) rep.addEventListener('click', function () {
+          f1GenerateRounds();
+          setBubble(1, `Nous nombres generats! Resol la ronda 1.`);
+          f1Render();
+        });
+
+        f1Render();
+      }
+
+      /* ---------------- FITXA 2: RECTA NUMÈRICA ---------------- */
+      var f2 = {
+        mode: 'explore',
+        view: 'cmp', // 'cmp' | 'sym'
+        a: -5,
+        b: 3,
+        rounds: [],
+        roundIdx: 0,
+        won: false
+      };
+
+      function f2ValToX(v) {
+        // -8 -> 56, 0 -> 320, +8 -> 584 (pas = 33px)
+        return 320 + v * 33;
+      }
+
+      function f2XToVal(x) {
+        var v = Math.round((x - 320) / 33);
+        return Math.max(-8, Math.min(8, v));
+      }
+
+      function f2BuildTicks() {
+        var g = byId('f2-ticks');
+        if (!g) return;
+        var html = '';
+        for (var v = -8; v <= 8; v++) {
+          var x = f2ValToX(v);
+          var c = v > 0 ? 'var(--primary)' : (v < 0 ? 'var(--coral)' : 'var(--sun)');
+          html += `<line x1="${x}" y1="116" x2="${x}" y2="134" stroke="${c}" stroke-width="${v === 0 ? 3 : 1.5}" />`;
+          html += `<text x="${x}" y="106" text-anchor="middle" fill="${c}" font-family="var(--font-label)" font-size="11" font-weight="600">${fmtSigned(v)}</text>`;
+        }
+        g.innerHTML = html;
+      }
+
+      function f2GenerateRounds() {
+        var low = -rndInt(6, 7);
+        var high = -rndInt(1, 2);
+        var oppRef = rndInt(0, 1) === 0 ? rndInt(3, 7) : -rndInt(3, 7);
+        var absVal = rndInt(3, 7);
+        f2.rounds = [
+          {
+            type: 'between',
+            low: low,
+            high: high,
+            prompt: `Ronda 1/3: Col·loca A en un enter més gran que ${fmtSigned(low)} i més petit que ${fmtSigned(high)}.`,
+            check: function (a) { return a > low && a < high; },
+            hint: `A la recta, més gran vol dir més a la dreta que ${fmtSigned(low)}, i més petit vol dir a l'esquerra de ${fmtSigned(high)}.`
+          },
+          {
+            type: 'opp',
+            refB: oppRef,
+            target: -oppRef,
+            prompt: `Ronda 2/3: El punt B és a ${fmtSigned(oppRef)}. Situa A al seu oposat!`,
+            check: function (a) { return a === -oppRef; },
+            hint: `L'oposat té la mateixa distància fins al 0, però al costat contrari de la recta.`
+          },
+          {
+            type: 'absneg',
+            absTarget: absVal,
+            target: -absVal,
+            prompt: `Ronda 3/3: Col·loca A en un nombre negatiu amb valor absolut |A| = ${absVal}.`,
+            check: function (a) { return a === -absVal; },
+            hint: `Busca la distància ${absVal} des del zero cap a l'esquerra (zona corall).`
+          }
+        ];
+        f2.roundIdx = 0;
+        f2.won = false;
+        f2.a = 0;
+        f2.b = oppRef;
+      }
+
+      function f2Render() {
+        var a = f2.a;
+        var bDisp = (f2.mode === 'explore' && f2.view === 'sym') ? -a : f2.b;
+        var isRepte = f2.mode === 'game';
+        var cur = isRepte ? f2.rounds[f2.roundIdx] : null;
+        if (cur && cur.type === 'opp' && !f2.won) bDisp = cur.refB;
+
+        var ax = f2ValToX(a);
+        var bx = f2ValToX(bDisp);
+
+        var pA = byId('f2-point-a');
+        if (pA) {
+          var cA = byId('f2-a-circle');
+          var lA = byId('f2-a-label');
+          var colA = a > 0 ? 'var(--primary)' : (a < 0 ? 'var(--coral)' : 'var(--sun)');
+          if (cA) { cA.setAttribute('cx', String(ax)); cA.setAttribute('fill', colA); }
+          if (lA) { lA.setAttribute('x', String(ax)); lA.textContent = `A (${fmtSigned(a)})`; }
+        }
+
+        var pB = byId('f2-point-b');
+        var showB = (f2.mode === 'explore') || (cur && cur.type === 'opp' && !f2.won);
+        if (pB) {
+          pB.setAttribute('opacity', showB ? '1' : '0');
+          var cB = pB.querySelector('circle');
+          var lB = byId('f2-b-label');
+          if (cB) cB.setAttribute('cx', String(bx));
+          if (lB) {
+            lB.setAttribute('x', String(bx));
+            lB.textContent = (f2.mode === 'explore' && f2.view === 'sym') ? `Oposat (${fmtSigned(bDisp)})` : `B (${fmtSigned(bDisp)})`;
+          }
+        }
+
+        var arc = byId('f2-abs-arc');
+        var arcTxt = byId('f2-abs-txt');
+        if (arc && arcTxt) {
+          var midX = (320 + ax) / 2;
+          arc.setAttribute('d', `M 320 116 Q ${midX} 56 ${ax} 116`);
+          arc.setAttribute('opacity', a === 0 ? '0.2' : '1');
+          arcTxt.setAttribute('x', String(midX));
+          arcTxt.textContent = `|${fmtSigned(a)}| = ${Math.abs(a)}`;
+        }
+
+        var av = byId('f2-a-val');
+        if (av) {
+          av.textContent = fmtSigned(a);
+          av.className = a > 0 ? 'val-pos' : (a < 0 ? 'val-neg' : 'val-zero');
+        }
+        var cmpV = byId('f2-cmp-val');
+        if (cmpV) {
+          var sym = a < bDisp ? '<' : (a > bDisp ? '>' : '=');
+          cmpV.textContent = `${fmtSigned(a)} ${sym} ${fmtSigned(bDisp)}`;
+        }
+        var absV = byId('f2-abs-val');
+        if (absV) absV.textContent = String(Math.abs(a));
+        var oppV = byId('f2-opp-val');
+        if (oppV) oppV.textContent = fmtSigned(-a);
+
+        var chall = byId('f2-challenge');
+        var challTxt = byId('f2-challenge-text');
+        var chk = byId('f2-check');
+        var rep = byId('f2-replay-btn');
+        if (chall && challTxt && chk && rep) {
+          chall.classList.toggle('is-visible', isRepte);
+          chall.classList.toggle('is-celebrate', f2.won);
+          chk.hidden = !isRepte || f2.won;
+          rep.hidden = !f2.won;
+          if (isRepte) {
+            challTxt.textContent = f2.won ? `⭐ Fitxa 2 superada! Ja saps ordenar enters, trobar oposats i distàncies.` : cur.prompt;
+          }
+        }
+        updateRoundDots('f2', f2.roundIdx, f2.won);
+      }
+
+      function f2UpdateFeedback() {
+        var a = f2.a;
+        var b = f2.view === 'sym' ? -a : f2.b;
+        if (f2.view === 'sym') {
+          setBubble(2, `|${fmtSigned(a)}| = ${Math.abs(a)} (distància al 0). El seu oposat és ${fmtSigned(-a)}, just a l'altra banda del mirall.`);
+        } else if (a < b) {
+          setBubble(2, `${fmtSigned(a)} queda a l'esquerra de ${fmtSigned(b)}, per tant ${fmtSigned(a)} < ${fmtSigned(b)}.`);
+        } else if (a > b) {
+          setBubble(2, `${fmtSigned(a)} queda més a la dreta que ${fmtSigned(b)}, per tant ${fmtSigned(a)} > ${fmtSigned(b)}.`);
+        } else {
+          setBubble(2, `A i B són al mateix punt (${fmtSigned(a)}).`);
+        }
+      }
+
+      function f2Wire() {
+        f2BuildTicks();
+        var svg = byId('f2-svg');
+        var dragging = false;
+        function pxToVal(ev) {
+          var rect = svg.getBoundingClientRect();
+          var x = ((ev.clientX - rect.left) / rect.width) * 640;
+          return f2XToVal(x);
+        }
+        if (svg) {
+          svg.addEventListener('pointerdown', function (ev) {
+            dragging = true;
+            if (svg.setPointerCapture) svg.setPointerCapture(ev.pointerId);
+            f2.a = pxToVal(ev);
+            markExplored(2);
+            if (f2.mode === 'explore') f2UpdateFeedback();
+            f2Render();
+          });
+          svg.addEventListener('pointermove', function (ev) {
+            if (!dragging) return;
+            var nv = pxToVal(ev);
+            if (nv !== f2.a) {
+              f2.a = nv;
+              if (f2.mode === 'explore') f2UpdateFeedback();
+              f2Render();
+            }
+          });
+          svg.addEventListener('pointerup', function () { dragging = false; });
+          svg.addEventListener('pointercancel', function () { dragging = false; });
+        }
+
+        var vCmp = byId('f2-view-cmp');
+        var vSym = byId('f2-view-sym');
+        if (vCmp) vCmp.addEventListener('click', function () {
+          f2.view = 'cmp';
+          vCmp.classList.add('is-active');
+          if (vSym) vSym.classList.remove('is-active');
+          markExplored(2);
+          if (f2.mode === 'explore') f2UpdateFeedback();
+          f2Render();
+        });
+        if (vSym) vSym.addEventListener('click', function () {
+          f2.view = 'sym';
+          vSym.classList.add('is-active');
+          if (vCmp) vCmp.classList.remove('is-active');
+          markExplored(2);
+          if (f2.mode === 'explore') f2UpdateFeedback();
+          f2Render();
+        });
+
+        var aMinus = byId('f2-a-minus');
+        var aPlus = byId('f2-a-plus');
+        if (aMinus) aMinus.addEventListener('click', function () {
+          f2.a = Math.max(-8, f2.a - 1);
+          markExplored(2);
+          if (f2.mode === 'explore') f2UpdateFeedback();
+          f2Render();
+        });
+        if (aPlus) aPlus.addEventListener('click', function () {
+          f2.a = Math.min(8, f2.a + 1);
+          markExplored(2);
+          if (f2.mode === 'explore') f2UpdateFeedback();
+          f2Render();
+        });
+
+        var mExp = byId('f2-mode-explore');
+        var mGame = byId('f2-mode-game');
+        if (mExp) mExp.addEventListener('click', function () {
+          f2.mode = 'explore';
+          mExp.classList.add('is-active');
+          if (mGame) mGame.classList.remove('is-active');
+          f2UpdateFeedback();
+          f2Render();
+        });
+        if (mGame) mGame.addEventListener('click', function () {
+          f2.mode = 'game';
+          mGame.classList.add('is-active');
+          if (mExp) mExp.classList.remove('is-active');
+          f2GenerateRounds();
+          setBubble(2, `Toca la recta per col·locar el punt A on demana la ronda.`);
+          f2Render();
+        });
+
+        var chk = byId('f2-check');
+        if (chk) chk.addEventListener('click', function () {
+          var r = f2.rounds[f2.roundIdx];
+          if (!r) return;
+          if (r.check(f2.a)) {
+            if (f2.roundIdx < 2) {
+              f2.roundIdx++;
+              f2.a = 0;
+              setBubble(2, `Encertat! Anem per la següent ronda.`, 'success');
+            } else {
+              f2.won = true;
+              markCompleted(2);
+              setBubble(2, `Fantàstic! Has guanyat l'estrella de la recta numèrica.`, 'success');
+            }
+            f2Render();
+          } else {
+            setBubble(2, r.hint, 'hint');
+          }
+        });
+
+        var rep = byId('f2-replay-btn');
+        if (rep) rep.addEventListener('click', function () {
+          f2GenerateRounds();
+          setBubble(2, `Nous reptes preparats! Toca la recta.`);
+          f2Render();
+        });
+
+        f2Render();
+      }
+
+      /* ---------------- FITXA 3: TALONS I FACTURES ---------------- */
+      var f3 = {
+        mode: 'explore',
+        start: -2,
+        op: '-', // '+' | '-'
+        docSign: -1, // +1 taló | -1 factura
+        amount: 5,
+        guessEnd: 3,
+        rounds: [],
+        roundIdx: 0,
+        won: false
+      };
+
+      function f3ValToX(v) {
+        return 320 + v * 28;
+      }
+
+      function f3XToVal(x) {
+        var v = Math.round((x - 320) / 28);
+        return Math.max(-9, Math.min(9, v));
+      }
+
+      function f3BuildTicks() {
+        var g = byId('f3-ticks');
+        if (!g) return;
+        var html = '';
+        for (var v = -9; v <= 9; v++) {
+          var x = f3ValToX(v);
+          var c = v > 0 ? 'var(--primary)' : (v < 0 ? 'var(--coral)' : 'var(--sun)');
+          html += `<line x1="${x}" y1="142" x2="${x}" y2="158" stroke="${c}" stroke-width="${v === 0 ? 3 : 1.5}" />`;
+          if (v % 2 === 0 || v === -9 || v === 9) {
+            html += `<text x="${x}" y="175" text-anchor="middle" fill="${c}" font-family="var(--font-label)" font-size="11" font-weight="600">${fmtSigned(v)}</text>`;
+          }
+        }
+        g.innerHTML = html;
+      }
+
+      function f3GenerateRounds() {
+        var c1 = { start: -rndInt(2, 4), op: '-', docSign: -1, amount: rndInt(4, 7) }; // -(-a) = +a
+        var c2 = { start: rndInt(1, 3), op: '+', docSign: -1, amount: rndInt(4, 6) };  // +(-a) = -a
+        var c3 = { start: -rndInt(1, 3), op: '-', docSign: 1, amount: rndInt(3, 5) };  // -(+a) = -a
+        f3.rounds = [
+          {
+            start: c1.start, op: c1.op, docSign: c1.docSign, amount: c1.amount,
+            target: c1.start + c1.amount,
+            prompt: `Ronda 1/3: Tens ${fmtSigned(c1.start)} € i et perdonen una factura de ${c1.amount} €: ${fmtParen(c1.start)} − (−${c1.amount}). Toca on aterra!`,
+            hint: `−(−${c1.amount}) vol dir anul·lar un deute: són dos signes iguals, així que sumes +${c1.amount} cap a la dreta!`
+          },
+          {
+            start: c2.start, op: c2.op, docSign: c2.docSign, amount: c2.amount,
+            target: c2.start - c2.amount,
+            prompt: `Ronda 2/3: Tens ${fmtSigned(c2.start)} € i t'arriba una factura de ${c2.amount} €: ${fmtParen(c2.start)} + (−${c2.amount}). On arribes?`,
+            hint: `+(−${c2.amount}) té signes diferents (+ i −), per tant perds ${c2.amount} € cap a l'esquerra.`
+          },
+          {
+            start: c3.start, op: c3.op, docSign: c3.docSign, amount: c3.amount,
+            target: c3.start - c3.amount,
+            prompt: `Ronda 3/3: Resol ${fmtParen(c3.start)} − (+${c3.amount}) movent el personatge a la recta.`,
+            hint: `−(+${c3.amount}) és entregar un taló: signes diferents donen −${c3.amount}.`
+          }
+        ];
+        f3.roundIdx = 0;
+        f3.won = false;
+        f3.guessEnd = f3.rounds[0].start;
+      }
+
+      function f3Render() {
+        var isRepte = f3.mode === 'game';
+        var cur = isRepte ? f3.rounds[f3.roundIdx] : null;
+        var st = (isRepte && cur && !f3.won) ? cur.start : f3.start;
+        var op = (isRepte && cur && !f3.won) ? cur.op : f3.op;
+        var docSign = (isRepte && cur && !f3.won) ? cur.docSign : f3.docSign;
+        var amt = (isRepte && cur && !f3.won) ? cur.amount : f3.amount;
+
+        var delta = (op === '+' ? 1 : -1) * (docSign * amt);
+        var realEnd = st + delta;
+        var shownEnd = (isRepte && !f3.won) ? f3.guessEnd : realEnd;
+
+        var sx = f3ValToX(st);
+        var ex = f3ValToX(shownEnd);
+        var midX = (sx + ex) / 2;
+
+        var sDot = byId('f3-start-dot');
+        var sTxt = byId('f3-start-txt');
+        if (sDot) sDot.setAttribute('cx', String(sx));
+        if (sTxt) { sTxt.setAttribute('x', String(sx)); sTxt.textContent = `Inici ${fmtSigned(st)}`; }
+
+        var jumper = byId('f3-jumper');
+        var jHead = byId('f3-jumper-head');
+        var jTxt = byId('f3-jumper-txt');
+        var col = shownEnd > 0 ? 'var(--primary)' : (shownEnd < 0 ? 'var(--coral)' : 'var(--sun)');
+        if (jumper) jumper.setAttribute('transform', `translate(${ex}, 128)`);
+        if (jHead) jHead.setAttribute('fill', col);
+        if (jTxt) jTxt.textContent = fmtSigned(shownEnd);
+
+        var arc = byId('f3-jump-arc');
+        var jLbl = byId('f3-jump-label');
+        var arcCol = (shownEnd - st) >= 0 ? 'var(--tertiary)' : 'var(--coral)';
+        if (arc) {
+          arc.setAttribute('d', `M ${sx} 134 Q ${midX} 44 ${ex} 134`);
+          arc.setAttribute('stroke', arcCol);
+        }
+        if (jLbl) {
+          jLbl.setAttribute('x', String(midX));
+          jLbl.setAttribute('fill', arcCol);
+          if (isRepte && !f3.won) {
+            jLbl.textContent = `Salt triat: ${fmtSigned(shownEnd - st)}`;
+          } else {
+            jLbl.textContent = `${fmtSigned(delta)} (${delta >= 0 ? 'cap a la dreta' : 'cap a l\'esquerra'})`;
+          }
+        }
+
+        var exprEl = byId('f3-expr');
+        var simpEl = byId('f3-simp');
+        var resEl = byId('f3-res');
+        if (exprEl) exprEl.textContent = `${fmtParen(st)} ${op} ${fmtParen(docSign * amt)}`;
+        if (simpEl) {
+          if (isRepte && !f3.won) {
+            simpEl.textContent = `?`;
+            simpEl.className = 'val-zero';
+          } else {
+            simpEl.textContent = `${fmtSigned(st)} ${delta >= 0 ? '+' : '−'} ${Math.abs(delta)}`;
+            simpEl.className = delta >= 0 ? 'val-pos' : 'val-neg';
+          }
+        }
+        if (resEl) {
+          resEl.textContent = (isRepte && !f3.won) ? `${fmtSigned(shownEnd)} € (triat)` : `${fmtSigned(realEnd)} €`;
+          resEl.className = shownEnd > 0 ? 'val-pos' : (shownEnd < 0 ? 'val-neg' : 'val-zero');
+        }
+
+        var expCtrls = byId('f3-explore-ctrls');
+        if (expCtrls) expCtrls.style.display = isRepte ? 'none' : 'flex';
+        var chall = byId('f3-challenge');
+        var challTxt = byId('f3-challenge-text');
+        var chk = byId('f3-check');
+        var rep = byId('f3-replay-btn');
+        if (chall && challTxt && chk && rep) {
+          chall.classList.toggle('is-visible', isRepte);
+          chall.classList.toggle('is-celebrate', f3.won);
+          chk.hidden = !isRepte || f3.won;
+          rep.hidden = !f3.won;
+          if (isRepte) {
+            challTxt.textContent = f3.won ? `⭐ Fitxa 3 superada! Ja domines els talons, les factures i els parèntesis.` : cur.prompt;
+          }
+        }
+        updateRoundDots('f3', f3.roundIdx, f3.won);
+      }
+
+      function f3UpdateExploreFeedback() {
+        var delta = (f3.op === '+' ? 1 : -1) * (f3.docSign * f3.amount);
+        var res = f3.start + delta;
+        var story = '';
+        if (f3.op === '+' && f3.docSign === 1) story = `Ingressar un taló de ${f3.amount} € suma +${f3.amount}.`;
+        else if (f3.op === '+' && f3.docSign === -1) story = `Rebre una factura de ${f3.amount} € resta −${f3.amount}.`;
+        else if (f3.op === '-' && f3.docSign === 1) story = `Entregar un taló de ${f3.amount} € resta −${f3.amount}.`;
+        else story = `Que t'anul·lin una factura de ${f3.amount} € és bo: −(−${f3.amount}) = +${f3.amount}!`;
+        setBubble(3, `${story} Surts de ${fmtSigned(f3.start)} i arribes a ${fmtSigned(res)} €.`);
+      }
+
+      function f3Wire() {
+        f3BuildTicks();
+        var svg = byId('f3-svg');
+        if (svg) {
+          svg.addEventListener('pointerdown', function (ev) {
+            var rect = svg.getBoundingClientRect();
+            var x = ((ev.clientX - rect.left) / rect.width) * 640;
+            var v = f3XToVal(x);
+            markExplored(3);
+            if (f3.mode === 'game' && !f3.won) {
+              f3.guessEnd = v;
+              f3Render();
+            }
+          });
+        }
+
+        var opAdd = byId('f3-op-add');
+        var opSub = byId('f3-op-sub');
+        var docPos = byId('f3-doc-pos');
+        var docNeg = byId('f3-doc-neg');
+        var startBtn = byId('f3-start-step');
+        var valBtn = byId('f3-val-step');
+
+        function clampAndSync() {
+          var delta = (f3.op === '+' ? 1 : -1) * (f3.docSign * f3.amount);
+          if (f3.start + delta > 9) f3.start = 9 - delta;
+          if (f3.start + delta < -9) f3.start = -9 - delta;
+          if (startBtn) startBtn.textContent = `Inici: ${fmtSigned(f3.start)}`;
+          if (valBtn) valBtn.textContent = `Import: ${f3.amount} €`;
+        }
+
+        if (opAdd) opAdd.addEventListener('click', function () {
+          f3.op = '+';
+          opAdd.classList.add('is-active');
+          if (opSub) opSub.classList.remove('is-active');
+          markExplored(3);
+          clampAndSync();
+          f3UpdateExploreFeedback();
+          f3Render();
+        });
+        if (opSub) opSub.addEventListener('click', function () {
+          f3.op = '-';
+          opSub.classList.add('is-active');
+          if (opAdd) opAdd.classList.remove('is-active');
+          markExplored(3);
+          clampAndSync();
+          f3UpdateExploreFeedback();
+          f3Render();
+        });
+        if (docPos) docPos.addEventListener('click', function () {
+          f3.docSign = 1;
+          docPos.classList.add('is-active');
+          if (docNeg) docNeg.classList.remove('is-active');
+          markExplored(3);
+          clampAndSync();
+          f3UpdateExploreFeedback();
+          f3Render();
+        });
+        if (docNeg) docNeg.addEventListener('click', function () {
+          f3.docSign = -1;
+          docNeg.classList.add('is-active');
+          if (docPos) docPos.classList.remove('is-active');
+          markExplored(3);
+          clampAndSync();
+          f3UpdateExploreFeedback();
+          f3Render();
+        });
+        if (startBtn) startBtn.addEventListener('click', function () {
+          var opts = [-4, -2, 0, 2, 4];
+          var idx = opts.indexOf(f3.start);
+          f3.start = opts[(idx + 1) % opts.length];
+          markExplored(3);
+          clampAndSync();
+          f3UpdateExploreFeedback();
+          f3Render();
+        });
+        if (valBtn) valBtn.addEventListener('click', function () {
+          f3.amount = f3.amount >= 6 ? 2 : f3.amount + 1;
+          markExplored(3);
+          clampAndSync();
+          f3UpdateExploreFeedback();
+          f3Render();
+        });
+
+        var mExp = byId('f3-mode-explore');
+        var mGame = byId('f3-mode-game');
+        if (mExp) mExp.addEventListener('click', function () {
+          f3.mode = 'explore';
+          mExp.classList.add('is-active');
+          if (mGame) mGame.classList.remove('is-active');
+          f3UpdateExploreFeedback();
+          f3Render();
+        });
+        if (mGame) mGame.addEventListener('click', function () {
+          f3.mode = 'game';
+          mGame.classList.add('is-active');
+          if (mExp) mExp.classList.remove('is-active');
+          f3GenerateRounds();
+          setBubble(3, `Toca la casella de la recta on creus que aterra el personatge.`);
+          f3Render();
+        });
+
+        var chk = byId('f3-check');
+        if (chk) chk.addEventListener('click', function () {
+          var r = f3.rounds[f3.roundIdx];
+          if (!r) return;
+          if (f3.guessEnd === r.target) {
+            if (f3.roundIdx < 2) {
+              f3.roundIdx++;
+              f3.guessEnd = f3.rounds[f3.roundIdx].start;
+              setBubble(3, `Exacte! Salt net cap a ${fmtSigned(r.target)}. Anem a la següent!`, 'success');
+            } else {
+              f3.won = true;
+              markCompleted(3);
+              setBubble(3, `Mestre dels parèntesis! Has completat les 3 rondes.`, 'success');
+            }
+            f3Render();
+          } else {
+            setBubble(3, r.hint, 'hint');
+          }
+        });
+
+        var rep = byId('f3-replay-btn');
+        if (rep) rep.addEventListener('click', function () {
+          f3GenerateRounds();
+          setBubble(3, `Nous talons i factures! Toca el punt d'arribada.`);
+          f3Render();
+        });
+
+        f3Render();
+      }
+
+      /* ---------------- FITXA 4: MÀQUINA DELS SIGNES ---------------- */
+      var f4 = {
+        mode: 'explore',
+        op: 'mul', // 'mul' | 'div'
+        signA: -1,
+        valA: 4,
+        signB: -1,
+        valB: 5,
+        pairIdx: 0,
+        rounds: [],
+        roundIdx: 0,
+        won: false
+      };
+      var f4Pairs = [
+        [4, 5],
+        [3, 7],
+        [6, 3],
+        [5, 2]
+      ];
+
+      function f4Compute() {
+        var a = f4.signA * f4.valA;
+        var b = f4.signB * f4.valB;
+        if (f4.op === 'mul') {
+          return { a: a, b: b, res: a * b };
+        } else {
+          // En divisió, fem que A sigui múltiple exacte de B
+          var dividend = f4.signA * (f4.valA * f4.valB);
+          return { a: dividend, b: b, res: dividend / b };
+        }
+      }
+
+      function f4GenerateRounds() {
+        var p1 = [3, 6][rndInt(0, 1)];
+        var p2 = [4, 5][rndInt(0, 1)];
+        var divB = [3, 4][rndInt(0, 1)];
+        f4.rounds = [
+          {
+            op: 'mul',
+            fixedA: -p1,
+            valB: p2,
+            targetSign: 1,
+            prompt: `Ronda 1/3: Multiplica (${fmtSigned(-p1)}) per (±${p2}) per obtenir un resultat POSITIU (+${p1 * p2}). Ajusta el signe de B!`,
+            check: function (d) { return d.res === p1 * p2 && f4.signA === -1 && f4.signB === -1; },
+            hint: `El primer factor és negatiu. Per aconseguir signe positiu (+), els dos factors han de tenir el mateix signe!`
+          },
+          {
+            op: 'mul',
+            fixedA: p2,
+            valB: p1,
+            targetSign: -1,
+            prompt: `Ronda 2/3: Aconsegueix −${p1 * p2} multiplicant amb signes diferents!`,
+            check: function (d) { return d.res === -(p1 * p2); },
+            hint: `Per treure resultat negatiu (−), un engranatge ha de ser + i l'altre −.`
+          },
+          {
+            op: 'div',
+            fixedA: -(divB * 4),
+            valB: divB,
+            targetSign: 1,
+            prompt: `Ronda 3/3: Canvia a DIVISIÓ (:) i ajusta els signes perquè (${fmtSigned(-(divB * 4))}) : (±${divB}) doni +4!`,
+            check: function (d) { return f4.op === 'div' && d.res === 4; },
+            hint: `Activa «: Divideix» i recorda: negatiu dividit entre negatiu dona positiu!`
+          }
+        ];
+        f4.roundIdx = 0;
+        f4.won = false;
+        f4ApplyRoundSetup();
+      }
+
+      function f4ApplyRoundSetup() {
+        var r = f4.rounds[f4.roundIdx];
+        if (!r) return;
+        f4.op = r.op;
+        if (r.op === 'mul') {
+          f4.signA = r.fixedA < 0 ? -1 : 1;
+          f4.valA = Math.abs(r.fixedA);
+          f4.signB = 1;
+          f4.valB = r.valB;
+        } else {
+          f4.signA = -1;
+          f4.valA = 4;
+          f4.signB = 1;
+          f4.valB = r.valB;
+        }
+      }
+
+      function f4Render() {
+        var d = f4Compute();
+        var colA = d.a >= 0 ? 'var(--primary)' : 'var(--coral)';
+        var colB = d.b >= 0 ? 'var(--primary)' : 'var(--coral)';
+        var colOut = d.res >= 0 ? 'var(--tertiary)' : 'var(--coral)';
+
+        var gaRing = byId('f4-gear-a-ring');
+        var gaTxt = byId('f4-gear-a-txt');
+        if (gaRing) gaRing.setAttribute('stroke', colA);
+        if (gaTxt) { gaTxt.setAttribute('fill', colA); gaTxt.textContent = fmtSigned(d.a); }
+
+        var gbRing = byId('f4-gear-b-ring');
+        var gbTxt = byId('f4-gear-b-txt');
+        if (gbRing) gbRing.setAttribute('stroke', colB);
+        if (gbTxt) { gbTxt.setAttribute('fill', colB); gbTxt.textContent = fmtSigned(d.b); }
+
+        var opTxt = byId('f4-op-txt');
+        if (opTxt) opTxt.textContent = f4.op === 'mul' ? '·' : ':';
+
+        var outBox = byId('f4-out-box');
+        var outTxt = byId('f4-out-txt');
+        var outNote = byId('f4-out-note');
+        if (outBox) outBox.setAttribute('stroke', colOut);
+        if (outTxt) { outTxt.setAttribute('fill', colOut); outTxt.textContent = fmtSigned(d.res); }
+        if (outNote) outNote.textContent = (f4.signA === f4.signB) ? `Signes iguals → +` : `Signes diferents → −`;
+
+        var expr = byId('f4-expr');
+        var rule = byId('f4-rule');
+        var sym = f4.op === 'mul' ? '·' : ':';
+        if (expr) expr.textContent = `${fmtParen(d.a)} ${sym} ${fmtParen(d.b)} = ${fmtSigned(d.res)}`;
+        if (rule) {
+          var sA = d.a >= 0 ? '(+)' : '(−)';
+          var sB = d.b >= 0 ? '(+)' : '(−)';
+          var sR = d.res >= 0 ? '(+)' : '(−)';
+          rule.textContent = `${sA} ${sym} ${sB} = ${sR}`;
+          rule.className = d.res >= 0 ? 'val-pos' : 'val-neg';
+        }
+
+        var btnMul = byId('f4-op-mul');
+        var btnDiv = byId('f4-op-div');
+        if (btnMul) btnMul.classList.toggle('is-active', f4.op === 'mul');
+        if (btnDiv) btnDiv.classList.toggle('is-active', f4.op === 'div');
+
+        var flA = byId('f4-flip-a');
+        var flB = byId('f4-flip-b');
+        if (flA) {
+          flA.textContent = `Signe A (${f4.signA > 0 ? '+' : '−'})`;
+          flA.className = f4.signA > 0 ? 'btn btn-cyan' : 'btn btn-coral';
+        }
+        if (flB) {
+          flB.textContent = `Signe B (${f4.signB > 0 ? '+' : '−'})`;
+          flB.className = f4.signB > 0 ? 'btn btn-cyan' : 'btn btn-coral';
+        }
+
+        var isRepte = f4.mode === 'game';
+        var chall = byId('f4-challenge');
+        var challTxt = byId('f4-challenge-text');
+        var chk = byId('f4-check');
+        var rep = byId('f4-replay-btn');
+        var cyc = byId('f4-cycle-nums');
+        if (cyc) cyc.hidden = isRepte;
+        if (chall && challTxt && chk && rep) {
+          chall.classList.toggle('is-visible', isRepte);
+          chall.classList.toggle('is-celebrate', f4.won);
+          chk.hidden = !isRepte || f4.won;
+          rep.hidden = !f4.won;
+          if (isRepte) {
+            challTxt.textContent = f4.won ? `⭐ Fitxa 4 superada! La regla dels signes no se t'escapa.` : f4.rounds[f4.roundIdx].prompt;
+          }
+        }
+        updateRoundDots('f4', f4.roundIdx, f4.won);
+      }
+
+      function f4UpdateExploreFeedback() {
+        var d = f4Compute();
+        var same = f4.signA === f4.signB;
+        if (f4.op === 'mul' && f4.signA === -1 && f4.signB === -1) {
+          setBubble(4, `Anul·lar ${f4.valA} factures de ${f4.valB} € et fa guanyar +${Math.abs(d.res)} €. Signes iguals → +!`);
+        } else if (same) {
+          setBubble(4, `Tots dos engranatges tenen el mateix signe: el resultat sempre surt positiu (${fmtSigned(d.res)}).`);
+        } else {
+          setBubble(4, `Un engranatge és + i l'altre −: signes diferents sempre donen resultat negatiu (${fmtSigned(d.res)}).`);
+        }
+      }
+
+      function f4Wire() {
+        function flipA() {
+          f4.signA *= -1;
+          markExplored(4);
+          if (f4.mode === 'explore') f4UpdateExploreFeedback();
+          f4Render();
+        }
+        function flipB() {
+          f4.signB *= -1;
+          markExplored(4);
+          if (f4.mode === 'explore') f4UpdateExploreFeedback();
+          f4Render();
+        }
+
+        var gA = byId('f4-gear-a');
+        var gB = byId('f4-gear-b');
+        var bA = byId('f4-flip-a');
+        var bB = byId('f4-flip-b');
+        if (gA) gA.addEventListener('click', flipA);
+        if (bA) bA.addEventListener('click', flipA);
+        if (gB) gB.addEventListener('click', flipB);
+        if (bB) bB.addEventListener('click', flipB);
+
+        var mulBtn = byId('f4-op-mul');
+        var divBtn = byId('f4-op-div');
+        if (mulBtn) mulBtn.addEventListener('click', function () {
+          f4.op = 'mul';
+          markExplored(4);
+          if (f4.mode === 'explore') f4UpdateExploreFeedback();
+          f4Render();
+        });
+        if (divBtn) divBtn.addEventListener('click', function () {
+          f4.op = 'div';
+          markExplored(4);
+          if (f4.mode === 'explore') f4UpdateExploreFeedback();
+          f4Render();
+        });
+
+        var cyc = byId('f4-cycle-nums');
+        if (cyc) cyc.addEventListener('click', function () {
+          f4.pairIdx = (f4.pairIdx + 1) % f4Pairs.length;
+          f4.valA = f4Pairs[f4.pairIdx][0];
+          f4.valB = f4Pairs[f4.pairIdx][1];
+          markExplored(4);
+          f4UpdateExploreFeedback();
+          f4Render();
+        });
+
+        var mExp = byId('f4-mode-explore');
+        var mGame = byId('f4-mode-game');
+        if (mExp) mExp.addEventListener('click', function () {
+          f4.mode = 'explore';
+          mExp.classList.add('is-active');
+          if (mGame) mGame.classList.remove('is-active');
+          f4UpdateExploreFeedback();
+          f4Render();
+        });
+        if (mGame) mGame.addEventListener('click', function () {
+          f4.mode = 'game';
+          mGame.classList.add('is-active');
+          if (mExp) mExp.classList.remove('is-active');
+          f4GenerateRounds();
+          setBubble(4, `Toca els engranatges o botons de signe per preparar la màquina.`);
+          f4Render();
+        });
+
+        var chk = byId('f4-check');
+        if (chk) chk.addEventListener('click', function () {
+          var r = f4.rounds[f4.roundIdx];
+          var d = f4Compute();
+          if (!r) return;
+          if (r.check(d)) {
+            if (f4.roundIdx < 2) {
+              f4.roundIdx++;
+              f4ApplyRoundSetup();
+              setBubble(4, `Clavat! La màquina funciona a la perfecció.`, 'success');
+            } else {
+              f4.won = true;
+              markCompleted(4);
+              setBubble(4, `Genial! Has superat tots els reptes de la màquina dels signes.`, 'success');
+            }
+            f4Render();
+          } else {
+            setBubble(4, r.hint, 'hint');
+          }
+        });
+
+        var rep = byId('f4-replay-btn');
+        if (rep) rep.addEventListener('click', function () {
+          f4GenerateRounds();
+          setBubble(4, `Nous reptes llestos! Ajusta els signes.`);
+          f4Render();
+        });
+
+        f4Render();
+      }
+
+      /* ---------------- FITXA 5: PA · MU · SU ---------------- */
+      var f5 = {
+        mode: 'explore',
+        presetIdx: 0,
+        stepIdx: 0,
+        history: [],
+        rounds: [],
+        roundIdx: 0,
+        won: false
+      };
+
+      var f5Presets = [
+        {
+          title: `20 − (9 − 12) · (+4)`,
+          steps: [
+            {
+              stage: 'pa',
+              tokens: [
+                { text: `20`, kind: 'static', ok: false },
+                { text: `20 − (9 − 12)`, kind: 'add', ok: false, hint: `Encara queda un parèntesi! Segons PA·MU·SU, comença pel parèntesi.` },
+                { text: `(9 − 12)`, kind: 'paren', ok: true, msg: `1r PArèntesi: 9 − 12 = −3.` },
+                { text: `· (+4)`, kind: 'static', ok: false }
+              ],
+              line: `20 − (9 − 12) · (+4)`
+            },
+            {
+              stage: 'mu',
+              tokens: [
+                { text: `20 − (−3)`, kind: 'add', ok: false, hint: `Compte! No facis la resta abans que la multiplicació.` },
+                { text: `(−3) · (+4)`, kind: 'mul', ok: true, msg: `2n MUltiplicació: (−3) · (+4) = −12.` }
+              ],
+              line: `20 − (−3) · (+4)`
+            },
+            {
+              stage: 'su',
+              tokens: [
+                { text: `20 − (−12)`, kind: 'add', ok: true, msg: `3r SUma/Resta: 20 − (−12) = 20 + 12 = +32!` }
+              ],
+              line: `20 − (−12)`
+            }
+          ],
+          finalVal: `+32`
+        },
+        {
+          title: `(−20) : (10 − 6) − (−3) · (−3)`,
+          steps: [
+            {
+              stage: 'pa',
+              tokens: [
+                { text: `(−20) :`, kind: 'static', ok: false },
+                { text: `(10 − 6)`, kind: 'paren', ok: true, msg: `1r PArèntesi: 10 − 6 = +4.` },
+                { text: `− (−3) · (−3)`, kind: 'static', ok: false }
+              ],
+              line: `(−20) : (10 − 6) − (−3) · (−3)`
+            },
+            {
+              stage: 'mu',
+              tokens: [
+                { text: `(−20) : 4`, kind: 'mul', ok: true, msg: `2n Divisió: (−20) : 4 = −5.` },
+                { text: `4 − (−3)`, kind: 'add', ok: false, hint: `Primer les divisions i multiplicacions, després restes!` },
+                { text: `(−3) · (−3)`, kind: 'static', ok: false }
+              ],
+              line: `(−20) : 4 − (−3) · (−3)`
+            },
+            {
+              stage: 'mu',
+              tokens: [
+                { text: `−5 − (−3)`, kind: 'add', ok: false, hint: `Encara queda la multiplicació (−3) · (−3)!` },
+                { text: `(−3) · (−3)`, kind: 'mul', ok: true, msg: `2n MUltiplicació: (−3) · (−3) = +9.` }
+              ],
+              line: `−5 − (−3) · (−3)`
+            },
+            {
+              stage: 'su',
+              tokens: [
+                { text: `−5 − (+9)`, kind: 'add', ok: true, msg: `3r Resta final: −5 − 9 = −14!` }
+              ],
+              line: `−5 − (+9)`
+            }
+          ],
+          finalVal: `−14`
+        }
+      ];
+
+      function f5MakeRandomChallenge(idx) {
+        var a = rndInt(10, 18);
+        var b1 = rndInt(3, 6);
+        var b2 = b1 + rndInt(2, 4); // b1 - b2 < 0
+        var c = rndInt(2, 4);
+        var diff = b1 - b2;
+        var prod = diff * c;
+        var fin = a - prod;
+        if (idx === 1) {
+          // Format divisió: (-4 * k) : (m - n) + p
+          var divRes = rndInt(2, 4);
+          var den = rndInt(2, 4);
+          var m = den + rndInt(3, 6);
+          var n = m - den;
+          var num = -(divRes * den);
+          var add = rndInt(3, 8);
+          var q = num / den;
+          return {
+            steps: [
+              {
+                stage: 'pa',
+                tokens: [
+                  { text: `${fmtParen(num)} :`, kind: 'static', ok: false },
+                  { text: `(${m} − ${n})`, kind: 'paren', ok: true, msg: `1r Parèntesi: ${m} − ${n} = ${den}.` },
+                  { text: `+ ${add}`, kind: 'static', ok: false }
+                ],
+                line: `${fmtParen(num)} : (${m} − ${n}) + ${add}`
+              },
+              {
+                stage: 'mu',
+                tokens: [
+                  { text: `${fmtParen(num)} : ${den}`, kind: 'mul', ok: true, msg: `2n Divisió: ${fmtParen(num)} : ${den} = ${fmtSigned(q)}.` },
+                  { text: `${den} + ${add}`, kind: 'add', ok: false, hint: `La divisió va abans que la suma! (PA · MU · SU)` }
+                ],
+                line: `${fmtParen(num)} : ${den} + ${add}`
+              },
+              {
+                stage: 'su',
+                tokens: [
+                  { text: `${fmtSigned(q)} + ${add}`, kind: 'add', ok: true, msg: `3r Suma final: ${fmtSigned(q)} + ${add} = ${fmtSigned(q + add)}!` }
+                ],
+                line: `${fmtSigned(q)} + ${add}`
+              }
+            ],
+            finalVal: fmtSigned(q + add)
+          };
+        }
+        return {
+          steps: [
+            {
+              stage: 'pa',
+              tokens: [
+                { text: `${a} −`, kind: 'static', ok: false },
+                { text: `(${b1} − ${b2})`, kind: 'paren', ok: true, msg: `1r Parèntesi: ${b1} − ${b2} = ${fmtSigned(diff)}.` },
+                { text: `· (+${c})`, kind: 'static', ok: false }
+              ],
+              line: `${a} − (${b1} − ${b2}) · (+${c})`
+            },
+            {
+              stage: 'mu',
+              tokens: [
+                { text: `${a} − ${fmtParen(diff)}`, kind: 'add', ok: false, hint: `No restis encara! Primer toca la multiplicació.` },
+                { text: `${fmtParen(diff)} · (+${c})`, kind: 'mul', ok: true, msg: `2n Multiplicació: ${fmtParen(diff)} · (+${c}) = ${fmtSigned(prod)}.` }
+              ],
+              line: `${a} − ${fmtParen(diff)} · (+${c})`
+            },
+            {
+              stage: 'su',
+              tokens: [
+                { text: `${a} − ${fmtParen(prod)}`, kind: 'add', ok: true, msg: `3r Resta final: ${a} + ${Math.abs(prod)} = ${fmtSigned(fin)}!` }
+              ],
+              line: `${a} − ${fmtParen(prod)}`
+            }
+          ],
+          finalVal: fmtSigned(fin)
+        };
+      }
+
+      function f5GenerateRounds() {
+        f5.rounds = [
+          f5MakeRandomChallenge(0),
+          f5MakeRandomChallenge(1),
+          f5MakeRandomChallenge(0)
+        ];
+        f5.roundIdx = 0;
+        f5.stepIdx = 0;
+        f5.history = [];
+        f5.won = false;
+      }
+
+      function f5CurrentModel() {
+        return f5.mode === 'game' ? f5.rounds[f5.roundIdx] : f5Presets[f5.presetIdx];
+      }
+
+      function f5HighlightStage(stage) {
+        var ids = ['pa', 'mu', 'su'];
+        var colors = { pa: 'var(--sun)', mu: 'var(--primary)', su: 'var(--tertiary)' };
+        var tints = { pa: 'var(--sun-tint)', mu: 'var(--cyan-tint)', su: 'var(--green-tint)' };
+        for (var i = 0; i < ids.length; i++) {
+          var k = ids[i];
+          var g = byId('f5-step-' + k);
+          if (!g) continue;
+          var r = g.querySelector('rect');
+          if (!r) continue;
+          if (k === stage) {
+            r.setAttribute('fill', tints[k]);
+            r.setAttribute('stroke', colors[k]);
+            r.setAttribute('stroke-width', '2.5');
+          } else {
+            r.setAttribute('fill', 'var(--surface-container)');
+            r.setAttribute('stroke', 'var(--outline)');
+            r.setAttribute('stroke-width', '1.5');
+          }
+        }
+      }
+
+      function f5Render() {
+        var model = f5CurrentModel();
+        var board = byId('f5-board');
+        var histEl = byId('f5-history');
+        var isRepte = f5.mode === 'game';
+
+        var finished = f5.stepIdx >= model.steps.length;
+        if (finished) {
+          f5HighlightStage('su');
+          if (board) {
+            board.innerHTML = `<span class="op-chip is-add">Resultat final = ${model.finalVal}</span>`;
+          }
+        } else {
+          var step = model.steps[f5.stepIdx];
+          f5HighlightStage(step.stage);
+          if (board) {
+            board.innerHTML = '';
+            var mainLine = document.createElement('div');
+            mainLine.className = 'expr-main-line';
+            mainLine.textContent = step.line;
+            board.appendChild(mainLine);
+
+            var promptEl = document.createElement('div');
+            promptEl.className = 'expr-prompt';
+            promptEl.textContent = 'Què fas primer?';
+            board.appendChild(promptEl);
+
+            var choicesRow = document.createElement('div');
+            choicesRow.className = 'expr-choices';
+            step.tokens.filter(function (tok) { return tok.kind !== 'static'; }).forEach(function (tok) {
+              var btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'op-chip';
+              if (tok.kind === 'paren') btn.classList.add('is-paren');
+              else if (tok.kind === 'mul') btn.classList.add('is-mul');
+              else if (tok.kind === 'add') btn.classList.add('is-add');
+              btn.textContent = tok.text;
+              btn.addEventListener('click', function () {
+                markExplored(5);
+                if (tok.ok) {
+                  f5.history.push(step.line + '  →  ' + tok.msg);
+                  f5.stepIdx++;
+                  if (f5.stepIdx >= model.steps.length) {
+                    if (isRepte) {
+                      if (f5.roundIdx < 2) {
+                        setBubble(5, `${tok.msg} Passant a la ronda següent!`, 'success');
+                        f5.roundIdx++;
+                        f5.stepIdx = 0;
+                        f5.history = [];
+                      } else {
+                        f5.won = true;
+                        markCompleted(5);
+                        setBubble(5, `${tok.msg} Has completat tots els passos de PA·MU·SU!`, 'success');
+                      }
+                    } else {
+                      setBubble(5, `${tok.msg} Expressió completada!`, 'success');
+                    }
+                  } else {
+                    setBubble(5, tok.msg, 'success');
+                  }
+                  f5Render();
+                } else {
+                  setBubble(5, tok.hint || `Segueix l'ordre PA · MU · SU!`, 'hint');
+                }
+              });
+              choicesRow.appendChild(btn);
+            });
+            board.appendChild(choicesRow);
+          }
+        }
+
+        if (histEl) {
+          if (f5.history.length === 0) {
+            histEl.innerHTML = `<span>Passos resolts: toca el bloc correcte de l'expressió de dalt.</span>`;
+          } else {
+            histEl.innerHTML = f5.history.map(function (h) { return `<span>✓ ${h}</span>`; }).join('');
+          }
+        }
+
+        var chall = byId('f5-challenge');
+        var challTxt = byId('f5-challenge-text');
+        var rep = byId('f5-replay-btn');
+        var ex1 = byId('f5-ex-1');
+        var ex2 = byId('f5-ex-2');
+        var rst = byId('f5-reset');
+        if (ex1) ex1.hidden = isRepte;
+        if (ex2) ex2.hidden = isRepte;
+        if (rst) rst.hidden = isRepte;
+        if (chall && challTxt && rep) {
+          chall.classList.toggle('is-visible', isRepte);
+          chall.classList.toggle('is-celebrate', f5.won);
+          rep.hidden = !f5.won;
+          if (isRepte) {
+            challTxt.textContent = f5.won ? `⭐ Fitxa 5 superada! Ja apliques PA · MU · SU sense errors.` : `Ronda ${f5.roundIdx + 1}/3: Clica les operacions en l'ordre correcte!`;
+          }
+        }
+        updateRoundDots('f5', f5.roundIdx, f5.won);
+      }
+
+      function f5Wire() {
+        var ex1 = byId('f5-ex-1');
+        var ex2 = byId('f5-ex-2');
+        var rst = byId('f5-reset');
+        if (ex1) ex1.addEventListener('click', function () {
+          f5.presetIdx = 0; f5.stepIdx = 0; f5.history = [];
+          markExplored(5);
+          setBubble(5, `Exemple 1 carregat. Quin bloc toca resoldre primer?`);
+          f5Render();
+        });
+        if (ex2) ex2.addEventListener('click', function () {
+          f5.presetIdx = 1; f5.stepIdx = 0; f5.history = [];
+          markExplored(5);
+          setBubble(5, `Exemple 2 carregat. Recorda: parèntesis abans que divisions!`);
+          f5Render();
+        });
+        if (rst) rst.addEventListener('click', function () {
+          f5.stepIdx = 0; f5.history = [];
+          setBubble(5, `Passos reiniciats. Torna a clicar el primer bloc.`);
+          f5Render();
+        });
+
+        var mExp = byId('f5-mode-explore');
+        var mGame = byId('f5-mode-game');
+        if (mExp) mExp.addEventListener('click', function () {
+          f5.mode = 'explore'; f5.stepIdx = 0; f5.history = [];
+          mExp.classList.add('is-active');
+          if (mGame) mGame.classList.remove('is-active');
+          setBubble(5, `Toca cada bloc en l'ordre PA · MU · SU.`);
+          f5Render();
+        });
+        if (mGame) mGame.addEventListener('click', function () {
+          f5.mode = 'game';
+          mGame.classList.add('is-active');
+          if (mExp) mExp.classList.remove('is-active');
+          f5GenerateRounds();
+          setBubble(5, `Resol les 3 rondes clicant sempre el bloc prioritari!`);
+          f5Render();
+        });
+
+        var rep = byId('f5-replay-btn');
+        if (rep) rep.addEventListener('click', function () {
+          f5GenerateRounds();
+          setBubble(5, `Noves expressions combinades llestes!`);
+          f5Render();
+        });
+
+        f5Render();
+      }
+
+      /* ---------------- FITXA 6: POTÈNCIES I ARRELS ---------------- */
+      var f6 = {
+        mode: 'explore',
+        kind: 'pow', // 'pow' | 'sqrt'
+        hasParen: true,
+        base: -2,
+        exp: 3,
+        sqrtSign: 1, // +1 o -1 per radicand
+        sqrtVal: 16,
+        rounds: [],
+        roundIdx: 0,
+        won: false
+      };
+
+      function f6Compute() {
+        if (f6.kind === 'pow') {
+          var absB = Math.abs(f6.base);
+          var mag = Math.pow(absB, f6.exp);
+          var res;
+          if (f6.exp === 0) {
+            res = f6.hasParen ? 1 : -1;
+          } else if (f6.hasParen) {
+            res = (f6.exp % 2 === 0) ? mag : -mag;
+          } else {
+            res = -mag;
+          }
+          return { res: res, mag: mag };
+        } else {
+          if (f6.sqrtSign < 0) return { exists: false };
+          return { exists: true, root: Math.sqrt(f6.sqrtVal) };
+        }
+      }
+
+      function f6GenerateRounds() {
+        var b1 = [2, 3][rndInt(0, 1)];
+        var b2 = [2, 3, 4][rndInt(0, 1)];
+        var sq = [9, 16, 25][rndInt(0, 2)];
+        var sqRoot = Math.sqrt(sq);
+        f6.rounds = [
+          {
+            kind: 'pow',
+            targetVal: b1 * b1,
+            prompt: `Ronda 1/3: Configura la potència amb base ${b1} negativa perquè el resultat sigui +${b1 * b1}.`,
+            setup: function () { f6.kind = 'pow'; f6.hasParen = false; f6.base = -b1; f6.exp = 2; },
+            check: function (d) { return f6.kind === 'pow' && Math.abs(f6.base) === b1 && f6.exp === 2 && f6.hasParen && d.res === b1 * b1; },
+            hint: `Sense parèntesi dona −${b1 * b1}! Activa el parèntesi perquè (−${b1})² sigui positiu.`
+          },
+          {
+            kind: 'pow',
+            targetVal: -(b2 * b2),
+            prompt: `Ronda 2/3: Ara fes que la base negativa ${b2} amb exponent 2 doni −${b2 * b2}!`,
+            setup: function () { f6.kind = 'pow'; f6.hasParen = true; f6.base = -b2; f6.exp = 2; },
+            check: function (d) { return f6.kind === 'pow' && Math.abs(f6.base) === b2 && f6.exp === 2 && !f6.hasParen && d.res === -(b2 * b2); },
+            hint: `El parèntesi mana! Si el treus, −${b2}² deixa el signe menys fora i dona −${b2 * b2}.`
+          },
+          {
+            kind: 'sqrt',
+            targetRoot: sqRoot,
+            prompt: `Ronda 3/3: Passa a «Arrels √» i prepara una arrel que existeixi i valgui +${sqRoot}.`,
+            setup: function () { f6.kind = 'sqrt'; f6.sqrtSign = -1; f6.sqrtVal = sq; },
+            check: function (d) { return f6.kind === 'sqrt' && d.exists && d.root === sqRoot; },
+            hint: `L'arrel d'un negatiu no existeix! Canvia el signe del radicand a + i busca √(+${sq}).`
+          }
+        ];
+        f6.roundIdx = 0;
+        f6.won = false;
+        f6.rounds[0].setup();
+      }
+
+      function f6Render() {
+        var d = f6Compute();
+        var exprEl = byId('f6-expr');
+        var expEl = byId('f6-expand');
+        var resEl = byId('f6-res');
+        var kicker = byId('f6-svg-kicker');
+        var svgBody = byId('f6-svg-content');
+
+        var absB = Math.abs(f6.base);
+        var expSup = ['⁰', '¹', '²', '³', '⁴'][f6.exp] || String(f6.exp);
+
+        if (f6.kind === 'pow') {
+          var exprStr = f6.hasParen ? `(−${absB})${expSup}` : `−${absB}${expSup}`;
+          var factors = [];
+          for (var i = 0; i < f6.exp; i++) {
+            factors.push(f6.hasParen ? `(−${absB})` : `${absB}`);
+          }
+          var expandStr = f6.exp === 0
+            ? (f6.hasParen ? `1 (tot nombre ≠ 0 elevat a 0 és 1)` : `−(1)`)
+            : (f6.hasParen ? factors.join(' · ') : `−(${factors.join(' · ')})`);
+
+          if (exprEl) exprEl.textContent = exprStr;
+          if (expEl) expEl.textContent = expandStr;
+          if (resEl) {
+            resEl.textContent = fmtSigned(d.res);
+            resEl.className = d.res >= 0 ? 'val-pos' : 'val-neg';
+          }
+          if (kicker) kicker.textContent = f6.hasParen ? `EL PARÈNTESI INCLOU EL SIGNE (−)` : `SENSE PARÈNTESI, EL (−) QUEDA FORA`;
+
+          if (svgBody) {
+            var html = '';
+            if (f6.exp === 0) {
+              html += `<text x="320" y="114" text-anchor="middle" fill="${d.res >= 0 ? 'var(--tertiary)' : 'var(--coral)'}" font-family="var(--font-headline)" font-size="30" font-weight="700">${exprStr} = ${fmtSigned(d.res)}</text>`;
+            } else {
+              var boxW = 92;
+              var gap = 16;
+              var totalW = f6.exp * boxW + (f6.exp - 1) * gap;
+              var startX = 320 - totalW / 2;
+              if (!f6.hasParen) {
+                html += `<text x="${startX - 24}" y="114" text-anchor="middle" fill="var(--coral)" font-family="var(--font-headline)" font-size="32" font-weight="700">−</text>`;
+              }
+              for (var j = 0; j < f6.exp; j++) {
+                var bx = startX + j * (boxW + gap);
+                var col = f6.hasParen ? 'var(--coral)' : 'var(--primary)';
+                var txt = f6.hasParen ? `−${absB}` : `${absB}`;
+                html += `<rect x="${bx}" y="72" width="${boxW}" height="64" rx="10" fill="var(--background)" stroke="${col}" stroke-width="2" />`;
+                html += `<text x="${bx + boxW / 2}" y="112" text-anchor="middle" fill="${col}" font-family="var(--font-headline)" font-size="24" font-weight="700">${txt}</text>`;
+                if (j < f6.exp - 1) {
+                  html += `<text x="${bx + boxW + gap / 2}" y="110" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="18">·</text>`;
+                }
+              }
+              var signNote = f6.hasParen
+                ? (f6.exp % 2 === 0 ? `Exponent parell (${f6.exp} menys) → POSITIU (${fmtSigned(d.res)})` : `Exponent senar (${f6.exp} menys) → NEGATIU (${fmtSigned(d.res)})`)
+                : `El menys no s'eleva → sempre NEGATIU (${fmtSigned(d.res)})`;
+              html += `<text x="320" y="168" text-anchor="middle" fill="${d.res >= 0 ? 'var(--tertiary)' : 'var(--coral)'}" font-family="var(--font-label)" font-size="13" font-weight="600">${signNote}</text>`;
+            }
+            svgBody.innerHTML = html;
+          }
+        } else {
+          var radStr = `${f6.sqrtSign > 0 ? '+' : '−'}${f6.sqrtVal}`;
+          if (exprEl) exprEl.textContent = `√(${radStr})`;
+          if (expEl) expEl.textContent = d.exists ? `(+${d.root})² = +${f6.sqrtVal} i (−${d.root})² = +${f6.sqrtVal}` : `x² = −${f6.sqrtVal} és impossible`;
+          if (resEl) {
+            resEl.textContent = d.exists ? `+${d.root} (i −${d.root})` : `No existeix`;
+            resEl.className = d.exists ? 'val-pos' : 'val-neg';
+          }
+          if (kicker) kicker.textContent = `ARREL QUADRADA EN ℤ`;
+          if (svgBody) {
+            if (d.exists) {
+              svgBody.innerHTML = `
+                <rect x="64" y="68" width="220" height="72" rx="10" fill="var(--green-tint)" stroke="var(--tertiary)" stroke-width="2" />
+                <text x="174" y="100" text-anchor="middle" fill="var(--tertiary)" font-family="var(--font-headline)" font-size="22" font-weight="700">+${d.root} (principal)</text>
+                <text x="174" y="124" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="12">(+${d.root}) · (+${d.root}) = +${f6.sqrtVal}</text>
+                <rect x="356" y="68" width="220" height="72" rx="10" fill="var(--cyan-tint)" stroke="var(--primary)" stroke-width="2" />
+                <text x="466" y="100" text-anchor="middle" fill="var(--primary)" font-family="var(--font-headline)" font-size="22" font-weight="700">−${d.root} (també)</text>
+                <text x="466" y="124" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="12">(−${d.root}) · (−${d.root}) = +${f6.sqrtVal}</text>
+              `;
+            } else {
+              svgBody.innerHTML = `
+                <rect x="80" y="72" width="480" height="74" rx="10" fill="var(--coral-tint)" stroke="var(--coral)" stroke-width="2" />
+                <text x="320" y="105" text-anchor="middle" fill="var(--coral)" font-family="var(--font-headline)" font-size="22" font-weight="700">No existeix cap arrel quadrada de −${f6.sqrtVal}</text>
+                <text x="320" y="130" text-anchor="middle" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="12">Qualsevol nombre elevat al quadrat (positiu o negatiu) sempre dona +</text>
+              `;
+            }
+          }
+        }
+
+        var tPow = byId('f6-type-pow');
+        var tSqrt = byId('f6-type-sqrt');
+        var bPar = byId('f6-toggle-paren');
+        var bBas = byId('f6-base-btn');
+        var bExp = byId('f6-exp-btn');
+        if (tPow) tPow.classList.toggle('is-active', f6.kind === 'pow');
+        if (tSqrt) tSqrt.classList.toggle('is-active', f6.kind === 'sqrt');
+
+        if (f6.kind === 'pow') {
+          if (bPar) {
+            bPar.textContent = f6.hasParen ? `Parèntesi: SÍ` : `Parèntesi: NO`;
+            bPar.className = f6.hasParen ? 'btn btn-sun' : 'btn btn-coral';
+          }
+          if (bBas) bBas.textContent = `Base: −${absB}`;
+          if (bExp) { bExp.hidden = false; bExp.textContent = `Exponent: ${f6.exp}`; }
+        } else {
+          if (bPar) {
+            bPar.textContent = f6.sqrtSign > 0 ? `Signe: +` : `Signe: −`;
+            bPar.className = f6.sqrtSign > 0 ? 'btn btn-cyan' : 'btn btn-coral';
+          }
+          if (bBas) bBas.textContent = `Nombre: ${f6.sqrtVal}`;
+          if (bExp) bExp.hidden = true;
+        }
+
+        var isRepte = f6.mode === 'game';
+        var chall = byId('f6-challenge');
+        var challTxt = byId('f6-challenge-text');
+        var chk = byId('f6-check');
+        var rep = byId('f6-replay-btn');
+        if (chall && challTxt && chk && rep) {
+          chall.classList.toggle('is-visible', isRepte);
+          chall.classList.toggle('is-celebrate', f6.won);
+          chk.hidden = !isRepte || f6.won;
+          rep.hidden = !f6.won;
+          if (isRepte) {
+            challTxt.textContent = f6.won ? `⭐ Fitxa 6 superada! Ja domines potències i arrels d'enters.` : f6.rounds[f6.roundIdx].prompt;
+          }
+        }
+        updateRoundDots('f6', f6.roundIdx, f6.won);
+      }
+
+      function f6UpdateExploreFeedback() {
+        var d = f6Compute();
+        if (f6.kind === 'pow') {
+          if (f6.hasParen) {
+            setBubble(6, `Amb parèntesi, el signe (−) també s'eleva a ${f6.exp}: exponent ${f6.exp % 2 === 0 ? 'parell → positiu' : 'senar → negatiu'} (${fmtSigned(d.res)}).`);
+          } else {
+            setBubble(6, `Sense parèntesi, el signe (−) queda fora de la potència! Resultat: ${fmtSigned(d.res)}.`);
+          }
+        } else {
+          if (d.exists) setBubble(6, `√(+${f6.sqrtVal}) té dues solucions: +${d.root} i −${d.root}, perquè totes dues al quadrat donen +${f6.sqrtVal}.`);
+          else setBubble(6, `√(−${f6.sqrtVal}) no existeix als enters: cap nombre multiplicat per si mateix dona negatiu.`);
+        }
+      }
+
+      function f6Wire() {
+        var tPow = byId('f6-type-pow');
+        var tSqrt = byId('f6-type-sqrt');
+        var bPar = byId('f6-toggle-paren');
+        var bBas = byId('f6-base-btn');
+        var bExp = byId('f6-exp-btn');
+
+        if (tPow) tPow.addEventListener('click', function () {
+          f6.kind = 'pow';
+          markExplored(6);
+          if (f6.mode === 'explore') f6UpdateExploreFeedback();
+          f6Render();
+        });
+        if (tSqrt) tSqrt.addEventListener('click', function () {
+          f6.kind = 'sqrt';
+          markExplored(6);
+          if (f6.mode === 'explore') f6UpdateExploreFeedback();
+          f6Render();
+        });
+        if (bPar) bPar.addEventListener('click', function () {
+          if (f6.kind === 'pow') f6.hasParen = !f6.hasParen;
+          else f6.sqrtSign *= -1;
+          markExplored(6);
+          if (f6.mode === 'explore') f6UpdateExploreFeedback();
+          f6Render();
+        });
+        if (bBas) bBas.addEventListener('click', function () {
+          if (f6.kind === 'pow') {
+            var next = Math.abs(f6.base) + 1;
+            f6.base = next > 4 ? -2 : -next;
+          } else {
+            var sqs = [4, 9, 16, 25];
+            var idx = sqs.indexOf(f6.sqrtVal);
+            f6.sqrtVal = sqs[(idx + 1) % sqs.length];
+          }
+          markExplored(6);
+          if (f6.mode === 'explore') f6UpdateExploreFeedback();
+          f6Render();
+        });
+        if (bExp) bExp.addEventListener('click', function () {
+          f6.exp = (f6.exp + 1) % 5;
+          markExplored(6);
+          if (f6.mode === 'explore') f6UpdateExploreFeedback();
+          f6Render();
+        });
+
+        var mExp = byId('f6-mode-explore');
+        var mGame = byId('f6-mode-game');
+        if (mExp) mExp.addEventListener('click', function () {
+          f6.mode = 'explore';
+          mExp.classList.add('is-active');
+          if (mGame) mGame.classList.remove('is-active');
+          f6UpdateExploreFeedback();
+          f6Render();
+        });
+        if (mGame) mGame.addEventListener('click', function () {
+          f6.mode = 'game';
+          mGame.classList.add('is-active');
+          if (mExp) mExp.classList.remove('is-active');
+          f6GenerateRounds();
+          setBubble(6, `Ajusta parèntesis, signe i valors per obtenir el resultat demanat.`);
+          f6Render();
+        });
+
+        var chk = byId('f6-check');
+        if (chk) chk.addEventListener('click', function () {
+          var r = f6.rounds[f6.roundIdx];
+          var d = f6Compute();
+          if (!r) return;
+          if (r.check(d)) {
+            if (f6.roundIdx < 2) {
+              f6.roundIdx++;
+              f6.rounds[f6.roundIdx].setup();
+              setBubble(6, `Molt bé! Passem a la ronda següent.`, 'success');
+            } else {
+              f6.won = true;
+              markCompleted(6);
+              setBubble(6, `Enhorabona! Has completat les 6 fitxes dels nombres enters!`, 'success');
+            }
+            f6Render();
+          } else {
+            setBubble(6, r.hint, 'hint');
+          }
+        });
+
+        var rep = byId('f6-replay-btn');
+        if (rep) rep.addEventListener('click', function () {
+          f6GenerateRounds();
+          setBubble(6, `Nous reptes preparats!`);
+          f6Render();
+        });
+
+        f6Render();
+      }
+
+      /* ---------------- NAVEGACIÓ, RESIZE I PERSISTÈNCIA ---------------- */
+      function wireGlobalEvents() {
+        if (typeof ResizeObserver === 'function') {
+          var ro = new ResizeObserver(function () { emitResize(); });
+          ro.observe(document.documentElement);
+          ro.observe(document.body);
+        }
+        window.addEventListener('resize', emitResize);
+
+        document.querySelectorAll('details.source-drawer').forEach(function (det) {
+          det.addEventListener('toggle', function () {
+            setTimeout(emitResize, 40);
+          });
+        });
+
+        if (isEmbed) {
+          document.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape') {
+              try {
+                if (window.parent && window.parent !== window) {
+                  window.parent.postMessage({ type: 'BONANOTA_VISUAL_CLOSE', world: world }, '*');
+                }
+              } catch (e) {}
+            }
+          });
+        }
+      }
+
+      async function boot() {
+        var localSaved = readLocalProgress();
+        if (localSaved) {
+          appState.explored = mergeFitxaLists(appState.explored, localSaved.explored);
+          appState.completed = mergeFitxaLists(appState.completed, localSaved.completed);
+        }
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === 'function') {
+          try {
+            var saved = await window.notebookAppApi.getAppState();
+            if (saved && typeof saved === 'object') {
+              appState.explored = mergeFitxaLists(appState.explored, saved.explored);
+              appState.completed = mergeFitxaLists(appState.completed, saved.completed);
+            }
+          } catch (e) {}
+        }
+
+        f1Wire();
+        f2Wire();
+        f3Wire();
+        f4Wire();
+        f5Wire();
+        f6Wire();
+        wireGlobalEvents();
+        updateProgressUI();
+        emitProgress();
+        emitResize();
+
+        if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === 'function') {
+          window.notebookAppApi.notifyAppReady();
+        }
+      }
+
+      boot();
+    })();
+  </script>
+</body>
+</html>
