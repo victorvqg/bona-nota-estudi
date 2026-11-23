@@ -26,6 +26,7 @@
   let currentModalUrl = '';
   let prevBodyOverflow = '';
   let prevFocusEl = null;
+  let pendingHeaderCelebration = null;
   const rewardInFlight = Object.create(null);
 
   function sanitizeUid(raw) {
@@ -188,6 +189,148 @@
     b.classList.toggle('fet', !!st.completed);
   }
 
+  function readHeaderStars() {
+    if (typeof global.puntsTots === 'function') {
+      try {
+        const v = Number(global.puntsTots());
+        if (Number.isFinite(v)) return v;
+      } catch (e) {}
+    }
+    const el = document.getElementById('punts');
+    if (el) {
+      const m = (el.textContent || '').match(/⭐\s*(\d+)/);
+      if (m) return Number(m[1]);
+    }
+    return null;
+  }
+
+  function syncModalStars(overrideVal) {
+    const mp = document.getElementById('bnVisualModalPunts');
+    if (!mp) return;
+    const isTast = CFG && typeof CFG.isDemoOrTast === 'function' && !!global.MODE_TAST;
+    const val = typeof overrideVal === 'number' ? overrideVal : readHeaderStars();
+    if (val === null || isTast) {
+      mp.hidden = true;
+      return;
+    }
+    mp.hidden = false;
+    mp.textContent = '⭐ ' + val;
+  }
+
+  function isReducedMotion() {
+    try {
+      if (document.body && document.body.classList.contains('suau')) return true;
+      if (global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+    } catch (e) {}
+    return false;
+  }
+
+  function renderCounterValue(el, val, isMainHeader) {
+    if (!el) return;
+    if (isMainHeader) {
+      const ext = el.querySelector('.pt-ext');
+      const extHtml = ext ? ext.outerHTML : '';
+      el.innerHTML = '⭐ ' + val + extHtml;
+    } else {
+      el.textContent = '⭐ ' + val;
+    }
+  }
+
+  function animateCounterTarget(targetEl, fromVal, toVal, stars, isMainHeader) {
+    if (!targetEl) return;
+    const reduced = isReducedMotion();
+
+    if (reduced) {
+      renderCounterValue(targetEl, toVal, isMainHeader);
+      if (isMainHeader && typeof global.pintaCap === 'function') {
+        try { global.pintaCap(); } catch (e) {}
+      }
+      return;
+    }
+
+    // 1) Mostra valor inicial abans de l'arribada de les estrelles
+    renderCounterValue(targetEl, fromVal, isMainHeader);
+
+    // 2) Estrelles volant des del centre fins al marcador (per sobre del modal, z-index 10002)
+    try {
+      const rect = targetEl.getBoundingClientRect();
+      const x0 = Math.round(global.innerWidth / 2);
+      const y0 = Math.round(global.innerHeight * 0.56);
+      const dx = Math.round(rect.left + rect.width / 2 - x0);
+      const dy = Math.round(rect.top + rect.height / 2 - y0);
+
+      const fly = document.createElement('div');
+      fly.className = 'bn-vis-fly';
+      fly.textContent = '+' + stars + ' ⭐';
+      fly.style.left = x0 + 'px';
+      fly.style.top = y0 + 'px';
+      document.body.appendChild(fly);
+
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          fly.style.transform = 'translate(calc(-50% + ' + dx + 'px), calc(-50% + ' + dy + 'px)) scale(0.65)';
+          fly.style.opacity = '0.15';
+        });
+      });
+      setTimeout(function () { fly.remove(); }, 950);
+    } catch (e) {}
+
+    // 3) Comptador pujant +1 a +1 quan arriben les estrelles + efecte boing + so
+    const steps = Math.max(1, Math.min(20, toVal - fromVal));
+    const startDelay = 420;
+    const duration = 680;
+    setTimeout(function () {
+      const t0 = performance.now();
+      targetEl.classList.remove('boing', 'is-boing');
+      void targetEl.offsetWidth;
+      targetEl.classList.add(isMainHeader ? 'boing' : 'is-boing');
+      if (typeof global.so === 'function') {
+        try { global.so('coin'); } catch (e) {}
+      }
+      function tick(now) {
+        const p = Math.min(1, (now - t0) / duration);
+        const cur = Math.round(fromVal + (toVal - fromVal) * p);
+        renderCounterValue(targetEl, cur, isMainHeader);
+        if (p < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          renderCounterValue(targetEl, toVal, isMainHeader);
+          if (isMainHeader && typeof global.pintaCap === 'function') {
+            try { global.pintaCap(); } catch (e) {}
+          }
+          // Actualitza també la targeta d'estadístiques de l'hero si és visible
+          const heroStat = document.querySelector('.hero .stats .mini b');
+          const prof = getActiveProfile();
+          if (heroStat && prof && typeof prof.punts === 'number' && heroStat.textContent.indexOf('⭐') !== -1) {
+            heroStat.textContent = '⭐ ' + prof.punts;
+          }
+        }
+      }
+      requestAnimationFrame(tick);
+    }, startDelay);
+  }
+
+  function celebrateStarsOnCounter(stars, beforeTotal, afterTotal) {
+    if (typeof beforeTotal !== 'number' || typeof afterTotal !== 'number' || afterTotal <= beforeTotal) {
+      return;
+    }
+    const modal = document.getElementById('bnVisualModal');
+    const modalOpen = !!(modal && !modal.hidden);
+    if (modalOpen) {
+      const mp = document.getElementById('bnVisualModalPunts');
+      if (mp && !mp.hidden) {
+        animateCounterTarget(mp, beforeTotal, afterTotal, stars, false);
+      }
+      // En tancar el modal, també animarem el marcador principal #punts perquè l'alumne ho vegi pujar al món
+      pendingHeaderCelebration = { from: beforeTotal, to: afterTotal, stars: stars };
+    } else {
+      const puntsEl = document.getElementById('punts');
+      if (puntsEl) {
+        animateCounterTarget(puntsEl, beforeTotal, afterTotal, stars, true);
+      }
+    }
+  }
+
   function showRewardToast(stars) {
     let toast = document.getElementById('bnVisualToast');
     if (!toast) {
@@ -239,9 +382,16 @@
   // Adaptador oficial amb RPC real bn_visual_premi de Supabase (idempotència server-side).
   // Protegit perquè a localhost / ?demo=1 / ?tast=1 o sense sessió + PIN no escrigui a producció.
   async function defaultSupabaseRewardAdapter(payload) {
+    const beforeTotal = readHeaderStars();
     if (isSafeSimulationMode()) {
       console.log('[PROVA LOCAL · SIMULACIÓ SUPABASE] Premi únic visual (+' + payload.stars + ' ⭐):', payload);
-      return { claimed: true, toast: true, stars: payload.stars };
+      return {
+        claimed: true,
+        toast: true,
+        stars: payload.stars,
+        beforeTotal: beforeTotal,
+        afterTotal: beforeTotal !== null ? beforeTotal + payload.stars : null
+      };
     }
 
     const prof = getActiveProfile();
@@ -297,7 +447,14 @@
             stars: awardedStars
           });
         }
-        return { claimed: true, toast: true, stars: awardedStars };
+        const afterTotal = readHeaderStars();
+        return {
+          claimed: true,
+          toast: true,
+          stars: awardedStars,
+          beforeTotal: beforeTotal,
+          afterTotal: afterTotal !== null ? afterTotal : (beforeTotal !== null ? beforeTotal + awardedStars : null)
+        };
       }
 
       return { claimed: false, toast: false };
@@ -347,7 +504,16 @@
       if (claimed) {
         markRewardClaimedLocal(uid, world, finalStars);
         updateBadge(Object.assign({}, st, { rewardClaimed: true }));
-        if (shouldToast) showRewardToast(finalStars);
+        if (shouldToast) {
+          showRewardToast(finalStars);
+          const bTot = typeof result === 'object' && result !== null && typeof result.beforeTotal === 'number'
+            ? result.beforeTotal
+            : null;
+          const aTot = typeof result === 'object' && result !== null && typeof result.afterTotal === 'number'
+            ? result.afterTotal
+            : null;
+          celebrateStarsOnCounter(finalStars, bTot, aTot);
+        }
       }
     } catch (err) {
       console.warn('[BonaNotaVisuals] Error a onReward:', err);
@@ -385,7 +551,15 @@
       '.bn-vis-cap{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;' +
       'padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top,0px));' +
       'background:' + c.headerBg + ';color:#fff;box-shadow:0 2px 12px rgba(0,0,0,.35)}' +
-      '.bn-vis-cap-tit{font-weight:900;font-size:16px;line-height:1.25;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
+      '.bn-vis-cap-tit{font-weight:900;font-size:16px;line-height:1.25;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}' +
+      '.bn-vis-modal-punts{flex:none;display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:4px 12px;' +
+      'border-radius:999px;background:rgba(15,23,42,.42);border:2px solid rgba(250,204,21,.65);color:#fef08a;' +
+      'font-weight:900;font-size:14.5px;white-space:nowrap;transition:transform .25s ease}' +
+      '.bn-vis-modal-punts.is-boing{animation:bnVisBoing .48s cubic-bezier(.3,1.8,.5,1)}' +
+      '@keyframes bnVisBoing{0%{transform:scale(1)}45%{transform:scale(1.24)}100%{transform:scale(1)}}' +
+      '.bn-vis-fly{position:fixed;z-index:10002;pointer-events:none;transform:translate(-50%,-50%) scale(1.1);' +
+      'font-weight:900;font-size:22px;color:#facc15;text-shadow:0 2px 0 #92400e,0 0 16px rgba(250,204,21,.85);' +
+      'white-space:nowrap;transition:transform .78s cubic-bezier(.5,-.35,.6,1),opacity .78s ease-in;will-change:transform}' +
       '.bn-vis-tanca{flex:none;min-height:48px;min-width:48px;padding:0 16px;border-radius:999px;' +
       'border:2px solid rgba(255,255,255,.55);background:rgba(15,23,42,.38);color:#fff;font-weight:900;' +
       'font-size:14.5px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;' +
@@ -422,6 +596,7 @@
     modal.innerHTML =
       '<div class="bn-vis-cap">' +
       '<span id="bnVisualTit" class="bn-vis-cap-tit"></span>' +
+      '<span id="bnVisualModalPunts" class="bn-vis-modal-punts" aria-live="polite" hidden></span>' +
       '<button type="button" id="bnVisualTanca" class="bn-vis-tanca" aria-label="Tornar al món">✕ Tornar al món</button>' +
       '</div>' +
       '<iframe id="bnVisualFrame" class="bn-vis-frame" title="Laboratori Visual"></iframe>';
@@ -454,6 +629,7 @@
     prevFocusEl = document.activeElement;
     prevBodyOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    syncModalStars();
     m.hidden = false;
 
     const bt = document.getElementById('bnVisualTanca');
@@ -469,6 +645,16 @@
       try {
         prevFocusEl.focus({ preventScroll: true });
       } catch (e) {}
+    }
+    if (pendingHeaderCelebration) {
+      const pend = pendingHeaderCelebration;
+      pendingHeaderCelebration = null;
+      const puntsEl = document.getElementById('punts');
+      if (puntsEl) {
+        setTimeout(function () {
+          animateCounterTarget(puntsEl, pend.from, pend.to, pend.stars, true);
+        }, 120);
+      }
     }
   }
 
