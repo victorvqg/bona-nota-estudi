@@ -60,13 +60,17 @@ for m in reversed(mons):
     es = m.get("llengua") == "es"
     ilu = d / "ilu" / f"{m['dades']}.svg"   # il·lustració pròpia del món (opcional; si no n'hi ha, es mostra l'emoji)
     dibuix = " ".join(ilu.read_text().split()) if ilu.exists() else m['ic']
-    targetes.append(f''' <a class="as" href="{e(m['carpeta'])}/" data-clau="{e(i['clau'])}" data-id="{e(i['id'])}" data-ic="{e(m['ic'])}" data-temes="{i['n']}" style="--c1:{c1};--c2:{c2};--c3:{c3}">
-  <div class="portada"><span class="tag">MÓN {e(m['mon'])}</span><span class="ic">{dibuix}</span></div>
+    lab_n = i.get("visual") or 0
+    lab_attrs = f' data-lab-world="{e(i["id"])}" data-lab-total="{lab_n}"' if lab_n else ""
+    lab_pill = '<span class="lab-pill">🧪 LAB · +10 ⭐</span>' if lab_n else ""
+    lab_xip = f'<span class="xip-lab">🧪 Lab 0/{lab_n}</span>' if lab_n else ""
+    targetes.append(f''' <a class="as" href="{e(m['carpeta'])}/" data-clau="{e(i['clau'])}" data-id="{e(i['id'])}" data-ic="{e(m['ic'])}" data-temes="{i['n']}"{lab_attrs} style="--c1:{c1};--c2:{c2};--c3:{c3}">
+  <div class="portada"><span class="tag">MÓN {e(m['mon'])}</span>{lab_pill}<span class="ic">{dibuix}</span></div>
   <div class="cos">
    <small class="mat">{e(m['materia'])}</small>
    <h2>{e(m['titol'])}</h2>
    <p>{e(m['desc'])}</p>
-   <div class="xips"><span>📖 {i['n']} {'fichas' if es else 'fitxes'}</span><span>🎮 {i['j']} {'juegos' if es else 'jocs'}</span><span>📝 Examen</span></div>
+   <div class="xips"><span>📖 {i['n']} {'fichas' if es else 'fitxes'}</span><span>🎮 {i['j']} {'juegos' if es else 'jocs'}</span><span>📝 Examen</span>{lab_xip}</div>
    <div class="avisos-mon" hidden></div>
    <div class="prog"><div class="barra"><i></i></div><small><span class="pt"></span><span class="pc"></span></small></div>
    <div class="juga"><span>JUGA ▶</span></div>
