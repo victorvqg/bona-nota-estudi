@@ -29,7 +29,7 @@ js = r"""
 const fs=require('fs');const out={};
 for(const f of process.argv.slice(1)){const src=fs.readFileSync(f,'utf8');
  const g={document:{getElementById:()=>({})},window:{},location:{search:''}};
- const r=new Function('document','window','location',src+';return {n:T.length,j:ASSIG.jocs.length,jocs:ASSIG.jocs.map(j=>j.id),clau:ASSIG.clau||("bn_"+ASSIG.id),id:ASSIG.id}')(g.document,g.window,g.location);
+ const r=new Function('document','window','location',src+';return {n:T.length,j:ASSIG.jocs.length,jocs:ASSIG.jocs.map(j=>j.id),clau:ASSIG.clau||("bn_"+ASSIG.id),id:ASSIG.id,visual:ASSIG.visual?(ASSIG.visual.total||6):0}')(g.document,g.window,g.location);
  out[f]=r}
 console.log(JSON.stringify(out))"""
 fitxers = [str(d / "dades" / f"{m['dades']}.js") for m in mons]
@@ -43,7 +43,8 @@ info = json.loads(r.stdout)
 import registres
 registres.valida(mons, (arrel / "sprites.js").read_text(), registres.ids_xat_base((arrel / "index.html").read_text()))
 jocs_mon = {m["dades"]: info[str(d / "dades" / f"{m['dades']}.js")]["jocs"] for m in mons}
-registres.escriu_bloc(arrel / "admin" / "index.html", registres.ADM, registres.bloc_admin(mons, jocs_mon))
+visuals_mon = {m["dades"]: info[str(d / "dades" / f"{m['dades']}.js")]["visual"] for m in mons if info[str(d / "dades" / f"{m['dades']}.js")].get("visual")}
+registres.escriu_bloc(arrel / "admin" / "index.html", registres.ADM, registres.bloc_admin(mons, jocs_mon, visuals_mon))
 registres.escriu_bloc(arrel / "sprites.js", registres.BN_MON, registres.bloc_bn_mon(mons))
 xat_js, xat_sql = registres.bloc_xat(mons)
 registres.escriu_bloc(arrel / "index.html", registres.XAT_JS, xat_js)

@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.63.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.64.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -589,6 +589,15 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
 ### Registre d'activitat
 
 `registra(event, detall)` escriu a la taula `bn_log`. `retalla()` manté cada registre per sota de 1.700 bytes: si cal, només es queden les preguntes fallades. No registra res obrint el fitxer des de l'ordinador (`file:`), amb `BN_NO_LOG` ni en `MODE_DEMO`. El detall de cada event és a «Què es registra», a l'apartat 8.
+
+### Laboratoris visuals interactius (`BonaNotaVisuals`)
+
+Bona Nota permet acoblar laboratoris visuals autònoms (HTML/CSS/JS pur) dins de qualsevol món mitjançant el motor compartit [`assets/bonanota-visuals.js`](assets/bonanota-visuals.js):
+
+- **Aïllament en `<iframe>`:** cada laboratori viu a `visuals/<mon>.html` (sense frameworks ni col·lisions de CSS) i es carrega en mode complet dins d'un modal full-screen (`?embed=1&world=<mon>&uid=<uid>`) o en mode fitxa única inline (`?embed=1&fitxa=N`) dins la teoria de cada tema, amb auto-alçada dinàmica (`BONANOTA_VISUAL_RESIZE`, zero doble scroll) i tancament amb `Escape` (`BONANOTA_VISUAL_CLOSE`).
+- **Integració declarativa via `motor/tot.py`:** afegint el camp opcional `ASSIG.visual` a `motor/dades/<mon>.js`, `motor/build.py` injecta automàticament l'script versionat, la targeta llançadora a `inici()`, les fitxes inline a `fitxa()` i el botó contextual («🧪 Obre laboratori visual») a `joc()`. Els mons sense `ASSIG.visual` queden intactes.
+- **Premi únic de `+10 ⭐` (`bn_visual_premi`):** en completar el 100% de les fitxes (`completed === true`), el motor valida la idempotència per alumne i món (`visual_<mon>`) contra la RPC `public.bn_visual_premi` de Supabase (`bn_priv.premis_visuals`), suma `+10 ⭐` un sol cop, anima el marcador (`#bnVisualModalPunts` / `#punts`) i registra l'activitat a `bn_log` (en local/`?demo=1`/`?tast=1` corre en mode simulació segur).
+- **Documentació:** guia de disseny [`docs/guia-disseny-bona-nota.md`](docs/guia-disseny-bona-nota.md), especificació del motor [`docs/motor-bonanota-visuals.md`](docs/motor-bonanota-visuals.md) i protocol d'integració pas a pas [`docs/integrar-visual.md`](docs/integrar-visual.md).
 
 ---
 

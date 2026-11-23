@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.64.0 · 2026-11-23
+
+### Afegit
+- **Motor compartit de laboratoris visuals (`assets/bonanota-visuals.js`, `BonaNotaVisuals`):** xassís lleuger sense dependències que injecta la targeta llançadora a `inici()`, les fitxes inline amb auto-alçada (`BONANOTA_VISUAL_RESIZE`, zero doble scroll) a `fitxa()`, el botó contextual («🧪 Obre laboratori visual») a `joc()` i el modal a pantalla completa (`>= 48px` + `Escape`). Inclou aïllament per alumne (`uid` a `localStorage`), premi únic de `+10 ⭐` amb idempotència server-side via RPC `bn_visual_premi` i animació d'estrelles volant + pujada del marcador (`#bnVisualModalPunts` i `#punts`).
+- **Suport natiu opcional a `motor/` (`motor/build.py` i `motor/plantilla-estudi-interactiu.html`):** qualsevol món que defineixi `ASSIG.visual` a `motor/dades/<mon>.js` rep automàticament el motor en regenerar amb `python3 motor/tot.py`, sense alterar els mons que no en porten.
+- **Laboratoris visuals en producció:** **La Geosfera** (`visuals/geosfera.html`, 6 fitxes interactives amb Mode Duel de Mohs) i **Els nombres enters** (`visuals/enters.html`, 6 fitxes interactives amb termòmetre, recta ℤ, talons/factures, màquina dels signes, PA·MU·SU i potències).
+- **Documentació de laboratoris visuals:** `docs/motor-bonanota-visuals.md`, `docs/guia-disseny-bona-nota.md`, `docs/integrar-visual.md` i apartat dedicat al `README.md`.
+- **Seguiment de laboratoris visuals al panell d'administració (`admin/index.html`):** badge `🧪 Lab (N)` i comptador d'alumnes premiats a la vista **Mons**, laboratoris completats a la fitxa del nen (**Nens**) i format clar `🧪 Lab <món> (+10 ⭐)` als registres de **Sessions / Activitat** (`LABS_MON` generat automàticament per `motor/tot.py`).
+
 ## 2.63.0 · 2026-11-20
 
 ### Afegit

@@ -28,6 +28,43 @@
   let prevFocusEl = null;
   let pendingHeaderCelebration = null;
   const rewardInFlight = Object.create(null);
+  const lastExploredByWorld = Object.create(null);
+
+  function playBonaNotaSfx(tipus) {
+    if (typeof global.so !== 'function') return;
+    try {
+      global.so(tipus || 'clic');
+    } catch (e) {}
+  }
+
+  function bindIframeSounds(iframeEl) {
+    if (!iframeEl || iframeEl.dataset.bnSfxBound === '1') return;
+    iframeEl.dataset.bnSfxBound = '1';
+    const attach = function () {
+      try {
+        const doc = iframeEl.contentDocument;
+        if (!doc || doc._bnSfxAttached) return;
+        doc._bnSfxAttached = true;
+        doc.addEventListener(
+          'click',
+          function (ev) {
+            const t = ev.target && ev.target.closest
+              ? ev.target.closest('button, summary, [role="button"], a.nav-pill, .svg-hit, .op-chip, .touch-chip, .seg-btn, .timeline-btn')
+              : null;
+            if (!t || t.disabled) return;
+            playBonaNotaSfx('clic');
+          },
+          true
+        );
+      } catch (e) {}
+    };
+    iframeEl.addEventListener('load', attach);
+    attach();
+  }
+
+  function scanInlineFramesForSounds() {
+    document.querySelectorAll('iframe.bn-vis-inline-frame').forEach(bindIframeSounds);
+  }
 
   function sanitizeUid(raw) {
     if (raw == null) return 'anon';
@@ -603,6 +640,8 @@
     document.body.appendChild(modal);
     const bt = document.getElementById('bnVisualTanca');
     if (bt) bt.addEventListener('click', tanca);
+    const fr = document.getElementById('bnVisualFrame');
+    if (fr) bindIframeSounds(fr);
   }
 
   function obre(fitxaNum) {
@@ -677,6 +716,11 @@
       if (!CFG || !d || typeof d !== 'object') return;
       if (d.world && d.world !== CFG.world) return;
 
+      if (d.type === 'BONANOTA_VISUAL_SFX') {
+        playBonaNotaSfx(d.sfx || 'clic');
+        return;
+      }
+
       if (d.type === 'BONANOTA_VISUAL_CLOSE') {
         tanca();
         return;
@@ -691,7 +735,10 @@
         const target =
           frames.find(function (fr) { return fr.contentWindow === e.source; }) ||
           frames.find(function (fr) { return Number(fr.dataset.fitxa) === Number(d.fitxa); });
-        if (target) target.style.height = Math.max(220, h) + 'px';
+        if (target) {
+          bindIframeSounds(target);
+          target.style.height = Math.max(220, h) + 'px';
+        }
         return;
       }
 
@@ -702,6 +749,11 @@
         const explored = Math.max(0, Math.min(total, Number.isFinite(rawExplored) ? rawExplored : 0));
         const completed = d.completed === true;
         const rewardClaimed = isRewardClaimed(uid, CFG.world);
+        const prevExp = lastExploredByWorld[uid + ':' + CFG.world];
+        if (typeof prevExp === 'number' && explored > prevExp) {
+          playBonaNotaSfx(completed ? 'super' : 'ok');
+        }
+        lastExploredByWorld[uid + ':' + CFG.world] = explored;
 
         const st = {
           uid: uid,
@@ -795,6 +847,7 @@
     const titol = typeof tema === 'string' ? 'Fitxa ' + CFG.temes[id] : (tema.titol || 'Visual interactiu');
     const n = CFG.temes && CFG.temes[id];
     if (!n) return '';
+    setTimeout(scanInlineFramesForSounds, 0);
     return (
       '<div class="bn-vis-inline" data-world="' + escHtml(CFG.world) + '" data-fitxa="' + n + '">' +
       '<iframe class="bn-vis-inline-frame" data-world="' + escHtml(CFG.world) + '" data-fitxa="' + n + '" ' +

@@ -757,7 +757,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.63.0";
+const VERSIO_ADMIN="2.64.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -779,6 +779,7 @@ const COL_MON={
 };
 const XMON={"enters":"Mates · Enters","geosfera":"Bio-Geo · Geosfera","angles":"Anglès · Tema 2","catala":"Català · Tema 2","divisibilitat":"Mates · Divisibilitat","comarques":"Socials · Comarques","castellano":"Castellano · Temas 2 y 3","biogeo":"Bio-Geo · Bloc 1","socials":"Socials · El clima"};
 const DEMO_JOCS={"enters":["salts","signeres","pamusu","err-enters"],"geosfera":["capes","mohs","mineral","err-geo"],"angles":["contraris","perdins","dospresents","fenn"],"catala":["subgeneres","oralescrit"],"divisibilitat":["fx-mcm","fx-criteris","fx-divisio","er-troba"],"comarques":["mapa43","capitals","ruta"],"castellano":["concretos","generos","byv"],"biogeo":["planetes","celules","cossos"],"socials":["climo","capes","parelles"]};
+const LABS_MON={"enters":6,"geosfera":6};
 /* MONS-ADMIN:fi */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -1263,6 +1264,18 @@ const pcExam=d=>d.pc!=null?d.pc:d.nota!=null?Math.round(d.nota*10):null;
 const REP_EXT={mx:"Taller",mapa:"MAPA",err:"Troba l'error",err_gen:"Troba l'error"};
 const extRepas=x=>String(x).split(",").map(p=>{const [t,v]=p.split(":");return `${REP_EXT[t]||t} ${v||""}`.trim()}).join(", ");
 const MOTIU_DUBTE={enunciat:"no s'entén l'enunciat",resposta:"la resposta no em quadra",pista:"hi falta una dada"};
+const esJocVisual=d=>!!(d&&typeof d.joc==="string"&&d.joc.indexOf("visual_")===0);
+const monDeVisual=(d,assig)=>esJocVisual(d)?d.joc.slice(7):String(assig||"");
+function labsDeNen(ls,nuv){
+ const m=new Map();
+ (ls||[]).forEach(l=>{const d=l&&l.detall;if(l&&l.event==="joc"&&esJocVisual(d)){const w=monDeVisual(d,l.assig);if(w)m.set(w,Math.max(m.get(w)||0,+d.stars||+d.est||10))}});
+ if(nuv&&typeof nuv==="object"){
+  if(Array.isArray(nuv.premis_visuals))nuv.premis_visuals.forEach(p=>{const k=String(p&&(p.reward_key||p.world)||"");const w=k.indexOf("visual_")===0?k.slice(7):k;if(w)m.set(w,Math.max(m.get(w)||0,+p.stars||10))});
+  if(Array.isArray(nuv.mons))nuv.mons.forEach(x=>{if(x&&x.visuals&&typeof x.visuals==="object")Object.entries(x.visuals).forEach(([w,v])=>{if(v&&v.rewardClaimed)m.set(w,Math.max(m.get(w)||0,+v.stars||10))})});
+ }
+ return [...m.entries()].map(([world,stars])=>({world,stars}));
+}
+function renderLabsNen(labs){return labs&&labs.length?labs.map(x=>`<span class="pill ok" title="Laboratori visual completat">🧪 ${esc(nomAssig(x.world))} · +${x.stars} ⭐</span>`).join(" "):""}
 function descriu(l){const d=l.detall||{};switch(l.event){
  case"entra":return d.nou?"Perfil nou creat":`Entra · ${d.punts??0} estrelles · ${d.aprovats??0}/${d.temes??"?"} temes aprovats`;
  case"fitxa":return `Llegeix la fitxa: <b>${esc(d.titol||d.tema)}</b>${d.s?` · ${fmtT(d.s)}${d.fi?" · fins al final":""}`:""}`;
@@ -1270,6 +1283,7 @@ function descriu(l){const d=l.detall||{};switch(l.event){
  case"test":return `Test de <b>${esc(d.titol||d.tema)}</b>: ${d.bones}/${d.n} · ${cpc(d.pc)}${d.pistes?` · ${pl(d.pistes,"pista","pistes")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"joc":if(d.joc==="boss")return `Boss <b>${esc(d.titol||"del món")}</b>: ${d.guanya?"guanyat":"perdut"}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.guanya&&d.cors!=null?` · ${pl(d.cors,"cor","cors")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
    if(d.joc==="repas")return `Repàs dels errors: ${cpc(d.pc)}${d.apr?` · ${pl(d.apr,"error après","errors apresos")}`:""}${d.ext?` · ${esc(extRepas(d.ext))}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
+   if(esJocVisual(d)){const w=monDeVisual(d,l.assig),st=+d.stars||+d.est||10;return `🧪 <b>Lab ${esc(nomAssig(w))}</b> (+${st} ⭐)`}
    return `Joc <b>${esc(d.titol||d.joc)}</b>: ${cpc(d.pc)}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.mode&&d.joc==="mapa43"?` · ${esc(d.mode)}`:""}${d.pistes?` · ${pl(d.pistes,"pista","pistes")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"examen":return `${d.joc==="examreal"?"Examen de veritat":d.joc==="examen"?"Examen sorpresa":"Examen de mates"}: ${d.nota!=null?`<b>${esc(String(d.nota).replace(".",","))}</b> sobre 10`:cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"oberta":if(d.mode==="control")return `Quadern · punts de control (${esc(d.tema||"")}): ${cpc(d.pc)} bé a la primera${d.pasos?` (${esc(d.pasos)})`:""}`;
@@ -1454,7 +1468,7 @@ function detall(k,manté){k=String(k||"").trim().toLowerCase();
  ],4);
  c.innerHTML=`<div class="fitxa-bar"><button class="btn sec petit" type="button" id="torna">${ic("enrere")} Tots els nens</button>
   <div class="fitxa-sel"><label for="selFitxaNen">${ic("nens")}<span>Canvia de nen:</span></label><select id="selFitxaNen" aria-label="Canvia de nen">${opcNens}</select></div></div>
- <section class="targeta perfil">${avatar(n.nom,"g")}<div class="perfil-info"><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}${pillNivell(estMax)}<span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin">${pillPin(null)}</span><span id="xAmagat"></span></div></div>
+ <section class="targeta perfil">${avatar(n.nom,"g")}<div class="perfil-info"><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}${pillNivell(estMax)}<span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin">${pillPin(null)}</span><span id="xAmagat"></span><span id="xLabs">${renderLabsNen(labsDeNen(ls))}</span></div></div>
   <div class="perfil-acc" role="group" aria-label="Descarrega informes i full d'examen"><button class="btn sec petit" type="button" id="btFullExamen" title="Descarrega un full de repàs d'1 pàgina A4 per a l'alumne abans de l'examen">${ic("diana")}<span>Full d'examen (1 pàg.)</span></button><button class="btn petit" type="button" id="btInfHtml" title="Descarrega un informe complet visual llest per llegir o imprimir com a PDF">${ic("baixar")}<span>Informe HTML / PDF</span></button><button class="btn sec petit" type="button" id="btInfMd" title="Descarrega l'informe complet en format Markdown (.md)">${ic("baixar")}<span>Informe .md</span></button></div></section>
  <div class="pestanyes" role="tablist" aria-label="Seccions de la fitxa">
   <button role="tab" type="button" id="tb-resum" aria-controls="tp-resum" aria-selected="true">Resum i estrelles</button>
@@ -2287,6 +2301,7 @@ async function pintaNuvol(n){const el=$("#nuv");if(!el||el.dataset.estat)return;
  let d;try{d=await nuvolDe(n)}catch(e){NUV=null;const x=$("#nuv");if(FITXA!==n.k||!x)return;x.dataset.estat="";x.removeAttribute("aria-busy");
   x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_fitxa.sql","La fitxa al núvol encara no està activada a la base de dades. La resta de la fitxa funciona igual."):avisErr(`No s'ha pogut carregar el que hi ha al núvol (${e&&e.message||e}).`);return}
  const x=$("#nuv");if(FITXA!==n.k||!x)return;x.dataset.estat="fet";x.removeAttribute("aria-busy");
+ const xl=$("#xLabs");if(xl){const ls=LOGS.filter(l=>clauNen(l)===n.k);xl.innerHTML=renderLabsNen(labsDeNen(ls,d))}
  try{x.innerHTML=htmlNuvol(d);if(NUV_PL)NUV_PL.lliga(x)}
  catch(e){console.error(e);x.innerHTML=avisErr(`No s'ha pogut dibuixar el que hi ha al núvol: ${e&&e.message||e}`)}}
 let NUV_PL=null;
@@ -2981,10 +2996,12 @@ async function vistaMonsLlista(cos,tk){
   let qTot=0,qOk=0;ls.forEach(l=>{if(!["test","examen","joc"].includes(l.event))return;aR(l.detall&&l.detall.q).forEach(q=>{const p=String(q).split(":");qTot++;if(p[1]==="1")qOk++})});
   const encert=qTot?Math.round(qOk*100/qTot):null;
   const temps=ls.filter(l=>l.event==="temps").reduce((s,l)=>s+(+((l.detall||{}).s)||0),0);
-  return {id:m.id,nom:nomAssig(m.id),titol:m.titol||"",obert:!tancats.has(m.id),nens:nensAct,nota,tests:te.length,encert,respostes:qTot,temps,pendents:pendOk?(pendMap.get(m.id)||0):null,avui:pendOk?(avuiMap.get(m.id)||0):0};
+  const labN=typeof LABS_MON==="object"&&LABS_MON[m.id]?LABS_MON[m.id]:0;
+  const labNens=labN?new Set(LOGS.filter(l=>l.event==="joc"&&esJocVisual(l.detall)&&monDeVisual(l.detall,l.assig)===m.id).map(clauNen)).size:0;
+  return {id:m.id,nom:nomAssig(m.id),titol:m.titol||"",obert:!tancats.has(m.id),nens:nensAct,nota,tests:te.length,encert,respostes:qTot,temps,pendents:pendOk?(pendMap.get(m.id)||0):null,avui:pendOk?(avuiMap.get(m.id)||0):0,labN,labNens};
  });
  const cols=[
-  {k:"nom",t:"Món",cls:"nw",q:r=>`${r.nom} ${r.titol} ${r.id}`,h:r=>`<button type="button" class="nen-b" data-obre-mon="${esc(r.id)}">${pillMon(r.id)}</button>`},
+  {k:"nom",t:"Món",cls:"nw",q:r=>`${r.nom} ${r.titol} ${r.id}${r.labN?" lab visual":""}`,h:r=>`<button type="button" class="nen-b" data-obre-mon="${esc(r.id)}">${pillMon(r.id)}</button>${r.labN?` <span class="pill ok" title="Laboratori visual actiu (${r.labN} fitxes) · ${r.labNens} alumnes amb premi +10 ⭐">🧪 Lab (${r.labN})${r.labNens?` · ${r.labNens} ⭐`:""}</span>`:""}`},
   {k:"obert",t:"Estat",cls:"nw",v:r=>r.obert?1:0,csv:r=>r.obert?"Obert":"Tancat",h:r=>`<button class="sw" type="button" role="switch" data-mon-sw="${esc(r.id)}" aria-label="Estat de ${esc(r.nom)}" aria-checked="${r.obert}"${nd}><i></i><span>${r.obert?"Obert":"Tancat"}</span></button>`},
   {k:"nens",t:"Nens actius",num:true},
   {k:"nota",t:"Nota mitjana",num:true,h:r=>r.nota==null?`<span class="muted">—</span>`:`${cpc(r.nota)} <span class="muted">(${r.tests})</span>`},
