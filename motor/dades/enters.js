@@ -4,6 +4,32 @@ const ASSIG={
  pissarra:true,            // ✏️ botó del full de brut (eines/pissarra.js)
  color:["#0c4a6e","#2563eb","#38bdf8"],
  peu:"Bona Nota · Llibre de Matemàtiques de 1r d'ESO (Barcanova), unitat 3, pàg. 66-83 · Els nombres enters",
+ visual:{
+  world:"enters",
+  src:"../../visuals/enters.html",
+  total:6,
+  rewardStars:10,
+  icona:"🌡️",
+  titol:"🌡️ Laboratori Visual · 6 fitxes interactives",
+  subtitol:"Termòmetre, recta ℤ, talons, màquina dels signes, PA·MU·SU i potències",
+  modalTitol:"🌡️ Els nombres enters · Laboratori Visual",
+  botoJoc:"🧪 Obre laboratori visual",
+  color:{
+   bg1:"#f0f9ff",
+   bg2:"#e0f2fe",
+   border:"#38bdf8",
+   hover:"#0284c7",
+   shadow:"rgba(2, 132, 199, 0.18)",
+   iconBg:"#bae6fd",
+   title:"#0c4a6e",
+   sub:"#0369a1",
+   badgeBorder:"#7dd3fc",
+   badgeText:"#0369a1",
+   headerBg:"linear-gradient(120deg,#0c4a6e,#2563eb 60%,#38bdf8)"
+  },
+  temes:{positius:1,conjunt:2,sumes:3,parentesis:3,multdiv:4,combinades:5,potencies:6},
+  jocs:{signe:1,recta:2,ordena:2,salts:3,opres:4,signeres:4,pamusu:5}
+ },
  blocs:[{titol:"🌡️ Què són els enters?",n:2},{titol:"➕ Sumar i restar",n:2},{titol:"✖️ Multiplicar, dividir i combinar",n:2},{titol:"⚡ Potències i arrels",n:1}],
  jocs:[
   {id:"recta",grup:"🧸 Per entendre",tipus:"figura",figura:"svgRectaLletres",ic:"📏",titol:"La recta dels enters",sub:"Llegeix la recta i respon",col:"#dbeafe",
