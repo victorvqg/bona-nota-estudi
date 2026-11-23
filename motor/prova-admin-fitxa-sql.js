@@ -25,7 +25,7 @@ const igual = (a, b) => JSON.stringify(canon(a)) === JSON.stringify(canon(b));
 const claus = o => o && typeof o === "object" ? Object.keys(o).sort().join(",") : String(o);
 const mateixesClaus = (o, llista) => claus(o) === [...llista].sort().join(",");
 const PIN = "1234A", ADM = ["admin@prova.cat", "contrasenya-de-prova"], DOLENTA = [ADM[0], "dolenta"];
-const K_TOP = ["k", "perfil", "amagat", "mons"], K_PERFIL = ["nom", "id", "pin_v", "creat", "pin_ts", "aspecte_ts"];
+const K_TOP = ["k", "perfil", "amagat", "mons", "premis_visuals"], K_PERFIL = ["nom", "id", "pin_v", "creat", "pin_ts", "aspecte_ts"];
 const K_MON = ["assig", "mod", "ts", "reinici", "punts", "temps", "dies", "dia_ult", "ultim", "temes", "rep", "rep_n", "rep_avui",
                "ob", "examens", "boss", "apresos", "jocs", "fonts", "ftema", "fjoc", "est"];
 const K_ERR = ["assig", "mod", "ts", "error"], K_TEMA = ["fitxa", "fc", "n", "max", "ult", "d_ult", "fallades"];
