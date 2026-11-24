@@ -702,6 +702,12 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
  .evo-dlg-cos{padding:10px 12px 14px}
  .evo-dlg .cv.cv-evo{min-height:260px}
 }
+.aj-llista{display:flex;flex-direction:column;gap:8px}
+.aj-fila{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r1);background:var(--card2)}
+.aj-info{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 220px}
+.aj-cap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.aj-mot{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.aj-acc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
@@ -2887,6 +2893,70 @@ function aplicaPlegaAlertes(obert){
  const sec=$("#alertes"),bt=$("#btAlPlega"),cos=$("#alCos");if(!sec||!bt||!cos)return;
  cos.hidden=!obert;bt.setAttribute("aria-expanded",String(obert));sec.dataset.plegat=obert?"0":"1";
 }
+let INICI_DATA={resum:null,ctrl:null};
+function generaResumSetmanalText(){
+ const A=(INICI_DATA.resum&&INICI_DATA.resum.ara)||{},B=INICI_DATA.resum&&INICI_DATA.resum.abans;
+ const perTxt=DIES===7?"Últims 7 dies":DIES===30?"Últims 30 dies":DIES===90?"Últims 90 dies":"Tot el curs";
+ const ara=new Date(),avui=`${String(ara.getDate()).padStart(2,"0")}/${String(ara.getMonth()+1).padStart(2,"0")}/${ara.getFullYear()}`;
+ const dif=(k,suf="")=>{if(!B||A[k]==null||B[k]==null)return "";const d=Math.round((+A[k])-(+B[k]));return d===0?"":` (${d>0?"+":""}${d}${suf})`};
+ const tanc=new Set(aR(oB(INICI_DATA.ctrl).mons_tancats).map(x=>String(x).trim().toLowerCase()));
+ const totM=Object.keys(ASSIGS).length,obM=Math.max(0,totM-tanc.size);
+ const prio=new Set(AL_RAW.filter(r=>r.k&&r.grav>=2).map(r=>r.k)).size;
+ return [
+  `📊 Bona Nota · Resum (${perTxt} · ${avui})`,
+  `• Alumnes actius: ${A.nens??"—"}${dif("nens")}`,
+  `• Sessions d'estudi: ${A.sessions??"—"}${dif("sessions")} · Temps total: ${fmtM(A.minuts)}`,
+  `• Nota mitjana: ${pcVal(A.nota)}${dif("nota"," pp")} · Encert preguntes: ${pcVal(A.encert)}${dif("encert"," pp")}`,
+  `• Mons oberts a la portada: ${obM} de ${totM}`,
+  prio?`• Seguiment: ${prio} ${prio===1?"alumne necessita":"alumnes necessiten"} reforç puntual en algun tema.`:`• Seguiment: tot el grup manté bon ritme sense incidències destacades.`
+ ].join("\n");
+}
+async function copiaResumSetmanal(){
+ const txt=generaResumSetmanalText();
+ try{
+  if(navigator.clipboard&&navigator.clipboard.writeText)await navigator.clipboard.writeText(txt);
+  else{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove()}
+  toast("Resum setmanal copiat al porta-retalls");
+ }catch(e){toast("No s'ha pogut copiar el resum","err")}
+}
+function pintaAjudaAvui(){
+ const el=$("#ajudaAvuiCos");if(!el)return;
+ el.removeAttribute("aria-busy");
+ const per=new Map();
+ AL_RAW.forEach(r=>{
+  if(!r.k||r.grav<2)return;
+  const g=per.get(r.k)||{k:r.k,nom:r.nom||r.k,score:0,maxG:0,items:[]};
+  g.score+=r.grav>=3?3:1;
+  if(r.grav>g.maxG)g.maxG=r.grav;
+  g.items.push(r);
+  per.set(r.k,g);
+ });
+ const top=[...per.values()].sort((a,b)=>b.score-a.score||b.maxG-a.maxG||a.nom.localeCompare(b.nom,"ca")).slice(0,5);
+ if(!top.length){el.innerHTML=`<p class="muted" style="margin:0;font-size:13.5px">Cap alumne prioritari en aquest període — tot el grup va al dia.</p>`;return}
+ el.innerHTML=`<div class="aj-llista">${top.map(g=>{
+  const p0=g.items.slice().sort((a,b)=>b.grav-a.grav)[0],extra=g.items.length-1;
+  return `<div class="aj-fila">
+   <div class="aj-info">
+    <div class="aj-cap"><button type="button" class="nen-b" data-obre-nen="${esc(g.k)}">${avatar(g.nom,"p")}<span>${esc(g.nom)}</span></button>${g.maxG>=3?`<span class="pill bad">Prioritari</span>`:`<span class="pill warn">Revisar</span>`}${p0.assig?xipAssig(p0.assig):""}${extra?`<span class="xip">+${extra} ${extra===1?"avís":"avisos"}</span>`:""}</div>
+    <div class="aj-mot">${esc(p0.text)}</div>
+   </div>
+   <div class="aj-acc">
+    <button type="button" class="btn petit" data-aj-full="${esc(g.k)}" data-aj-nom="${esc(g.nom)}" title="Descarrega el Full d'examen A4 d'aquest alumne">${ic("baixar")}<span>Full A4</span></button>
+    <button type="button" class="btn sec petit" data-obre-nen="${esc(g.k)}">Fitxa</button>
+   </div>
+  </div>`}).join("")}</div>`;
+ el.querySelectorAll("[data-aj-full]").forEach(bt=>{bt.onclick=async()=>{
+  const k=bt.dataset.ajFull,nom=bt.dataset.ajNom||k,h0=bt.innerHTML;
+  try{
+   bt.disabled=true;bt.innerHTML=`${ic("rellotge")}<span>Preparant…</span>`;
+   await asseguraLogs().catch(()=>null);
+   const n=nens(LOGS).find(x=>x.k===k)||{k,nom,assigs:new Set(),ses:new Set(),ap:new Set(),diesSet:new Set(),dies:0,ratxa:0,ult:null,temps:0,tests:[],jocs:0,exam:[],punts:{},fonts:{}};
+   const ls=LOGS.filter(l=>clauNen(l)===k);
+   bt.disabled=false;bt.innerHTML=h0;
+   await obreFullExamenNen(n,ls,bt);
+  }catch(e){bt.disabled=false;bt.innerHTML=h0;toast("No s'ha pogut preparar el full d'examen","err")}
+ }});
+}
 // les 6 xifres d'Inici: també les crida comprovaNovetats per actualitzar-les al seu lloc (només canvia el número)
 function kpisInici(tok,silenci=false){
  const pResum=rpcT("bn_admin_resum",{p_assig:null,p_nom:null});
@@ -2894,6 +2964,7 @@ function kpisInici(tok,silenci=false){
  const pCtrl=ctrlDe().catch(()=>null);
  return Promise.all([pResum,pXatRes,pCtrl]).then(([resum,xRes,ctrl])=>{
   if(tok!==TOK||VISTA!=="inici"||!$("#iniciKpis"))return;
+  INICI_DATA={resum,ctrl};
   const A=(resum&&resum.ara)||{},B=resum&&resum.abans,ex=estatXatCtrl(ctrl||{});
   const xPill=`<span id="kpiXatPill">${ex.obertAra?pillEstat("be","Xat obert ara"):ex.xatAct?pillEstat("avis","Tancat per horari"):pillEstat("malament","Tancat manualment")}</span>`;
   $("#iniciKpis").innerHTML=filaKpis([
@@ -2914,12 +2985,14 @@ async function vistaInici(c){
  TF.assig="";TF.nom="";
  c.innerHTML=`<div class="pila"><div id="iniciKpis">${esqKpis(6)}</div>
   <div class="graella">
+   ${card("ajudaAvui","c-12","diana","Qui necessita ajuda avui","Top 5 alumnes amb avisos actius en el període, amb accés directe al Full d'examen A4 i resum setmanal segur per compartir.",`<div id="ajudaAvuiCos" aria-busy="true"><div class="esq esq-f"></div></div>`,`<button class="btn sec petit" type="button" id="btCopiaResum" title="Copia un resum breu i sense dades sensibles per compartir amb famílies o equip docent">${ic("copia")}<span>Copia resum</span></button>`)}
    ${cartaAlertesInici()}
    ${card("control","c-12","ajust","Control ràpid","Obre o tanca el xat i cadascun dels mons en un clic. Els horaris automàtics i els crèdits són a Configuració.",`<div id="tCtrl" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
    ${cartaAltes("c-6")}
    ${card("fontsDia","c-6","estrella","Estrelles per origen","Repartiment de les estrelles noves guanyades durant el període seleccionat.",`<div id="fontsDiaCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   </div></div>`;
  const btPl=$("#btAlPlega");if(btPl)btPl.onclick=()=>{const cos=$("#alCos");if(!cos)return;AL_PLEGA_MANUAL=cos.hidden;aplicaPlegaAlertes(AL_PLEGA_MANUAL)};
+ const btCR=$("#btCopiaResum");if(btCR)btCR.onclick=()=>copiaResumSetmanal();
  tControl();
  pintaAltes();
  pintaFontsDiaInici(tok);
@@ -2933,6 +3006,7 @@ async function vistaInici(c){
   $("#tAl").removeAttribute("aria-busy");
   aplicaPlegaAlertes(true);
   $("#tAl").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","Les alertes encara no estan activades a la base de dades."):avisErr(`No s'han pogut carregar les alertes (${e}).`);
+  const aj=$("#ajudaAvuiCos");if(aj){aj.removeAttribute("aria-busy");aj.innerHTML=`<p class="muted" style="margin:0;font-size:13px">No disponible sense les alertes.</p>`}
  });
 }
 function resolTextAlerta(a){
@@ -2947,6 +3021,7 @@ function tAlertes(al){
  const e=$("#tAl"),res=$("#alResum"),fil=$("#alFiltres");if(!e)return;
  AL_RAW=(al||[]).map((a,i)=>{const nom=a.nom?String(a.nom).trim():"",k=nom?nom.toLowerCase():"",g=+a.gravetat||1;
   return {i,nom,k,assig:a.assig||"",text:resolTextAlerta(a),grav:g,tipus:String(a.tipus||"")}});
+ pintaAjudaAvui();
  const nMal=AL_RAW.filter(r=>r.grav>=3).length,nAvis=AL_RAW.filter(r=>r.grav===2).length,nInf=AL_RAW.filter(r=>r.grav===1).length;
  if(res)res.innerHTML=!AL_RAW.length?`<span class="pill ok">Tot en ordre</span>`:[
   nMal?`<span class="pill bad">${nMal} malament</span>`:"",
