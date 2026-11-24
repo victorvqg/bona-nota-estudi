@@ -4,6 +4,19 @@ const ASSIG={
  id:"socials", clau:"bn_soc", nom:"Socials", tema:"Tema 3: El clima", curs:"1r ESO", ic:"🌍",
  color:["#1e3a8a","#2563eb","#0ea5e9"],
  peu:"Bona Nota · Llibre de Socials (tema 3, Vicens Vives) i apunts de geografia de l'Anoia",
+ visual:{
+  world:"clima",
+  src:"../../visuals/clima.html",
+  total:6,
+  rewardStars:10,
+  icona:"🧪",
+  titol:"🧪 Laboratori Visual · 6 fitxes interactives",
+  subtitol:"Climograma, capes de l'atmosfera, factors LAD, pressió, mapes del temps i efecte d'hivernacle",
+  modalTitol:"Laboratori Visual · El Clima",
+  botoJoc:"🧪 Obre laboratori visual",
+  temes:{temps:1,atmos:2,elements:3,pressio:4,mapes:5,canvi:6,climaig:1},
+  jocs:{classifica:1,climo:1,"fx-climo":1,"cl-construeix":1,"cl-compara":1,"err-clima":1,capes:2,"fr-atmos":2,"fr-elements":3,parelles:3,"fr-pressio":4,"mapa-temps1":5,"mapa-temps2":5,"mapa-temps3":5,"mapa-temps4":5,"mapa-temps5":5,"fr-canvi":6}
+ },
  blocs:[{titol:"📖 Temes del llibre",n:6},{titol:"🏔️ Apunts de l'Anoia",n:4}],
  jocs:[
   {id:"fr-atmos",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🧅",titol:"Temps, clima i atmosfera",sub:"Capes, gasos i funcions",col:"#f3e8ff",
