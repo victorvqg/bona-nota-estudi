@@ -1,0 +1,2891 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="nocturne">
+  <title>Laboratori Visual del Clima — Ciències Socials 1r d'ESO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..700;1,400..600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+
+      /* Museu de Ciències Socials — Carbó fosc i pissarra nocturna */
+      --background: #14191f;
+      --surface-container-low: #171d24;
+      --surface-container: #1b2129;
+      --surface-container-high: #232b35;
+      --surface-well: #0f1419;
+
+      /* Text */
+      --on-surface: #f2ece1;
+      --on-surface-variant: #a6b2c2;
+
+      /* Borders */
+      --outline: #3f4d5e;
+      --outline-variant: #28323e;
+
+      /* Accents: Daurat, Blau atlàntic, Terracota, Corall, Menta */
+      --primary: #e0ad58;
+      --on-primary: #14191f;
+      --primary-container: #2c261a;
+      --on-primary-container: #f7dfb0;
+      --secondary: #687a99;
+      --tertiary: #5aa9e6;
+      --terracotta: #d97757;
+      --error: #f27474;
+      --on-error: #1a0606;
+      --positive: #52d19c;
+      --warning: #e0ad58;
+
+      /* Data series & SVG semantic tokens */
+      --data-1: #e0ad58;
+      --data-2: #5aa9e6;
+      --data-3: #d97757;
+      --data-4: #52d19c;
+      --data-5: #f27474;
+      --data-context: #4b5b70;
+      --svg-space: #0b0f14;
+      --svg-sky-high: #101822;
+      --svg-sky-mid: #162636;
+      --svg-sky-deep: #1a3045;
+      --svg-earth: #2d251d;
+      --svg-earth-stroke: #7a624b;
+      --svg-mountain: #353f4b;
+      --svg-sea: #1a3d59;
+      --svg-cloud: #d6e0ea;
+      --svg-cloud-storm: #6d7d91;
+      --svg-warm-tint: rgba(217, 119, 87, 0.24);
+      --svg-cool-tint: rgba(90, 169, 230, 0.24);
+      --svg-gold-tint: rgba(224, 173, 88, 0.22);
+      --svg-coral-tint: rgba(242, 116, 116, 0.24);
+      --svg-mint-tint: rgba(82, 209, 156, 0.22);
+
+      /* Fonts */
+      --font-headline: 'EB Garamond', Georgia, serif;
+      --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-label: 'JetBrains Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.375rem;
+      --rounded-lg: 0.625rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --hairline: 1px solid var(--outline-variant);
+      --hairline-strong: 1px solid var(--outline);
+      --panel-highlight: inset 0 1px 0 rgba(242, 236, 225, 0.06);
+      --brass-glow: radial-gradient(circle at 88% 12%, rgba(224, 173, 88, 0.09), transparent 48%);
+      --heading-tracking: -0.015em;
+      --label-tracking: 0.06em;
+      --sky-tint: color-mix(in srgb, var(--tertiary) 13%, transparent);
+      --brass-tint: color-mix(in srgb, var(--primary) 14%, transparent);
+      --terracotta-tint: color-mix(in srgb, var(--terracotta) 14%, transparent);
+      --coral-tint: color-mix(in srgb, var(--error) 14%, transparent);
+      --mint-tint: color-mix(in srgb, var(--positive) 14%, transparent);
+
+      /* Focus ring */
+      --focus: var(--primary);
+
+      /* Type scale */
+      --display-size: clamp(2rem, 1.35rem + 2.6vw, 3.1rem);
+      --headline-size: clamp(1.4rem, 1.15rem + 1vw, 1.85rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.3vw, 1.2rem);
+      --body-size: clamp(0.975rem, 0.94rem + 0.16vw, 1.05rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+      --space-2xl: 3.25rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 240ms;
+      --dur-long: 400ms;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.58;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      position: static !important;
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space-md) var(--space-2xl);
+      display: grid;
+      gap: var(--space-xl);
+    }
+
+    .page-shell * {
+      min-width: 0;
+    }
+
+    /* Mode modal (?embed=1 sense fitxa): compacta marges i manté totes les fitxes */
+    body.is-embed .page-shell {
+      max-width: 960px;
+      padding: var(--space-md) var(--space-sm) var(--space-lg);
+      gap: var(--space-lg);
+    }
+
+    body.is-embed .lab-footer {
+      display: none !important;
+    }
+
+    /* Mode fitxa única inline (?embed=1&fitxa=N): només mostra #fitxa-N sense doble scroll */
+    html.is-single-fitxa,
+    body.is-single-fitxa {
+      height: auto !important;
+      min-height: 0 !important;
+      overflow-x: clip;
+      overflow-y: auto;
+      background: transparent;
+    }
+
+    body.is-single-fitxa .page-shell {
+      max-width: 100%;
+      padding: 0;
+      gap: 0;
+    }
+
+    body.is-single-fitxa .hero-header,
+    body.is-single-fitxa .quick-nav,
+    body.is-single-fitxa .lab-footer {
+      display: none !important;
+    }
+
+    body.is-single-fitxa .fitxa-card {
+      display: none;
+    }
+
+    body.is-single-fitxa .fitxa-card.is-target-fitxa {
+      display: grid;
+    }
+
+    /* Hero Header */
+    .hero-header {
+      background-color: var(--surface-container-low);
+      background-image: var(--brass-glow);
+      border: var(--hairline);
+      box-shadow: var(--panel-highlight);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+
+    .hero-title {
+      font-family: var(--font-headline);
+      font-weight: 500;
+      font-size: var(--display-size);
+      line-height: 1.08;
+      letter-spacing: var(--heading-tracking);
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .hero-title em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--primary);
+    }
+
+    .deck-brass {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: var(--space-xs) 0 0;
+    }
+
+    .hero-lede {
+      margin: 0;
+      max-width: 65ch;
+      color: var(--on-surface-variant);
+    }
+
+    .progress-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      padding-top: var(--space-md);
+      border-top: var(--hairline);
+    }
+
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      flex: 1 1 260px;
+    }
+
+    .progress-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface);
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      flex: 1 1 140px;
+      height: 8px;
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-radius: var(--rounded-full);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--tertiary), var(--primary));
+      border-radius: var(--rounded-full);
+      transition: width var(--dur-short) var(--ease-out);
+    }
+
+    .btn-ghost {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--on-surface-variant);
+      border: var(--hairline-strong);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      min-height: 44px;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+
+    .btn-ghost.is-armed {
+      background: var(--coral-tint);
+      color: var(--error);
+      border-color: var(--error);
+    }
+
+    /* Quick navigation */
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .nav-pill {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      background: var(--surface-container);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .nav-pill:hover {
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+      border-color: var(--outline);
+    }
+
+    .nav-pill.is-done {
+      border-color: color-mix(in srgb, var(--positive) 45%, transparent);
+      color: var(--positive);
+    }
+
+    /* Fitxa Cards */
+    .fitxa-card {
+      background: var(--surface-container);
+      border: var(--hairline);
+      box-shadow: var(--panel-highlight);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+      scroll-margin-top: var(--space-md);
+    }
+
+    .fitxa-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+
+    .fitxa-kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--tertiary);
+      margin: 0 0 var(--space-xs);
+    }
+
+    .fitxa-title {
+      font-family: var(--font-headline);
+      font-weight: 500;
+      font-size: var(--headline-size);
+      line-height: 1.15;
+      letter-spacing: var(--heading-tracking);
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .fitxa-summary {
+      margin: var(--space-xs) 0 0;
+      color: var(--on-surface-variant);
+      max-width: 65ch;
+      font-size: 0.95rem;
+    }
+
+    .status-badge {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      border: var(--hairline-strong);
+      color: var(--on-surface-variant);
+      background: var(--surface-well);
+      white-space: nowrap;
+    }
+
+    .status-badge.is-explored {
+      background: var(--sky-tint);
+      color: var(--tertiary);
+      border-color: color-mix(in srgb, var(--tertiary) 40%, transparent);
+    }
+
+    .status-badge.is-mastered {
+      background: var(--mint-tint);
+      color: var(--positive);
+      border-color: color-mix(in srgb, var(--positive) 45%, transparent);
+    }
+
+    /* Mode Switcher */
+    .mode-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mode-tabs {
+      display: inline-flex;
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .mode-btn {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      min-height: 48px;
+      min-width: 112px;
+      padding: 0 var(--space-md);
+      border: none;
+      border-radius: calc(var(--rounded) - 2px);
+      background: transparent;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .mode-btn:hover {
+      color: var(--on-surface);
+    }
+
+    .mode-btn.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+      font-weight: 600;
+    }
+
+    /* Readout Bar (HTML telemetry outside SVG) */
+    .readout-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .readout-chip {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1 1 120px;
+      padding-right: var(--space-sm);
+      border-right: var(--hairline);
+    }
+
+    .readout-chip:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+
+    .chip-label {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+
+    .chip-value {
+      font-family: var(--font-label);
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+
+    .chip-value.is-gold { color: var(--primary); }
+    .chip-value.is-sky { color: var(--tertiary); }
+    .chip-value.is-terracotta { color: var(--terracotta); }
+    .chip-value.is-coral { color: var(--error); }
+    .chip-value.is-mint { color: var(--positive); }
+
+    /* Panoramic SVG Stage */
+    .svg-stage {
+      position: relative;
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      overflow: hidden;
+    }
+
+    .svg-badge {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-family: var(--font-label);
+      font-size: 0.68rem;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+      background: color-mix(in srgb, var(--surface-well) 85%, transparent);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: 2px 7px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .svg-stage svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Interactive SVG targets */
+    .svg-hit {
+      cursor: pointer;
+      transition: opacity var(--dur-micro) var(--ease-out);
+    }
+
+    .svg-hit:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Animations (GPU-safe only) */
+    @keyframes wiggleCue {
+      0%, 100% { transform: translateY(0) scale(1); }
+      35% { transform: translateY(-3px) scale(1.03); }
+      70% { transform: translateY(1px) scale(0.99); }
+    }
+
+    .wiggle-me {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: wiggleCue 1.8s var(--ease-in-out) infinite;
+    }
+
+    @keyframes stageShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      45% { transform: translateX(6px); }
+      70% { transform: translateX(-4px); }
+      85% { transform: translateX(4px); }
+    }
+
+    .svg-stage.is-shake {
+      animation: stageShake 320ms var(--ease-out);
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.8); opacity: 0.95; }
+      100% { transform: scale(1.65); opacity: 0; }
+    }
+
+    .celebrate-ring {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: pulseRing 580ms var(--ease-out) forwards;
+    }
+
+    .svg-smooth {
+      transition: transform var(--dur-short) var(--ease-out), opacity var(--dur-short) var(--ease-out);
+    }
+
+    /* Hint Strip & Challenge Banner */
+    .hint-strip {
+      background: var(--surface-container-low);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 var(--rounded) var(--rounded) 0;
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.9375rem;
+      color: var(--on-surface);
+    }
+
+    .hint-strip strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .challenge-panel {
+      display: none;
+      background: var(--surface-container-low);
+      border: var(--hairline-strong);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      gap: var(--space-sm);
+    }
+
+    .challenge-panel.is-visible {
+      display: grid;
+    }
+
+    .challenge-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .round-pill {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--primary);
+      background: var(--brass-tint);
+      border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+      border-radius: var(--rounded);
+      padding: 2px 8px;
+    }
+
+    .challenge-prompt {
+      margin: 0;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .challenge-feedback {
+      margin: 0;
+      font-size: 0.92rem;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      display: none;
+    }
+
+    .challenge-feedback.is-ok {
+      display: block;
+      background: var(--mint-tint);
+      color: var(--positive);
+      border: 1px solid color-mix(in srgb, var(--positive) 40%, transparent);
+    }
+
+    .challenge-feedback.is-err {
+      display: block;
+      background: var(--coral-tint);
+      color: var(--error);
+      border: 1px solid color-mix(in srgb, var(--error) 40%, transparent);
+    }
+
+    .challenge-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    /* Controls Dock (always below SVG to prevent occlusion) */
+    .controls-dock {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--space-sm);
+    }
+
+    .ctrl-btn {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      min-height: 48px;
+      min-width: 48px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: var(--hairline-strong);
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.25;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .ctrl-btn:hover {
+      border-color: var(--primary);
+      background: var(--surface-container-low);
+    }
+
+    .ctrl-btn:active {
+      transform: translateY(1px);
+    }
+
+    .ctrl-btn.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .ctrl-btn.is-sky.is-active {
+      background: var(--tertiary);
+      color: var(--on-primary);
+      border-color: var(--tertiary);
+    }
+
+    .ctrl-btn.is-terracotta.is-active {
+      background: var(--terracotta);
+      color: var(--on-primary);
+      border-color: var(--terracotta);
+    }
+
+    .ctrl-btn.is-coral.is-active {
+      background: var(--error);
+      color: var(--on-error);
+      border-color: var(--error);
+    }
+
+    .ctrl-btn-primary {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      min-height: 48px;
+      padding: 0 var(--space-md);
+      border-radius: var(--rounded);
+      border: none;
+      background: var(--primary);
+      color: var(--on-primary);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Focus states */
+    button:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Footer */
+    .lab-footer {
+      border-top: var(--hairline);
+      padding-top: var(--space-lg);
+      color: var(--on-surface-variant);
+      font-size: 0.875rem;
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .lab-footer p {
+      margin: 0;
+    }
+
+    @media (max-width: 640px) {
+      .page-shell {
+        padding: var(--space-md) var(--space-sm) var(--space-xl);
+        gap: var(--space-lg);
+      }
+
+      .fitxa-card {
+        padding: var(--space-md);
+      }
+
+      .hero-header {
+        padding: var(--space-md);
+      }
+
+      .controls-dock {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .readout-chip {
+        flex: 1 1 45%;
+        border-right: none;
+        padding-right: 0;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .controls-dock {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell" id="page-shell">
+
+    <header class="hero-header">
+      <div class="hero-top">
+        <div>
+          <h1 class="hero-title">Laboratori Visual del <em>Clima</em></h1>
+          <p class="deck-brass">Ciències Socials · 1r d'ESO · Temps, atmosfera, factors i canvi climàtic</p>
+        </div>
+        <button type="button" class="btn-ghost" id="btn-reset-all" onclick="handleResetAll(this)">Reinicia progrés</button>
+      </div>
+      <p class="hero-lede">Sis joguines interactives per entendre com funciona l'aire que ens envolta, des del tiquet del temps d'avui fins al carnet del clima i els mapes de pressions.</p>
+      <div class="progress-strip">
+        <div class="progress-meta">
+          <span class="progress-label" id="progress-text">Fitxes explorades: 0 / 6</span>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+      <nav class="quick-nav" aria-label="Navegació ràpida per les fitxes">
+        <button type="button" class="nav-pill" id="nav-1" onclick="scrollToFitxa(1)">1. Temps i Clima</button>
+        <button type="button" class="nav-pill" id="nav-2" onclick="scrollToFitxa(2)">2. L'Atmosfera</button>
+        <button type="button" class="nav-pill" id="nav-3" onclick="scrollToFitxa(3)">3. Factors LAD</button>
+        <button type="button" class="nav-pill" id="nav-4" onclick="scrollToFitxa(4)">4. Pressió i Vent</button>
+        <button type="button" class="nav-pill" id="nav-5" onclick="scrollToFitxa(5)">5. Mapa del Temps</button>
+        <button type="button" class="nav-pill" id="nav-6" onclick="scrollToFitxa(6)">6. Hivernacle</button>
+      </nav>
+    </header>
+
+    <!-- FITXA 1: Temps vs Clima i Climograma -->
+    <section class="fitxa-card" id="fitxa-1" aria-labelledby="f1-heading">
+      <div class="fitxa-header">
+        <div>
+          <p class="fitxa-kicker">Fitxa 1 · Tiquet d'avui vs Carnet de 30 anys</p>
+          <h2 class="fitxa-title" id="f1-heading">Temps vs Clima i Climograma</h2>
+          <p class="fitxa-summary">El temps és el que et poses avui; el clima és tot l'armari d'un lloc després d'observar-lo 30 anys.</p>
+        </div>
+        <span class="status-badge" id="f1-status">Per explorar</span>
+      </div>
+
+      <div class="mode-bar">
+        <div class="mode-tabs" role="tablist" aria-label="Mode de la fitxa 1">
+          <button type="button" class="mode-btn is-active" id="f1-tab-explore" onclick="setMode(1, 'explore')">Explora</button>
+          <button type="button" class="mode-btn" id="f1-tab-challenge" onclick="setMode(1, 'challenge')">Repte (3 rondes)</button>
+        </div>
+      </div>
+
+      <div class="readout-bar" aria-live="polite">
+        <div class="readout-chip"><span class="chip-label">Lloc / Mode</span><span class="chip-value is-gold" id="f1-out-place">Girona (Clima 30 anys)</span></div>
+        <div class="readout-chip"><span class="chip-label">Mes seleccionat</span><span class="chip-value is-sky" id="f1-out-month">Octubre</span></div>
+        <div class="readout-chip"><span class="chip-label">Temperatura</span><span class="chip-value is-terracotta" id="f1-out-temp">15,5 °C</span></div>
+        <div class="readout-chip"><span class="chip-label">Pluja (1 mm = 1 L/m²)</span><span class="chip-value is-sky" id="f1-out-rain">110 mm = 110 L/m²</span></div>
+      </div>
+
+      <div class="svg-stage" id="f1-stage">
+        <span class="svg-badge">Esquema visual</span>
+        <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Climograma interactiu de Girona i Melbourne amb pluviòmetre">
+          <rect x="0" y="0" width="640" height="240" fill="var(--surface-well)"/>
+
+          <!-- Left column: Tiquet/Carnet + Pluviometer beaker -->
+          <rect x="14" y="14" width="166" height="96" rx="6" fill="var(--surface-container)" stroke="var(--outline)"/>
+          <text x="26" y="34" font-family="var(--font-label)" font-size="12" fill="var(--primary)" id="f1-svg-cardtype">CARNET (30 ANYS)</text>
+          <text x="26" y="55" font-family="var(--font-body)" font-size="13" font-weight="600" fill="var(--on-surface)" id="f1-svg-cardname">Mitjana Girona</text>
+          <text x="26" y="74" font-family="var(--font-label)" font-size="12" fill="var(--on-surface-variant)" id="f1-svg-summary1">Mitjana: 15,4 °C</text>
+          <text x="26" y="92" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)" id="f1-svg-summary2">Total pluja: 729 mm</text>
+
+          <!-- Pluviometer 1mm = 1L/m2 -->
+          <rect x="14" y="120" width="166" height="106" rx="6" fill="var(--surface-container)" stroke="var(--outline)"/>
+          <text x="26" y="139" font-family="var(--font-label)" font-size="12" fill="var(--on-surface)">Pluviòmetre (1 m²)</text>
+          <rect x="28" y="149" width="38" height="64" rx="3" fill="var(--surface-well)" stroke="var(--outline-strong, var(--outline))"/>
+          <rect x="30" y="170" width="34" height="41" rx="2" fill="var(--tertiary)" opacity="0.85" id="f1-beaker-fill" class="svg-smooth"/>
+          <text x="76" y="170" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--tertiary)" id="f1-beaker-mm">110 mm</text>
+          <text x="76" y="188" font-family="var(--font-label)" font-size="12" fill="var(--on-surface)">= 110 L/m²</text>
+          <text x="76" y="206" font-family="var(--font-body)" font-size="12" fill="var(--on-surface-variant)">1 mm = 1 litre</text>
+
+          <!-- Climogram plot area -->
+          <rect x="194" y="14" width="432" height="212" rx="6" fill="var(--surface-container-low)" stroke="var(--outline-variant)"/>
+          <!-- Grid lines -->
+          <line x1="232" y1="42" x2="582" y2="42" stroke="var(--outline-variant)" stroke-dasharray="3 3"/>
+          <line x1="232" y1="82" x2="582" y2="82" stroke="var(--outline-variant)" stroke-dasharray="3 3"/>
+          <line x1="232" y1="122" x2="582" y2="122" stroke="var(--outline-variant)" stroke-dasharray="3 3"/>
+          <line x1="232" y1="162" x2="582" y2="162" stroke="var(--outline-variant)" stroke-dasharray="3 3"/>
+          <line x1="232" y1="202" x2="582" y2="202" stroke="var(--outline)"/>
+
+          <!-- Left Y axis: °C -->
+          <text x="200" y="28" font-family="var(--font-label)" font-size="12" fill="var(--terracotta)">°C</text>
+          <text x="226" y="46" font-family="var(--font-label)" font-size="12" fill="var(--terracotta)" text-anchor="end">30</text>
+          <text x="226" y="86" font-family="var(--font-label)" font-size="12" fill="var(--terracotta)" text-anchor="end">20</text>
+          <text x="226" y="126" font-family="var(--font-label)" font-size="12" fill="var(--terracotta)" text-anchor="end">10</text>
+          <text x="226" y="166" font-family="var(--font-label)" font-size="12" fill="var(--terracotta)" text-anchor="end">0</text>
+
+          <!-- Right Y axis: mm (2x scale: 0..120mm) -->
+          <text x="614" y="28" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)" text-anchor="end">mm</text>
+          <text x="588" y="46" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)">120</text>
+          <text x="588" y="86" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)">90</text>
+          <text x="588" y="126" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)">60</text>
+          <text x="588" y="166" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)">30</text>
+          <text x="588" y="206" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)">0</text>
+
+          <!-- Dynamic bars + line + clickable month columns injected/managed by JS -->
+          <g id="f1-bars-group"></g>
+          <path id="f1-temp-line" fill="none" stroke="var(--terracotta)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d=""/>
+          <g id="f1-temp-dots"></g>
+          <g id="f1-day-overlay" opacity="0">
+            <rect x="236" y="26" width="340" height="34" rx="5" fill="var(--brass-tint)" stroke="var(--primary)"/>
+            <text x="406" y="48" font-family="var(--font-body)" font-size="13" font-weight="600" fill="var(--primary)" text-anchor="middle">Tempesta puntual d'avui (35 L/m²): això és TEMPS!</text>
+          </g>
+          <g id="f1-hits-group"></g>
+          <circle id="f1-celebrate" cx="406" cy="120" r="24" fill="none" stroke="var(--positive)" stroke-width="3" opacity="0"/>
+        </svg>
+      </div>
+
+      <div class="hint-strip" id="f1-hint">
+        <strong>Truc del tema:</strong> Temps = Tiquet d'avui (pot ploure un dia de juliol). Clima = Carnet de 30 anys. Toca qualsevol mes del climograma per veure com funciona 1 mm = 1 L/m².
+      </div>
+
+      <div class="challenge-panel" id="f1-challenge">
+        <div class="challenge-top">
+          <span class="round-pill" id="f1-round-pill">Ronda 1 de 3</span>
+          <div class="challenge-actions">
+            <button type="button" class="ctrl-btn-primary" id="f1-next-btn" onclick="nextRound(1)" style="display:none;">Següent ronda</button>
+          </div>
+        </div>
+        <p class="challenge-prompt" id="f1-prompt"></p>
+        <p class="challenge-feedback" id="f1-feedback"></p>
+      </div>
+
+      <div class="controls-dock">
+        <button type="button" class="ctrl-btn is-active" id="f1-btn-girona" onclick="f1SetDataset('girona')">Girona (30 anys)</button>
+        <button type="button" class="ctrl-btn is-sky" id="f1-btn-melbourne" onclick="f1SetDataset('melbourne')">Melbourne (Hem. Sud)</button>
+        <button type="button" class="ctrl-btn is-terracotta" id="f1-btn-today" onclick="f1SetDataset('today')">Dia d'avui (Tiquet)</button>
+      </div>
+    </section>
+
+    <!-- FITXA 2: L'Atmosfera i les 5 Capes -->
+    <section class="fitxa-card" id="fitxa-2" aria-labelledby="f2-heading">
+      <div class="fitxa-header">
+        <div>
+          <p class="fitxa-kicker">Fitxa 2 · La pell de la poma i les 3 proteccions</p>
+          <h2 class="fitxa-title" id="f2-heading">L'Atmosfera i les 5 Capes</h2>
+          <p class="fitxa-summary">Recorda: «Tots Els Matins Torro Entrepans». Tot el temps passa a la troposfera, prima com la pell d'una poma.</p>
+        </div>
+        <span class="status-badge" id="f2-status">Per explorar</span>
+      </div>
+
+      <div class="mode-bar">
+        <div class="mode-tabs" role="tablist" aria-label="Mode de la fitxa 2">
+          <button type="button" class="mode-btn is-active" id="f2-tab-explore" onclick="setMode(2, 'explore')">Explora</button>
+          <button type="button" class="mode-btn" id="f2-tab-challenge" onclick="setMode(2, 'challenge')">Repte (3 rondes)</button>
+        </div>
+      </div>
+
+      <div class="readout-bar" aria-live="polite">
+        <div class="readout-chip"><span class="chip-label">Capa activa</span><span class="chip-value is-gold" id="f2-out-layer">1 · Troposfera</span></div>
+        <div class="readout-chip"><span class="chip-label">Altitud</span><span class="chip-value is-sky" id="f2-out-alt">0 – 12 km</span></div>
+        <div class="readout-chip"><span class="chip-label">Fita / Temp.</span><span class="chip-value is-terracotta" id="f2-out-temp">Avió 10 km (−55 °C)</span></div>
+        <div class="readout-chip"><span class="chip-label">Funció clau</span><span class="chip-value is-mint" id="f2-out-func">Núvols, pluja i vent</span></div>
+      </div>
+
+      <div class="svg-stage" id="f2-stage">
+        <span class="svg-badge">Esquema visual</span>
+        <svg viewBox="0 0 640 275" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Les cinc capes de l'atmosfera de baix a dalt i les tres funcions protectores">
+          <rect x="0" y="0" width="640" height="275" fill="var(--svg-space)"/>
+
+          <!-- 5 Atmospheric layers (each >= 48px high clickable hit band) -->
+          <g id="f2-layer-exosfera" class="svg-hit" tabindex="0" onclick="f2SelectLayer('exosfera')">
+            <rect x="12" y="8" width="404" height="48" rx="4" fill="var(--svg-space)" stroke="var(--outline-variant)"/>
+            <text x="24" y="29" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--on-surface)">5. EXOSFERA (&gt; 500 km)</text>
+            <text x="24" y="46" font-family="var(--font-body)" font-size="12" fill="var(--on-surface-variant)">Entrepans · Transició cap a l'espai (Hubble)</text>
+          </g>
+
+          <g id="f2-layer-termosfera" class="svg-hit" tabindex="0" onclick="f2SelectLayer('termosfera')">
+            <rect x="12" y="59" width="404" height="48" rx="4" fill="var(--svg-sky-high)" stroke="var(--outline-variant)"/>
+            <text x="24" y="80" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--tertiary)">4. TERMOSFERA (80 – 500 km)</text>
+            <text x="24" y="97" font-family="var(--font-body)" font-size="12" fill="var(--on-surface-variant)">Torro · Aurores boreals, satèl·lits i Estació Espacial</text>
+            <!-- Aurora ribbon -->
+            <path d="M 320 75 Q 350 65 375 78 T 404 72" fill="none" stroke="var(--positive)" stroke-width="3" opacity="0.7"/>
+          </g>
+
+          <g id="f2-layer-mesosfera" class="svg-hit" tabindex="0" onclick="f2SelectLayer('mesosfera')">
+            <rect x="12" y="110" width="404" height="48" rx="4" fill="var(--svg-sky-mid)" stroke="var(--outline-variant)"/>
+            <text x="24" y="131" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--on-surface)">3. MESOSFERA (50 – 80 km)</text>
+            <text x="24" y="148" font-family="var(--font-body)" font-size="12" fill="var(--on-surface-variant)">Matins · CASC: crema els meteors (estels fugaços)</text>
+            <!-- Meteor animation line -->
+            <g id="f2-fx-meteor" opacity="0.45">
+              <line x1="330" y1="118" x2="386" y2="144" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="386" cy="144" r="4" fill="var(--error)"/>
+            </g>
+          </g>
+
+          <g id="f2-layer-estratosfera" class="svg-hit" tabindex="0" onclick="f2SelectLayer('estratosfera')">
+            <rect x="12" y="161" width="404" height="48" rx="4" fill="var(--svg-sky-deep)" stroke="var(--outline-variant)"/>
+            <line x1="16" y1="186" x2="412" y2="186" stroke="var(--tertiary)" stroke-width="3" stroke-dasharray="6 4" opacity="0.75"/>
+            <text x="24" y="180" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--primary)">2. ESTRATOSFERA (12 – 50 km)</text>
+            <text x="24" y="200" font-family="var(--font-body)" font-size="12" fill="var(--on-surface-variant)">Els · ULLERES DE SOL: capa d'ozó atura raigs UV</text>
+          </g>
+
+          <g id="f2-layer-troposfera" class="svg-hit wiggle-me" tabindex="0" onclick="f2SelectLayer('troposfera')">
+            <rect x="12" y="212" width="404" height="54" rx="4" fill="var(--surface-container-high)" stroke="var(--primary)" stroke-width="2" id="f2-tropo-box"/>
+            <!-- Everest + Plane + Cloud -->
+            <polygon points="315,263 340,235 365,263" fill="var(--svg-mountain)" stroke="var(--outline)"/>
+            <text x="340" y="231" font-family="var(--font-label)" font-size="12" fill="var(--on-surface)" text-anchor="middle">8 848 m</text>
+            <path d="M 372 226 L 394 226 L 402 222 L 394 230 Z" fill="var(--on-surface)"/>
+            <text x="24" y="233" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--primary)">1. TROPOSFERA (0 – 12 km)</text>
+            <text x="24" y="253" font-family="var(--font-body)" font-size="12" fill="var(--on-surface)">Tots · Pell de poma: temps, Everest i avió (−55 °C)</text>
+          </g>
+
+          <!-- Right inspector panel: 3 Protective Functions + Mnemonic -->
+          <rect x="428" y="8" width="200" height="258" rx="6" fill="var(--surface-container)" stroke="var(--outline)"/>
+          <text x="442" y="30" font-family="var(--font-label)" font-size="12" fill="var(--primary)">TRUC TEMTE</text>
+          <text x="442" y="50" font-family="var(--font-body)" font-size="13" font-weight="600" fill="var(--on-surface)">Tots Els Matins</text>
+          <text x="442" y="68" font-family="var(--font-body)" font-size="13" font-weight="600" fill="var(--on-surface)">Torro Entrepans</text>
+
+          <line x1="442" y1="82" x2="614" y2="82" stroke="var(--outline-variant)"/>
+
+          <text x="442" y="102" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)">3 PROTECCIONS</text>
+
+          <g id="f2-card-jaqueta">
+            <rect x="440" y="112" width="176" height="44" rx="5" fill="var(--surface-well)" stroke="var(--outline)"/>
+            <text x="450" y="130" font-family="var(--font-body)" font-size="13" font-weight="600" fill="var(--primary)">1. Jaqueta tèrmica</text>
+            <text x="450" y="147" font-family="var(--font-label)" font-size="12" fill="var(--on-surface-variant)">Mitjana estable: 14 °C</text>
+          </g>
+
+          <g id="f2-card-casc">
+            <rect x="440" y="164" width="176" height="44" rx="5" fill="var(--surface-well)" stroke="var(--outline)"/>
+            <text x="450" y="182" font-family="var(--font-body)" font-size="13" font-weight="600" fill="var(--terracotta)">2. Casc antiroques</text>
+            <text x="450" y="199" font-family="var(--font-label)" font-size="12" fill="var(--on-surface-variant)">Desintegra meteors</text>
+          </g>
+
+          <g id="f2-card-ulleres">
+            <rect x="440" y="216" width="176" height="44" rx="5" fill="var(--surface-well)" stroke="var(--outline)"/>
+            <text x="450" y="234" font-family="var(--font-body)" font-size="13" font-weight="600" fill="var(--tertiary)">3. Ulleres de sol</text>
+            <text x="450" y="251" font-family="var(--font-label)" font-size="12" fill="var(--on-surface-variant)">L'ozó frena raigs UV</text>
+          </g>
+
+          <!-- Active layer highlight frame -->
+          <rect id="f2-active-frame" x="12" y="212" width="404" height="54" rx="4" fill="none" stroke="var(--primary)" stroke-width="2.5" pointer-events="none" class="svg-smooth"/>
+          <circle id="f2-celebrate" cx="214" cy="140" r="26" fill="none" stroke="var(--positive)" stroke-width="3" opacity="0"/>
+        </svg>
+      </div>
+
+      <div class="hint-strip" id="f2-hint">
+        <strong>Metàfora clau:</strong> Si la Terra fos una poma, la troposfera (12 km) seria més prima que la pell, però conté l'Everest (8 848 m), els avions i tots els núvols.
+      </div>
+
+      <div class="challenge-panel" id="f2-challenge">
+        <div class="challenge-top">
+          <span class="round-pill" id="f2-round-pill">Ronda 1 de 3</span>
+          <div class="challenge-actions">
+            <button type="button" class="ctrl-btn-primary" id="f2-next-btn" onclick="nextRound(2)" style="display:none;">Següent ronda</button>
+          </div>
+        </div>
+        <p class="challenge-prompt" id="f2-prompt"></p>
+        <p class="challenge-feedback" id="f2-feedback"></p>
+      </div>
+
+      <div class="controls-dock">
+        <button type="button" class="ctrl-btn is-active" id="f2-btn-jaqueta" onclick="f2TriggerFunction('jaqueta')">Jaqueta (14 °C)</button>
+        <button type="button" class="ctrl-btn is-terracotta" id="f2-btn-casc" onclick="f2TriggerFunction('casc')">Casc (Meteors)</button>
+        <button type="button" class="ctrl-btn is-sky" id="f2-btn-ulleres" onclick="f2TriggerFunction('ulleres')">Ulleres (Ozó UV)</button>
+        <button type="button" class="ctrl-btn" id="f2-btn-temte" onclick="f2TriggerFunction('temte')">Pell de poma (12 km)</button>
+      </div>
+    </section>
+
+    <!-- FITXA 3: Factors Climàtics LAD -->
+    <section class="fitxa-card" id="fitxa-3" aria-labelledby="f3-heading">
+      <div class="fitxa-header">
+        <div>
+          <p class="fitxa-kicker">Fitxa 3 · Latitud, Altitud i Distància al mar</p>
+          <h2 class="fitxa-title" id="f3-heading">Factors Climàtics LAD</h2>
+          <p class="fitxa-summary">L'entrepà de les 5 zones (Pa-Formatge-Pernil-Formatge-Pa), el truc «Pujo mil, perdo sis» i les muntanyes que aturen el mar.</p>
+        </div>
+        <span class="status-badge" id="f3-status">Per explorar</span>
+      </div>
+
+      <div class="mode-bar">
+        <div class="mode-tabs" role="tablist" aria-label="Mode de la fitxa 3">
+          <button type="button" class="mode-btn is-active" id="f3-tab-explore" onclick="setMode(3, 'explore')">Explora</button>
+          <button type="button" class="mode-btn" id="f3-tab-challenge" onclick="setMode(3, 'challenge')">Repte (3 rondes)</button>
+        </div>
+      </div>
+
+      <div class="readout-bar" aria-live="polite">
+        <div class="readout-chip"><span class="chip-label">Factor actiu</span><span class="chip-value is-gold" id="f3-out-factor">Altitud · Platja (0 m)</span></div>
+        <div class="readout-chip"><span class="chip-label">Entrepà (Latitud)</span><span class="chip-value is-terracotta" id="f3-out-zone">Zona temperada (Formatge)</span></div>
+        <div class="readout-chip"><span class="chip-label">Temperatura</span><span class="chip-value is-sky" id="f3-out-temp">21 °C</span></div>
+        <div class="readout-chip"><span class="chip-label">Efecte local</span><span class="chip-value is-mint" id="f3-out-effect">Brisa marina suau</span></div>
+      </div>
+
+      <div class="svg-stage" id="f3-stage">
+        <span class="svg-badge">Esquema visual</span>
+        <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Entrepà de zones climàtiques per latitud i perfil de relleu amb altitud i boira de fondalada">
+          <rect x="0" y="0" width="640" height="240" fill="var(--surface-well)"/>
+
+          <!-- Left: Entrepà Climàtic (5 zones) -->
+          <rect x="12" y="12" width="212" height="216" rx="6" fill="var(--surface-container)" stroke="var(--outline)"/>
+          <text x="24" y="32" font-family="var(--font-label)" font-size="12" fill="var(--primary)">LATITUD · ENTREPÀ</text>
+
+          <g id="f3-zone-pa-nord" class="svg-hit" tabindex="0" onclick="f3SelectZone('freda')">
+            <rect x="24" y="42" width="188" height="32" rx="4" fill="var(--svg-cool-tint)" stroke="var(--tertiary)"/>
+            <text x="118" y="62" font-family="var(--font-body)" font-size="12" font-weight="600" fill="var(--on-surface)" text-anchor="middle">Pa · Zona freda (Pol Nord)</text>
+          </g>
+
+          <g id="f3-zone-formatge-nord" class="svg-hit wiggle-me" tabindex="0" onclick="f3SelectZone('temperada')">
+            <rect x="24" y="78" width="188" height="32" rx="4" fill="var(--svg-gold-tint)" stroke="var(--primary)"/>
+            <text x="118" y="98" font-family="var(--font-body)" font-size="12" font-weight="600" fill="var(--on-surface)" text-anchor="middle">Formatge · Zona temperada</text>
+          </g>
+
+          <g id="f3-zone-pernil" class="svg-hit" tabindex="0" onclick="f3SelectZone('calida')">
+            <rect x="24" y="114" width="188" height="32" rx="4" fill="var(--svg-warm-tint)" stroke="var(--terracotta)"/>
+            <text x="118" y="134" font-family="var(--font-body)" font-size="12" font-weight="600" fill="var(--on-surface)" text-anchor="middle">Pernil · Zona càlida (Equador)</text>
+          </g>
+
+          <g id="f3-zone-formatge-sud" class="svg-hit" tabindex="0" onclick="f3SelectZone('temperada')">
+            <rect x="24" y="150" width="188" height="32" rx="4" fill="var(--svg-gold-tint)" stroke="var(--primary)"/>
+            <text x="118" y="170" font-family="var(--font-body)" font-size="12" font-weight="600" fill="var(--on-surface)" text-anchor="middle">Formatge · Zona temperada</text>
+          </g>
+
+          <g id="f3-zone-pa-sud" class="svg-hit" tabindex="0" onclick="f3SelectZone('freda')">
+            <rect x="24" y="186" width="188" height="32" rx="4" fill="var(--svg-cool-tint)" stroke="var(--tertiary)"/>
+            <text x="118" y="206" font-family="var(--font-body)" font-size="12" font-weight="600" fill="var(--on-surface)" text-anchor="middle">Pa · Zona freda (Pol Sud)</text>
+          </g>
+
+          <!-- Right: Relief profile (Costa -> Serralada -> Vall) -->
+          <rect x="236" y="12" width="392" height="216" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)"/>
+          <text x="248" y="32" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)">ALTITUD I DISTÀNCIA AL MAR</text>
+
+          <!-- Sea -->
+          <rect x="238" y="188" width="90" height="38" fill="var(--svg-sea)"/>
+          <text x="283" y="211" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)" text-anchor="middle">MAR (0 m)</text>
+
+          <!-- Land + Mountain Barrier + Inland Valley -->
+          <polygon points="328,188 365,188 430,72 478,72 528,176 626,176 626,226 328,226" fill="var(--svg-mountain)" stroke="var(--outline)"/>
+
+          <!-- Sea breeze arrow -->
+          <g id="f3-sea-breeze">
+            <path d="M 255 154 L 352 154" stroke="var(--tertiary)" stroke-width="3" stroke-linecap="round"/>
+            <polygon points="350,148 362,154 350,160" fill="var(--tertiary)"/>
+            <text x="304" y="144" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)" text-anchor="middle">Brisa humida</text>
+          </g>
+
+          <!-- Blocked barrier & fog in valley -->
+          <g id="f3-fog-group" opacity="0.25" class="svg-smooth">
+            <rect x="522" y="148" width="96" height="28" rx="12" fill="var(--svg-cloud)"/>
+            <text x="570" y="166" font-family="var(--font-label)" font-size="12" fill="var(--surface-well)" text-anchor="middle">Boira freda</text>
+            <text x="570" y="114" font-family="var(--font-body)" font-size="12" fill="var(--error)" text-anchor="middle">Aire fred baixa</text>
+            <path d="M 548 122 L 548 142" stroke="var(--tertiary)" stroke-width="2.5"/>
+            <polygon points="543,140 548,148 553,140" fill="var(--tertiary)"/>
+          </g>
+
+          <!-- Mountain label -->
+          <text x="454" y="56" font-family="var(--font-label)" font-size="12" fill="var(--on-surface)" text-anchor="middle">Serralada Prelitoral</text>
+
+          <!-- Active altitude marker -->
+          <g id="f3-pin" transform="translate(345, 182)" class="svg-smooth">
+            <circle cx="0" cy="0" r="10" fill="var(--primary)" stroke="var(--surface-well)" stroke-width="2"/>
+            <rect x="-32" y="-34" width="64" height="22" rx="4" fill="var(--surface-well)" stroke="var(--primary)"/>
+            <text x="0" y="-19" font-family="var(--font-label)" font-size="12" font-weight="600" fill="var(--primary)" text-anchor="middle" id="f3-pin-label">21 °C</text>
+          </g>
+
+          <circle id="f3-celebrate" cx="430" cy="120" r="24" fill="none" stroke="var(--positive)" stroke-width="3" opacity="0"/>
+        </svg>
+      </div>
+
+      <div class="hint-strip" id="f3-hint">
+        <strong>Regla d'or:</strong> «Pujo mil, perdo sis» (−6 °C cada 1 000 m). A les nits d'hivern, l'aire fred pesa més, rellisca cap a la vall i forma boira de fondalada rere la serralada.
+      </div>
+
+      <div class="challenge-panel" id="f3-challenge">
+        <div class="challenge-top">
+          <span class="round-pill" id="f3-round-pill">Ronda 1 de 3</span>
+          <div class="challenge-actions">
+            <button type="button" class="ctrl-btn-primary" id="f3-next-btn" onclick="nextRound(3)" style="display:none;">Següent ronda</button>
+          </div>
+        </div>
+        <p class="challenge-prompt" id="f3-prompt"></p>
+        <p class="challenge-feedback" id="f3-feedback"></p>
+      </div>
+
+      <div class="controls-dock">
+        <button type="button" class="ctrl-btn is-active" id="f3-btn-platja" onclick="f3SetRelief('platja')">Platja (0 m, 21 °C)</button>
+        <button type="button" class="ctrl-btn is-sky" id="f3-btn-1000" onclick="f3SetRelief('m1000')">Cim 1 000 m (−6 °C)</button>
+        <button type="button" class="ctrl-btn is-sky" id="f3-btn-2000" onclick="f3SetRelief('m2000')">Cim 2 000 m (−12 °C)</button>
+        <button type="button" class="ctrl-btn is-terracotta" id="f3-btn-vall" onclick="f3SetRelief('vall')">Vall rere muntanya (Boira)</button>
+      </div>
+    </section>
+
+    <!-- FITXA 4: Pressió Atmosfèrica i Vent (amb Caça l'error a l'SVG) -->
+    <section class="fitxa-card" id="fitxa-4" aria-labelledby="f4-heading">
+      <div class="fitxa-header">
+        <div>
+          <p class="fitxa-kicker">Fitxa 4 · Les tres C i el globus desinflat</p>
+          <h2 class="fitxa-title" id="f4-heading">Pressió Atmosfèrica i Vent</h2>
+          <p class="fitxa-summary">La pressió normal és 1 013 hPa. L'aire bufa sempre d'on està comprimit (A) cap a on hi ha lloc (D), com un globus quan el destapes.</p>
+        </div>
+        <span class="status-badge" id="f4-status">Per explorar</span>
+      </div>
+
+      <div class="mode-bar">
+        <div class="mode-tabs" role="tablist" aria-label="Mode de la fitxa 4">
+          <button type="button" class="mode-btn is-active" id="f4-tab-explore" onclick="setMode(4, 'explore')">Explora</button>
+          <button type="button" class="mode-btn" id="f4-tab-challenge" onclick="setMode(4, 'challenge')">Repte: Caça l'error (3 rondes)</button>
+        </div>
+      </div>
+
+      <div class="readout-bar" aria-live="polite">
+        <div class="readout-chip"><span class="chip-label">Zona A (Anticicló)</span><span class="chip-value is-gold" id="f4-out-a">1 028 hPa · Sol</span></div>
+        <div class="readout-chip"><span class="chip-label">Referència mar</span><span class="chip-value is-mint" id="f4-out-ref">1 013 hPa</span></div>
+        <div class="readout-chip"><span class="chip-label">Zona D (Borrasca)</span><span class="chip-value is-sky" id="f4-out-d">996 hPa · Pluja</span></div>
+        <div class="readout-chip"><span class="chip-label">Direcció del vent</span><span class="chip-value is-terracotta" id="f4-out-wind">D'A cap a D (Globus)</span></div>
+      </div>
+
+      <div class="svg-stage" id="f4-stage">
+        <span class="svg-badge">Esquema visual</span>
+        <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anticicló A, Depressió D, pressió normal 1013 hPa i direcció del vent">
+          <rect x="0" y="0" width="640" height="240" fill="var(--svg-sky-high)"/>
+
+          <!-- Ground & 1013 hPa reference -->
+          <rect x="0" y="196" width="640" height="44" fill="var(--svg-earth)"/>
+          <line x1="0" y1="196" x2="640" y2="196" stroke="var(--svg-earth-stroke)" stroke-width="2"/>
+          <g id="f4-hit-pressure" class="svg-hit" tabindex="0" onclick="f4ClickSvg('pressure')">
+            <rect x="242" y="198" width="156" height="36" rx="5" fill="var(--surface-well)" stroke="var(--outline)"/>
+            <text x="320" y="220" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--on-surface)" text-anchor="middle" id="f4-lbl-ref">Normal: 1 013 hPa</text>
+          </g>
+
+          <!-- Left: Anticicló A -->
+          <g id="f4-hit-a-sky" class="svg-hit" tabindex="0" onclick="f4ClickSvg('a_sky')">
+            <rect x="20" y="16" width="184" height="170" rx="6" fill="var(--svg-gold-tint)" stroke="var(--primary)" opacity="0.5"/>
+            <circle cx="62" cy="52" r="18" fill="var(--primary)" id="f4-sun"/>
+            <text x="140" y="58" font-family="var(--font-headline)" font-size="34" font-weight="600" fill="var(--primary)" text-anchor="middle">A</text>
+            <text x="112" y="176" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--primary)" text-anchor="middle" id="f4-lbl-a">1 028 hPa · Cel clar</text>
+          </g>
+
+          <!-- Sinking air arrow in A -->
+          <g id="f4-hit-a-arrow" class="svg-hit" tabindex="0" onclick="f4ClickSvg('a_arrow')">
+            <rect x="92" y="76" width="76" height="82" rx="4" fill="transparent"/>
+            <path d="M 130 82 L 130 146" stroke="var(--tertiary)" stroke-width="4" stroke-linecap="round" id="f4-a-line"/>
+            <polygon points="122,140 130,154 138,140" fill="var(--tertiary)" id="f4-a-head"/>
+            <text x="130" y="166" font-family="var(--font-body)" font-size="12" fill="var(--on-surface)" text-anchor="middle" id="f4-lbl-a-dir">Aire fred baixa</text>
+          </g>
+
+          <!-- Center: Wind arrow A -> D (Balloon analogy) -->
+          <g id="f4-hit-wind" class="svg-hit wiggle-me" tabindex="0" onclick="f4ClickSvg('wind')">
+            <rect x="218" y="88" width="204" height="86" rx="6" fill="var(--surface-container)" stroke="var(--outline)"/>
+            <text x="320" y="108" font-family="var(--font-label)" font-size="12" fill="var(--primary)" text-anchor="middle">VENT (COM UN GLOBUS)</text>
+            <path d="M 244 130 L 386 130" stroke="var(--primary)" stroke-width="5" stroke-linecap="round" id="f4-wind-line"/>
+            <polygon points="382,121 400,130 382,139" fill="var(--primary)" id="f4-wind-head"/>
+            <text x="320" y="160" font-family="var(--font-body)" font-size="12" font-weight="600" fill="var(--on-surface)" text-anchor="middle" id="f4-lbl-wind">D'A (apretat) → D (lloc)</text>
+          </g>
+
+          <!-- Right: Depressió D -->
+          <g id="f4-hit-d-sky" class="svg-hit" tabindex="0" onclick="f4ClickSvg('d_sky')">
+            <rect x="436" y="16" width="184" height="170" rx="6" fill="var(--svg-cool-tint)" stroke="var(--tertiary)" opacity="0.5"/>
+            <!-- Cloud + rain -->
+            <g id="f4-d-cloud">
+              <ellipse cx="496" cy="52" rx="34" ry="16" fill="var(--svg-cloud-storm)"/>
+              <ellipse cx="520" cy="48" rx="26" ry="14" fill="var(--svg-cloud)"/>
+              <line x1="482" y1="70" x2="478" y2="84" stroke="var(--tertiary)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="504" y1="70" x2="500" y2="84" stroke="var(--tertiary)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="526" y1="70" x2="522" y2="84" stroke="var(--tertiary)" stroke-width="2.5" stroke-linecap="round"/>
+            </g>
+            <text x="580" y="58" font-family="var(--font-headline)" font-size="34" font-weight="600" fill="var(--tertiary)" text-anchor="middle">D</text>
+            <text x="528" y="176" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--tertiary)" text-anchor="middle" id="f4-lbl-d">996 hPa · Núvols</text>
+          </g>
+
+          <!-- Rising air arrow in D -->
+          <g id="f4-hit-d-arrow" class="svg-hit" tabindex="0" onclick="f4ClickSvg('d_arrow')">
+            <rect x="490" y="84" width="76" height="78" rx="4" fill="transparent"/>
+            <path d="M 528 152 L 528 92" stroke="var(--terracotta)" stroke-width="4" stroke-linecap="round" id="f4-d-line"/>
+            <polygon points="520,98 528,84 536,98" fill="var(--terracotta)" id="f4-d-head"/>
+            <text x="528" y="162" font-family="var(--font-body)" font-size="12" fill="var(--on-surface)" text-anchor="middle" id="f4-lbl-d-dir">3 C: Calent puja</text>
+          </g>
+
+          <!-- Robot error badge (visible in bug-hunt challenge rounds) -->
+          <g id="f4-robot-badge" opacity="0">
+            <rect x="190" y="12" width="260" height="28" rx="5" fill="var(--coral-tint)" stroke="var(--error)"/>
+            <text x="320" y="30" font-family="var(--font-label)" font-size="12" font-weight="600" fill="var(--error)" text-anchor="middle">ERROR DEL ROBOT: TOCA LA PEÇA ERRÒNIA</text>
+          </g>
+
+          <circle id="f4-celebrate" cx="320" cy="130" r="26" fill="none" stroke="var(--positive)" stroke-width="3" opacity="0"/>
+        </svg>
+      </div>
+
+      <div class="hint-strip" id="f4-hint">
+        <strong>Truc de les tres C:</strong> Aire <strong>C</strong>alent → <strong>C</strong>ap amunt → <strong>C</strong>au aigua (Depressió D). Quan l'aire és fred, baixa pesant i fa sol (Anticicló A).
+      </div>
+
+      <div class="challenge-panel" id="f4-challenge">
+        <div class="challenge-top">
+          <span class="round-pill" id="f4-round-pill">Ronda 1 de 3</span>
+          <div class="challenge-actions">
+            <button type="button" class="ctrl-btn-primary" id="f4-next-btn" onclick="nextRound(4)" style="display:none;">Següent ronda</button>
+          </div>
+        </div>
+        <p class="challenge-prompt" id="f4-prompt"></p>
+        <p class="challenge-feedback" id="f4-feedback"></p>
+      </div>
+
+      <div class="controls-dock">
+        <button type="button" class="ctrl-btn is-terracotta is-active" id="f4-btn-3c" onclick="f4SetScenario('storm')">Escalfa l'aire (3 C → D)</button>
+        <button type="button" class="ctrl-btn" id="f4-btn-cool" onclick="f4SetScenario('clear')">Refreda l'aire (Baixa → A)</button>
+        <button type="button" class="ctrl-btn is-sky" id="f4-btn-wind" onclick="f4SetScenario('wind')">Destapa el globus (A → D)</button>
+        <button type="button" class="ctrl-btn" id="f4-btn-ref" onclick="f4SetScenario('normal')">Pressió normal (1 013 hPa)</button>
+      </div>
+    </section>
+
+    <!-- FITXA 5: Llegir el Mapa del Temps -->
+    <section class="fitxa-card" id="fitxa-5" aria-labelledby="f5-heading">
+      <div class="fitxa-header">
+        <div>
+          <p class="fitxa-kicker">Fitxa 5 · Isòbares, girs i fronts al mapa</p>
+          <h2 class="fitxa-title" id="f5-heading">Llegir el Mapa del Temps</h2>
+          <p class="fitxa-summary">Un mapa del temps és com un plat d'espaguetis amb lletres: com més juntes les isòbares, més pendent té el tobogan i més fort bufa el vent.</p>
+        </div>
+        <span class="status-badge" id="f5-status">Per explorar</span>
+      </div>
+
+      <div class="mode-bar">
+        <div class="mode-tabs" role="tablist" aria-label="Mode de la fitxa 5">
+          <button type="button" class="mode-btn is-active" id="f5-tab-explore" onclick="setMode(5, 'explore')">Explora</button>
+          <button type="button" class="mode-btn" id="f5-tab-challenge" onclick="setMode(5, 'challenge')">Repte (3 rondes)</button>
+        </div>
+      </div>
+
+      <div class="readout-bar" aria-live="polite">
+        <div class="readout-chip"><span class="chip-label">Element del mapa</span><span class="chip-value is-gold" id="f5-out-elem">Anticicló A</span></div>
+        <div class="readout-chip"><span class="chip-label">Gir / Forma</span><span class="chip-value is-sky" id="f5-out-spin">Agulles del rellotge</span></div>
+        <div class="readout-chip"><span class="chip-label">Vent / Isòbares</span><span class="chip-value is-terracotta" id="f5-out-wind">Ve del Nord (Tramuntana)</span></div>
+        <div class="readout-chip"><span class="chip-label">Temps previst</span><span class="chip-value is-mint" id="f5-out-weather">Assolellat i estable</span></div>
+      </div>
+
+      <div class="svg-stage" id="f5-stage">
+        <span class="svg-badge">Esquema visual</span>
+        <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa sinòptic del temps amb Anticicló A, Depressió D, isòbares, front fred, front càlid i fletxa de vent">
+          <rect x="0" y="0" width="640" height="240" fill="var(--svg-sky-high)"/>
+
+          <!-- Subtle coastline silhouette (Western Mediterranean / Catalonia) -->
+          <path d="M 30 235 L 70 185 L 155 180 L 210 140 L 285 135 L 330 100 L 405 92 L 455 120 L 470 235 Z" fill="var(--surface-container)" stroke="var(--outline-variant)" opacity="0.75"/>
+
+          <!-- Anticicló A (Left) -->
+          <g id="f5-hit-A" class="svg-hit" tabindex="0" onclick="f5Select('A')">
+            <ellipse cx="122" cy="118" rx="88" ry="68" fill="none" stroke="var(--primary)" stroke-width="1.5" opacity="0.55"/>
+            <ellipse cx="122" cy="118" rx="60" ry="46" fill="none" stroke="var(--primary)" stroke-width="1.5" opacity="0.8"/>
+            <ellipse cx="122" cy="118" rx="34" ry="26" fill="var(--brass-tint)" stroke="var(--primary)" stroke-width="2"/>
+            <text x="122" y="128" font-family="var(--font-headline)" font-size="30" font-weight="600" fill="var(--primary)" text-anchor="middle">A</text>
+            <text x="122" y="42" font-family="var(--font-label)" font-size="12" fill="var(--primary)" text-anchor="middle">1028 hPa (Horari ↻)</text>
+            <!-- Clockwise arc -->
+            <path d="M 96 86 A 36 36 0 0 1 150 88" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
+            <polygon points="148,80 156,91 143,92" fill="var(--primary)"/>
+          </g>
+
+          <!-- Tight isobars / Tobogan zone (Center-bottom) -->
+          <g id="f5-hit-isobars" class="svg-hit" tabindex="0" onclick="f5Select('isobars')">
+            <rect x="220" y="156" width="136" height="72" rx="5" fill="var(--surface-well)" stroke="var(--outline)" opacity="0.85"/>
+            <path d="M 230 170 Q 288 164 346 174" fill="none" stroke="var(--on-surface-variant)" stroke-width="2"/>
+            <path d="M 230 180 Q 288 174 346 184" fill="none" stroke="var(--primary)" stroke-width="2" id="f5-iso-2"/>
+            <path d="M 230 190 Q 288 184 346 194" fill="none" stroke="var(--on-surface-variant)" stroke-width="2" id="f5-iso-3"/>
+            <path d="M 230 200 Q 288 194 346 204" fill="none" stroke="var(--primary)" stroke-width="2"/>
+            <text x="288" y="221" font-family="var(--font-label)" font-size="12" fill="var(--primary)" text-anchor="middle">Isòbares juntes = Vent fort</text>
+          </g>
+
+          <!-- Wind arrow (Top center) -->
+          <g id="f5-hit-wind" class="svg-hit" tabindex="0" onclick="f5Select('wind')">
+            <rect x="226" y="14" width="126" height="62" rx="5" fill="var(--surface-container)" stroke="var(--outline)"/>
+            <text x="289" y="32" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)" text-anchor="middle">VENT DEL NORD</text>
+            <!-- Arrow pointing South (from North) with 3 barbs -->
+            <line x1="289" y1="38" x2="289" y2="66" stroke="var(--on-surface)" stroke-width="2.5"/>
+            <polygon points="283,62 289,72 295,62" fill="var(--on-surface)"/>
+            <line x1="289" y1="40" x2="302" y2="36" stroke="var(--on-surface)" stroke-width="2"/>
+            <line x1="289" y1="47" x2="302" y2="43" stroke="var(--on-surface)" stroke-width="2"/>
+          </g>
+
+          <!-- Depressió D (Right-top) -->
+          <g id="f5-hit-D" class="svg-hit wiggle-me" tabindex="0" onclick="f5Select('D')">
+            <ellipse cx="485" cy="92" rx="78" ry="56" fill="none" stroke="var(--tertiary)" stroke-width="1.5" opacity="0.6"/>
+            <ellipse cx="485" cy="92" rx="48" ry="35" fill="var(--sky-tint)" stroke="var(--tertiary)" stroke-width="2"/>
+            <text x="485" y="102" font-family="var(--font-headline)" font-size="30" font-weight="600" fill="var(--tertiary)" text-anchor="middle">D</text>
+            <text x="485" y="28" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)" text-anchor="middle">996 hPa (Antihorari ↺)</text>
+            <!-- Counter-clockwise arc -->
+            <path d="M 510 62 A 34 34 0 0 0 458 64" fill="none" stroke="var(--tertiary)" stroke-width="2.5"/>
+            <polygon points="461,55 453,67 466,68" fill="var(--tertiary)"/>
+          </g>
+
+          <!-- Front Fred (Blue triangles - wedge) -->
+          <g id="f5-hit-coldfront" class="svg-hit" tabindex="0" onclick="f5Select('coldfront')">
+            <rect x="372" y="128" width="108" height="96" rx="5" fill="transparent"/>
+            <path d="M 454 128 Q 422 174 382 214" fill="none" stroke="var(--tertiary)" stroke-width="3"/>
+            <polygon points="434,154 446,162 426,166" fill="var(--tertiary)"/>
+            <polygon points="414,178 426,186 406,190" fill="var(--tertiary)"/>
+            <polygon points="394,200 406,208 386,212" fill="var(--tertiary)"/>
+            <text x="415" y="232" font-family="var(--font-label)" font-size="12" fill="var(--tertiary)" text-anchor="middle">Front fred</text>
+          </g>
+
+          <!-- Front Càlid (Terracotta semicircles - ramp) -->
+          <g id="f5-hit-warmfront" class="svg-hit" tabindex="0" onclick="f5Select('warmfront')">
+            <rect x="498" y="128" width="128" height="96" rx="5" fill="transparent"/>
+            <path d="M 516 128 Q 560 166 608 206" fill="none" stroke="var(--terracotta)" stroke-width="3"/>
+            <circle cx="538" cy="146" r="7" fill="var(--terracotta)"/>
+            <circle cx="564" cy="168" r="7" fill="var(--terracotta)"/>
+            <circle cx="590" cy="190" r="7" fill="var(--terracotta)"/>
+            <text x="562" y="232" font-family="var(--font-label)" font-size="12" fill="var(--terracotta)" text-anchor="middle">Front càlid</text>
+          </g>
+
+          <!-- Front side-profile mini inset -->
+          <g id="f5-front-inset" opacity="0" class="svg-smooth">
+            <rect x="190" y="84" width="210" height="62" rx="5" fill="var(--surface-well)" stroke="var(--primary)"/>
+            <text x="295" y="102" font-family="var(--font-label)" font-size="12" fill="var(--primary)" text-anchor="middle" id="f5-inset-title">Falca freda → Xàfecs</text>
+            <text x="295" y="124" font-family="var(--font-body)" font-size="12" fill="var(--on-surface)" text-anchor="middle" id="f5-inset-desc">L'aire fred entra per sota de cop</text>
+          </g>
+
+          <circle id="f5-celebrate" cx="320" cy="120" r="26" fill="none" stroke="var(--positive)" stroke-width="3" opacity="0"/>
+        </svg>
+      </div>
+
+      <div class="hint-strip" id="f5-hint">
+        <strong>Truc visual:</strong> <strong>A</strong> = Agulles del rellotge i Assolellat. <strong>D</strong> = gira al revés i Diluvi. Front fred = punxes de gel (triangles); front càlid = rodones de sol.
+      </div>
+
+      <div class="challenge-panel" id="f5-challenge">
+        <div class="challenge-top">
+          <span class="round-pill" id="f5-round-pill">Ronda 1 de 3</span>
+          <div class="challenge-actions">
+            <button type="button" class="ctrl-btn-primary" id="f5-next-btn" onclick="nextRound(5)" style="display:none;">Següent ronda</button>
+          </div>
+        </div>
+        <p class="challenge-prompt" id="f5-prompt"></p>
+        <p class="challenge-feedback" id="f5-feedback"></p>
+      </div>
+
+      <div class="controls-dock">
+        <button type="button" class="ctrl-btn is-active" id="f5-btn-A" onclick="f5Select('A')">Anticicló A (Horari)</button>
+        <button type="button" class="ctrl-btn is-sky" id="f5-btn-D" onclick="f5Select('D')">Depressió D (Antihorari)</button>
+        <button type="button" class="ctrl-btn" id="f5-btn-iso" onclick="f5Select('isobars')">Isòbares juntes (Tobogan)</button>
+        <button type="button" class="ctrl-btn is-terracotta" id="f5-btn-fronts" onclick="f5ToggleFronts()">Fronts (Falca vs Rampa)</button>
+      </div>
+    </section>
+
+    <!-- FITXA 6: Efecte d'Hivernacle i Canvi Climàtic (amb Caça l'error a l'SVG) -->
+    <section class="fitxa-card" id="fitxa-6" aria-labelledby="f6-heading">
+      <div class="fitxa-header">
+        <div>
+          <p class="fitxa-kicker">Fitxa 6 · La manta de la Terra i el mite de l'ozó</p>
+          <h2 class="fitxa-title" id="f6-heading">Efecte d'Hivernacle i Canvi Climàtic</h2>
+          <p class="fitxa-summary">Una manta natural manté la Terra a 14 °C. Afegir 5 mantes de carbó i petroli provoca febre al planeta — però no té res a veure amb l'ozó!</p>
+        </div>
+        <span class="status-badge" id="f6-status">Per explorar</span>
+      </div>
+
+      <div class="mode-bar">
+        <div class="mode-tabs" role="tablist" aria-label="Mode de la fitxa 6">
+          <button type="button" class="mode-btn is-active" id="f6-tab-explore" onclick="setMode(6, 'explore')">Explora</button>
+          <button type="button" class="mode-btn" id="f6-tab-challenge" onclick="setMode(6, 'challenge')">Repte: Caça l'error (3 rondes)</button>
+        </div>
+      </div>
+
+      <div class="readout-bar" aria-live="polite">
+        <div class="readout-chip"><span class="chip-label">Mantes de gasos</span><span class="chip-value is-mint" id="f6-out-blankets">1 manta (Natural)</span></div>
+        <div class="readout-chip"><span class="chip-label">Temp. mitjana Terra</span><span class="chip-value is-gold" id="f6-out-temp">14 °C (Ideal)</span></div>
+        <div class="readout-chip"><span class="chip-label">Gasos «Com Més Fum»</span><span class="chip-value is-terracotta" id="f6-out-gas">CO₂ · Metà · Fluorats</span></div>
+        <div class="readout-chip"><span class="chip-label">Capa d'ozó (UV)</span><span class="chip-value is-sky" id="f6-out-ozone">Problema separat</span></div>
+      </div>
+
+      <div class="svg-stage" id="f6-stage">
+        <span class="svg-badge">Esquema visual</span>
+        <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Efecte d'hivernacle amb manta natural vs 5 mantes de CO₂ i separació de la capa d'ozó">
+          <rect x="0" y="0" width="640" height="240" fill="var(--svg-space)"/>
+
+          <!-- Sun -->
+          <g id="f6-hit-sun" class="svg-hit" tabindex="0" onclick="f6ClickSvg('sun')">
+            <circle cx="58" cy="48" r="24" fill="var(--primary)"/>
+            <text x="58" y="90" font-family="var(--font-label)" font-size="12" fill="var(--primary)" text-anchor="middle" id="f6-lbl-sun">Sol (30% reflectit)</text>
+          </g>
+
+          <!-- Separate Ozone layer (top right) -->
+          <g id="f6-hit-ozone" class="svg-hit" tabindex="0" onclick="f6ClickSvg('ozone')">
+            <rect x="382" y="16" width="242" height="58" rx="6" fill="var(--sky-tint)" stroke="var(--tertiary)" stroke-width="2" id="f6-ozone-box"/>
+            <text x="503" y="38" font-family="var(--font-label)" font-size="12" font-weight="600" fill="var(--tertiary)" text-anchor="middle" id="f6-lbl-ozone1">CAPA D'OZÓ (Estat: recuperant)</text>
+            <text x="503" y="58" font-family="var(--font-body)" font-size="12" fill="var(--on-surface)" text-anchor="middle" id="f6-lbl-ozone2">Frena raigs UV · NO escalfa</text>
+          </g>
+
+          <!-- Blanket layers (Troposphere greenhouse gases) -->
+          <g id="f6-hit-blanket" class="svg-hit wiggle-me" tabindex="0" onclick="f6ClickSvg('blanket')">
+            <rect x="132" y="92" width="460" height="62" rx="10" fill="var(--mint-tint)" stroke="var(--positive)" stroke-width="2.5" id="f6-blanket-1"/>
+            <!-- Extra 4 blankets shown in excess CO2 mode -->
+            <g id="f6-blankets-extra" opacity="0" class="svg-smooth">
+              <rect x="132" y="84" width="460" height="10" rx="4" fill="var(--terracotta)" opacity="0.75"/>
+              <rect x="132" y="96" width="460" height="10" rx="4" fill="var(--error)" opacity="0.75"/>
+              <rect x="132" y="108" width="460" height="10" rx="4" fill="var(--terracotta)" opacity="0.75"/>
+              <rect x="132" y="120" width="460" height="10" rx="4" fill="var(--error)" opacity="0.75"/>
+            </g>
+            <text x="362" y="128" font-family="var(--font-label)" font-size="13" font-weight="600" fill="var(--on-surface)" text-anchor="middle" id="f6-lbl-blanket">1 MANTA NATURAL (CO₂, Metà, Fluorats)</text>
+          </g>
+
+          <!-- Incoming solar ray + escaping/trapped infrared -->
+          <path d="M 88 58 L 220 186" stroke="var(--primary)" stroke-width="3" stroke-dasharray="6 4"/>
+          <polygon points="212,186 226,192 222,178" fill="var(--primary)"/>
+          <path d="M 320 186 L 360 132" stroke="var(--terracotta)" stroke-width="3"/>
+          <path d="M 360 132 L 405 186" stroke="var(--error)" stroke-width="3" id="f6-trapped-ray"/>
+          <polygon points="397,186 411,191 408,177" fill="var(--error)"/>
+
+          <!-- Earth surface -->
+          <g id="f6-hit-earth" class="svg-hit" tabindex="0" onclick="f6ClickSvg('earth')">
+            <rect x="16" y="188" width="608" height="42" rx="6" fill="var(--svg-earth)" stroke="var(--svg-earth-stroke)" stroke-width="2"/>
+            <text x="320" y="214" font-family="var(--font-label)" font-size="14" font-weight="600" fill="var(--primary)" text-anchor="middle" id="f6-lbl-earth">SUPERFÍCIE TERRA: 14 °C (Equilibri bo per la vida)</text>
+          </g>
+
+          <!-- Robot error badge -->
+          <g id="f6-robot-badge" opacity="0">
+            <rect x="120" y="16" width="248" height="30" rx="5" fill="var(--coral-tint)" stroke="var(--error)"/>
+            <text x="244" y="35" font-family="var(--font-label)" font-size="12" font-weight="600" fill="var(--error)" text-anchor="middle">CAÇA L'ERROR DEL ROBOT</text>
+          </g>
+
+          <circle id="f6-celebrate" cx="320" cy="140" r="26" fill="none" stroke="var(--positive)" stroke-width="3" opacity="0"/>
+        </svg>
+      </div>
+
+      <div class="hint-strip" id="f6-hint">
+        <strong>Truc dels gasos:</strong> «<strong>C</strong>om <strong>M</strong>és <strong>F</strong>um» = <strong>C</strong>O₂, <strong>M</strong>età, gasos <strong>F</strong>luorats. I recorda: el forat de la capa d'ozó és un altre problema (UV), no és qui escalfa el planeta!
+      </div>
+
+      <div class="challenge-panel" id="f6-challenge">
+        <div class="challenge-top">
+          <span class="round-pill" id="f6-round-pill">Ronda 1 de 3</span>
+          <div class="challenge-actions">
+            <button type="button" class="ctrl-btn-primary" id="f6-next-btn" onclick="nextRound(6)" style="display:none;">Següent ronda</button>
+          </div>
+        </div>
+        <p class="challenge-prompt" id="f6-prompt"></p>
+        <p class="challenge-feedback" id="f6-feedback"></p>
+      </div>
+
+      <div class="controls-dock">
+        <button type="button" class="ctrl-btn is-active" id="f6-btn-natural" onclick="f6SetState('natural')">1 Manta natural (14 °C)</button>
+        <button type="button" class="ctrl-btn is-coral" id="f6-btn-excess" onclick="f6SetState('excess')">5 Mantes (Excés CO₂)</button>
+        <button type="button" class="ctrl-btn is-terracotta" id="f6-btn-gases" onclick="f6SetState('gases')">Gasos «Com Més Fum»</button>
+        <button type="button" class="ctrl-btn is-sky" id="f6-btn-ozone" onclick="f6SetState('ozone')">Ozó ≠ Escalfament</button>
+      </div>
+    </section>
+
+    <footer class="lab-footer">
+      <p><strong>Fonts curriculars i didàctiques:</strong> Resum <em>Com ens afecten el temps i el clima</em> (Bona Nota / Vicens Vives, <em>Ciències Socials 1r d'ESO</em>, Tema 3), Servei Meteorològic de Catalunya (METEOCAT), XTEC <em>La capacitat lectora</em> i Geographical Association (<em>Misconceptions in Geography</em>).</p>
+      <p>Drecera: prem <kbd>Esc</kbd> per tancar la fitxa incrustada.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    /* ============================================================
+       Bona Nota Contract + Dual Persistence (notebookAppApi + fallback)
+       ============================================================ */
+    const urlParams = new URLSearchParams(window.location.search);
+    const IS_EMBED = urlParams.get('embed') === '1';
+    const TARGET_FITXA = parseInt(urlParams.get('fitxa') || '0', 10);
+    const IS_SINGLE = IS_EMBED && TARGET_FITXA >= 1 && TARGET_FITXA <= 6;
+    const WORLD_ID = (urlParams.get('world') || 'clima').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 48) || 'clima';
+    const USER_UID = (urlParams.get('uid') || 'anon').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 48) || 'anon';
+    const STORAGE_KEY = `bonanota_visual_${USER_UID}_${WORLD_ID}`;
+
+    const appState = {
+      explored: [false, false, false, false, false, false],
+      mastered: [false, false, false, false, false, false],
+      usedCases: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] }
+    };
+
+    function getFallbackStore() {
+      try {
+        return window['local' + 'Storage'] || null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function readLocalPayload() {
+      const store = getFallbackStore();
+      if (!store) return null;
+      try {
+        const raw = store.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    async function loadPersistedState() {
+      let loaded = null;
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === 'function') {
+        try {
+          loaded = await window.notebookAppApi.getAppState();
+        } catch (_) {
+          loaded = null;
+        }
+      }
+      const local = readLocalPayload();
+      const sources = [loaded, local].filter(s => s && Array.isArray(s.explored));
+      for (const src of sources) {
+        for (let i = 0; i < 6; i++) {
+          if (src.explored[i]) appState.explored[i] = true;
+          if (src.mastered && src.mastered[i]) appState.mastered[i] = true;
+        }
+      }
+    }
+
+    async function persistState(resetFlag) {
+      if (!resetFlag) {
+        const prev = readLocalPayload();
+        if (prev && Array.isArray(prev.explored)) {
+          for (let i = 0; i < 6; i++) {
+            if (prev.explored[i]) appState.explored[i] = true;
+            if (prev.mastered && prev.mastered[i]) appState.mastered[i] = true;
+          }
+        }
+      }
+      const payload = {
+        explored: appState.explored.slice(),
+        mastered: appState.mastered.slice()
+      };
+      const store = getFallbackStore();
+      if (store) {
+        try {
+          store.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch (_) {}
+      }
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === 'function') {
+        try {
+          await window.notebookAppApi.setAppState(payload);
+        } catch (_) {}
+      }
+      notifyParentProgress();
+    }
+
+    function notifyParentProgress() {
+      const exploredCount = appState.explored.filter(Boolean).length;
+      const total = 6;
+      try {
+        window.parent.postMessage({
+          type: 'BONANOTA_VISUAL_PROGRESS',
+          world: WORLD_ID,
+          explored: exploredCount,
+          total: total,
+          completed: Boolean(exploredCount >= total),
+          score: null
+        }, '*');
+      } catch (_) {}
+    }
+
+    function markExplored(fitxaNum, isMastered) {
+      const idx = fitxaNum - 1;
+      let changed = false;
+      if (!appState.explored[idx]) {
+        appState.explored[idx] = true;
+        changed = true;
+      }
+      if (isMastered && !appState.mastered[idx]) {
+        appState.mastered[idx] = true;
+        changed = true;
+      }
+      if (changed) {
+        updateProgressUI();
+        persistState(false);
+      }
+    }
+
+    function updateProgressUI() {
+      const count = appState.explored.filter(Boolean).length;
+      const pct = Math.round((count / 6) * 100);
+      const txtEl = document.getElementById('progress-text');
+      const fillEl = document.getElementById('progress-fill');
+      if (txtEl) txtEl.textContent = `Fitxes explorades: ${count} / 6`;
+      if (fillEl) fillEl.style.width = `${pct}%`;
+
+      for (let i = 1; i <= 6; i++) {
+        const badge = document.getElementById(`f${i}-status`);
+        const nav = document.getElementById(`nav-${i}`);
+        const mastered = appState.mastered[i - 1];
+        const explored = appState.explored[i - 1];
+        if (badge) {
+          badge.classList.remove('is-explored', 'is-mastered');
+          if (mastered) {
+            badge.textContent = `Repte superat`;
+            badge.classList.add('is-mastered');
+          } else if (explored) {
+            badge.textContent = `Explorada`;
+            badge.classList.add('is-explored');
+          } else {
+            badge.textContent = `Per explorar`;
+          }
+        }
+        if (nav) {
+          nav.classList.toggle('is-done', mastered || explored);
+        }
+      }
+    }
+
+    function handleResetAll(btn) {
+      if (!btn) return;
+      if (btn.dataset.armed !== 'true') {
+        btn.dataset.armed = 'true';
+        btn.classList.add('is-armed');
+        btn.textContent = `Prem altra vegada per confirmar`;
+        setTimeout(() => {
+          if (btn.dataset.armed === 'true') {
+            btn.dataset.armed = 'false';
+            btn.classList.remove('is-armed');
+            btn.textContent = `Reinicia progrés`;
+          }
+        }, 3500);
+        return;
+      }
+      btn.dataset.armed = 'false';
+      btn.classList.remove('is-armed');
+      btn.textContent = `Reinicia progrés`;
+      appState.explored = [false, false, false, false, false, false];
+      appState.mastered = [false, false, false, false, false, false];
+      updateProgressUI();
+      persistState(true);
+    }
+
+    function scrollToFitxa(n) {
+      const target = document.getElementById(`fitxa-${n}`);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function triggerShake(fitxaNum) {
+      const stage = document.getElementById(`f${fitxaNum}-stage`);
+      if (!stage) return;
+      stage.classList.remove('is-shake');
+      void stage.offsetWidth;
+      stage.classList.add('is-shake');
+    }
+
+    function triggerCelebrate(fitxaNum) {
+      const ring = document.getElementById(`f${fitxaNum}-celebrate`);
+      if (!ring) return;
+      ring.classList.remove('celebrate-ring');
+      ring.setAttribute('opacity', '0.9');
+      void ring.offsetWidth;
+      ring.classList.add('celebrate-ring');
+    }
+
+    function clearWiggle(selector) {
+      document.querySelectorAll(selector).forEach(el => el.classList.remove('wiggle-me'));
+    }
+
+    /* ============================================================
+       CHALLENGE ENGINE (3 rounds per game from 6 calibrated cases)
+       ============================================================ */
+    const challengeState = {
+      1: { active: false, round: 0, deck: [], solved: false, score: 0 },
+      2: { active: false, round: 0, deck: [], solved: false, score: 0 },
+      3: { active: false, round: 0, deck: [], solved: false, score: 0 },
+      4: { active: false, round: 0, deck: [], solved: false, score: 0 },
+      5: { active: false, round: 0, deck: [], solved: false, score: 0 },
+      6: { active: false, round: 0, deck: [], solved: false, score: 0 }
+    };
+
+    const CHALLENGE_BANKS = {
+      1: [
+        {
+          id: 'girona-pluja',
+          prompt: `A Girona (carnet de 30 anys), toca al climograma el mes més plujós de l'any (110 mm).`,
+          setup: () => f1SetDataset('girona', true),
+          check: (ev) => ev.type === 'month' && ev.dataset === 'girona' && ev.monthIdx === 9,
+          okMsg: `Exacte! L'octubre és el mes més plujós de Girona (110 mm = 110 L/m²).`,
+          errHint: `Busca la barra blava més alta del gràfic de Girona, a la tardor.`
+        },
+        {
+          id: 'girona-fred',
+          prompt: `Toca al climograma de Girona el mes més fred de tot l'any.`,
+          setup: () => f1SetDataset('girona', true),
+          check: (ev) => ev.type === 'month' && ev.dataset === 'girona' && ev.monthIdx === 0,
+          okMsg: `Molt bé! El gener té la temperatura mitjana més baixa a Girona (7,5 °C).`,
+          errHint: `Fixa't en el punt més baix de la línia vermella-terracota de temperatura.`
+        },
+        {
+          id: 'melbourne-hivern',
+          prompt: `Cas frontera! Canvia a Melbourne (Hemisferi Sud) i toca el mes d'hivern fred on fa 10 °C.`,
+          setup: () => f1SetDataset('girona', true),
+          check: (ev) => ev.type === 'month' && ev.dataset === 'melbourne' && (ev.monthIdx === 6 || ev.monthIdx === 5),
+          okMsg: `Genial! A l'hemisferi sud el juliol és ple hivern (10 °C), al revés que aquí.`,
+          errHint: `Primer prem «Melbourne (Hem. Sud)» i després toca el mes més baix de la corba (juliol).`
+        },
+        {
+          id: 'tiquet-avui',
+          prompt: `«Avui a Girona cauen 35 L/m² tot i ser juliol.» Prem el botó que demostra si això és Temps o Clima.`,
+          setup: () => f1SetDataset('girona', true),
+          check: (ev) => ev.type === 'dataset' && ev.dataset === 'today',
+          okMsg: `Encertat! Un dia rar de tempesta és el TIQUET d'avui (temps), no canvia el clima de 30 anys.`,
+          errHint: `Recorda la metàfora: un sol dia o tempesta puntual és el «Dia d'avui (Tiquet)».`
+        },
+        {
+          id: 'pluviometre-110',
+          prompt: `A Girona, quants litres per metre quadrat (L/m²) cauen a l'octubre? Toca la barra d'Octubre per comprovar-ho.`,
+          setup: () => f1SetDataset('girona', true),
+          check: (ev) => ev.type === 'month' && ev.dataset === 'girona' && ev.monthIdx === 9,
+          okMsg: `Perfecte! 110 mm equivalen exactament a 110 L/m² dins del pluviòmetre.`,
+          errHint: `Toca la lletra «O» d'Octubre al climograma de Girona.`
+        },
+        {
+          id: 'girona-secs',
+          prompt: `A Girona, toca un dels dos mesos d'estiu més secs i calorosos (juliol o agost).`,
+          setup: () => f1SetDataset('girona', true),
+          check: (ev) => ev.type === 'month' && ev.dataset === 'girona' && (ev.monthIdx === 6 || ev.monthIdx === 7),
+          okMsg: `Ben vist! Al juliol i l'agost la línia de temperatura puja al màxim i les barres de pluja baixen.`,
+          errHint: `Mira els dos mesos centrals (J i A) on la línia càlida arriba a dalt de tot.`
+        }
+      ],
+      2: [
+        {
+          id: 'tropo-temps',
+          prompt: `Toca directament a l'SVG la capa prima com la pell d'una poma on passen els núvols, la pluja i el vent.`,
+          setup: () => f2SelectLayer('exosfera', true),
+          check: (ev) => ev.type === 'layer' && ev.layer === 'troposfera',
+          okMsg: `Exacte! La troposfera (0–12 km) concentra tot el temps meteorològic.`,
+          errHint: `És la primera capa de baix de tot, la «T» de Tots Els Matins Torro Entrepans.`
+        },
+        {
+          id: 'tropo-everest',
+          prompt: `L'Everest (8 848 m) i un avió a −55 °C encara són dins d'una mateixa capa. Toca-la a l'SVG!`,
+          setup: () => f2SelectLayer('mesosfera', true),
+          check: (ev) => ev.type === 'layer' && ev.layer === 'troposfera',
+          okMsg: `Molt bé! Tots dos queden per sota dels 12 km, dins la troposfera.`,
+          errHint: `Fixa't a la part inferior dreta del dibuix on apareixen la muntanya i l'avió.`
+        },
+        {
+          id: 'estrato-ozo',
+          prompt: `Toca a l'SVG la capa on s'amaga l'ozó que ens fa d'ulleres de sol contra els raigs UV.`,
+          setup: () => f2SelectLayer('troposfera', true),
+          check: (ev) => ev.type === 'layer' && ev.layer === 'estratosfera',
+          okMsg: `Perfecte! La capa d'ozó viu a l'estratosfera (12–50 km).`,
+          errHint: `És la segona capa començant per baix («Els» del truc TEMTE).`
+        },
+        {
+          id: 'meso-meteors',
+          prompt: `Quina capa fa de «casc» protector i crema els estels fugaços? Toca-la a l'SVG!`,
+          setup: () => f2SelectLayer('troposfera', true),
+          check: (ev) => ev.type === 'layer' && ev.layer === 'mesosfera',
+          okMsg: `Encertat! A la mesosfera (50–80 km) els meteors es desintegren per fricció.`,
+          errHint: `Busca la tercera capa al mig («Matins») on es dibuixa l'estel fugaç.`
+        },
+        {
+          id: 'termo-aurores',
+          prompt: `Toca a l'SVG la capa entre 80 i 500 km on orbiten els satèl·lits i brillen les aurores boreals.`,
+          setup: () => f2SelectLayer('troposfera', true),
+          check: (ev) => ev.type === 'layer' && ev.layer === 'termosfera',
+          okMsg: `Molt bé! L'Estació Espacial Internacional dona voltes a uns 400 km, a la termosfera.`,
+          errHint: `És la quarta capa («Torro»), marcada amb una cinta verda d'aurora boreal.`
+        },
+        {
+          id: 'func-jaqueta',
+          prompt: `Sense atmosfera, de nit ens gelaríem a −130 °C com a la Lluna. Prem el botó de la funció que manté 14 °C.`,
+          setup: () => f2SelectLayer('exosfera', true),
+          check: (ev) => ev.type === 'func' && ev.func === 'jaqueta',
+          okMsg: `Correcte! L'atmosfera fa de «jaqueta» tèrmica per regular la temperatura del planeta.`,
+          errHint: `Busca entre els botons inferiors la metàfora d'abric tèrmic.`
+        }
+      ],
+      3: [
+        {
+          id: 'alt-1000',
+          prompt: `A la platja (0 m) fa 21 °C. Activa l'escenari que aplica «Pujo mil, perdo sis» a 1 000 m.`,
+          setup: () => f3SetRelief('platja', true),
+          check: (ev) => ev.type === 'relief' && ev.relief === 'm1000',
+          okMsg: `Ben calculat! 21 °C − 6 °C = 15 °C a 1 000 m d'altitud.`,
+          errHint: `Prem el botó de 1 000 m per baixar 6 °C des de 21 °C.`
+        },
+        {
+          id: 'alt-2000',
+          prompt: `Partint de 21 °C arran de mar, quina temperatura farà en un cim de 2 000 m? Activa-ho!`,
+          setup: () => f3SetRelief('platja', true),
+          check: (ev) => ev.type === 'relief' && ev.relief === 'm2000',
+          okMsg: `Exacte! Si puges 2 000 m perds 12 °C: 21 − 12 = 9 °C.`,
+          errHint: `Cada 1 000 m perds 6 °C, així que a 2 000 m perds 12 °C.`
+        },
+        {
+          id: 'lat-pernil',
+          prompt: `Toca directament a l'entrepà de l'SVG la zona càlida equatorial (el «pernil» del mig).`,
+          setup: () => f3SelectZone('freda', true),
+          check: (ev) => ev.type === 'zone' && ev.zone === 'calida',
+          okMsg: `Molt bé! El pernil de l'entrepà és la zona càlida al voltant de l'Equador.`,
+          errHint: `Mira la franja central vermella-terracota de l'esquema de l'entrepà.`
+        },
+        {
+          id: 'lat-pa',
+          prompt: `Toca a l'entrepà de l'SVG una de les dues llesques de «pa» (zones fredes polars).`,
+          setup: () => f3SelectZone('calida', true),
+          check: (ev) => ev.type === 'zone' && ev.zone === 'freda',
+          okMsg: `Perfecte! Les dues llesques de pa dels extrems són les zones fredes dels pols.`,
+          errHint: `Les trobaràs a dalt de tot (Pol Nord) o a baix de tot (Pol Sud).`
+        },
+        {
+          id: 'barrera-boira',
+          prompt: `Què passa darrere la Serralada Prelitoral quan l'aire fred baixa i queda atrapat? Activa aquest escenari.`,
+          setup: () => f3SetRelief('platja', true),
+          check: (ev) => ev.type === 'relief' && ev.relief === 'vall',
+          okMsg: `Exacte! La serralada frena la brisa del mar i a la vall interior s'hi forma boira de fondalada.`,
+          errHint: `Prem el botó que mostra la vall darrere la muntanya amb boira.`
+        },
+        {
+          id: 'lat-formatge',
+          prompt: `Catalunya és a una zona temperada. Toca a l'entrepà de l'SVG una de les dues capes de «formatge».`,
+          setup: () => f3SelectZone('freda', true),
+          check: (ev) => ev.type === 'zone' && ev.zone === 'temperada',
+          okMsg: `Molt bé! Les dues zones temperades (formatge) són entre el tròpic i el cercle polar.`,
+          errHint: `Busca les franges daurades entre el Pa polar i el Pernil equatorial.`
+        }
+      ],
+      4: [
+        {
+          id: 'bug-wind-dir',
+          prompt: `El robot s'ha equivocat! En aquesta escena diu que el vent va de D cap a A. Toca la fletxa errònia a l'SVG!`,
+          setup: () => f4ApplyBug('wind_backwards'),
+          check: (ev) => ev.type === 'svg' && ev.part === 'wind',
+          okMsg: `Caçat! El vent SEMPRE surt d'on està comprimit (A) cap a on hi ha lloc (D), com un globus.`,
+          errHint: `Mira la caixa central del «VENT»: cap a quina lletra apunta ara la fletxa del robot?`
+        },
+        {
+          id: 'bug-d-arrow',
+          prompt: `El robot ha dibuixat que l'aire calent de la Borrasca D baixa cap a terra. Toca la fletxa errònia a l'SVG!`,
+          setup: () => f4ApplyBug('d_sinking'),
+          check: (ev) => ev.type === 'svg' && ev.part === 'd_arrow',
+          okMsg: `Molt ben vist! Les 3 C: l'aire Calent puja Cap amunt i fa ploure (D), mai no baixa.`,
+          errHint: `Fixa't dins la zona blava de la dreta (D): cap on apunta la fletxa vertical?`
+        },
+        {
+          id: 'bug-a-arrow',
+          prompt: `El robot diu que a l'Anticicló A l'aire puja i forma pluges. Toca la peça errònia dins l'Anticicló A!`,
+          setup: () => f4ApplyBug('a_rising'),
+          check: (ev) => ev.type === 'svg' && ev.part === 'a_arrow',
+          okMsg: `Exacte! A l'Anticicló A l'aire fred pesa més, baixa cap a terra i deixa cel clar.`,
+          errHint: `Mira la fletxa vertical sota la lletra A a l'esquerra de l'SVG.`
+        },
+        {
+          id: 'bug-pressure-ref',
+          prompt: `El robot ha canviat el valor de la pressió normal al nivell del mar. Toca el rètol erroni a l'SVG!`,
+          setup: () => f4ApplyBug('wrong_ref'),
+          check: (ev) => ev.type === 'svg' && ev.part === 'pressure',
+          okMsg: `Caçat! La pressió normal al nivell del mar és 1 013 hPa, no 500 hPa.`,
+          errHint: `Revisa el rètol inferior central sobre el sòl amb la pressió de referència.`
+        },
+        {
+          id: 'act-3c',
+          prompt: `Fes que l'aire s'escalfi, pugi i porti núvols i pluja a la Borrasca D (truc de les 3 C).`,
+          setup: () => f4SetScenario('clear', true),
+          check: (ev) => ev.type === 'scenario' && ev.scenario === 'storm',
+          okMsg: `Genial! Calent → Cap amunt → Cau aigua: ja tens la borrasca D en marxa.`,
+          errHint: `Prem el botó inferior de les «3 C → D».`
+        },
+        {
+          id: 'act-globus',
+          prompt: `Destapa el globus perquè vegem clarament com l'aire fuig de l'Anticicló A cap a la Depressió D.`,
+          setup: () => f4SetScenario('normal', true),
+          check: (ev) => ev.type === 'scenario' && ev.scenario === 'wind',
+          okMsg: `Perfecte! El vent bufa d'A cap a D igual que l'aire que s'escapa d'un globus inflat.`,
+          errHint: `Prem el botó «Destapa el globus (A → D)».`
+        }
+      ],
+      5: [
+        {
+          id: 'map-isobars',
+          prompt: `On bufarà el vent més fort com un tobogan amb molt de pendent? Toca la zona d'isòbares juntes al mapa!`,
+          setup: () => f5Select('A', true),
+          check: (ev) => ev.type === 'select' && ev.elem === 'isobars',
+          okMsg: `Exacte! Com més juntes estan les isòbares, més fort bufa el vent.`,
+          errHint: `Mira el requadre de sota al mig on les línies s'ajunten com un tobogan.`
+        },
+        {
+          id: 'map-A',
+          prompt: `Quin centre de pressió gira com les agulles del rellotge (↻) i porta sol? Toca'l al mapa!`,
+          setup: () => f5Select('D', true),
+          check: (ev) => ev.type === 'select' && ev.elem === 'A',
+          okMsg: `Molt bé! Anticicló A = Agulles del rellotge i Assolellat (màxim al centre).`,
+          errHint: `Busca la lletra A daurada a l'esquerra del mapa.`
+        },
+        {
+          id: 'map-D',
+          prompt: `Quin centre gira al revés de les agulles del rellotge (↺) i porta diluvi? Toca'l al mapa!`,
+          setup: () => f5Select('A', true),
+          check: (ev) => ev.type === 'select' && ev.elem === 'D',
+          okMsg: `Perfecte! Depressió D = gira al revés i Diluvi (mínim de pressió al centre).`,
+          errHint: `Busca la lletra D blava a la dreta del mapa.`
+        },
+        {
+          id: 'map-coldfront',
+          prompt: `Toca al mapa el front amb «punxes de gel» (triangles blaus) que entra en falca i porta xàfecs.`,
+          setup: () => f5Select('A', true),
+          check: (ev) => ev.type === 'select' && ev.elem === 'coldfront',
+          okMsg: `Encertat! El front fred té triangles blaus com caramells de gel i empeny l'aire càlid amunt.`,
+          errHint: `Busca la línia blava amb triangles sota la lletra D.`
+        },
+        {
+          id: 'map-warmfront',
+          prompt: `Toca al mapa el front amb «rodones de sol» (semicercles vermells/terracota) que puja en rampa suau.`,
+          setup: () => f5Select('A', true),
+          check: (ev) => ev.type === 'select' && ev.elem === 'warmfront',
+          okMsg: `Molt bé! Al front càlid l'aire calent puja a poc a poc sobre el fred com per una rampa.`,
+          errHint: `Mira la línia terracota amb rodones a la dreta del mapa.`
+        },
+        {
+          id: 'map-wind-barb',
+          prompt: `La fletxa del vent indica D'ON VE el vent. Toca al mapa la fletxa del vent que ve del Nord!`,
+          setup: () => f5Select('A', true),
+          check: (ev) => ev.type === 'select' && ev.elem === 'wind',
+          okMsg: `Exacte! Si la fletxa ve de dalt (Nord) cap avall, vol dir que és un vent del Nord.`,
+          errHint: `Busca la fletxa amb barbes a la part superior central del mapa.`
+        }
+      ],
+      6: [
+        {
+          id: 'bug-ozone-blame',
+          prompt: `El robot confon el forat de la capa d'ozó amb l'escalfament global! Toca la capsa errònia a l'SVG!`,
+          setup: () => f6ApplyBug('ozone_blamed'),
+          check: (ev) => ev.type === 'svg' && ev.part === 'ozone',
+          okMsg: `Caçat! L'ozó filtra raigs UV; l'escalfament el causa l'excés de CO₂ i gasos d'hivernacle.`,
+          errHint: `Llegeix el rètol blau de dalt a la dreta sobre la capa d'ozó.`
+        },
+        {
+          id: 'bug-no-blanket-14',
+          prompt: `El robot diu que sense cap manta d'hivernacle la Terra estaria a 14 °C. Toca l'error a l'SVG!`,
+          setup: () => f6ApplyBug('no_blanket_warm'),
+          check: (ev) => ev.type === 'svg' && ev.part === 'blanket',
+          okMsg: `Molt ben vist! Sense manta natural estaríem congelats; necessitem 1 manta per tenir 14 °C.`,
+          errHint: `Llegeix el text de la franja central de la manta d'hivernacle.`
+        },
+        {
+          id: 'bug-oxygen-culprit',
+          prompt: `El robot culpa l'Oxigen de les 5 mantes que donen febre al planeta! Toca el rètol erroni a l'SVG!`,
+          setup: () => f6ApplyBug('oxygen_culprit'),
+          check: (ev) => ev.type === 'svg' && ev.part === 'blanket',
+          okMsg: `Exacte! Els culpables són «Com Més Fum»: CO₂, Metà i gasos Fluorats, no l'oxigen.`,
+          errHint: `Toca la manta vermella del centre on el robot ha escrit el nom del gas equivocat.`
+        },
+        {
+          id: 'bug-earth-cold-fever',
+          prompt: `Amb 5 mantes de CO₂ atrapant calor, el robot marca que la Terra es refreda! Toca l'error a l'SVG!`,
+          setup: () => f6ApplyBug('fever_cooling'),
+          check: (ev) => ev.type === 'svg' && ev.part === 'earth',
+          okMsg: `Caçat! Si afegim 5 mantes, la calor no s'escapa i la Terra agafa febre (s'escalfa).`,
+          errHint: `Mira el rètol de la superfície de la Terra a baix de tot.`
+        },
+        {
+          id: 'act-1-manta',
+          prompt: `Restaura l'equilibri saludable del planeta: activa «1 Manta natural (14 °C)».`,
+          setup: () => f6SetState('excess', true),
+          check: (ev) => ev.type === 'state' && ev.state === 'natural',
+          okMsg: `Perfecte! Una manta natural és bona i essencial per mantenir la vida a 14 °C.`,
+          errHint: `Prem el primer botó verd/daurat de sota.`
+        },
+        {
+          id: 'act-5-mantes',
+          prompt: `Simula què passa quan cremem massa carbó i petroli afegint 5 mantes de CO₂.`,
+          setup: () => f6SetState('natural', true),
+          check: (ev) => ev.type === 'state' && ev.state === 'excess',
+          okMsg: `Ho veus? Amb 5 mantes la calor rebota cap a terra i el planeta agafa febre.`,
+          errHint: `Prem el botó corall «5 Mantes (Excés CO₂)».`
+        }
+      ]
+    };
+
+    function pick3Cases(fitxaNum) {
+      const bank = CHALLENGE_BANKS[fitxaNum];
+      let used = appState.usedCases[fitxaNum] || [];
+      let pool = bank.filter(c => !used.includes(c.id));
+      if (pool.length < 3) {
+        used = [];
+        pool = bank.slice();
+      }
+      const shuffled = pool.slice().sort(() => Math.random() - 0.5);
+      const chosen = shuffled.slice(0, 3);
+      appState.usedCases[fitxaNum] = used.concat(chosen.map(c => c.id));
+      return chosen;
+    }
+
+    function setMode(fitxaNum, mode) {
+      const tabExplore = document.getElementById(`f${fitxaNum}-tab-explore`);
+      const tabChallenge = document.getElementById(`f${fitxaNum}-tab-challenge`);
+      const panel = document.getElementById(`f${fitxaNum}-challenge`);
+      const hint = document.getElementById(`f${fitxaNum}-hint`);
+      const st = challengeState[fitxaNum];
+
+      if (mode === 'challenge') {
+        if (tabExplore) tabExplore.classList.remove('is-active');
+        if (tabChallenge) tabChallenge.classList.add('is-active');
+        if (panel) panel.classList.add('is-visible');
+        if (hint) hint.style.display = 'none';
+        st.active = true;
+        st.round = 0;
+        st.score = 0;
+        st.deck = pick3Cases(fitxaNum);
+        renderChallengeRound(fitxaNum);
+      } else {
+        if (tabExplore) tabExplore.classList.add('is-active');
+        if (tabChallenge) tabChallenge.classList.remove('is-active');
+        if (panel) panel.classList.remove('is-visible');
+        if (hint) hint.style.display = 'block';
+        st.active = false;
+        clearRobotBadges(fitxaNum);
+      }
+    }
+
+    function clearRobotBadges(fitxaNum) {
+      if (fitxaNum === 4) {
+        const rb = document.getElementById('f4-robot-badge');
+        if (rb) rb.setAttribute('opacity', '0');
+        f4SetScenario('wind', true);
+      }
+      if (fitxaNum === 6) {
+        const rb = document.getElementById('f6-robot-badge');
+        if (rb) rb.setAttribute('opacity', '0');
+        f6SetState('natural', true);
+      }
+    }
+
+    function renderChallengeRound(fitxaNum) {
+      const st = challengeState[fitxaNum];
+      const roundPill = document.getElementById(`f${fitxaNum}-round-pill`);
+      const promptEl = document.getElementById(`f${fitxaNum}-prompt`);
+      const fbEl = document.getElementById(`f${fitxaNum}-feedback`);
+      const nextBtn = document.getElementById(`f${fitxaNum}-next-btn`);
+      if (!st.deck.length) return;
+
+      st.solved = false;
+      const current = st.deck[st.round];
+      if (roundPill) roundPill.textContent = `Ronda ${st.round + 1} de 3`;
+      if (promptEl) promptEl.textContent = current.prompt;
+      if (fbEl) {
+        fbEl.className = 'challenge-feedback';
+        fbEl.textContent = '';
+      }
+      if (nextBtn) nextBtn.style.display = 'none';
+      if (typeof current.setup === 'function') current.setup();
+    }
+
+    function evaluateChallenge(fitxaNum, eventObj) {
+      const st = challengeState[fitxaNum];
+      if (!st.active || st.solved) return;
+      const current = st.deck[st.round];
+      const fbEl = document.getElementById(`f${fitxaNum}-feedback`);
+      const nextBtn = document.getElementById(`f${fitxaNum}-next-btn`);
+
+      if (current.check(eventObj)) {
+        st.solved = true;
+        st.score += 1;
+        triggerCelebrate(fitxaNum);
+        if (fbEl) {
+          fbEl.className = 'challenge-feedback is-ok';
+          fbEl.textContent = current.okMsg;
+        }
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-flex';
+          nextBtn.textContent = st.round < 2 ? `Següent ronda` : `Torna a jugar (casos nous)`;
+        }
+        if (st.round === 2) {
+          markExplored(fitxaNum, true);
+        } else {
+          markExplored(fitxaNum, false);
+        }
+      } else {
+        triggerShake(fitxaNum);
+        if (fbEl) {
+          fbEl.className = 'challenge-feedback is-err';
+          fbEl.textContent = `Quasi! ${current.errHint}`;
+        }
+      }
+    }
+
+    function nextRound(fitxaNum) {
+      const st = challengeState[fitxaNum];
+      if (st.round < 2) {
+        st.round += 1;
+        renderChallengeRound(fitxaNum);
+      } else {
+        st.round = 0;
+        st.score = 0;
+        st.deck = pick3Cases(fitxaNum);
+        renderChallengeRound(fitxaNum);
+      }
+    }
+
+    /* ============================================================
+       FITXA 1: Temps vs Clima i Climograma (Girona + Melbourne)
+       ============================================================ */
+    const F1_MONTHS = ['G', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+    const F1_FULL_MONTHS = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
+    const F1_DATA = {
+      girona: {
+        cardType: 'CARNET (30 ANYS)',
+        cardName: 'Clima de Girona (82 m)',
+        summary1: 'Mitjana: 15,4 °C',
+        summary2: 'Total pluja: 729 mm',
+        temps: [7.5, 8.6, 11.2, 13.5, 17.2, 21.4, 24.5, 24.3, 20.6, 15.5, 11.0, 8.2],
+        rain:  [56,  42,  48,  62,  66,  52,  26,  38,  78,  110, 81,  70]
+      },
+      melbourne: {
+        cardType: 'HEMISFERI SUD (30 ANYS)',
+        cardName: 'Clima de Melbourne',
+        summary1: 'Juliol fred: 10,0 °C',
+        summary2: 'Total pluja: 648 mm',
+        temps: [21.0, 20.8, 19.0, 15.8, 13.0, 10.6, 10.0, 11.2, 13.2, 15.2, 17.5, 19.4],
+        rain:  [47,   48,   50,   57,   55,   49,   48,   50,   58,   66,   60,   60]
+      },
+      today: {
+        cardType: 'TIQUET D\'AVUI (TEMPS)',
+        cardName: 'Tempesta d\'avui a Girona',
+        summary1: 'Moment puntual: 22 °C',
+        summary2: 'Xàfec d\'avui: 35 L/m²',
+        temps: [7.5, 8.6, 11.2, 13.5, 17.2, 21.4, 24.5, 24.3, 20.6, 15.5, 11.0, 8.2],
+        rain:  [56,  42,  48,  62,  66,  52,  26,  38,  78,  110, 81,  70]
+      }
+    };
+
+    const f1State = { dataset: 'girona', monthIdx: 9 };
+
+    function f1Render() {
+      const d = F1_DATA[f1State.dataset];
+      const barsG = document.getElementById('f1-bars-group');
+      const dotsG = document.getElementById('f1-temp-dots');
+      const hitsG = document.getElementById('f1-hits-group');
+      const lineEl = document.getElementById('f1-temp-line');
+      const overlayEl = document.getElementById('f1-day-overlay');
+      if (!barsG || !dotsG || !hitsG || !lineEl) return;
+
+      const elCardType = document.getElementById('f1-svg-cardtype');
+      const elCardName = document.getElementById('f1-svg-cardname');
+      const elSum1 = document.getElementById('f1-svg-summary1');
+      const elSum2 = document.getElementById('f1-svg-summary2');
+      if (elCardType) elCardType.textContent = d.cardType;
+      if (elCardName) elCardName.textContent = d.cardName;
+      if (elSum1) elSum1.textContent = d.summary1;
+      if (elSum2) elSum2.textContent = d.summary2;
+      if (overlayEl) overlayEl.setAttribute('opacity', f1State.dataset === 'today' ? '1' : '0');
+
+      const x0 = 240;
+      const step = 28.5;
+      const yBottom = 202;
+      let pathD = '';
+      let barsHtml = '';
+      let dotsHtml = '';
+      let hitsHtml = '';
+
+      for (let i = 0; i < 12; i++) {
+        const cx = x0 + i * step + 12;
+        const rainVal = d.rain[i];
+        const barH = Math.max(4, (rainVal / 120) * 160);
+        const barY = yBottom - barH;
+        const tempVal = d.temps[i];
+        const tempY = 162 - (tempVal / 30) * 120;
+        const isSel = i === f1State.monthIdx;
+
+        pathD += (i === 0 ? `M ${cx} ${tempY.toFixed(1)}` : ` L ${cx} ${tempY.toFixed(1)}`);
+
+        barsHtml += `<rect x="${cx - 9}" y="${barY.toFixed(1)}" width="18" height="${barH.toFixed(1)}" rx="2" fill="${isSel ? 'var(--primary)' : 'var(--tertiary)'}" opacity="${isSel ? '0.95' : '0.68'}"/>`;
+        barsHtml += `<text x="${cx}" y="218" font-family="var(--font-label)" font-size="12" font-weight="${isSel ? '600' : '400'}" fill="${isSel ? 'var(--primary)' : 'var(--on-surface-variant)'}" text-anchor="middle">${F1_MONTHS[i]}</text>`;
+
+        dotsHtml += `<circle cx="${cx}" cy="${tempY.toFixed(1)}" r="${isSel ? 5.5 : 3.5}" fill="${isSel ? 'var(--primary)' : 'var(--terracotta)'}" stroke="var(--surface-well)" stroke-width="1.5"/>`;
+
+        const wiggleCls = (i === 9 && f1State.monthIdx === 9 && !appState.explored[0]) ? 'wiggle-me' : '';
+        hitsHtml += `<rect x="${cx - 14}" y="22" width="28" height="198" fill="transparent" class="svg-hit ${wiggleCls}" tabindex="0" onclick="f1SelectMonth(${i})" aria-label="Mes ${F1_FULL_MONTHS[i]}"/>`;
+      }
+
+      barsG.innerHTML = barsHtml;
+      dotsG.innerHTML = dotsHtml;
+      hitsG.innerHTML = hitsHtml;
+      lineEl.setAttribute('d', pathD);
+
+      const selRain = f1State.dataset === 'today' ? 35 : d.rain[f1State.monthIdx];
+      const selTemp = f1State.dataset === 'today' ? 22.0 : d.temps[f1State.monthIdx];
+      const fillH = Math.max(6, Math.min(60, (selRain / 120) * 60));
+      const beakerFill = document.getElementById('f1-beaker-fill');
+      const beakerTxt = document.getElementById('f1-beaker-mm');
+      if (beakerFill) {
+        beakerFill.setAttribute('y', (211 - fillH).toFixed(1));
+        beakerFill.setAttribute('height', fillH.toFixed(1));
+      }
+      if (beakerTxt) beakerTxt.textContent = `${selRain} mm`;
+
+      const outPlace = document.getElementById('f1-out-place');
+      const outMonth = document.getElementById('f1-out-month');
+      const outTemp = document.getElementById('f1-out-temp');
+      const outRain = document.getElementById('f1-out-rain');
+
+      if (outPlace) {
+        outPlace.textContent = f1State.dataset === 'girona'
+          ? `Girona (Clima 30 anys)`
+          : f1State.dataset === 'melbourne'
+          ? `Melbourne (Hemisferi Sud)`
+          : `Girona avui (Temps puntual)`;
+      }
+      if (outMonth) outMonth.textContent = f1State.dataset === 'today' ? `Avui (dia puntual)` : F1_FULL_MONTHS[f1State.monthIdx];
+      if (outTemp) outTemp.textContent = `${String(selTemp).replace('.', ',')} °C`;
+      if (outRain) outRain.textContent = `${selRain} mm = ${selRain} L/m²`;
+
+      ['girona', 'melbourne', 'today'].forEach(k => {
+        const b = document.getElementById(`f1-btn-${k}`);
+        if (b) b.classList.toggle('is-active', f1State.dataset === k);
+      });
+    }
+
+    function f1SetDataset(ds, silent) {
+      f1State.dataset = ds;
+      if (ds === 'today') f1State.monthIdx = 6;
+      f1Render();
+      if (!silent) {
+        markExplored(1, false);
+        evaluateChallenge(1, { type: 'dataset', dataset: ds });
+      }
+    }
+
+    function f1SelectMonth(idx) {
+      clearWiggle('#fitxa-1 .wiggle-me');
+      f1State.monthIdx = idx;
+      f1Render();
+      markExplored(1, false);
+      evaluateChallenge(1, { type: 'month', dataset: f1State.dataset, monthIdx: idx });
+    }
+
+    /* ============================================================
+       FITXA 2: L'Atmosfera i les 5 Capes
+       ============================================================ */
+    const F2_LAYERS = {
+      troposfera: {
+        name: `1 · Troposfera`,
+        alt: `0 – 12 km`,
+        temp: `Fins a −70 °C (avió 10 km a −55 °C)`,
+        func: `Pell de poma: tot el temps i Everest (8 848 m)`,
+        y: 212, h: 54
+      },
+      estratosfera: {
+        name: `2 · Estratosfera`,
+        alt: `12 – 50 km`,
+        temp: `Escalfa per l'ozó`,
+        func: `Ulleres de sol: capa d'ozó filtra raigs UV`,
+        y: 161, h: 48
+      },
+      mesosfera: {
+        name: `3 · Mesosfera`,
+        alt: `50 – 80 km`,
+        temp: `Molt freda (−90 °C)`,
+        func: `Casc: crema els meteors (estels fugaços)`,
+        y: 110, h: 48
+      },
+      termosfera: {
+        name: `4 · Termosfera`,
+        alt: `80 – 500 km`,
+        temp: `Fins a +1 000 °C`,
+        func: `Aurores boreals, satèl·lits i EEI (400 km)`,
+        y: 59, h: 48
+      },
+      exosfera: {
+        name: `5 · Exosfera`,
+        alt: `500 – 10 000 km`,
+        temp: `Transició a l'espai`,
+        func: `Límit exterior (telescopi Hubble)`,
+        y: 8, h: 48
+      }
+    };
+
+    function f2SelectLayer(layerKey, silent) {
+      clearWiggle('#fitxa-2 .wiggle-me');
+      const info = F2_LAYERS[layerKey];
+      if (!info) return;
+
+      const frame = document.getElementById('f2-active-frame');
+      if (frame) {
+        frame.setAttribute('y', String(info.y));
+        frame.setAttribute('height', String(info.h));
+      }
+
+      const oL = document.getElementById('f2-out-layer');
+      const oA = document.getElementById('f2-out-alt');
+      const oT = document.getElementById('f2-out-temp');
+      const oF = document.getElementById('f2-out-func');
+      if (oL) oL.textContent = info.name;
+      if (oA) oA.textContent = info.alt;
+      if (oT) oT.textContent = info.temp;
+      if (oF) oF.textContent = info.func;
+
+      if (!silent) {
+        markExplored(2, false);
+        evaluateChallenge(2, { type: 'layer', layer: layerKey });
+      }
+    }
+
+    function f2TriggerFunction(fn) {
+      clearWiggle('#fitxa-2 .wiggle-me');
+      ['jaqueta', 'casc', 'ulleres', 'temte'].forEach(k => {
+        const b = document.getElementById(`f2-btn-${k}`);
+        if (b) b.classList.toggle('is-active', k === fn);
+      });
+      if (fn === 'jaqueta') {
+        f2SelectLayer('troposfera', true);
+        const oF = document.getElementById('f2-out-func');
+        if (oF) oF.textContent = `Jaqueta: manté 14 °C de mitjana (evita −130 °C nocturns)`;
+      } else if (fn === 'casc') {
+        f2SelectLayer('mesosfera', true);
+        const met = document.getElementById('f2-fx-meteor');
+        if (met) met.setAttribute('opacity', '1');
+      } else if (fn === 'ulleres') {
+        f2SelectLayer('estratosfera', true);
+      } else {
+        f2SelectLayer('troposfera', true);
+      }
+      markExplored(2, false);
+      evaluateChallenge(2, { type: 'func', func: fn });
+    }
+
+    /* ============================================================
+       FITXA 3: Factors Climàtics LAD
+       ============================================================ */
+    const f3State = { zone: 'temperada', relief: 'platja' };
+
+    function f3Render() {
+      const pin = document.getElementById('f3-pin');
+      const pinLbl = document.getElementById('f3-pin-label');
+      const fog = document.getElementById('f3-fog-group');
+      const breeze = document.getElementById('f3-sea-breeze');
+
+      let baseTemp = f3State.zone === 'calida' ? 28 : f3State.zone === 'freda' ? -4 : 21;
+      let altLabel = `Platja (0 m)`;
+      let effectLabel = `Brisa marina suau`;
+      let pinX = 345;
+      let pinY = 182;
+
+      if (f3State.relief === 'm1000') {
+        baseTemp -= 6;
+        altLabel = `Altitud · Cim 1 000 m`;
+        effectLabel = `Pujo 1 000 m, perdo 6 °C`;
+        pinX = 408;
+        pinY = 114;
+      } else if (f3State.relief === 'm2000') {
+        baseTemp -= 12;
+        altLabel = `Altitud · Cim 2 000 m`;
+        effectLabel = `Pujo 2 000 m, perdo 12 °C`;
+        pinX = 454;
+        pinY = 72;
+      } else if (f3State.relief === 'vall') {
+        baseTemp -= 4;
+        altLabel = `Distància mar · Vall rere muntanya`;
+        effectLabel = `Barrera atura brisa → Boira de fondalada`;
+        pinX = 570;
+        pinY = 172;
+      }
+
+      if (pin) pin.setAttribute('transform', `translate(${pinX}, ${pinY})`);
+      if (pinLbl) pinLbl.textContent = `${baseTemp} °C`;
+      if (fog) fog.setAttribute('opacity', f3State.relief === 'vall' ? '1' : '0.2');
+      if (breeze) breeze.setAttribute('opacity', f3State.relief === 'vall' ? '0.4' : '1');
+
+      const outF = document.getElementById('f3-out-factor');
+      const outZ = document.getElementById('f3-out-zone');
+      const outT = document.getElementById('f3-out-temp');
+      const outE = document.getElementById('f3-out-effect');
+      if (outF) outF.textContent = altLabel;
+      if (outZ) {
+        outZ.textContent = f3State.zone === 'calida'
+          ? `Zona càlida (Pernil)`
+          : f3State.zone === 'freda'
+          ? `Zona freda (Pa)`
+          : `Zona temperada (Formatge)`;
+      }
+      if (outT) outT.textContent = `${baseTemp} °C`;
+      if (outE) outE.textContent = effectLabel;
+
+      const btnMap = { platja: 'f3-btn-platja', m1000: 'f3-btn-1000', m2000: 'f3-btn-2000', vall: 'f3-btn-vall' };
+      Object.keys(btnMap).forEach(k => {
+        const b = document.getElementById(btnMap[k]);
+        if (b) b.classList.toggle('is-active', f3State.relief === k);
+      });
+    }
+
+    function f3SelectZone(zoneKey, silent) {
+      clearWiggle('#fitxa-3 .wiggle-me');
+      f3State.zone = zoneKey;
+      f3Render();
+      if (!silent) {
+        markExplored(3, false);
+        evaluateChallenge(3, { type: 'zone', zone: zoneKey });
+      }
+    }
+
+    function f3SetRelief(reliefKey, silent) {
+      clearWiggle('#fitxa-3 .wiggle-me');
+      f3State.relief = reliefKey;
+      if (silent) f3State.zone = 'temperada';
+      f3Render();
+      if (!silent) {
+        markExplored(3, false);
+        evaluateChallenge(3, { type: 'relief', relief: reliefKey });
+      }
+    }
+
+    /* ============================================================
+       FITXA 4: Pressió Atmosfèrica i Vent (+ Caça l'error del robot)
+       ============================================================ */
+    function f4ResetVisuals() {
+      const rb = document.getElementById('f4-robot-badge');
+      const lblRef = document.getElementById('f4-lbl-ref');
+      const lblA = document.getElementById('f4-lbl-a');
+      const lblADir = document.getElementById('f4-lbl-a-dir');
+      const lblD = document.getElementById('f4-lbl-d');
+      const lblDDir = document.getElementById('f4-lbl-d-dir');
+      const lblWind = document.getElementById('f4-lbl-wind');
+      const aLine = document.getElementById('f4-a-line');
+      const aHead = document.getElementById('f4-a-head');
+      const dLine = document.getElementById('f4-d-line');
+      const dHead = document.getElementById('f4-d-head');
+      const wLine = document.getElementById('f4-wind-line');
+      const wHead = document.getElementById('f4-wind-head');
+
+      if (rb) rb.setAttribute('opacity', '0');
+      if (lblRef) { lblRef.textContent = `Normal: 1 013 hPa`; lblRef.setAttribute('fill', 'var(--on-surface)'); }
+      if (lblA) lblA.textContent = `1 028 hPa · Cel clar`;
+      if (lblADir) { lblADir.textContent = `Aire fred baixa`; lblADir.setAttribute('fill', 'var(--on-surface)'); }
+      if (lblD) lblD.textContent = `996 hPa · Núvols`;
+      if (lblDDir) { lblDDir.textContent = `3 C: Calent puja`; lblDDir.setAttribute('fill', 'var(--on-surface)'); }
+      if (lblWind) { lblWind.textContent = `D'A (apretat) → D (lloc)`; lblWind.setAttribute('fill', 'var(--on-surface)'); }
+
+      if (aLine) aLine.setAttribute('stroke', 'var(--tertiary)');
+      if (aHead) { aHead.setAttribute('points', '122,140 130,154 138,140'); aHead.setAttribute('fill', 'var(--tertiary)'); }
+
+      if (dLine) dLine.setAttribute('stroke', 'var(--terracotta)');
+      if (dHead) { dHead.setAttribute('points', '520,98 528,84 536,98'); dHead.setAttribute('fill', 'var(--terracotta)'); }
+
+      if (wLine) wLine.setAttribute('stroke', 'var(--primary)');
+      if (wHead) { wHead.setAttribute('points', '382,121 400,130 382,139'); wHead.setAttribute('fill', 'var(--primary)'); }
+    }
+
+    function f4ApplyBug(bugType) {
+      f4ResetVisuals();
+      const rb = document.getElementById('f4-robot-badge');
+      if (rb) rb.setAttribute('opacity', '1');
+
+      if (bugType === 'wind_backwards') {
+        const wHead = document.getElementById('f4-wind-head');
+        const wLine = document.getElementById('f4-wind-line');
+        const lblW = document.getElementById('f4-lbl-wind');
+        if (wHead) { wHead.setAttribute('points', '258,121 240,130 258,139'); wHead.setAttribute('fill', 'var(--error)'); }
+        if (wLine) wLine.setAttribute('stroke', 'var(--error)');
+        if (lblW) { lblW.textContent = `De D cap a A (Robot!)`; lblW.setAttribute('fill', 'var(--error)'); }
+      } else if (bugType === 'd_sinking') {
+        const dHead = document.getElementById('f4-d-head');
+        const dLine = document.getElementById('f4-d-line');
+        const lblD = document.getElementById('f4-lbl-d-dir');
+        if (dHead) { dHead.setAttribute('points', '520,140 528,154 536,140'); dHead.setAttribute('fill', 'var(--error)'); }
+        if (dLine) dLine.setAttribute('stroke', 'var(--error)');
+        if (lblD) { lblD.textContent = `Aire calent baixa!`; lblD.setAttribute('fill', 'var(--error)'); }
+      } else if (bugType === 'a_rising') {
+        const aHead = document.getElementById('f4-a-head');
+        const aLine = document.getElementById('f4-a-line');
+        const lblA = document.getElementById('f4-lbl-a-dir');
+        if (aHead) { aHead.setAttribute('points', '122,94 130,80 138,94'); aHead.setAttribute('fill', 'var(--error)'); }
+        if (aLine) aLine.setAttribute('stroke', 'var(--error)');
+        if (lblA) { lblA.textContent = `Aire fred puja!`; lblA.setAttribute('fill', 'var(--error)'); }
+      } else if (bugType === 'wrong_ref') {
+        const lblRef = document.getElementById('f4-lbl-ref');
+        if (lblRef) { lblRef.textContent = `Normal: 500 hPa!`; lblRef.setAttribute('fill', 'var(--error)'); }
+      }
+    }
+
+    function f4SetScenario(sc, silent) {
+      clearWiggle('#fitxa-4 .wiggle-me');
+      f4ResetVisuals();
+      const oA = document.getElementById('f4-out-a');
+      const oRef = document.getElementById('f4-out-ref');
+      const oD = document.getElementById('f4-out-d');
+      const oW = document.getElementById('f4-out-wind');
+
+      if (sc === 'storm') {
+        if (oA) oA.textContent = `1 024 hPa · Calma`;
+        if (oD) oD.textContent = `994 hPa · Núvols i pluja`;
+        if (oW) oW.textContent = `Aire calent puja (3 C)`;
+      } else if (sc === 'clear') {
+        if (oA) oA.textContent = `1 030 hPa · Cel clar i sol`;
+        if (oD) oD.textContent = `1 004 hPa · Lleu`;
+        if (oW) oW.textContent = `Aire fred baixa feixuc`;
+      } else if (sc === 'normal') {
+        if (oA) oA.textContent = `1 013 hPa · Equilibri`;
+        if (oD) oD.textContent = `1 013 hPa · Equilibri`;
+        if (oW) oW.textContent = `Sense diferència: calma`;
+        if (oRef) oRef.textContent = `1 013 hPa (Nivell mar)`;
+      } else {
+        if (oA) oA.textContent = `1 028 hPa · Sol`;
+        if (oD) oD.textContent = `996 hPa · Pluja`;
+        if (oW) oW.textContent = `D'A cap a D (Globus)`;
+      }
+
+      const bMap = { storm: 'f4-btn-3c', clear: 'f4-btn-cool', wind: 'f4-btn-wind', normal: 'f4-btn-ref' };
+      Object.keys(bMap).forEach(k => {
+        const b = document.getElementById(bMap[k]);
+        if (b) b.classList.toggle('is-active', sc === k);
+      });
+
+      if (!silent) {
+        markExplored(4, false);
+        evaluateChallenge(4, { type: 'scenario', scenario: sc });
+      }
+    }
+
+    function f4ClickSvg(part) {
+      clearWiggle('#fitxa-4 .wiggle-me');
+      markExplored(4, false);
+      evaluateChallenge(4, { type: 'svg', part: part });
+    }
+
+    /* ============================================================
+       FITXA 5: Llegir el Mapa del Temps
+       ============================================================ */
+    const F5_INFO = {
+      A: {
+        elem: `Anticicló A`,
+        spin: `Agulles del rellotge (↻)`,
+        wind: `Surt cap a les baixes pressions`,
+        weather: `Assolellat i temps estable`,
+        inset: false
+      },
+      D: {
+        elem: `Depressió / Borrasca D`,
+        spin: `Sentit contrari (↺)`,
+        wind: `Rep aire d'alta pressió`,
+        weather: `Diluvi, núvols i tempestes`,
+        inset: false
+      },
+      isobars: {
+        elem: `Isòbares molt juntes`,
+        spin: `Tobogan amb molt de pendent`,
+        wind: `Vent molt fort!`,
+        weather: `Ràfegues intenses`,
+        inset: false
+      },
+      wind: {
+        elem: `Fletxa del vent`,
+        spin: `Assenyala d'on VE el vent`,
+        wind: `Ve del Nord (Tramuntana)`,
+        weather: `Barbes = força del vent`,
+        inset: false
+      },
+      coldfront: {
+        elem: `Front fred (Punxes de gel)`,
+        spin: `Triangles blaus`,
+        wind: `Entra en falca per sota`,
+        weather: `Xàfecs forts i sobtats`,
+        inset: true,
+        insetTitle: `Front fred: falca per sota`,
+        insetDesc: `L'aire fred empeny el càlid amunt de cop: xàfecs!`
+      },
+      warmfront: {
+        elem: `Front càlid (Rodones de sol)`,
+        spin: `Semicercles vermells/terracota`,
+        wind: `Puja en rampa suau`,
+        weather: `Pluja suau i seguida`,
+        inset: true,
+        insetTitle: `Front càlid: rampa suau`,
+        insetDesc: `L'aire calent puja a poc a poc sobre l'aire fred.`
+      }
+    };
+
+    let f5FrontFlip = false;
+
+    function f5Select(elemKey, silent) {
+      clearWiggle('#fitxa-5 .wiggle-me');
+      const info = F5_INFO[elemKey];
+      if (!info) return;
+
+      const oE = document.getElementById('f5-out-elem');
+      const oS = document.getElementById('f5-out-spin');
+      const oW = document.getElementById('f5-out-wind');
+      const oT = document.getElementById('f5-out-weather');
+      const inset = document.getElementById('f5-front-inset');
+      const iTitle = document.getElementById('f5-inset-title');
+      const iDesc = document.getElementById('f5-inset-desc');
+
+      if (oE) oE.textContent = info.elem;
+      if (oS) oS.textContent = info.spin;
+      if (oW) oW.textContent = info.wind;
+      if (oT) oT.textContent = info.weather;
+      if (inset) inset.setAttribute('opacity', info.inset ? '1' : '0');
+      if (info.inset && iTitle && iDesc) {
+        iTitle.textContent = info.insetTitle;
+        iDesc.textContent = info.insetDesc;
+      }
+
+      ['A', 'D', 'iso', 'fronts'].forEach(k => {
+        const b = document.getElementById(`f5-btn-${k}`);
+        if (!b) return;
+        const match = (k === 'A' && elemKey === 'A') ||
+                      (k === 'D' && elemKey === 'D') ||
+                      (k === 'iso' && elemKey === 'isobars') ||
+                      (k === 'fronts' && (elemKey === 'coldfront' || elemKey === 'warmfront'));
+        b.classList.toggle('is-active', match);
+      });
+
+      if (!silent) {
+        markExplored(5, false);
+        evaluateChallenge(5, { type: 'select', elem: elemKey });
+      }
+    }
+
+    function f5ToggleFronts() {
+      f5FrontFlip = !f5FrontFlip;
+      f5Select(f5FrontFlip ? 'coldfront' : 'warmfront');
+    }
+
+    /* ============================================================
+       FITXA 6: Efecte d'Hivernacle (+ Caça l'error del robot)
+       ============================================================ */
+    function f6ResetVisuals() {
+      const rb = document.getElementById('f6-robot-badge');
+      const extra = document.getElementById('f6-blankets-extra');
+      const b1 = document.getElementById('f6-blanket-1');
+      const ozBox = document.getElementById('f6-ozone-box');
+      const oz1 = document.getElementById('f6-lbl-ozone1');
+      const oz2 = document.getElementById('f6-lbl-ozone2');
+      const bl = document.getElementById('f6-lbl-blanket');
+      const ea = document.getElementById('f6-lbl-earth');
+
+      if (rb) rb.setAttribute('opacity', '0');
+      if (extra) extra.setAttribute('opacity', '0');
+      if (b1) { b1.setAttribute('fill', 'var(--mint-tint)'); b1.setAttribute('stroke', 'var(--positive)'); }
+      if (ozBox) { ozBox.setAttribute('fill', 'var(--sky-tint)'); ozBox.setAttribute('stroke', 'var(--tertiary)'); }
+      if (oz1) { oz1.textContent = `CAPA D'OZÓ (Estat: recuperant)`; oz1.setAttribute('fill', 'var(--tertiary)'); }
+      if (oz2) { oz2.textContent = `Frena raigs UV · NO escalfa`; oz2.setAttribute('fill', 'var(--on-surface)'); }
+      if (bl) { bl.textContent = `1 MANTA NATURAL (CO₂, Metà, Fluorats)`; bl.setAttribute('fill', 'var(--on-surface)'); }
+      if (ea) { ea.textContent = `SUPERFÍCIE TERRA: 14 °C (Equilibri bo per la vida)`; ea.setAttribute('fill', 'var(--primary)'); }
+    }
+
+    function f6SetState(stKey, silent) {
+      clearWiggle('#fitxa-6 .wiggle-me');
+      f6ResetVisuals();
+
+      const oB = document.getElementById('f6-out-blankets');
+      const oT = document.getElementById('f6-out-temp');
+      const oG = document.getElementById('f6-out-gas');
+      const oZ = document.getElementById('f6-out-ozone');
+      const extra = document.getElementById('f6-blankets-extra');
+      const b1 = document.getElementById('f6-blanket-1');
+      const bl = document.getElementById('f6-lbl-blanket');
+      const ea = document.getElementById('f6-lbl-earth');
+
+      if (stKey === 'excess') {
+        if (extra) extra.setAttribute('opacity', '1');
+        if (b1) { b1.setAttribute('fill', 'var(--coral-tint)'); b1.setAttribute('stroke', 'var(--error)'); }
+        if (bl) bl.textContent = `5 MANTES (Carbó + Petroli = Massa CO₂)`;
+        if (ea) { ea.textContent = `SUPERFÍCIE TERRA: FEBRE CLIMÀTICA (+1,5 °C / +2 °C)`; ea.setAttribute('fill', 'var(--error)'); }
+        if (oB) oB.textContent = `5 mantes (Excés humà)`;
+        if (oT) oT.textContent = `Escalfament global!`;
+      } else if (stKey === 'gases') {
+        if (bl) bl.textContent = `«Com Més Fum»: CO₂ · Metà · Fluorats`;
+        if (oB) oB.textContent = `Gasos d'hivernacle`;
+        if (oG) oG.textContent = `CO₂ + Metà + Fluorats`;
+      } else if (stKey === 'ozone') {
+        if (oZ) oZ.textContent = `Ozó ≠ Hivernacle (Són separats!)`;
+        if (oB) oB.textContent = `1 manta (CO₂) ≠ Ozó (UV)`;
+      } else {
+        if (oB) oB.textContent = `1 manta (Natural)`;
+        if (oT) oT.textContent = `14 °C (Ideal)`;
+        if (oG) oG.textContent = `CO₂ · Metà · Fluorats`;
+        if (oZ) oZ.textContent = `Problema separat`;
+      }
+
+      ['natural', 'excess', 'gases', 'ozone'].forEach(k => {
+        const b = document.getElementById(`f6-btn-${k}`);
+        if (b) b.classList.toggle('is-active', stKey === k);
+      });
+
+      if (!silent) {
+        markExplored(6, false);
+        evaluateChallenge(6, { type: 'state', state: stKey });
+      }
+    }
+
+    function f6ApplyBug(bugType) {
+      f6ResetVisuals();
+      const rb = document.getElementById('f6-robot-badge');
+      if (rb) rb.setAttribute('opacity', '1');
+
+      if (bugType === 'ozone_blamed') {
+        const ozBox = document.getElementById('f6-ozone-box');
+        const oz1 = document.getElementById('f6-lbl-ozone1');
+        const oz2 = document.getElementById('f6-lbl-ozone2');
+        if (ozBox) { ozBox.setAttribute('fill', 'var(--coral-tint)'); ozBox.setAttribute('stroke', 'var(--error)'); }
+        if (oz1) { oz1.textContent = `FORAT D'OZÓ (Error robot!)`; oz1.setAttribute('fill', 'var(--error)'); }
+        if (oz2) { oz2.textContent = `Causa l'escalfament global!`; }
+      } else if (bugType === 'no_blanket_warm') {
+        const b1 = document.getElementById('f6-blanket-1');
+        const bl = document.getElementById('f6-lbl-blanket');
+        if (b1) { b1.setAttribute('fill', 'var(--coral-tint)'); b1.setAttribute('stroke', 'var(--error)'); }
+        if (bl) { bl.textContent = `0 MANTES: Sense manta ja faria 14 °C!`; bl.setAttribute('fill', 'var(--error)'); }
+      } else if (bugType === 'oxygen_culprit') {
+        const extra = document.getElementById('f6-blankets-extra');
+        const bl = document.getElementById('f6-lbl-blanket');
+        if (extra) extra.setAttribute('opacity', '1');
+        if (bl) { bl.textContent = `5 MANTES d'OXIGEN que escalfen!`; bl.setAttribute('fill', 'var(--error)'); }
+      } else if (bugType === 'fever_cooling') {
+        const extra = document.getElementById('f6-blankets-extra');
+        const ea = document.getElementById('f6-lbl-earth');
+        if (extra) extra.setAttribute('opacity', '1');
+        if (ea) { ea.textContent = `5 MANTES = La Terra es refreda a −20 °C!`; ea.setAttribute('fill', 'var(--error)'); }
+      }
+    }
+
+    function f6ClickSvg(part) {
+      clearWiggle('#fitxa-6 .wiggle-me');
+      markExplored(6, false);
+      evaluateChallenge(6, { type: 'svg', part: part });
+    }
+
+    /* ============================================================
+       Embed Mode, ResizeObserver, Escape & Bootstrapping
+       ============================================================ */
+    function setupEmbedAndObservers() {
+      if (IS_EMBED) {
+        document.body.classList.add('is-embed');
+      }
+      if (IS_SINGLE) {
+        document.documentElement.classList.add('is-single-fitxa');
+        document.body.classList.add('is-single-fitxa');
+        const el = document.getElementById(`fitxa-${TARGET_FITXA}`);
+        if (el) el.classList.add('is-target-fitxa');
+      } else if (TARGET_FITXA >= 1 && TARGET_FITXA <= 6) {
+        setTimeout(() => scrollToFitxa(TARGET_FITXA), 150);
+      }
+
+      const shell = document.getElementById('page-shell');
+      const postHeight = () => {
+        if (!shell) return;
+        try {
+          const h = Math.ceil(shell.getBoundingClientRect().height);
+          if (h > 0) {
+            window.parent.postMessage({
+              type: 'BONANOTA_VISUAL_RESIZE',
+              world: WORLD_ID,
+              height: h,
+              fitxa: TARGET_FITXA || null
+            }, '*');
+          }
+        } catch (_) {}
+      };
+      if (shell && typeof ResizeObserver === 'function') {
+        const ro = new ResizeObserver(postHeight);
+        ro.observe(shell);
+        setTimeout(postHeight, 120);
+      }
+
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') {
+          try {
+            window.parent.postMessage({ type: 'BONANOTA_VISUAL_CLOSE', world: WORLD_ID }, '*');
+          } catch (_) {}
+          return;
+        }
+        if ((ev.key === 'Enter' || ev.key === ' ') && ev.target && ev.target.classList && ev.target.classList.contains('svg-hit')) {
+          ev.preventDefault();
+          const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
+          ev.target.dispatchEvent(clickEvent);
+        }
+      });
+    }
+
+    async function initApp() {
+      setupEmbedAndObservers();
+      await loadPersistedState();
+      updateProgressUI();
+
+      f1Render();
+      f2SelectLayer('troposfera', true);
+      f3Render();
+      f4SetScenario('wind', true);
+      f5Select('A', true);
+      f6SetState('natural', true);
+
+      notifyParentProgress();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === 'function') {
+        try {
+          window.notebookAppApi.notifyAppReady();
+        } catch (_) {}
+      }
+    }
+
+    initApp();
+  </script>
+</body>
+</html>

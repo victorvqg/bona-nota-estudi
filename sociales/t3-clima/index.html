@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="dbd1c9b2e9",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="b1bece7b3c",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -751,6 +751,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 <div class="peu-pag"><small class="bn-versio">versió 2.64.0</small></div>
 
 <script src="../../sprites.js?v=0d2acb59"></script>
+<script src="../../assets/bonanota-visuals.js?v=491955c9"></script>
 <script>
 // Bona Nota · Estudi interactiu · dades de SOCIALS 1r ESO
 // Font: llibre de Socials (tema 3, Vicens Vives) + apunts-geografia-anoia.md
@@ -758,6 +759,19 @@ const ASSIG={
  id:"socials", clau:"bn_soc", nom:"Socials", tema:"Tema 3: El clima", curs:"1r ESO", ic:"🌍",
  color:["#1e3a8a","#2563eb","#0ea5e9"],
  peu:"Bona Nota · Llibre de Socials (tema 3, Vicens Vives) i apunts de geografia de l'Anoia",
+ visual:{
+  world:"clima",
+  src:"../../visuals/clima.html",
+  total:6,
+  rewardStars:10,
+  icona:"🧪",
+  titol:"🧪 Laboratori Visual · 6 fitxes interactives",
+  subtitol:"Climograma, capes de l'atmosfera, factors LAD, pressió, mapes del temps i efecte d'hivernacle",
+  modalTitol:"Laboratori Visual · El Clima",
+  botoJoc:"🧪 Obre laboratori visual",
+  temes:{temps:1,atmos:2,elements:3,pressio:4,mapes:5,canvi:6,climaig:1},
+  jocs:{classifica:1,climo:1,"fx-climo":1,"cl-construeix":1,"cl-compara":1,"err-clima":1,capes:2,"fr-atmos":2,"fr-elements":3,parelles:3,"fr-pressio":4,"mapa-temps1":5,"mapa-temps2":5,"mapa-temps3":5,"mapa-temps4":5,"mapa-temps5":5,"fr-canvi":6}
+ },
  blocs:[{titol:"📖 Temes del llibre",n:6},{titol:"🏔️ Apunts de l'Anoia",n:4}],
  jocs:[
   {id:"fr-atmos",grup:"✍️ Frases amb buits",tipus:"frases",ic:"🧅",titol:"Temps, clima i atmosfera",sub:"Capes, gasos i funcions",col:"#f3e8ff",
@@ -2887,6 +2901,7 @@ function inici(){
  {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd&&(!MODE_TAST||jocObertTast(jd.id)))h+=`<div class="continua" role="button" tabindex="0" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(MODE_TAST&&T.length)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(0)"><span style="font-size:28px">${T[0].ic}</span><b>Comença la mostra: ${T[0].titol}</b><span class="btn">Tasta →</span></div>`;
  else if(sp>=0)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
+ if(window.BonaNotaVisuals&&ASSIG.visual)h+=BonaNotaVisuals.cartaInici();
  h+=bossCarta(true)+cartaMissions();
  h+=`${blocsTemes()}
  <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
@@ -2904,7 +2919,7 @@ function seccionsJocs(){if(!ASSIG.jocs.some(j=>j.grup))return `<h2 class="sec">$
  const ex=(ASSIG.jocs.find(j=>/examen/i.test(j.grup||""))||{}).grup||"📝 Exàmens",grups=[];
  JOCS.forEach(t=>{const j=ASSIG.jocs.find(x=>x.id===t[0]),g=j?(j.grup||`${ICO.jocs} Jocs`):ex;let G=grups.find(x=>x[0]===g);if(!G)grups.push(G=[g,[]]);G[1].push(t)});
  return grups.map(([g,ts])=>`<h2 class="sec">${g}</h2><div class="grid">${tilesJocs(ts)}</div>`).join("")}
-function joc(id){if(MODE_TAST&&!jocObertTast(id)){const jj=JOCS.find(x=>x[0]===id);convidaPin(`«${jj?jj[2]:"Aquest joc"}» s'obre entrant amb nom i PIN. Al mode tast pots jugar a «${ASSIG.jocs[0].titol}».`);return}tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");aplicaSuau();comprovaAvisNit();if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,frases:jocFrases,custom:j=>window[j.fn](j)})[j.tipus](j)}
+function joc(id){if(MODE_TAST&&!jocObertTast(id)){const jj=JOCS.find(x=>x[0]===id);convidaPin(`«${jj?jj[2]:"Aquest joc"}» s'obre entrant amb nom i PIN. Al mode tast pots jugar a «${ASSIG.jocs[0].titol}».`);return}tancaActivitat();REPAS=false;JOC0=Date.now();iniciActivitat();ULT=null;JOCSTAR=diaEst().j[id]?0:1;aturaSeg();COMBO=0;FONT=id==="examen"?["examen"]:["jocs",id];window.scrollTo(0,0);marcaNav("jocs");aplicaSuau();comprovaAvisNit();if(id==="examen")return examen();if(id==="examreal")return examenReal();const j=ASSIG.jocs.find(x=>x.id===id||(id==="err"&&x.id==="er-troba"));if(!j){vista("jocs");return}({ordena:jocOrdena,parelles:jocParelles,classifica:jocClassifica,figura:jocFigura,error:jocError,frases:jocFrases,custom:j=>window[j.fn](j)})[j.tipus](j);if(window.BonaNotaVisuals&&ASSIG.visual)BonaNotaVisuals.insertaBotoJoc(j.id)}
 function desaJoc(id,pc){(S.jocs[id]=S.jocs[id]||[]).push(pc);desa();const j=JOCS.find(x=>x[0]===id),ex=id==="examen"||id==="examreal";
  const det=Object.assign({joc:id,titol:j?j[2]:id,pc,s:segs(JOC0)},ULT||{});ULT=null;
  if(ex&&Array.isArray(det.q)){det.temes=[...new Set(det.q.map(x=>x.split("/")[0]))]}
@@ -2928,7 +2943,7 @@ function esquemaTema(e){let h="";if(e.fn&&typeof window[e.fn]==="function"){try{
 function fitxa(){
  const t=tema;ET(t.id).fitxa=true;desa();ACTV={tipus:"fitxa",tid:t.id,titol:t.titol,t0:Date.now(),fi:0};
  const txtF=`${t.titol}. Idea clau: ${t.idea}. ${t.pts.join(". ")}. Truc: ${t.truc}. Compte: ${t.compte}`;
- document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div>${t.vista&&typeof mxVistaTema==="function"?mxVistaTema(t.vista):""}${t.esquema?esquemaTema(t.esquema):""}<ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div><div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
+ document.getElementById("zona").innerHTML=`<div class="box">${potEscoltar()?`<div class="escolta-fila">${btEscolta(txtF,"Escolta la fitxa")}</div>`:""}<div class="idea"><small>IDEA CLAU</small>${t.idea}</div>${t.vista&&typeof mxVistaTema==="function"?mxVistaTema(t.vista):""}${t.esquema?esquemaTema(t.esquema):""}<ul class="pts">${t.pts.map(p=>`<li>${p}</li>`).join("")}</ul><div class="truc">★ <b>Truc:</b> ${t.truc}</div><div class="compte">⚠ <b>Compte:</b> ${t.compte}</div></div>${window.BonaNotaVisuals&&ASSIG.visual?BonaNotaVisuals.inlineTemaHtml(t):""}<div class="fila">${(()=>{const pj=t.practica&&ASSIG.jocs.find(x=>x.id===t.practica);return pj?`<button class="btn sec" onclick="joc('${pj.id}')">✏️ Practica-ho com a classe: ${pj.titol}</button>`:""})()}<button class="btn" onclick="if(ACTV)ACTV.fi=1;pest='targetes';pintaTema()">Ara les targetes →</button>${(()=>{const jf=t.frases&&ASSIG.jocs.find(x=>x.id===t.frases);return jf?`<button class="btn sec" onclick="joc('${jf.id}')">✍️ Practica-ho amb frases</button>`:""})()}</div>`;
  const cpt=document.querySelector("#zona .compte");if(cpt&&"IntersectionObserver" in window){const a=ACTV,ob=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){if(a)a.fi=1;ob.disconnect()}});ob.observe(cpt)}
 }
 function targetes(n){calla();
@@ -5077,6 +5092,7 @@ aplicaSuau();
 // (excepte si la URL porta ?sw); a localhost, a més, es desregistra el que hi hagués d'abans i se n'esborra la còpia guardada.
 (function(){if(!("serviceWorker" in navigator))return;const loc=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);if(loc?/[?&]sw\b/.test(location.search):location.protocol==="https:"){navigator.serviceWorker.register("../../sw.js").catch(()=>{});return}if(loc){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.filter(k=>k.indexOf("bn-")===0).forEach(k=>caches.delete(k))).catch(()=>{})}})();
 pintaCap();pintaSo();
+if(window.BonaNotaVisuals&&ASSIG.visual){BonaNotaVisuals.init(Object.assign({getUserId:()=>{try{const u=new URLSearchParams(location.search).get("uid");if(u)return u}catch(e){}return(!MODE_TAST&&S&&S.nom)?S.nom:"anon"},getProfileState:()=>S,isDemoOrTast:()=>MODE_DEMO||MODE_TAST},ASSIG.visual));}
 (function(){const usp=new URLSearchParams(location.search),jP=usp.get("joc"),tP=usp.get("tema"),vP=usp.get("vista"),dbP=usp.get("demoBoss"),dcP=usp.get("demoCombat"),tastP=usp.get("tast")==="1",directe=MODE_DEMO||jP||tP!==null||vP||dbP||dcP;
  if(!SENSE_NUVOL()){
   try{const mem=JSON.parse(localStorage.getItem("bn_mons_tancats")||"[]");if(Array.isArray(mem)&&mem.includes(ASSIG.id))MON_TANCAT_MANUAL=true}catch(e){}
