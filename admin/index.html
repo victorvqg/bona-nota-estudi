@@ -779,7 +779,7 @@ const COL_MON={
 };
 const XMON={"enters":"Mates · Enters","geosfera":"Bio-Geo · Geosfera","angles":"Anglès · Tema 2","catala":"Català · Tema 2","divisibilitat":"Mates · Divisibilitat","comarques":"Socials · Comarques","castellano":"Castellano · Temas 2 y 3","biogeo":"Bio-Geo · Bloc 1","socials":"Socials · El clima"};
 const DEMO_JOCS={"enters":["salts","signeres","pamusu","err-enters"],"geosfera":["capes","mohs","mineral","err-geo"],"angles":["contraris","perdins","dospresents","fenn"],"catala":["subgeneres","oralescrit"],"divisibilitat":["fx-mcm","fx-criteris","fx-divisio","er-troba"],"comarques":["mapa43","capitals","ruta"],"castellano":["concretos","generos","byv"],"biogeo":["planetes","celules","cossos"],"socials":["climo","capes","parelles"]};
-const LABS_MON={"enters":6,"geosfera":6,"socials":6};
+const LABS_MON={"enters":{"world":"enters","total":6},"geosfera":{"world":"geosfera","total":6},"socials":{"world":"clima","total":6}};
 /* MONS-ADMIN:fi */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -1004,8 +1004,8 @@ async function carregaIds(){
 }
 let FAPR=null,ALTES_CURS=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null,RK_VISTA="total",RK_MON="socials";
 const AUTO_MS=60000;let NOV_BASE=null,NOV_ULT=0,NOV_CURS=false;
-function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_MAP={};ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
-function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
+function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_MAP={};ALTES_CURS=null;VIS_CACHE=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;VIS_CACHE=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
 async function carrega(){
  netejaCaches();
  await carregaRegles();
@@ -1121,8 +1121,8 @@ const P_DE_DIES={1:"avui",7:"7d",30:"30d",365:"curs"};
 const TABS_DEF={nens:"llista",mons:"llista",sessions:"sessions",ranquing:"classificacio",config:"horaris"};
 const FITXA_TABS={resum:"tb-resum","tb-resum":"tb-resum",apr:"tb-apr","tb-apr":"tb-apr",aprenentatge:"tb-apr",ses:"tb-ses","tb-ses":"tb-ses",sessions:"tb-ses",nuv:"tb-nuv","tb-nuv":"tb-nuv",nuvol:"tb-nuv"};
 const FITXA_SLUG={"tb-resum":"resum","tb-apr":"apr","tb-ses":"ses","tb-nuv":"nuv"};
-const MON_TABS={resum:"mtb-resum","mtb-resum":"mtb-resum",domini:"mtb-domini","mtb-domini":"mtb-domini",errors:"mtb-domini",obertes:"mtb-obertes","mtb-obertes":"mtb-obertes",taller:"mtb-taller","mtb-taller":"mtb-taller"};
-const MON_SLUG={"mtb-resum":"resum","mtb-domini":"domini","mtb-obertes":"obertes","mtb-taller":"taller"};
+const MON_TABS={resum:"mtb-resum","mtb-resum":"mtb-resum",domini:"mtb-domini","mtb-domini":"mtb-domini",errors:"mtb-domini",obertes:"mtb-obertes","mtb-obertes":"mtb-obertes",taller:"mtb-taller","mtb-taller":"mtb-taller",lab:"mtb-lab","mtb-lab":"mtb-lab"};
+const MON_SLUG={"mtb-resum":"resum","mtb-domini":"domini","mtb-obertes":"obertes","mtb-taller":"taller","mtb-lab":"lab"};
 const normMonId=id=>{const k=String(id||"").trim().toLowerCase();return k==="matematiques"||k==="matemàtiques"?"divisibilitat":k};
 const esMonMates=id=>{const k=normMonId(id),m=(MONSL||[]).find(x=>x.id===k);return k==="divisibilitat"||!!(m&&String(m.carpeta||"").startsWith("matematiques/"))};
 function llegeixUrl(){
@@ -1266,17 +1266,45 @@ const REP_EXT={mx:"Taller",mapa:"MAPA",err:"Troba l'error",err_gen:"Troba l'erro
 const extRepas=x=>String(x).split(",").map(p=>{const [t,v]=p.split(":");return `${REP_EXT[t]||t} ${v||""}`.trim()}).join(", ");
 const MOTIU_DUBTE={enunciat:"no s'entén l'enunciat",resposta:"la resposta no em quadra",pista:"hi falta una dada"};
 const esJocVisual=d=>!!(d&&typeof d.joc==="string"&&d.joc.indexOf("visual_")===0);
-const monDeVisual=(d,assig)=>esJocVisual(d)?d.joc.slice(7):String(assig||"");
+function labInfo(assig){
+ if(typeof LABS_MON!=="object"||!LABS_MON||!assig)return null;
+ const raw=LABS_MON[assig];if(!raw)return null;
+ if(typeof raw==="number")return {assig,world:assig,total:raw};
+ return {assig,world:String(raw.world||assig),total:Number(raw.total)||6};
+}
+function labsCatalog(){
+ if(typeof LABS_MON!=="object"||!LABS_MON)return [];
+ return Object.keys(LABS_MON).map(a=>labInfo(a)).filter(Boolean);
+}
+function assigDeWorld(w,fallbackAssig){
+ const k=String(w||"").trim().toLowerCase();
+ const fb=String(fallbackAssig||"").trim().toLowerCase();
+ for(const x of labsCatalog()){if(x.world.toLowerCase()===k||x.assig.toLowerCase()===k)return x.assig}
+ if(fb&&labInfo(fb))return fb;
+ return fb||k;
+}
+const monDeVisual=(d,assig)=>assigDeWorld(esJocVisual(d)?d.joc.slice(7):"",assig);
 function labsDeNen(ls,nuv){
  const m=new Map();
- (ls||[]).forEach(l=>{const d=l&&l.detall;if(l&&l.event==="joc"&&esJocVisual(d)){const w=monDeVisual(d,l.assig);if(w)m.set(w,Math.max(m.get(w)||0,+d.stars||+d.est||10))}});
+ const put=(a,o)=>{if(!a)return;const info=labInfo(a),tot=o.total||(info?info.total:6),cur=m.get(a)||{assig:a,world:info?info.world:a,explored:0,total:tot,mastered:null,completed:false,premi:false,stars:0};
+  cur.total=Math.max(cur.total,tot);
+  if(o.explored!=null)cur.explored=Math.max(cur.explored,Math.min(cur.total,+o.explored||0));
+  if(o.mastered!=null)cur.mastered=Math.max(cur.mastered||0,+o.mastered||0);
+  if(o.premi){cur.premi=true;cur.completed=true;cur.explored=cur.total;cur.stars=Math.max(cur.stars,+o.stars||10)}
+  if(o.completed||cur.explored>=cur.total){cur.completed=true;cur.explored=cur.total}
+  m.set(a,cur)};
+ (ls||[]).forEach(l=>{const d=l&&l.detall;if(l&&l.event==="joc"&&esJocVisual(d)){
+  const a=monDeVisual(d,l.assig),isPremi=d.pas==="premi"||(d.pas!=="progres"&&(d.stars!=null||d.est!=null||d.explored==null));
+  put(a,{explored:d.explored!=null?+d.explored:(isPremi?null:1),total:d.total?+d.total:null,mastered:d.mastered!=null?+d.mastered:null,completed:d.completed===true||isPremi,premi:isPremi,stars:+d.stars||+d.est||10})}});
  if(nuv&&typeof nuv==="object"){
-  if(Array.isArray(nuv.premis_visuals))nuv.premis_visuals.forEach(p=>{const k=String(p&&(p.reward_key||p.world)||"");const w=k.indexOf("visual_")===0?k.slice(7):k;if(w)m.set(w,Math.max(m.get(w)||0,+p.stars||10))});
-  if(Array.isArray(nuv.mons))nuv.mons.forEach(x=>{if(x&&x.visuals&&typeof x.visuals==="object")Object.entries(x.visuals).forEach(([w,v])=>{if(v&&v.rewardClaimed)m.set(w,Math.max(m.get(w)||0,+v.stars||10))})});
+  if(Array.isArray(nuv.premis_visuals))nuv.premis_visuals.forEach(p=>{const k=String(p&&(p.reward_key||p.world)||""),w=k.indexOf("visual_")===0?k.slice(7):k,a=assigDeWorld(w);if(a)put(a,{premi:true,stars:+p.stars||10})});
+  if(Array.isArray(nuv.mons))nuv.mons.forEach(x=>{if(x&&x.visuals&&typeof x.visuals==="object")Object.entries(x.visuals).forEach(([w,v])=>{if(!v||typeof v!=="object")return;const a=assigDeWorld(w,x.assig);put(a,{explored:v.explored,total:v.total,mastered:v.mastered,completed:v.completed===true,premi:v.rewardClaimed===true,stars:+v.stars||10})})});
  }
- return [...m.entries()].map(([world,stars])=>({world,stars}));
+ return [...m.values()].sort((a,b)=>(b.premi?2:b.completed?1:0)-(a.premi?2:a.completed?1:0)||b.explored-a.explored);
 }
-function renderLabsNen(labs){return labs&&labs.length?labs.map(x=>`<span class="pill ok" title="Laboratori visual completat">🧪 ${esc(nomAssig(x.world))} · +${x.stars} ⭐</span>`).join(" "):""}
+function renderLabsNen(labs){return labs&&labs.length?labs.map(x=>x.premi||x.completed
+ ?`<span class="pill ok" title="Laboratori visual completat (${x.explored}/${x.total}${x.mastered!=null?` · ${x.mastered} reptes`:""})">🧪 ${esc(nomAssig(x.assig))} · ${x.premi?`+${x.stars} ⭐`:`${x.explored}/${x.total} ✓`}</span>`
+ :`<span class="pill neutre" title="Laboratori visual en curs (${x.explored}/${x.total} fitxes)">🧪 ${esc(nomAssig(x.assig))} · ${x.explored}/${x.total}</span>`).join(" "):""}
 function descriu(l){const d=l.detall||{};switch(l.event){
  case"entra":return d.nou?"Perfil nou creat":`Entra · ${d.punts??0} estrelles · ${d.aprovats??0}/${d.temes??"?"} temes aprovats`;
  case"fitxa":return `Llegeix la fitxa: <b>${esc(d.titol||d.tema)}</b>${d.s?` · ${fmtT(d.s)}${d.fi?" · fins al final":""}`:""}`;
@@ -1284,7 +1312,7 @@ function descriu(l){const d=l.detall||{};switch(l.event){
  case"test":return `Test de <b>${esc(d.titol||d.tema)}</b>: ${d.bones}/${d.n} · ${cpc(d.pc)}${d.pistes?` · ${pl(d.pistes,"pista","pistes")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"joc":if(d.joc==="boss")return `Boss <b>${esc(d.titol||"del món")}</b>: ${d.guanya?"guanyat":"perdut"}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.guanya&&d.cors!=null?` · ${pl(d.cors,"cor","cors")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
    if(d.joc==="repas")return `Repàs dels errors: ${cpc(d.pc)}${d.apr?` · ${pl(d.apr,"error après","errors apresos")}`:""}${d.ext?` · ${esc(extRepas(d.ext))}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
-   if(esJocVisual(d)){const w=monDeVisual(d,l.assig),st=+d.stars||+d.est||10;return `🧪 <b>Lab ${esc(nomAssig(w))}</b> (+${st} ⭐)`}
+   if(esJocVisual(d)){const a=monDeVisual(d,l.assig);if(d.pas==="progres"){const ex=d.explored!=null?`${d.explored}/${d.total||"?"} fitxes`:"en curs";return `🧪 <b>Lab ${esc(nomAssig(a))}</b> · ${esc(ex)}${d.mastered?` · ${pl(d.mastered,"repte","reptes")}`:""}`}const st=+d.stars||+d.est||10;return `🧪 <b>Lab ${esc(nomAssig(a))}</b> · Completat (+${st} ⭐)`}
    return `Joc <b>${esc(d.titol||d.joc)}</b>: ${cpc(d.pc)}${d.enc!=null?` · ${d.enc} encerts, ${d.err} errors`:""}${d.mode&&d.joc==="mapa43"?` · ${esc(d.mode)}`:""}${d.pistes?` · ${pl(d.pistes,"pista","pistes")}`:""}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"examen":return `${d.joc==="examreal"?"Examen de veritat":d.joc==="examen"?"Examen sorpresa":"Examen de mates"}: ${d.nota!=null?`<b>${esc(String(d.nota).replace(".",","))}</b> sobre 10`:cpc(d.pc)}${d.s?` · ${fmtT(d.s)}`:""}`;
  case"oberta":if(d.mode==="control")return `Quadern · punts de control (${esc(d.tema||"")}): ${cpc(d.pc)} bé a la primera${d.pasos?` (${esc(d.pasos)})`:""}`;
@@ -1380,7 +1408,7 @@ document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const tr=e.tar
 document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-nen]");if(b){e.preventDefault();obreFitxaNen(b.dataset.obreNen)}});
 document.addEventListener("click",e=>{const tr=e.target.closest("tr.clic[data-mon]");if(tr&&!e.target.closest("button,a,input,select"))obreFitxaMon(tr.dataset.mon)});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const tr=e.target.closest&&e.target.closest("tr.clic[data-mon]");if(tr&&e.target===tr)obreFitxaMon(tr.dataset.mon)});
-document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-mon]");if(b){e.preventDefault();obreFitxaMon(b.dataset.obreMon)}});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-obre-mon]");if(b){e.preventDefault();obreFitxaMon(b.dataset.obreMon,b.dataset.obreTab||undefined)}});
 document.addEventListener("click",e=>{const sw=e.target.closest("[data-mon-sw]");if(sw){e.preventDefault();toggleMonCtrl(sw.dataset.monSw)}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go-cfg]");if(b){e.preventDefault();navega("config",{tab:b.dataset.goCfg})}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go-msgs]");if(b){e.preventDefault();navega("nens",{tab:"missatges"})}});
@@ -2278,7 +2306,72 @@ let NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","
 async function carregaRegles(){if(REGLES)return REGLES;try{const r=await fetch("regles.json",{cache:"no-cache"});if(r.ok){REGLES=await r.json();if(Array.isArray(REGLES.NIVELLS)&&REGLES.NIVELLS.length){NIVELLS=REGLES.NIVELLS;XNIV=NIVELLS.map(x=>x[1])}if(typeof REGLES.APROVA==="number")APROVAT=REGLES.APROVA}}catch(e){REGLES={NIVELLS,APROVA:APROVAT}}return REGLES}
 function nivellDe(p){p=Math.max(0,+p||0);let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];return {n:i+1,nom,ic,min,seg:seg?seg[0]:null,segNom:seg?seg[1]:null,falten:seg?seg[0]-p:0}}
 const pillNivell=p=>{const nv=nivellDe(p);return `<span class="pill neutre niv-p" title="Nivell ${nv.n} · ${esc(nv.nom)}${nv.seg!=null?` (${p} ⭐ · en falten ${nv.falten} per a ${esc(nv.segNom)})`:` (${p} ⭐ · nivell màxim)`}">${esc(nv.ic)} ${nv.n} · ${esc(nv.nom)}</span>`};
-let NUV=null,ALTES=null,ALTES_MAP={}; // la resposta de la fitxa oberta {k,p}, les altes {p,prom} i el mapa k → detall d'alta
+let NUV=null,ALTES=null,ALTES_MAP={},VIS_CACHE=null; // la resposta de la fitxa oberta {k,p}, les altes {p,prom}, el mapa k → detall d'alta i els labs visuals
+function visualsDe(){if(!VIS_CACHE){const p=rpcF("bn_admin_visuals",{p_assig:null});p.catch(()=>{if(VIS_CACHE===p)VIS_CACHE=null});VIS_CACHE=p}return VIS_CACHE}
+function construeixFilesVisuals(raw,assigFiltre){
+ const cat=labsCatalog().filter(c=>!assigFiltre||c.assig===assigFiltre);
+ if(!cat.length)return [];
+ const catMap=new Map(cat.map(c=>[c.assig,c]));
+ const byKey=new Map();
+ const ensure=(k,nom,id,assig,tePin)=>{
+  if(!k||!catMap.has(assig))return null;
+  const kk=String(k).trim().toLowerCase(),key=assig+"::"+kk,info=catMap.get(assig);
+  let r=byKey.get(key);
+  if(!r){r={k:kk,nom:String(nom||NOMS_TOTS[kk]||kk),id:nN(id)??IDS[kk]??null,assig,world:info.world,total:info.total,explored:0,mastered:null,completed:false,premi:false,stars:0,tePin:!!tePin,iniciTs:null,ultimTs:null,premiTs:null};byKey.set(key,r)}
+  else{if(nom&&r.nom===r.k)r.nom=String(nom);if(r.id==null&&nN(id)!=null)r.id=nN(id);if(tePin)r.tePin=true}
+  return r;
+ };
+ const minTs=(a,b)=>(a&&b)?Math.min(a,b):(a||b||null);
+ const maxTs=(a,b)=>(a&&b)?Math.max(a,b):(a||b||null);
+ if(raw&&typeof raw==="object"){
+  aR(raw.actius).forEach(x=>{if(!x||!x.k||!x.assig)return;ensure(x.k,x.nom,x.id,String(x.assig).toLowerCase(),x.te_pin===true)});
+  aR(raw.progres).forEach(x=>{if(!x||!x.k||!x.visuals||typeof x.visuals!=="object")return;
+   Object.entries(x.visuals).forEach(([w,v])=>{if(!v||typeof v!=="object")return;
+    const a=assigDeWorld(w,x.assig),r=ensure(x.k,x.nom,x.id,a,true);if(!r)return;
+    const tot=nN(v.total)||r.total;r.total=Math.max(r.total,tot);
+    if(nN(v.explored)!=null)r.explored=Math.max(r.explored,Math.min(r.total,nN(v.explored)));
+    if(nN(v.mastered)!=null)r.mastered=Math.max(r.mastered||0,nN(v.mastered));
+    if(v.completed===true||r.explored>=r.total){r.completed=true;r.explored=r.total}
+    if(v.rewardClaimed===true){r.premi=true;r.completed=true;r.explored=r.total;r.stars=Math.max(r.stars,nN(v.stars)||10);r.premiTs=maxTs(r.premiTs,nN(v.completedTs)||nN(v.ts)||nN(x.ts))}
+    r.iniciTs=minTs(r.iniciTs,nN(v.firstTs)||nN(v.ts)||nN(x.ts));
+    r.ultimTs=maxTs(r.ultimTs,nN(v.lastTs)||nN(v.completedTs)||nN(v.ts)||nN(x.ts));
+   })});
+  aR(raw.premis).forEach(x=>{if(!x||!x.k)return;const rk=String(x.reward_key||""),w=rk.indexOf("visual_")===0?rk.slice(7):rk,a=assigDeWorld(w);
+   const r=ensure(x.k,x.nom,x.id,a,true);if(!r)return;
+   r.premi=true;r.completed=true;r.explored=r.total;r.stars=Math.max(r.stars,nN(x.stars)||10);
+   const ts=nN(x.ts);r.premiTs=maxTs(r.premiTs,ts);r.iniciTs=minTs(r.iniciTs,ts);r.ultimTs=maxTs(r.ultimTs,ts);
+  });
+  aR(raw.logs).forEach(x=>{if(!x||!x.k)return;const rk=String(x.reward_key||""),w=rk.indexOf("visual_")===0?rk.slice(7):rk,a=assigDeWorld(w,x.assig);
+   const r=ensure(x.k,x.nom,x.id,a,x.id!=null);if(!r)return;
+   if(nN(x.total))r.total=Math.max(r.total,nN(x.total));
+   if(nN(x.explored)!=null)r.explored=Math.max(r.explored,Math.min(r.total,nN(x.explored)));
+   if(nN(x.mastered)!=null)r.mastered=Math.max(r.mastered||0,nN(x.mastered));
+   if(x.premi===true){r.premi=true;r.completed=true;r.explored=r.total;r.stars=Math.max(r.stars,nN(x.stars)||10);r.premiTs=maxTs(r.premiTs,nN(x.ultim_ts))}
+   else if(x.completed===true||r.explored>=r.total){r.completed=true;r.explored=r.total}
+   r.iniciTs=minTs(r.iniciTs,nN(x.inici_ts));r.ultimTs=maxTs(r.ultimTs,nN(x.ultim_ts));
+  });
+ }else{
+  // Fallback local amb LOGS del període si bn_admin_visuals encara no està instal·lat a Supabase
+  (LOGS||[]).forEach(l=>{if(!l||!l.nom)return;const k=clauNen(l),a=String(l.assig||"").toLowerCase();
+   if(catMap.has(a))ensure(k,l.nom,IDS[k],a,IDS[k]!=null);
+   const d=l.detall;if(l.event==="joc"&&esJocVisual(d)){
+    const va=monDeVisual(d,a),r=ensure(k,l.nom,IDS[k],va,IDS[k]!=null);if(!r)return;
+    const ts=Date.parse(l.ts)||null,isPremi=d.pas==="premi"||(d.pas!=="progres"&&(d.stars!=null||d.est!=null||d.explored==null));
+    if(nN(d.total))r.total=Math.max(r.total,nN(d.total));
+    if(nN(d.explored)!=null)r.explored=Math.max(r.explored,Math.min(r.total,nN(d.explored)));
+    if(nN(d.mastered)!=null)r.mastered=Math.max(r.mastered||0,nN(d.mastered));
+    if(isPremi){r.premi=true;r.completed=true;r.explored=r.total;r.stars=Math.max(r.stars,+d.stars||+d.est||10);r.premiTs=maxTs(r.premiTs,ts)}
+    else if(d.completed===true||r.explored>=r.total){r.completed=true;r.explored=r.total}
+    else if(r.explored===0)r.explored=1;
+    r.iniciTs=minTs(r.iniciTs,ts);r.ultimTs=maxTs(r.ultimTs,ts);
+   }});
+ }
+ return [...byKey.values()].map(r=>{
+  const estat=r.premi||r.completed||r.explored>=r.total?"completat":r.explored>0?"en_curs":"pendent";
+  const ordE=estat==="completat"?3:estat==="en_curs"?2:1;
+  return Object.assign(r,{estat,ordE,pct:Math.round((r.explored*100)/Math.max(1,r.total)),refTs:r.premiTs||r.ultimTs||r.iniciTs||0});
+ });
+}
 async function rpcF(f,extra){if(DEMO)return demoFitxaRpc(f,extra||{});const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
  body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,...(extra||{})})});if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
 const nN=v=>{const x=typeof v==="number"?v:typeof v==="string"&&v.trim()!==""?+v:NaN;return Number.isFinite(x)?x:null};
@@ -3007,14 +3100,18 @@ async function vistaMonsSeccio(c){
  }
 }
 async function vistaMonsLlista(cos,tk){
- let ms,ctrl,rep,pendOk=true;
- try{[ms,ctrl,rep]=(await Promise.all([asseguraLogs(),monsLlista(),ctrlDe().catch(()=>null),repPendentsDe(null).catch(e=>{pendOk=false;return null})])).slice(1)}
+ let ms,ctrl,rep,visRaw,pendOk=true;
+ try{[ms,ctrl,rep,visRaw]=(await Promise.all([asseguraLogs(),monsLlista(),ctrlDe().catch(()=>null),repPendentsDe(null).catch(e=>{pendOk=false;return null}),visualsDe().catch(()=>null)])).slice(1)}
  catch(e){if(tk!==TOK||!$("#monsCos"))return;cos.innerHTML=avisErr(`No s'han pogut carregar els mons (${e}).`);return}
  if(tk!==TOK||VISTA!=="mons"||ELEM||!$("#monsCos"))return;
  const tancats=new Set(aR(oB(ctrl).mons_tancats).map(x=>String(x).trim().toLowerCase()));
  const pendMap=new Map(),avuiMap=new Map();
  if(pendOk){const L=Array.isArray(rep)?rep:aR(oB(rep).temes);
   L.forEach(r=>{if(!r||typeof r!=="object"||r.assig==null)return;const a=String(r.assig);pendMap.set(a,(pendMap.get(a)||0)+(nN(r.n)||0));avuiMap.set(a,(avuiMap.get(a)||0)+(nN(r.avui)||0))})}
+ const visFiles=construeixFilesVisuals(visRaw,null);
+ const visPerMon=new Map();
+ labsCatalog().forEach(c=>{const fs=visFiles.filter(x=>x.assig===c.assig);
+  visPerMon.set(c.assig,{info:c,completats:fs.filter(x=>x.estat==="completat").length,enCurs:fs.filter(x=>x.estat==="en_curs").length,pendents:fs.filter(x=>x.estat==="pendent").length,premis:fs.filter(x=>x.premi).length,tot:fs.length})});
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
  const rows=ms.map(m=>{
   const ls=LOGS.filter(l=>l.assig===m.id),nensAct=new Set(ls.map(clauNen)).size;
@@ -3022,12 +3119,12 @@ async function vistaMonsLlista(cos,tk){
   let qTot=0,qOk=0;ls.forEach(l=>{if(!["test","examen","joc"].includes(l.event))return;aR(l.detall&&l.detall.q).forEach(q=>{const p=String(q).split(":");qTot++;if(p[1]==="1")qOk++})});
   const encert=qTot?Math.round(qOk*100/qTot):null;
   const temps=ls.filter(l=>l.event==="temps").reduce((s,l)=>s+(+((l.detall||{}).s)||0),0);
-  const labN=typeof LABS_MON==="object"&&LABS_MON[m.id]?LABS_MON[m.id]:0;
-  const labNens=labN?new Set(LOGS.filter(l=>l.event==="joc"&&esJocVisual(l.detall)&&monDeVisual(l.detall,l.assig)===m.id).map(clauNen)).size:0;
-  return {id:m.id,nom:nomAssig(m.id),titol:m.titol||"",obert:!tancats.has(m.id),nens:nensAct,nota,tests:te.length,encert,respostes:qTot,temps,pendents:pendOk?(pendMap.get(m.id)||0):null,avui:pendOk?(avuiMap.get(m.id)||0):0,labN,labNens};
+  const li=labInfo(m.id),vs=visPerMon.get(m.id);
+  const labN=li?li.total:0,labDone=vs?vs.completats:0,labProg=vs?vs.enCurs:0;
+  return {id:m.id,nom:nomAssig(m.id),titol:m.titol||"",obert:!tancats.has(m.id),nens:nensAct,nota,tests:te.length,encert,respostes:qTot,temps,pendents:pendOk?(pendMap.get(m.id)||0):null,avui:pendOk?(avuiMap.get(m.id)||0):0,labN,labDone,labProg};
  });
  const cols=[
-  {k:"nom",t:"Món",cls:"nw",q:r=>`${r.nom} ${r.titol} ${r.id}${r.labN?" lab visual":""}`,h:r=>`<button type="button" class="nen-b" data-obre-mon="${esc(r.id)}">${pillMon(r.id)}</button>${r.labN?` <span class="pill ok" title="Laboratori visual actiu (${r.labN} fitxes) · ${r.labNens} alumnes amb premi +10 ⭐">🧪 Lab (${r.labN})${r.labNens?` · ${r.labNens} ⭐`:""}</span>`:""}`},
+  {k:"nom",t:"Món",cls:"nw",q:r=>`${r.nom} ${r.titol} ${r.id}${r.labN?" lab visual":""}`,h:r=>`<button type="button" class="nen-b" data-obre-mon="${esc(r.id)}">${pillMon(r.id)}</button>${r.labN?` <button type="button" class="pill ok" style="cursor:pointer;border:0" data-obre-mon="${esc(r.id)}" data-obre-tab="lab" title="Obre el control del laboratori visual (${r.labN} fitxes) · ${r.labDone} completats · ${r.labProg} en curs">🧪 Lab (${r.labN})${r.labDone||r.labProg?` · ${r.labDone} ✅${r.labProg?` · ${r.labProg} ⏳`:""}`:""}</button>`:""}`},
   {k:"obert",t:"Estat",cls:"nw",v:r=>r.obert?1:0,csv:r=>r.obert?"Obert":"Tancat",h:r=>`<button class="sw" type="button" role="switch" data-mon-sw="${esc(r.id)}" aria-label="Estat de ${esc(r.nom)}" aria-checked="${r.obert}"${nd}><i></i><span>${r.obert?"Obert":"Tancat"}</span></button>`},
   {k:"nens",t:"Nens actius",num:true},
   {k:"nota",t:"Nota mitjana",num:true,h:r=>r.nota==null?`<span class="muted">—</span>`:`${cpc(r.nota)} <span class="muted">(${r.tests})</span>`},
@@ -3036,7 +3133,20 @@ async function vistaMonsLlista(cos,tk){
   {k:"pendents",t:"Errors pendents",num:true,v:r=>r.pendents,h:r=>r.pendents==null?`<span class="muted">—</span>`:r.pendents?`<b>${r.pendents}</b>${r.avui?` <span class="pill warn" title="Toquen avui">${r.avui} avui</span>`:""}`:`<span class="muted">0</span>`}
  ];
  const prev=TAULES.tMons;
- cos.innerHTML=`<div class="targeta">${taula("tMons",cols,rows,{k:prev?prev.k:"nens",desc:prev?prev.desc:true,manteQ:true,etiqueta:"Llista de mons",csvNom:"bona-nota-mons",fila:r=>` class="clic" data-mon="${esc(r.id)}" tabindex="0"`})}</div>`;
+ const labResumRows=[...visPerMon.values()].map(v=>{
+  const pct=v.tot?Math.round(v.completats*100/v.tot):0;
+  return {id:v.info.assig,nom:nomAssig(v.info.assig),total:v.info.total,completats:v.completats,enCurs:v.enCurs,pendents:v.pendents,premis:v.premis,tot:v.tot,pct};
+ });
+ const labResumCols=[
+  {k:"nom",t:"Laboratori",cls:"nw",h:r=>`<button type="button" class="nen-b" data-obre-mon="${esc(r.id)}" data-obre-tab="lab">${pillMon(r.id)}</button> <span class="muted" style="font-size:12px">${r.total} fitxes</span>`},
+  {k:"completats",t:"Completats",num:true,h:r=>`<span class="pill ok">${r.completats} ✅</span>`},
+  {k:"enCurs",t:"En curs",num:true,h:r=>r.enCurs?`<span class="pill neutre">${r.enCurs} ⏳</span>`:`<span class="muted">0</span>`},
+  {k:"pendents",t:"Pendents",num:true,h:r=>`<span class="muted">${r.pendents}</span>`},
+  {k:"pct",t:"Adopció",num:true,h:r=>mini(r.pct,100,"ok",`${r.pct}%`)},
+  {k:"acc",t:"",cls:"nw",ord:false,csv:()=>"",h:r=>`<button type="button" class="btn sec petit" data-obre-mon="${esc(r.id)}" data-obre-tab="lab">Veure alumnes →</button>`}
+ ];
+ const labCard=labResumRows.length?card("monsLabs","c-12","diana","🧪 Control de laboratoris visuals",visRaw?"Dades acumulades reals (premis oficials, progrés al núvol i registre d'activitat). Clica un laboratori per veure el detall alumne per alumne.":"Mostrant dades del registre del període (activa supabase/bn_admin_visuals.sql per veure l'estat acumulat complet).",taula("tMonsLabs",labResumCols,labResumRows,{k:"completats",desc:true,eines:false,etiqueta:"Resum de laboratoris visuals",csvNom:"bona-nota-labs-resum",fila:r=>` class="clic" data-obre-mon="${esc(r.id)}" data-obre-tab="lab" tabindex="0"`})):"";
+ cos.innerHTML=`<div class="pila"><div class="targeta">${taula("tMons",cols,rows,{k:prev?prev.k:"nens",desc:prev?prev.desc:true,manteQ:true,etiqueta:"Llista de mons",csvNom:"bona-nota-mons",fila:r=>` class="clic" data-mon="${esc(r.id)}" tabindex="0"`})}</div>${labCard}</div>`;
 }
 async function detallMon(c,monId0){
  const tok=++TOK,monId=normMonId(monId0);
@@ -3046,10 +3156,11 @@ async function detallMon(c,monId0){
  let m=ms.find(x=>x.id===monId);
  if(!m&&!ASSIGS[monId]){navega("mons");return}
  if(!m)m={id:monId,nom:nomAssig(monId),titol:nomAssig(monId),materia:"",desc:"",ic:"",carpeta:monId};
- const mates=esMonMates(monId);
- const tabsDef=[["mtb-resum","mtp-resum","Resum i notes"],["mtb-domini","mtp-domini","Domini i errors"],["mtb-obertes","mtp-obertes","Obertes"],...(mates?[["mtb-taller","mtp-taller","Taller"]]:[])];
+ const mates=esMonMates(monId),teLab=!!labInfo(monId);
+ const tabsDef=[["mtb-resum","mtp-resum","Resum i notes"],["mtb-domini","mtp-domini","Domini i errors"],["mtb-obertes","mtp-obertes","Obertes"],...(mates?[["mtb-taller","mtp-taller","Taller"]]:[]),...(teLab?[["mtb-lab","mtp-lab","🧪 Lab visual"]]:[])];
  let tabIni=MON_TABS[TAB]||"mtb-resum";
  if(tabIni==="mtb-taller"&&!mates)tabIni="mtb-resum";
+ if(tabIni==="mtb-lab"&&!teLab)tabIni="mtb-resum";
  VISTA="mons";ELEM=monId;FITXA=null;TAB=tabIni;escriuUrl(false);marcaMenu();$("#titol").textContent="Fitxa del món";
  const tancats=new Set(aR(oB(ctrl).mons_tancats).map(x=>String(x).trim().toLowerCase())),ob=!tancats.has(monId);
  const nd=DEMO?` disabled aria-disabled="true" title="No disponible en demo"`:"";
@@ -3068,11 +3179,73 @@ async function detallMon(c,monId0){
   else if(id==="mtb-domini")pintaMonDomini(monId,tok);
   else if(id==="mtb-obertes")pintaMonObertes(monId,tok);
   else if(id==="mtb-taller")pintaMonTaller(monId,tok);
+  else if(id==="mtb-lab")pintaMonLab(monId,tok);
  };
  const tabs=$$("#contingut .pestanyes [role=tab]"),obre=(t,focus)=>{tabs.forEach(x=>{const s=x===t;x.setAttribute("aria-selected",s);x.tabIndex=s?0:-1;$("#"+x.getAttribute("aria-controls")).hidden=!s});
   TAB=t.id;escriuUrl(false);if(focus!==false)t.focus();carregaTab(t.id)};
  tabs.forEach((t,i)=>{t.onclick=()=>obre(t);t.onkeydown=e=>{const mv={ArrowRight:1,ArrowLeft:-1}[e.key];if(mv){e.preventDefault();obre(tabs[(i+mv+tabs.length)%tabs.length])}else if(e.key==="Home"){e.preventDefault();obre(tabs[0])}else if(e.key==="End"){e.preventDefault();obre(tabs[tabs.length-1])}}});
  carregaTab(tabIni);
+}
+function obrePanellLab(r){
+ if(!r)return;
+ const estPill=r.estat==="completat"?`<span class="pill ok">Completat ✅</span>`:r.estat==="en_curs"?`<span class="pill neutre">En curs ⏳</span>`:`<span class="pill warn">Pendent</span>`;
+ const files=[
+  ["Laboratori",`🧪 ${nomAssig(r.assig)} (${r.total} fitxes)`],
+  ["Progrés",`${r.explored} de ${r.total} fitxes (${r.pct}%)`],
+  r.mastered!=null?["Reptes superats",`${r.mastered} de ${r.total}`]:null,
+  ["Premi +10 ⭐",r.premi?`Cobrat (+${r.stars||10} ⭐)`:r.tePin?"Encara no cobrat":"Sense PIN (no cobra premi al núvol)"],
+  ["Primera activitat",r.iniciTs?dataExacta(r.iniciTs):"—"],
+  ["Última activitat",r.ultimTs?dataExacta(r.ultimTs):"—"],
+  r.premiTs?["Data i hora del premi",dataExacta(r.premiTs)]:null
+ ].filter(Boolean);
+ obrePanell({titol:`Lab ${nomAssig(r.assig)} · ${r.nom}`,cos:`<div class="pila" style="gap:12px">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${avatar(r.nom,"g")}<div><div style="font-weight:700;font-size:16px">${esc(r.nom)}${r.id!=null?` <span class="xip">#${r.id}</span>`:""}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">${estPill}${r.premi?`<span class="pill ok">+${r.stars||10} ⭐</span>`:""}</div></div></div>
+  <div class="cp-det">${files.map(([k,v])=>`<div><span class="muted">${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>
+  <div><button type="button" class="btn petit" id="btLabObreFitxa">${ic("usuari")}Obre la fitxa completa</button></div>
+ </div>`});
+ const bt=$("#btLabObreFitxa");if(bt)bt.onclick=()=>{tancaPanell();obreFitxaNen(r.k)};
+}
+async function pintaMonLab(monId,tok){
+ const tp=$("#mtp-lab");if(!tp||tp.dataset.estat)return;
+ tp.dataset.estat="carrega";
+ tp.innerHTML=`<div class="pila"><div id="monLabKpis">${esqKpis(4)}</div>${card("monLabCard","c-12","diana",`🧪 Alumnes al laboratori · ${nomAssig(monId)}`,"Control acumulat de qui ha iniciat, està fent o ha completat el laboratori visual d'aquest món. Clica una fila per veure'n les dates exactes al segon.",`<div id="monLabCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}</div>`;
+ let raw=null,errSql=null;
+ try{await asseguraLogs();raw=await visualsDe()}
+ catch(e){errSql=e}
+ if(tok!==TOK||ELEM!==monId||!$("#monLabCos"))return;
+ tp.dataset.estat="fet";
+ const files=construeixFilesVisuals(raw,monId);
+ const nComp=files.filter(x=>x.estat==="completat").length,nCurs=files.filter(x=>x.estat==="en_curs").length,nPend=files.filter(x=>x.estat==="pendent").length,nPrem=files.filter(x=>x.premi).length;
+ const pcComp=files.length?Math.round(nComp*100/files.length):0;
+ $("#monLabKpis").innerHTML=filaKpis([
+  {t:"Completats",v:nComp,p:`<span class="pill ok">${pcComp}% dels actius</span>`},
+  {t:"En curs",v:nCurs,p:`<span class="pill neutre">1..${(labInfo(monId)||{total:6}).total-1} fitxes</span>`},
+  {t:"Pendents",v:nPend,p:`<span class="pill warn">encara no l'han obert</span>`},
+  {t:"Premis +10 ⭐",v:nPrem,p:`<span class="pill ok">${nPrem*10} ⭐ entregades</span>`}
+ ],4);
+ const cos=$("#monLabCos");cos.removeAttribute("aria-busy");
+ const avis=errSql==="falta"?avisSQL("supabase/bn_admin_visuals.sql","La funció bn_admin_visuals encara no està activada a Supabase. Es mostren les dades locals del registre del període."):errSql?avisErr(`No s'ha pogut carregar l'estat complet del núvol (${errSql}). Es mostren les dades del registre.`):"";
+ let filtre="tots";
+ const pintaTaula=()=>{
+  const sub=filtre==="tots"?files:files.filter(x=>x.estat===filtre);
+  const fBtn=(id,tit,n)=>`<button type="button" class="btn ${filtre===id?"":"sec "}petit" data-lab-f="${id}">${tit} (${n})</button>`;
+  const barra=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${fBtn("tots","Tots",files.length)}${fBtn("completat","Completats ✅",nComp)}${fBtn("en_curs","En curs ⏳",nCurs)}${fBtn("pendent","Pendents",nPend)}</div>`;
+  const cols=[
+   {k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(r.k)}" title="Obre la fitxa de ${esc(r.nom)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>${r.id!=null?`<span class="xip">#${r.id}</span>`:""}</span>`},
+   {k:"ordE",t:"Estat",cls:"nw",csv:r=>r.estat==="completat"?"Completat":r.estat==="en_curs"?"En curs":"Pendent",h:r=>r.estat==="completat"?`<span class="pill ok">Completat ✅</span>`:r.estat==="en_curs"?`<span class="pill neutre">En curs ⏳</span>`:`<span class="pill warn">Pendent</span>`},
+   {k:"explored",t:"Progrés",cls:"nw",num:true,csv:r=>`${r.explored}/${r.total}${r.mastered!=null?` (${r.mastered} reptes)`:""}`,h:r=>`${mini(r.explored,r.total,r.estat==="completat"?"ok":"",`${r.explored}/${r.total}`)}${r.mastered!=null&&r.mastered>0?` <span class="muted" style="font-size:11.5px">· ${pl(r.mastered,"repte","reptes")}</span>`:""}`},
+   {k:"premi",t:"Premi",cls:"nw",v:r=>r.premi?2:r.tePin?1:0,csv:r=>r.premi?`+${r.stars||10}`:r.tePin?"Pendent":"Sense PIN",h:r=>r.premi?`<span class="pill ok">+${r.stars||10} ⭐</span>`:r.tePin?`<span class="muted">—</span>`:`<span class="pill neutre">Sense PIN</span>`},
+   {k:"iniciTs",t:"Iniciat",cls:"nw",v:r=>r.iniciTs||0,csv:r=>r.iniciTs?dataExacta(r.iniciTs):"—",h:r=>r.iniciTs?`<span title="${esc(dataExacta(r.iniciTs))}">${esc(dataC(r.iniciTs))}</span>`:`<span class="muted">—</span>`},
+   {k:"refTs",t:"Completat / Últim",cls:"nw",v:r=>r.refTs||0,csv:r=>r.refTs?dataExacta(r.refTs):"—",h:r=>r.refTs?`<span title="${esc(dataExacta(r.refTs))}">${esc(dataC(r.refTs))}</span>`:`<span class="muted">—</span>`}
+  ];
+  const prev=TAULES.tMonLab;
+  cos.innerHTML=avis+barra+(sub.length?taula("tMonLab",cols,sub,{k:prev?prev.k:"ordE",desc:prev?prev.desc:true,alta:true,etiqueta:`Laboratori visual · ${nomAssig(monId)}`,csvNom:`bona-nota-lab-${monId}`,fila:r=>` class="clic" data-lab-nen="${esc(r.k)}" tabindex="0"`}):buit("diana","Cap alumne en aquest estat."));
+  cos.querySelectorAll("[data-lab-f]").forEach(b=>b.onclick=()=>{filtre=b.dataset.labF;pintaTaula()});
+  const obre=k=>{const r=files.find(x=>x.k===k);if(r)obrePanellLab(r)};
+  cos.onclick=e=>{const tr=e.target.closest("tr[data-lab-nen]");if(tr&&!e.target.closest("button,a,input,select"))obre(tr.dataset.labNen)};
+  cos.onkeydown=e=>{if(e.key==="Enter"){const tr=e.target.closest&&e.target.closest("tr[data-lab-nen]");if(tr&&e.target===tr)obre(tr.dataset.labNen)}};
+ };
+ pintaTaula();
 }
 async function pintaMonResum(monId,tok){
  const tp=$("#mtp-resum");if(!tp||tp.dataset.estat)return;
@@ -4629,6 +4802,28 @@ function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
   return Object.values(per).map(r=>{const pf=demoPerfil(r.k,r.primer),alta=pf&&pf.creat||r.primer,set=new Set(DEMO_L.filter(l=>{const t=Date.parse(l.ts);return clauNen(l)===r.k&&t>=alta&&t<alta+7*864e5}).map(l=>diaL(l.ts))),pts=Object.values(r.pts).filter(v=>v>0);
    return {k:r.k,nom:r.nom,alta,primer:r.primer,creat:pf?pf.creat:null,pin_ts:pf?pf.pin_ts:null,aspecte_ts:pf?pf.aspecte_ts:null,id:pf?pf.id:null,mons:pts.length,punts:pts.reduce((s,v)=>s+v,0),dies7:set.size,amagat:!!(demoEstat(r.k)&1),te_pin:!!pf}})
    .filter(r=>r.alta>=des).sort((a,b)=>b.alta-a.alta)}
+ if(f==="bn_admin_visuals"){const ara=Date.now(),h=36e5,d=864e5;
+  return {
+   premis:[
+    {k:"àlex",nom:"Àlex",id:2,reward_key:"visual_clima",stars:10,ts:ara-6*h},
+    {k:"laia",nom:"Laia",id:4,reward_key:"visual_enters",stars:10,ts:ara-2*d}
+   ],
+   progres:[
+    {k:"àlex",nom:"Àlex",id:2,assig:"socials",visuals:{clima:{world:"clima",explored:6,total:6,mastered:5,completed:true,rewardClaimed:true,stars:10,firstTs:ara-8*h,lastTs:ara-6*h,completedTs:ara-6*h}},ts:ara-6*h},
+    {k:"àlex",nom:"Àlex",id:2,assig:"geosfera",visuals:{geosfera:{world:"geosfera",explored:3,total:6,mastered:1,completed:false,rewardClaimed:false,firstTs:ara-26*h,lastTs:ara-18*h}},ts:ara-18*h},
+    {k:"pau",nom:"Pau",id:3,assig:"socials",visuals:{clima:{world:"clima",explored:4,total:6,mastered:2,completed:false,rewardClaimed:false,firstTs:ara-14*h,lastTs:ara-3*h}},ts:ara-3*h},
+    {k:"laia",nom:"Laia",id:4,assig:"enters",visuals:{enters:{world:"enters",explored:6,total:6,mastered:6,completed:true,rewardClaimed:true,stars:10,firstTs:ara-3*d,lastTs:ara-2*d,completedTs:ara-2*d}},ts:ara-2*d}
+   ],
+   logs:[
+    {k:"hugo",nom:"Hugo",id:null,assig:"socials",reward_key:"visual_clima",explored:2,total:6,mastered:0,completed:false,premi:false,stars:null,inici_ts:ara-5*h,ultim_ts:ara-4*h}
+   ],
+   actius:[
+    {k:"àlex",nom:"Àlex",id:2,assig:"socials",te_pin:true},{k:"pau",nom:"Pau",id:3,assig:"socials",te_pin:true},
+    {k:"nora",nom:"Nora",id:5,assig:"socials",te_pin:true},{k:"hugo",nom:"Hugo",id:null,assig:"socials",te_pin:false},
+    {k:"àlex",nom:"Àlex",id:2,assig:"geosfera",te_pin:true},{k:"laia",nom:"Laia",id:4,assig:"geosfera",te_pin:true},
+    {k:"laia",nom:"Laia",id:4,assig:"enters",te_pin:true},{k:"pau",nom:"Pau",id:3,assig:"enters",te_pin:true}
+   ]
+  }}
  throw "demo"}
 // demo del Benestar: els mateixos nens que la resta de la demo (la Nora respon de pressa, l'Hugo fa dies que no ve), un cas de cada color,
 // una vigília en blau (la Jana, a Comarques), un nen amb dos aparells (en Pau) i una data d'examen posada (Mates, d'aquí a 2 dies)

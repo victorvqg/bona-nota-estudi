@@ -1639,12 +1639,14 @@
 
     function notifyParentProgress() {
       const exploredCount = appState.explored.filter(Boolean).length;
+      const masteredCount = appState.mastered.filter(Boolean).length;
       const total = 6;
       try {
         window.parent.postMessage({
           type: 'BONANOTA_VISUAL_PROGRESS',
           world: WORLD_ID,
           explored: exploredCount,
+          mastered: masteredCount,
           total: total,
           completed: Boolean(exploredCount >= total),
           score: null

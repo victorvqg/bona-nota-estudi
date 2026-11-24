@@ -455,24 +455,42 @@
       if (res.already_claimed === true) {
         if (prof && typeof prof === 'object') {
           prof.visuals = prof.visuals || {};
-          prof.visuals[payload.world] = {
+          const prevV = prof.visuals[payload.world] && typeof prof.visuals[payload.world] === 'object' ? prof.visuals[payload.world] : {};
+          const tot = Number(CFG && CFG.total) || Number(prevV.total) || 6;
+          prof.visuals[payload.world] = Object.assign({}, prevV, {
+            world: payload.world,
+            explored: Math.max(tot, Number(prevV.explored) || 0),
+            total: tot,
+            completed: true,
             rewardClaimed: true,
             stars: payload.stars,
+            firstTs: prevV.firstTs || Date.now(),
+            lastTs: Date.now(),
+            completedTs: prevV.completedTs || Date.now(),
             ts: Date.now()
-          };
+          });
         }
         return { claimed: true, toast: false, stars: payload.stars };
       }
 
       if (res.awarded === true) {
         const awardedStars = Number(res.stars) || payload.stars || 10;
+        const tot = Number(CFG && CFG.total) || 6;
         if (prof && typeof prof === 'object') {
           prof.visuals = prof.visuals || {};
-          prof.visuals[payload.world] = {
+          const prevV = prof.visuals[payload.world] && typeof prof.visuals[payload.world] === 'object' ? prof.visuals[payload.world] : {};
+          prof.visuals[payload.world] = Object.assign({}, prevV, {
+            world: payload.world,
+            explored: Math.max(tot, Number(prevV.explored) || 0),
+            total: tot,
+            completed: true,
             rewardClaimed: true,
             stars: awardedStars,
+            firstTs: prevV.firstTs || Date.now(),
+            lastTs: Date.now(),
+            completedTs: prevV.completedTs || Date.now(),
             ts: Date.now()
-          };
+          });
         }
         if (typeof global.suma === 'function') {
           global.suma(awardedStars);
@@ -480,6 +498,10 @@
         if (typeof global.registra === 'function') {
           global.registra('joc', {
             joc: payload.rewardKey,
+            pas: 'premi',
+            explored: tot,
+            total: tot,
+            completed: true,
             punts: prof ? prof.punts : 0,
             stars: awardedStars
           });
@@ -747,22 +769,27 @@
         const total = Number(d.total) || CFG.total || 6;
         const rawExplored = Number(d.explored);
         const explored = Math.max(0, Math.min(total, Number.isFinite(rawExplored) ? rawExplored : 0));
-        const completed = d.completed === true;
+        const rawMastered = d.mastered != null ? Number(d.mastered) : null;
+        const mastered = rawMastered !== null && Number.isFinite(rawMastered) ? Math.max(0, Math.min(total, rawMastered)) : null;
+        const completed = d.completed === true || explored >= total;
         const rewardClaimed = isRewardClaimed(uid, CFG.world);
-        const prevExp = lastExploredByWorld[uid + ':' + CFG.world];
+        const wk = uid + ':' + CFG.world;
+        const prevExp = lastExploredByWorld[wk];
         if (typeof prevExp === 'number' && explored > prevExp) {
           playBonaNotaSfx(completed ? 'super' : 'ok');
         }
-        lastExploredByWorld[uid + ':' + CFG.world] = explored;
+        lastExploredByWorld[wk] = explored;
 
+        const nowTs = Date.now();
         const st = {
           uid: uid,
           world: CFG.world,
           explored: explored,
           total: total,
+          mastered: mastered,
           completed: completed,
           rewardClaimed: rewardClaimed,
-          updatedAt: Date.now()
+          updatedAt: nowTs
         };
 
         try {
@@ -775,17 +802,65 @@
               uid: uid,
               explored: explored,
               total: total,
+              mastered: mastered,
               completed: completed,
-              updatedAt: st.updatedAt
+              updatedAt: nowTs
             }));
           }
         } catch (err) {}
+
+        // Telemetria incremental al perfil (bn_priv.progres) i al registre (bn_log) — també sense PIN
+        const isDemoTast = typeof CFG.isDemoOrTast === 'function' ? Boolean(CFG.isDemoOrTast()) : false;
+        if (!isDemoTast && explored > 0) {
+          const prof = getActiveProfile();
+          let syncChanged = false;
+          if (prof && typeof prof === 'object' && prof.nom) {
+            prof.visuals = prof.visuals || {};
+            const prevV = prof.visuals[CFG.world] && typeof prof.visuals[CFG.world] === 'object' ? prof.visuals[CFG.world] : {};
+            const nextExp = Math.max(explored, Number(prevV.explored) || 0);
+            const nextMast = mastered !== null ? Math.max(mastered, Number(prevV.mastered) || 0) : (prevV.mastered != null ? prevV.mastered : null);
+            const nextDone = Boolean(completed || prevV.completed || nextExp >= total);
+            if (nextExp !== (Number(prevV.explored) || 0) || nextMast !== (prevV.mastered != null ? prevV.mastered : null) || nextDone !== Boolean(prevV.completed)) {
+              syncChanged = true;
+            }
+            prof.visuals[CFG.world] = Object.assign({}, prevV, {
+              world: CFG.world,
+              explored: nextExp,
+              total: total,
+              mastered: nextMast,
+              completed: nextDone,
+              rewardClaimed: Boolean(prevV.rewardClaimed || rewardClaimed),
+              firstTs: prevV.firstTs || nowTs,
+              lastTs: nowTs,
+              completedTs: prevV.completedTs || (nextDone ? nowTs : null)
+            });
+            if (syncChanged && typeof global.desa === 'function') {
+              try { global.desa(); } catch (e) {}
+            }
+          }
+          const logKey = wk + ':' + explored + ':' + (mastered === null ? '' : mastered);
+          if (syncChanged || (typeof prevExp === 'number' && explored > prevExp)) {
+            if (!lastExploredByWorld['log:' + logKey] && typeof global.registra === 'function' && !isSafeSimulationMode()) {
+              lastExploredByWorld['log:' + logKey] = true;
+              try {
+                global.registra('joc', {
+                  joc: 'visual_' + CFG.world,
+                  pas: 'progres',
+                  explored: explored,
+                  total: total,
+                  mastered: mastered,
+                  completed: completed,
+                  punts: prof ? prof.punts : 0
+                });
+              } catch (e) {}
+            }
+          }
+        }
 
         updateBadge(st);
         console.log('[PROVA LOCAL] Progrés ' + CFG.world + ' (' + uid + '):', d);
 
         if (completed === true) {
-          // TODO: Integrar recompensa d'estrelles a Supabase quan es validi la prova
           tryClaimReward(st);
         }
       }
