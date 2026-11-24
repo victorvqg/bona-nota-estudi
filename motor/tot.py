@@ -29,7 +29,7 @@ js = r"""
 const fs=require('fs');const out={};
 for(const f of process.argv.slice(1)){const src=fs.readFileSync(f,'utf8');
  const g={document:{getElementById:()=>({})},window:{},location:{search:''}};
- const r=new Function('document','window','location',src+';return {n:T.length,j:ASSIG.jocs.length,jocs:ASSIG.jocs.map(j=>j.id),clau:ASSIG.clau||("bn_"+ASSIG.id),id:ASSIG.id,visual:ASSIG.visual?(ASSIG.visual.total||6):0}')(g.document,g.window,g.location);
+ const r=new Function('document','window','location',src+';return {n:T.length,j:ASSIG.jocs.length,jocs:ASSIG.jocs.map(j=>j.id),clau:ASSIG.clau||("bn_"+ASSIG.id),id:ASSIG.id,visual:ASSIG.visual?{world:ASSIG.visual.world||ASSIG.id,total:ASSIG.visual.total||6}:null}')(g.document,g.window,g.location);
  out[f]=r}
 console.log(JSON.stringify(out))"""
 fitxers = [str(d / "dades" / f"{m['dades']}.js") for m in mons]
@@ -60,8 +60,10 @@ for m in reversed(mons):
     es = m.get("llengua") == "es"
     ilu = d / "ilu" / f"{m['dades']}.svg"   # il·lustració pròpia del món (opcional; si no n'hi ha, es mostra l'emoji)
     dibuix = " ".join(ilu.read_text().split()) if ilu.exists() else m['ic']
-    lab_n = i.get("visual") or 0
-    lab_attrs = f' data-lab-world="{e(i["id"])}" data-lab-total="{lab_n}"' if lab_n else ""
+    lab = i.get("visual") or None
+    lab_n = lab["total"] if isinstance(lab, dict) else (lab or 0)
+    lab_w = lab["world"] if isinstance(lab, dict) else i["id"]
+    lab_attrs = f' data-lab-world="{e(lab_w)}" data-lab-total="{lab_n}"' if lab_n else ""
     lab_pill = '<span class="lab-pill">🧪 LAB · +10 ⭐</span>' if lab_n else ""
     lab_xip = f'<span class="xip-lab">🧪 Lab 0/{lab_n}</span>' if lab_n else ""
     targetes.append(f''' <a class="as" href="{e(m['carpeta'])}/" data-clau="{e(i['clau'])}" data-id="{e(i['id'])}" data-ic="{e(m['ic'])}" data-temes="{i['n']}"{lab_attrs} style="--c1:{c1};--c2:{c2};--c3:{c3}">
