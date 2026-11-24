@@ -862,6 +862,7 @@ const fmtM=m=>m==null?"—":m>=60?`${Math.floor(m/60)} h ${Math.round(m%60)} min
 const pcVal=v=>v==null?"—":v+"%";
 const DS=["dg","dl","dt","dc","dj","dv","ds"],MS=["gen","febr","març","abr","maig","juny","jul","ag","set","oct","nov","des"];
 const dataC=ts=>{const d=new Date(ts);return `${DS[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]} · ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`};
+const dataExacta=ts=>{const d=new Date(ts),p2=n=>String(n).padStart(2,"0");return `${DS[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]} ${d.getFullYear()} · ${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`};
 const diaC=ts=>{const d=new Date(ts);return `${DS[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]}`};
 const hora=ts=>new Date(ts).toLocaleTimeString("ca-ES",{hour:"2-digit",minute:"2-digit"});
 const diaL=ts=>{const d=new Date(ts);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
@@ -1003,7 +1004,7 @@ async function carregaIds(){
 }
 let FAPR=null,ALTES_CURS=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null,RK_VISTA="total",RK_MON="socials";
 const AUTO_MS=60000;let NOV_BASE=null,NOV_ULT=0,NOV_CURS=false;
-function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_MAP={};ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
 function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
 async function carrega(){
  netejaCaches();
@@ -1468,7 +1469,7 @@ function detall(k,manté){k=String(k||"").trim().toLowerCase();
  ],4);
  c.innerHTML=`<div class="fitxa-bar"><button class="btn sec petit" type="button" id="torna">${ic("enrere")} Tots els nens</button>
   <div class="fitxa-sel"><label for="selFitxaNen">${ic("nens")}<span>Canvia de nen:</span></label><select id="selFitxaNen" aria-label="Canvia de nen">${opcNens}</select></div></div>
- <section class="targeta perfil">${avatar(n.nom,"g")}<div class="perfil-info"><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}${pillNivell(estMax)}<span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin">${pillPin(null)}</span><span id="xAmagat"></span><span id="xLabs">${renderLabsNen(labsDeNen(ls))}</span></div></div>
+ <section class="targeta perfil">${avatar(n.nom,"g")}<div class="perfil-info"><h2>${esc(n.nom)}</h2><div class="xips">${idDe(k)}${pillNivell(estMax)}<span id="xAlta">${ALTES_MAP[k]&&ALTES_MAP[k].alta?`<span class="xip" title="Data i hora exacta d'alta al sistema Bona Nota">${ic("rellotge")}Alta: <b>${esc(dataExacta(ALTES_MAP[k].alta))}</b></span>`:""}</span><span class="xip">${ic("sessions")}${pl(n.ses.size,"sessió","sessions")}</span><span class="xip">${ic("rellotge")}${fmtT(n.temps)}</span><span class="xip">${ic("diana")}${n.tests.length} tests · mitjana ${n.tests.length?mitj(n.tests)+"%":"—"}</span><span id="xPin">${pillPin(null)}</span><span id="xAmagat"></span><span id="xLabs">${renderLabsNen(labsDeNen(ls))}</span></div></div>
   <div class="perfil-acc" role="group" aria-label="Descarrega informes i full d'examen"><button class="btn sec petit" type="button" id="btFullExamen" title="Descarrega un full de repàs d'1 pàgina A4 per a l'alumne abans de l'examen">${ic("diana")}<span>Full d'examen (1 pàg.)</span></button><button class="btn petit" type="button" id="btInfHtml" title="Descarrega un informe complet visual llest per llegir o imprimir com a PDF">${ic("baixar")}<span>Informe HTML / PDF</span></button><button class="btn sec petit" type="button" id="btInfMd" title="Descarrega l'informe complet en format Markdown (.md)">${ic("baixar")}<span>Informe .md</span></button></div></section>
  <div class="pestanyes" role="tablist" aria-label="Seccions de la fitxa">
   <button role="tab" type="button" id="tb-resum" aria-controls="tp-resum" aria-selected="true">Resum i estrelles</button>
@@ -2277,7 +2278,7 @@ let NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","
 async function carregaRegles(){if(REGLES)return REGLES;try{const r=await fetch("regles.json",{cache:"no-cache"});if(r.ok){REGLES=await r.json();if(Array.isArray(REGLES.NIVELLS)&&REGLES.NIVELLS.length){NIVELLS=REGLES.NIVELLS;XNIV=NIVELLS.map(x=>x[1])}if(typeof REGLES.APROVA==="number")APROVAT=REGLES.APROVA}}catch(e){REGLES={NIVELLS,APROVA:APROVAT}}return REGLES}
 function nivellDe(p){p=Math.max(0,+p||0);let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];return {n:i+1,nom,ic,min,seg:seg?seg[0]:null,segNom:seg?seg[1]:null,falten:seg?seg[0]-p:0}}
 const pillNivell=p=>{const nv=nivellDe(p);return `<span class="pill neutre niv-p" title="Nivell ${nv.n} · ${esc(nv.nom)}${nv.seg!=null?` (${p} ⭐ · en falten ${nv.falten} per a ${esc(nv.segNom)})`:` (${p} ⭐ · nivell màxim)`}">${esc(nv.ic)} ${nv.n} · ${esc(nv.nom)}</span>`};
-let NUV=null,ALTES=null; // la resposta de la fitxa oberta {k,p} i la de les altes {p,prom}
+let NUV=null,ALTES=null,ALTES_MAP={}; // la resposta de la fitxa oberta {k,p}, les altes {p,prom} i el mapa k → detall d'alta
 async function rpcF(f,extra){if(DEMO)return demoFitxaRpc(f,extra||{});const r=await fetch(API.replace("bn_admin_logs",f),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},
  body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,...(extra||{})})});if(r.status===404)throw "falta";if(!r.ok)throw r.status;return r.json()}
 const nN=v=>{const x=typeof v==="number"?v:typeof v==="string"&&v.trim()!==""?+v:NaN;return Number.isFinite(x)?x:null};
@@ -2302,6 +2303,7 @@ async function pintaNuvol(n){const el=$("#nuv");if(!el||el.dataset.estat)return;
   x.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_fitxa.sql","La fitxa al núvol encara no està activada a la base de dades. La resta de la fitxa funciona igual."):avisErr(`No s'ha pogut carregar el que hi ha al núvol (${e&&e.message||e}).`);return}
  const x=$("#nuv");if(FITXA!==n.k||!x)return;x.dataset.estat="fet";x.removeAttribute("aria-busy");
  const xl=$("#xLabs");if(xl){const ls=LOGS.filter(l=>clauNen(l)===n.k);xl.innerHTML=renderLabsNen(labsDeNen(ls,d))}
+ const xa=$("#xAlta");if(xa&&!xa.textContent.trim()){const cr=nN(d&&d.perfil&&d.perfil.creat);if(cr&&cr>0)xa.innerHTML=`<span class="xip" title="Quan va crear el perfil amb el PIN">${ic("rellotge")}Alta: <b>${esc(dataExacta(cr))}</b></span>`}
  try{x.innerHTML=htmlNuvol(d);if(NUV_PL)NUV_PL.lliga(x)}
  catch(e){console.error(e);x.innerHTML=avisErr(`No s'ha pogut dibuixar el que hi ha al núvol: ${e&&e.message||e}`)}}
 let NUV_PL=null;
@@ -2309,7 +2311,7 @@ function htmlNuvol(d){d=oB(d);NUV_PL=null;const pf=d.perfil&&typeof d.perfil==="
  const xi=(t,v,tt)=>`<span class="xip"${tt?` title="${esc(tt)}"`:""}>${t}${v!=null?` <b>${v}</b>`:""}</span>`;
  const id=nN(pf&&pf.id),pv=nN(pf&&pf.pin_v),estMax=mons.length?Math.max(0,...mons.map(m=>nN(m.punts)||0)):null;
  const cap=`<div class="nv-perfil">${pf?[id!=null?xi(`#${id}`,null,"Número d'identificació"):"",pv===2?`<span class="pill ok">${ic("escut")}PIN nou</span>`:`<span class="pill warn" title="PIN antic de 4 números">PIN antic</span>`,
-   xi("Alta:",msS(pf.creat)||"d'abans","Quan va crear el perfil amb el PIN (els perfils d'abans de la 2.12.0 no ho tenen)"),msS(pf.pin_ts)?xi("PIN:",msS(pf.pin_ts),"Quan va posar o canviar el PIN · "+msL(pf.pin_ts)):"",
+   xi("Alta:",nN(pf.creat)>0?dataExacta(nN(pf.creat)):"d'abans","Quan va crear el perfil amb el PIN (els perfils d'abans de la 2.12.0 no ho tenen)"),msS(pf.pin_ts)?xi("PIN:",msS(pf.pin_ts),"Quan va posar o canviar el PIN · "+msL(pf.pin_ts)):"",
    xi("Perfil triat:",msS(pf.aspecte_ts)||"encara no","Quan va triar el perfil arcade a /perfil/")].join(""):`<span class="pill neutre">Sense PIN</span>`}${estMax!=null?pillNivell(estMax):""}${d.amagat===true?`<span class="pill warn">${ic("ullno")}Amagat del rànquing</span>`:""}</div>`;
  if(!mons.length)return cap+(pf?buit("copies","Té PIN, però encara no ha desat res al núvol.","Quan jugui amb el PIN posat, aquí sortirà el que porta a cada món."):buit("clau","No té PIN: només hi ha el registre (pestanyes anteriors).","Sense PIN, el progrés es queda només al seu dispositiu."));
  const as=mons.map(m=>String(m.assig??"?")),PL=NUV_PL=plegables("bn_admin_nuv",as);
@@ -2367,6 +2369,26 @@ function monNuvol(m,a,i,PL){
 const cartaAltes=(col="")=>{const titolP={avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[PERIODE[DIES]||"7d"]||"";
  return card("altes",col,"usuari","Nens nous","La data d'alta és el primer registre o el dia que va crear el perfil amb PIN, el que sigui abans.",`<div id="altesCos" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`,`<span class="pill neutre" id="altesSub">${esc(titolP)}</span>`)};
 function altesDe(p){if(!ALTES||ALTES.p!==p)ALTES={p,prom:rpcF("bn_admin_altes",{p_periode:p})};return ALTES.prom}
+function obrePanellAlta(r){
+ if(!r)return;
+ const origen=r.creat&&r.primer?(r.creat<=r.primer?"Creació del perfil amb PIN":"Primer registre d'activitat"):r.creat?"Creació del perfil amb PIN":r.primer?"Primer registre d'activitat":null;
+ const files=[
+  ["Alta al sistema Bona Nota",r.alta?dataExacta(r.alta):"—"],
+  origen?["Origen de l'alta",origen]:null,
+  ["Perfil amb PIN creat",r.creat?dataExacta(r.creat):(r.tePin?"D'abans (sense data)":"Sense PIN")],
+  ["Primer registre d'activitat",r.primer?dataExacta(r.primer):"Encara no ha jugat"],
+  r.pin?["Últim canvi de PIN",dataExacta(r.pin)]:null,
+  r.aspecte?["Perfil arcade triat",dataExacta(r.aspecte)]:null,
+  ["Activitat",`${r.punts} ⭐ · ${pl(r.mons,"món","mons")} · 1a setm.: ${r.primer==null?"—":`${r.dies7} de 7 dies`}`]
+ ].filter(Boolean);
+ obrePanell({titol:`Alta de ${r.nom}`,cos:`<div class="pila" style="gap:12px">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${avatar(r.nom,"g")}<div><div style="font-weight:700;font-size:16px">${esc(r.nom)}${r.id!=null?` <span class="xip">#${r.id}</span>`:""}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">${r.tePin?pillEstat("be","Té PIN"):`<span class="pill neutre">Sense PIN</span>`}${r.amagat?`<span class="pill warn">${ic("ullno")}Amagat del rànquing</span>`:""}</div></div></div>
+  <div class="kpi" style="margin:0"><div class="kpi-t">Data i hora exacta d'alta</div><div class="kpi-v" style="font-size:17px">${r.alta?esc(dataExacta(r.alta)):"—"}</div></div>
+  <div class="cp-det">${files.map(([k,v])=>`<div><span class="muted">${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>
+  ${r.teFitxa?`<div><button type="button" class="btn petit" id="btAltaObreFitxa">${ic("usuari")}Obre la fitxa completa</button></div>`:""}
+ </div>`});
+ const bt=$("#btAltaObreFitxa");if(bt)bt.onclick=()=>{tancaPanell();obreFitxaNen(r.k)};
+}
 async function pintaAltes(){const p=PERIODE[DIES]||"7d";if(!$("#altesCos"))return;let L;
  const viu=()=>{const e=$("#altesCos");return e&&(PERIODE[DIES]||"7d")===p?e:null};
  const sub=$("#altesSub");if(sub)sub.textContent={avui:"d'avui","7d":"dels últims 7 dies","30d":"dels últims 30 dies",curs:"de tot el curs"}[p]||"";
@@ -2377,18 +2399,22 @@ async function pintaAltes(){const p=PERIODE[DIES]||"7d";if(!$("#altesCos"))retur
   const hi=LOGS_DIES===DIES?new Set(LOGS.map(clauNen)):null;
   const rows=aR(L).filter(r=>r&&typeof r==="object"&&r.k!=null).map(r=>{const k=String(r.k).trim().toLowerCase(),nom=String(r.nom??r.k);if(k&&k!=="_alta"&&!NOMS_TOTS[k])NOMS_TOTS[k]=nom;
    const primer=nN(r.primer),teFitxa=hi?hi.has(k):primer!=null;
-   return {k,nom,alta:nN(r.alta),primer,teFitxa,pin:nN(r.pin_ts),id:nN(r.id),mons:nN(r.mons)||0,punts:nN(r.punts)||0,dies7:nN(r.dies7)||0,amagat:r.amagat===true,tePin:r.te_pin===true}}).filter(r=>!k0||r.k===k0);
+   const obj={k,nom,alta:nN(r.alta),creat:nN(r.creat),primer,teFitxa,pin:nN(r.pin_ts),aspecte:nN(r.aspecte_ts),id:nN(r.id),mons:nN(r.mons)||0,punts:nN(r.punts)||0,dies7:nN(r.dies7)||0,amagat:r.amagat===true,tePin:r.te_pin===true};
+   ALTES_MAP[k]=obj;return obj}).filter(r=>!k0||r.k===k0);
   if(!rows.length){el.innerHTML=buit("usuari",k0?"Aquest nen no és nou en aquest període.":"Cap nen nou en aquest període.",k0?"":"Prova amb un període més llarg (30 dies o Curs).");return}
-  const dia=v=>v?`<span title="${esc(dataC(v))}">${esc(diaC(v))}</span>`:`<span class="muted">—</span>`;
+  const dia=v=>v?`<span title="${esc(dataExacta(v))}">${esc(dataC(v))}</span>`:`<span class="muted">—</span>`;
   const cols=[
    {k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c">${r.teFitxa?`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}" title="Obre la fitxa de ${esc(r.nom)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`:`<span class="nen">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></span>`}${r.id!=null?`<span class="xip">#${r.id}</span>`:""}${r.amagat?`<span class="pill warn" title="Amagat del rànquing">${ic("ullno")}</span>`:""}</span>`},
    {k:"alta",t:"Alta",cls:"nw",h:r=>dia(r.alta)},
    {k:"primer",t:"1r registre",cls:"nw",h:r=>r.primer?dia(r.primer):`<span class="pill warn">Encara no ha jugat</span>`},
-   {k:"pin",t:"PIN",cls:"nw",v:r=>r.tePin?1:0,h:r=>r.tePin?pillEstat("be",r.pin?dataC(r.pin):"Té PIN"):`<span class="pill neutre">Sense PIN</span>`},
+   {k:"pin",t:"PIN",cls:"nw",v:r=>r.tePin?1:0,h:r=>r.tePin?pillEstat("be",r.pin?dataExacta(r.pin):"Té PIN"):`<span class="pill neutre">Sense PIN</span>`},
    {k:"punts",t:"Estrelles",num:true},
    {k:"dies7",t:"1a setm.",num:true,h:r=>r.primer==null?`<span class="muted">—</span>`:`${r.dies7} de 7`}];
   const prev=TAULES.tAltes;
-  el.innerHTML=taula("tAltes",cols,rows,{k:prev?prev.k:"alta",desc:prev?prev.desc:true,alta:true,etiqueta:"Nens nous",csvNom:"bona-nota-altes",fila:r=>r.teFitxa?` class="clic" data-nen="${esc(r.k)}" tabindex="0"`:""})}
+  el.innerHTML=taula("tAltes",cols,rows,{k:prev?prev.k:"alta",desc:prev?prev.desc:true,alta:true,etiqueta:"Nens nous",csvNom:"bona-nota-altes",fila:r=>` class="clic" data-alta-nen="${esc(r.k)}" tabindex="0"`});
+  const obre=k=>{const r=rows.find(x=>x.k===k);if(r)obrePanellAlta(r)};
+  el.onclick=e=>{const tr=e.target.closest("tr[data-alta-nen]");if(tr&&!e.target.closest("button,a,input,select"))obre(tr.dataset.altaNen)};
+  el.onkeydown=e=>{if(e.key==="Enter"){const tr=e.target.closest&&e.target.closest("tr[data-alta-nen]");if(tr&&e.target===tr)obre(tr.dataset.altaNen)}}}
  catch(e){console.error(e);el.innerHTML=avisErr(`Les altes no s'han pogut dibuixar: ${e&&e.message||e}`)}}
 // ---- Resum compacte d'estrelles per origen del període a Inici i evolució diària a Sessions → Activitat (bn_admin_fonts_dia) ----
 async function pintaFontsDiaInici(tok){const el=$("#fontsDiaCos");if(!el)return;let d;
