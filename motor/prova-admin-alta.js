@@ -319,8 +319,8 @@ function dadesAdmin() {
   await dm.p.click('#tMons tr[data-mon="socials"] td:first-child');
   await dm.p.waitForSelector("#selFitxaMon");
   const tabsSoc = await dm.p.$$eval('#contingut [role="tablist"] [role="tab"]', bs => bs.map(b => b.id.replace(/^mtb-/, "")));
-  ok(dm.p.url().includes("v=mons") && dm.p.url().includes("id=socials") && tabsSoc.join(",") === "resum,domini,obertes",
-   `Fitxa de Socials té les 3 pestanyes sense Taller (${tabsSoc.join(",")})`);
+  ok(dm.p.url().includes("v=mons") && dm.p.url().includes("id=socials") && tabsSoc.join(",") === "resum,domini,obertes,lab",
+   `Fitxa de Socials té les pestanyes amb Lab visual i sense Taller (${tabsSoc.join(",")})`);
   await dm.p.click("#mtb-obertes");
   await dm.p.waitForSelector("#tMonObe tbody tr.clic");
   await dm.p.click("#tMonObe tbody tr.clic td:first-child");
