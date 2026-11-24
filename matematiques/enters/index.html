@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="558e4f4c71",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="dbd1c9b2e9",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -333,6 +333,7 @@ body.bf-obert{overflow:hidden;touch-action:none}
 .d-sub{position:absolute;left:4%;right:4%;top:20%;text-align:center;font-weight:900;color:#ffedd5;font-size:clamp(14px,2.5vw,17px);opacity:0;z-index:7}
 .d-med{position:absolute;left:50%;top:38%;width:clamp(108px,19vh,144px);height:clamp(108px,19vh,144px);transform:translate(-50%,-50%);z-index:7;visibility:hidden}
 .d-med svg{width:100%;height:100%;display:block}
+.d-halo{position:absolute;left:50%;top:38%;width:clamp(190px,34vh,260px);height:clamp(190px,34vh,260px);transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#fde04788 0%,#f59e0b44 42%,#f59e0b00 72%);opacity:0;z-index:6;pointer-events:none}
 .d-vic{position:absolute;left:0;right:0;top:52%;text-align:center;font-family:'Press Start 2P',monospace;font-size:clamp(10px,2.4vw,13px);color:#fef3c7;text-shadow:2px 2px 0 #000;z-index:7}
 .d-tally{position:absolute;left:0;right:0;top:67%;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:7}
 .d-tally small{font-family:'Press Start 2P',monospace;font-size:9px;color:#fed7aa;text-shadow:1px 1px 0 #000}
@@ -1497,7 +1498,7 @@ function audio(){if(!AC){AC=bnSo.context();if(!AC)throw new Error("sense Web Aud
   REV=AC.createConvolver();REV.buffer=impuls(1.8,3);REV.connect(guany(.9)).connect(MG);
   ECO=AC.createDelay(1);ECO.delayTime.value=.21;const fb=guany(.3),lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2600;ECO.connect(lp).connect(fb).connect(ECO);lp.connect(guany(.5)).connect(MG);
   SB=guany(1);SB.connect(MG);SB.connect(guany(.22)).connect(REV);SB.connect(guany(.12)).connect(ECO);
-  BG=guany(1);BG.connect(SB);
+  BG=guany(1);BG.connect(guany(.92)).connect(MG);BG.connect(guany(.26)).connect(REV);BG.connect(guany(.1)).connect(ECO);
   MB=guany(0);MB.connect(MG);MB.connect(guany(.35)).connect(REV);MB.connect(guany(.2)).connect(ECO);}
  if(AC.state!=="running"&&AC.state!=="closed")try{AC.resume().catch(()=>{})}catch(e){}return AC}
 function pintaSo(){const b=document.getElementById("so"),r=document.getElementById("volum"),n=document.getElementById("volN"),m=document.getElementById("soMenu");if(b)b.innerHTML=icSo(VOL);if(r)r.value=VOL;if(n)n.textContent=VOL;
@@ -1511,23 +1512,31 @@ addEventListener("keydown",e=>{if(e.key==="Escape"){const p=document.getElementB
 addEventListener("scroll",()=>{const h=document.querySelector("header");if(h)h.classList.toggle("petit",(window.scrollY||0)>60)},{passive:true});
 function posaVol(v){VOL=v;if(v)VOLant=v;try{localStorage.setItem("bn_vol",v)}catch(e){}bnSo.sessio(v>0);if(MG)MG.gain.setTargetAtTime(GVOL[v],AC.currentTime,.05);pintaSo();if(v){audio();so("clic")}}
 function canviaSo(){posaVol(VOL?0:(VOLant||3))}
-// una veu: oscil·lador amb envolupant (atac ràpid, caiguda exponencial), filtre opcional, lliscament de to i vibrato
-function veu(f,t0,d,o={}){const{tipus="triangle",vol=.12,atac=.006,dest=SB,filtre=0,q=1,cap=0,vib=0,det=0}=o;
+// una veu: oscil·lador amb envolupant (caiguda exponencial o ADSR amb sus/rel), filtre opcional, lliscament de to i vibrato
+function veu(f,t0,d,o={}){const{tipus="triangle",vol=.12,atac=.006,dest=SB,filtre=0,filtreIni=0,q=1,cap=0,vib=0,det=0,sus=0,rel=.22}=o;
  const t=AC.currentTime+t0,os=AC.createOscillator(),g=AC.createGain();os.type=tipus;os.frequency.setValueAtTime(f,t);if(det)os.detune.value=det;
  if(cap)os.frequency.exponentialRampToValueAtTime(Math.max(20,cap),t+d);
- if(vib){const l=AC.createOscillator(),lg=guany(vib);l.frequency.value=5.5;l.connect(lg).connect(os.frequency);l.start(t+Math.min(.15,d/3));l.stop(t+d+.05)}
- g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+atac);g.gain.setTargetAtTime(0,t+atac,d/4.5);
- let sortida=g;if(filtre){const fl=AC.createBiquadFilter();fl.type="lowpass";fl.Q.value=q;fl.frequency.setValueAtTime(filtre*3,t);fl.frequency.exponentialRampToValueAtTime(filtre,t+Math.min(.25,d));g.connect(fl);sortida=fl}
- os.connect(g);sortida.connect(dest);os.start(t);os.stop(t+d+.3)}
+ if(vib){const l=AC.createOscillator(),lg=guany(vib);l.frequency.value=5.2;l.connect(lg).connect(os.frequency);l.start(t+Math.min(.22,d/2.5));l.stop(t+d+rel+.1)}
+ g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+atac);
+ if(sus>0){const tS=Math.min(t+d,t+atac+Math.min(.09,d*.35));g.gain.linearRampToValueAtTime(vol*sus,tS);g.gain.setValueAtTime(vol*sus,Math.max(tS,t+d));g.gain.exponentialRampToValueAtTime(.0001,t+d+rel)}
+ else g.gain.setTargetAtTime(0,t+atac,d/4.5);
+ let sortida=g;if(filtre){const fl=AC.createBiquadFilter();fl.type="lowpass";fl.Q.value=q;fl.frequency.setValueAtTime(filtreIni||filtre*3,t);fl.frequency.exponentialRampToValueAtTime(filtre,t+Math.min(.25,d));g.connect(fl);sortida=fl}
+ os.connect(g);sortida.connect(dest);os.start(t);os.stop(t+d+(sus>0?rel+.08:.3))}
 // compatibilitat amb el codi antic (nota = una veu simple)
 function nota(f,t0,d,tipus="square",vol=.12,dest){veu(f,t0,d,{tipus,vol:vol*.8,dest:dest||SB,filtre:tipus==="square"||tipus==="sawtooth"?3200:0})}
 // timbres
 const pluck=(f,t0,d,v=.1,dest)=>{veu(f,t0,d,{tipus:"triangle",vol:v,dest});veu(f,t0,d*.6,{tipus:"square",vol:v*.35,filtre:2400,dest,det:6})};
 const campana=(f,t0,d,v=.08,dest)=>{veu(f,t0,d,{tipus:"sine",vol:v,dest});veu(f*2,t0,d*.45,{tipus:"sine",vol:v*.35,dest});veu(f*3.01,t0,d*.2,{tipus:"sine",vol:v*.12,dest})};
 const metall=(f,t0,d,v=.07,dest)=>{veu(f,t0,d,{tipus:"sawtooth",vol:v,filtre:1800,q:2,dest,vib:d>.4?f*.012:0});veu(f,t0,d,{tipus:"square",vol:v*.5,filtre:1400,det:-8,dest})};
+// timbres cinematogràfics v3 (ADSR amb sustain, cos càlid i percussió orquestral per a celebracions del Boss)
+const metallPro=(f,t0,d,v=.065,dest=BG)=>{const r=Math.min(.26,Math.max(.1,d*.35));veu(f,t0,d,{tipus:"sawtooth",vol:v,atac:.018,sus:.72,rel:r,filtre:1750,filtreIni:2650,q:1.3,det:-7,vib:d>.35?f*.009:0,dest});veu(f,t0,d,{tipus:"sawtooth",vol:v*.85,atac:.02,sus:.7,rel:r,filtre:1650,filtreIni:2450,q:1.2,det:7,dest});veu(f/2,t0,d,{tipus:"triangle",vol:v*.48,atac:.015,sus:.78,rel:r,dest})};
+const corda=(f,t0,d,v=.055,dest=BG)=>{const r=Math.min(.42,Math.max(.18,d*.35));veu(f,t0,d,{tipus:"sawtooth",vol:v*.55,atac:.055,sus:.78,rel:r,filtre:1600,filtreIni:1950,q:.8,det:-10,dest});veu(f,t0,d,{tipus:"sawtooth",vol:v*.55,atac:.06,sus:.78,rel:r,filtre:1600,filtreIni:1950,q:.8,det:10,dest});veu(f,t0,d,{tipus:"triangle",vol:v*.6,atac:.045,sus:.82,rel:r,dest})};
+const timbala=(f,t0,v=.16,dest=BG)=>{veu(f*1.38,t0,.26,{tipus:"sine",vol:v,atac:.004,cap:f,dest});veu(f,t0,.12,{tipus:"triangle",vol:v*.38,atac:.003,filtre:520,dest});sorollet(t0,.055,{vol:v*.22,tipus:"bandpass",f0:380,f1:190,q:1.4,dest})};
+const plat=(t0,d=1.2,v=.055,dest=BG)=>{sorollet(t0,d,{vol:v,tipus:"highpass",f0:5400,f1:7800,q:.7,dest});sorollet(t0,d*.75,{vol:v*.45,tipus:"bandpass",f0:8200,f1:6200,q:2.2,dest})};
+const brillant=(f,t0,d,v=.05,dest=BG)=>{veu(f,t0,d,{tipus:"sine",vol:v,atac:.005,dest});veu(f*2,t0,d*.55,{tipus:"sine",vol:v*.34,atac:.005,dest});veu(f*4,t0,d*.22,{tipus:"sine",vol:v*.09,atac:.005,dest})};
 function sorollet(t0,d,o={}){const{vol=.08,tipus="bandpass",f0=800,f1=3000,q=1.2,dest=SB}=o;const t=AC.currentTime+t0,s=AC.createBufferSource(),fl=AC.createBiquadFilter(),g=AC.createGain();
- s.buffer=soroll();fl.type=tipus;fl.Q.value=q;fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+d);
- g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+Math.min(.02,d/3));g.gain.exponentialRampToValueAtTime(.0005,t+d);s.connect(fl).connect(g).connect(dest);s.start(t);s.stop(t+d+.05)}
+ s.buffer=soroll();if(d>.95)s.loop=true;fl.type=tipus;fl.Q.value=q;fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+d);
+ g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+Math.min(.02,d/3));g.gain.exponentialRampToValueAtTime(.0005,t+d);s.connect(fl).connect(g).connect(dest);s.start(t);s.stop(t+d+.05)}
 const cop=(t0,v=.18,dest)=>{veu(150,t0,.22,{tipus:"sine",vol:v,cap:45,dest})};
 function so(t){if(!VOL)return;try{audio();
  if(t==="ok"){campana(1319,0,.35,.08);campana(1976,.09,.5,.08);pluck(1319,0,.1,.04);sorollet(.09,.12,{vol:.025,tipus:"highpass",f0:6000,f1:9000})}
@@ -2436,49 +2445,84 @@ function bossLliure(){BOSS_BUSY=false;const b=BOSS_BUF;BOSS_BUF=null;if(b&&perfo
 function bossAturaCombat(){BOSS_ACTS.forEach(t=>{try{t.kill()}catch(e){}});BOSS_ACTS.length=0;
  if(BOSS_IDLE){BOSS_IDLE.kill();BOSS_IDLE=null}if(BOSS_BEAT){BOSS_BEAT.kill();BOSS_BEAT=null}if(BOSS_LOW){BOSS_LOW.kill();BOSS_LOW=null}
  BOSS_BUSY=false;BOSS_BUF=null}
+// Tonalitat i escala pentatònica del món perquè tots els SFX de la celebració harmonitzin amb la fanfara
+const BF_SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const BF_PENTA=[0,2,4,7,9];
+const BOSS_MUS_TON={epica:62,cosmos:60,primavera:64,chiptune:60,alegria:62,toreador:65,estrena:60};
+function bfTonalitat(c){c=c||bossCfg();if(c.notes){const toks=String(c.notes).trim().split(/\s+/).reverse();for(const tk of toks){const m=/^([A-G])([#b]?)(-?\d)/.exec(tk);if(m)return 60+((BF_SEMI[m[1]]+(m[2]==="#"?1:m[2]==="b"?-1:0)+12)%12)}}return BOSS_MUS_TON[c.mus]||62}
+function bfEscala(arrel,i){const k=Math.max(0,i|0);return mf(arrel+12+BF_PENTA[k%5]+Math.floor(k/5)*12)}
+function bossPrepAudio(dur=15.5){if(!VOL)return;try{audio();const now=AC.currentTime;BG.gain.cancelScheduledValues(now);BG.gain.setValueAtTime(.001,now);BG.gain.linearRampToValueAtTime(1,now+.025);abaixaMusUnMoment(dur)}catch(e){}}
 // Efectes de so del Boss sobre els busos del motor (SB al combat, BG a la celebració)
-function bossSfx(nom,arg,dest){if(!VOL)return;try{audio();const d=dest||SB;
- if(nom==="sel")veu(700,0,.05,{tipus:"square",vol:.04,dest:d});
+function bossSfx(nom,arg,dest){if(!VOL)return;try{audio();const d=dest||SB,ton=bfTonalitat();
+ if(nom==="sel")veu(700,0,.05,{tipus:"square",vol:.04,filtre:2600,dest:d});
  else if(nom==="whoosh")veu(300,0,.2,{tipus:"triangle",vol:.055,cap:950,dest:d});
- else if(nom==="hit"){sorollet(0,.12,{vol:.13,tipus:"lowpass",f0:1800,f1:600,dest:d});veu(520,0,.14,{tipus:"square",vol:.07,cap:140,dest:d})}
- else if(nom==="crit"){sorollet(0,.22,{vol:.17,tipus:"lowpass",f0:2600,f1:700,dest:d});veu(900,0,.24,{tipus:"sawtooth",vol:.07,cap:120,dest:d});veu(1320,.05,.12,{tipus:"square",vol:.05,dest:d})}
- else if(nom==="buzz")veu(180,0,.18,{tipus:"sawtooth",vol:.06,cap:120,dest:d});
- else if(nom==="charge")veu(110,0,.26,{tipus:"sawtooth",vol:.05,cap:430,dest:d});
- else if(nom==="err"){sorollet(0,.28,{vol:.18,tipus:"lowpass",f0:700,f1:220,dest:d});veu(220,0,.35,{tipus:"sawtooth",vol:.08,cap:60,dest:d})}
- else if(nom==="heavy"){sorollet(0,.45,{vol:.2,tipus:"lowpass",f0:900,f1:240,dest:d});veu(200,0,.48,{tipus:"square",vol:.08,cap:40,dest:d})}
- else if(nom==="blip"){sorollet(0,.08,{vol:.08,tipus:"lowpass",f0:3000,f1:900,dest:d});veu(620-(arg||0)*40,0,.09,{tipus:"square",vol:.05,dest:d})}
- else if(nom==="boom"){sorollet(0,.8,{vol:.22,tipus:"lowpass",f0:1400,f1:200,dest:d});veu(160,0,.85,{tipus:"sawtooth",vol:.09,cap:30,dest:d})}
- else if(nom==="stamp"){sorollet(0,.14,{vol:.18,tipus:"lowpass",f0:600,f1:200,dest:d});veu(90,0,.2,{tipus:"square",vol:.09,dest:d})}
- else if(nom==="escup")veu(520,0,.12,{tipus:"square",vol:.05,cap:200,dest:d});
- else if(nom==="esquitx"){sorollet(0,.3,{vol:.18,tipus:"lowpass",f0:500,f1:180,dest:d});veu(180,0,.25,{tipus:"sawtooth",vol:.07,cap:70,dest:d})}
+ else if(nom==="hit"){sorollet(0,.12,{vol:.13,tipus:"lowpass",f0:1800,f1:600,dest:d});veu(520,0,.14,{tipus:"square",vol:.07,filtre:2200,cap:140,dest:d})}
+ else if(nom==="crit"){sorollet(0,.22,{vol:.17,tipus:"lowpass",f0:2600,f1:700,dest:d});veu(900,0,.24,{tipus:"sawtooth",vol:.07,filtre:2600,cap:120,dest:d});veu(1320,.05,.12,{tipus:"square",vol:.05,filtre:2800,dest:d})}
+ else if(nom==="buzz")veu(180,0,.18,{tipus:"sawtooth",vol:.06,filtre:900,cap:120,dest:d});
+ else if(nom==="charge")veu(110,0,.26,{tipus:"sawtooth",vol:.05,filtre:1200,cap:430,dest:d});
+ else if(nom==="err"){sorollet(0,.28,{vol:.18,tipus:"lowpass",f0:700,f1:220,dest:d});veu(220,0,.35,{tipus:"sawtooth",vol:.08,filtre:950,cap:60,dest:d})}
+ else if(nom==="heavy"){veu(132,0,.44,{tipus:"sine",vol:.24,atac:.004,cap:38,dest:d});timbala(mf(ton-24),0,.16,d);timbala(mf(ton-17),.02,.1,d);sorollet(0,.13,{vol:.14,tipus:"bandpass",f0:1600,f1:420,q:1.1,dest:d})}
+ else if(nom==="blip"){const k=arg||0,f=mf(ton-5+k*2);veu(f,0,.11,{tipus:"triangle",vol:.075,atac:.004,filtre:1800+k*260,cap:f*1.12,dest:d});timbala(mf(ton-24+(k%2?7:0)),0,.08+k*.012,d);sorollet(0,.06,{vol:.04+k*.008,tipus:"bandpass",f0:1200+k*240,f1:2400+k*320,q:1.6,dest:d})}
+ else if(nom==="boom"){veu(98,.03,.85,{tipus:"sine",vol:.26,atac:.006,cap:26,dest:d});timbala(mf(ton-24),.03,.2,d);sorollet(.03,.78,{vol:.18,tipus:"lowpass",f0:1300,f1:140,q:.9,dest:d});plat(.06,1.15,.05,d)}
+ else if(nom==="stamp"){timbala(mf(ton-24),0,.18,d);sorollet(0,.11,{vol:.11,tipus:"lowpass",f0:720,f1:180,q:1,dest:d})}
+ else if(nom==="escup")veu(520,0,.12,{tipus:"square",vol:.05,filtre:2000,cap:200,dest:d});
+ else if(nom==="esquitx"){sorollet(0,.3,{vol:.18,tipus:"lowpass",f0:500,f1:180,dest:d});veu(180,0,.25,{tipus:"sawtooth",vol:.07,filtre:850,cap:70,dest:d})}
  else if(nom==="uuu")veu(520,0,.32,{tipus:"sine",vol:.07,cap:170,dest:d});
- else if(nom==="frega")sorollet(0,.26,{vol:.08,tipus:"bandpass",f0:2800,f1:3600,q:1.5,dest:d});
- else if(nom==="puf"){sorollet(0,.35,{vol:.15,tipus:"lowpass",f0:1800,f1:400,dest:d});veu(520,0,.1,{tipus:"square",vol:.05,dest:d})}
- else if(nom==="apaga")veu(700,0,.35,{tipus:"triangle",vol:.08,cap:50,dest:d});
- else if(nom==="star")campana(780+((arg||0)%20)*42,0,.12,.045,d);
- else if(nom==="heart"){pluck(660,0,.08,.06,d);pluck(990,.08,.14,.07,d)}
- else if(nom==="med")[784,988,1175,1568].forEach((f,i)=>veu(f,i*.07,.25,{tipus:"triangle",vol:.07,dest:d}))}catch(e){}}
+ else if(nom==="frega")sorollet(0,.26,{vol:.075,tipus:"bandpass",f0:2400,f1:3400,q:1.5,dest:d});
+ else if(nom==="puf"){sorollet(0,.34,{vol:.12,tipus:"bandpass",f0:420,f1:2400,q:1.2,dest:d});veu(480,0,.14,{tipus:"sine",vol:.09,cap:740,dest:d});brillant(bfEscala(ton,4),.04,.35,.045,d)}
+ else if(nom==="apaga"){veu(880,0,.42,{tipus:"sine",vol:.085,cap:220,dest:d});brillant(bfEscala(ton,5),.02,.65,.045,d);plat(.05,.9,.035,d)}
+ else if(nom==="botiStar"){const k=arg||0;brillant(bfEscala(ton,k%5),0,.16,.028,d)}
+ else if(nom==="star"){const idx=Math.min(10,Math.floor(((arg||0)%20)*11/20));brillant(bfEscala(ton,idx),0,.18,.032,d)}
+ else if(nom==="heart"){const k=arg||0,base=k*2;[0,2,4].forEach((g,j)=>brillant(bfEscala(ton,base+g),j*.055,.22,.042,d))}
+ else if(nom==="med"){timbala(mf(ton-24),0,.19,d);plat(.02,1.5,.06,d)}}catch(e){}}
 function bossLent(f,ms){if(!window.gsap)return;gsap.globalTimeline.timeScale(f);clearTimeout(BF_LENT_T);BF_LENT_T=setTimeout(()=>{if(window.gsap)gsap.globalTimeline.timeScale(1)},ms)}
 function tancaBossFesta(){clearTimeout(BF_T);BF_T=null;BF_TS.forEach(clearTimeout);BF_TS=[];clearTimeout(BF_LENT_T);BF_LENT_T=null;
  if(window.gsap){try{gsap.globalTimeline.timeScale(1)}catch(e){}}
  if(BF_TL){try{BF_TL.kill()}catch(e){}BF_TL=null}
  document.body.classList.remove("bf-obert");
- if(AC&&BG){try{BG.gain.cancelScheduledValues(AC.currentTime);BG.gain.setTargetAtTime(0,AC.currentTime,.04)}catch(e){}}
+ if(AC&&BG){try{const now=AC.currentTime;BG.gain.cancelScheduledValues(now);BG.gain.setTargetAtTime(.0001,now,.025)}catch(e){}}
  document.querySelectorAll(".boss-festa").forEach(el=>{if(window.gsap)try{gsap.killTweensOf(el.querySelectorAll("*"))}catch(e){}el.remove()})}
-const BF_SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
-function bfSeq(str,bpm,fn){const u=60/(bpm||125)/2;let t=.03;for(const tok of String(str||"").trim().split(/\s+/)){if(!tok)continue;const [nm,ds]=tok.split(":"),d=(parseFloat(ds)||1)*u;if(nm==="_"||nm==="R"){t+=d;continue}const m=/^([A-G])([#b]?)(-?\d)$/.exec(nm);if(!m)continue;const semi=BF_SEMI[m[1]]+(m[2]==="#"?1:m[2]==="b"?-1:0)+(+m[3]+1)*12;fn(440*Math.pow(2,(semi-69)/12),t,d);t+=d}return t}
+function bfSeq(str,bpm,fn){const u=60/(bpm||125)/2;let t=.02;for(const tok of String(str||"").trim().split(/\s+/)){if(!tok)continue;const [nm,ds]=tok.split(":"),d=(parseFloat(ds)||1)*u;if(nm==="_"||nm==="R"){t+=d;continue}const m=/^([A-G])([#b]?)(-?\d)$/.exec(nm);if(!m)continue;const semi=BF_SEMI[m[1]]+(m[2]==="#"?1:m[2]==="b"?-1:0)+(+m[3]+1)*12;fn(440*Math.pow(2,(semi-69)/12),t,d);t+=d}return t}
 const BOSS_MUS={
- epica(){cop(.02,.2,BG);sorollet(.06,.55,{vol:.07,tipus:"bandpass",f0:280,f1:1400,q:1.5,dest:BG});const fi=bfSeq("D4:1 A4:1 D5:1.5 A4:.5 Bb4:1 C5:1 D5:2 _:.5 A4:.5 D5:.5 F#5:1 E5:.5 D5:.5 E5:1 F#5:1 A5:3",125,(f,t,d)=>{metall(f,t,d*.95,.075,BG);pluck(f*2,t,d*.6,.04,BG)});[146.8,220,293.7].forEach((f,i)=>veu(f,.04+i*.9,1.1,{tipus:"triangle",vol:.07,atac:.02,dest:BG}));cop(fi-.7,.22,BG);[293.7,370,440,587.3,880].forEach((f,i)=>{metall(f,fi-.72,1.1,.055,BG);campana(f*2,fi-.68+i*.04,1.2,.035,BG)})},
- cosmos(){[65.4,98,130.8].forEach(f=>veu(f,.02,2.4,{tipus:"triangle",vol:.08,atac:.08,dest:BG}));const fi=bfSeq("C4:2.5 G4:2.5 C5:4 _:.5 E5:.8 Eb5:3.5 _:.5 C4:1 G4:1 C5:1 E5:1 G5:1.5 C6:3",160,(f,t,d)=>{metall(f,t,d*.95,.075,BG);if(f>=520)campana(f*2,t,d+.4,.04,BG)});[0,1,2,3].forEach(k=>cop(1.9+k*.22,.19,BG));sorollet(fi-.9,.9,{vol:.05,tipus:"highpass",f0:3500,f1:10000,dest:BG})},
- primavera(){const fi=bfSeq("E5:.5 G#5:1 G#5:1 G#5:1 F#5:.5 E5:.5 B5:2.5 B5:.5 A5:.5 G#5:1 G#5:1 G#5:1 F#5:.5 E5:.5 B5:3",118,(f,t,d)=>{pluck(f,t,d*.92,.09,BG);campana(f*2,t,d*.7,.035,BG)});[164.8,246.9,329.6].forEach((f,i)=>veu(f,.05+i*1.1,1.3,{tipus:"triangle",vol:.065,atac:.02,dest:BG}));[659.3,830.6,987.8,1318.5].forEach((f,i)=>campana(f,fi-.75+i*.05,1.2,.045,BG))},
- chiptune(){const fi=bfSeq("C5:.5 E5:.5 G5:.5 C6:1 G5:.5 C6:1 D5:.5 F#5:.5 A5:.5 D6:1 A5:.5 D6:1 E5:.5 G#5:.5 B5:.5 E6:1 B5:.5 E6:.5 G6:3",115,(f,t,d)=>{veu(f,t,d*.88,{tipus:"square",vol:.065,filtre:3200,dest:BG});veu(f/2,t,d*.75,{tipus:"triangle",vol:.06,dest:BG})});cop(.02,.16,BG);cop(fi-.8,.2,BG);[1046.5,1318.5,1568,2093].forEach((f,i)=>campana(f,fi-.75+i*.04,1.1,.045,BG))},
- alegria(){const fi=bfSeq("F#5:1 F#5:1 G5:1 A5:1 A5:1 G5:1 F#5:1 E5:1 D5:1 D5:1 E5:1 F#5:1 F#5:1.5 E5:.5 E5:2.5",126,(f,t,d)=>{pluck(f,t,d*.92,.085,BG);metall(f/2,t,d*.85,.045,BG)});[146.8,220,293.7].forEach((f,i)=>veu(f,.04+i*1.1,1.2,{tipus:"triangle",vol:.065,dest:BG}));[587.3,740,880,1174.7].forEach((f,i)=>campana(f,fi-.65+i*.05,1.2,.045,BG))},
- toreador(){[0,.12,.24,1.2,1.32,2.4].forEach(t=>sorollet(t,.08,{vol:.06,tipus:"bandpass",f0:1200,f1:3200,q:1.8,dest:BG}));const fi=bfSeq("C5:1.5 D5:.5 C5:1 A4:1 A4:1 A4:.5 G#4:.5 A4:.5 B4:.5 A4:1 Bb4:1 G4:1.5 C5:.5 A4:1.5 F4:.5 C5:3",124,(f,t,d)=>{metall(f,t,d*.92,.075,BG);pluck(f,t,d*.65,.045,BG)});cop(.03,.18,BG);cop(fi-.75,.22,BG);[261.6,349.2,440,523.3].forEach(f=>metall(f,fi-.72,1.1,.05,BG))},
- estrena(){sorollet(.02,.09,{vol:.12,tipus:"bandpass",f0:1800,f1:4500,q:2.2,dest:BG});cop(.02,.18,BG);const fi=bfSeq("G4:.5 C5:.5 E5:.5 G5:1.5 E5:.5 G5:2 A4:.5 D5:.5 F#5:.5 A5:1.5 F#5:.5 A5:1.5 G5:.5 C6:3",115,(f,t,d)=>{metall(f,t,d*.95,.075,BG);campana(f*2,t,d*.65,.035,BG)});[523.3,659.3,784,1046.5,1318.5,1568,2093].forEach((f,i)=>campana(f,fi-.8+i*.05,1.25,.04,BG));cop(fi-.75,.22,BG)}
+ epica(){timbala(73.4,.02,.15,BG);plat(.04,.9,.035,BG);
+  const fi=bfSeq("D4:1 A4:1 D5:1.5 A4:.5 Bb4:1 C5:1 D5:2 _:.5 A4:.5 D5:.5 F#5:1 E5:.5 D5:.5 E5:1 F#5:1 A5:2 _:.5 G5:.5 F#5:1 G5:1 A5:1.5 B5:.5 A5:1 F#5:1 D6:2.5",136,(f,t,d)=>{metallPro(f,t,d*.92,.062,BG);pluck(f*2,t,d*.5,.028,BG)});
+  [[146.8,.02,1.6],[116.5,1.62,1.2],[130.8,2.82,1.2],[146.8,4.02,1.6]].forEach(([f,t,d])=>{corda(f,t,d,.055,BG);corda(f*1.5,t,d,.038,BG)});
+  [1.6,2.8,4.0,fi-.7].forEach(t=>timbala(73.4,t,.14,BG));
+  [293.7,370,440,587.3].forEach((f,i)=>brillant(f*2,fi-.65+i*.045,1.1,.03,BG))},
+ cosmos(){[65.4,98,130.8].forEach(f=>corda(f,.02,2.8,.062,BG));
+  const fi=bfSeq("C4:2 G4:2 C5:3.5 _:.5 E5:.8 Eb5:2.8 _:.5 C4:1 G4:1 C5:1 E5:1 G5:1.5 A5:1 B5:1 C6:2.5",156,(f,t,d)=>{metallPro(f,t,d*.92,.062,BG);if(f>=520)brillant(f*2,t,d+.35,.03,BG)});
+  [0,1,2,3].forEach(k=>timbala(k%2?98:65.4,1.65+k*.22,.15,BG));
+  corda(130.8,2.9,2.8,.055,BG);corda(196,2.9,2.8,.045,BG);plat(fi-.8,1.1,.04,BG)},
+ primavera(){const fi=bfSeq("E5:.5 G#5:1 G#5:1 G#5:1 F#5:.5 E5:.5 B5:2 B5:.5 A5:.5 G#5:1 G#5:1 G#5:1 F#5:.5 E5:.5 B5:2 B5:.5 A5:.5 G#5:1 A5:1 B5:1 A5:1 G#5:1 F#5:1 E5:2.5",134,(f,t,d)=>{pluck(f,t,d*.92,.075,BG);brillant(f*2,t,d*.65,.026,BG)});
+  [[164.8,.02,1.8],[246.9,1.82,1.8],[164.8,3.62,2.0]].forEach(([f,t,d])=>{corda(f,t,d,.052,BG);corda(f*1.25,t,d,.036,BG)});
+  [659.3,830.6,987.8,1318.5].forEach((f,i)=>brillant(f,fi-.65+i*.05,1.15,.035,BG))},
+ chiptune(){const fi=bfSeq("C5:.5 E5:.5 G5:.5 C6:1 G5:.5 C6:1 D5:.5 F#5:.5 A5:.5 D6:1 A5:.5 D6:1 E5:.5 G#5:.5 B5:.5 E6:1 B5:.5 E6:1 F5:.5 A5:.5 C6:.5 G5:.5 B5:.5 D6:.5 C6:1 G5:1 C6:2.5",132,(f,t,d)=>{veu(f,t,d*.88,{tipus:"square",vol:.052,atac:.005,sus:.68,rel:.08,filtre:3400,dest:BG});veu(f/2,t,d*.82,{tipus:"triangle",vol:.058,atac:.005,sus:.75,rel:.08,dest:BG})});
+  timbala(65.4,.02,.14,BG);timbala(98,2.2,.14,BG);timbala(65.4,fi-.7,.16,BG);
+  [1046.5,1318.5,1568,2093].forEach((f,i)=>brillant(f,fi-.65+i*.045,1.1,.035,BG))},
+ alegria(){const fi=bfSeq("F#5:1 F#5:1 G5:1 A5:1 A5:1 G5:1 F#5:1 E5:1 D5:1 D5:1 E5:1 F#5:1 F#5:1.5 E5:.5 E5:2 F#5:1 F#5:1 G5:1 A5:1 A5:1 G5:1 F#5:1 E5:1 D5:1 D5:1 E5:1 F#5:1 E5:1.5 D5:.5 D5:2.5",166,(f,t,d)=>{pluck(f,t,d*.9,.072,BG);metallPro(f/2,t,d*.85,.04,BG)});
+  [[146.8,.02,1.5],[220,1.52,1.4],[146.8,2.92,1.5],[220,4.42,1.0],[146.8,5.42,1.0]].forEach(([f,t,d])=>corda(f,t,d,.052,BG));
+  [587.3,740,880,1174.7].forEach((f,i)=>brillant(f,fi-.65+i*.05,1.15,.035,BG))},
+ toreador(){[0,.12,.24,1.2,1.32,2.4,3.6,3.72].forEach(t=>sorollet(t,.07,{vol:.05,tipus:"bandpass",f0:1400,f1:3400,q:1.8,dest:BG}));
+  const fi=bfSeq("C5:1.5 D5:.5 C5:1 A4:1 A4:1 A4:.5 G#4:.5 A4:.5 B4:.5 A4:1 Bb4:1 G4:1.5 C5:.5 A4:1.5 F4:.5 C5:2 _:.5 A4:.5 C5:1 D5:1 E5:1 F5:2.5",136,(f,t,d)=>{metallPro(f,t,d*.9,.062,BG);pluck(f,t,d*.6,.032,BG)});
+  [[174.6,.02,1.8],[130.8,1.82,1.8],[174.6,3.62,2.0]].forEach(([f,t,d])=>corda(f,t,d,.052,BG));
+  timbala(87.3,.02,.15,BG);timbala(87.3,fi-.7,.17,BG);plat(fi-.68,1.0,.038,BG)},
+ estrena(){sorollet(.02,.075,{vol:.1,tipus:"bandpass",f0:1900,f1:4600,q:2.2,dest:BG});timbala(65.4,.02,.15,BG);
+  const fi=bfSeq("G4:.5 C5:.5 E5:.5 G5:1.5 E5:.5 G5:1.8 A4:.5 D5:.5 F#5:.5 A5:1.5 F#5:.5 A5:1.8 B4:.5 E5:.5 G5:.5 B5:1.5 A5:.5 G5:1 C6:2.8",132,(f,t,d)=>{metallPro(f,t,d*.92,.062,BG);brillant(f*2,t,d*.6,.026,BG)});
+  [[130.8,.02,1.8],[146.8,1.82,1.8],[196,3.62,1.0],[130.8,4.62,1.4]].forEach(([f,t,d])=>corda(f,t,d,.054,BG));
+  [523.3,659.3,784,1046.5,1318.5,1568].forEach((f,i)=>brillant(f,fi-.75+i*.05,1.2,.032,BG));timbala(65.4,fi-.7,.17,BG)}
 };
-function bossMusica(){if(!VOL)return;try{audio();BG.gain.cancelScheduledValues(AC.currentTime);BG.gain.setValueAtTime(1,AC.currentTime);abaixaMusUnMoment(8.8);
- const c=bossCfg();if(c.notes){const fn=c.timbre==="pluck"?pluck:c.timbre==="campana"?campana:metall,fi=bfSeq(c.notes,c.bpm,(f,t,d)=>fn(f,t,d*.92,.08,BG));cop(.02,.16,BG);cop(Math.max(.3,fi-.6),.2,BG);return}
+function bossMusica(){if(!VOL)return;try{bossPrepAudio(12);
+ const c=bossCfg();if(c.notes){const ton=bfTonalitat(c),fn=c.timbre==="pluck"?pluck:c.timbre==="campana"?brillant:metallPro,fi=bfSeq(c.notes,c.bpm,(f,t,d)=>fn(f,t,d*.92,.065,BG));timbala(mf(ton-24),.02,.14,BG);corda(mf(ton-12),.02,Math.max(1.8,fi*.55),.05,BG);corda(mf(ton-5),fi*.5,Math.max(1.6,fi*.5),.045,BG);timbala(mf(ton-24),Math.max(.3,fi-.55),.16,BG);return}
  (BOSS_MUS[c.mus]||BOSS_MUS.epica)()}catch(e){}}
+// Acte III · Coda de glòria sincronitzada al mil·lisegon amb la caiguda de la medalla
+function bossCoda(){if(!VOL)return;try{audio();const ton=bfTonalitat(),r=mf(ton),b=mf(ton-24);
+ timbala(b,0,.2,BG);timbala(mf(ton-17),.14,.14,BG);timbala(b,.28,.22,BG);plat(.04,1.8,.055,BG);
+ [0,4,7,12].forEach(s=>{corda(mf(ton-12+s),.05,3.2,.048,BG);metallPro(mf(ton+s),.04,2.4,.045,BG)});
+ [0,4,7,12,16,19,24].forEach((s,i)=>brillant(mf(ton+s),.12+i*.075,1.6,.036,BG));
+ // 2a espurna d'acord final sincronitzada amb la 2a salva de confeti (~1,45 s després)
+ timbala(b,1.45,.16,BG);plat(1.45,1.6,.042,BG);
+ [12,16,19,24].forEach((s,i)=>brillant(mf(ton+s),1.5+i*.065,1.7,.032,BG));
+ }catch(e){}}
 const BOSS_FX_CFG={
  explosio:{bg:"#7c2d12",bg2:"#c2410c",ic:"🌹"},
  orbites:{bg:"#0c4a6e",bg2:"#0284c7",ic:"🪐"},
@@ -2510,42 +2554,42 @@ function bossCanons(host,W,H,em){const cols=["#fde047","#22c55e","#38bdf8","#f47
   gsap.to(el,{opacity:0,duration:.35,delay:1.75,onComplete:()=>el.remove()})}}
 const BOSS_MORT={
  pixels({tl,L,IN,mon,wh,c,flash}){
-  tl.to(mon,{keyframes:{x:[-3,3,-5,5,-7,7,-9,9,-11,11,-12,12,0]},duration:1.3,ease:"none"},"agonia")
-    .to(mon,{scale:1.2,duration:1.3,ease:"power1.in"},"agonia");
-  [.15,.37,.57,.75,.91,1.05,1.17,1.25].forEach(t=>tl.set(wh,{opacity:1},L("agonia",t)).set(wh,{opacity:0},L("agonia",t+.05)));
-  for(let i=0;i<6;i++)tl.add(()=>{const a=gsap.utils.random(0,Math.PI*2),r=gsap.utils.random(30,80);bossEsclat(IN,c.x+Math.cos(a)*r,c.y+Math.sin(a)*r,i)},L("agonia",.1+i*.2));
+  tl.to(mon,{keyframes:{x:[-3,3,-5,5,-7,7,-9,9,-11,11,-13,13,-14,14,0]},duration:1.55,ease:"none"},"agonia")
+    .to(mon,{scale:1.22,duration:1.55,ease:"power1.in"},"agonia");
+  [.15,.40,.63,.84,1.03,1.20,1.35,1.47].forEach(t=>tl.set(wh,{opacity:1},L("agonia",t)).set(wh,{opacity:0},L("agonia",t+.05)));
+  for(let i=0;i<6;i++)tl.add(()=>{const a=gsap.utils.random(0,Math.PI*2),r=gsap.utils.random(30,80);bossEsclat(IN,c.x+Math.cos(a)*r,c.y+Math.sin(a)*r,i)},L("agonia",.12+i*.23));
   tl.set(mon,{autoAlpha:0},"trenca")
-    .add(()=>{bossSfx("boom",0,BG);bossLent(.3,420);bossTrencaPixels(IN,mon);bossAnell(IN,c.x,c.y,7);bossSacseja(IN,18)},"trenca")
-    .fromTo(flash,{opacity:1},{opacity:0,duration:.5,immediateRender:false},"trenca")},
- goma({tl,L,IN,mon,c,flash}){const S=mon.getBoundingClientRect().width||160,cell=S/16,vora=S/2+36,dur=.3,cols=["#fda4af","#f1f5f9","#94a3b8"],g=document.createElement("div");g.className="d-goma";g.innerHTML=bossPixSvg("goma");IN.appendChild(g);
+    .add(()=>{bossSfx("boom",0,BG);bossLent(.32,440);bossTrencaPixels(IN,mon);bossAnell(IN,c.x,c.y,7.5);bossSacseja(IN,18)},"trenca")
+    .fromTo(flash,{opacity:1},{opacity:0,duration:.55,immediateRender:false},"trenca")},
+ goma({tl,L,IN,mon,c,flash}){const S=mon.getBoundingClientRect().width||160,cell=S/16,vora=S/2+36,dur=.36,cols=["#fda4af","#f1f5f9","#94a3b8"],g=document.createElement("div");g.className="d-goma";g.innerHTML=bossPixSvg("goma");IN.appendChild(g);
   const rects=[...mon.querySelectorAll("svg:not(.wh) rect")];
   gsap.set(g,{x:c.x-vora,y:c.y-S/2+3*cell,xPercent:-50,yPercent:-50,rotation:-16,scale:0});
-  tl.to(g,{scale:1,duration:.14,ease:"back.out(3)"},"agonia")
-    .to(mon,{keyframes:{x:[-4,4,-4,4,-3,3,0]},duration:1.1,ease:"none"},"agonia");
-  [[0,5],[6,10],[11,15]].forEach(([y0,y1],i)=>{const t0=.14+i*.34,dir=i%2?-1:1,yy=c.y-S/2+(y0+y1+1)/2*cell;
-   if(i)tl.to(g,{y:yy,duration:.03},L("agonia",t0-.03));
+  tl.to(g,{scale:1,duration:.16,ease:"back.out(3)"},"agonia")
+    .to(mon,{keyframes:{x:[-4,4,-4,4,-3,3,-2,2,0]},duration:1.4,ease:"none"},"agonia");
+  [[0,5],[6,10],[11,15]].forEach(([y0,y1],i)=>{const t0=.18+i*.42,dir=i%2?-1:1,yy=c.y-S/2+(y0+y1+1)/2*cell;
+   if(i)tl.to(g,{y:yy,duration:.04},L("agonia",t0-.04));
    tl.add(()=>bossSfx("frega",0,BG),L("agonia",t0))
      .to(g,{x:c.x+dir*vora,duration:dur,ease:"sine.inOut"},L("agonia",t0))
-     .to(g,{rotation:"+=14",duration:.05,yoyo:true,repeat:5,ease:"none"},L("agonia",t0));
+     .to(g,{rotation:"+=14",duration:.06,yoyo:true,repeat:5,ease:"none"},L("agonia",t0));
    rects.forEach(r=>{const x=+r.getAttribute("x"),y=+r.getAttribute("y");if(y<y0||y>y1)return;const f=dir>0?(x+.5)/16:1-(x+.5)/16,p=(36+f*S)/(2*vora);
     tl.set(r,{opacity:0},L("agonia",t0+dur*Math.acos(Math.max(-1,Math.min(1,1-2*p)))/Math.PI))});
    for(let k=1;k<4;k++)tl.add(()=>bossParticules(IN,gsap.getProperty(g,"x"),gsap.getProperty(g,"y")+12,3,cols,{a0:50,a1:130,v0:40,v1:130,g:600,dur:.6,size:5}),L("agonia",t0+dur*k/4))});
-  tl.to(g,{scale:1.5,rotation:"+=160",duration:.14,ease:"power2.in"},L("trenca",-.16))
+  tl.to(g,{scale:1.5,rotation:"+=160",duration:.15,ease:"power2.in"},L("trenca",-.17))
     .set([mon,g],{autoAlpha:0},"trenca")
-    .add(()=>{bossSfx("puf",0,BG);bossLent(.4,300);bossAnell(IN,c.x,c.y,5);bossParticules(IN,c.x,c.y,26,cols.concat("#fff"),{a0:-180,a1:180,v0:120,v1:380,g:400,dur:1,size:6});bossSacseja(IN,8)},"trenca")
-    .fromTo(flash,{opacity:.7},{opacity:0,duration:.45,immediateRender:false},"trenca")},
+    .add(()=>{bossSfx("puf",0,BG);bossLent(.4,320);bossAnell(IN,c.x,c.y,5.5);bossParticules(IN,c.x,c.y,26,cols.concat("#fff"),{a0:-180,a1:180,v0:120,v1:380,g:400,dur:1,size:6});bossSacseja(IN,8)},"trenca")
+    .fromTo(flash,{opacity:.7},{opacity:0,duration:.5,immediateRender:false},"trenca")},
  esvaeix({tl,L,IN,mon,c,flash}){
-  tl.to(mon,{keyframes:{opacity:[1,.35,.9,.25,.8,.3,.75,.4,.9]},duration:1.05,ease:"none"},"agonia")
-    .to(mon,{y:-34,scaleY:1.22,scaleX:.86,duration:1.05,ease:"sine.inOut"},"agonia")
-    .to(mon,{keyframes:{x:[-8,8,-6,6,-4,4,0]},duration:1.05,ease:"sine.inOut"},"agonia");
-  for(let i=0;i<6;i++)tl.add(()=>bossParticules(IN,c.x+gsap.utils.random(-60,60),c.y+gsap.utils.random(-20,60),3,["#fff","#e0f2fe","#fde68a"],{a0:-110,a1:-70,v0:40,v1:110,g:-60,dur:.8,size:5}),L("agonia",.1+i*.17));
-  tl.to(mon,{opacity:1,scaleY:.04,scaleX:1.6,duration:.13,ease:"power3.in"},L("trenca",-.25))
+  tl.to(mon,{keyframes:{opacity:[1,.35,.9,.25,.8,.3,.75,.4,.9]},duration:1.35,ease:"none"},"agonia")
+    .to(mon,{y:-34,scaleY:1.22,scaleX:.86,duration:1.35,ease:"sine.inOut"},"agonia")
+    .to(mon,{keyframes:{x:[-8,8,-6,6,-4,4,0]},duration:1.35,ease:"sine.inOut"},"agonia");
+  for(let i=0;i<6;i++)tl.add(()=>bossParticules(IN,c.x+gsap.utils.random(-60,60),c.y+gsap.utils.random(-20,60),3,["#fff","#e0f2fe","#fde68a"],{a0:-110,a1:-70,v0:40,v1:110,g:-60,dur:.8,size:5}),L("agonia",.14+i*.2));
+  tl.to(mon,{opacity:1,scaleY:.04,scaleX:1.6,duration:.14,ease:"power3.in"},L("trenca",-.26))
     .to(mon,{scaleX:0,duration:.12,ease:"power2.in"},L("trenca",-.12))
     .set(mon,{autoAlpha:0},"trenca")
-    .add(()=>{bossSfx("apaga",0,BG);bossLent(.4,300);bossAnell(IN,c.x,c.y-34,5);bossParticules(IN,c.x,c.y-34,18,["#fff","#fde68a","#e0f2fe"],{a0:-180,a1:180,v0:150,v1:420,g:200,dur:.9,size:6});bossSacseja(IN,8)},"trenca")
-    .fromTo(flash,{opacity:.75},{opacity:0,duration:.45,immediateRender:false},"trenca")}
+    .add(()=>{bossSfx("apaga",0,BG);bossLent(.4,320);bossAnell(IN,c.x,c.y-34,5.5);bossParticules(IN,c.x,c.y-34,18,["#fff","#fde68a","#e0f2fe"],{a0:-180,a1:180,v0:150,v1:420,g:200,dur:.9,size:6});bossSacseja(IN,8)},"trenca")
+    .fromTo(flash,{opacity:.75},{opacity:0,duration:.5,immediateRender:false},"trenca")}
 };
-// Celebració D a pantalla completa (n2918): seqüència amb etiquetes (cop → agonia → trenca → botí → segell → recompte → cors → medalla)
+// Celebració D+ a pantalla completa (v3): seqüència en 3 actes (~14,5 s · cop → agonia → trenca → botí → segell → recompte → cors → medalla → glòria)
 function bossFesta(forca,resum,faseFixa,pecesForca){const host=app.querySelector(".boss");if(!host&&!faseFixa)return;tancaBossFesta();
  const c=bossCfg(),cfg=BOSS_FX_CFG[c.fx]||BOSS_FX_CFG.explosio,ico=c.ic||cfg.ic,peces=Object.assign({},bossPeces(c),pecesForca||{});
  const u=resum||BOSS_ULTIM||{premiBase:BOSS_ESTRELLES,premiCors:3,premi:BOSS_ESTRELLES+3,cors:3,vegades:(S.boss&&S.boss.v)||1};
@@ -2556,13 +2600,14 @@ function bossFesta(forca,resum,faseFixa,pecesForca){const host=app.querySelector
   const q=document.createElement("div");q.className="boss-festa quiet";q.dataset.fx=c.fx;q.dataset.mort=peces.mort;
   q.innerHTML=`<div class="bf-rotul" style="font-size:13px">${ico} ${c.rotul}</div><div class="bf-sub" style="font-size:13.5px">🏆 ${u.vegades} · ${txtEst} · ${c.nom} vençut!</div>`;
   if(host)host.insertBefore(q,host.firstChild);return}
+ if(!faseFixa)bossPrepAudio(15.5);
  const c1=(ASSIG.color&&ASSIG.color[1])||cfg.bg2,c0=(ASSIG.color&&ASSIG.color[0])||cfg.bg;
  const bonus=Math.min(3,Math.max(0,u.cors||0)),nEst=u.premiBase>0?u.premiBase:BOSS_ESTRELLES;
  const d=document.createElement("div");d.className="boss-festa";d.dataset.fx=c.fx;d.dataset.mort=peces.mort;d.dataset.fase=String(faseFixa||1);d.setAttribute("role","status");
  d.innerHTML=`<div class="bf-in"><div class="d-bg0"></div><div class="d-bg1" style="background:radial-gradient(circle at 50% 38%,${c1},${c0} 48%,#0b0714 90%)"></div><div class="d-rays"></div><div class="d-neg"></div><div class="d-slash"></div>
   <div class="d-mon">${bossSpr("boss-spr",true)}</div>
   <div class="d-rot">${c.rotul}</div><div class="d-sub">${c.nom} vençut!</div>
-  <div class="d-med">${bossPixSvg("trophy")}</div><div class="d-vic">🏆 ${u.vegades}a VICTÒRIA</div>
+  <div class="d-halo"></div><div class="d-med">${bossPixSvg("trophy")}</div><div class="d-vic">🏆 ${u.vegades}a VICTÒRIA</div>
   <div class="d-tally"><small>CORS DE SOBRES</small><div class="row">${[0,1,2].map(i=>`<div class="dh dh${i}">${bossPixSvg(i<bonus?"heart":"heartG")}</div>`).join("")}</div></div>
   <div class="d-cnt"><span class="cn">${u.premiBase>0?"+0":"Avui fet"}</span><div class="ic">${bossPixSvg("star")}</div></div>
   <div class="d-salta">Toca per continuar ✕</div><div class="d-flash"></div></div>`;
@@ -2571,83 +2616,89 @@ function bossFesta(forca,resum,faseFixa,pecesForca){const host=app.querySelector
  document.body.appendChild(d);
  const arrenca=()=>{if(!d.isConnected||!window.gsap)return;
   const q=s=>d.querySelector(s),IN=q(".bf-in"),W=IN.clientWidth||innerWidth,H=IN.clientHeight||innerHeight;
-  const mon=q(".d-mon"),wh=q(".d-mon .wh"),neg=q(".d-neg"),slash=q(".d-slash"),flash=q(".d-flash"),rot=q(".d-rot"),sub=q(".d-sub"),med=q(".d-med"),vic=q(".d-vic"),tally=q(".d-tally"),cnt=q(".d-cnt"),cn=q(".cn"),rays=q(".d-rays"),bg1=q(".d-bg1"),salta=q(".d-salta");
+  const mon=q(".d-mon"),wh=q(".d-mon .wh"),neg=q(".d-neg"),slash=q(".d-slash"),flash=q(".d-flash"),rot=q(".d-rot"),sub=q(".d-sub"),halo=q(".d-halo"),med=q(".d-med"),vic=q(".d-vic"),tally=q(".d-tally"),cnt=q(".d-cnt"),cn=q(".cn"),rays=q(".d-rays"),bg1=q(".d-bg1"),salta=q(".d-salta");
   gsap.set(cnt,{xPercent:-50,yPercent:-50,autoAlpha:0});gsap.set([rot,tally,vic,med],{autoAlpha:0});gsap.set(slash,{rotation:-24,scaleX:0});gsap.set(med,{transformOrigin:"50% 100%"});
   const c0p=bossCentre(mon,IN),tg=bossCentre(q(".d-cnt .ic"),IN);
   let n=0;const suma=()=>{if(u.premiBase<=0)return;n++;cn.textContent="+"+n;gsap.fromTo(cnt,{scale:1.3},{scale:1,duration:.22,ease:"back.out(4)",overwrite:"auto"})};
   const tl=gsap.timeline();BF_TL=tl;const L=(l,dt)=>l+(dt<0?"-=":"+=")+Math.abs(dt).toFixed(3);
-  const tMed=5.8+Math.max(bonus,.5)*.38+.6;
-  tl.addLabel("cop",0).addLabel("agonia",.45).addLabel("trenca",1.75).addLabel("boti",2).addLabel("segell",3).addLabel("recompte",3.9).addLabel("cors",5.4).addLabel("medalla",tMed);
+  const tMed=7.55+Math.max(bonus,1)*.48+.65,tGlo=tMed+1.45;
+  tl.addLabel("cop",0).addLabel("agonia",.55).addLabel("trenca",2.2).addLabel("boti",2.9).addLabel("segell",4.05).addLabel("recompte",5.4).addLabel("cors",7.55).addLabel("medalla",tMed).addLabel("gloria",tGlo);
   // 1) COP · imatge d'impacte (negre i blanc) i tall diagonal
   tl.add(()=>{d.dataset.fase="1";bossSfx("heavy",0,BG)},"cop")
     .set([neg,wh],{opacity:1},"cop")
     .fromTo(slash,{scaleX:0,opacity:1},{scaleX:1,duration:.08,ease:"power4.out"},"cop")
     .fromTo(IN,{scale:1.14},{scale:1,duration:.55,ease:"power2.out"},"cop")
-    .to(slash,{opacity:0,duration:.15},L("cop",.3))
+    .to(slash,{opacity:0,duration:.16},L("cop",.34))
     .set([neg,wh],{opacity:0},"agonia")
-    .fromTo(flash,{opacity:.85},{opacity:0,duration:.3,immediateRender:false},"agonia");
-  // 2) AGONIA i TRENCA · peça «mort» del món
+    .fromTo(flash,{opacity:.85},{opacity:0,duration:.32,immediateRender:false},"agonia");
+  // 2) AGONIA i TRENCA · peça «mort» del món amb 0,7 s d'aire per gaudir l'esclat
   (BOSS_MORT[peces.mort]||BOSS_MORT.pixels)({tl,L,IN,mon,wh,c:c0p,flash});
-  tl.to(bg1,{opacity:1,duration:.5},"trenca")
-    .to(rays,{opacity:.55,duration:.8},L("trenca",.15))
-    .to(rays,{rotation:360,duration:26,repeat:-1,ease:"none"},L("trenca",.15));
-  // 3) BOTÍ · 20 estrelles salten i reboten a terra en dues files
+  tl.to(bg1,{opacity:1,duration:.6},"trenca")
+    .to(rays,{opacity:.55,duration:.85},L("trenca",.15))
+    .to(rays,{rotation:360,duration:24,repeat:-1,ease:"none"},L("trenca",.15));
+  // 3) BOTÍ · 20 estrelles salten i reboten a terra amb 6 accents afinats
   const stars=[],GY=H*.58,slots=gsap.utils.shuffle([...Array(nEst).keys()]),marge=Math.min(64,Math.max(24,W*.07));
   for(let i=0;i<nEst;i++){const s=document.createElement("div");s.className="d-star";s.innerHTML=bossPixSvg("star");IN.appendChild(s);stars.push(s);
-   const k=slots[i],fila=k%2,colsN=Math.ceil(nEst/2),gx=marge+(W-marge*2)*(Math.floor(k/2)+.5)/colsN+(fila?8:-6)+gsap.utils.random(-2,2),gy=GY+(fila?20:0),t=i*.02;s._g={x:gx,y:gy};
+   const k=slots[i],fila=k%2,colsN=Math.ceil(nEst/2),gx=marge+(W-marge*2)*(Math.floor(k/2)+.5)/colsN+(fila?8:-6)+gsap.utils.random(-2,2),gy=GY+(fila?20:0),t=i*.024;s._g={x:gx,y:gy};
    gsap.set(s,{x:c0p.x,y:c0p.y,xPercent:-50,yPercent:-50,scale:0});
-   tl.to(s,{x:gx,scale:1,rotation:gsap.utils.random(-180,180),duration:.8,ease:"power1.out"},L("boti",t))
+   tl.to(s,{x:gx,scale:1,rotation:gsap.utils.random(-180,180),duration:.82,ease:"power1.out"},L("boti",t))
      .to(s,{y:c0p.y-gsap.utils.random(60,160),duration:.3,ease:"power2.out"},L("boti",t))
-     .to(s,{y:gy,duration:.5,ease:"bounce.out"},L("boti",t+.3))
-     .to(s,{rotation:0,duration:.2},L("boti",t+.8))}
+     .to(s,{y:gy,duration:.52,ease:"bounce.out"},L("boti",t+.3))
+     .to(s,{rotation:0,duration:.2},L("boti",t+.82))}
+  for(let k=0;k<6;k++)tl.add(()=>bossSfx("botiStar",k,BG),L("boti",.42+k*.095));
   const ord=stars.slice().sort((a,b)=>a._g.x-b._g.x);
-  // 4) SEGELL · el rètol cau com un segell, sona la música del món i salten les estrelles
+  // 4) SEGELL · el rètol cau com un segell, i 80 ms després arrenca la fanfara del món (zero saturació)
   const ch=bossLletres(rot);
   tl.add(()=>{d.dataset.fase="2"},"segell")
     .set(rot,{autoAlpha:1},"segell")
     .fromTo(rot,{scale:3.2},{scale:1,duration:.2,ease:"power4.in",immediateRender:false},"segell")
-    .add(()=>{bossSfx("stamp",0,BG);bossMusica();bossSacseja(IN,10)},L("segell",.2))
+    .add(()=>{bossSfx("stamp",0,BG);bossSacseja(IN,10)},L("segell",.2))
+    .add(()=>{bossMusica()},L("segell",.28))
     .fromTo(rot,{scaleX:1.14,scaleY:.84},{scaleX:1,scaleY:1,duration:.45,ease:"elastic.out(1,.4)",immediateRender:false},L("segell",.2))
     .to(ord,{y:"-=16",duration:.1,yoyo:true,repeat:1,ease:"power2.out",stagger:{each:.012,from:"center"}},L("segell",.2))
-    .to(sub,{opacity:1,duration:.3},L("segell",.5))
-    .to(ch,{y:-6,duration:.28,yoyo:true,repeat:9,stagger:.04,ease:"sine.inOut"},L("segell",.8));
-  // 5) RECOMPTE · les estrelles volen al marcador d'una en una
+    .to(sub,{opacity:1,duration:.35},L("segell",.55))
+    .to(ch,{y:-6,duration:.3,yoyo:true,repeat:14,stagger:.04,ease:"sine.inOut"},L("segell",.85));
+  // 5) RECOMPTE · les 20 estrelles volen al marcador tocant l'escala pentatònica del món
   tl.add(()=>{d.dataset.fase="3"},"recompte")
-    .to(cnt,{autoAlpha:1,duration:.2},"recompte")
+    .to(cnt,{autoAlpha:1,duration:.22},"recompte")
     .fromTo(cnt,{y:30},{y:0,duration:.3,ease:"back.out(3)",immediateRender:false},"recompte");
-  ord.forEach((s,i)=>{const g=s._g,t=.2+i*.06,side=g.x<tg.x?-1:1;
+  ord.forEach((s,i)=>{const g=s._g,t=.2+i*.075,side=g.x<tg.x?-1:1;
    tl.to(s,{y:g.y-18,duration:.1,ease:"power2.out"},L("recompte",t))
      .to(s,{motionPath:{path:[{x:g.x+side*34,y:g.y-10+(tg.y-g.y)*.35},{x:tg.x,y:tg.y}],curviness:1.4},scale:.7,rotation:360,duration:.4,ease:"power2.in"},L("recompte",t+.1))
      .add(()=>{s.remove();suma();bossSfx("star",i,BG)},L("recompte",t+.5))});
-  // 6) CORS · els cors de sobres salten, es giren com una moneda i es tornen estrelles
+  // 6) CORS · els cors de sobres salten, es giren com una moneda i es tornen estrelles amb arpegi harmònic
   tl.add(()=>{d.dataset.fase="4"},"cors")
     .to(tally,{autoAlpha:1,duration:.25},"cors");
-  for(let k=0;k<bonus;k++){const h=q(".dh"+k),hc=bossCentre(h,IN),t=.4+k*.38;
-   tl.to(h,{y:-20,duration:.12,ease:"power2.out"},L("cors",t)).to(h,{y:0,duration:.12,ease:"power2.in"},L("cors",t+.12))
-     .to(h,{scaleX:0,duration:.08,ease:"power1.in"},L("cors",t+.24))
-     .add(()=>{h.innerHTML=bossPixSvg("star");bossSfx("heart",0,BG)},L("cors",t+.32))
-     .to(h,{scaleX:1,duration:.08,ease:"power1.out"},L("cors",t+.32))
-     .to(h,{x:tg.x-hc.x,y:tg.y-hc.y,scale:.6,duration:.28,ease:"back.in(1.6)"},L("cors",t+.44))
-     .add(()=>{gsap.set(h,{autoAlpha:0});suma()},L("cors",t+.72))}
-  // 7) MEDALLA · cau, s'aixafa i dispara els canons de confeti amb les partícules del món
+  for(let k=0;k<bonus;k++){const h=q(".dh"+k),hc=bossCentre(h,IN),t=.35+k*.48;
+   tl.to(h,{y:-22,duration:.13,ease:"power2.out"},L("cors",t)).to(h,{y:0,duration:.13,ease:"power2.in"},L("cors",t+.13))
+     .to(h,{scaleX:0,duration:.08,ease:"power1.in"},L("cors",t+.26))
+     .add(()=>{h.innerHTML=bossPixSvg("star");bossSfx("heart",k,BG)},L("cors",t+.34))
+     .to(h,{scaleX:1,duration:.08,ease:"power1.out"},L("cors",t+.34))
+     .to(h,{x:tg.x-hc.x,y:tg.y-hc.y,scale:.6,duration:.3,ease:"back.in(1.6)"},L("cors",t+.46))
+     .add(()=>{gsap.set(h,{autoAlpha:0});suma()},L("cors",t+.76))}
+  // 7) MEDALLA · cau, s'aixafa i dispara la Coda musical + halo daurat + 1a salva de confeti
   tl.add(()=>{d.dataset.fase="5"},"medalla")
-    .to(tally,{autoAlpha:0,duration:.2},L("medalla",-.2))
+    .to(tally,{autoAlpha:0,duration:.22},L("medalla",-.22))
     .set(med,{autoAlpha:1},"medalla")
     .fromTo(med,{y:-420,scaleX:.82,scaleY:1.3},{y:0,duration:.32,ease:"power3.in",immediateRender:false},"medalla")
-    .add(()=>{bossSfx("stamp",0,BG);bossSfx("med",0,BG);bossSacseja(IN,13);bossAnell(IN,c0p.x,c0p.y+40,6);bossCanons(IN,W,H,c.em)},L("medalla",.32))
+    .add(()=>{bossSfx("stamp",0,BG);bossCoda();bossSacseja(IN,13);bossAnell(IN,c0p.x,c0p.y+40,6.5);bossCanons(IN,W,H,c.em)},L("medalla",.32))
+    .to(halo,{opacity:.9,scale:1.15,duration:.45,ease:"power2.out"},L("medalla",.32))
+    .to(halo,{opacity:.55,scale:.96,duration:1.1,yoyo:true,repeat:-1,ease:"sine.inOut"},L("medalla",.8))
     .to(med,{scaleX:1.32,scaleY:.72,duration:.07,ease:"power2.out"},L("medalla",.32))
-    .to(med,{scaleX:1,scaleY:1,duration:.6,ease:"elastic.out(1,.35)"},L("medalla",.39))
-    .to(vic,{autoAlpha:1,duration:.3},L("medalla",.6))
-    .to(cnt,{y:-Math.min(130,H*.18),scale:1.4,duration:.5,ease:"back.out(2)"},L("medalla",.75))
-    .to(salta,{opacity:1,duration:.4},L("medalla",1.1))
-    .to(med,{y:-8,duration:1,yoyo:true,repeat:-1,ease:"sine.inOut"},L("medalla",1.2));
+    .to(med,{scaleX:1,scaleY:1,duration:.62,ease:"elastic.out(1,.35)"},L("medalla",.39))
+    .to(vic,{autoAlpha:1,duration:.35},L("medalla",.65))
+    .to(cnt,{y:-Math.min(130,H*.18),scale:1.4,duration:.55,ease:"back.out(2)"},L("medalla",.8))
+    .to(salta,{opacity:1,duration:.45},L("medalla",1.15))
+    .to(med,{y:-8,duration:1.05,yoyo:true,repeat:-1,ease:"sine.inOut"},L("medalla",1.25));
+  // 8) GLÒRIA · 2a salva de confeti sincronitzada amb la 2a espurna de la coda + 3,5 s per gaudir la victòria
+  tl.add(()=>{bossAnell(IN,c0p.x,c0p.y+24,5.5);bossCanons(IN,W,H,c.em)},L("gloria",.32));
   if(faseFixa){
-   const f=Math.min(5,Math.max(1,+faseFixa||1)),map={1:.2,2:3.6,3:4.7,4:5.95,5:tMed+1.15};
+   const f=Math.min(5,Math.max(1,+faseFixa||1)),map={1:.25,2:4.75,3:6.3,4:8.1,5:tMed+1.25};
    tl.seek(map[f],true).pause();d.dataset.fase=String(f);
    if(f>=4)d.querySelectorAll(".d-star").forEach(s=>s.remove());
    if(f>=3&&u.premiBase>0)cn.textContent="+"+(f===3?u.premiBase:u.premi);
    return}
-  BF_T=setTimeout(()=>{if(d.isConnected){d.classList.add("surt");BF_T=setTimeout(tancaBossFesta,360)}},9300)};
+  BF_T=setTimeout(()=>{if(d.isConnected){d.classList.add("surt");BF_T=setTimeout(tancaBossFesta,360)}},14800)};
  if(window.gsap&&GSAP_OK)arrenca();else carregaGsap().then(arrenca)}
 const BOSS_CADUCA_MS=30*60*1000;
 function bossClau(){if(MODE_TAST||!S.nom)return "";return CL+"boss_"+S.nom.trim().toLowerCase()}
