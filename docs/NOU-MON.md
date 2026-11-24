@@ -1,5 +1,7 @@
 # 🌍 Guia per construir un món nou
 
+> **CRITERI TEMPORAL (laboratoris visuals en mons nous):** Fins a nou avís, en crear un món nou NO creïs cap fitxer a `visuals/`, NO afegeixis el bloc `visual` a les dades del món ni generis cap laboratori visual. Crea només el món estàndard (fitxes, jocs, examen i portada). Només s'integrarà un laboratori visual si jo ho demano explícitament amb `docs/integrar-visual.md`.
+
 Com s'afegeix un **món nou** a Bona Nota de cap a cap. Amb Claude Code, la skill **`nou-mon`** (`.claude/skills/nou-mon/SKILL.md`) ho fa tot d'una tirada a partir d'una carpeta de Drive: llegeix els apunts, escriu el món, el revisa i el publica sense preguntar res ni obrir cap finestra de permís.
 
 **El camí curt:**

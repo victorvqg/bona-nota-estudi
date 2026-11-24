@@ -2,6 +2,8 @@
 
 Instruccions per a qualsevol agent de codi (Claude Code, Gemini, Kimi, Codex) en aquest repo.
 
+> **CRITERI TEMPORAL (laboratoris visuals en mons nous):** Fins a nou avís, en crear un món nou NO creïs cap fitxer a `visuals/`, NO afegeixis el bloc `visual` a les dades del món ni generis cap laboratori visual. Crea només el món estàndard (fitxes, jocs, examen i portada). Només s'integrarà un laboratori visual si jo ho demano explícitament amb `docs/integrar-visual.md`.
+
 ## Nucli
 
 Aquest repo fa servir el nucli (`nucli.json`: checks, regles i commits). Docs: estat `docs/ESTAT.md` · decisions `docs/DECISIONS.md` · trampes `docs/TRAMPES.md` · convencions `docs/CONVENCIONS.md` · arquitectura `docs/ARQUITECTURA.md` · món d'Anglès `docs/MON-ANGLES.md` (com es construeix i les frases amb buits) · món de mates `docs/MON-MATES.md` (taller, vistes i pistes) · mons de llengua `docs/MON-LLENGUA.md` · bon ús `docs/BON-US.md` (tota mecànica nova passa el filtre del seu apartat 6) · laboratoris visuals `docs/motor-bonanota-visuals.md` i protocol `docs/integrar-visual.md` (seguir sempre que es demani «Integra `<fitxer.html>` al món `<assignatura>/<mon>`»).
