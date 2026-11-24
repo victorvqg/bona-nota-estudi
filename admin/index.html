@@ -1004,8 +1004,18 @@ async function carregaIds(){
 }
 let FAPR=null,ALTES_CURS=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null,RK_VISTA="total",RK_MON="socials";
 const AUTO_MS=60000;let NOV_BASE=null,NOV_ULT=0,NOV_CURS=false;
-function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_MAP={};ALTES_CURS=null;VIS_CACHE=null;MAT_CACHE={};BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
-function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;VIS_CACHE=null;MAT_CACHE={};BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
+// Capa de cache unificada amb TTL i deduplicació de peticions en vol (Onada 2)
+const CACHE=(()=>{const d=new Map(),inf=new Map();return {
+ get(k,ttl,fn){const ara=Date.now(),h=d.get(k);if(h&&(ttl<=0||ara-h.t<ttl))return Promise.resolve(h.v);
+  if(inf.has(k))return inf.get(k);
+  const p=Promise.resolve().then(fn).then(v=>{inf.delete(k);d.set(k,{v,t:Date.now()});return v},e=>{inf.delete(k);throw e});
+  inf.set(k,p);return p},
+ del(k){d.delete(k);inf.delete(k)},
+ delPrefix(pre){for(const k of [...d.keys()])if(k.startsWith(pre))d.delete(k);for(const k of [...inf.keys()])if(k.startsWith(pre))inf.delete(k)},
+ clear(){d.clear();inf.clear()}
+}})();
+function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();CACHE.clear();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_MAP={};ALTES_CURS=null;VIS_CACHE=null;MAT_CACHE={};BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+function invalidarDades({logs=true}={}){CACHE.clear();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;VIS_CACHE=null;MAT_CACHE={};BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
 async function carrega(){
  netejaCaches();
  await carregaRegles();
@@ -1421,9 +1431,17 @@ function benestarGlobalDe(){const p=PERIODE[DIES]||"7d";
 function benestarNenDe(nom){const p=PERIODE[DIES]||"7d",k=String(nom||"").trim().toLowerCase();
  if(BEN&&BEN.p===p&&(BEN.n===null||String(BEN.n).trim().toLowerCase()===k))return BEN.prom;
  return rpcB("bn_admin_benestar",{p_periode:p,p_nom:nom})}
-function vistaNens(c){
+function vistaNens(c,resum){
  TF.assig="";TF.nom="";
- const N=nens(LOGS),totNens=new Set([...Object.keys(NOMS_TOTS).filter(k=>k&&k!=="_alta"),...N.map(x=>x.k)]).size;
+ const usaSql=!!(resum&&Array.isArray(resum.nens));
+ const N=usaSql?resum.nens.map(x=>{
+  const k=String(x.k||"").trim().toLowerCase(),nom=String(x.nom||k);
+  if(x.id!=null)IDS[k]=+x.id;
+  if(nom&&!NOMS_TOTS[k])NOMS_TOTS[k]=nom;
+  return {k,nom,ult:x.ult?new Date(+x.ult).toISOString():null,dies:+x.dies||0,ratxa:+x.ratxa||0,temps:+x.temps||0,
+   est:+x.est||0,estMax:+x.est_max||0,nota:x.nota==null?null:+x.nota,tests:+x.tests||0,amagat:!!x.amagat};
+ }):nens(LOGS);
+ const totNens=usaSql?Math.max(+resum.total_nens||0,N.length):new Set([...Object.keys(NOMS_TOTS).filter(k=>k&&k!=="_alta"),...N.map(x=>x.k)]).size;
  let benMap=null,benAvisos=null;
  c.innerHTML=`<div class="pila"><div id="nensKpis"></div><div class="targeta"><div id="tNensWrap"></div></div></div>`;
  const pintaK=()=>{const el=$("#nensKpis");if(!el)return;
@@ -1433,8 +1451,10 @@ function vistaNens(c){
    {t:"Temps mitjà",v:N.length?fmtT(N.reduce((s,x)=>s+x.temps,0)/N.length):"—"},
    {t:"Avisos benestar",v:benAvisos==null?"—":benAvisos,cls:benAvisos>0?"avis":""}
   ],4)};
- const rows=()=>N.map(n=>{const e=ESTATS[n.k+"#v"],vals=Object.values(n.punts),est=vals.reduce((a,b)=>a+b,0),estMax=vals.length?Math.max(0,...vals):0,b=benMap&&benMap.get(n.k);
-  const sem=b?b.sem:null,semOrd=sem==="vermell"?3:sem==="groc"?2:sem==="verd"?1:0;
+ const rows=()=>N.map(n=>{
+  const b=benMap&&benMap.get(n.k),sem=b?b.sem:null,semOrd=sem==="vermell"?3:sem==="groc"?2:sem==="verd"?1:0;
+  if(usaSql)return {...n,sem,semOrd,semTxt:b?b.txt:""};
+  const e=ESTATS[n.k+"#v"],vals=Object.values(n.punts),est=vals.reduce((a,b)=>a+b,0),estMax=vals.length?Math.max(0,...vals):0;
   return {k:n.k,nom:n.nom,ult:n.ult,dies:n.dies,ratxa:n.ratxa,temps:n.temps,est,estMax,nota:mitj(n.tests),tests:n.tests.length,amagat:e!=null?!!(e&1):false,sem,semOrd,semTxt:b?b.txt:""}});
  const cols=[
   {k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom)}<span>${esc(r.nom)}</span></button>${idDe(r.k)}${r.amagat?`<span class="pill warn" title="Amagat del rànquing">${ic("ullno")}</span>`:""}</span>`},
@@ -1456,7 +1476,7 @@ function vistaNens(c){
   benMap=m;benAvisos=av;
   if(VISTA==="nens"&&!ELEM&&$("#tNensWrap")){pintaK();pintaT()}
  }).catch(()=>{});
- N.forEach(n=>estatDe(n.nom).then(v=>{ESTATS[n.k+"#v"]=v;if(VISTA==="nens"&&!ELEM&&$("#tNensWrap"))pintaT()}));
+ if(!usaSql)N.forEach(n=>estatDe(n.nom).then(v=>{ESTATS[n.k+"#v"]=v;if(VISTA==="nens"&&!ELEM&&$("#tNensWrap"))pintaT()}));
 }
 
 // ====================== FITXA DEL NEN ======================
@@ -2307,8 +2327,9 @@ async function carregaRegles(){if(REGLES)return REGLES;try{const r=await fetch("
 function nivellDe(p){p=Math.max(0,+p||0);let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];return {n:i+1,nom,ic,min,seg:seg?seg[0]:null,segNom:seg?seg[1]:null,falten:seg?seg[0]-p:0}}
 const pillNivell=p=>{const nv=nivellDe(p);return `<span class="pill neutre niv-p" title="Nivell ${nv.n} · ${esc(nv.nom)}${nv.seg!=null?` (${p} ⭐ · en falten ${nv.falten} per a ${esc(nv.segNom)})`:` (${p} ⭐ · nivell màxim)`}">${esc(nv.ic)} ${nv.n} · ${esc(nv.nom)}</span>`};
 let NUV=null,ALTES=null,ALTES_MAP={},VIS_CACHE=null,MAT_CACHE={}; // fitxa oberta, altes, mapa d'altes, visuals i matriu per món
-function visualsDe(){if(!VIS_CACHE){const p=rpcF("bn_admin_visuals",{p_assig:null});p.catch(()=>{if(VIS_CACHE===p)VIS_CACHE=null});VIS_CACHE=p}return VIS_CACHE}
-function matriuMonDe(a){const k=String(a||"").toLowerCase();if(!MAT_CACHE[k]){const p=rpcF("bn_admin_matriu_mon",{p_assig:k});p.catch(()=>{if(MAT_CACHE[k]===p)delete MAT_CACHE[k]});MAT_CACHE[k]=p}return MAT_CACHE[k]}
+function visualsDe(){return CACHE.get("visuals",60000,()=>rpcF("bn_admin_visuals",{p_assig:null}))}
+function matriuMonDe(a){const k=String(a||"").toLowerCase();return CACHE.get("mat:"+k,60000,()=>rpcF("bn_admin_matriu_mon",{p_assig:k}))}
+function nensResumDe(dies){const d=dies>0?+dies:null;return CACHE.get("nens:"+(d||0),60000,()=>rpcF("bn_admin_nens_resum",{p_dies:d}))}
 function construeixFilesVisuals(raw,assigFiltre){
  const cat=labsCatalog().filter(c=>!assigFiltre||c.assig===assigFiltre);
  if(!cat.length)return [];
@@ -2993,16 +3014,23 @@ async function vistaNensSeccio(c){
  c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Nens")+`<div id="nensCos">${tab!=="missatges"&&LOGS_DIES===DIES?"":esqTaula()}</div>`;
  lligaPestanyes(c,ll);
  if(tab==="missatges"){await vistaMissatgesNen($("#nensCos"),tok);return}
+ if(tab==="llista"){
+  let res=null;
+  try{res=await nensResumDe(DIES)}catch(e){res=null}
+  if(tok!==TOK||VISTA!=="nens")return;
+  const cos=$("#nensCos");if(!cos)return;
+  if(res&&Array.isArray(res.nens)){vistaNens(cos,res);return}
+  try{await asseguraLogs()}catch(e){if(tok!==TOK)return;cos.innerHTML=avisErr(`No s'han pogut carregar les dades (${e}).`);return}
+  if(tok!==TOK||VISTA!=="nens")return;
+  vistaNens(cos,null);
+  return;
+ }
  try{await asseguraLogs()}catch(e){if(tok!==TOK)return;$("#nensCos").innerHTML=avisErr(`No s'han pogut carregar les dades (${e}).`);return}
  if(tok!==TOK||VISTA!=="nens")return;
  const cos=$("#nensCos");if(!cos)return;
- if(tab==="llista"){
-  vistaNens(cos);
- }else{
-  const pintaB=()=>{cos.innerHTML=barraFiltresLocals({assig:true,nen:true})+card("benestar","c-12","cor","Benestar","Un semàfor per nen amb els motius en paraules planeres, i la fase i data d'examen de cada món.",`<div id="tBen" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`,`<button class="btn sec petit" type="button" data-go-msgs="1">${ic("ull")}<span>Què veu el nen</span></button>`);
-   lligaFiltresLocals(()=>{TOK++;pintaB()});tBenestar()};
-  pintaB();
- }
+ const pintaB=()=>{cos.innerHTML=barraFiltresLocals({assig:true,nen:true})+card("benestar","c-12","cor","Benestar","Un semàfor per nen amb els motius en paraules planeres, i la fase i data d'examen de cada món.",`<div id="tBen" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`,`<button class="btn sec petit" type="button" data-go-msgs="1">${ic("ull")}<span>Què veu el nen</span></button>`);
+  lligaFiltresLocals(()=>{TOK++;pintaB()});tBenestar()};
+ pintaB();
 }
 let MN_FILTRE="tots";
 async function vistaMissatgesNen(cos,tok){
@@ -4950,7 +4978,7 @@ function demoControlRpc(cfg){if(!DEMO_CTRL)DEMO_CTRL={xat_actiu:true,horari:{act
  const {efTM,efOM}=monsHorariEfectiu(DEMO_CTRL.horari);
  const mNit=enHorariTancat(DEMO_CTRL.horari.tanca_mons===true,efTM,efOM);
  return Object.assign({},JSON.parse(JSON.stringify(DEMO_CTRL)),{llindars:llindarsNorm(DEMO_CTRL.llindars),ranquing:rkCfgNorm(DEMO_CTRL.ranquing),xat_en_horari_tancat:tH,xat_obert_ara:DEMO_CTRL.xat_actiu&&!tH,mons_tancats_nit:mNit})}
-function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
+function demoFitxaRpc(f,x){demoInit();const k0=String(x.p_nom||"").trim().toLowerCase();
  if(f==="bn_admin_fitxa"){const ls=DEMO_L.filter(l=>clauNen(l)===k0),pf=demoPerfil(k0,ls.length?Date.parse(ls[0].ts):null),P=DEMO_PERF[k0]||{};
   let as=[...new Set(ls.map(l=>l.assig))].sort();if(!pf||P.res)as=[];if(P.mons)as=as.slice(0,P.mons);
   return {k:k0,perfil:pf&&Object.assign({nom:ls.length?ls[0].nom:x.p_nom},pf),amagat:!!(demoEstat(k0)&1),mons:as.map(a=>demoMon(k0,a))}}
@@ -4988,6 +5016,12 @@ function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
   const al=ks.map(k=>{const m=demoMon(k,a0),pf=demoPerfil(k,null),vp=(visD.progres||[]).find(p=>p.k===k&&p.assig===a0);
    return {k,nom:(lsA.find(l=>clauNen(l)===k)||{}).nom||k,id:pf?pf.id:null,te_pin:!!pf,punts:m.punts,ultim_ts:m.ts,rep_n:m.rep_n,boss_v:m.boss?m.boss.v:0,exam_max:m.examens.length?Math.max(...m.examens.map(e=>e.pc)):null,temes_progres:m.temes,temes_log:{},visuals:vp?vp.visuals:{}}});
   return {assig:a0,alumnes:al,premis_visuals:visD.premis}}
+ if(f==="bn_admin_nens_resum"){const d0=x.p_dies>0?Date.now()-x.p_dies*864e5:0;
+  const ls=d0?DEMO_L.filter(l=>new Date(l.ts).getTime()>=d0):DEMO_L;
+  const ns=nens(ls).map(n=>{const vals=Object.values(n.punts),pf=demoPerfil(n.k,null);
+   return {k:n.k,nom:n.nom,id:pf?pf.id:null,te_pin:!!pf,amagat:false,ult:n.ult?new Date(n.ult).getTime():null,dies:n.dies,ratxa:n.ratxa,temps:Math.round(n.temps),nota:mitj(n.tests),tests:n.tests.length,est:vals.reduce((a,b)=>a+b,0),est_max:vals.length?Math.max(0,...vals):0}});
+  const tot=new Set([...Object.keys(NOMS_TOTS).filter(k=>k&&k!=="_alta"),...ns.map(n=>n.k)]).size;
+  return {total_nens:tot,nens:ns}}
  throw "demo"}
 // demo del Benestar: els mateixos nens que la resta de la demo (la Nora respon de pressa, l'Hugo fa dies que no ve), un cas de cada color,
 // una vigília en blau (la Jana, a Comarques), un nen amb dos aparells (en Pau) i una data d'examen posada (Mates, d'aquí a 2 dies)
