@@ -1004,8 +1004,8 @@ async function carregaIds(){
 }
 let FAPR=null,ALTES_CURS=null,DIF_MON_D=null,DIF_MON_A=null,AUTO_CURS=false,AUTO_TIMER=null,RK_VISTA="total",RK_MON="socials";
 const AUTO_MS=60000;let NOV_BASE=null,NOV_ULT=0,NOV_CURS=false;
-function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_MAP={};ALTES_CURS=null;VIS_CACHE=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
-function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;VIS_CACHE=null;BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
+function netejaCaches(){NOV_BASE=null;NOV_BASE_ID=null;amagaNovetats();ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_MAP={};ALTES_CURS=null;VIS_CACHE=null;MAT_CACHE={};BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;LOGS_DIES=null;LOGS_PROM=null;X=null}
+function invalidarDades({logs=true}={}){ESTATS={};NUV=null;FAPR=null;ALTES=null;ALTES_CURS=null;VIS_CACHE=null;MAT_CACHE={};BEN=null;FDIA=null;REPP=null;CTRL=null;DIFR=null;DIF_MON_D=null;DIF_MON_A=null;X=null;if(logs){LOGS_DIES=null;LOGS_PROM=null}}
 async function carrega(){
  netejaCaches();
  await carregaRegles();
@@ -2306,8 +2306,9 @@ let NIVELLS=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","
 async function carregaRegles(){if(REGLES)return REGLES;try{const r=await fetch("regles.json",{cache:"no-cache"});if(r.ok){REGLES=await r.json();if(Array.isArray(REGLES.NIVELLS)&&REGLES.NIVELLS.length){NIVELLS=REGLES.NIVELLS;XNIV=NIVELLS.map(x=>x[1])}if(typeof REGLES.APROVA==="number")APROVAT=REGLES.APROVA}}catch(e){REGLES={NIVELLS,APROVA:APROVAT}}return REGLES}
 function nivellDe(p){p=Math.max(0,+p||0);let i=0;while(i<NIVELLS.length-1&&p>=NIVELLS[i+1][0])i++;const [min,nom,ic]=NIVELLS[i],seg=NIVELLS[i+1];return {n:i+1,nom,ic,min,seg:seg?seg[0]:null,segNom:seg?seg[1]:null,falten:seg?seg[0]-p:0}}
 const pillNivell=p=>{const nv=nivellDe(p);return `<span class="pill neutre niv-p" title="Nivell ${nv.n} · ${esc(nv.nom)}${nv.seg!=null?` (${p} ⭐ · en falten ${nv.falten} per a ${esc(nv.segNom)})`:` (${p} ⭐ · nivell màxim)`}">${esc(nv.ic)} ${nv.n} · ${esc(nv.nom)}</span>`};
-let NUV=null,ALTES=null,ALTES_MAP={},VIS_CACHE=null; // la resposta de la fitxa oberta {k,p}, les altes {p,prom}, el mapa k → detall d'alta i els labs visuals
+let NUV=null,ALTES=null,ALTES_MAP={},VIS_CACHE=null,MAT_CACHE={}; // fitxa oberta, altes, mapa d'altes, visuals i matriu per món
 function visualsDe(){if(!VIS_CACHE){const p=rpcF("bn_admin_visuals",{p_assig:null});p.catch(()=>{if(VIS_CACHE===p)VIS_CACHE=null});VIS_CACHE=p}return VIS_CACHE}
+function matriuMonDe(a){const k=String(a||"").toLowerCase();if(!MAT_CACHE[k]){const p=rpcF("bn_admin_matriu_mon",{p_assig:k});p.catch(()=>{if(MAT_CACHE[k]===p)delete MAT_CACHE[k]});MAT_CACHE[k]=p}return MAT_CACHE[k]}
 function construeixFilesVisuals(raw,assigFiltre){
  const cat=labsCatalog().filter(c=>!assigFiltre||c.assig===assigFiltre);
  if(!cat.length)return [];
@@ -3167,13 +3168,17 @@ async function detallMon(c,monId0){
  const opcMons=ms.map(x=>`<option value="${esc(x.id)}"${x.id===monId?" selected":""}>${esc(nomAssig(x.id))}${x.titol?` · ${esc(x.titol)}`:""}</option>`).join("");
  c.innerHTML=`<div class="fitxa-bar"><button class="btn sec petit" type="button" id="tornaMon">${ic("enrere")} Tots els mons</button>
   <div class="fitxa-sel"><label for="selFitxaMon">${ic("llibre")}<span>Canvia de món:</span></label><select id="selFitxaMon" aria-label="Canvia de món">${opcMons}</select></div></div>
- <section class="targeta perfil"><span class="mon-ic" style="--mc:${colAssig(monId)}" aria-hidden="true">${esc(m.ic||"📚")}</span><div><h2>${esc(nomAssig(monId))}</h2>
+ <section class="targeta perfil"><span class="mon-ic" style="--mc:${colAssig(monId)}" aria-hidden="true">${esc(m.ic||"📚")}</span><div class="perfil-info"><h2>${esc(nomAssig(monId))}</h2>
   <div class="xips">${pillMon(monId)}${m.nom?`<span class="xip">${esc(m.nom)}</span>`:""}<span id="fitxaMonEstat">${ob?pillEstat("be","Obert a la portada"):pillEstat("malament","Tancat a la portada")}</span>
-   <button class="sw" type="button" role="switch" id="fitxaMonSw" data-mon-sw="${esc(monId)}" aria-label="Estat de ${esc(nomAssig(monId))}" aria-checked="${ob}"${nd}><i></i><span>${ob?"Obert":"Tancat"}</span></button></div></div></section>
+   <button class="sw" type="button" role="switch" id="fitxaMonSw" data-mon-sw="${esc(monId)}" aria-label="Estat de ${esc(nomAssig(monId))}" aria-checked="${ob}"${nd}><i></i><span>${ob?"Obert":"Tancat"}</span></button></div></div>
+  <div class="perfil-acc" role="group" aria-label="Descarrega informe de classe del món"><button class="btn petit" type="button" id="btMonInfHtml" title="Descarrega l'informe visual de classe d'aquest món llest per imprimir o desar com a PDF">${ic("baixar")}<span>Informe classe (PDF)</span></button><button class="btn sec petit" type="button" id="btMonInfMd" title="Descarrega l'informe de classe en format Markdown (.md)">${ic("baixar")}<span>Informe .md</span></button></div></section>
  <div class="pestanyes" role="tablist" aria-label="Seccions del món">${tabsDef.map(([tid,pid,tit])=>`<button role="tab" type="button" id="${tid}" aria-controls="${pid}" aria-selected="${tid===tabIni}" tabindex="${tid===tabIni?0:-1}">${esc(tit)}</button>`).join("")}</div>
  ${tabsDef.map(([tid,pid])=>`<section role="tabpanel" id="${pid}" aria-labelledby="${tid}"${tid===tabIni?"":" hidden"}></section>`).join("")}`;
  $("#tornaMon").onclick=()=>navega("mons");
  $("#selFitxaMon").onchange=e=>{const nid=normMonId(e.target.value);if(!nid||nid===monId)return;navega("mons",{id:nid,tab:MON_SLUG[TAB]||"resum"})};
+ const bMH=$("#btMonInfHtml"),bMM=$("#btMonInfMd");
+ if(bMH)bMH.onclick=()=>baixaInformeMon(monId,"html",bMH);
+ if(bMM)bMM.onclick=()=>baixaInformeMon(monId,"md",bMM);
  const carregaTab=id=>{
   if(id==="mtb-resum")pintaMonResum(monId,tok);
   else if(id==="mtb-domini")pintaMonDomini(monId,tok);
@@ -3304,19 +3309,127 @@ async function pintaMonResum(monId,tok){
   el.innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El domini per tema encara no està activat a la base de dades."):avisErr(`No s'han pogut carregar els temes (${e}).`)});
  tp.dataset.estat="fet";
 }
+function construeixMatriuMon(monId,rawMat,domFallback,visRaw){
+ const tmMap=new Map();
+ Object.entries(PREG||{}).forEach(([k,v])=>{const [as,t]=k.split("/");if(as===monId&&!t.startsWith("j-")&&!tmMap.has(t))tmMap.set(t,String(v&&v.tema||t))});
+ const li=labInfo(monId),teLab=!!li;
+ const premisSet=new Set();
+ if(rawMat&&Array.isArray(rawMat.premis_visuals)){
+  rawMat.premis_visuals.forEach(p=>{if(!p||!p.k)return;const rk=String(p.reward_key||""),w=rk.indexOf("visual_")===0?rk.slice(7):rk;if(assigDeWorld(w)===monId)premisSet.add(String(p.k).toLowerCase())});
+ }
+ const visMap=new Map();
+ if(visRaw)construeixFilesVisuals(visRaw,monId).forEach(r=>visMap.set(r.k,r));
+ const rawAl=rawMat&&Array.isArray(rawMat.alumnes)?rawMat.alumnes:null;
+ let base=[];
+ if(rawAl){
+  base=rawAl.map(a=>{
+   const k=String(a.k||"").toLowerCase(),tp=oB(a.temes_progres),tl=oB(a.temes_log);
+   Object.keys(tp).forEach(t=>{if(!tmMap.has(t)&&!t.startsWith("j-"))tmMap.set(t,titolTema(monId,t))});
+   Object.keys(tl).forEach(t=>{if(!tmMap.has(t)&&!t.startsWith("j-"))tmMap.set(t,titolTema(monId,t))});
+   const temes={};
+   [...tmMap.keys()].forEach(t=>{
+    const p=oB(tp[t]),l=oB(tl[t]);
+    const mp=nN(p.max),ml=nN(l.max),mx=mp!=null&&ml!=null?Math.max(mp,ml):(mp??ml??null);
+    const n=(nN(p.n)||0)+(mp==null?(nN(l.n)||0):0);
+    const fitxa=p.fitxa===true||l.fitxa===true||(nN(p.fc)||0)>0;
+    temes[t]={max:mx,n,fitxa};
+   });
+   const vObj=oB(a.visuals),vSelf=li&&(vObj[li.world]||vObj[monId])||null,vExt=visMap.get(k)||null;
+   const labExp=Math.max(nN(vSelf&&vSelf.explored)||0,vExt?vExt.explored:0);
+   const labPremi=premisSet.has(k)||!!(vSelf&&vSelf.rewardClaimed)||!!(vExt&&vExt.premi);
+   const labTot=li?li.total:6;
+   return {k,nom:String(a.nom||k),id:nN(a.id),tePin:a.te_pin===true,punts:nN(a.punts)||0,ultimTs:nN(a.ultim_ts),repN:nN(a.rep_n)||0,bossV:nN(a.boss_v)||0,examMax:nN(a.exam_max),temes,lab:teLab?{explored:labPremi?labTot:Math.min(labTot,labExp),total:labTot,premi:labPremi}:null};
+  });
+ }else{
+  const byK=new Map();
+  (domFallback||[]).filter(x=>x&&x.assig===monId).forEach(x=>{
+   const k=String(x.nom||"").trim().toLowerCase();if(!k)return;
+   if(!tmMap.has(x.tema))tmMap.set(x.tema,x.titol||x.tema);
+   const r=byK.get(k)||{k,nom:String(x.nom),id:IDS[k]??null,tePin:IDS[k]!=null,punts:0,ultimTs:null,repN:0,bossV:0,examMax:null,temes:{},lab:null};
+   r.temes[x.tema]={max:x.millor!=null?+x.millor:null,n:+x.intents||0,fitxa:(+x.segons_estudi||0)>0};
+   byK.set(k,r);
+  });
+  (LOGS||[]).filter(l=>l&&l.assig===monId&&l.nom).forEach(l=>{
+   const k=clauNen(l),r=byK.get(k)||{k,nom:l.nom,id:IDS[k]??null,tePin:IDS[k]!=null,punts:0,ultimTs:null,repN:0,bossV:0,examMax:null,temes:{},lab:null};
+   const ts=Date.parse(l.ts)||null;if(ts&&(!r.ultimTs||ts>r.ultimTs))r.ultimTs=ts;
+   const d=l.detall||{};if(d.punts!=null)r.punts=Math.max(r.punts,+d.punts||0);
+   if(l.event==="joc"&&d.joc==="boss"&&d.guanya)r.bossV++;
+   if(l.event==="examen"&&d.pc!=null)r.examMax=Math.max(r.examMax||0,+d.pc);
+   byK.set(k,r);
+  });
+  base=[...byK.values()].map(r=>{
+   if(teLab){const v=visMap.get(r.k);r.lab={explored:v?v.explored:0,total:li.total,premi:!!(v&&v.premi)}}
+   return r;
+  });
+ }
+ const temes=[...tmMap.entries()];
+ const N=Math.max(1,temes.length);
+ const files=base.map(r=>{
+  let ap=0,su=0,fx=0,no=0;
+  temes.forEach(([t])=>{const c=r.temes[t];if(!c||(c.max==null&&!c.fitxa))no++;else if(c.max==null)fx++;else if(c.max>=APROVAT)ap++;else su++});
+  const pTemes=(ap/N)*60;
+  const pRep=r.repN===0?20:r.repN<=3?12:r.repN<=8?6:0;
+  const pBoss=(r.bossV>0||(r.examMax!=null&&r.examMax>=APROVAT))?1:0;
+  const pLab=teLab?(r.lab&&(r.lab.premi||r.lab.explored>=r.lab.total)?1:(r.lab&&r.lab.explored>0?r.lab.explored/r.lab.total:0)):0;
+  const pPrac=teLab?(pLab*10+pBoss*10):(pBoss*20);
+  const llest=Math.min(100,Math.round(pTemes+pRep+pPrac));
+  const band=llest>=80?"llest":llest>=50?"progres":"risc";
+  return Object.assign(r,{ap,su,fx,no,totalTemes:temes.length,llest,band});
+ }).sort((a,b)=>a.llest-b.llest||a.nom.localeCompare(b.nom,"ca"));
+ const resumTemes=temes.map(([t,tit],i)=>{
+  let ap=0,fets=0;files.forEach(r=>{const c=r.temes[t];if(c&&c.max!=null){fets++;if(c.max>=APROVAT)ap++}});
+  return {t,tit,idx:i+1,ap,fets,pc:files.length?Math.round(ap*100/files.length):0};
+ });
+ return {monId,temes,teLab,files,resumTemes};
+}
 async function pintaMonDomini(monId,tok){
  const tp=$("#mtp-domini");if(!tp||tp.dataset.estat)return;
  tp.dataset.estat="carrega";
  tp.innerHTML=`<div class="pila">
-  ${card("domini","c-12","diana","Domini per tema","Quants temes té aprovats cada nen i la millor nota de test a cada tema. Clica un nen per obrir-ne la fitxa.",`<div id="tDom" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  ${card("monMatriu","c-12","diana","🗺️ Preparació de la classe (Matriu Alumnes × Temes)","Estat acumulat real de cada alumne en aquest món: % de preparació per a l'examen (60% temes aprovats · 20% repàs al dia · 20% pràctica Lab/Boss/Examen), semàfor per tema i resum de classe.",`<div id="tMatriu" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
+  ${card("domini","c-12","diana","Domini per tema (període)","Quants temes té aprovats cada nen i la millor nota de test a cada tema en el període seleccionat. Clica un nen per obrir-ne la fitxa.",`<div id="tDom" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   ${card("fallades","c-12","creu","Preguntes més fallades","Top 20 d'aquest món, amb l'opció equivocada que més trien (parany).",`<div id="tFal" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   ${card("pendents","c-12","reinicia","Errors pendents de repàs","Temes d'aquest món on els nens amb PIN acumulen més errors per repassar al núvol.",`<div id="tRep" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
   ${card("monDifCard","c-12","llamp","Dificultat real d'aquest món","Encert real de les preguntes d'aquest món en tests i exàmens dels últims 365 dies.",`<div id="tMonDif" aria-busy="true"><div class="esq esq-f"></div><div class="esq esq-f"></div></div>`)}
  </div>`;
- Promise.all([rpcT("bn_admin_domini",{p_assig:monId,p_nom:null}),preguntes()]).then(([dom])=>{
-  if(tok!==TOK||ELEM!==monId||!$("#tDom"))return;$("#tDom").removeAttribute("aria-busy");tDomini(Array.isArray(dom)?dom:[],"tDom");
- }).catch(e=>{if(tok!==TOK||ELEM!==monId||!$("#tDom"))return;$("#tDom").removeAttribute("aria-busy");
-  $("#tDom").innerHTML=e==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El domini encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el domini (${e}).`)});
+ const pDom=Promise.all([rpcT("bn_admin_domini",{p_assig:monId,p_nom:null}).catch(e=>({__err:e})),preguntes()]);
+ const pMat=matriuMonDe(monId).catch(e=>({__err:e}));
+ const pVis=visualsDe().catch(()=>null);
+ Promise.all([pMat,pDom,pVis,asseguraLogs().catch(()=>null)]).then(([rawMat,[dom0],visRaw])=>{
+  const el=$("#tMatriu");if(tok!==TOK||ELEM!==monId||!el)return;el.removeAttribute("aria-busy");
+  const errSql=rawMat&&rawMat.__err?rawMat.__err:null;
+  const domArr=Array.isArray(dom0)?dom0:[];
+  const M=construeixMatriuMon(monId,errSql?null:rawMat,domArr,visRaw);
+  const avis=errSql==="falta"?avisSQL("supabase/bn_admin_matriu_mon.sql","La funció bn_admin_matriu_mon encara no està activada a Supabase. Es mostra una aproximació amb les dades del període."):errSql?avisErr(`No s'ha pogut carregar la matriu del núvol (${errSql}).`):"";
+  if(!M.files.length){el.innerHTML=avis+buit("diana","Encara no hi ha alumnes actius en aquest món.");return}
+  let fl="tots";
+  const nRisc=M.files.filter(x=>x.band==="risc").length,nProg=M.files.filter(x=>x.band==="progres").length,nLlest=M.files.filter(x=>x.band==="llest").length;
+  const pitjorT=[...M.resumTemes].sort((a,b)=>a.pc-b.pc)[0];
+  const pintaM=()=>{
+   const sub=fl==="tots"?M.files:M.files.filter(x=>x.band===fl);
+   const fb=(id,t,n)=>`<button type="button" class="btn ${fl===id?"":"sec "}petit" data-mat-f="${id}">${t} (${n})</button>`;
+   const barra=`<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px">${fb("tots","Tots",M.files.length)}${fb("risc","En risc (<50%)",nRisc)}${fb("progres","En progrés",nProg)}${fb("llest","Llests (≥80%)",nLlest)}${pitjorT?`<span class="esp"></span><span class="pill warn" title="Tema amb menys aprovats de la classe">Tema més fluix: T${pitjorT.idx} (${pitjorT.pc}%)</span>`:""}</div>`;
+   const celH=r=>`<div style="display:flex;gap:3px;flex-wrap:wrap;align-items:center">${M.temes.map(([t,tit],i)=>{const c=r.temes[t];const cl=!c||(c.max==null&&!c.fitxa)?"buit":c.max==null?"bfx":bandPc(c.max);const tx=!c||(c.max==null&&!c.fitxa)?"·":c.max==null?"F":c.max;return `<span class="dm-c ${cl}" style="min-width:26px;font-size:11px;padding:2px 4px" title="T${i+1} · ${esc(tit)}: ${c&&c.max!=null?c.max+"%":c&&c.fitxa?"només fitxa":"sense obrir"}">${tx}</span>`}).join("")}</div>`;
+   const cols=[
+    {k:"nom",t:"Nen",cls:"nw",h:r=>`<span class="nen-c"><button type="button" class="nen-b" data-obre-nen="${esc(r.k)}" title="Obre la fitxa de ${esc(r.nom)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>${r.id!=null?`<span class="xip">#${r.id}</span>`:""}</span>`},
+    {k:"llest",t:"% llest",num:true,cls:"nw",h:r=>mini(r.llest,100,r.llest>=80?"ok":r.llest>=50?"":"bad",r.llest+"%")},
+    {k:"ap",t:`Temes (${M.temes.length})`,num:true,csv:r=>`${r.ap}/${r.totalTemes}`,h:r=>`<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px"><b>${r.ap}/${r.totalTemes}</b> aprovats${r.su?` · <span class="bad">${r.su} millorar</span>`:""}</span>${celH(r)}</div>`},
+    ...(M.teLab?[{k:"lab",t:"🧪 Lab",cls:"nw",v:r=>r.lab?(r.lab.premi?100:r.lab.explored):0,csv:r=>r.lab?`${r.lab.explored}/${r.lab.total}${r.lab.premi?" (+10)":""}`:"—",h:r=>!r.lab?"—":r.lab.premi?`<span class="pill ok">${r.lab.total}/${r.lab.total} ✓</span>`:r.lab.explored>0?`<span class="pill neutre">${r.lab.explored}/${r.lab.total}</span>`:`<span class="muted">0/${r.lab.total}</span>`}]:[]),
+    {k:"bossV",t:"👾 Boss",num:true,cls:"nw",h:r=>r.bossV?`<span class="pill ok">🏆 ${r.bossV}</span>`:`<span class="muted">—</span>`},
+    {k:"repN",t:"Repàs",num:true,cls:"nw",h:r=>r.repN?`<span class="pill ${r.repN>5?"bad":"warn"}">${r.repN} err.</span>`:`<span class="pill ok">0</span>`}
+   ];
+   const resumH=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;align-items:center"><span class="muted"><b>Aprovats per tema:</b></span>${M.resumTemes.map(t=>`<span class="xip" title="${esc(t.tit)} · ${t.ap} de ${M.files.length} alumnes aprovats">T${t.idx}: <b class="${t.pc>=70?"ok":t.pc>=40?"warn":"bad"}">${t.pc}%</b></span>`).join("")}</div>`;
+   const prev=TAULES.tMonMatriu;
+   el.innerHTML=avis+barra+(sub.length?taula("tMonMatriu",cols,sub,{k:prev?prev.k:"llest",desc:prev?prev.desc:false,alta:true,etiqueta:`Matriu de classe · ${nomAssig(monId)}`,csvNom:`bona-nota-matriu-${monId}`,fila:r=>` class="clic" data-nen="${esc(r.k)}" tabindex="0"`}):buit("diana","Cap alumne en aquest filtre."))+resumH;
+   el.querySelectorAll("[data-mat-f]").forEach(b=>b.onclick=()=>{fl=b.dataset.matF;pintaM()});
+  };
+  pintaM();
+ });
+ pDom.then(([dom])=>{
+  if(tok!==TOK||ELEM!==monId||!$("#tDom"))return;$("#tDom").removeAttribute("aria-busy");
+  if(dom&&dom.__err){$("#tDom").innerHTML=dom.__err==="falta"?avisSQL("supabase/bn_admin_tauler.sql","El domini encara no està activat a la base de dades."):avisErr(`No s'ha pogut carregar el domini (${dom.__err}).`);return}
+  tDomini(Array.isArray(dom)?dom:[],"tDom");
+ });
  Promise.all([rpcT("bn_admin_fallades",{p_assig:monId,p_nom:null}),preguntes()]).then(([fall])=>{
   if(tok!==TOK||ELEM!==monId||!$("#tFal"))return;$("#tFal").removeAttribute("aria-busy");tFallades(Array.isArray(fall)?fall:[],"tFal","bn_admin_mfal");
  }).catch(e=>{if(tok!==TOK||ELEM!==monId||!$("#tFal"))return;$("#tFal").removeAttribute("aria-busy");
@@ -3324,6 +3437,51 @@ async function pintaMonDomini(monId,tok){
  tPendents(monId,"tRep");
  tDificultat(monId,"tMonDif");
  tp.dataset.estat="fet";
+}
+async function baixaInformeMon(monId,fmt,bt){
+ if(bt){bt.disabled=true;bt.dataset.orig=bt.innerHTML;bt.textContent="Preparant…"}
+ try{
+  const [rawMat,domRes,fallRes,visRaw]=await Promise.all([
+   matriuMonDe(monId).catch(()=>null),
+   rpcT("bn_admin_domini",{p_assig:monId,p_nom:null}).catch(()=>[]),
+   rpcT("bn_admin_fallades",{p_assig:monId,p_nom:null}).catch(()=>[]),
+   visualsDe().catch(()=>null),
+   preguntes().catch(()=>null),
+   asseguraLogs().catch(()=>null)
+  ]);
+  const M=construeixMatriuMon(monId,rawMat,Array.isArray(domRes)?domRes:[],visRaw);
+  const net=t=>String(t||"").replace(/<[^>]+>/g,"");
+  const fall=(Array.isArray(fallRes)?fallRes:[]).slice(0,10).map(f=>{const q=PREG[f.assig+"/"+f.qid]||null,parany=q&&f.opcio_parany!=null&&q.o[+f.opcio_parany]!=null?net(q.o[+f.opcio_parany]):null;
+   return {qid:f.qid,text:q?net(q.t):`Pregunta ${f.qid}`,tema:q?q.tema:"",bona:q?net(q.o[q.c]):"?",parany,pct:+f.pct_error||0,errors:+f.errors||0,intents:+f.intents||0}});
+  const ara=new Date(),gen=dataExacta(ara),iso=ara.toISOString().slice(0,10),nomM=nomAssig(monId);
+  const nAl=M.files.length,mitjLlest=nAl?Math.round(M.files.reduce((s,r)=>s+r.llest,0)/nAl):0;
+  const nLlest=M.files.filter(r=>r.band==="llest").length,nRisc=M.files.filter(r=>r.band==="risc").length;
+  const nLabComp=M.teLab?M.files.filter(r=>r.lab&&(r.lab.premi||r.lab.explored>=r.lab.total)).length:0;
+  if(fmt==="md"){
+   const L=[`# Informe de classe · ${nomM}`,`> Generat: ${gen} · Alumnes actius: ${nAl} · Preparació mitjana: ${mitjLlest}% · Llests (≥80%): ${nLlest} · En risc (<50%): ${nRisc}${M.teLab?` · Lab visual completat: ${nLabComp}/${nAl}`:""}`,"",
+    "## 1. Preparació per alumne",`| Nen | % llest | Temes aprovats |${M.teLab?" Lab visual |":""} Boss | Errors repàs |`,`|---|---:|---:|${M.teLab?"---:|":""}---:|---:|`,
+    ...M.files.map(r=>`| ${r.nom} | ${r.llest}% | ${r.ap}/${r.totalTemes} |${M.teLab?` ${r.lab?`${r.lab.explored}/${r.lab.total}${r.lab.premi?" (+10⭐)":""}`:"—"} |`:""} ${r.bossV} | ${r.repN} |`),"",
+    "## 2. Aprovats de classe per tema","| Tema | Aprovats | % classe |","|---|---:|---:|",
+    ...M.resumTemes.map(t=>`| T${t.idx} · ${t.tit} | ${t.ap}/${nAl} | ${t.pc}% |`),"",
+    "## 3. Top preguntes més fallades (amb distractor trampa)",
+    ...(fall.length?fall.map((f,i)=>`${i+1}. **${f.text}** (${f.pct}% d'error · ${f.errors}/${f.intents})\n   - Bona: ${f.bona}${f.parany?`\n   - Distractor trampa: ${f.parany}`:""}`):["Cap pregunta fallada registrada."])];
+   baixaFitxer(`informe-mon-${monId}-${iso}.md`,L.join("\n"),"text/markdown;charset=utf-8");
+   toast(`Informe de ${nomM} descarregat (.md)`);
+  }else{
+   const rowsH=M.files.map(r=>`<tr><td><b>${esc(r.nom)}</b>${r.id!=null?` <small style="color:#64748b">#${r.id}</small>`:""}</td><td style="font-weight:700;color:${r.llest>=80?"#15803d":r.llest>=50?"#b45309":"#b91c1c"}">${r.llest}%</td><td>${r.ap}/${r.totalTemes}</td>${M.teLab?`<td>${r.lab?`${r.lab.explored}/${r.lab.total}${r.lab.premi?" ✓":""}`:"—"}</td>`:""}<td>${r.bossV||"—"}</td><td>${r.repN}</td></tr>`).join("");
+   const temesH=M.resumTemes.map(t=>`<tr><td>T${t.idx} · ${esc(t.tit)}</td><td>${t.ap}/${nAl}</td><td style="font-weight:700;color:${t.pc>=70?"#15803d":t.pc>=40?"#b45309":"#b91c1c"}">${t.pc}%</td></tr>`).join("");
+   const fallH=fall.length?fall.map((f,i)=>`<div style="padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px"><b>${i+1}. ${esc(f.text)}</b> <span style="color:#b91c1c;font-weight:700">(${f.pct}% d'error · ${f.errors}/${f.intents})</span><div style="font-size:13px;margin-top:4px"><span style="color:#15803d">✓ Bona: ${esc(f.bona)}</span>${f.parany?` · <span style="color:#b45309">⚠ Parany: ${esc(f.parany)}</span>`:""}</div></div>`).join(""):`<p style="color:#64748b">Cap pregunta fallada registrada.</p>`;
+   const html=`<!DOCTYPE html><html lang="ca"><head><meta charset="UTF-8"><title>Informe de classe · ${esc(nomM)}</title><style>body{font-family:system-ui,-apple-system,sans-serif;color:#0f172a;max-width:920px;margin:24px auto;padding:0 16px;line-height:1.45}h1{margin:0 0 6px}h2{margin:22px 0 10px;border-bottom:2px solid #e2e8f0;padding-bottom:4px;font-size:17px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.kpi{border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;background:#f8fafc}.kpi small{display:block;color:#64748b;font-size:12px}.kpi b{font-size:22px}table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9}.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}@media print{.noprint{display:none}}</style></head><body>
+    <div class="bar"><div><h1>📊 Informe de classe · ${esc(nomM)}</h1><small style="color:#64748b">Generat: ${esc(gen)} · Bona Nota</small></div><button class="noprint" onclick="window.print()" style="padding:8px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#2563eb;color:#fff;font-weight:600;cursor:pointer">🖨️ Imprimeix / PDF</button></div>
+    <div class="kpis"><div class="kpi"><small>Alumnes actius</small><b>${nAl}</b></div><div class="kpi"><small>Preparació mitjana</small><b>${mitjLlest}%</b></div><div class="kpi"><small>Llests (≥80%) / En risc</small><b>${nLlest} / ${nRisc}</b></div><div class="kpi"><small>${M.teLab?"Lab visual completat":"Temes del món"}</small><b>${M.teLab?`${nLabComp}/${nAl}`:M.temes.length}</b></div></div>
+    <h2>1. Preparació per alumne</h2><table><thead><tr><th>Nen</th><th>% llest</th><th>Temes</th>${M.teLab?"<th>🧪 Lab</th>":""}<th>👾 Boss</th><th>Repàs</th></tr></thead><tbody>${rowsH}</tbody></table>
+    <h2>2. Aprovats de classe per tema</h2><table><thead><tr><th>Tema</th><th>Aprovats</th><th>% classe</th></tr></thead><tbody>${temesH}</tbody></table>
+    <h2>3. Top preguntes més fallades (i distractor trampa)</h2>${fallH}</body></html>`;
+   baixaFitxer(`informe-mon-${monId}-${iso}.html`,html,"text/html;charset=utf-8");
+   toast(`Informe de ${nomM} descarregat (HTML / PDF)`);
+  }
+ }catch(e){console.error(e);toast(`No s'ha pogut generar l'informe del món (${e&&e.message||e})`,"err")}
+ finally{if(bt){bt.disabled=false;if(bt.dataset.orig)bt.innerHTML=bt.dataset.orig}}
 }
 async function pintaMonObertes(monId,tok){
  const tp=$("#mtp-obertes");if(!tp||tp.dataset.estat)return;
@@ -4824,6 +4982,12 @@ function demoFitxaRpc(f,x){const k0=String(x.p_nom||"").trim().toLowerCase();
     {k:"laia",nom:"Laia",id:4,assig:"enters",te_pin:true},{k:"pau",nom:"Pau",id:3,assig:"enters",te_pin:true}
    ]
   }}
+ if(f==="bn_admin_matriu_mon"){const a0=String(x.p_assig||"").toLowerCase(),lsA=DEMO_L.filter(l=>l.assig===a0);
+  const ks=[...new Set(lsA.map(clauNen))].sort();
+  const visD=demoFitxaRpc("bn_admin_visuals",{});
+  const al=ks.map(k=>{const m=demoMon(k,a0),pf=demoPerfil(k,null),vp=(visD.progres||[]).find(p=>p.k===k&&p.assig===a0);
+   return {k,nom:(lsA.find(l=>clauNen(l)===k)||{}).nom||k,id:pf?pf.id:null,te_pin:!!pf,punts:m.punts,ultim_ts:m.ts,rep_n:m.rep_n,boss_v:m.boss?m.boss.v:0,exam_max:m.examens.length?Math.max(...m.examens.map(e=>e.pc)):null,temes_progres:m.temes,temes_log:{},visuals:vp?vp.visuals:{}}});
+  return {assig:a0,alumnes:al,premis_visuals:visD.premis}}
  throw "demo"}
 // demo del Benestar: els mateixos nens que la resta de la demo (la Nora respon de pressa, l'Hugo fa dies que no ve), un cas de cada color,
 // una vigília en blau (la Jana, a Comarques), un nen amb dos aparells (en Pau) i una data d'examen posada (Mates, d'aquí a 2 dies)
