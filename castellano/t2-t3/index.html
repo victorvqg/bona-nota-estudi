@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f8b2895294",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="4c6ade4d14",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -253,6 +253,24 @@ ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;heig
 .boss{position:relative;overflow:hidden;background:radial-gradient(circle at 50% 20%,#312e81,#0f172a 70%);border-radius:20px;padding:14px;margin:4px 0 10px;border:3px solid #a78bfa;color:#e2e8f0;transition:border-color .35s,background .35s}
 .boss.sacseja{animation:bossSacseja .32s ease-out}
 @keyframes bossSacseja{0%,100%{transform:none}20%{transform:translateX(-5px) translateY(2px)}45%{transform:translateX(5px) translateY(-2px)}70%{transform:translateX(-3px)}}
+.album-box{background:var(--card);border:2px solid var(--lin);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 4px 14px #00000008}
+.album-cap{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.album-cap b{font-size:15px}
+.album-bar{height:7px;background:var(--lin);border-radius:99px;overflow:hidden;margin-bottom:10px}
+.album-bar i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#22c55e);border-radius:99px;transition:width .35s}
+.album-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.alb-s{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:9px 6px;border-radius:12px;border:1.5px solid var(--lin);background:var(--fons);cursor:pointer;font:inherit;color:var(--txt);transition:transform .15s,border-color .15s}
+.alb-s:hover{transform:translateY(-2px);border-color:var(--p)}
+.alb-s .ai{font-size:22px;line-height:1.1;filter:grayscale(1) opacity(.5)}
+.alb-s b{font-size:11.5px;line-height:1.2}
+.alb-s small{font-size:10.5px;color:var(--suau);line-height:1.2}
+.alb-s.fet{background:linear-gradient(180deg,#fef9c3,#fffbeb);border-color:#f59e0b;box-shadow:0 2px 10px #f59e0b26}
+.alb-s.fet .ai{filter:none}
+.alb-s.fet small{color:#92400e;font-weight:700}
+.alb-100{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:99px;padding:2px 9px}
+@media (max-width:700px){.album-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:380px){.album-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+body.suau .alb-s:hover{transform:none}
 .boss.fase2{border-color:#fb923c;background:radial-gradient(circle at 50% 18%,#431407,#0f172a 72%);box-shadow:0 0 18px #fb923c44}
 .boss.furia{border-color:#ef4444;background:radial-gradient(circle at 50% 18%,#7f1d1d,#0f172a 72%);box-shadow:0 0 22px #ef444455}
 .boss-furia-tag{display:inline-block;font-family:'Press Start 2P',monospace;font-size:9px;background:#dc2626;color:#fef08a;padding:3px 7px;border-radius:7px;border:1.5px solid #fca5a5;margin-left:6px;vertical-align:middle;animation:bossCorBatec .9s ease-in-out infinite}
@@ -1985,7 +2003,8 @@ function focs(cv){const c=cv.getContext("2d");let W,H;const mida=()=>{W=cv.width
   for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.vx*=.985;p.v-=.012;if(p.v<=0){P.splice(i,1);continue}c.globalAlpha=p.v;c.fillStyle=p.col;c.fillRect(p.x|0,p.y|0,p.m,p.m)}
   c.globalAlpha=1;requestAnimationFrame(pas)};pas();return()=>{viu=false}}
 document.addEventListener("click",e=>{const el=e.target.closest("button,.tile,.continua,.flash,label.chk,details summary");if(!el||el.matches(".opt,#so"))return;so(el.matches(".flash")?"gir":"clic")},true);
-let demoN=0;const MODE_DEMO=/[?&](demo|demoBoss=|demoCombat=|joc=|tema=|vista=)/.test(location.search);
+let demoN=0;const MODE_DEMO=/[?&](demo|demoBoss=|demoCombat=|demoAlbum=|joc=|tema=|vista=)/.test(location.search);
+const DEMO_ALBUM=/[?&]demoAlbum=1/.test(location.search);
 function demo(){const casos=[[60,3,5,false],[80,4,5,false],[100,5,5,true],[40,2,5,false],[0,0,5,false]];const c=casos[demoN%5];demoN++;arcade(...c);const d=document.querySelector(".arc");if(d){const t=document.createElement("div");t.className="t4";t.style.color="#facc15";t.textContent=`DEMO ${(demoN-1)%5+1}/5 · TORNA A TOCAR "PROVA" PER LA SEGÜENT`;d.appendChild(t)}}
 function fracas(pc,bones,n){
  so("trist");abaixaMusUnMoment(4.5);document.body.classList.add("tremola");setTimeout(()=>document.body.classList.remove("tremola"),450);
@@ -2066,6 +2085,39 @@ function tileTema(t,i){
 }
 function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<APROVA})}
 function blocsTemes(){let i=0;return ASSIG.blocs.map(b=>{const h=`<h2 class="sec">${b.titol}</h2><div class="grid">${T.slice(i,i+b.n).map((t,k)=>tileTema(t,i+k)).join("")}</div>`;i+=b.n;return h}).join("")}
+function albumSegells(){
+ if(DEMO_ALBUM)return [
+  {id:"exp",ic:"📖",nom:"Explorador",sub:`${T.length}/${T.length} fitxes`,fet:true,acc:"vista('temes')"},
+  {id:"dom",ic:"🎯",nom:"Domini",sub:`${T.length}/${T.length} temes`,fet:true,acc:"vista('temes')"},
+  {id:"mem",ic:"🧠",nom:"Memòria neta",sub:"0 pendents",fet:true,acc:"repas()"},
+  ASSIG.visual?{id:"lab",ic:"🧪",nom:"Científic",sub:"Completat",fet:true,acc:"obreVisual()"}:{id:"joc",ic:"🎮",nom:"Jugador",sub:"2/2 jocs",fet:true,acc:"vista('jocs')"},
+  {id:"bos",ic:"👾",nom:"Caçabosses",sub:"Pendent",fet:false,acc:"boss()"},
+  {id:"ex",ic:"🏆",nom:"Nota de 10",sub:"Examen ≥ 90%",fet:false,acc:"joc('examreal')"}
+ ];
+ const nT=T.length,fitxes=T.filter(t=>ET(t.id).fitxa).length,aprov=T.filter(t=>(millor(t.id)??0)>=APROVA).length;
+ const testsFets=T.reduce((s,t)=>s+ET(t.id).intents.length,0),repP=repPendents().length;
+ const visOk=!!(S.visuals&&Object.values(S.visuals).some(v=>v&&(v.completed||v.rewardClaimed)));
+ const jocsFets=Object.keys(S.jocs||{}).filter(k=>k!=="examen"&&k!=="examreal"&&(S.jocs[k]||[]).length>0).length;
+ const bossV=(S.boss&&S.boss.v)||0,exam90=(S.examens||[]).some(x=>x&&x.pc>=90);
+ return [
+  {id:"exp",ic:"📖",nom:"Explorador",sub:`${fitxes}/${nT} fitxes`,fet:nT>0&&fitxes>=nT,acc:"vista('temes')"},
+  {id:"dom",ic:"🎯",nom:"Domini",sub:`${aprov}/${nT} temes`,fet:nT>0&&aprov>=nT,acc:"vista('temes')"},
+  {id:"mem",ic:"🧠",nom:"Memòria neta",sub:testsFets?repP?`${repP} pendents`:"0 pendents":"Fes 1 test",fet:testsFets>0&&repP===0,acc:repP?"repas()":"vista('temes')"},
+  ASSIG.visual?{id:"lab",ic:"🧪",nom:"Científic",sub:visOk?"Completat":"Lab visual",fet:visOk,acc:"typeof obreVisual==='function'?obreVisual():vista('jocs')"}
+   :{id:"joc",ic:"🎮",nom:"Jugador",sub:`${Math.min(2,jocsFets)}/2 jocs`,fet:jocsFets>=2,acc:"vista('jocs')"},
+  {id:"bos",ic:"👾",nom:"Caçabosses",sub:bossV?`Vençut ×${bossV}`:"Pendent",fet:bossV>0,acc:"boss()"},
+  {id:"ex",ic:"🏆",nom:"Nota de 10",sub:exam90?"≥ 90% ✓":"Examen ≥ 90%",fet:exam90,acc:"joc('examreal')"}
+ ];
+}
+function cartaAlbum(){
+ if((MODE_TAST||!S.nom)&&!DEMO_ALBUM)return "";
+ const segs=albumSegells(),fets=segs.filter(s=>s.fet).length,pc=Math.round(fets*100/segs.length);
+ return `<section class="album-box" id="albumMon" aria-label="Àlbum de segells del món">
+  <div class="album-cap"><b>🏅 Àlbum del món${DEMO_ALBUM?` <small style="color:var(--suau);font-weight:600">(mode demo)</small>`:""}</b><span>${fets===segs.length?`<span class="alb-100">👑 COMPLETAT 100%!</span>`:`<b>${fets}/${segs.length}</b> segells`}</span></div>
+  <div class="album-bar"><i style="width:${pc}%"></i></div>
+  <div class="album-grid">${segs.map(s=>`<button type="button" class="alb-s${s.fet?" fet":""}" onclick="${s.acc}" title="${s.nom}: ${s.sub}"><span class="ai" aria-hidden="true">${s.ic}</span><b>${s.nom}</b><small>${s.sub}</small></button>`).join("")}</div>
+ </section>`;
+}
 function inici(){
  marcaDia();aplicaSuau();
  const aprov=T.filter(t=>(millor(t.id)??0)>=APROVA).length, sp=seguentPendent();
@@ -2078,7 +2130,7 @@ function inici(){
  {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd&&(!MODE_TAST||jocObertTast(jd.id)))h+=`<div class="continua" role="button" tabindex="0" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(MODE_TAST&&T.length)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(0)"><span style="font-size:28px">${T[0].ic}</span><b>Comença la mostra: ${T[0].titol}</b><span class="btn">Tasta →</span></div>`;
  else if(sp>=0)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
- h+=bossCarta(true)+cartaMissions();
+ h+=bossCarta(true)+cartaMissions()+cartaAlbum();
  h+=`${blocsTemes()}
  <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
  ${seccionsJocs()}

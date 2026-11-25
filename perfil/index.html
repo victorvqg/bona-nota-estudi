@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f8b2895294",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="4c6ade4d14",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -228,6 +228,21 @@ footer{position:relative;text-align:center;padding:10px 16px calc(176px + env(sa
 /* ---- sense moviment: si el sistema ho demana o amb «efectes suaus» ---- */
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.roda{scroll-behavior:auto}}
 body.suau *,body.suau *::before,body.suau *::after{animation:none!important;transition:none!important}
+.gran[data-comp="estel"]{box-shadow:0 0 0 4px #facc15,0 0 22px #facc1588}
+.gran[data-comp="boss"]{box-shadow:0 0 0 4px #ef4444,0 0 22px #ef444488}
+.gran[data-comp="lab"]{box-shadow:0 0 0 4px #38bdf8,0 0 22px #38bdf888}
+.gran[data-comp="remuntada"]{box-shadow:0 0 0 4px #22c55e,0 0 22px #22c55e88}
+.gran[data-comp="corona"]{box-shadow:0 0 0 4px #a855f7,0 0 0 7px #facc15,0 0 24px #a855f788}
+.comp-badge{position:absolute;top:-8px;right:-8px;font-size:20px;background:#0f172a;border:2px solid #facc15;border-radius:99px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px #0006}
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:8px}
+.cmp{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:10px 8px;border-radius:12px;border:2px solid #ffffff22;background:#1e1b4b88;color:#f8fafc;cursor:pointer;font:inherit;transition:transform .14s,border-color .14s}
+.cmp:hover:not(:disabled){transform:translateY(-2px);border-color:#facc15}
+.cmp.on{border-color:#facc15;background:#312e81;box-shadow:0 0 14px #facc1544}
+.cmp:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.7)}
+.cmp i{font-style:normal;font-size:22px;line-height:1}
+.cmp b{font-size:12px}
+.cmp small{font-size:10.5px;color:#cbd5e1;line-height:1.2}
+body.suau .cmp:hover{transform:none}
 </style>
 </head>
 <body>
@@ -278,6 +293,11 @@ body.suau *,body.suau *::before,body.suau *::after{animation:none!important;tran
    <h2 id="tPerfil"><b>2</b> PERFIL ARCADE <small>50 insígnies</small></h2>
    <div class="estils" id="estils" role="radiogroup" aria-label="Estil de color"></div>
    <div id="cats"></div>
+  </section>
+
+  <section class="bloc" aria-labelledby="tComps">
+   <h2 id="tComps"><b>3</b> COMPLEMENTS PER FITES <small>Sense atzar · es desbloquegen aprenent</small></h2>
+   <div class="comp-grid" id="comps" role="radiogroup" aria-label="Complement d'avatar"></div>
   </section>
  </div>
 
@@ -382,10 +402,34 @@ const soTic=()=>nota(740,0,.035,"square",.045);
 const soTada=()=>{[523,659,784,1047].forEach((f,i)=>nota(f,i*.09,.26,"square",.07));nota(1568,.4,.5,"triangle",.06)};
 
 // ====================== ESTAT ======================
+const COMP_CAT=[
+ {id:"",ic:"⚪",nom:"Clàssic",req:"Sempre disponible",ok:()=>true},
+ {id:"estel",ic:"✨",nom:"Estel·lar",req:"25 ⭐ totals",ok:f=>f.tot>=25},
+ {id:"boss",ic:"👾",nom:"Caçabosses",req:"Vèncer 1 Boss",ok:f=>f.boss>=1},
+ {id:"lab",ic:"🧪",nom:"Científic",req:"Completar 1 Lab visual",ok:f=>f.lab>=1},
+ {id:"remuntada",ic:"🧠",nom:"Remuntada",req:"5 errors apresos",ok:f=>f.apr>=5},
+ {id:"corona",ic:"👑",nom:"Domini",req:"100 ⭐ en un món o examen ≥ 90%",ok:f=>f.dom>=1}
+];
+function fitesReals(nom){
+ if(DEMO)return {tot:218,boss:2,lab:1,apr:7,dom:0};
+ const p=progresMons(nom);
+ let tot=0,boss=0,lab=0,apr=0,dom=0;
+ p.forEach(x=>{
+  if(!x||typeof x!=="object")return;
+  const pts=+x.punts||0;tot+=pts;
+  if(x.boss&&x.boss.v>0)boss+=+x.boss.v;
+  if(x.visuals&&Object.values(x.visuals).some(v=>v&&(v.completed||v.rewardClaimed)))lab++;
+  if(x.rep&&typeof x.rep==="object")Object.values(x.rep).forEach(r=>{if(r&&r.c>=3)apr++});
+  if(pts>=100||(Array.isArray(x.examens)&&x.examens.some(e=>e&&e.pc>=90)))dom++;
+ });
+ return {tot,boss,lab,apr,dom};
+}
+const FITES=NOM?fitesReals(NOM):{tot:0,boss:0,lab:0,apr:0,dom:0};
+const COMP_OK=id=>{const c=COMP_CAT.find(x=>x.id===id);return !!(c&&c.ok(FITES))};
 const guardat=aspecteDe(NOM)||{};
-const EST={av:BN_AV.includes(guardat.av)?guardat.av:animalPelNom(NOM||"nen"),sk:BN_SKILLS[guardat.sk]?guardat.sk:"",v:BN_SKILL_VAR_PAL[guardat.v]?guardat.v:""};
-const clau=a=>`${a.av}|${a.sk}|${a.v}`;
-let DESAT=clau({av:BN_AV.includes(guardat.av)?guardat.av:"",sk:EST.sk,v:EST.v}); // el que hi ha desat: sense animal triat compta com a «cap»
+const EST={av:BN_AV.includes(guardat.av)?guardat.av:animalPelNom(NOM||"nen"),sk:BN_SKILLS[guardat.sk]?guardat.sk:"",v:BN_SKILL_VAR_PAL[guardat.v]?guardat.v:"",comp:COMP_OK(guardat.comp)?guardat.comp:""};
+const clau=a=>`${a.av}|${a.sk}|${a.v}|${a.comp||""}`;
+let DESAT=clau({av:BN_AV.includes(guardat.av)?guardat.av:"",sk:EST.sk,v:EST.v,comp:EST.comp}); // el que hi ha desat: sense animal triat compta com a «cap»
 let TRIAT_AV=BN_AV.includes(guardat.av); // mentre no toca cap animal, l'animal no es desa (es continua calculant pel nom)
 const $=id=>document.getElementById(id);
 const viu=t=>{$("viu").textContent="";setTimeout(()=>{$("viu").textContent=t},30)};
@@ -394,15 +438,24 @@ const nomAn=id=>({fox:"Guineu",frog:"Granota",lion:"Lleó",panda:"Panda",tiger:"
 
 // ====================== PINTAR ======================
 function pintaFitxa(flip){
- const av=$("granAv");av.parentElement.style.setProperty("--av",BN_AV_BG[EST.av]);av.innerHTML=bnSpr(EST.av,"av-spr");
+ const av=$("granAv"),gran=av.parentElement;gran.style.setProperty("--av",BN_AV_BG[EST.av]);
+ if(EST.comp)gran.dataset.comp=EST.comp;else delete gran.dataset.comp;
+ const cInfo=COMP_CAT.find(x=>x.id===EST.comp);
+ av.innerHTML=bnSpr(EST.av,"av-spr")+(EST.comp&&cInfo?`<span class="comp-badge" aria-hidden="true">${cInfo.ic}</span>`:"");
  const ins=$("insig"),nou=EST.sk?`<span class="anell"></span>${bnSkillSpr(EST.sk,EST.v)}`:`<span class="anell"></span>?`;
  const posa=()=>{ins.classList.toggle("buit",!EST.sk);ins.innerHTML=nou};
  if(flip&&!SUAU){ins.classList.remove("flip");void ins.offsetWidth;ins.classList.add("flip");setTimeout(posa,250)}else posa();
  $("fSk").textContent=EST.sk?nomSk(EST.sk).toUpperCase():"Tria el teu perfil arcade";$("fSk").classList.toggle("buit",!EST.sk);
  $("fEst").textContent=EST.sk?BN_SKILL_ESTILS[EST.v].toUpperCase():"";
- const bt=$("btDesa"),canvis=clau({av:TRIAT_AV?EST.av:"",sk:EST.sk,v:EST.v})!==DESAT;
+ const bt=$("btDesa"),canvis=clau({av:TRIAT_AV?EST.av:"",sk:EST.sk,v:EST.v,comp:EST.comp})!==DESAT;
  if(!bt.classList.contains("ok")||canvis){bt.classList.remove("ok");bt.textContent="DESA EL PERFIL ▶";bt.setAttribute("aria-disabled",canvis?"false":"true")}
 }
+function pintaComps(){
+ const el=$("comps");if(!el)return;
+ el.innerHTML=COMP_CAT.map(c=>{const ok=c.ok(FITES),on=EST.comp===c.id;
+  return `<button class="cmp${on?" on":""}" type="button" role="radio" aria-checked="${on}" data-comp="${c.id}" ${ok?"":"disabled"} title="${esc(c.nom)} · ${esc(c.req)}"><i>${ok?c.ic:"🔒"}</i><b>${esc(c.nom)}</b><small>${ok?(on?"Actiu ✓":"Desbloquejat"):esc(c.req)}</small></button>`}).join("");
+}
+function triaComp(id){if(!COMP_OK(id))return;const canvi=id!==EST.comp;EST.comp=id;pintaComps();pintaFitxa(false);if(canvi){soMoneda();const c=COMP_CAT.find(x=>x.id===id);viu(`Complement: ${c?c.nom:id}`)}}
 function pintaCap(){
  const p=progresMons(NOM),id=DEMO?8:(p.map(x=>x.id).find(Boolean)||""),tot=p.reduce((s,x)=>s+(+x.punts>0?+x.punts:0),0)||(DEMO?218:0),nv=nivell(tot);
  $("qui").innerHTML=`Hola, <em>${esc(NOM)}</em>!${id?` <small>#${esc(id)}</small>`:""} Tria com et veuran els altres al rànquing.`;
@@ -450,12 +503,12 @@ function avis(h){$("avis").innerHTML=h||""}
 function toast(t){const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),SUAU?1200:1800)}
 function pluja(){if(SUAU)return;const d=document.createElement("div");d.className="pluja";let h="";for(let i=0;i<24;i++)h+=`<i style="left:${Math.random()*100}%;--m:${10+Math.random()*10|0}px;--d:${(1.3+Math.random()*1.2).toFixed(2)}s;--r:${(Math.random()*.8).toFixed(2)}s">${bnSpr(Math.random()<.3?"superstar":"star")}</i>`;d.innerHTML=h;document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}
 async function desa(){const bt=$("btDesa");if(bt.getAttribute("aria-disabled")==="true"||bt.classList.contains("ok"))return;
- const a={av:TRIAT_AV?EST.av:"",sk:EST.sk,v:EST.v};
+ const a={av:TRIAT_AV?EST.av:"",sk:EST.sk,v:EST.v,comp:EST.comp||""};
  desaAspecteLocal(NOM,a,true);DESAT=clau(a);
  bt.textContent="DESANT…";bt.setAttribute("aria-disabled","true");avis("");
  const pin=pinDe(NOM);let res="local";
  if(DEMO)res="ok";
- else if(pin&&AMB_XARXA){try{res=await rpcP("bn_aspecte_desa",{p_nom:NOM,p_pin:pin,p_aspecte:{av:a.av||undefined,sk:a.sk||undefined,v:a.v||""}})}catch(m){res=m}}
+ else if(pin&&AMB_XARXA){try{res=await rpcP("bn_aspecte_desa",{p_nom:NOM,p_pin:pin,p_aspecte:{av:a.av||undefined,sk:a.sk||undefined,v:a.v||"",comp:a.comp||undefined}})}catch(m){res=m}}
  if(res==="ok"){desaAspecteLocal(NOM,a,false);avis("")}
  else if(res==="pin")avis(`🔐 El PIN guardat ja no serveix. <a href="../">Torna a entrar a la portada</a> amb el PIN nou i el perfil es pujarà sol.`);
  else if(res==="bloc")avis("⏳ Massa intents. Espera 15 minuts: el perfil queda guardat en aquest aparell.");
@@ -469,7 +522,8 @@ function reintentaPendents(){const e=aspecteDe(NOM),pin=pinDe(NOM);if(!e||!e.pen
 // ====================== ARRENCADA ======================
 if(!NOM){$("sense").hidden=false;$("senseAv").innerHTML=bnSpr("owl");$("accions").hidden=true;$("qui").textContent="";}
 else{
- $("app").hidden=false;pintaCap();pintaRoda();pintaEstils();pintaGraella();pintaFitxa(false);
+ $("app").hidden=false;pintaCap();pintaRoda();pintaEstils();pintaGraella();pintaComps();pintaFitxa(false);
+ $("comps").addEventListener("click",e=>{const b=e.target.closest(".cmp");if(b&&!b.disabled)triaComp(b.dataset.comp)});
  requestAnimationFrame(()=>centra($("roda").querySelector(".an.on"),false));
  // roda: tocar un animal el tria i el centra; en parar de lliscar, el del mig queda triat
  const roda=$("roda");roda.addEventListener("click",e=>{const b=e.target.closest(".an");if(b)triaAnimal(b.dataset.an)});
