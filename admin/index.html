@@ -122,8 +122,9 @@ input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:var
 /* xifres clau (màx 6 a Inici, màx 4 a la resta; sense subtítols) */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
 .kpis.kpis-6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.kpis.kpis-5{grid-template-columns:repeat(5,minmax(0,1fr))}
 .kpis.kpis-4{grid-template-columns:repeat(4,minmax(0,1fr))}
-@media (max-width:1199px){.kpis.kpis-6{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:1199px){.kpis.kpis-6,.kpis.kpis-5{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:900px){.kpis.kpis-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh1);padding:11px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .kpi-t{font-size:12px;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -672,7 +673,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
  .tb-bar .cerca{max-width:none;flex:1 1 160px}
  main{padding:12px}
  .targeta{padding:12px}
- .kpis,.kpis.kpis-6,.kpis.kpis-4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .kpis,.kpis.kpis-6,.kpis.kpis-5,.kpis.kpis-4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
  .kpi{padding:10px 12px}
  .kpi-v{font-size:21px}
  .fest{grid-template-columns:minmax(100px,140px) minmax(40px,1fr) 42px}
@@ -2611,12 +2612,14 @@ function baixaCSV(nom,files){const cel=v=>`"${String(v??"").replace(/"/g,'""')}"
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+t],{type:"text/csv"}));a.download=`${nom}-${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 function vistaSessions(c){const ls=LF(),g={};ls.forEach(l=>(g[l.sessio]=g[l.sessio]||[]).push(l));
  const S=Object.entries(g).map(([id,a])=>{a.sort((x,y)=>x.ts.localeCompare(y.ts));return {id,a,nom:a[0].nom,k:clauNen(a[0]),assig:a[0].assig,ini:a[0].ts,fi:a[a.length-1].ts,durada:a.filter(l=>l.event==="temps").reduce((s,l)=>s+(l.detall.s||0),0),n:a.length,evs:[...new Set(a.map(l=>l.event))]}});
+ const totSeg=S.reduce((s,x)=>s+x.durada,0);
  const kpis=filaKpis([
   {t:"Sessions",v:S.length},
-  {t:"Durada mitjana",v:S.length?fmtT(S.reduce((s,x)=>s+x.durada,0)/S.length):"—"},
+  {t:"Temps total",v:S.length?fmtT(totSeg):"—"},
+  {t:"Durada mitjana",v:S.length?fmtT(totSeg/S.length):"—"},
   {t:"Nens únics",v:new Set(S.map(x=>x.k)).size},
   {t:"Accions",v:ls.length}
- ],4);
+ ],5);
  const cols=[
   {k:"ini",t:"Inici",cls:"nw",h:r=>dataC(r.ini)},
   {k:"nom",t:"Nen",cls:"nw",h:r=>nenH(r.nom)},
