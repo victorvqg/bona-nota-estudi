@@ -14,7 +14,6 @@ Al final del fitxer de dades, en aquest ordre:
 //@inclou eines/exercicis-mates.js   // ✏️ taller: generadors, fitxes, examen, repàs barrejat, Troba l'error
 //@inclou eines/manipulatius-mates.js // 🧸 rectangles, arbre, granotes, rajoles
 //@inclou eines/quadern.js           // 📒 comprovar el quadern i la foto a les obertes
-//@inclou eines/pissarra.js          // ✏️ full de brut
 ```
 
 ## 2. Un generador del taller

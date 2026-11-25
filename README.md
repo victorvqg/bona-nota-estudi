@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.67.2 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.68.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -390,7 +390,7 @@ Les peces del xat de cada món també s'han de posar a la base de dades: fes l'`
 | `blocs` | `[{titol, n}]`: agrupa els temes. La suma de `n` ha de donar el nombre de temes |
 | `jocs` | Llista de jocs (vegeu «Jocs») |
 | `boss` | `{nom, spr, fx, mus, rotul, em}` (i opcionalment `pix` 16×16, `notes` a mida i `ic`, la icona central de la celebració): el repte final del món i la seva celebració audiovisual ([`docs/BOSS-I-EFECTES.md`](docs/BOSS-I-EFECTES.md)) |
-| `foto`, `pissarra`, `repasExtra`, `destacat` | Opcionals: foto del quadern, full de brut, joc ofert en acabar el repàs i joc amb botó gran a l'inici |
+| `foto`, `repasExtra`, `destacat` | Opcionals: foto del quadern, joc ofert en acabar el repàs i joc amb botó gran a l'inici |
 | `peu` | Ja no es mostra: només deixa constància d'on surt el contingut |
 
 **`T`** són els temes. Cada tema porta `id`, `ic`, `col`, `titol`, `font`, `idea`, `pts`, `truc`, `compte` i, a mates, `practica`, més:
@@ -553,7 +553,6 @@ Aquests tipus viuen a la plantilla (`motor/plantilla-estudi-interactiu.html`).
 | `exercicis-mates.js` | Taller de mates: generadors `MXG`, Troba l'error `MXE`, teclat, fitxes en 3 modes, examen i repàs barrejat | Mates |
 | `manipulatius-mates.js` | Dibuixos interactius: rectangles, arbre de factors, granotes, rajoles | Mates |
 | `quadern.js` | Punts de control i foto del quadern a les obertes | Mates |
-| `pissarra.js` | Full de brut tàctil (no es desa) | Mates |
 | `so-mobil.js` | Un sol `AudioContext`, desbloquejat al primer toc, que sona a l'iPhone en silenci | Plantilla i portada |
 | `actualitza.js` | Actualització automàtica (vegeu l'apartat 7) | Plantilla i portada |
 | `mapa-comarques.js` | Genera els camins SVG de les 43 comarques i els escriu a `dades/comarques.js`, entre les marques `MAPA:inici` i `MAPA:fi` | Ningú: s'executa a mà |
@@ -584,7 +583,7 @@ Les maneres previstes d'afegir coses a un món sense tocar la plantilla:
 - **Escolta:** `speechSynthesis`, amb la veu del mateix dispositiu.
 - **Descans i bon ús:** cada 25 minuts de pàgina visible (`DESCANS_S`) proposa una pausa de 5 minuts, la registra (`descans`: `fet` o `salta`) i deixa saltar-la com a màxim 2 vegades seguides els dies normals (3 a la vigília). A l'inici del món hi ha el pla de 10 dies (`#plaDia`), el botó «Demà tinc examen» (`examen_dema`, màx. 2 dies/món), l'avís amable als 60/120 minuts i la franja de nit (`21:30`/`22:00`, amb mode suau automàtic). Totes les regles i el filtre per a mecàniques noves són a [`docs/BON-US.md`](docs/BON-US.md).
 - **Animacions i Mode suau:** tant els mons (combos, superestrelles cada 50 ⭐ i celebracions de Boss) com el rànquing (`FESTES`) fan servir animacions CSS temàtiques. La classe `suau` del `body` (activada manualment al perfil, via `prefers-reduced-motion` o sola a la franja nocturna sense alterar `bn_suau`) elimina les animacions fortes i els parpelleigs mantenint els missatges estàtics.
-- **Teclat:** un únic `keydown` reparteix les tecles segons la pantalla. No interfereix amb camps de text, la pissarra ni el teclat del Taller.
+- **Teclat:** un únic `keydown` reparteix les tecles segons la pantalla. No interfereix amb camps de text ni amb el teclat del Taller.
 
 ### Registre d'activitat
 

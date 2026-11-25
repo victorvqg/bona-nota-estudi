@@ -36,7 +36,6 @@ Les peces del sistema, com es parlen i on viu cada cosa. Es manté curt: el deta
 - `exercicis-mates.js`: Taller de mates (generadors, teclat numèric, fitxes en 3 modes, examen, repàs barrejat i Troba l'error).
 - `manipulatius-mates.js`: manipulatius interactius (rectangles, arbre de factors, granotes MCM, rajoles MCD).
 - `quadern.js`: punts de control pas a pas i correcció per foto a les preguntes obertes.
-- `pissarra.js`: full de brut tàctil.
 - `mapa-comarques.js`: generador del mapa SVG de comarques.
 - `so-mobil.js`: desbloqueig i manteniment d'àudio WebAudio a iOS/mòbil fins i tot en mode silenci.
 - `actualitza.js`: actualització automàtica en obrir la pàgina (portada i mons). Compara la versió de la pàgina amb `versio.json` (generat per `tot.py`) i, si és una còpia vella, esborra la memòria cau `bn-…` i recarrega un sol cop; mai toca el progrés.
