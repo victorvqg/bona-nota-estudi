@@ -1024,17 +1024,13 @@ function mostraSuper(){if(!SUPPEND)return mostraNivell();if(document.querySelect
 // aspecte del nen (animal, perfil arcade i estil triats a /perfil/): el llegeix del mapa bn_aspectes de l'aparell, que omple la portada.
 // Si sprites.js no ha carregat (p. ex. obrint el fitxer en local), es queda l'emoji de sempre.
 function aspecteNen(){try{const m=JSON.parse(localStorage.getItem("bn_aspectes")||"{}")||{},a=m[S.nom.trim().toLowerCase()];return a&&typeof a==="object"?a:{}}catch(e){return {}}}
-const COMP_META={estel:["✨","Estel·lar"],boss:["🔥","Caçabosses"],lab:["🧪","Científic"],remuntada:["⚡","Remuntada"],corona:["👑","Domini Total"]};
-const TITOL_META={fitxatge:"🐣 Nou fitxatge",maquina:"📜 Màquina d'estudi",cervell:"🧠 Cervell d'or",heroi:"🦸 Heroi de la Classe",llegenda:"🌟 Llegenda de 1r ESO",imparable:"💎 Imparable",mite:"🏆 Mite Absolut",cacacaps:"👾 Caçador de Caps Finals",cientific:"🧪 Científic del Lab",rescatador:"❄️ Rescatador en Gel",nota10:"🎯 Imbatible de 10"};
-function heroAv(){if(MODE_TAST)return `<div class="av" aria-hidden="true">👀</div>`;if(typeof bnSpr!=="function"||!S.nom)return `<div class="av">🧒</div>`;const a=aspecteNen();
+function heroAv(){if(MODE_TAST)return `<div class="av" aria-hidden="true">👀</div>`;if(typeof bnAvatarHtml!=="function"||!S.nom)return `<div class="av">🧒</div>`;const a=aspecteNen();
  let h=7;for(const c of S.nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;const an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length];
- const comp=COMP_META[a.comp]?a.comp:(DEMO_ALBUM?"corona":""),marc=/^(bronze|plata|or|neo|foc|diamant|prisma)$/.test(a.marc||"")?a.marc:(DEMO_ALBUM?"neo":"");
- const sk=typeof bnSkillSpr==="function"&&BN_SKILLS[a.sk]?`<span class="av-sk">${bnSkillSpr(a.sk,a.v)}</span>`:"";
- const cmp=comp?`<span class="av-cmp" aria-hidden="true">${COMP_META[comp][0]}</span>`:"";
- return `<a class="av"${comp?` data-comp="${comp}"`:""}${marc?` data-marc="${marc}"`:""} href="../../perfil/" title="Canvia el teu perfil" aria-label="El teu perfil: canvia l'animal i la insígnia" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${cmp}${sk}</a>`}
+ const comp=BN_COMP_META[a.comp]?a.comp:(DEMO_ALBUM?"corona":""),marc=bnMarcOk(a.marc)||(DEMO_ALBUM?"neo":"");
+ return bnAvatarHtml({av:an,sk:a.sk,v:a.v,comp,marc,tag:"a",cls:"av",attrs:`href="../../perfil/" title="Canvia el teu perfil" aria-label="El teu perfil: canvia l'animal i la insígnia"`})}
 function heroAsp(){if(MODE_TAST)return `<p class="asp">Mode tast anònim · cap dada ni estrella es guarda</p>`;if(typeof bnSkillSpr!=="function")return "";const a=aspecteNen();
- const comp=COMP_META[a.comp]?a.comp:(DEMO_ALBUM?"corona":""),cmpTag=comp?`<span class="asp-cmp">${COMP_META[comp][0]} ${COMP_META[comp][1]}</span>`:"";
- const ttl=TITOL_META[a.titol]?`<span class="asp-cmp" style="background:#eef2ff;color:#3730a3;border-color:#a5b4fc">${TITOL_META[a.titol]}</span>`:"";
+ const comp=BN_COMP_META[a.comp]?a.comp:(DEMO_ALBUM?"corona":""),cmpTag=comp?`<span class="asp-cmp">${BN_COMP_META[comp][0]} ${BN_COMP_META[comp][1]}</span>`:"";
+ const ttl=typeof bnTitolHtml==="function"?bnTitolHtml(a.titol,"asp-cmp"):"";
  if(!BN_SKILLS[a.sk])return `<p class="asp">${cmpTag}${ttl}<a href="../../perfil/">👾 Tria el teu perfil arcade</a></p>`;
  return `<p class="asp">${cmpTag}${ttl}${BN_SKILL_INFO[a.sk].n} · ${BN_SKILL_ESTILS[BN_SKILL_VAR_PAL[a.v]?a.v:""]}</p>`}
 function pintaCap(){if(MODE_TAST){document.getElementById("punts").textContent="👀 Tast anònim";document.getElementById("punts").title="Mode tast anònim: cap estrella ni nom es guarda ni surt al rànquing. Toca per saber-ne més.";document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=`👀 Sense compte · sense rànquing`;const cr=document.getElementById("curs");if(cr)cr.textContent=ASSIG.curs||"";return}const nv=nivell(S.punts),tot=puntsTots(),sup=Math.floor(tot/SUPER);document.getElementById("punts").innerHTML=`⭐ ${tot}<span class="pt-ext"> · ${nv.ic} ${nv.n}</span>`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · 🌠 ${sup} superestrelles (1 cada ${SUPER} ⭐) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;pintaQui()}

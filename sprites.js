@@ -160,3 +160,15 @@ const BN_MAT_RESERVA=[{color:"#2563eb",tint:"#93c5fd"},{color:"#db2777",tint:"#f
 function bnMat(nom){if(BN_MAT[nom])return BN_MAT[nom];const t=String(nom||"Altres").trim();let h=2166136261;for(const c of t.toLowerCase()){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return Object.assign({curt:t.toUpperCase()},BN_MAT_RESERVA[(h>>>0)%BN_MAT_RESERVA.length])}
 // món que encara no és a BN_MON: rajola grisa amb una estrella (a la portada, index.html hi posa l'emoji del món)
 function bnTile(id){const m=BN_MON[id]||{ic:"star"};return `<span class="spr-tile" style="--mc:${bnMat(m.mat).color}">${bnSpr(m.ic)}</span>`}
+// dibuix compartit d'avatar, marc, complement i títol (usat per portada/rànquing, mons i /perfil/ · n2997)
+const BN_COMP_META={estel:["✨","Estel·lar"],boss:["🔥","Caçabosses"],lab:["🧪","Científic"],remuntada:["⚡","Remuntada"],corona:["👑","Domini Total"]};
+const BN_TITOL_META={fitxatge:"🐣 Nou fitxatge",maquina:"📜 Màquina d'estudi",cervell:"🧠 Cervell d'or",heroi:"🦸 Heroi de la Classe",llegenda:"🌟 Llegenda de 1r ESO",imparable:"💎 Imparable",mite:"🏆 Mite Absolut",cacacaps:"👾 Caçador de Caps Finals",cientific:"🧪 Científic del Lab",rescatador:"❄️ Rescatador en Gel",nota10:"🎯 Imbatible de 10"};
+const BN_MARC_RE=/^(bronze|plata|or|neo|foc|diamant|prisma)$/;
+function bnMarcOk(m){return BN_MARC_RE.test(m||"")?m:""}
+function bnEscHtml(t){return String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]))}
+function bnAvatarHtml(o){const an=BN_AV.includes(o.av)?o.av:BN_AV[0],comp=BN_COMP_META[o.comp]?o.comp:"",marc=bnMarcOk(o.marc),sk=BN_SKILLS[o.sk]?o.sk:"",v=BN_SKILL_VAR_PAL[o.v]?o.v:"";
+ const tag=o.tag||"span",cls=o.cls||"av",attrs=o.attrs?(" "+o.attrs):"";
+ const skH=sk?`<span class="av-sk" title="Perfil: ${bnEscHtml(BN_SKILL_INFO[sk].n)} · ${bnEscHtml(BN_SKILL_ESTILS[v])}">${bnSkillSpr(sk,v)}</span>`:"";
+ const cmpH=comp?`<span class="av-cmp" aria-hidden="true">${BN_COMP_META[comp][0]}</span>`:"";
+ return `<${tag} class="${cls}"${comp?` data-comp="${comp}"`:""}${marc?` data-marc="${marc}"`:""}${attrs} style="--av:${BN_AV_BG[an]}">${o.dins||""}<span class="av-cl">${bnSpr(an,"av-spr")}</span>${cmpH}${skH}</${tag}>`}
+function bnTitolHtml(titol,cls){return BN_TITOL_META[titol]?`<span class="${cls||"asp-cmp"}">${BN_TITOL_META[titol]}</span>`:""}
