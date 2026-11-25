@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="36eab7c67d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5495ce47af",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -149,6 +149,13 @@ h2.sec:first-child{margin-top:4px}
 .hero .av .av-cl{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;background:repeating-conic-gradient(#1d16311a 0 25%,transparent 0 50%) 0 0/12px 12px,var(--av,#312e81)}
 .hero .av .av-cl svg{display:block;width:84%;height:auto;shape-rendering:crispEdges}
 .hero .av .av-sk{position:absolute;right:-9px;bottom:-7px;width:30px;height:30px;border-radius:9px;background:#1d1631;border:2px solid #facc15;display:grid;place-items:center;box-shadow:0 2px 6px #0006}
+.hero .av[data-marc="bronze"]{box-shadow:0 0 0 3px #d97706,0 0 0 6px #78350f}
+.hero .av[data-marc="plata"]{box-shadow:0 0 0 3px #e2e8f0,0 0 0 6px #64748b}
+.hero .av[data-marc="or"]{box-shadow:0 0 0 3px #fef08a,0 0 0 6px #ca8a04,0 0 18px #facc15aa}
+.hero .av[data-marc="neo"]{box-shadow:0 0 0 3px #67e8f9,0 0 0 6px #0891b2,0 0 20px #22d3eecc}
+.hero .av[data-marc="foc"]{box-shadow:0 0 0 3px #fdba74,0 0 0 6px #dc2626,0 0 20px #f97316cc}
+.hero .av[data-marc="diamant"]{box-shadow:0 0 0 3px #e0f2fe,0 0 0 6px #38bdf8,0 0 22px #7dd3fccc}
+.hero .av[data-marc="prisma"]{box-shadow:0 0 0 3px #f472b6,0 0 0 6px #a855f7,0 0 24px #facc15aa}
 .hero .av .av-sk svg{width:22px;height:auto;display:block;shape-rendering:crispEdges}
 .hero .asp{margin:2px 0 0;font-weight:900;font-size:13.5px;color:#4338ca}
 .hero .asp a{color:inherit;text-decoration:none;border-bottom:1.5px dotted #a5b4fc}
@@ -841,7 +848,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.69.1</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.70.0</small></div>
 
 <script src="../../sprites.js?v=1d98486b"></script>
 <script src="../../assets/bonanota-visuals.js?v=0b523622"></script>
@@ -2636,7 +2643,7 @@ function cartaEstrelles(gran){
 function mostraNivell(){if(SUPPEND)return mostraSuper();if(!NIVPEND)return;if(document.querySelector(".arc")){setTimeout(mostraNivell,400);return}
  const v=NIVPEND;NIVPEND=null;so("nivell");abaixaMusUnMoment(4);window.NIVELLS_MOSTRATS=(window.NIVELLS_MOSTRATS||0)+1;
  const d=document.createElement("div");d.className="arc niv";
- d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">LEVEL UP!</div><div class="nic">${v.ic}</div><div class="t3">NIVELL ${v.n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ARA ETS<br>${v.nom.toUpperCase()}</div>${v.seg?`<div class="t4">PROPER: ${v.seg[2]} ${v.seg[1].toUpperCase()} · ${v.falten} ⭐</div>`:`<div class="t4">HAS ARRIBAT AL NIVELL MÀXIM!</div>`}`;
+ d.innerHTML=`<canvas></canvas><div class="flash"></div><div class="t1">LEVEL UP!</div><div class="nic">${v.ic}</div><div class="t3">NIVELL ${v.n}</div><div class="t2">${S.nom?S.nom.toUpperCase()+", ":""}ARA ETS<br>${v.nom.toUpperCase()}</div><div class="t4" style="color:#fde047;margin-top:6px">🎁 REVISA EL TEU PERFIL: TENS NOVES RECOMPENSES!</div>${v.seg?`<div class="t4">PROPER: ${v.seg[2]} ${v.seg[1].toUpperCase()} · ${v.falten} ⭐</div>`:`<div class="t4">HAS ARRIBAT AL NIVELL MÀXIM!</div>`}`;
  document.body.appendChild(d);const para=focs(d.querySelector("canvas"));const tanca=()=>{para();d.remove()};d.onclick=tanca;setTimeout(()=>{if(d.isConnected)tanca()},4500)}
 function cartaNivell(){const v=nivell(S.punts);return `<div class="nivell" role="button" tabindex="0" onclick="vista('analitica')"><span class="nic">${v.ic}</span><div style="flex:1;min-width:0"><b>Nivell ${v.n} · ${v.nom}</b><div class="barra"><i style="width:${v.pc}%"></i></div><small>${v.seg?`Et falten ${v.falten} ⭐ per a ${v.seg[2]} ${v.seg[1]}`:"Nivell màxim! Ets una llegenda 🌟"}</small></div></div>`}
 // estrelles de la capçalera: suma de tots els mons per al mateix nom. El món obert compta en directe; els altres mons
@@ -2670,16 +2677,18 @@ function mostraSuper(){if(!SUPPEND)return mostraNivell();if(document.querySelect
 // Si sprites.js no ha carregat (p. ex. obrint el fitxer en local), es queda l'emoji de sempre.
 function aspecteNen(){try{const m=JSON.parse(localStorage.getItem("bn_aspectes")||"{}")||{},a=m[S.nom.trim().toLowerCase()];return a&&typeof a==="object"?a:{}}catch(e){return {}}}
 const COMP_META={estel:["✨","Estel·lar"],boss:["🔥","Caçabosses"],lab:["🧪","Científic"],remuntada:["⚡","Remuntada"],corona:["👑","Domini Total"]};
+const TITOL_META={fitxatge:"🐣 Nou fitxatge",maquina:"📜 Màquina d'estudi",cervell:"🧠 Cervell d'or",heroi:"🦸 Heroi de la Classe",llegenda:"🌟 Llegenda de 1r ESO",imparable:"💎 Imparable",mite:"🏆 Mite Absolut",cacacaps:"👾 Caçador de Caps Finals",cientific:"🧪 Científic del Lab",rescatador:"❄️ Rescatador en Gel",nota10:"🎯 Imbatible de 10"};
 function heroAv(){if(MODE_TAST)return `<div class="av" aria-hidden="true">👀</div>`;if(typeof bnSpr!=="function"||!S.nom)return `<div class="av">🧒</div>`;const a=aspecteNen();
  let h=7;for(const c of S.nom.trim().toLowerCase())h=(h*31+c.charCodeAt(0))>>>0;const an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length];
- const comp=COMP_META[a.comp]?a.comp:(DEMO_ALBUM?"corona":"");
+ const comp=COMP_META[a.comp]?a.comp:(DEMO_ALBUM?"corona":""),marc=/^(bronze|plata|or|neo|foc|diamant|prisma)$/.test(a.marc||"")?a.marc:(DEMO_ALBUM?"neo":"");
  const sk=typeof bnSkillSpr==="function"&&BN_SKILLS[a.sk]?`<span class="av-sk">${bnSkillSpr(a.sk,a.v)}</span>`:"";
  const cmp=comp?`<span class="av-cmp" aria-hidden="true">${COMP_META[comp][0]}</span>`:"";
- return `<a class="av"${comp?` data-comp="${comp}"`:""} href="../../perfil/" title="Canvia el teu perfil" aria-label="El teu perfil: canvia l'animal i la insígnia" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${cmp}${sk}</a>`}
+ return `<a class="av"${comp?` data-comp="${comp}"`:""}${marc?` data-marc="${marc}"`:""} href="../../perfil/" title="Canvia el teu perfil" aria-label="El teu perfil: canvia l'animal i la insígnia" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${cmp}${sk}</a>`}
 function heroAsp(){if(MODE_TAST)return `<p class="asp">Mode tast anònim · cap dada ni estrella es guarda</p>`;if(typeof bnSkillSpr!=="function")return "";const a=aspecteNen();
  const comp=COMP_META[a.comp]?a.comp:(DEMO_ALBUM?"corona":""),cmpTag=comp?`<span class="asp-cmp">${COMP_META[comp][0]} ${COMP_META[comp][1]}</span>`:"";
- if(!BN_SKILLS[a.sk])return `<p class="asp">${cmpTag}<a href="../../perfil/">👾 Tria el teu perfil arcade</a></p>`;
- return `<p class="asp">${cmpTag}${BN_SKILL_INFO[a.sk].n} · ${BN_SKILL_ESTILS[BN_SKILL_VAR_PAL[a.v]?a.v:""]}</p>`}
+ const ttl=TITOL_META[a.titol]?`<span class="asp-cmp" style="background:#eef2ff;color:#3730a3;border-color:#a5b4fc">${TITOL_META[a.titol]}</span>`:"";
+ if(!BN_SKILLS[a.sk])return `<p class="asp">${cmpTag}${ttl}<a href="../../perfil/">👾 Tria el teu perfil arcade</a></p>`;
+ return `<p class="asp">${cmpTag}${ttl}${BN_SKILL_INFO[a.sk].n} · ${BN_SKILL_ESTILS[BN_SKILL_VAR_PAL[a.v]?a.v:""]}</p>`}
 function pintaCap(){if(MODE_TAST){document.getElementById("punts").textContent="👀 Tast anònim";document.getElementById("punts").title="Mode tast anònim: cap estrella ni nom es guarda ni surt al rànquing. Toca per saber-ne més.";document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;document.getElementById("qui").textContent=`👀 Sense compte · sense rànquing`;const cr=document.getElementById("curs");if(cr)cr.textContent=ASSIG.curs||"";return}const nv=nivell(S.punts),tot=puntsTots(),sup=Math.floor(tot/SUPER);document.getElementById("punts").innerHTML=`⭐ ${tot}<span class="pt-ext"> · ${nv.ic} ${nv.n}</span>`;document.getElementById("punts").title=`${tot} ⭐ sumant tots els mons (${S.punts} en aquest) · 🌠 ${sup} superestrelles (1 cada ${SUPER} ⭐) · Nivell ${nv.n}: ${nv.nom}`;document.getElementById("hola").textContent=`${ASSIG.nom}${ASSIG.tema?" · "+ASSIG.tema:""}`;pintaQui()}
 // capçalera: «👤 Mireia #8» (o l'avatar arcade, si n'ha triat un) i el curs en una etiqueta. El nom va com a text (mai com a HTML).
 function pintaQui(){const q=document.getElementById("qui"),c=document.getElementById("curs");if(!q)return;q.textContent="";

@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.70.0 · 2026-11-25
+
+### Afegit
+- **Perfil 2.0, Camí de Nivells (fins a 1.000 ⭐) i Esdeveniment Premiat (`perfil/index.html`, `index.html`, `motor/plantilla-estudi-interactiu.html`, `supabase/bn_aspecte.sql`):**
+  - **Camí de Nivells visual horitzontal (`Nivell 1 · 0 ⭐` → `Nivell 10 · 330 ⭐` + `Màster I/II/III · 500/750/1.000 ⭐`):** mostra clarament cada fita aconseguida, el pròxim premi i quantes estrelles falten.
+  - **8 Marcs d'Avatar (`Clàssic`, `Bronze`, `Plata`, `Or Reial`, `Neó Cian`, `Foc Mític`, `Diamant`, `Prisma Estel·lar`)** visibles a `/perfil/`, Podi, Rànquing, salutació de la portada i capçalera dels 9 mons.
+  - **12 Títols de Jugador** (per nivells fins a `1.000 ⭐` i per fites reals: *Caçador de Caps Finals*, *Científic del Lab*, *Rescatador en Gel*, *Imbatible de 10*) visibles a `/perfil/` i als 9 mons.
+  - **Claredat total Meves / Bloquejades:** barra de filtre `🗂️ Totes` · `✅ Meves` · `🔒 Per desbloquejar` + comptadors `X/Y` a cada bloc.
+  - **🎁 Esdeveniment Premiat:** pastilla parpellejant **`🎁 Perfil +N`** a la portada, avís al cartell de *Level Up* dins dels mons i **Cofre d'Estrena** interactiu a `/perfil/` amb confeti, fanfàrria i botó 1-clic **`✨ Equipa-ho ara!`** (respectant Mode suau).
+
 ## 2.69.1 · 2026-11-25
 
 ### Canviat
