@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.68.0 · 2026-11-25
+
+### Eliminat
+- **Pissarra tàctil (✏️) dels mons de Matemàtiques:** eliminada l'eina `motor/eines/pissarra.js`, el botó ✏️ de la capçalera a `matematiques/divisibilitat` i `matematiques/enters`, i les seves referències a la plantilla i documentació (`README.md`, `docs/ARQUITECTURA.md`, `docs/MON-MATES.md`).
+
 ## 2.67.2 · 2026-11-25
 
 ### Afegit

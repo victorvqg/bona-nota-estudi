@@ -1,7 +1,6 @@
 const ASSIG={
  id:"enters",
  nom:"Matemàtiques", tema:"Tema 3: Els nombres enters", curs:"1r ESO", ic:"🌡️",
- pissarra:true,            // ✏️ botó del full de brut (eines/pissarra.js)
  color:["#0c4a6e","#2563eb","#38bdf8"],
  peu:"Bona Nota · Llibre de Matemàtiques de 1r d'ESO (Barcanova), unitat 3, pàg. 66-83 · Els nombres enters",
  visual:{
@@ -333,5 +332,3 @@ function svgSalts(){const {s,X}=rectaBase(-8,2,{num:true});let o=s.replace('view
 
 // 👾 Boss del món (docs/BOSS-I-EFECTES.md §3)
 ASSIG.boss={nom:"El Rei Sota Zero",spr:"gegant",fx:"blocs",mus:"chiptune",ic:"🌡️",rotul:"SIGNE CORRECTE!",em:["➕","➖","🌡️","❄️"]};
-
-//@inclou eines/pissarra.js

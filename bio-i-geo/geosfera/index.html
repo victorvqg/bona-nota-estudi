@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="37cd15a723",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="33d5028f73",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -839,7 +839,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.67.2</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.68.0</small></div>
 
 <script src="../../sprites.js?v=0d2acb59"></script>
 <script src="../../assets/bonanota-visuals.js?v=0b523622"></script>
@@ -4245,8 +4245,7 @@ document.addEventListener("keydown",e=>{
  const arc=document.querySelector(".arc");
  if(arc&&(e.key==="Enter"||e.key===" ")){e.preventDefault();arc.click();return}
  if(enCamp||document.querySelector(".descans"))return;
- // 3) Si la pissarra està oberta o hi ha el taller de mates amb el seu propi teclat, no interferir
- const pis=document.getElementById("pisCapa");if(pis&&pis.classList.contains("on"))return;
+ // 3) Si hi ha el taller de mates amb el seu propi teclat, no interferir
  if(document.querySelector(".mx-tec"))return;
  // 4) Targetes (flashcards): Espai / ↑ / ↓ gira; ← / → passa targeta
  const fl=document.querySelector("#zona .flash");

@@ -3516,8 +3516,7 @@ document.addEventListener("keydown",e=>{
  const arc=document.querySelector(".arc");
  if(arc&&(e.key==="Enter"||e.key===" ")){e.preventDefault();arc.click();return}
  if(enCamp||document.querySelector(".descans"))return;
- // 3) Si la pissarra està oberta o hi ha el taller de mates amb el seu propi teclat, no interferir
- const pis=document.getElementById("pisCapa");if(pis&&pis.classList.contains("on"))return;
+ // 3) Si hi ha el taller de mates amb el seu propi teclat, no interferir
  if(document.querySelector(".mx-tec"))return;
  // 4) Targetes (flashcards): Espai / ↑ / ↓ gira; ← / → passa targeta
  const fl=document.querySelector("#zona .flash");

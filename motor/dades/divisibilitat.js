@@ -1,7 +1,6 @@
 const ASSIG={
  id:"divisibilitat",
  nom:"Matemàtiques", tema:"Tema 2: Divisibilitat", curs:"1r ESO", ic:"🔢",
- pissarra:true,            // ✏️ botó del full de brut (eines/pissarra.js)
  foto:false,               // 📷 correcció de la foto del quadern arxivada (posa true quan ANTHROPIC_API_KEY estigui configurada a bn-corregeix)
  repasExtra:"rp-barreja",  // en acabar el repàs dels errors, botó per fer el repàs barrejat
  color:["#134e4a","#0d9488","#84cc16"],
@@ -314,4 +313,3 @@ ASSIG.boss={nom:"El Gegant Primer",spr:"gegant",fx:"blocs",mus:"chiptune",rotul:
 //@inclou eines/exercicis-mates.js
 //@inclou eines/manipulatius-mates.js
 //@inclou eines/quadern.js
-//@inclou eines/pissarra.js
