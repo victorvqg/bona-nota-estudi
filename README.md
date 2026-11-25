@@ -654,14 +654,15 @@ També és una pàgina a mà (blocs `SO-MOBIL`, `ACTUALITZA`, `sprites.js?v=` i 
 - **`?demo=1`** mostra la pàgina sense núvol amb tots els complements actius i un **simulador d'estrelles** (`0 / 30 / 80 / 150 / 218 ⭐`) per provar cada rang en 1 clic. `../#ranquing` obre la portada amb el rànquing desplegat.
 - Prova: `node motor/prova-perfil.js` (Playwright, amb Supabase simulat, incloent bloqueig a `0 ⭐` i Efectes suaus).
 
-### 🎮 Gamificació sana (v2.65.0 · `docs/BON-US.md` §6)
+### 🎮 Gamificació sana i disseny dels mons (v2.65.0–v2.67.1 · `docs/BON-US.md` §6)
 
 Totes les mecàniques de diversió passen el filtre de 10 punts de `docs/BON-US.md` (zero atzar, zero por de perdre, respecte total a Mode suau, descans i nit):
 
-- **Bosses 2.0 (`?demoCombat=1`):** 3 fases visuals i narratives (`100–67%`, `66–34% 🔥 S'ESCALFA`, `<30% 🔥 FASE DE FÚRIA`), Cop Crític (`×1,5`) en preguntes difícils (`⚡`) o de la cua de repàs (`🔁`), i **Escut de Coneixement (`🛡️`)** que absorbeix la primera errada si s'ha completat el Lab visual o s'han aprovat tots els temes.
-- **Àlbum de 6 segells del món (`?demoAlbum=1`):** targeta compacta a l'inici de cada món (`📖 Explorador`, `🎯 Domini`, `🧠 Memòria neta`, `🧪 Científic` / `🎮 Jugador`, `👾 Caçabosses`, `🏆 Nota de 10`) amb corona `👑 COMPLETAT 100%!`.
+- **Bosses 2.0 (`?demoCombat=1`):** 3 fases visuals i narratives (`100–67%`, `66–34% 🔥 S'ESCALFA`, `<30% 🔥 FASE DE FÚRIA`, amb avís de canvi de fase `.boss-fase-av` d'alt contrast WCAG AAA > 8:1), Cop Crític (`×1,5`) en preguntes difícils (`⚡`) o de la cua de repàs (`🔁`), i **Escut de Coneixement (`🛡️`)** que absorbeix la primera errada si s'ha completat el Lab visual o s'han aprovat tots els temes.
+- **Àlbum de 6 segells del món (`?demoAlbum=1`):** franja compacta d'1 línia a l'inici de cada món (`📖 Explorador`, `🎯 Domini`, `🧠 Memòria neta`, `🧪 Científic` / `🎮 Jugador`, `👾 Caçabosses`, `🏆 Nota de 10`) amb corona `👑 COMPLETAT 100%!`.
 - **Mode «❄️ Rescat d'errors en gel» (`?demoRescat=1`), Duel contra el rècord (`👻 Rècord` + `📈 NOU RÈCORD PERSONAL!`) i Avatar reactiu (`#avReac`)** als tests i repàs.
 - **Boss Cooperatiu de la Classe (`/?demo`):** evolució de la *Meta de la colla* a la portada amb 4 Bosses setmanals rotatius, barra de vida cooperativa (`VIDA X / Y`) i botó `🎉 Festa de la colla!`.
+- **Inici compacte i blocs intel·ligents a `1160px` (v2.66.0–v2.67.0):** capçalera Hero + nivell + PIN fusionats, graella 2×2 `.inici-hub` (Repàs / Lab visual / Boss), Missions plegables, amplada fluida de `1160px`, emparellament automàtic de blocs curts (`n ≤ 2`), graella equilibrada `.grid[data-n]` sense targetes òrfenes i `Preguntes obertes` en franja horitzontal al 100 %.
 
 ---
 
@@ -748,9 +749,9 @@ el tauler mostri el text de les preguntes.
 ## 9. Tauler d'administració
 
 El tauler és a https://bonanota.net/admin/ i demana el correu i la contrasenya d'admin. Serveix per veure què fan els nens, cuidar-ne l'ús i gestionar-los.
-S'organitza en **6 seccions principals** (`Inici`, `Nens`, `Mons`, `Activitat`, `Rànquing` i `Xat`, amb barra inferior fixa al mòbil) més l'accés **⚙ Configuració** (`Horaris i crèdits`, `Rànquing`, `Catàleg del xat`, `Llindars` i `Còpies`) a la barra superior, i carrega les funcions de `supabase/bn_admin_*.sql` **sota demanda** segons la pantalla oberta. «Activitat» conserva l'adreça `?v=sessions`, i l'adreça vella del xat (`?v=ranquing&tab=xat`) porta a `?v=xat`.
+S'organitza en **7 seccions principals** (`Inici`, `Control ràpid`, `Nens`, `Mons`, `Activitat`, `Rànquing` i `Xat`, amb barra inferior fixa de 7 icones al mòbil) més l'accés **⚙ Configuració** (`Horaris i crèdits`, `Rànquing`, `Catàleg del xat`, `Llindars` i `Còpies`) a la barra superior, i carrega les funcions de `supabase/bn_admin_*.sql` **sota demanda** segons la pantalla oberta. «Activitat» conserva l'adreça `?v=sessions`, i l'adreça vella del xat (`?v=ranquing&tab=xat`) porta a `?v=xat`.
 
-A la barra superior hi ha només el selector global de període (`Avui`, `7 dies`, `30 dies`, `Curs`, ocult a `Configuració`), actualitzar, tema clar/fosc i `Configuració`; els filtres d'assignatura (`#fAssig`) i de nen (`#fNen`) apareixen localment a cada sub-vista que els admet. El desplegable `#fNen` mostra sempre **tots els nens** que existeixen a la base de dades (`bn_admin_ids`, que uneix `bn_priv.perfils` i `public.bn_log` a `supabase/bn_ids_i_punts.sql`), encara que no tinguin activitat en el període triat o que tinguin 0 registres. El registre (`bn_admin_logs`) es carrega sota demanda paginat en blocs de 1.000 files (`?limit=1000&offset=…`) fins a cobrir tot el període seleccionat, de manera que el límit de 1.000 files per resposta de PostgREST no deixa cap nen fora. Després, en actualitzar, només es baixen les files noves (`p_des_id`, apartat següent).
+A la barra superior hi ha només el selector global de període (`Avui`, `7 dies`, `30 dies`, `Curs`, ocult a `Configuració` i `Control ràpid`), actualitzar, tema clar/fosc i `Configuració`; els filtres d'assignatura (`#fAssig`) i de nen (`#fNen`) apareixen localment a cada sub-vista que els admet. El desplegable `#fNen` mostra sempre **tots els nens** que existeixen a la base de dades (`bn_admin_ids`, que uneix `bn_priv.perfils` i `public.bn_log` a `supabase/bn_ids_i_punts.sql`), encara que no tinguin activitat en el període triat o que tinguin 0 registres. El registre (`bn_admin_logs`) es carrega sota demanda paginat en blocs de 1.000 files (`?limit=1000&offset=…`) fins a cobrir tot el període seleccionat, de manera que el límit de 1.000 files per resposta de PostgREST no deixa cap nen fora. Després, en actualitzar, només es baixen les files noves (`p_des_id`, apartat següent).
 
 ### 🔄 Actualització sense pantallasso i paginació
 
@@ -763,19 +764,19 @@ Pla: [`docs/superpowers/specs/2026-11-18-admin-ordre-paginacio-pla-mestre.md`](d
 
 ### 🎛️ Control ràpid: xat, horari i mons
 
-A **Inici** (`#control`, amb interruptors d'1 clic) i a **⚙ Configuració → Horaris i crèdits**:
+A la secció dedicada **Control ràpid** del menú lateral (`?v=control`, amb franja superior compacta per al xat i graella al 100 % d'amplada de 3–4 columnes per als mons) i a **⚙ Configuració → Horaris i crèdits**:
 
 - **Obrir o tancar el xat** amb un clic (també des de la secció `Xat` del menú).
 - **Programar l'horari automàtic** (`Configuració → Horaris i crèdits`): una hora de tancament i una d'obertura, en hora de Catalunya/Madrid (per exemple `21:30` → `07:00`), que tanca el xat de nit i mostra l'avís amable d'anar a descansar als mons i a la portada.
-- **Activar o desactivar cada món** (des d'`Inici` o des de `Mons → Llista`). Un món desactivat surt en gris a la portada amb «🔒 TANCAT» i no deixa entrar-hi, tampoc per enllaç directe. Les estrelles es conserven al rànquing.
+- **Activar o desactivar cada món** (des de `Control ràpid` o des de `Mons → Llista`). Un món desactivat surt en gris a la portada amb «🔒 TANCAT» i no deixa entrar-hi, tampoc per enllaç directe. Les estrelles es conserven al rànquing.
 
 El SQL és a `supabase/bn_control.sql`. Els mons es validen pel format de l'id (`^[a-z0-9_-]{1,40}$`), sense cap llista escrita a mà: un món nou no hi demana cap canvi.
 
 ### 📊 Inici, Mons, Activitat, Rànquing i Xat
 
 Les vistes s'alimenten amb les funcions agregades de `supabase/bn_admin_tauler.sql` (`bn_admin_resum`, `_activitat`, `_calor`, `_domini`, `_fallades`, `_evolucio`, `_alertes`) carregades sota demanda:
-- **Inici (`?v=inici`):** 6 xifres clau amb comparació amb el període anterior, **alertes plegables** (a dalt, abans del control ràpid d'1 clic) (`bn_admin_alertes`, amb resum de pastilles, filtres per gravetat/tipus/món, enunciat real de les preguntes, drecera `⚙ Ajusta` i 10 alertes per pàgina), nens nous (`bn_admin_altes`) i resum d'estrelles per origen (`bn_admin_fonts_dia`).
-- **Mons (`?v=mons`) i Fitxa del món (`?v=mons&id=<mon>`):** llista dels 8 mons amb interruptor directe, matriu de domini nen × tema (`bn_admin_domini`), preguntes més fallades amb el parany més triat (`bn_admin_fallades`), errors pendents (`bn_admin_rep_pendents`), dificultat real (`bn_admin_dificultat`), preguntes obertes al panell lateral i, a matemàtiques, **✏️ Taller de mates: on s'equivoquen** (`bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql`).
+- **Inici (`?v=inici`):** 6 xifres clau amb comparació amb el període anterior, targeta **Qui necessita ajuda avui** (Top 5 amb botó directe `Full A4` i `Copia resum`), **alertes plegables** (`bn_admin_alertes`, amb resum de pastilles, filtres per gravetat/tipus/món, enunciat real de les preguntes, drecera `⚙ Ajusta` i 10 alertes per pàgina), nens nous (`bn_admin_altes`) i resum d'estrelles per origen (`bn_admin_fonts_dia`).
+- **Mons (`?v=mons`) i Fitxa del món (`?v=mons&id=<mon>`):** llista dels 9 mons amb interruptor directe, matriu de domini nen × tema (`bn_admin_domini`) i **Matriu de preparació de classe (`bn_admin_matriu_mon`)**, preguntes més fallades amb el parany més triat (`bn_admin_fallades`), errors pendents (`bn_admin_rep_pendents`), dificultat real (`bn_admin_dificultat`), preguntes obertes al panell lateral i, a matemàtiques, **✏️ Taller de mates: on s'equivoquen** (`bn_admin_errors_taller`, a `supabase/bn_admin_errors_taller.sql`).
 - **Activitat (`?v=sessions`):** `Sessions` (cronologia, amb el detall al panell lateral), **`Log per dia`** filtrable per món, nen i data (o en `Taula`, amb exportació CSV) i `Gràfics` (mapa de calor hora × dia, evolució diària i estrelles per origen).
 - **Rànquing (`?v=ranquing`):** `Classificació` pública (`Total`, `Per món`, `Setmana` via `bn_ranking_mons`) amb interruptor `Visible` i bloc inferior d'amagats, i `Reptes` (`Combos i repàs` i `Repàs, boss i missions` de `tMotivacio()`).
 - **Xat (`?v=xat`):** resum del dia, interruptor del xat, moderació dels missatges en 5 columnes i silenciats, amb dreceres al catàleg i als horaris de `Configuració`.
