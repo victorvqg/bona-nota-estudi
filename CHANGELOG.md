@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.72.0 · 2026-11-25
+
+### Canviat
+- **Redisseny `/perfil/` en format «Passe de Cartes» (`perfil/index.html`, `sprites.js`, `index.html`, `motor/plantilla-estudi-interactiu.html`, `motor/prova-perfil.js` · `n2997`):**
+  - **Carrusel amb carta en focus (`scroll-snap`):** 3–4 cartes visibles a l'escriptori i ~1,6 al mòbil, amb brillantor i botó d'acció només al centre, raresa declarada com a dada (5 nivells amb nom + 1–5 gemmes + 6è aspecte «GESTA» amb progrés real) i previsualització viva del teu avatar dins les cartes de Marcs i Complements.
+  - **10 Cartes de Classe per a les 50 insígnies arcade** (amb escala fixa de 5 rangs i les 3 mostres d'estil dins la carta oberta), **Emprovador** de peces bloquejades sense desar, franja clicable **PRÒXIM PREMI** a la carta d'heroi, **Mini-vista «Així et veuen»** compartida via `bnAvatarHtml()` / `bnTitolHtml()` a `sprites.js`, i **Camí de nivells** clicable centrat al nivell actual.
+  - **Mòbil primer (`390 px`) i rendiment:** avatar `160 px` a mòbil / `192 px` a escriptori (fix del bug `.gran` duplicat), 6 pestanyes fixes a baix a l'abast del polze, botó `DESA` flotant només amb canvis, `IntersectionObserver` per pausar animacions fora de pantalla, 0 `backdrop-filter` i 0 animacions/transicions/so en equipar en mode suau.
+
 ## 2.71.0 · 2026-11-25
 
 ### Canviat

@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="4eba0f8851",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a3975f5052",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -945,9 +945,9 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.71.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.72.0</small></footer>
 
-<script src="sprites.js?v=1d98486b"></script>
+<script src="sprites.js?v=70733852"></script>
 <script>
 /* SO-MOBIL:inici (copiat de motor/eines/so-mobil.js per motor/tot.py, no editar a mà) */
 // ===== SO ALS MÒBILS (motor/eines/so-mobil.js · el mateix codi als mons i a la portada; tot.py el copia a index.html) =====
@@ -1462,17 +1462,15 @@ const fT=s=>{const m=Math.round(s/60);return m<1?"<1 MIN":m>=60?`${Math.floor(m/
 function aspMapa(){try{return JSON.parse(localStorage.getItem("bn_aspectes")||"{}")||{}}catch(e){return {}}}
 function aspecteDe(nom){const a=aspMapa()[String(nom||"").trim().toLowerCase()];return a&&typeof a==="object"?a:null}
 function desaAspectes(llista){if(tastActiu())return;const m=aspMapa();(llista||[]).forEach(x=>{if(!x||!x.nom||!x.aspecte||typeof x.aspecte!=="object")return;const k=x.nom.trim().toLowerCase();if(m[k]&&m[k].pendent)return;const prev=m[k]||{};m[k]=Object.assign({},x.aspecte,{mod:Date.now()});if(!m[k].comp&&prev.comp)m[k].comp=prev.comp;if(!m[k].marc&&prev.marc)m[k].marc=prev.marc;if(!m[k].titol&&prev.titol)m[k].titol=prev.titol});try{localStorage.setItem("bn_aspectes",JSON.stringify(m))}catch(e){}}
-function compIc(c){return ({estel:"✨",boss:"🔥",lab:"🧪",remuntada:"⚡",corona:"👑"})[c]||""}
-function marcOk(m){return /^(bronze|plata|or|neo|foc|diamant|prisma)$/.test(m||"")?m:""}
+function compIc(c){return (BN_COMP_META[c]||[])[0]||""}
+function marcOk(m){return bnMarcOk(m)}
 function avatar(nom){let h=7;const k=String(nom||"").trim().toLowerCase();for(const c of k)h=(h*31+c.charCodeAt(0))>>>0;const a=aspecteDe(nom)||{},an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length];
  const demoC=/[?&]demo\b/.test(location.search)?({pau:"corona",jana:"boss",nora:"lab",hugo:"remuntada",ona:"estel"})[k]:"";
  const demoM=/[?&]demo\b/.test(location.search)?({pau:"prisma",jana:"foc",nora:"neo",hugo:"or",ona:"plata"})[k]:"";
  const comp=compIc(a.comp)?a.comp:(demoC||""),marc=marcOk(a.marc)||(demoM||"");
- return {e:bnSpr(an,"av-spr"),c:BN_AV_BG[an],sk:BN_SKILLS[a.sk]?a.sk:"",v:BN_SKILL_VAR_PAL[a.v]?a.v:"",comp,marc}}
-// cercle d'avatar: el dibuix va enganxat a baix i el retalla un element interior (així la corona de fora no es talla); la insígnia va a la cantonada
-function avHtml(nom,cls,dins){const a=avatar(nom),x=t=>String(t).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c])),sk=a.sk?`<span class="av-sk" title="Perfil: ${x(BN_SKILL_INFO[a.sk].n)} · ${x(BN_SKILL_ESTILS[a.v])}">${bnSkillSpr(a.sk,a.v)}</span>`:"";
- const cmp=a.comp?`<span class="av-cmp" aria-hidden="true">${compIc(a.comp)}</span>`:"";
- return `<span class="${cls}"${a.comp?` data-comp="${a.comp}"`:""}${a.marc?` data-marc="${a.marc}"`:""} style="--av:${a.c}">${dins||""}<span class="av-cl">${a.e}</span>${cmp}${sk}</span>`}
+ return {av:an,e:bnSpr(an,"av-spr"),c:BN_AV_BG[an],sk:BN_SKILLS[a.sk]?a.sk:"",v:BN_SKILL_VAR_PAL[a.v]?a.v:"",comp,marc}}
+// cercle d'avatar compartit amb sprites.js (bnAvatarHtml)
+function avHtml(nom,cls,dins){const a=avatar(nom);return bnAvatarHtml({av:a.av,sk:a.sk,v:a.v,comp:a.comp,marc:a.marc,cls,dins})}
 // pujades pendents del perfil (desat sense connexió o abans d'aplicar l'SQL): en silenci, en obrir la portada
 (function(){if(tastActiu())return;const G=jugador();if(!G||!/^https?:/.test(location.protocol))return;const e=aspecteDe(G),p=pinsP()[G.toLowerCase()];if(!e||!e.pendent||!p)return;
  rpcP("bn_aspecte_desa",{p_nom:G,p_pin:p,p_aspecte:{av:e.av,sk:e.sk,v:e.v||"",comp:e.comp||undefined,marc:e.marc||undefined,titol:e.titol||undefined}}).then(r=>{if(r!=="ok")return;const m=aspMapa();if(m[G.toLowerCase()])delete m[G.toLowerCase()].pendent;try{localStorage.setItem("bn_aspectes",JSON.stringify(m))}catch(x){}}).catch(()=>{})})();
