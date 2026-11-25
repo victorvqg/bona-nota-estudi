@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.73.1 · 2026-11-25
+
+### Corregit
+- **Contrast i `:hover` de les pestanyes de Trimestre i filtres d'assignatura a la portada (`index.html` · `n3000`):** corregida l'especificitat de `.trim-bt:hover` que enfosquia el botó actiu (`1r Trimestre`) deixant el text blau marí il·legible sobre fons fosc, i millorat el contrast de totes les pestanyes de trimestre i filtres d'assignatures sobre el cel nocturn.
+
 ## 2.73.0 · 2026-11-25
 
 ### Afegit
