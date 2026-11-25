@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.72.1 · 2026-11-25
+
+### Corregit
+- **Navegació amb fletxes del teclat (`←` / `→`) i so «clinc» al Passe de Cartes (`perfil/index.html`):** les fletxes del teclat ara mouen les targetes del carrusel actiu des de qualsevol punt de la pàgina, mantenen el focus després de repintar i reprodueixen el so «clinc-clinc» en passar cada carta (respectant Mode suau i silenci).
+
 ## 2.72.0 · 2026-11-25
 
 ### Canviat
