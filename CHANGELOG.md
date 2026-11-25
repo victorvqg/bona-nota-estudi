@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.69.1 · 2026-11-25
+
+### Canviat
+- **Nom i ordre de les llengües a la portada (`motor/mons.json`, `motor/dades/catala.js`, `index.html`):** canviat «Català» per **«Llengua Catalana»** i agrupades les tres llengües juntes al filtre d'assignatures (`Llengua Catalana · Lengua Castellana · Anglès`).
+
 ## 2.69.0 · 2026-11-25
 
 ### Afegit
