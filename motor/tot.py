@@ -66,7 +66,8 @@ for m in reversed(mons):
     lab_attrs = f' data-lab-world="{e(lab_w)}" data-lab-total="{lab_n}"' if lab_n else ""
     lab_pill = '<span class="lab-pill">🧪 LAB · +10 ⭐</span>' if lab_n else ""
     lab_xip = f'<span class="xip-lab">🧪 Lab 0/{lab_n}</span>' if lab_n else ""
-    targetes.append(f''' <a class="as" href="{e(m['carpeta'])}/" data-clau="{e(i['clau'])}" data-id="{e(i['id'])}" data-ic="{e(m['ic'])}" data-temes="{i['n']}"{lab_attrs} style="--c1:{c1};--c2:{c2};--c3:{c3}">
+    trim = int(m.get("trimestre") or 1)
+    targetes.append(f''' <a class="as" href="{e(m['carpeta'])}/" data-clau="{e(i['clau'])}" data-id="{e(i['id'])}" data-ic="{e(m['ic'])}" data-temes="{i['n']}" data-trimestre="{trim}" data-materia="{e(m['materia'])}"{lab_attrs} style="--c1:{c1};--c2:{c2};--c3:{c3}">
   <div class="portada"><span class="tag">MÓN {e(m['mon'])}</span>{lab_pill}<span class="ic">{dibuix}</span></div>
   <div class="cos">
    <small class="mat">{e(m['materia'])}</small>

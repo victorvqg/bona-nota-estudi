@@ -87,12 +87,14 @@ def bloc_admin(mons: list, jocs_per_mon: dict, visuals_per_mon: dict = None) -> 
     demo = {m["dades"]: m.get("demo_jocs") or jocs_per_mon.get(m["dades"], [])[:4] for m in nou_a_vell}
     col = "\n".join(f" {js(m['dades'])}:{js(m.get('col_admin') or deriva_col_admin(m['colors'][1]))}," for m in nou_a_vell)
     labs = {m["dades"]: visuals_per_mon[m["dades"]] for m in nou_a_vell if visuals_per_mon and visuals_per_mon.get(m["dades"])}
+    trims = {m["dades"]: int(m.get("trimestre") or 1) for m in nou_a_vell}
     return (f"const ASSIGS={js(assigs)};\n"
             f"// Color fix per a cada món (clar: color, fons, text, vora · fosc: color, fons, text, vora)\n"
             f"const COL_MON={{\n{col.rstrip(',')}\n}};\n"
             f"const XMON={js(xmon)};\n"
             f"const DEMO_JOCS={js(demo)};\n"
-            f"const LABS_MON={js(labs)};")
+            f"const LABS_MON={js(labs)};\n"
+            f"const TRIM_MON={js(trims)};")
 
 
 def bloc_bn_mon(mons: list) -> str:

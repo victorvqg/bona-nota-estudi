@@ -70,7 +70,8 @@ def crea(argv, motor: Path, arrel: Path = None) -> dict:
     if dades.exists():
         sys.exit(f"ERROR: {dades.name} ja existeix")
     seg = max([p[0] for m in mons for p in m.get("xat", [])] + [0]) + 1
-    nou = {"dades": a.id, "carpeta": a.carpeta, "mon": str(max([int(m["mon"]) for m in mons if str(m.get("mon", "")).isdigit()] + [0]) + 1), "neix": datetime.date.today().isoformat(),
+    trim_def = max([int(m.get("trimestre") or 1) for m in mons] + [1])
+    nou = {"dades": a.id, "carpeta": a.carpeta, "mon": str(max([int(m["mon"]) for m in mons if str(m.get("mon", "")).isdigit()] + [0]) + 1), "trimestre": trim_def, "neix": datetime.date.today().isoformat(),
            "materia": a.materia, "titol": a.titol, "desc": a.desc, "colors": colors, "ic": a.ic,
            "curt": a.curt, "spr": a.spr, "xat": [[seg + i, t] for i, t in enumerate(peces)]}
     if a.llengua:
