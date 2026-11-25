@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.67.2 · 2026-11-25
+
+### Afegit
+- **Avís visual a «Missions d'avui» (`.missions.pend` · 9 mons):** quan hi ha missions pendents i el quadre està plegat, fa un pols ambre suau amb puntet d'avís per convidar a obrir-lo; s'atura en desplegar-lo o en completar totes les missions, i en **Mode suau** / `prefers-reduced-motion` mostra un ressaltat estàtic sense moviment.
+
 ## 2.67.1 · 2026-11-25
 
 ### Corregit
