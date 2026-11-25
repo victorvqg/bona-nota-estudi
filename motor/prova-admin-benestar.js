@@ -217,8 +217,8 @@ function respon(st, f, cos) {
   await p.click('[data-go-msgs="1"]');
   await p.waitForSelector("#missatgesNen .mn-card");
   const nCardsMsgs = await p.$$eval("#missatgesNen .mn-card", cs => cs.length);
-  ok(nCardsMsgs === 13 && (await txt("#missatgesNen")).includes("Què NO veu mai el nen"),
-   `Nens → Missatges al nen mostra les 13 targetes de missatges literals i el bloc de privadesa (obtingut: ${nCardsMsgs})`);
+  ok(nCardsMsgs === 14 && (await txt("#missatgesNen")).includes("Què NO veu mai el nen"),
+   `Nens → Missatges al nen mostra les 14 targetes de missatges literals i el bloc de privadesa (obtingut: ${nCardsMsgs})`);
   await p.click('#mnCats [data-mn-cat="nit"]');
   const nCardsNit = await p.$$eval("#missatgesNen .mn-card", cs => cs.length);
   ok(nCardsNit === 3, `el filtre «Horari de nit» de Missatges al nen filtra les 3 targetes nocturnes (obtingut: ${nCardsNit})`);

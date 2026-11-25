@@ -5,6 +5,30 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.65.0 · 2026-11-25
+
+### Afegit
+- **Pla Mestre de Gamificació Sana (Pilars 1–5 + Camí d'Evolució a `/perfil/`, 100 % compatible amb `docs/BON-US.md` §6 i Mode suau):**
+  - **Bosses 2.0 (`motor/plantilla-estudi-interactiu.html` → 9 mons):** 3 fases visuals i narratives (`100–67%`, `66–34% 🔥 S'ESCALFA`, `<30% 🔥 FASE DE FÚRIA`), Cop Crític (`×1,5`) en encertar preguntes difícils (`⚡`) o de la cua de repàs (`🔁`), i **Escut de Coneixement (`🛡️`)** que absorbeix la primera errada sense perdre cap cor si s'ha completat el Laboratori visual o s'han aprovat tots els temes (`?demoCombat=1`).
+  - **Àlbum de 6 segells del món (`#albumMon`):** targeta compacta a l'inici de cada món (`📖 Explorador`, `🎯 Domini`, `🧠 Memòria neta`, `🧪 Científic` / `🎮 Jugador`, `👾 Caçabosses`, `🏆 Nota de 10`) amb corona `👑 COMPLETAT 100%!` (`?demoAlbum=1`).
+  - **Mode «❄️ Rescat d'errors en gel» (`repas()` i `?demoRescat=1`), Duel contra el teu rècord (`👻 Rècord` + `📈 NOU RÈCORD PERSONAL!`) i Avatar reactiu en directe (`#avReac`).**
+  - **Boss Cooperatiu de la Classe (`index.html`, `/?demo`):** evolució de la *Meta de la colla* amb 4 Bosses setmanals rotatius, barra de vida cooperativa `VIDA X / Y` i botó `🎉 Festa de la colla!` en derrotar-lo entre tots.
+  - **Camí d'Evolució i Complements Èpics a `/perfil/` (`perfil/index.html`, `/?demo=1`):** desbloqueig progressiu sense atzar ni pèrdua de peces prèvies (`73` peces: 20 animals `0 → 140 ⭐`, 50 perfils arcade `0 / 15 / 40 / 75 / 120 ⭐` amb 10 inicials, 3 estils `0 / 25 / 70 ⭐`), barra de progrés, simulador d'estrelles en `?demo=1` i 5 complements èpics amb ornaments SVG i aura de fitxa (`✨ Estel·lar`, `🔥 Caçabosses`, `🧪 Científic`, `⚡ Remuntada`, `👑 Domini Total`) visibles també a la portada, rànquing, podi i capçalera dels 9 mons (`supabase/bn_aspecte.sql`).
+- **Pla Mestre de Tractament de Dades a `/admin/` (Onades 1–4):**
+  - **Onada 1 (`supabase/bn_admin_matriu_mon.sql`):** 3 índexs compostos a `public.bn_log`, RPC `bn_admin_matriu_mon`, **Matriu de preparació de classe (`Alumnes × Temes`)** a `Fitxa del Món → Domini i errors` i **Informe de classe del món** (`PDF/HTML` + `.md`).
+  - **Onada 2 (`supabase/bn_admin_nens_resum.sql`):** RPC `bn_admin_nens_resum` (agrega `Nens → Llista` a Postgres sense baixar logs crus) + capa `CACHE` unificada amb TTL i deduplicació de peticions en vol.
+  - **Onada 3 (`admin/index.html`):** targeta **«Qui necessita ajuda avui»** a `Inici` (Top 5 amb botó directe `Full A4`) + botó **`Copia resum`** setmanal en 1 clic (lliure de noms i senyals sensibles).
+  - **Onada 4 (`admin/index.html`):** exportació **`Revisió (.md)`** de preguntes a `Mons → Dificultat real`, detector plegable **`🧹 Higiene de comptes`** a `Nens → Llista`, quadre KPI **`Temps total`** en 1 fila compacta de 5 KPIs a `Activitat → Sessions`, i taula transparent de regles de desbloqueig de `/perfil/` a `Configuració → Llindars` + `Nens → Missatges al nen`.
+- **Laboratori Visual del Clima (`visuals/clima.html`):** 6 fitxes interactives integrades a `sociales/t3-clima` i seguiment complet de laboratoris visuals a `/admin/` (`supabase/bn_admin_visuals.sql`).
+- **Àudio v3 del Boss i celebracions (`docs/BOSS-I-EFECTES.md`):** síntesi WebAudio ADSR (`metallPro`, `corda`, `timbala`, `plat`, `brillant`), partitures en 3 actes i celebració D+ (~14,5 s).
+
+### Canviat
+- **`admin/index.html` (`Inici → Nens nous` i `Fitxa del nen`):** data i hora exacta d'alta fins al segon (`dataExacta`) i panell lateral detallat en clicar qualsevol alta.
+- **`motor/prova-perfil.js`:** ampliat amb la suite 7 que verifica el bloqueig progressiu a `0 ⭐` i el desbloqueig per estrelles.
+
+### Corregit
+- **`admin/index.html` (`Activitat → Sessions`):** aplicat `.kpis-5` a `filaKpis(items, 5)` perquè els 5 quadres KPI (`Sessions`, `Temps total`, `Durada mitjana`, `Nens únics`, `Accions`) surtin alineats en una sola fila.
+
 ## 2.64.0 · 2026-11-23
 
 ### Afegit

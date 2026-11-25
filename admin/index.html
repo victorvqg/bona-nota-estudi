@@ -766,7 +766,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.64.0";
+const VERSIO_ADMIN="2.65.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -3199,6 +3199,10 @@ async function vistaMissatgesNen(cos,tok){
    prev:`<b>INSERT COIN</b> · Per parlar, guanya <b>${estCred} ⭐ avui</b>.<br><b>TORNA DEMÀ</b> · Ja has dit les <b>${maxDia} frases d'avui</b>. Pots continuar llegint i votant «Ben dit».<br><b>XAT TANCAT</b> · Ara el xat està tancat. Pots llegir, però no escriure ni votar.`,
    quan:`Quan encara no ha guanyat <b>${estCred} ⭐</b> avui per desbloquejar crèdit, quan arriba al màxim de <b>${maxDia} frases diàries</b>, quan el xat és fora d'horari (<b>${esc(tH)}–${esc(oH)}</b>) o si té un silenci temporal actiu.`,
    perque:`Fer que el xat sigui una petita recompensa lligada a haver estudiat abans, amb frases tancades segures i un sostre diari clar.`},
+  {cat:"anims",on:"Perfil arcade (/perfil/)",ef:"acompanya",tit:"🔓 Camí d'evolució i peces bloquejades sense atzar",cls:"p-anim",
+   prev:`🔒 <b>Ninja:</b> et falten <b>45 ⭐</b> (calen 120 ⭐ entre tots els mons)`,
+   quan:`Quan un alumne toca un animal, perfil arcade o estil de color que requereix més estrelles (escala determinista 0 → 140 ⭐; 0 atzar i ningú perd el que ja tenia triat).`,
+   perque:`Donar metes clares i motivadores sense caixes sorpresa ni pressió: comença amb 7 animals i 10 perfils (1 de cada categoria) i evoluciona a mesura que aprèn.`},
   {cat:"xat",on:"Només a /admin/",ef:"privat",tit:"🔒 Què NO veu mai el nen (100% privat per a l'adult)",cls:"",
    prev:`<b>Cap semàfor ni etiqueta sobre el nen:</b> l'alumne <b>mai no veu</b> el semàfor de Benestar (🟢/🟡/🔴/🔵), ni avisos de «respon massa de pressa», «frustració per suspesos», «marató», «inactiu» ni si està amagat del rànquing públic.`,
    quan:`Sempre: tots els indicadors diagnòstics de <b>Nens → Benestar</b>, <b>Inici → Alertes</b> i la visibilitat del rànquing viuen exclusivament dins d'<code>/admin/</code>.`,
@@ -4663,12 +4667,19 @@ function pintaLlindars(cos,ctrl){
   filesBen.map(([k,nom,sub,nv,esc2,nums])=>`<tr data-ll-tr="be-${esc(k)}" class="${nv==="off"?"ll-off":""}"><td><b>${esc(nom)}</b><span class="ll-sub">${esc(sub)}</span></td><td class="nw">${selBe(k,nv,esc2)}</td><td><div class="ll-nums">${nums}</div></td></tr>`).join("")+
   posBen.map(([nom,reg])=>`<tr><td><b>${esc(nom)}</b><span class="ll-sub">Senyal positiu (suma sempre en verd)</span></td><td class="nw">${pillEstat("be","Positiu (bé)")}</td><td class="muted" style="font-size:12.5px">${esc(reg)}</td></tr>`).join("")
  }</tbody></table></div><div class="ll-peu"><button type="button" class="linkb" data-go-cfg="horaris">${ic("rellotge")}Hora d'inici nocturn a Horaris i crèdits ${ic("endavant")}</button><button class="btn petit" type="button" id="btDesaLlindars2"${nd}>${ic("ok")}<span>Desa els llindars</span></button></div>`;
+ const regPerfil=[
+  {p:"Animals (20)",v:"0 → 140 ⭐",ef:"7 inicials (0 ⭐) · Ós/Koala/Os rentador (10 ⭐) · Mussol/Llop/Pop (25 ⭐) · Lleó/Tigre/Balena (45 ⭐) · Dino/Tauró (70 ⭐) · Unicorn (100 ⭐) · Drac (140 ⭐)"},
+  {p:"Perfils arcade (50)",v:"0 / 15 / 40 / 75 / 120 ⭐",ef:"10 oberts d'inici (posició #1 de cada categoria); cada nivell n'obre +10 més fins als 50"},
+  {p:"Estils de color (3)",v:"0 / 25 / 70 ⭐",ef:"Clàssic (0 ⭐) · Ofensiva (25 ⭐) · Tàctica (70 ⭐)"},
+  {p:"Complements èpics (5)",v:"Per fites reals",ef:"✨ Estel·lar (25 ⭐) · 🔥 Caçabosses (1 Boss) · 🧪 Científic (1 Lab visual) · ⚡ Remuntada (5 errors apresos) · 👑 Domini Total (100 ⭐ o examen ≥ 90%)"}
+ ];
+ const perfilH=`<h4 style="margin:16px 0 8px;font-size:13.5px">🎭 Desbloqueig progressiu de /perfil/ (0 atzar · retrocompatible)</h4>${taula("tLlindarsPerfil",[{k:"p",t:"Element",cls:"nw",h:r=>`<b>${esc(r.p)}</b>`},{k:"v",t:"Llindar",cls:"nw",h:r=>`<span class="pill info">${esc(r.v)}</span>`},{k:"ef",t:"Detall"}],regPerfil,{eines:false,etiqueta:"Desbloqueig de perfil"})}`;
  cos.innerHTML=(DEMO?`<div class="avis" style="margin-bottom:12px">${ic("info")}<div><p style="margin:0"><b>Mode demo:</b> configuració de mostra. Les accions d'escriptura estan desactivades.</p></div></div>`:"")+
   `<div class="pila">
    ${card("cfgLlindarsAl","","alerta","Alertes d'Inici","Tria què és malament, avís, informatiu o desactivat a la targeta d'Alertes d'Inici i amb quins números salta. Es desa a Supabase per a mòbil i ordinador.",tbAl,accBar)}
    ${card("cfgLlindarsBen","","cor","Llindars de benestar i bon ús","Senyals que calcula bn_admin_benestar al servidor (docs/BON-US.md §5). La vigília es fixa amb la data d'examen de cada món o pel pic del grup entre els dies 3 i 12.",tbBen)}
    ${card("cfgLlindarsPed","","diana","Regles pedagògiques i nivells","Valors actius compartits entre el generador dels mons (motor/tot.py) i el panell d'administració (admin/regles.json).",
-    taula("tLlindarsPed",[{k:"p",t:"Paràmetre",cls:"nw",h:r=>`<b>${esc(r.p)}</b>`},{k:"v",t:"Valor actiu",cls:"nw",h:r=>`<span class="pill info">${esc(r.v)}</span>`},{k:"ef",t:"Efecte"},{k:"or",t:"Origen",cls:"nw muted"}],regPed,{eines:false,etiqueta:"Regles pedagògiques"})+nivH)}
+    taula("tLlindarsPed",[{k:"p",t:"Paràmetre",cls:"nw",h:r=>`<b>${esc(r.p)}</b>`},{k:"v",t:"Valor actiu",cls:"nw",h:r=>`<span class="pill info">${esc(r.v)}</span>`},{k:"ef",t:"Efecte"},{k:"or",t:"Origen",cls:"nw muted"}],regPed,{eines:false,etiqueta:"Regles pedagògiques"})+nivH+perfilH)}
   </div>`;
  cos.querySelectorAll("[data-ll-al-grav]").forEach(s=>{s.onchange=()=>{s.className="ll-sel "+clsGravAl(s.value);const tr=s.closest("tr");if(tr)tr.classList.toggle("ll-off",+s.value===0)}});
  cos.querySelectorAll("[data-ll-be-niv]").forEach(s=>{s.onchange=()=>{s.className="ll-sel "+clsNivBen(s.value);const tr=s.closest("tr");if(tr)tr.classList.toggle("ll-off",s.value==="off")}});

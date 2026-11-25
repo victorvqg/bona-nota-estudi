@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.64.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.65.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -644,14 +644,24 @@ Els nens es parlen **amb peces**, sense escriure: una frase amb un forat (`___`)
 - **Admin** (`admin/` → Xat): resum del dia, missatges (també els esborrats) per esborrar o recuperar, silenciar un nom 1, 3 o 7 dies, configuració, catàleg amb interruptors i peça nova.
 - Proves: `node motor/prova-xat-sql.js` (el SQL dins de PGlite), `node motor/prova-xat.js` (portada) i `node motor/prova-admin-xat.js` (admin).
 
-### 👾 Perfil del nen (`perfil/index.html`)
+### 👾 Perfil del nen i Camí d'Evolució (`perfil/index.html`)
 
-També és una pàgina a mà (blocs `SO-MOBIL`, `ACTUALITZA`, `sprites.js?v=` i versió del peu els escriu `tot.py`). El nen hi tria el seu **aspecte**: l'animal (`BN_AV`), el **perfil arcade** (una de les 50 insígnies de `BN_SKILLS`) i l'estil de color (`""` Clàssic, `A` Ofensiva, `B` Tàctica; paletes a `BN_SKILL_VAR_PAL`). `bnSkillSpr(id, estil)` dibuixa la insígnia.
+També és una pàgina a mà (blocs `SO-MOBIL`, `ACTUALITZA`, `sprites.js?v=` i versió del peu els escriu `tot.py`). El nen hi tria el seu **aspecte**: l'animal (`BN_AV`), el **perfil arcade** (una de les 50 insígnies de `BN_SKILLS`), l'estil de color (`""` Clàssic, `A` Ofensiva, `B` Tàctica; paletes a `BN_SKILL_VAR_PAL`) i un **complement èpic per fites** (`estel`, `boss`, `lab`, `remuntada`, `corona`). `bnSkillSpr(id, estil)` dibuixa la insígnia i `compFxSvg(comp)` dibuixa els ornaments SVG sobre l'avatar.
 
-- **On es guarda:** a l'aparell, al mapa `localStorage.bn_aspectes` (`{nom en minúscules: {av, sk, v, mod, pendent}}`), i al núvol, a la columna `aspecte` del perfil del nen (`supabase/bn_aspecte.sql`: `bn_aspecte_desa(nom, pin, aspecte)` amb PIN i `bn_aspectes()`, pública, que és el que llegeix el rànquing). Si la pujada falla (sense connexió o SQL no aplicat), queda `pendent` i la portada o la mateixa pàgina la reintenten en obrir-se.
-- **On es veu:** `avatar(nom)` de la portada i del tauler mira primer l'aspecte; si no n'hi ha, l'animal es calcula pel nom com sempre. La salutació de cada món (`heroAv()` a la plantilla) llegeix el mapa local.
-- `?demo` mostra la pàgina amb un nen inventat i sense núvol. `../#ranquing` obre la portada amb el rànquing desplegat.
-- Prova: `node motor/prova-perfil.js` (Playwright, amb Supabase simulat).
+- **Desbloqueig progressiu sense atzar (v2.65.0):** d'inici tothom té **7 animals**, **10 perfils arcade** (el #1 de cada categoria) i l'estil **Clàssic**; a mesura que suma estrelles entre tots els mons va obrint la resta (animals fins a `140 ⭐` · Drac, perfils en 5 esglaons `0 / 15 / 40 / 75 / 120 ⭐`, estils a `25 ⭐` i `70 ⭐`). És **100 % retrocompatible**: ningú no perd mai una peça que ja tenia triada. Els **5 complements èpics** es desbloquegen per fites qualitatives reals (25 ⭐, vèncer 1 Boss, completar 1 Lab visual, aprendre 5 errors o dominar un món).
+- **On es guarda:** a l'aparell, al mapa `localStorage.bn_aspectes` (`{nom en minúscules: {av, sk, v, comp, mod, pendent}}`), i al núvol, a la columna `aspecte` del perfil del nen (`supabase/bn_aspecte.sql`: `bn_aspecte_desa(nom, pin, aspecte)` amb PIN i `bn_aspectes()`, pública, que és el que llegeix el rànquing). Si la pujada falla (sense connexió o SQL no aplicat), queda `pendent` i la portada o la mateixa pàgina la reintenten en obrir-se.
+- **On es veu:** a `/perfil/`, a `avatar(nom)` de la portada/podi/rànquing (`index.html`), a la salutació dels 9 mons (`heroAv()` a la plantilla) i al tauler d'administració.
+- **`?demo=1`** mostra la pàgina sense núvol amb tots els complements actius i un **simulador d'estrelles** (`0 / 30 / 80 / 150 / 218 ⭐`) per provar cada rang en 1 clic. `../#ranquing` obre la portada amb el rànquing desplegat.
+- Prova: `node motor/prova-perfil.js` (Playwright, amb Supabase simulat, incloent bloqueig a `0 ⭐` i Efectes suaus).
+
+### 🎮 Gamificació sana (v2.65.0 · `docs/BON-US.md` §6)
+
+Totes les mecàniques de diversió passen el filtre de 10 punts de `docs/BON-US.md` (zero atzar, zero por de perdre, respecte total a Mode suau, descans i nit):
+
+- **Bosses 2.0 (`?demoCombat=1`):** 3 fases visuals i narratives (`100–67%`, `66–34% 🔥 S'ESCALFA`, `<30% 🔥 FASE DE FÚRIA`), Cop Crític (`×1,5`) en preguntes difícils (`⚡`) o de la cua de repàs (`🔁`), i **Escut de Coneixement (`🛡️`)** que absorbeix la primera errada si s'ha completat el Lab visual o s'han aprovat tots els temes.
+- **Àlbum de 6 segells del món (`?demoAlbum=1`):** targeta compacta a l'inici de cada món (`📖 Explorador`, `🎯 Domini`, `🧠 Memòria neta`, `🧪 Científic` / `🎮 Jugador`, `👾 Caçabosses`, `🏆 Nota de 10`) amb corona `👑 COMPLETAT 100%!`.
+- **Mode «❄️ Rescat d'errors en gel» (`?demoRescat=1`), Duel contra el rècord (`👻 Rècord` + `📈 NOU RÈCORD PERSONAL!`) i Avatar reactiu (`#avReac`)** als tests i repàs.
+- **Boss Cooperatiu de la Classe (`/?demo`):** evolució de la *Meta de la colla* a la portada amb 4 Bosses setmanals rotatius, barra de vida cooperativa (`VIDA X / Y`) i botó `🎉 Festa de la colla!`.
 
 ---
 
@@ -778,9 +788,15 @@ A **Nens → Benestar** (`?v=nens&tab=benestar`) i a la pestanya **Sessions i be
 
 A **Rànquing → Reptes** i **Mons → Fitxa del món → Domini i errors** (`supabase/bn_admin_fonts_rep.sql`). `bn_admin_fonts_dia` treu les estrelles de cada font per dia de les diferències del camp `fonts` entre registres del mateix nen i món: el porten `entra` i `temps` i, des de la 2.8.2, també `test`, `joc`, `examen` i `oberta`. Cada increment es compta contra el màxim anterior, de manera que un aparell vell que envia valors baixos no fa comptar dues vegades el mateix. El primer registre de cada nen i món, i el primer després d'un reinici, només serveixen de base, i un valor que baixa compta 0. `bn_admin_rep_pendents` agrega els errors pendents de repàs (`estat.rep` de `bn_priv.progres`) per món i tema, sense noms.
 
-### ⚡ Dificultat real de les preguntes
+### ⚡ Dificultat real de les preguntes i Salut de continguts
 
-A **Mons → Dificultat real** (`?v=mons&tab=dificultat`, i per món a `?v=mons&id=<mon>&tab=domini`, `supabase/bn_admin_dificultat.sql`, issue `#16`). Mostra sempre els 8 mons, llegeix `bn_admin_dificultat` (respostes de `test` i `examen` dels últims 365 dies, excloent el repàs espaiat) i la compara directament al navegador amb `motor/dificultat.json` i `admin/preguntes.json`: marca `➕ Proposa ⚡` les preguntes amb `< 55 %` d'encert (i `≥ 8` respostes) que encara no són difícils, `➖ Revisa ⚡` les marcades difícils amb `≥ 75 %` d'encert, `⚡ Confirmada` i `Fàcil (> 90 %)`, indica també els mons que encara tenen `< 8` respostes per pregunta o sense dades, i permet descarregar el JSON per passar-lo a `python3 motor/dificultat.py --proposa`.
+A **Mons → Dificultat real** (`?v=mons&tab=dificultat`, i per món a `?v=mons&id=<mon>&tab=domini`, `supabase/bn_admin_dificultat.sql`, issue `#16`). Mostra sempre tots els mons, llegeix `bn_admin_dificultat` (respostes de `test` i `examen` dels últims 365 dies, excloent el repàs espaiat) i la compara directament al navegador amb `motor/dificultat.json` i `admin/preguntes.json`: marca `➕ Proposa ⚡` les preguntes amb `< 55 %` d'encert (i `≥ 8` respostes) que encara no són difícils, `➖ Revisa ⚡` les marcades difícils amb `≥ 75 %` d'encert, `⚡ Confirmada` i `Fàcil (> 90 %)`, i permet descarregar tant `dificultat.json` com **`Revisió (.md)`** (llista prioritzada de preguntes amb dubtes o `< 55 %` d'encert).
+
+### 📊 Visió de classe, rendiment i acció diària (v2.65.0)
+
+- **Matriu de preparació de classe (`Mons → Fitxa del Món → Domini i errors`, `supabase/bn_admin_matriu_mon.sql`):** creua l'estat acumulat dels alumnes per tema (`% llest`, micro-cel·les semàfor `T1..TN`, `🧪 Lab`, `👾 Boss`, `Repàs`, filtres ràpids, CSV) i inclou descàrrega d'**Informe de classe del món** (`PDF/HTML` + `.md`) amb Top 10 preguntes fallades i distractor trampa.
+- **Resum agregat de Nens (`supabase/bn_admin_nens_resum.sql`) + `CACHE` unificada:** `Nens → Llista` s'agrega directament a Postgres (sense baixar logs crus fora d'`Activitat`), inclou un detector plegable **`🧹 Higiene de comptes`** (possibles duplicats i comptes sense PIN inactius > 30 dies), i `Activitat → Sessions` mostra 5 quadres KPI en una fila amb **`Temps total`** filtrat.
+- **Acció diària a `Inici`:** targeta **«Qui necessita ajuda avui»** (Top 5 alumnes prioritaris amb botó directe `Full A4`) + botó **`Copia resum`** setmanal en 1 clic (lliure de noms i senyals de benestar). Les regles de desbloqueig de `/perfil/` es consulten a **⚙ Configuració → Llindars** i a **Nens → Missatges al nen**.
 
 ### 👤 Nens i Fitxa del nen
 
