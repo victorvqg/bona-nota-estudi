@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="a3975f5052",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="595217f615",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -337,11 +337,28 @@ h1 span{display:inline-block}
 /* taula */
 /* La taula no s'estreny mai: cada món té una columna de 42 px i el nom com a mínim 170 px. Si no hi cap, es desplaça de costat
    (.ht-scroll) i el bloc posició + moviment + avatar i nom (.ht-fix) queda enganxat a l'esquerra, amb el fons opac de la fila. */
-.ht-scroll{overflow-x:auto;overflow-y:hidden;padding:2px 0 10px;scrollbar-color:#6366f1 #ffffff10}
-.hs-taula{display:flex;flex-direction:column;gap:6px}
-@media(min-width:641px){.hs-taula{min-width:calc(406px + var(--nw) * 48px)}}
-.ht-fila{--fbg:#171a38;display:grid;grid-template-columns:30px 34px minmax(170px,1fr) repeat(var(--nw),42px) 58px 66px;align-items:center;gap:6px;padding:8px 10px;border-radius:12px;
- background:var(--fbg);border:1px solid #ffffff14;animation:filaPuja .4s cubic-bezier(.2,1.3,.4,1) both}
+.ht-scroll{overflow-x:auto;overflow-y:visible;padding:8px 6px 14px;scrollbar-color:#6366f1 #ffffff10}
+.hs-taula{display:flex;flex-direction:column;gap:8px}
+@media(min-width:641px){.hs-taula{min-width:calc(430px + var(--nw) * 48px)}}
+.ht-fila{--fbg:#171a38;position:relative;display:grid;grid-template-columns:30px 34px minmax(210px,1fr) repeat(var(--nw),42px) 58px 66px;align-items:center;gap:6px;padding:9px 10px;border-radius:14px;
+ background:var(--fbg);border:1px solid #ffffff14;animation:filaPuja .4s cubic-bezier(.2,1.3,.4,1) both;transition:transform .22s cubic-bezier(.3,1.5,.5,1),border-color .2s,box-shadow .2s}
+.ht-fila .av,.pd-av{transition:transform .24s cubic-bezier(.3,1.6,.5,1)}
+.ht-fila .av-sk,.ht-fila .av-cmp,.pd-av .av-sk,.pd-av .av-cmp{transition:transform .22s cubic-bezier(.3,1.6,.5,1)}
+@media(hover:hover){
+ .ht-fila:not(.ht-cap):not(.ht-mat):hover{transform:translateY(-2px) scale(1.018);z-index:5;border-color:#facc15aa;box-shadow:0 10px 26px #000a,0 0 18px #facc1533}
+ .ht-fila:not(.ht-cap):not(.ht-mat):hover .av{transform:scale(1.28);z-index:6;animation:rkBota .55s cubic-bezier(.3,1.6,.5,1) both}
+ .ht-fila:not(.ht-cap):not(.ht-mat):hover .av-sk{transform:scale(1.18) rotate(-8deg)}
+ .ht-fila:not(.ht-cap):not(.ht-mat):hover .av-cmp{transform:translateY(-3px) scale(1.22) rotate(10deg)}
+ .pd:not(.lliure):hover .pd-av{transform:scale(1.14);animation:rkPodiBota .55s cubic-bezier(.3,1.6,.5,1) both}
+}
+@keyframes rkBota{0%{transform:scale(1.06) translateY(0) rotate(0)}38%{transform:scale(1.34) translateY(-5px) rotate(-6deg)}72%{transform:scale(1.26) translateY(0) rotate(4deg)}100%{transform:scale(1.28) translateY(0) rotate(0)}}
+@keyframes rkPodiBota{0%{transform:scale(1.02) translateY(0)}40%{transform:scale(1.18) translateY(-7px) rotate(-4deg)}75%{transform:scale(1.13) translateY(0) rotate(3deg)}100%{transform:scale(1.14) translateY(0)}}
+.rk-det{grid-column:2;display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;min-width:0}
+.rk-ttl,.rk-cmp,.rk-sk{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:900;line-height:1.25;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.rk-ttl{background:#312e81cc;border:1px solid #a5b4fc88;color:#e0e7ff}
+.rk-cmp{background:#581c87cc;border:1px solid #facc1588;color:#fef08a}
+.rk-sk{background:#0f172acc;border:1px solid #38bdf866;color:#7dd3fc}
+.pd-ttl{display:inline-flex;align-items:center;gap:3px;margin:2px 0 4px;padding:2px 8px;border-radius:99px;background:#312e81cc;border:1px solid #a5b4fc88;color:#e0e7ff;font-size:11px;font-weight:900;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes filaPuja{from{transform:translateY(10px);opacity:0}}
 .ht-fila.top{--fbg:#252228;border-color:#facc1544}
 .ht-fila.jo{border:2px solid #22d3ee;box-shadow:0 0 14px #22d3ee44}
@@ -354,9 +371,9 @@ h1 span{display:inline-block}
 .ht-fila .pos{font-family:'Press Start 2P',monospace;font-size:13px;color:#c7d2fe;text-align:center}
 .ht-fila.top .pos{line-height:0}
 .ht-fila .mv{text-align:center}
-.ht-fila .nom{display:grid;grid-template-columns:40px minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;align-items:center;min-width:0}
+.ht-fila .nom{display:grid;grid-template-columns:46px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:10px;align-items:center;min-width:0}
 .ht-cap .nom{display:block}
-.ht-fila .av{position:relative;grid-row:1/3;width:40px;height:40px;border-radius:50%;background:var(--av);box-shadow:0 0 0 3px #1d1631}
+.ht-fila .av{position:relative;grid-row:1/4;width:46px;height:46px;border-radius:50%;background:var(--av);box-shadow:0 0 0 3px #1d1631}
 .ht-fila .nm{font-weight:900;font-size:17px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2}
 .ht-fila .tags{display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden}
 .ht-fila .tags i,.ht-fila .mw i{font-style:normal;font-weight:900;font-size:11.5px;line-height:1;border-radius:999px;padding:3px 6px;background:#ffffff14;border:1px solid #ffffff26;color:#e0e7ff;white-space:nowrap}
@@ -385,7 +402,7 @@ h1 span{display:inline-block}
  .ht-fila.top .pos .spr{width:26px}
  .hs-caixeta .g{gap:8px}
 }
-@media(prefers-reduced-motion:reduce){.tk-it.quiet{animation:none}.pd.p1::before,.hs-tu::after,.premi .ic,.mov.up,.mov.nou{animation:none}.hs-fila,.premi,.ht-fila{animation:none}}
+@media(prefers-reduced-motion:reduce){.tk-it.quiet{animation:none}.pd.p1::before,.hs-tu::after,.premi .ic,.mov.up,.mov.nou{animation:none}.hs-fila,.premi,.ht-fila,.ht-fila .av,.pd-av{animation:none!important;transition:none!important}}
 /* ===== sprites de pixel art del rànquing (sprites.js) ===== */
 .spr{display:inline-block;width:1.15em;height:auto;vertical-align:-.2em;shape-rendering:crispEdges}
 .spr-tile{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--mc);border:2px solid #1d1631;box-shadow:inset 0 -3px 0 #0003,inset 0 2px 0 #fff4;vertical-align:middle}
@@ -945,7 +962,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.72.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.73.0</small></footer>
 
 <script src="sprites.js?v=70733852"></script>
 <script>
@@ -1467,8 +1484,9 @@ function marcOk(m){return bnMarcOk(m)}
 function avatar(nom){let h=7;const k=String(nom||"").trim().toLowerCase();for(const c of k)h=(h*31+c.charCodeAt(0))>>>0;const a=aspecteDe(nom)||{},an=BN_AV.includes(a.av)?a.av:BN_AV[h%BN_AV.length];
  const demoC=/[?&]demo\b/.test(location.search)?({pau:"corona",jana:"boss",nora:"lab",hugo:"remuntada",ona:"estel"})[k]:"";
  const demoM=/[?&]demo\b/.test(location.search)?({pau:"prisma",jana:"foc",nora:"neo",hugo:"or",ona:"plata"})[k]:"";
- const comp=compIc(a.comp)?a.comp:(demoC||""),marc=marcOk(a.marc)||(demoM||"");
- return {av:an,e:bnSpr(an,"av-spr"),c:BN_AV_BG[an],sk:BN_SKILLS[a.sk]?a.sk:"",v:BN_SKILL_VAR_PAL[a.v]?a.v:"",comp,marc}}
+ const demoT=/[?&]demo\b/.test(location.search)?({pau:"mite",jana:"cacacaps",nora:"heroi",hugo:"cervell",ona:"maquina"})[k]:"";
+ const comp=compIc(a.comp)?a.comp:(demoC||""),marc=marcOk(a.marc)||(demoM||""),titol=BN_TITOL_META[a.titol]?a.titol:(demoT||"");
+ return {av:an,e:bnSpr(an,"av-spr"),c:BN_AV_BG[an],sk:BN_SKILLS[a.sk]?a.sk:"",v:BN_SKILL_VAR_PAL[a.v]?a.v:"",comp,marc,titol}}
 // cercle d'avatar compartit amb sprites.js (bnAvatarHtml)
 function avHtml(nom,cls,dins){const a=avatar(nom);return bnAvatarHtml({av:a.av,sk:a.sk,v:a.v,comp:a.comp,marc:a.marc,cls,dins})}
 // pujades pendents del perfil (desat sense connexió o abans d'aplicar l'SQL): en silenci, en obrir la portada
@@ -1536,7 +1554,8 @@ function pintaHs(){
  // ---- 1) podi: només avatar, nom, valor i moviment ----
  const vPodi=r=>TB==="punts"?`<span class="cnt" data-n="${r.punts}">${r.punts}</span> ${ST()}`:TB==="setmana"?`+<span class="cnt" data-n="${r.setmana}">${r.setmana}</span> ${ST()}`:TB==="remuntada"?`<span class="cnt" data-n="${r.apr}">${r.apr}</span> ${BR()}<small>${r.apr===1?"error recuperat":"errors recuperats"}</small>`:TB==="dies"?`<span class="cnt" data-n="${r.dies}">${r.dies}</span><small>${r.dies===1?"dia d'estudi":"dies d'estudi"}</small>`:(()=>{const n=niv(r.punts_max);return `${nivIc(n)} ${n+1}<small>${NIV[n][1]}</small>`})();
  const pd=(r,pos)=>{if(!r)return `<div class="pd p${pos} lliure"><span class="pd-av" style="--av:#1e1b4b"><span class="av-cl">${spr("ghost")}</span></span><span class="pd-nom">Lliure</span><span class="pd-val"><small>Pot ser teu!</small></span><div class="pd-bloc">${pos}</div></div>`;
-  return `<div class="pd p${pos} ${esJo(r)?"jo":""}">${avHtml(r.nom,"pd-av",pos===1?`<span class="corona">${spr("crown")}</span>`:"")}<span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="pd-val">${vPodi(r)}</span><span class="pd-mv">${movHtml(mov(r,pos))}</span><div class="pd-bloc">${pos}</div></div>`};
+  const avP=avatar(r.nom),ttlP=bnTitolHtml(avP.titol,"pd-ttl");
+  return `<div class="pd p${pos} ${esJo(r)?"jo":""}">${avHtml(r.nom,"pd-av",pos===1?`<span class="corona">${spr("crown")}</span>`:"")}<span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span>${ttlP}<span class="pd-val">${vPodi(r)}</span><span class="pd-mv">${movHtml(mov(r,pos))}</span><div class="pd-bloc">${pos}</div></div>`};
  // ---- 2) taula de classificació: columnes alineades, la de la pestanya activa ressaltada ----
  const MED=[spr("medal1"),spr("medal2"),spr("medal3")],nw=MONS_IC.length;
  // fila d'assignatures damunt de la capçalera: nom curt amb el seu color i una ratlla a sota que abraça les seves columnes (42 px cada món).
@@ -1546,10 +1565,15 @@ function pintaHs(){
  const mats=`<div class="ht-fila ht-mat" aria-hidden="true"><span class="ht-fix"></span>${MONS_GR.map(g=>`<span class="ht-matg" style="grid-column:span ${g.n};--mc:${g.color};--mt:${g.tint}" title="${esc(g.mat)}"><b style="${fsMat(g).slice(1)}">${esc(g.curt)}</b></span>`).join("")}<span class="ht-mat1"></span></div>`;
  const tt=x=>` title="${x}" aria-label="${x}"`;
  const cap=`<div class="ht-fila ht-cap" role="row"><span class="ht-fix"><span class="pos">#</span><span class="mv"></span><span class="nom">Nom</span></span>${MONS_IC.map(([id,ic])=>`<span class="w">${ic}</span>`).join("")}<span class="num c-punts"${tt("Estrelles de tots els mons")}>${spr("star")} Total</span>${TB==="dies"?`<span class="num c-x"${tt("Dies d'estudi (últims 120 dies)")}>${spr("hourglass")} Dies</span>`:TB==="remuntada"?`<span class="num c-x"${tt("Errors recuperats al repàs els últims 7 dies (+2 extra quan queda après)")}>${spr("brain")} Repàs</span>`:`<span class="num c-x"${tt("Estrelles dels últims 7 dies")}>${spr("fire")} 7 dies</span>`}</div>`;
- const fila=(r,pos,i,extra)=>{const m=r.mons||{},n=niv(r.punts_max||0),sup=Math.floor((r.punts||0)/SUPER);
+ const fila=(r,pos,i,extra)=>{const m=r.mons||{},n=niv(r.punts_max||0),sup=Math.floor((r.punts||0)/SUPER),av=avatar(r.nom);
+  const detParts=[];
+  if(av.titol)detParts.push(bnTitolHtml(av.titol,"rk-ttl"));
+  if(av.comp&&BN_COMP_META[av.comp])detParts.push(`<span class="rk-cmp">${BN_COMP_META[av.comp][0]} ${esc(BN_COMP_META[av.comp][1])}</span>`);
+  if(av.sk&&BN_SKILL_INFO[av.sk])detParts.push(`<span class="rk-sk">⚔️ ${esc(BN_SKILL_INFO[av.sk].n)} · ${esc(BN_SKILL_ESTILS[av.v])}</span>`);
+  const detH=detParts.length?`<span class="rk-det">${detParts.join("")}</span>`:"";
   return `<div class="ht-fila ${pos<=3?"top":""} ${esJo(r)?"jo":""} ${extra||""}" role="row" style="animation-delay:${(.8+i*.06).toFixed(2)}s">
   <span class="ht-fix"><span class="pos"${pos<=3?tt(`${ordinal(pos)} lloc`):""}>${pos<=3?MED[pos-1]:pos}</span><span class="mv">${movHtml(mov(r,pos))}</span>
-  <span class="nom">${avHtml(r.nom,"av")}<span class="nm">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="tags"><i class="nv"${tt(`Nivell ${n+1}: ${NIV[n][1]}`)}>${nivIc(n)} ${n+1}</i>${sup?`<i class="su"${tt(`Superestrelles (1 cada ${SUPER} ⭐)`)}>${spr("superstar")} ${sup}</i>`:""}</span>
+  <span class="nom">${avHtml(r.nom,"av")}<span class="nm">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="tags"><i class="nv"${tt(`Nivell ${n+1}: ${NIV[n][1]}`)}>${nivIc(n)} ${n+1}</i>${sup?`<i class="su"${tt(`Superestrelles (1 cada ${SUPER} ⭐)`)}>${spr("superstar")} ${sup}</i>`:""}</span>${detH}
    <span class="mw">${MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<i>${ic} ${m[id]}</i>`).join("")}</span></span></span>
   ${MONS_IC.map(([id])=>`<span class="w${m[id]>0?"":" buit"}">${m[id]>0?m[id]:"·"}</span>`).join("")}
   <span class="num c-punts">${r.punts||0}</span><span class="num c-x">${TB==="dies"?(r.dies>0?r.dies:"·"):TB==="remuntada"?(r.apr>0?r.apr:"·"):(r.setmana>0?"+"+r.setmana:"·")}</span></div>`};
