@@ -13,6 +13,9 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
   - **Portada (`index.html`, `1100px`):** barra de pestanyes de trimestre (`🔥 1r Trimestre`, `📅 2n T · aviat`, `📅 3r T · aviat`, `🗂️ Tots`) + filtre ràpid d'assignatura (`#matFiltres`). Dins del trimestre actiu, els 6 mons més recents surten en targetes grans i els anteriors es compacten en una **baralla inferior (`.as-deck`)** amb botó `Mostra en gran ▾` / `Plega compactes ▴`; els trimestres passats s'obren directament en format compacte.
   - **Tauler `/admin/` (`Control ràpid`):** mostra l'etiqueta de trimestre (`1r T` / `2n T` / `3r T`) a cada targeta de món.
 
+### Corregit
+- **Alçada dels quadres de `.inici-hub` (Repàs / Boss / Lab) i pampallugues de «Missions d'avui»:** els quadres de `.inici-hub` passen a format horitzontal compacte (~72 px en lloc de 220 px amb espai buit) i `#app>#missions.pend:not([open])` força l'animació `misPulsa` + puntet parpellejant (`misPunt`) sense interferència de `#app>*`.
+
 ## 2.68.0 · 2026-11-25
 
 ### Corregit
