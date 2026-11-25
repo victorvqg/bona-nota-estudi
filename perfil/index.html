@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="35ba09aa33",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1db8d30217",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -263,6 +263,22 @@ body.suau *,body.suau *::before,body.suau *::after{animation:none!important;tran
 .cmp b{font-size:12.5px;letter-spacing:.01em}
 .cmp small{font-size:10.5px;color:#e2e8f0;line-height:1.25}
 .cmp.on small{color:#fde047;font-weight:800}
+/* ---- Camí d'evolució i peces bloquejades ---- */
+.evo-bar{background:linear-gradient(135deg,#1e1b4bdd,#0f172aee);border:2px solid #818cf8;border-radius:16px;padding:12px 14px;margin-bottom:14px;box-shadow:0 6px 20px #0004}
+.evo-cap{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:800;color:#f8fafc}
+.evo-cap small{color:#fde047;font-weight:700}
+.evo-track{height:8px;background:#ffffff1a;border-radius:99px;overflow:hidden;margin:8px 0 6px}
+.evo-track i{display:block;height:100%;background:linear-gradient(90deg,#38bdf8,#facc15,#a855f7);border-radius:99px;transition:width .35s}
+.evo-sub{margin:0;font-size:12px;color:#cbd5e1}
+.evo-demo{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid #ffffff1a;font-size:11.5px;color:#fde047;font-weight:700}
+.evo-demo button{padding:3px 9px;border-radius:99px;border:1.5px solid #facc1566;background:#0f172a;color:#fef08a;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer}
+.evo-demo button.on{background:#facc15;color:#1e1b4b;border-color:#fef08a}
+.an.lock,.sk.lock{position:relative;opacity:.62}
+.an.lock .av-cl,.sk.lock .spr{filter:brightness(0) invert(.12) opacity(.6)}
+.lock-tag{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);background:#0f172ae6;color:#fde047;border:1px solid #facc1588;border-radius:99px;padding:1px 5px;font-size:9px;font-weight:800;white-space:nowrap;pointer-events:none;line-height:1.2}
+.est.lock{opacity:.55;border-style:dashed}
+@keyframes shakeLock{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.shake{animation:shakeLock .26s ease}
 </style>
 </head>
 <body>
@@ -301,6 +317,7 @@ body.suau *,body.suau *::before,body.suau *::after{animation:none!important;tran
  </aside>
 
  <div class="tries" id="tries">
+  <div id="evoBox"></div>
   <section class="bloc" aria-labelledby="tAnimal">
    <h2 id="tAnimal"><b>1</b> ANIMAL <small>Llisca o toca'n un</small></h2>
    <div class="roda-caixa">
@@ -332,7 +349,7 @@ body.suau *,body.suau *::before,body.suau *::after{animation:none!important;tran
  <a class="en-bt" href="../">ANAR A LA PORTADA ▶</a>
 </div>
 
-<footer>Bona Nota · el teu perfil es guarda amb el teu nom i PIN <small class="bn-versio">versió 2.64.0</small></footer>
+<footer>Bona Nota · el teu perfil es guarda amb el teu nom i PIN <small class="bn-versio">versió 2.65.0</small></footer>
 
 <script src="../sprites.js?v=0d2acb59"></script>
 <script>
@@ -404,7 +421,7 @@ function animalPelNom(nom){let h=7;for(const c of nom.trim().toLowerCase())h=(h*
 const K_ASP="bn_aspectes";
 const aspMapa=()=>lsJ(K_ASP,{});
 function aspecteDe(nom){const m=aspMapa()[String(nom||"").trim().toLowerCase()];return m&&typeof m==="object"?m:null}
-function desaAspecteLocal(nom,a,pendent){const m=aspMapa(),e={mod:Date.now()};if(a.av)e.av=a.av;if(a.sk)e.sk=a.sk;if(a.v)e.v=a.v;if(pendent)e.pendent=true;m[nom.trim().toLowerCase()]=e;try{localStorage.setItem(K_ASP,JSON.stringify(m))}catch(x){}}
+function desaAspecteLocal(nom,a,pendent){const m=aspMapa(),e={mod:Date.now()};if(a.av)e.av=a.av;if(a.sk)e.sk=a.sk;if(a.v)e.v=a.v;if(a.comp)e.comp=a.comp;if(pendent)e.pendent=true;m[nom.trim().toLowerCase()]=e;try{localStorage.setItem(K_ASP,JSON.stringify(m))}catch(x){}}
 // progrés guardat dels mons (bn_<assig>_perfils): id numèric i estrelles totals del nen, com a la portada
 function progresMons(nom){const out=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!/^bn_.*_perfils$/.test(k))continue;const ps=lsJ(k,{}),kk=Object.keys(ps).find(x=>x.trim().toLowerCase()===nom.trim().toLowerCase());if(kk&&ps[kk])out.push(ps[kk])}}catch(e){}return out}
 const NIV=[[0,"Aprenent","🐣"],[10,"Explorador","🧭"],[25,"Investigador","🔍"],[45,"Savi","📜"],[70,"Expert","🎓"],[100,"Mestre","🧠"],[140,"Campió","🏅"],[190,"Heroi","🦸"],[250,"Llegenda","👑"],[330,"Llegenda d'or","🌟"]];
@@ -440,8 +457,13 @@ function compFxSvg(id){
  if(id==="corona")return `<svg viewBox="0 0 200 200"><g class="fx-top"><path d="M56,36 L50,8 L76,22 L100,0 L124,22 L150,8 L144,36 Z" fill="#facc15" stroke="#92400e" stroke-width="3" stroke-linejoin="round"/><rect x="56" y="34" width="88" height="10" rx="3" fill="#eab308" stroke="#92400e" stroke-width="2.5"/><circle cx="100" cy="24" r="5" fill="#a855f7" stroke="#fff" stroke-width="1.5"/><circle cx="74" cy="28" r="4" fill="#ef4444" stroke="#fff" stroke-width="1.2"/><circle cx="126" cy="28" r="4" fill="#38bdf8" stroke="#fff" stroke-width="1.2"/></g><g class="fx-rot"><circle cx="100" cy="100" r="90" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-dasharray="6 14" opacity=".8"/></g></svg>`;
  return "";
 }
+const AV_REQ={fox:0,frog:0,rabbit:0,pig:0,penguin:0,monkey:0,bear:10,koala:10,raccoon:10,owl:25,wolf:25,octopus:25,lion:45,tiger:45,whale:45,dino:70,shark:70,unicorn:100,dragon:140,panda:0};
+const SK_POS_REQ=[0,15,40,75,120];
+const EST_REQ={"":0,A:25,B:70};
+const SK_REQ={};BN_SKILL_CAT.forEach((_,ci)=>{Object.keys(BN_SKILLS).filter(id=>BN_SKILL_INFO[id].c===ci).forEach((id,pos)=>{SK_REQ[id]=SK_POS_REQ[pos]??120})});
+let DEMO_EST=DEMO?218:null;
 function fitesReals(nom){
- if(DEMO)return {tot:218,boss:2,lab:1,apr:7,dom:1};
+ if(DEMO){const t=DEMO_EST;return {tot:t,boss:t>=40?2:0,lab:t>=40?1:0,apr:t>=70?7:0,dom:t>=100?1:0}}
  const p=progresMons(nom);
  let tot=0,boss=0,lab=0,apr=0,dom=0;
  p.forEach(x=>{
@@ -454,9 +476,15 @@ function fitesReals(nom){
  });
  return {tot,boss,lab,apr,dom};
 }
-const FITES=NOM?fitesReals(NOM):{tot:0,boss:0,lab:0,apr:0,dom:0};
+let FITES=NOM?fitesReals(NOM):{tot:0,boss:0,lab:0,apr:0,dom:0};
 const COMP_OK=id=>{const c=COMP_CAT.find(x=>x.id===id);return !!(c&&c.ok(FITES))};
 const guardat=aspecteDe(NOM)||{};
+const avReq=an=>AV_REQ[an]??0;
+const skReq=id=>SK_REQ[id]??0;
+const estReq=v=>EST_REQ[v]??0;
+const avObert=an=>FITES.tot>=avReq(an)||(!DEMO&&(an===guardat.av||an===animalPelNom(NOM||"")));
+const skObert=id=>FITES.tot>=skReq(id)||(!DEMO&&id===guardat.sk);
+const estObert=v=>FITES.tot>=estReq(v)||(!DEMO&&v===guardat.v);
 const EST={av:BN_AV.includes(guardat.av)?guardat.av:animalPelNom(NOM||"nen"),sk:BN_SKILLS[guardat.sk]?guardat.sk:"",v:BN_SKILL_VAR_PAL[guardat.v]?guardat.v:"",comp:COMP_OK(guardat.comp)?guardat.comp:(DEMO?"corona":"")};
 const clau=a=>`${a.av}|${a.sk}|${a.v}|${a.comp||""}`;
 let DESAT=clau({av:BN_AV.includes(guardat.av)?guardat.av:"",sk:EST.sk,v:EST.v,comp:EST.comp}); // el que hi ha desat: sense animal triat compta com a «cap»
@@ -491,31 +519,42 @@ function pintaComps(){
 }
 function triaComp(id){if(!COMP_OK(id))return;const canvi=id!==EST.comp;EST.comp=id;pintaComps();pintaFitxa(false);
  if(canvi){const g=$("gran");if(g&&!SUAU){g.classList.remove("comp-pop");void g.offsetWidth;g.classList.add("comp-pop")}soMoneda();const c=COMP_CAT.find(x=>x.id===id);viu(`Complement: ${c?c.nom:id}`)}}
+function pintaEvo(){
+ const el=$("evoBox");if(!el)return;
+ const avN=BN_AV.filter(avObert).length,skN=Object.keys(BN_SKILLS).filter(skObert).length,estN=Object.keys(BN_SKILL_ESTILS).filter(estObert).length;
+ const fets=avN+skN+estN,totP=BN_AV.length+Object.keys(BN_SKILLS).length+Object.keys(BN_SKILL_ESTILS).length,pc=Math.round(fets*100/totP);
+ const fites=[10,15,25,40,45,70,75,100,120,140].filter(x=>x>FITES.tot);
+ const seg=fites.length?fites[0]:null;
+ const demoH=DEMO?`<div class="evo-demo" role="group" aria-label="Simula nivell d'estrelles"><span>🧪 Simula estrelles:</span>${[0,30,80,150,218].map(n=>`<button type="button" data-sim="${n}" class="${DEMO_EST===n?"on":""}">${n} ⭐</button>`).join("")}</div>`:"";
+ el.innerHTML=`<div class="evo-bar"><div class="evo-cap"><span>🔓 Camí d'evolució · ${fets} / ${totP} peces</span><small>${seg?`Proper desbloqueig a ${seg} ⭐ (falten ${seg-FITES.tot} ⭐)`:"👑 Col·lecció completa!"}</small></div><div class="evo-track"><i style="width:${pc}%"></i></div><p class="evo-sub">Comences amb animals i 10 perfils (1 de cada categoria). Puja d'estrelles entre tots els mons per obrir la resta sense atzar!</p>${demoH}</div>`;
+ if(DEMO)el.querySelectorAll("[data-sim]").forEach(b=>b.onclick=()=>{DEMO_EST=+b.dataset.sim;FITES=fitesReals(NOM);if(!COMP_OK(EST.comp))EST.comp="";if(!avObert(EST.av))EST.av=BN_AV.find(avObert)||"fox";if(EST.sk&&!skObert(EST.sk))EST.sk="";if(!estObert(EST.v))EST.v="";pintaCap();pintaEvo();pintaRoda();pintaEstils();pintaGraella();pintaComps();pintaFitxa(false)});
+}
 function pintaCap(){
- const p=progresMons(NOM),id=DEMO?8:(p.map(x=>x.id).find(Boolean)||""),tot=p.reduce((s,x)=>s+(+x.punts>0?+x.punts:0),0)||(DEMO?218:0),nv=nivell(tot);
+ const p=progresMons(NOM),id=DEMO?8:(p.map(x=>x.id).find(Boolean)||""),tot=DEMO?DEMO_EST:FITES.tot,nv=nivell(tot);
  $("qui").innerHTML=`Hola, <em>${esc(NOM)}</em>!${id?` <small>#${esc(id)}</small>`:""} Tria com et veuran els altres al rànquing.`;
  $("fNom").innerHTML=`${esc(NOM)}${id?`<small>#${esc(id)}</small>`:""}`;
  $("fNiv").textContent=`${nv[2]} ${nv[1]} · ⭐ ${tot}`;
 }
 function pintaRoda(){
- $("roda").innerHTML=BN_AV.map(an=>`<button class="an${an===EST.av?" on":""}" type="button" role="radio" aria-checked="${an===EST.av}" tabindex="${an===EST.av?0:-1}" data-an="${an}" aria-label="${nomAn(an)}" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span></button>`).join("");
+ $("roda").innerHTML=BN_AV.map(an=>{const ok=avObert(an),rq=avReq(an);return `<button class="an${an===EST.av?" on":""}${ok?"":" lock"}" type="button" role="radio" aria-checked="${an===EST.av}" aria-disabled="${!ok}" tabindex="${an===EST.av?0:-1}" data-an="${an}" aria-label="${nomAn(an)}${ok?"":` (bloquejat: ${rq} estrelles)`}" style="--av:${BN_AV_BG[an]}"><span class="av-cl">${bnSpr(an)}</span>${ok?"":`<span class="lock-tag">🔒 ${rq}⭐</span>`}</button>`}).join("");
  $("rodaPeu").textContent=nomAn(EST.av);
 }
 function centra(el,suau){const r=$("roda");if(!el)return;const x=el.offsetLeft-(r.clientWidth-el.offsetWidth)/2;r.scrollTo({left:x,behavior:suau&&!SUAU?"smooth":"auto"})}
 function marcaRoda(pop){$("roda").querySelectorAll(".an").forEach(b=>{const on=b.dataset.an===EST.av;b.classList.toggle("on",on);b.setAttribute("aria-checked",on);b.tabIndex=on?0:-1;b.classList.remove("pop");if(on&&pop&&!SUAU){void b.offsetWidth;b.classList.add("pop")}});$("rodaPeu").textContent=nomAn(EST.av)}
-function pintaEstils(){$("estils").innerHTML=Object.keys(BN_SKILL_ESTILS).map(v=>`<button class="est${v===EST.v?" on":""}" type="button" role="radio" aria-checked="${v===EST.v}" tabindex="${v===EST.v?0:-1}" data-v="${v}">${BN_SKILL_ESTILS[v]}</button>`).join("")}
+function pintaEstils(){$("estils").innerHTML=Object.keys(BN_SKILL_ESTILS).map(v=>{const ok=estObert(v),rq=estReq(v);return `<button class="est${v===EST.v?" on":""}${ok?"":" lock"}" type="button" role="radio" aria-checked="${v===EST.v}" aria-disabled="${!ok}" tabindex="${v===EST.v?0:-1}" data-v="${v}">${BN_SKILL_ESTILS[v]}${ok?"":` 🔒 ${rq}⭐`}</button>`}).join("")}
 function pintaGraella(){
  const ids=Object.keys(BN_SKILLS);
- $("cats").innerHTML=BN_SKILL_CAT.map((c,i)=>`<div class="cat"><h3><b>${String(i+1).padStart(2,"0")}</b> ${esc(c)}</h3><div class="graella-sk" role="radiogroup" aria-label="${esc(c)}">${ids.filter(id=>BN_SKILL_INFO[id].c===i).map(id=>`<button class="sk${id===EST.sk?" on":""}" type="button" role="radio" aria-checked="${id===EST.sk}" tabindex="${id===EST.sk||(!EST.sk&&id===ids[0])?0:-1}" data-sk="${id}" aria-label="${esc(nomSk(id))}" title="${esc(nomSk(id))}">${bnSkillSpr(id,EST.v)}</button>`).join("")}</div></div>`).join("");
+ $("cats").innerHTML=BN_SKILL_CAT.map((c,i)=>`<div class="cat"><h3><b>${String(i+1).padStart(2,"0")}</b> ${esc(c)}</h3><div class="graella-sk" role="radiogroup" aria-label="${esc(c)}">${ids.filter(id=>BN_SKILL_INFO[id].c===i).map(id=>{const ok=skObert(id),rq=skReq(id);return `<button class="sk${id===EST.sk?" on":""}${ok?"":" lock"}" type="button" role="radio" aria-checked="${id===EST.sk}" aria-disabled="${!ok}" tabindex="${id===EST.sk||(!EST.sk&&id===ids[0])?0:-1}" data-sk="${id}" aria-label="${esc(nomSk(id))}${ok?"":` (bloquejat: ${rq} estrelles)`}" title="${esc(nomSk(id))}${ok?"":` · 🔒 ${rq} ⭐`}">${bnSkillSpr(id,EST.v)}${ok?"":`<span class="lock-tag">🔒${rq}⭐</span>`}</button>`}).join("")}</div></div>`).join("");
 }
 function marcaGraella(bot){document.querySelectorAll(".sk").forEach(b=>{const on=b.dataset.sk===EST.sk;b.classList.toggle("on",on);b.setAttribute("aria-checked",on);b.tabIndex=on?0:-1;b.classList.remove("bot");if(on&&bot&&!SUAU){void b.offsetWidth;b.classList.add("bot")}});if(!EST.sk){const p=document.querySelector(".sk");if(p)p.tabIndex=0}}
-function repintaColors(){document.querySelectorAll(".sk").forEach(b=>{b.innerHTML=bnSkillSpr(b.dataset.sk,EST.v)});document.querySelectorAll(".est").forEach(b=>{const on=b.dataset.v===EST.v;b.classList.toggle("on",on);b.setAttribute("aria-checked",on);b.tabIndex=on?0:-1});
+function repintaColors(){document.querySelectorAll(".sk").forEach(b=>{const ok=skObert(b.dataset.sk),rq=skReq(b.dataset.sk);b.innerHTML=bnSkillSpr(b.dataset.sk,EST.v)+(ok?"":`<span class="lock-tag">🔒${rq}⭐</span>`)});document.querySelectorAll(".est").forEach(b=>{const on=b.dataset.v===EST.v;b.classList.toggle("on",on);b.setAttribute("aria-checked",on);b.tabIndex=on?0:-1});
  if(!SUAU)document.querySelectorAll(".graella-sk").forEach(g=>{g.classList.remove("flaix");void g.offsetWidth;g.classList.add("flaix")})}
 
 // ====================== TRIAR ======================
-function triaAnimal(an,opt={}){if(!BN_AV.includes(an))return;const canvi=an!==EST.av;EST.av=an;TRIAT_AV=true;marcaRoda(canvi&&!opt.silenci);pintaFitxa(false);if(canvi&&!opt.silenci){soMoneda();viu(`Animal: ${nomAn(an)}`)}if(!opt.noCentra)centra($("roda").querySelector(`[data-an="${an}"]`),true)}
-function triaSk(id,opt={}){if(!BN_SKILLS[id])return;const canvi=id!==EST.sk;EST.sk=id;marcaGraella(canvi&&!opt.silenci);pintaFitxa(canvi&&!opt.silenci);if(canvi&&!opt.silenci){soMoneda();viu(`Perfil arcade: ${nomSk(id)}`)}}
-function triaEstil(v,opt={}){if(!(v in BN_SKILL_ESTILS))return;const canvi=v!==EST.v;EST.v=v;repintaColors();pintaFitxa(false);if(canvi&&!opt.silenci){soTic();viu(`Estil: ${BN_SKILL_ESTILS[v]}`)}}
+function avisaBloqueig(el,nom,req){const falten=Math.max(1,req-FITES.tot);if(el&&!SUAU){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake")}soTic();toast(`🔒 ${nom}: et falten ${falten} ⭐ (calen ${req} ⭐)`);viu(`${nom} bloquejat: calen ${req} estrelles`)}
+function triaAnimal(an,opt={}){if(!BN_AV.includes(an))return;if(!avObert(an)){avisaBloqueig($("roda").querySelector(`[data-an="${an}"]`),nomAn(an),avReq(an));return}const canvi=an!==EST.av;EST.av=an;TRIAT_AV=true;marcaRoda(canvi&&!opt.silenci);pintaFitxa(false);if(canvi&&!opt.silenci){soMoneda();viu(`Animal: ${nomAn(an)}`)}if(!opt.noCentra)centra($("roda").querySelector(`[data-an="${an}"]`),true)}
+function triaSk(id,opt={}){if(!BN_SKILLS[id])return;if(!skObert(id)){avisaBloqueig(document.querySelector(`.sk[data-sk="${id}"]`),nomSk(id),skReq(id));return}const canvi=id!==EST.sk;EST.sk=id;marcaGraella(canvi&&!opt.silenci);pintaFitxa(canvi&&!opt.silenci);if(canvi&&!opt.silenci){soMoneda();viu(`Perfil arcade: ${nomSk(id)}`)}}
+function triaEstil(v,opt={}){if(!(v in BN_SKILL_ESTILS))return;if(!estObert(v)){avisaBloqueig(document.querySelector(`.est[data-v="${v}"]`),BN_SKILL_ESTILS[v],estReq(v));return}const canvi=v!==EST.v;EST.v=v;repintaColors();pintaFitxa(false);if(canvi&&!opt.silenci){soTic();viu(`Estil: ${BN_SKILL_ESTILS[v]}`)}}
 // tecles ← → (i ↑ ↓ a la graella) dins de cada grup de ràdio: mouen la tria i el focus
 function teclat(e){const b=e.target.closest("[role=radio]");if(!b)return;const g=b.closest("[role=radiogroup]"),tots=[...g.querySelectorAll("[role=radio]")],i=tots.indexOf(b);let j=null;
  const pas=g.classList.contains("graella-sk")?(getComputedStyle(g).gridTemplateColumns.split(" ").length||5):1;
@@ -524,13 +563,13 @@ function teclat(e){const b=e.target.closest("[role=radio]");if(!b)return;const g
 
 // ====================== SORPRESA (màquina escurabutxaques) ======================
 let SORPRESA=null;
-function sorpresa(){if(SORPRESA)return;const al=a=>a[Math.floor(Math.random()*a.length)],ids=Object.keys(BN_SKILLS),vs=Object.keys(BN_SKILL_ESTILS);
- const fi={av:al(BN_AV.filter(a=>a!==EST.av)),sk:al(ids.filter(s=>s!==EST.sk)),v:al(vs)};
+function sorpresa(){if(SORPRESA)return;const al=a=>a[Math.floor(Math.random()*a.length)],avs=BN_AV.filter(avObert),ids=Object.keys(BN_SKILLS).filter(skObert),vs=Object.keys(BN_SKILL_ESTILS).filter(estObert);
+ const fi={av:al(avs.filter(a=>a!==EST.av).length?avs.filter(a=>a!==EST.av):avs),sk:al(ids.filter(s=>s!==EST.sk).length?ids.filter(s=>s!==EST.sk):ids),v:al(vs)};
  const acaba=()=>{SORPRESA=null;triaEstil(fi.v,{silenci:true});triaAnimal(fi.av,{silenci:true});triaSk(fi.sk,{silenci:true});marcaRoda(true);marcaGraella(true);pintaFitxa(true);soTada();viu(`Sorpresa: ${nomAn(fi.av)}, ${nomSk(fi.sk)}, ${BN_SKILL_ESTILS[fi.v]}`)};
  if(SUAU)return acaba();
  const passos=[70,70,80,90,100,110,125,140,160,185,220];let k=0;$("btSorpresa").disabled=true;
  const tic=()=>{if(k>=passos.length){$("btSorpresa").disabled=false;return acaba()}
-  EST.av=al(BN_AV);EST.sk=al(ids);EST.v=al(vs);TRIAT_AV=true;marcaRoda(false);marcaGraella(false);repintaColors();pintaFitxa(false);soTic();SORPRESA=setTimeout(tic,passos[k++])};
+  EST.av=al(avs);EST.sk=al(ids);EST.v=al(vs);TRIAT_AV=true;marcaRoda(false);marcaGraella(false);repintaColors();pintaFitxa(false);soTic();SORPRESA=setTimeout(tic,passos[k++])};
  SORPRESA=setTimeout(tic,0)}
 
 // ====================== DESAR ======================
@@ -552,12 +591,12 @@ async function desa(){const bt=$("btDesa");if(bt.getAttribute("aria-disabled")==
  toast("GUARDAT!");pluja();soTada();viu(res==="ok"?"Perfil guardat":"Perfil guardat en aquest aparell")}
 // pujades pendents (desades sense connexió o abans d'aplicar l'SQL): en silenci, cada cop que s'obre la pàgina
 function reintentaPendents(){const e=aspecteDe(NOM),pin=pinDe(NOM);if(!e||!e.pendent||!pin||!AMB_XARXA)return;
- rpcP("bn_aspecte_desa",{p_nom:NOM,p_pin:pin,p_aspecte:{av:e.av,sk:e.sk,v:e.v||""}}).then(r=>{if(r==="ok")desaAspecteLocal(NOM,e,false)}).catch(()=>{})}
+ rpcP("bn_aspecte_desa",{p_nom:NOM,p_pin:pin,p_aspecte:{av:e.av,sk:e.sk,v:e.v||"",comp:e.comp||undefined}}).then(r=>{if(r==="ok")desaAspecteLocal(NOM,e,false)}).catch(()=>{})}
 
 // ====================== ARRENCADA ======================
 if(!NOM){$("sense").hidden=false;$("senseAv").innerHTML=bnSpr("owl");$("accions").hidden=true;$("qui").textContent="";}
 else{
- $("app").hidden=false;pintaCap();pintaRoda();pintaEstils();pintaGraella();pintaComps();pintaFitxa(false);
+ $("app").hidden=false;pintaCap();pintaEvo();pintaRoda();pintaEstils();pintaGraella();pintaComps();pintaFitxa(false);
  $("comps").addEventListener("click",e=>{const b=e.target.closest(".cmp");if(b&&!b.disabled)triaComp(b.dataset.comp)});
  requestAnimationFrame(()=>centra($("roda").querySelector(".an.on"),false));
  // roda: tocar un animal el tria i el centra; en parar de lliscar, el del mig queda triat

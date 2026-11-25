@@ -25,7 +25,7 @@ function servidor() {
  const srv = await servidor(), BASE = `http://127.0.0.1:${srv.address().port}`;
  const nav = await chromium.launch();
  const SEED = { bn_jugador: "Prova", bn_pins: JSON.stringify({ prova: "1234A" }), bn_vol: "0",
-  bn_biogeo_perfils: JSON.stringify({ Prova: { nom: "Prova", id: 77, punts: 30, temes: {} } }) };
+  bn_biogeo_perfils: JSON.stringify({ Prova: { nom: "Prova", id: 77, punts: 150, temes: {} } }) };
  // obre la pàgina amb un estat de l'aparell i una resposta simulada per a cada funció de Supabase
  async function obre(seed, respostes, extra) {
   const ctx = await nav.newContext({ viewport: { width: 390, height: 844 }, ...(extra || {}) }), p = await ctx.newPage();
@@ -121,6 +121,28 @@ function servidor() {
   ok(await p.evaluate(() => document.querySelector(".sk.on") !== null && document.querySelector("#btDesa").getAttribute("aria-disabled") === "false"), "la Sorpresa és instantània");
   await p.click("#btDesa"); await p.waitForTimeout(200);
   ok((await p.$$(".pluja")).length === 0, "sense pluja d'estrelles"); await ctx.close() }
+
+ console.log("7) desbloqueig progressiu (0 ⭐): bloqueja peces altes i deixa triar les inicials");
+ { const seed0 = { bn_jugador: "Nou", bn_pins: JSON.stringify({ nou: "1234A" }), bn_vol: "0",
+    bn_biogeo_perfils: JSON.stringify({ Nou: { nom: "Nou", id: 99, punts: 0, temes: {} } }) };
+  const { p, ctx, errors } = await obre(seed0, { bn_aspecte_desa: "ok" });
+  ok((await p.$$(".an.lock")).length > 0 && (await p.$$(".sk.lock")).length === 40, "amb 0 ⭐ hi ha 40 perfils bloquejats i 10 d'oberts (1 per categoria)");
+  await p.click('.sk[data-sk="ninja"]', { force: true }); await p.waitForTimeout(200);
+  ok((await p.getAttribute('.sk[data-sk="ninja"]', "aria-checked")) === "false", "clicar un perfil bloquejat no el selecciona");
+  await p.click('.sk[data-sk="cronos"]'); await p.waitForTimeout(200);
+  ok((await p.getAttribute('.sk[data-sk="cronos"]', "aria-checked")) === "true", "clicar un perfil inicial (0 ⭐) sí el selecciona");
+  ok(errors.length === 0, "cap error de JavaScript"); await ctx.close() }
+
+ console.log("8) complement per fites: es desa a localStorage, s'envia al núvol i es conserva en recarregar");
+ { const { p, ctx, crides, errors, asp } = await obre(SEED, { bn_aspecte_desa: "ok" });
+  await p.click('#comps .cmp[data-comp="estel"]'); await p.waitForTimeout(200);
+  await p.click("#btDesa"); await p.waitForTimeout(400);
+  const a = (await asp()).prova, c = crides.find(x => x.f === "bn_aspecte_desa");
+  ok(a && a.comp === "estel", "el complement 'estel' queda desat a localStorage.bn_aspectes");
+  ok(c && c.cos.p_aspecte && c.cos.p_aspecte.comp === "estel", "bn_aspecte_desa rep p_aspecte.comp='estel'");
+  await p.reload(); await p.waitForTimeout(300);
+  ok((await p.evaluate(() => document.getElementById("fitxa").dataset.comp)) === "estel", "en recarregar /perfil/, el complement segueix equipat");
+  ok(errors.length === 0, "cap error de JavaScript"); await ctx.close() }
 
  await nav.close(); srv.close();
  console.log(fallades ? `\n✗ ${fallades} comprovacions han fallat` : "\n✓ Totes les comprovacions de la pàgina de perfil passen");
