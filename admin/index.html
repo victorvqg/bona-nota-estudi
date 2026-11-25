@@ -770,7 +770,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.68.0";
+const VERSIO_ADMIN="2.69.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -793,6 +793,7 @@ const COL_MON={
 const XMON={"enters":"Mates · Enters","geosfera":"Bio-Geo · Geosfera","angles":"Anglès · Tema 2","catala":"Català · Tema 2","divisibilitat":"Mates · Divisibilitat","comarques":"Socials · Comarques","castellano":"Castellano · Temas 2 y 3","biogeo":"Bio-Geo · Bloc 1","socials":"Socials · El clima"};
 const DEMO_JOCS={"enters":["salts","signeres","pamusu","err-enters"],"geosfera":["capes","mohs","mineral","err-geo"],"angles":["contraris","perdins","dospresents","fenn"],"catala":["subgeneres","oralescrit"],"divisibilitat":["fx-mcm","fx-criteris","fx-divisio","er-troba"],"comarques":["mapa43","capitals","ruta"],"castellano":["concretos","generos","byv"],"biogeo":["planetes","celules","cossos"],"socials":["climo","capes","parelles"]};
 const LABS_MON={"enters":{"world":"enters","total":6},"geosfera":{"world":"geosfera","total":6},"socials":{"world":"clima","total":6}};
+const TRIM_MON={"enters":1,"geosfera":1,"angles":1,"catala":1,"divisibilitat":1,"comarques":1,"castellano":1,"biogeo":1,"socials":1};
 /* MONS-ADMIN:fi */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -2804,8 +2805,8 @@ function pintaControl(d){const el=$("#tCtrl");if(!el)return;el.removeAttribute("
     <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">${monsNit?`<span class="pill warn">🌙 Tancats de nit (${minAHora(monsTancaM)}–${minAHora(monsObreM)}${capEt})</span>`:tancaMons?`<span class="pill info">🌙 Nit: ${minAHora(monsTancaM)}–${minAHora(monsObreM)}${capEt}</span>`:""}<span class="pill ${nOb===ms.length?"ok":nOb===0?"bad":"warn"}" id="ctrlMonsEstat">${nOb} de ${ms.length} oberts</span>
      <button class="btn sec petit" type="button" id="ctrlMonsObre"${nd||tancats.size===0?" disabled":""}>Activa'ls tots</button>
      <button class="btn sec petit" type="button" id="ctrlMonsTanca"${nd||tancats.size===ms.length?" disabled":""}>Tanca'ls tots</button></div></div>
-   <div class="ctrl-mons">${ms.map(m=>{const ob=!tancats.has(m.id);return `<div class="ctrl-mon${ob?"":" tancat"}" style="--mc:${colAssig(m.id)}">
-    <div class="ctrl-mon-t"><b title="${esc(m.nom)}">${esc(nomAssig(m.id))}</b><small>${ob?"Obert":"🔒 Tancat"}</small></div>
+   <div class="ctrl-mons">${ms.map(m=>{const ob=!tancats.has(m.id),tr=(typeof TRIM_MON!=="undefined"&&TRIM_MON[m.id])||1,trL=tr===2?"2n T":tr===3?"3r T":"1r T";return `<div class="ctrl-mon${ob?"":" tancat"}" style="--mc:${colAssig(m.id)}">
+    <div class="ctrl-mon-t"><b title="${esc(m.nom)}">${esc(nomAssig(m.id))}</b><small>${ob?"Obert":"🔒 Tancat"} · ${trL}</small></div>
     <button class="sw" type="button" role="switch" data-ctrl-mon="${esc(m.id)}" aria-label="${esc(nomAssig(m.id))}" aria-checked="${ob}"${nd}><i></i><span>${ob?"Obert":"Tancat"}</span></button></div>`}).join("")}</div>
   </div>
  </div>`;
