@@ -58,6 +58,7 @@ function servidor() {
   ok((await p.getAttribute('.an[data-an="whale"]', "aria-checked")) === "true" && (await p.textContent("#rodaPeu")) === "Balena", "animal triat amb clic");
   await p.focus('.an[data-an="whale"]'); await p.keyboard.press("ArrowRight"); await p.waitForTimeout(250);
   ok((await p.getAttribute('.an[data-an="fox"]', "aria-checked")) === "true" || (await p.evaluate(() => document.querySelector(".an.on").dataset.an)) !== "whale", "les fletxes del teclat canvien l'animal");
+  await p.click('#armariTabs [data-tab="insignies"]'); await p.waitForTimeout(150);
   await p.click('.sk[data-sk="ninja"]'); await p.waitForTimeout(350);
   ok((await p.getAttribute('.sk[data-sk="ninja"]', "aria-checked")) === "true" && (await p.textContent("#fSk")) === "NINJA", "perfil triat amb clic i nom a la fitxa");
   await p.focus('.sk[data-sk="ninja"]'); await p.keyboard.press("ArrowLeft"); await p.waitForTimeout(350);
@@ -77,7 +78,7 @@ function servidor() {
 
  console.log("3) la funció SQL encara no existeix (404): queda pendent i es puja en tornar");
  { const { p, ctx, errors, asp } = await obre(SEED, {});
-  await p.click('.sk[data-sk="piro"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
+  await p.click('#armariTabs [data-tab="insignies"]'); await p.click('.sk[data-sk="piro"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
   const a = (await asp()).prova;
   ok(a && a.sk === "piro" && a.pendent === true, "guardat amb «pendent»");
   ok((await p.textContent("#avis")).includes("Guardat en aquest aparell"), "avís de guardat a l'aparell");
@@ -91,15 +92,15 @@ function servidor() {
 
  console.log("4) PIN incorrecte (tant per HTTP 400 com per codi normal sense raise, issue #33)");
  { const { p, ctx, asp } = await obre(SEED, { bn_aspecte_desa: { status: 400, body: '{"message":"pin incorrecte"}' } });
-  await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
+  await p.click('#armariTabs [data-tab="insignies"]'); await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
   ok((await asp()).prova.pendent === true, "queda pendent (HTTP 400)");
   ok(/PIN/.test(await p.textContent("#avis")) && (await p.$("#avis a")) !== null, "avís de PIN amb enllaç a la portada (HTTP 400)"); await ctx.close() }
  { const { p, ctx, asp } = await obre(SEED, { bn_aspecte_desa: "pin" });
-  await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
+  await p.click('#armariTabs [data-tab="insignies"]'); await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
   ok((await asp()).prova.pendent === true, "queda pendent (codi 'pin' sense raise)");
   ok(/PIN/.test(await p.textContent("#avis")) && (await p.$("#avis a")) !== null, "avís de PIN amb enllaç a la portada (codi 'pin')"); await ctx.close() }
  { const { p, ctx, asp } = await obre(SEED, { bn_aspecte_desa: { ok: false, codi: "pin" } });
-  await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
+  await p.click('#armariTabs [data-tab="insignies"]'); await p.click('.sk[data-sk="mag"]'); await p.click("#btDesa"); await p.waitForTimeout(600);
   ok((await asp()).prova.pendent === true, "queda pendent (codi JSON {ok:false,codi:'pin'})");
   ok(/PIN/.test(await p.textContent("#avis")) && (await p.$("#avis a")) !== null, "avís de PIN amb enllaç a la portada (codi JSON)"); await ctx.close() }
 
@@ -115,7 +116,7 @@ function servidor() {
 
  console.log("6) «Efectes suaus»: cap animació en marxa");
  { const { p, ctx } = await obre(Object.assign({}, SEED, { bn_suau: "1" }), { bn_aspecte_desa: "ok" });
-  await p.click('.sk[data-sk="drifter"]'); await p.waitForTimeout(200);
+  await p.click('#armariTabs [data-tab="insignies"]'); await p.click('.sk[data-sk="drifter"]'); await p.waitForTimeout(200);
   ok((await p.evaluate(() => document.body.classList.contains("suau") && document.getAnimations().length)) === 0, "cap animació CSS en marxa");
   await p.click("#btSorpresa"); await p.waitForTimeout(150);
   ok(await p.evaluate(() => document.querySelector(".sk.on") !== null && document.querySelector("#btDesa").getAttribute("aria-disabled") === "false"), "la Sorpresa és instantània");
@@ -127,6 +128,7 @@ function servidor() {
     bn_biogeo_perfils: JSON.stringify({ Nou: { nom: "Nou", id: 99, punts: 0, temes: {} } }) };
   const { p, ctx, errors } = await obre(seed0, { bn_aspecte_desa: "ok" });
   ok((await p.$$(".an.lock")).length > 0 && (await p.$$(".sk.lock")).length === 40, "amb 0 ⭐ hi ha 40 perfils bloquejats i 10 d'oberts (1 per categoria)");
+  await p.click('#armariTabs [data-tab="insignies"]'); await p.waitForTimeout(120);
   await p.click('.sk[data-sk="ninja"]', { force: true }); await p.waitForTimeout(200);
   ok((await p.getAttribute('.sk[data-sk="ninja"]', "aria-checked")) === "false", "clicar un perfil bloquejat no el selecciona");
   await p.click('.sk[data-sk="cronos"]'); await p.waitForTimeout(200);
@@ -135,6 +137,7 @@ function servidor() {
 
  console.log("8) complement per fites: es desa a localStorage, s'envia al núvol i es conserva en recarregar");
  { const { p, ctx, crides, errors, asp } = await obre(SEED, { bn_aspecte_desa: "ok" });
+  await p.click('#armariTabs [data-tab="comps"]'); await p.waitForTimeout(120);
   await p.click('#comps .cmp[data-comp="estel"]'); await p.waitForTimeout(200);
   await p.click("#btDesa"); await p.waitForTimeout(400);
   const a = (await asp()).prova, c = crides.find(x => x.f === "bn_aspecte_desa");
@@ -142,6 +145,22 @@ function servidor() {
   ok(c && c.cos.p_aspecte && c.cos.p_aspecte.comp === "estel", "bn_aspecte_desa rep p_aspecte.comp='estel'");
   await p.reload(); await p.waitForTimeout(300);
   ok((await p.evaluate(() => document.getElementById("fitxa").dataset.comp)) === "estel", "en recarregar /perfil/, el complement segueix equipat");
+  ok(errors.length === 0, "cap error de JavaScript"); await ctx.close() }
+
+ console.log("9) Armari horitzontal (6 pestanyes, filtre, Marcs, Títols i Cofre d'Estrena)");
+ { const { p, ctx, errors } = await obre(SEED, { bn_aspecte_desa: "ok" }, { viewport: { width: 1280, height: 820 } });
+  ok((await p.$$("#armariTabs .arm-tab")).length === 6, "6 pestanyes horitzontals a l'armari");
+  await p.click('#armariTabs [data-tab="marcs"]'); await p.waitForTimeout(120);
+  ok(await p.isVisible('.panell-tab[data-panel="marcs"]'), "la pestanya Marcs mostra el seu panell");
+  await p.click('#marcs .mrc[data-marc="or"]'); await p.waitForTimeout(150);
+  ok((await p.evaluate(() => document.getElementById("gran").dataset.marc)) === "or", "equipar marc Or Reial actualitza l'avatar");
+  await p.click('#armariTabs [data-tab="titols"]'); await p.waitForTimeout(120);
+  await p.click('#titols .ttl[data-titol="cervell"]'); await p.waitForTimeout(150);
+  ok((await p.textContent("#fTitol")).includes("Cervell"), "equipar títol surt a la fitxa");
+  await p.click('#filtreEstat [data-fe="lock"]'); await p.waitForTimeout(120);
+  ok((await p.$$('#titols .ttl.amagat-f')).length > 0, "el filtre «Per desbloquejar» amaga les peces ja obertes");
+  await p.click('#armariTabs [data-tab="cami"]'); await p.waitForTimeout(120);
+  ok(await p.isVisible('.panell-tab[data-panel="cami"] .evo-rail'), "la pestanya Camí mostra el rail de nivells");
   ok(errors.length === 0, "cap error de JavaScript"); await ctx.close() }
 
  await nav.close(); srv.close();

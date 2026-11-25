@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.71.0 · 2026-11-25
+
+### Canviat
+- **Redisseny de `/perfil/` en format «Armari de Videojoc» horitzontal (`perfil/index.html`, `motor/prova-perfil.js`):**
+  - **Avatar protagonista molt més gran (`420px` d'amplada · cercle de `204px` sobre pedestal lluminós):** s'ha ampliat l'aparador esquerre i l'insígnia (`80px`), amb els botons `🎲 Sorpresa` i `DESA EL PERFIL ▶` en paral·lel.
+  - **Navegació horitzontal per 6 pestanyes (`🐾 Animals`, `🖼️ Marcs`, `🏷️ Títols`, `⚔️ Insígnies`, `✨ Complements`, `🗺️ Camí`):** elimina la cascada vertical llarga i deixa tot el perfil accessible sense scroll a l'escriptori.
+  - **Graella visual de 20 animals (5×4) i filtre horitzontal de categories d'insígnies (`Totes` + 10 categories):** tots els personatges es veuen d'un sol cop d'ull sense carrusel estret, i les 50 insígnies arcade es filtren per categoria en un panell compacte.
+
 ## 2.70.0 · 2026-11-25
 
 ### Afegit
