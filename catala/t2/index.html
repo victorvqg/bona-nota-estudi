@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="206db426d2",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="31e206c59d",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -85,7 +85,7 @@ nav button:focus-visible,.so-btn:focus-visible,.logo:focus-visible,#punts:focus-
 .pausa-seg:hover{border-color:#93c5fd;background:#f8fbff}
 /* capçalera */
 header{background:linear-gradient(120deg,var(--g1,#1e3a8a),var(--g2,#2563eb) 55%,var(--g3,#0ea5e9));color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 14px #1e3a8a40}
-.hd{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.hd{max-width:1160px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
 .logo{font-weight:900;font-size:22px;letter-spacing:.2px;display:flex;align-items:center;gap:10px;cursor:pointer;flex:1;min-width:0}
 .logo span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #logoic{flex:none;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:#ffffff26;border:1px solid #ffffff40;font-size:22px}
@@ -128,7 +128,7 @@ nav{justify-content:safe center}
 @media(min-width:601px){header .hd{transition:padding .2s}header.petit .hd{padding-top:5px;padding-bottom:5px}header.petit .qui-fila{display:none}header.petit #logoic{width:32px;height:32px;font-size:18px}}
 .surt-gran{display:block;text-align:center;margin-top:16px;color:var(--suau);font-weight:800;text-decoration:none}
 .surt-gran:hover{color:var(--blau2)}
-main{max-width:960px;margin:0 auto;padding:18px 16px 40px}
+main{max-width:1160px;margin:0 auto;padding:18px 20px 40px}
 /* elements bàsics */
 h2.sec .ico{color:var(--g2,#2563eb);width:24px;height:24px}
 h2.sec{font-size:21px;margin:26px 0 12px;display:flex;align-items:center;gap:8px}
@@ -161,7 +161,33 @@ h2.sec:first-child{margin-top:4px}
 .continua{margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--groc-cl);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
 .continua b{flex:1}
 /* graella de temes */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}
+/* blocs intel·ligents (Opció A · v2.67.0): emparella blocs curts (n<=2) i equilibra columnes */
+.blocs-parella{display:grid;gap:18px;align-items:start;margin-top:22px}
+.blocs-parella[data-cols="2-2"],.blocs-parella[data-cols="1-1"]{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.blocs-parella[data-cols="2-1"]{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.blocs-parella[data-cols="1-2"]{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+.bloc-g{min-width:0}
+.blocs-parella .bloc-g h2.sec{margin:0 0 10px;font-size:19.5px}
+.grid[data-n="1"]{grid-template-columns:minmax(0,1fr)}
+.grid[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid[data-n="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid[data-n="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+.grid[data-n="5"]{grid-template-columns:repeat(5,minmax(0,1fr))}
+.grid[data-n="6"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid[data-n="7"],.grid[data-n="8"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+.grid[data-n="9"]{grid-template-columns:repeat(5,minmax(0,1fr))}
+.grid[data-n="1"]>.tile{min-height:110px}
+@media(max-width:1059px){.grid[data-n="5"],.grid[data-n="9"]{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:860px){.blocs-parella[data-cols]{grid-template-columns:1fr;gap:14px}.grid[data-n="3"],.grid[data-n="4"],.grid[data-n="5"],.grid[data-n="6"],.grid[data-n="7"],.grid[data-n="8"],.grid[data-n="9"]{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){main{padding:14px 12px 32px}.grid[data-n]{grid-template-columns:1fr}}
+/* preguntes obertes en franja horitzontal al 100% */
+.grid-ob{display:grid;grid-template-columns:1fr}
+.tile.tile-ob{flex-direction:row;align-items:center;gap:14px;min-height:0;padding:14px 18px}
+.tile.tile-ob .ic{flex:none}
+.tile.tile-ob .ob-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tile.tile-ob .peu{margin-top:0;min-width:170px;flex:none}
+@media(max-width:600px){.tile.tile-ob{flex-wrap:wrap;padding:14px}.tile.tile-ob .peu{width:100%;min-width:0;margin-top:4px}}
 .tile{background:var(--card);border-radius:var(--r);padding:16px;cursor:pointer;box-shadow:var(--om);transition:transform .15s,box-shadow .15s;position:relative;display:flex;flex-direction:column;gap:6px;min-height:150px}
 .tile:hover{transform:translateY(-3px);box-shadow:0 10px 24px #0f172a1f}
 .tile .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
@@ -808,7 +834,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.66.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.67.0</small></div>
 
 <script src="../../sprites.js?v=0d2acb59"></script>
 <script>
@@ -1955,7 +1981,12 @@ function tileTema(t,i){
  return `<div class="tile" role="button" tabindex="0" onclick="obre(${i})"><div class="ic" style="background:${t.col}1f">${t.ic}</div>${ap?`<span class="segell">${m>=90?"🏆":"✅"}</span>`:`<span class="num">${i+1}/${T.length}</span>`}<b>${t.titol}</b><small>${t.font}</small><div class="peu"><div class="barra"><i style="width:${f}%"></i></div><span class="pc">${m===null?"—":f+"%"}</span></div></div>`;
 }
 function seguentPendent(){return T.findIndex(t=>{const m=millor(t.id);return m===null||m<APROVA})}
-function blocsTemes(){let i=0;return ASSIG.blocs.map(b=>{const h=`<h2 class="sec">${b.titol}</h2><div class="grid">${T.slice(i,i+b.n).map((t,k)=>tileTema(t,i+k)).join("")}</div>`;i+=b.n;return h}).join("")}
+function blocHtml(b,i0){return `<section class="bloc-g" data-n="${b.n}"><h2 class="sec">${b.titol}</h2><div class="grid" data-n="${b.n}">${T.slice(i0,i0+b.n).map((t,k)=>tileTema(t,i0+k)).join("")}</div></section>`}
+function blocsTemes(){const bs=ASSIG.blocs,out=[];let i=0;
+ for(let j=0;j<bs.length;j++){const b=bs[j],nx=bs[j+1];
+  if(b.n<=2&&nx&&nx.n<=2){out.push(`<div class="blocs-parella" data-cols="${b.n}-${nx.n}">${blocHtml(b,i)}${blocHtml(nx,i+b.n)}</div>`);i+=b.n+nx.n;j++}
+  else{out.push(blocHtml(b,i));i+=b.n}}
+ return out.join("")}
 function albumSegells(){
  if(DEMO_ALBUM)return [
   {id:"exp",ic:"📖",nom:"Explorador",sub:`${T.length}/${T.length} fitxes`,fet:true,acc:"vista('temes')"},
@@ -2006,13 +2037,13 @@ function inici(){
  h+=`<div class="inici-hub">${cartaRepas()}`;h+=`${bossCarta(true)}</div>`;
  h+=cartaMissions()+cartaAlbum();
  h+=`${blocsTemes()}
- <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
+ <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid-ob">${tileObertes()}</div>
  ${seccionsJocs()}
  <div class="fila">${btSuau()}${MODE_DEMO?`<button class="btn" onclick="demo()">🎆 Prova els efectes (demo)</button>`:""}${MODE_TAST?`<button class="btn verd" onclick="surtTast(false)">🔐 Entra amb nom i PIN</button>`:`<button class="btn sec" onclick="vista('analitica')">📊 Veure com vaig</button>`}<a class="btn sec" href="${MODE_TAST?"../../?tast=1#mons":"../../"}" style="text-decoration:none;display:inline-block">🚪 Tots els mons</a></div>`;
  app.innerHTML=h;
 }
 function pintaTemes(){app.innerHTML=blocsTemes()}
-function tileObertes(){if(MODE_TAST)return `<div class="tile" role="button" tabindex="0" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>👀 Mostra de la 1a pregunta (de ${OB.length}) · escriure i corregir és amb nom i PIN</small><div class="peu"><span class="etq etq-mostra">👀 Mostra</span></div></div>`;const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile" role="button" tabindex="0" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
+function tileObertes(){if(MODE_TAST)return `<div class="tile tile-ob" role="button" tabindex="0" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><div class="ob-txt"><b>Preguntes per desenvolupar</b><small>👀 Mostra de la 1a pregunta (de ${OB.length}) · escriure i corregir és amb nom i PIN</small></div><div class="peu"><span class="etq etq-mostra">👀 Mostra</span></div></div>`;const n=Object.keys(S.ob).length,pc=Math.round(n*100/OB.length);return `<div class="tile tile-ob" role="button" tabindex="0" onclick="vista('obertes')"><div class="ic" style="background:#fff7ed">✍️</div><div class="ob-txt"><b>Preguntes per desenvolupar</b><small>${OB.length} preguntes · escriu i compara amb la resposta model</small></div><div class="peu"><div class="barra"><i style="width:${pc}%"></i></div><span class="pc">${n}/${OB.length}</span></div></div>`}
 const JOCS=[...ASSIG.jocs.map(j=>[j.id,j.ic,j.titol,j.sub,j.col]),["examen","🏆","Examen sorpresa","15 preguntes de tot","#fee2e2"],["examreal","📝","Examen de veritat","10 preguntes · nota sobre 10","#e0e7ff"]];
 function tilesJocs(llista){return (llista||JOCS).map(([id,ic,t,s,c])=>{if(MODE_TAST&&!jocObertTast(id))return `<div class="tile tast-bloc" role="button" tabindex="0" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq">🔒 Amb nom i PIN</span></div></div>`;const r=S.jocs[id]||[];const ul=r.length?r[r.length-1]:null;if(MODE_TAST)return `<div class="tile" role="button" tabindex="0" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':'etq-mostra'}">${ul===null?"👀 Mostra":`Provat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`;return `<div class="tile" role="button" tabindex="0" onclick="joc('${id}')"><div class="ic" style="background:${c}">${ic}</div><b>${t}</b><small>${s}</small><div class="peu"><span class="etq ${ul!==null?'ap':''}">${ul===null?"Nou":`Jugat ${r.length}×`}</span>${ul!==null?`<span class="pc" style="margin-left:auto">${ul}%</span>`:""}</div></div>`}).join("")}
 function pintaJocs(){app.innerHTML=bossCarta()+seccionsJocs()}
