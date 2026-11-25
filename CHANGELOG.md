@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.67.0 · 2026-11-25
+
+### Canviat
+- **Blocs de temes intel·ligents i amplada fluida als 9 mons (Opció A · `motor/plantilla-estudi-interactiu.html`):**
+  - Contenidor principal (`main`) i capçalera (`.hd`) ampliats de `960px` a **`1160px`** (+21 % d'amplada útil en portàtil i escriptori).
+  - **Emparellament automàtic de blocs curts (`n ≤ 2`):** dos blocs consecutius curts es col·loquen de costat en proporció exacta (`2-2`, `2-1`, `1-2`, `1-1`), reduint `matematiques/enters` de 4 files mig buides a 2 files plenes.
+  - **Graella equilibrada per nombre de temes (`.grid[data-n]`):** `n=3` (3 cols), `n=4` (4 cols), `n=5` (5 cols en pantalla ampla), `n=6` (3×2), `n=9` (5+4), eliminant les targetes òrfenes i els buits a la dreta en tots 9 mons.
+  - **`Preguntes obertes d'examen` (`.tile-ob`):** passa a franja horitzontal al 100 % d'amplada en lloc d'una targeta quadrada solitària al 25 %.
+
 ## 2.66.0 · 2026-11-25
 
 ### Canviat
