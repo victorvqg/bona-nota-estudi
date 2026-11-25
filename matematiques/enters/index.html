@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5764a05efe",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="36eab7c67d",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -841,9 +841,9 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.69.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.69.1</small></div>
 
-<script src="../../sprites.js?v=0d2acb59"></script>
+<script src="../../sprites.js?v=1d98486b"></script>
 <script src="../../assets/bonanota-visuals.js?v=0b523622"></script>
 <script>
 const ASSIG={
@@ -1181,7 +1181,7 @@ function svgSalts(){const {s,X}=rectaBase(-8,2,{num:true});let o=s.replace('view
 // 👾 Boss del món (docs/BOSS-I-EFECTES.md §3)
 ASSIG.boss={nom:"El Rei Sota Zero",spr:"gegant",fx:"blocs",mus:"chiptune",ic:"🌡️",rotul:"SIGNE CORRECTE!",em:["➕","➖","🌡️","❄️"]};
 
-const MONS=[{"id": "enters", "clau": "bn_enters", "ic": "🌡️", "materia": "Matemàtiques", "titol": "Tema 3: Els nombres enters", "url": "../../matematiques/enters/", "neix": "2026-11-20"}, {"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "opina", "ic": "📖", "materia": "Català", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "Baix", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "Siéntate", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
+const MONS=[{"id": "enters", "clau": "bn_enters", "ic": "🌡️", "materia": "Matemàtiques", "titol": "Tema 3: Els nombres enters", "url": "../../matematiques/enters/", "neix": "2026-11-20"}, {"id": "geosfera", "clau": "bn_geosfera", "ic": "🌋", "materia": "Biologia i Geologia", "titol": "Geosfera", "url": "../../bio-i-geo/geosfera/", "neix": "2026-11-17"}, {"id": "angles", "clau": "Look!", "ic": "🎬", "materia": "Anglès", "titol": "Tema 2: That's Entertainment", "url": "../../angles/t2/", "neix": "2026-11-10"}, {"id": "catala", "clau": "opina", "ic": "📖", "materia": "Llengua Catalana", "titol": "Tema 2: La literatura, el nom i la puntuació", "url": "../../catala/t2/", "neix": "2026-11-06"}, {"id": "divisibilitat", "clau": "bn_divisibilitat", "ic": "🔢", "materia": "Matemàtiques", "titol": "Tema 2: Divisibilitat", "url": "../../matematiques/divisibilitat/", "neix": "2026-11-04"}, {"id": "comarques", "clau": "Baix", "ic": "🗺️", "materia": "Ciències socials", "titol": "Les comarques de Catalunya", "url": "../../sociales/comarques/", "neix": "2026-11-03"}, {"id": "castellano", "clau": "Siéntate", "ic": "📝", "materia": "Lengua Castellana", "titol": "Temas 2 y 3", "url": "../../castellano/t2-t3/", "neix": "2026-11-02"}, {"id": "biogeo", "clau": "bn_biogeo", "ic": "🔭", "materia": "Biologia i Geologia", "titol": "Bloc 1: Univers, Terra i cèl·lula", "url": "../../bio-i-geo/univers/", "neix": "2026-11-02"}, {"id": "socials", "clau": "bn_soc", "ic": "🌍", "materia": "Ciències socials", "titol": "Tema 3: El clima", "url": "../../sociales/t3-clima/", "neix": "2026-11-02"}];
 const QIDS={"positius":[1,2,3,4,5,6,7,8,9],"conjunt":[1,2,3,4,5,6,7,8],"sumes":[1,2,3,4,5,6,7,8,9],"parentesis":[1,2,3,4,5,6,7,8,9],"multdiv":[1,2,3,4,5,6,7,8,9],"combinades":[1,2,3,4,5,6,7,8,9],"potencies":[1,2,3,4,5,6,7,8,9],"j-recta":[1,2,3,4,5,6],"j-salts":[1,2,3,4]};
 const QDIF={};
 const CL=(ASSIG.clau||"bn_"+ASSIG.id)+"_";
