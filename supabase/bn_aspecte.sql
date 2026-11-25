@@ -21,6 +21,7 @@ begin
     t := p_aspecte->>'av'; if t ~ '^[a-z0-9_]{1,24}$' then a := a || jsonb_build_object('av', t); end if;
     t := p_aspecte->>'sk'; if t ~ '^[a-z0-9_]{1,24}$' then a := a || jsonb_build_object('sk', t); end if;
     t := p_aspecte->>'v';  if t in ('A','B') then a := a || jsonb_build_object('v', t); end if;
+    t := p_aspecte->>'comp'; if t in ('estel','boss','lab','remuntada','corona') then a := a || jsonb_build_object('comp', t); end if;
   end if;
   update bn_priv.perfils p set aspecte = a, aspecte_ts = now() where p.k = lower(trim(p_nom));
   return 'ok';
