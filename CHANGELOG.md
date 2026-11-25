@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.67.1 · 2026-11-25
+
+### Corregit
+- **Contrast de l'avís de canvi de fase del Boss (`.boss-fase-av` · 9 mons):** substituït el text clar sobre fons translúcid (il·legible dins la targeta blanca de pregunta) per fons `#fff7ed`, vora `#ea580c` i text fosc `#9a3412` (contrast WCAG AAA > 8:1).
+
 ## 2.67.0 · 2026-11-25
 
 ### Canviat

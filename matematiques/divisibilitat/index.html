@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="31e206c59d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="47505ddccf",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -339,7 +339,7 @@ body.suau .alb-s:hover{transform:none}
 .boss-escut{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:800;background:#fef3c7;color:#92400e;border:2px solid #f59e0b;border-radius:999px;padding:3px 9px;margin-left:6px;box-shadow:0 2px 8px #f59e0b44}
 .boss-escut-av{background:#fef3c722;border:1.5px solid #f59e0b;color:#fde68a;border-radius:12px;padding:8px 12px;margin:8px auto;max-width:440px;font-size:13.5px;line-height:1.4}
 .boss-escut-av.off{background:#ffffff0d;border-color:#94a3b855;color:#cbd5e1;font-size:12.5px}
-.boss-fase-av{margin-top:8px;padding:7px 11px;border-radius:10px;background:#7c2d1233;border:1px solid #fb923c88;color:#fed7aa;font-size:13px;font-weight:700}
+.boss-fase-av{margin-top:8px;padding:9px 13px;border-radius:10px;background:#fff7ed;border:2px solid #ea580c;color:#9a3412;font-size:13.5px;font-weight:800}
 body.suau .boss-furia-tag{animation:none}
 .boss-cap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .boss-nom{font-family:'Press Start 2P',monospace;font-size:11px;color:#fde047;line-height:1.6;flex:1 1 150px}
@@ -834,7 +834,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.67.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.67.1</small></div>
 
 <script src="../../sprites.js?v=0d2acb59"></script>
 <script>
