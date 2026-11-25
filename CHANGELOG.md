@@ -5,6 +5,12 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.66.0 · 2026-11-25
+
+### Canviat
+- **Inici dels mons compactat (Opció B · `motor/plantilla-estudi-interactiu.html` → 9 mons):** capçalera Hero + barra de nivell + pastilla de PIN fusionades en una sola targeta, `#plaDia` compacte, graella 2×2 `.inici-hub` per a Repàs / Laboratori visual / Boss, **Missions d'avui** plegables (`<details>`) i **Àlbum del món** comprimit en 1 línia de 6 segells (~40% menys scroll vertical).
+- **Tauler `/admin/` · «Control ràpid» al menú lateral (`?v=control`):** mogut fora d'`Inici` a una secció pròpia del menú lateral (i barra inferior mòbil de 7 icones sense desbordament a 360/390/430 px); *Xat de la colla* passa a una franja horitzontal compacta superior i *Mons a la web* disposa del 100% de l'amplada en graella espaiosa de 3–4 columnes.
+
 ## 2.65.0 · 2026-11-25
 
 ### Afegit

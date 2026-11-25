@@ -115,24 +115,27 @@ function dadesAdmin() {
   return { p, ctx, d, crides, errors, menu, txt };
  }
 
- console.log("1) Admin ?demo: Inici (6 KPIs, Control ràpid d'1 clic, ajuda plegable), Configuració (4 pestanyes i panell lateral) i nivells (M5)");
+ console.log("1) Admin ?demo: Inici (6 KPIs, Alertes), Control ràpid al menú lateral (ajuda plegable), Configuració (4 pestanyes i panell lateral) i nivells (M5)");
  {
   const { p, ctx, crides, errors, menu, txt } = await obreAdmin("/admin/?demo");
-  await p.waitForSelector("#control #ctrlXatSw");
+  await p.waitForSelector("#tAlertes table");
   ok((await txt("#titol")) === "Inici" && !(await p.isHidden("#periodeWrap")), "s'obre per defecte a Inici amb el selector de període visible");
   ok((await p.$$("#iniciKpis .kpi")).length === 6 && (await p.$$("#iniciKpis .kpi-s")).length === 0,
    "Inici mostra exactament 6 KPIs compactes i cap subtítol sota les xifres");
+  await p.click('#nav [data-v="control"]');
+  await p.waitForSelector("#control #ctrlXatSw");
   const ctrlTxt = await txt("#control");
   const idsCtrl = await p.$$eval("#control [data-ctrl-mon]", bs => bs.map(b => b.dataset.ctrlMon));
   ok(ctrlTxt.includes("Control ràpid") && idsCtrl.length === MONS.N && idsCtrl[0] === MONS.nou && idsCtrl[MONS.N - 1] === MONS.vell,
-   `targeta «Control ràpid» a Inici amb interruptor del xat i dels ${MONS.N} mons ordenats del més nou ('${MONS.nou}') al més antic ('${MONS.vell}')`);
+   `secció «Control ràpid» al menú lateral amb interruptor del xat i dels ${MONS.N} mons ordenats del més nou ('${MONS.nou}') al més antic ('${MONS.vell}')`);
   // Ajuda plegable (i)
   const btAj = "#control .btn-ajuda", boxAj = "#control .ajuda-box";
   ok((await p.isHidden(boxAj)) === true, "l'explicació secundària (i) està plegada per defecte");
   await p.click(btAj);
   ok((await p.isHidden(boxAj)) === false && (await p.getAttribute(btAj, "aria-expanded")) === "true", "clicar el botó (i) desplega l'ajuda");
 
-  // Alertes plegables amb filtres i drecera ⚙ Ajusta (g21)
+  // Tornem a Inici per comprovar Alertes plegables amb filtres i drecera ⚙ Ajusta (g21)
+  await p.click('#nav [data-v="inici"]');
   await p.waitForSelector("#tAlertes table");
   const alResTxt = await txt("#alResum");
   ok((await p.getAttribute("#alertes", "data-plegat")) === "0" && !(await p.isHidden("#alCos")) && alResTxt.includes("malament") && alResTxt.includes("avís"),
@@ -248,14 +251,16 @@ function dadesAdmin() {
  console.log("2) Admin amb credencials: càrrega sota demanda a Inici, control d'1 clic, Configuració → Horaris i nivells M5");
  {
   const { p, ctx, crides, errors, menu, txt } = await obreAdmin("/admin/", { cred: CRED });
-  await p.waitForSelector("#control #ctrlXatSw");
+  await p.waitForSelector("#iniciKpis .kpi");
   await p.waitForTimeout(120);
   // Verifiquem que Inici NO dispara la bateria d'11-12 RPCs d'altres seccions
   const noInici = ["bn_admin_domini", "bn_admin_fallades", "bn_admin_activitat", "bn_admin_calor", "bn_admin_evolucio", "bn_admin_benestar", "bn_admin_dificultat", "bn_admin_rep_pendents", "bn_admin_copies", "bn_admin_xat_msgs"];
   ok(noInici.every(f => !crides.some(c => c.f === f)),
    "càrrega sota demanda: entrar a Inici no demana cap RPC de Mons, Sessions, Benestar, Xat ni Còpies");
 
-  // Tanquem el xat des del botó ràpid d'1 clic a Inici
+  // Anem a Control ràpid des del menú lateral i tanquem el xat
+  await p.click('#nav [data-v="control"]');
+  await p.waitForSelector("#control #ctrlXatSw");
   await p.click("#ctrlXatSw");
   await p.waitForTimeout(80);
   ok((await p.getAttribute("#ctrlXatSw", "aria-checked")) === "false" && (await txt("#ctrlXatEstat")).includes("Tancat manualment"),
@@ -424,6 +429,8 @@ function dadesAdmin() {
  console.log("2b) Mòbil (360, 390 i 430 px): barra inferior fixa de 5 eixos, ≤ 8 columnes per taula i zero desbordament");
  for (const w of [360, 390, 430]) {
   const { p, ctx, errors } = await obreAdmin("/admin/?demo", { viewport: { width: w, height: 800 } });
+  await p.waitForSelector("#iniciKpis .kpi");
+  await p.click('#navInf [data-v="control"]');
   await p.waitForSelector("#control #ctrlXatSw");
   const maxCols = () => p.$$eval("#contingut table", ts => Math.max(0, ...ts.map(t => t.querySelectorAll("thead th").length)));
   const navInfVis = await p.isVisible("#navInf"), navLatVis = await p.isVisible(".menu");

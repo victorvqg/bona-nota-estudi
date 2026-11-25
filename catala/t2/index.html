@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1db8d30217",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="206db426d2",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -271,23 +271,40 @@ ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;heig
 .rescat-cel{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#bae6fd;border:1.5px solid #38bdf8;font-size:15px;transition:transform .22s,background .22s,border-color .22s}
 .rescat-cel.ok{background:#fef08a;border-color:#eab308;transform:scale(1.1)}
 body.suau .av-reac.ok,body.suau .av-reac.combo,body.suau .rescat-cel.ok{transform:none}
-.album-box{background:var(--card);border:2px solid var(--lin);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 4px 14px #00000008}
-.album-cap{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.album-cap b{font-size:15px}
-.album-bar{height:7px;background:var(--lin);border-radius:99px;overflow:hidden;margin-bottom:10px}
-.album-bar i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#22c55e);border-radius:99px;transition:width .35s}
-.album-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
-.alb-s{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:9px 6px;border-radius:12px;border:1.5px solid var(--lin);background:var(--fons);cursor:pointer;font:inherit;color:var(--txt);transition:transform .15s,border-color .15s}
-.alb-s:hover{transform:translateY(-2px);border-color:var(--p)}
-.alb-s .ai{font-size:22px;line-height:1.1;filter:grayscale(1) opacity(.5)}
-.alb-s b{font-size:11.5px;line-height:1.2}
-.alb-s small{font-size:10.5px;color:var(--suau);line-height:1.2}
-.alb-s.fet{background:linear-gradient(180deg,#fef9c3,#fffbeb);border-color:#f59e0b;box-shadow:0 2px 10px #f59e0b26}
+.hero-niv{grid-column:1/-1;width:100%;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:10px;margin-top:4px;border-top:1px solid var(--lin);font-size:12.5px;cursor:pointer}
+.hero-niv b{white-space:nowrap}
+.hero-niv .barra{flex:1 1 120px;min-width:90px;height:7px}
+.hero-niv small{color:var(--suau);font-weight:700}
+.hero-pin{margin-left:auto;font-size:11.5px;color:var(--suau);font-weight:700;white-space:nowrap}
+.inici-hub{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:10px 0}
+.inici-hub:empty{display:none}
+.inici-hub .continua,.inici-hub .boss-carta,.inici-hub .bn-visual-card{margin:0!important;padding:11px 12px!important;border-radius:14px!important;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:6px;min-height:84px}
+.inici-hub .boss-carta .boss-mini{width:34px;height:34px}
+.inici-hub .boss-carta .bc-t{width:100%}
+.inici-hub .boss-carta .bc-t b{font-size:14px}
+.inici-hub .boss-carta .bc-t small{font-size:11.5px;line-height:1.25}
+.inici-hub .boss-carta .btn,.inici-hub .continua .btn{padding:5px 10px;font-size:12px;margin-top:2px}
+.inici-hub .continua b{font-size:13.5px;line-height:1.25}
+.inici-hub .bn-visual-card .bn-vc-sub{font-size:11.5px!important;line-height:1.25!important}
+.pla-dia{padding:8px 12px!important;margin:8px 0!important}
+.pla-dia p{margin:2px 0 0!important;font-size:13px!important}
+.missions{margin-top:10px!important;padding:0!important}
+.missions summary.mi-cap{list-style:none;cursor:pointer;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0}
+.missions summary.mi-cap::-webkit-details-marker{display:none}
+.missions .mi-cos{padding:0 12px 10px}
+.album-box{background:var(--card);border:2px solid var(--lin);border-radius:14px;padding:9px 12px;margin:10px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.album-cap{display:flex;align-items:center;gap:8px;margin:0;white-space:nowrap}
+.album-cap b{font-size:13.5px}
+.album-grid{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:200px}
+.alb-s{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:99px;border:1.5px solid var(--lin);background:var(--fons);cursor:pointer;font:inherit;color:var(--txt);transition:transform .15s,border-color .15s}
+.alb-s:hover{transform:translateY(-1px);border-color:var(--p)}
+.alb-s .ai{font-size:15px;line-height:1;filter:grayscale(1) opacity(.5)}
+.alb-s b{font-size:11.5px;line-height:1.1}
+.alb-s small{display:none}
+.alb-s.fet{background:linear-gradient(180deg,#fef9c3,#fffbeb);border-color:#f59e0b;box-shadow:0 2px 6px #f59e0b22}
 .alb-s.fet .ai{filter:none}
-.alb-s.fet small{color:#92400e;font-weight:700}
-.alb-100{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:99px;padding:2px 9px}
-@media (max-width:700px){.album-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:380px){.album-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.alb-100{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:800;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:99px;padding:2px 8px}
+@media (max-width:600px){.inici-hub{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.alb-s{padding:4px 7px}.alb-s b{font-size:10.5px}}
 body.suau .alb-s:hover{transform:none}
 .boss.fase2{border-color:#fb923c;background:radial-gradient(circle at 50% 18%,#431407,#0f172a 72%);box-shadow:0 0 18px #fb923c44}
 .boss.furia{border-color:#ef4444;background:radial-gradient(circle at 50% 18%,#7f1d1d,#0f172a 72%);box-shadow:0 0 22px #ef444455}
@@ -791,7 +808,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.65.0</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.66.0</small></div>
 
 <script src="../../sprites.js?v=0d2acb59"></script>
 <script>
@@ -1965,26 +1982,29 @@ function albumSegells(){
 }
 function cartaAlbum(){
  if((MODE_TAST||!S.nom)&&!DEMO_ALBUM)return "";
- const segs=albumSegells(),fets=segs.filter(s=>s.fet).length,pc=Math.round(fets*100/segs.length);
+ const segs=albumSegells(),fets=segs.filter(s=>s.fet).length;
  return `<section class="album-box" id="albumMon" aria-label="Àlbum de segells del món">
-  <div class="album-cap"><b>🏅 Àlbum del món${DEMO_ALBUM?` <small style="color:var(--suau);font-weight:600">(mode demo)</small>`:""}</b><span>${fets===segs.length?`<span class="alb-100">👑 COMPLETAT 100%!</span>`:`<b>${fets}/${segs.length}</b> segells`}</span></div>
-  <div class="album-bar"><i style="width:${pc}%"></i></div>
+  <div class="album-cap"><b>🏅 Àlbum</b>${fets===segs.length?`<span class="alb-100">👑 100%!</span>`:`<small style="color:var(--suau);font-weight:800">${fets}/${segs.length}</small>`}</div>
   <div class="album-grid">${segs.map(s=>`<button type="button" class="alb-s${s.fet?" fet":""}" onclick="${s.acc}" title="${s.nom}: ${s.sub}"><span class="ai" aria-hidden="true">${s.ic}</span><b>${s.nom}</b><small>${s.sub}</small></button>`).join("")}</div>
  </section>`;
 }
 function inici(){
  marcaDia();aplicaSuau();
  const aprov=T.filter(t=>(millor(t.id)??0)>=APROVA).length, sp=seguentPendent();
- const res=resumGlobal();
+ const res=resumGlobal(),nv=nivell(S.punts);
  const tastBar=MODE_TAST?`<div class="tast-bar" id="tastBanner"><div class="tast-txt"><b>👀 Estàs en mode tast anònim</b> · Cap estrella ni nom es guarda ni surt al rànquing. Tens obert el <b>Tema 1</b>, el <b>primer joc</b> i la <b>1a pregunta oberta</b>.</div><div class="tast-acc"><button class="btn verd btn-petit" type="button" id="btTastLogin" onclick="surtTast(false)">🔐 Entra amb nom i PIN</button><a class="btn sec btn-petit" href="../../?tast=1#mons" style="text-decoration:none">🚪 Altres mons</a></div></div>`:"";
+ const pinTag=(!MODE_TAST&&S.nom&&!/^file:/.test(location.protocol)&&!window.BN_NO_LOG&&pinDe(S.nom))?`<span class="hero-pin" title="Progrés sincronitzat al núvol amb PIN">☁️ PIN</span>`:"";
+ const heroNiv=MODE_TAST?"":`<div class="hero-niv" role="button" tabindex="0" onclick="vista('analitica')" title="Veure tots els nivells"><b>${nv.ic} Nivell ${nv.n} · ${nv.nom}</b><div class="barra"><i style="width:${nv.pc}%"></i></div><small>${nv.seg?`Falten ${nv.falten} ⭐ → ${nv.seg[2]} ${nv.seg[1]}`:"Nivell màxim 🌟"}</small>${pinTag}</div>`;
  let h=`${bannerTempsHtml()}${tastBar}<div class="hero">${heroAv()}<div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>${MODE_TAST?"Mode tast!":`Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}`}</h1>${heroAsp()}<p>${MODE_TAST?`Prova com funciona per dins: fitxa, targetes, ${NTEST_TAST} preguntes de test i el primer joc.`:aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
- ${MODE_TAST?"":`<div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div>`}</div>${MODE_TAST?"":cartaNivell()}`;
- h+=cartaPin()+cartaPlaDia()+cartaRepas();
- // joc destacat (opcional): ASSIG.destacat = id del joc → botó gran a l'inici
+ ${MODE_TAST?"":`<div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div>`}${heroNiv}</div>`;
+ h+=cartaPlaDia();
+ // 1 sola acció principal destacada (Continua o joc destacat)
  {const jd=ASSIG.destacat&&ASSIG.jocs.find(x=>x.id===ASSIG.destacat);if(jd&&(!MODE_TAST||jocObertTast(jd.id)))h+=`<div class="continua" role="button" tabindex="0" style="background:#ffedd5;border-color:#fb923c" onclick="joc('${jd.id}')"><span style="font-size:30px">${jd.ic}</span><b style="font-size:19px">${jd.titol}<small style="display:block;font-size:14px;font-weight:700;color:var(--suau)">${jd.sub}</small></b><span class="btn">Juga →</span></div>`}
  if(MODE_TAST&&T.length)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(0)"><span style="font-size:28px">${T[0].ic}</span><b>Comença la mostra: ${T[0].titol}</b><span class="btn">Tasta →</span></div>`;
  else if(sp>=0)h+=`<div class="continua" role="button" tabindex="0" onclick="obre(${sp})"><span style="font-size:28px">${T[sp].ic}</span><b>${S.ultim===null?"Comença":"Continua"} per: ${T[sp].titol}</b><span class="btn">Vés-hi →</span></div>`;
- h+=bossCarta(true)+cartaMissions()+cartaAlbum();
+ // Graella compacta d'accions secundàries (Repàs + Lab Visual + Boss)
+ h+=`<div class="inici-hub">${cartaRepas()}`;h+=`${bossCarta(true)}</div>`;
+ h+=cartaMissions()+cartaAlbum();
  h+=`${blocsTemes()}
  <h2 class="sec">${ICO.obertes} Preguntes obertes d'examen</h2><div class="grid">${tileObertes()}</div>
  ${seccionsJocs()}
@@ -3594,8 +3614,8 @@ function revisaMissions(){const e=diaEst(),ms=missionsAvui();e.mf=e.mf||[];let n
  if(ms.length&&ms.every(m=>e.mf.includes(m.id))&&!e.mt){e.mt=1;nou++;const f=FONT;FONT=["missio"];suma(MIS_TOTES);FONT=f;retolMissio("🎉 LES 3 MISSIONS!",`+${MIS_TOTES} ⭐ DE REGAL`,900+nou*1700)}
  desa();const c=document.getElementById("missions");if(c)c.outerHTML=cartaMissions()}
 function cartaMissions(){if(MODE_TAST||!S.nom)return "";const ms=missionsAvui();if(!ms.length)return "";const mf=diaEst().mf||[],fetes=ms.filter(m=>mf.includes(m.id)).length;
- return `<div class="missions" id="missions"><div class="mi-cap"><b>🎯 Missions d'avui</b><small>${fetes===ms.length?`🎉 Totes fetes! +${MIS_PREMI*ms.length+MIS_TOTES} ⭐`:`${fetes} de ${ms.length} · +${MIS_PREMI} ⭐ cada una · les ${ms.length}: +${MIS_TOTES} ⭐ més`}</small></div>${ms.map(m=>{const fet=mf.includes(m.id),v=Math.min(misValor(m.id),m.n);
-  return `<button class="mi${fet?" fet":""}" type="button" onclick="misAnar('${m.anar}')"><span class="mi-ic">${m.ic}</span><span class="mi-t">${m.t(m.n)}</span><span class="mi-p">${fet?"✔ FETA":`${v}/${m.n}`}</span><i class="mi-b" style="width:${Math.round(v*100/Math.max(1,m.n))}%"></i></button>`}).join("")}</div>`}
+ return `<details class="missions" id="missions"><summary class="mi-cap"><b>🎯 Missions d'avui</b><small>${fetes===ms.length?`🎉 Totes fetes! +${MIS_PREMI*ms.length+MIS_TOTES} ⭐`:`${fetes} de ${ms.length} · +${MIS_PREMI} ⭐ cadascuna · desplega ▾`}</small></summary><div class="mi-cos">${ms.map(m=>{const fet=mf.includes(m.id),v=Math.min(misValor(m.id),m.n);
+  return `<button class="mi${fet?" fet":""}" type="button" onclick="misAnar('${m.anar}')"><span class="mi-ic">${m.ic}</span><span class="mi-t">${m.t(m.n)}</span><span class="mi-p">${fet?"✔ FETA":`${v}/${m.n}`}</span><i class="mi-b" style="width:${Math.round(v*100/Math.max(1,m.n))}%"></i></button>`}).join("")}</div></details>`}
 function misAnar(a){if(a==="repas")return repas();if(a==="jocs")return vista("jocs");if(a==="obertes")return vista("obertes");if(a==="examen")return joc("examen");const sp=seguentPendent();obre(sp>=0?sp:(S.ultim||0))}
 // prova automàtica (motor/prova.js): premis de les missions (un cop cada una), targeta i tria estable del dia
 async function bnProvaMissions(){const estAbans=JSON.stringify(S.est||null),p0=S.punts;
