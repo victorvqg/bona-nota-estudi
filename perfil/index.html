@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="027cf5ec02",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="d66eea402e",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -228,21 +228,41 @@ footer{position:relative;text-align:center;padding:10px 16px calc(176px + env(sa
 /* ---- sense moviment: si el sistema ho demana o amb «efectes suaus» ---- */
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.roda{scroll-behavior:auto}}
 body.suau *,body.suau *::before,body.suau *::after{animation:none!important;transition:none!important}
-.gran[data-comp="estel"]{box-shadow:0 0 0 4px #facc15,0 0 22px #facc1588}
-.gran[data-comp="boss"]{box-shadow:0 0 0 4px #ef4444,0 0 22px #ef444488}
-.gran[data-comp="lab"]{box-shadow:0 0 0 4px #38bdf8,0 0 22px #38bdf888}
-.gran[data-comp="remuntada"]{box-shadow:0 0 0 4px #22c55e,0 0 22px #22c55e88}
-.gran[data-comp="corona"]{box-shadow:0 0 0 4px #a855f7,0 0 0 7px #facc15,0 0 24px #a855f788}
-.comp-badge{position:absolute;top:-8px;right:-8px;font-size:20px;background:#0f172a;border:2px solid #facc15;border-radius:99px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px #0006}
-.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:8px}
-.cmp{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:10px 8px;border-radius:12px;border:2px solid #ffffff22;background:#1e1b4b88;color:#f8fafc;cursor:pointer;font:inherit;transition:transform .14s,border-color .14s}
-.cmp:hover:not(:disabled){transform:translateY(-2px);border-color:#facc15}
-.cmp.on{border-color:#facc15;background:#312e81;box-shadow:0 0 14px #facc1544}
-.cmp:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.7)}
-.cmp i{font-style:normal;font-size:22px;line-height:1}
-.cmp b{font-size:12px}
-.cmp small{font-size:10.5px;color:#cbd5e1;line-height:1.2}
-body.suau .cmp:hover{transform:none}
+/* ---- Complements per fites: aures de fitxa, ornaments pixel-art i títol ---- */
+.fitxa{transition:border-color .3s,box-shadow .3s,background .3s}
+.fitxa[data-comp="estel"]{border-color:#facc15!important;background:radial-gradient(circle at 50% 18%,#713f12cc,#1e1b4bf0 68%)!important;box-shadow:0 0 36px #facc1566,inset 0 0 28px #fde04733!important}
+.fitxa[data-comp="boss"]{border-color:#ef4444!important;background:radial-gradient(circle at 50% 18%,#7f1d1dcc,#1e1b4bf0 68%)!important;box-shadow:0 0 38px #ef444477,inset 0 0 30px #f9731633!important}
+.fitxa[data-comp="lab"]{border-color:#38bdf8!important;background:radial-gradient(circle at 50% 18%,#0c4a6ecc,#0f172af0 68%)!important;box-shadow:0 0 36px #38bdf866,inset 0 0 28px #22d3ee33!important}
+.fitxa[data-comp="remuntada"]{border-color:#22c55e!important;background:radial-gradient(circle at 50% 18%,#14532dcc,#0f172af0 68%)!important;box-shadow:0 0 36px #22c55e66,inset 0 0 28px #4ade8033!important}
+.fitxa[data-comp="corona"]{border-color:#facc15!important;background:radial-gradient(circle at 50% 18%,#581c87dd,#1e1b4bf2 68%)!important;box-shadow:0 0 42px #a855f788,0 0 20px #facc1566,inset 0 0 32px #facc1533!important}
+.gran-caixa{position:relative}
+.gran[data-comp="estel"]{box-shadow:0 0 0 4px #fef08a,0 0 0 8px #f59e0b88,0 0 30px #facc15!important}
+.gran[data-comp="boss"]{box-shadow:0 0 0 4px #fca5a5,0 0 0 8px #ef444499,0 0 32px #f97316!important}
+.gran[data-comp="lab"]{box-shadow:0 0 0 4px #bae6fd,0 0 0 8px #0ea5e988,0 0 30px #38bdf8!important}
+.gran[data-comp="remuntada"]{box-shadow:0 0 0 4px #bbf7d0,0 0 0 8px #16a34a88,0 0 30px #22c55e!important}
+.gran[data-comp="corona"]{box-shadow:0 0 0 4px #fde047,0 0 0 9px #a855f7aa,0 0 36px #facc15!important}
+.gran.comp-pop{animation:compPop .42s cubic-bezier(.2,1.5,.4,1)}
+@keyframes compPop{0%{transform:scale(.88)}55%{transform:scale(1.1)}100%{transform:scale(1)}}
+.comp-fx{position:absolute;inset:-18px;pointer-events:none;z-index:4;display:flex;align-items:center;justify-content:center}
+.comp-fx svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 3px 8px #0008)}
+.comp-fx .fx-rot{transform-origin:100px 100px;animation:fxRot 9s linear infinite}
+.comp-fx .fx-rot2{transform-origin:100px 100px;animation:fxRot 13s linear infinite reverse}
+.comp-fx .fx-pul{transform-origin:100px 100px;animation:fxPul 1.6s ease-in-out infinite}
+.comp-fx .fx-top{transform-origin:100px 24px;animation:fxTop 2s ease-in-out infinite}
+@keyframes fxRot{to{transform:rotate(360deg)}}
+@keyframes fxPul{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.08);opacity:1}}
+@keyframes fxTop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.fitxa-comp{display:inline-flex;align-items:center;gap:5px;margin:4px auto 2px;padding:4px 11px;border-radius:99px;font-family:'Press Start 2P',monospace;font-size:9.5px;letter-spacing:.04em;color:#fff;background:var(--cc,#f59e0b);border:2px solid #ffffffaa;box-shadow:0 3px 12px #0006;text-shadow:1px 1px 0 #0008}
+.fitxa-comp[hidden]{display:none}
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px;margin-top:10px}
+.cmp{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;padding:12px 8px;border-radius:14px;border:2px solid #ffffff26;background:linear-gradient(160deg,color-mix(in srgb,var(--cc,#6366f1) 24%,#1e1b4b),#0f172acc);color:#f8fafc;cursor:pointer;font:inherit;transition:transform .15s,border-color .15s,box-shadow .15s}
+.cmp:hover:not(:disabled){transform:translateY(-3px);border-color:var(--cc,#facc15);box-shadow:0 6px 18px color-mix(in srgb,var(--cc,#facc15) 45%,transparent)}
+.cmp.on{border-color:var(--cc,#facc15);background:linear-gradient(160deg,color-mix(in srgb,var(--cc,#facc15) 42%,#1e1b4b),#1e1b4b);box-shadow:0 0 0 2px var(--cc,#facc15),0 0 20px color-mix(in srgb,var(--cc,#facc15) 55%,transparent)}
+.cmp:disabled{opacity:.44;cursor:not-allowed;filter:grayscale(.75)}
+.cmp .cmp-prev{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;background:radial-gradient(circle,color-mix(in srgb,var(--cc,#6366f1) 55%,#0f172a),#0f172a);border:2.5px solid var(--cc,#94a3b8);box-shadow:0 0 12px color-mix(in srgb,var(--cc,#6366f1) 50%,transparent)}
+.cmp b{font-size:12.5px;letter-spacing:.01em}
+.cmp small{font-size:10.5px;color:#e2e8f0;line-height:1.25}
+.cmp.on small{color:#fde047;font-weight:800}
 </style>
 </head>
 <body>
@@ -260,10 +280,12 @@ body.suau .cmp:hover{transform:none}
  <section class="fitxa" id="fitxa" aria-label="La teva fitxa">
   <div class="gran-caixa">
    <button class="gran" id="gran" type="button" aria-label="El teu animal. Toca'l perquè salti"><span class="av-cl" id="granAv"></span></button>
+   <div class="comp-fx" id="compFx" aria-hidden="true"></div>
    <div class="insig buit" id="insig" aria-hidden="true"><span class="anell"></span>?</div>
   </div>
   <div class="fitxa-txt">
    <div class="fitxa-nom" id="fNom"></div>
+   <div class="fitxa-comp" id="fComp" hidden></div>
    <div class="fitxa-sk buit" id="fSk">Tria el teu perfil arcade</div>
    <div class="fitxa-est" id="fEst"></div>
    <div class="fitxa-niv" id="fNiv"></div>
@@ -403,15 +425,23 @@ const soTada=()=>{[523,659,784,1047].forEach((f,i)=>nota(f,i*.09,.26,"square",.0
 
 // ====================== ESTAT ======================
 const COMP_CAT=[
- {id:"",ic:"⚪",nom:"Clàssic",req:"Sempre disponible",ok:()=>true},
- {id:"estel",ic:"✨",nom:"Estel·lar",req:"25 ⭐ totals",ok:f=>f.tot>=25},
- {id:"boss",ic:"👾",nom:"Caçabosses",req:"Vèncer 1 Boss",ok:f=>f.boss>=1},
- {id:"lab",ic:"🧪",nom:"Científic",req:"Completar 1 Lab visual",ok:f=>f.lab>=1},
- {id:"remuntada",ic:"🧠",nom:"Remuntada",req:"5 errors apresos",ok:f=>f.apr>=5},
- {id:"corona",ic:"👑",nom:"Domini",req:"100 ⭐ en un món o examen ≥ 90%",ok:f=>f.dom>=1}
+ {id:"",ic:"⚪",nom:"Clàssic",tag:"",col:"#64748b",req:"Sempre disponible",ok:()=>true},
+ {id:"estel",ic:"✨",nom:"Estel·lar",tag:"✨ ESTEL·LAR",col:"#eab308",req:"25 ⭐ totals",ok:f=>f.tot>=25},
+ {id:"boss",ic:"🔥",nom:"Caçabosses",tag:"🔥 CAÇABOSSES",col:"#ef4444",req:"Vèncer 1 Boss",ok:f=>f.boss>=1},
+ {id:"lab",ic:"🧪",nom:"Científic",tag:"🧪 CIENTÍFIC",col:"#0ea5e9",req:"Completar 1 Lab visual",ok:f=>f.lab>=1},
+ {id:"remuntada",ic:"⚡",nom:"Remuntada",tag:"⚡ REMUNTADA",col:"#22c55e",req:"5 errors apresos",ok:f=>f.apr>=5},
+ {id:"corona",ic:"👑",nom:"Domini Total",tag:"👑 DOMINI TOTAL",col:"#a855f7",req:"100 ⭐ en un món o examen ≥ 90%",ok:f=>f.dom>=1}
 ];
+function compFxSvg(id){
+ if(id==="estel")return `<svg viewBox="0 0 200 200"><g class="fx-rot"><circle cx="100" cy="100" r="88" fill="none" stroke="#fde047" stroke-width="3" stroke-dasharray="10 12" opacity=".85"/><polygon points="100,2 104,13 116,13 106,20 110,32 100,25 90,32 94,20 84,13 96,13" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5"/><polygon points="184,92 187,99 195,99 189,103 191,111 184,106 177,111 179,103 173,99 181,99" fill="#fde047"/><polygon points="16,92 19,99 27,99 21,103 23,111 16,106 9,111 11,103 5,99 13,99" fill="#fde047"/><polygon points="100,174 103,182 111,182 105,186 107,194 100,189 93,194 95,186 89,182 97,182" fill="#fff"/></g></svg>`;
+ if(id==="boss")return `<svg viewBox="0 0 200 200"><g class="fx-pul"><path d="M52,36 L66,6 L82,26 L100,0 L118,26 L134,6 L148,36 Q124,24 100,28 Q76,24 52,36 Z" fill="#f97316" stroke="#fef08a" stroke-width="2.5"/><path d="M68,32 L78,14 L92,28 L100,10 L108,28 L122,14 L132,32 Z" fill="#fde047"/><path d="M12,112 L26,96 L18,86 L34,76 L26,116 Z M188,112 L174,96 L182,86 L166,76 L174,116 Z" fill="#ef4444" stroke="#fca5a5" stroke-width="1.5"/></g></svg>`;
+ if(id==="lab")return `<svg viewBox="0 0 200 200"><g class="fx-rot"><ellipse cx="100" cy="100" rx="92" ry="34" fill="none" stroke="#38bdf8" stroke-width="3.5" transform="rotate(-28 100 100)" opacity=".9"/><circle cx="180" cy="60" r="7" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/></g><g class="fx-rot2"><ellipse cx="100" cy="100" rx="92" ry="34" fill="none" stroke="#22d3ee" stroke-width="3" transform="rotate(28 100 100)" opacity=".85"/><circle cx="22" cy="62" r="6" fill="#67e8f9" stroke="#0891b2" stroke-width="2"/></g></svg>`;
+ if(id==="remuntada")return `<svg viewBox="0 0 200 200"><g class="fx-pul"><path d="M22,124 L4,104 L18,96 L8,74 L30,78 L24,54 L42,68 L36,122 Z" fill="#22c55e" stroke="#bbf7d0" stroke-width="2"/><path d="M178,124 L196,104 L182,96 L192,74 L170,78 L176,54 L158,68 L164,122 Z" fill="#22c55e" stroke="#bbf7d0" stroke-width="2"/><polygon points="100,4 114,22 106,22 106,34 94,34 94,22 86,22" fill="#4ade80" stroke="#dcfce7" stroke-width="2"/></g></svg>`;
+ if(id==="corona")return `<svg viewBox="0 0 200 200"><g class="fx-top"><path d="M56,36 L50,8 L76,22 L100,0 L124,22 L150,8 L144,36 Z" fill="#facc15" stroke="#92400e" stroke-width="3" stroke-linejoin="round"/><rect x="56" y="34" width="88" height="10" rx="3" fill="#eab308" stroke="#92400e" stroke-width="2.5"/><circle cx="100" cy="24" r="5" fill="#a855f7" stroke="#fff" stroke-width="1.5"/><circle cx="74" cy="28" r="4" fill="#ef4444" stroke="#fff" stroke-width="1.2"/><circle cx="126" cy="28" r="4" fill="#38bdf8" stroke="#fff" stroke-width="1.2"/></g><g class="fx-rot"><circle cx="100" cy="100" r="90" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-dasharray="6 14" opacity=".8"/></g></svg>`;
+ return "";
+}
 function fitesReals(nom){
- if(DEMO)return {tot:218,boss:2,lab:1,apr:7,dom:0};
+ if(DEMO)return {tot:218,boss:2,lab:1,apr:7,dom:1};
  const p=progresMons(nom);
  let tot=0,boss=0,lab=0,apr=0,dom=0;
  p.forEach(x=>{
@@ -427,7 +457,7 @@ function fitesReals(nom){
 const FITES=NOM?fitesReals(NOM):{tot:0,boss:0,lab:0,apr:0,dom:0};
 const COMP_OK=id=>{const c=COMP_CAT.find(x=>x.id===id);return !!(c&&c.ok(FITES))};
 const guardat=aspecteDe(NOM)||{};
-const EST={av:BN_AV.includes(guardat.av)?guardat.av:animalPelNom(NOM||"nen"),sk:BN_SKILLS[guardat.sk]?guardat.sk:"",v:BN_SKILL_VAR_PAL[guardat.v]?guardat.v:"",comp:COMP_OK(guardat.comp)?guardat.comp:""};
+const EST={av:BN_AV.includes(guardat.av)?guardat.av:animalPelNom(NOM||"nen"),sk:BN_SKILLS[guardat.sk]?guardat.sk:"",v:BN_SKILL_VAR_PAL[guardat.v]?guardat.v:"",comp:COMP_OK(guardat.comp)?guardat.comp:(DEMO?"corona":"")};
 const clau=a=>`${a.av}|${a.sk}|${a.v}|${a.comp||""}`;
 let DESAT=clau({av:BN_AV.includes(guardat.av)?guardat.av:"",sk:EST.sk,v:EST.v,comp:EST.comp}); // el que hi ha desat: sense animal triat compta com a «cap»
 let TRIAT_AV=BN_AV.includes(guardat.av); // mentre no toca cap animal, l'animal no es desa (es continua calculant pel nom)
@@ -438,10 +468,14 @@ const nomAn=id=>({fox:"Guineu",frog:"Granota",lion:"Lleó",panda:"Panda",tiger:"
 
 // ====================== PINTAR ======================
 function pintaFitxa(flip){
- const av=$("granAv"),gran=av.parentElement;gran.style.setProperty("--av",BN_AV_BG[EST.av]);
- if(EST.comp)gran.dataset.comp=EST.comp;else delete gran.dataset.comp;
+ const av=$("granAv"),gran=av.parentElement,fitxa=$("fitxa"),fx=$("compFx"),fc=$("fComp");
+ gran.style.setProperty("--av",BN_AV_BG[EST.av]);
+ if(EST.comp){gran.dataset.comp=EST.comp;if(fitxa)fitxa.dataset.comp=EST.comp}
+ else{delete gran.dataset.comp;if(fitxa)delete fitxa.dataset.comp}
  const cInfo=COMP_CAT.find(x=>x.id===EST.comp);
- av.innerHTML=bnSpr(EST.av,"av-spr")+(EST.comp&&cInfo?`<span class="comp-badge" aria-hidden="true">${cInfo.ic}</span>`:"");
+ av.innerHTML=bnSpr(EST.av,"av-spr");
+ if(fx)fx.innerHTML=EST.comp?compFxSvg(EST.comp):"";
+ if(fc){if(EST.comp&&cInfo&&cInfo.tag){fc.hidden=false;fc.style.setProperty("--cc",cInfo.col);fc.textContent=cInfo.tag}else{fc.hidden=true;fc.textContent=""}}
  const ins=$("insig"),nou=EST.sk?`<span class="anell"></span>${bnSkillSpr(EST.sk,EST.v)}`:`<span class="anell"></span>?`;
  const posa=()=>{ins.classList.toggle("buit",!EST.sk);ins.innerHTML=nou};
  if(flip&&!SUAU){ins.classList.remove("flip");void ins.offsetWidth;ins.classList.add("flip");setTimeout(posa,250)}else posa();
@@ -453,9 +487,10 @@ function pintaFitxa(flip){
 function pintaComps(){
  const el=$("comps");if(!el)return;
  el.innerHTML=COMP_CAT.map(c=>{const ok=c.ok(FITES),on=EST.comp===c.id;
-  return `<button class="cmp${on?" on":""}" type="button" role="radio" aria-checked="${on}" data-comp="${c.id}" ${ok?"":"disabled"} title="${esc(c.nom)} · ${esc(c.req)}"><i>${ok?c.ic:"🔒"}</i><b>${esc(c.nom)}</b><small>${ok?(on?"Actiu ✓":"Desbloquejat"):esc(c.req)}</small></button>`}).join("");
+  return `<button class="cmp${on?" on":""}" style="--cc:${c.col}" type="button" role="radio" aria-checked="${on}" data-comp="${c.id}" ${ok?"":"disabled"} title="${esc(c.nom)} · ${esc(c.req)}"><span class="cmp-prev" aria-hidden="true">${ok?c.ic:"🔒"}</span><b>${esc(c.nom)}</b><small>${ok?(on?"EQUIPAT ✓":"Desbloquejat"):esc(c.req)}</small></button>`}).join("");
 }
-function triaComp(id){if(!COMP_OK(id))return;const canvi=id!==EST.comp;EST.comp=id;pintaComps();pintaFitxa(false);if(canvi){soMoneda();const c=COMP_CAT.find(x=>x.id===id);viu(`Complement: ${c?c.nom:id}`)}}
+function triaComp(id){if(!COMP_OK(id))return;const canvi=id!==EST.comp;EST.comp=id;pintaComps();pintaFitxa(false);
+ if(canvi){const g=$("gran");if(g&&!SUAU){g.classList.remove("comp-pop");void g.offsetWidth;g.classList.add("comp-pop")}soMoneda();const c=COMP_CAT.find(x=>x.id===id);viu(`Complement: ${c?c.nom:id}`)}}
 function pintaCap(){
  const p=progresMons(NOM),id=DEMO?8:(p.map(x=>x.id).find(Boolean)||""),tot=p.reduce((s,x)=>s+(+x.punts>0?+x.punts:0),0)||(DEMO?218:0),nv=nivell(tot);
  $("qui").innerHTML=`Hola, <em>${esc(NOM)}</em>!${id?` <small>#${esc(id)}</small>`:""} Tria com et veuran els altres al rànquing.`;
