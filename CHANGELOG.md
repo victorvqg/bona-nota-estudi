@@ -12,6 +12,11 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
   - Cada posició de la classificació mostra ara el **Títol de jugador** (compartit via `bnTitolHtml`), el **Complement** (`👑 Domini Total`, etc.) i la **Insígnia arcade + Estil** (`⚔️ Franctirador · Clàssic`), i el podi llueix també el títol sota el nom.
   - En passar el ratolí per sobre d'una fila del rànquing o d'un jugador del podi, la targeta s'eleva suaument i l'**avatar creix (`scale(1.28)`) amb un bot i balanceig divertit** (respectant `prefers-reduced-motion`).
 
+## 2.72.1 · 2026-11-25
+
+### Corregit
+- **Navegació amb fletxes del teclat (`←` / `→`) i so «clinc» al Passe de Cartes (`perfil/index.html`):** les fletxes del teclat ara mouen les targetes del carrusel actiu des de qualsevol punt de la pàgina, mantenen el focus després de repintar i reprodueixen el so «clinc-clinc» en passar cada carta (respectant Mode suau i silenci).
+
 ## 2.72.0 · 2026-11-25
 
 ### Canviat
