@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.74.0 · 2026-11-26
+
+### Afegit
+- **Moviments tàctils i Targeta Ràpida d'Heroi al rànquing per a mòbil i tablet (Opció A · `index.html` · `n3001`):**
+  - **Vida suau automàtica:** els avatars del podi i la teva fila (`TU`) fan una respiració suau visible també en mòbil i tablet (desactivada en `prefers-reduced-motion`).
+  - **Toc animat + Targeta Ràpida d'Heroi:** en tocar qualsevol fila del rànquing o jugador del podi (mòbil, tablet o escriptori), l'avatar creix i fa el bot arcade i s'obre una targeta ràpida amb l'**avatar gegant (`96 px`)**, marc, complement, títol, insígnia + estil i desglossament d'estrelles per món (i botó directe a `/perfil/` si ets tu).
+  - **Millora mòbil (`≤ 640 px`):** avatar ampliat de `34 px` a `44 px` amb graella de 4 files sense retalls.
+
 ## 2.73.1 · 2026-11-25
 
 ### Corregit
