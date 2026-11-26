@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.76.5 · 2026-11-26
+
+### Corregit
+- **Disseny mòbil i tablet del Xat de la Colla 3.0 (`index.html`, `motor/prova-xat.js` · `n3009`):**
+  - Corregit l'aixafament vertical de `.x-previ` i el solapament d'`ENVIA` sobre `🎲 Idea` a pantalles `≤ 760 px`: la previsualització ocupa ara el 100 % d'amplada, amb `+ Rematada` i `🎲 Idea` a sota (50 % / 50 %) i `ENVIA` a tota l'amplada (`46 px` d'alt).
+  - Pestanyes de categoria en graella neta 3×2 a mòbil (`≤ 640 px`), scroll intern controlat a frases/peces/rematades, 10 monedes de crèdits en una sola fila i nova prova geomètrica anti-solapament a 390 px a `motor/prova-xat.js`.
+
 ## 2.76.4 · 2026-11-26
 
 ### Canviat
