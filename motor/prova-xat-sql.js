@@ -12,6 +12,7 @@
 // Cal PGlite:  npm install --no-save @electric-sql/pglite@0.5   (l'Action «Revisa Bona Nota» ja l'instal·la)
 const fs = require("fs"), path = require("path"), vm = require("vm");
 const MONS = require("./eines/mons-prova");   // nombre de mons i ids des de motor/mons.json
+const NFRASES = MONS.catalegXat().XAT_FR.length;   // frases del catàleg (39)
 const NPECES = MONS.catalegXat().XAT_PC.length;   // peces del catàleg (generals + 3 per món)
 let PGlite, pgcrypto;
 try { ({ PGlite } = require("@electric-sql/pglite")); ({ pgcrypto } = require("@electric-sql/pglite/contrib/pgcrypto")) }
@@ -66,7 +67,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
  console.log("1) bn_xat.sql dues vegades: idempotent i respecta el que ha canviat l'admin");
  { const sql = fitxer("supabase/bn_xat.sql");
   let e = await executa(sql); ok(e === null, "primera execució sense errors" + (e ? ": " + e : ""));
-  ok((await val("select count(*)::int from bn_priv.xat_frases")) === 26 && (await val("select count(*)::int from bn_priv.xat_peces")) === NPECES, `26 frases i ${NPECES} peces`);
+  ok((await val("select count(*)::int from bn_priv.xat_frases")) === NFRASES && (await val("select count(*)::int from bn_priv.xat_peces")) === NPECES, `${NFRASES} frases i ${NPECES} peces`);
   ok(igual(await cfg(null), { est_credit: 10, max_dia: 5, espera_s: 10, actiu: true }), "configuració inicial 10 ⭐ · 5 al dia · 10 s · obert");
   ok((await adm("bn_admin_xat_actiu", ["frase", 13, false])) === 1 && (await adm("bn_admin_xat_actiu", ["peca", 44, false])) === 1, "l'admin desactiva la frase 13 i la peça 44");
   ok((await cfg({ est_credit: 12 })).est_credit === 12, "l'admin canvia les estrelles per crèdit a 12");
@@ -86,12 +87,12 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   const fr = (await q("select id, cat, text, slot, nivell from bn_priv.xat_frases where id < 1001 order by id")).map(r => ({ id: r.id, c: r.cat, t: r.text, s: r.slot, n: r.nivell }));
   const pc = (await q("select id, tipus, text, nivell, mon from bn_priv.xat_peces where id < 1001 order by id")).map(r => ({ id: r.id, s: r.tipus, t: r.text, n: r.nivell, m: r.mon }));
   const frJ = XAT_FR.map(f => ({ id: f.id, c: f.c, t: f.t, s: f.s, n: f.n })), pcJ = XAT_PC.map(p => ({ id: p.id, s: p.s, t: p.t, n: p.n ?? null, m: p.m ?? null }));
-  ok(frJ.length === 26 && igual(fr, frJ), "les 26 frases són idèntiques (text, categoria, forat i nivell)" + (igual(fr, frJ) ? "" : ": " + JSON.stringify(fr.find((x, i) => !igual(x, frJ[i])))));
+  ok(frJ.length === NFRASES && igual(fr, frJ), `les ${NFRASES} frases són idèntiques (text, categoria, forat i nivell)` + (igual(fr, frJ) ? "" : ": " + JSON.stringify(fr.find((x, i) => !igual(x, frJ[i])))));
   ok(pcJ.length === NPECES && igual(pc, pcJ), "les peces de XAT-CATALEG són idèntiques (text, tipus i nivell o món)" + (igual(pc, pcJ) ? "" : ": " + JSON.stringify(pc.find((x, i) => !igual(x, pcJ[i])))));
   ok(XAT_FR.every(f => f.s !== "C" || ["aura", "colla"].includes(f.c)) && XAT_FR.filter(f => f.s === "C").every(f => !/-\d/.test(f.t)), "regla d'or: el nom d'un company només va en frases d'aura o de colla, cap de negativa");
   const cols = (await q("select column_name c, data_type t from information_schema.columns where table_schema = 'bn_priv' and table_name = 'xat_msg' order by ordinal_position")).map(r => r.c + ":" + r.t);
   ok(igual(cols, ["id:bigint", "k:text", "nom:text", "frase:integer", "peca:integer", "company:text", "ts:timestamp with time zone", "esborrat:boolean"]), "xat_msg només té ids, el nom del nen, el company, l'hora i «esborrat»: " + cols.join(" "));
-  ok((await falla("insert into bn_priv.xat_msg(k, nom, frase, company) values ('a', 'a', 22, repeat('x', 41))")) !== null, "el company no pot passar de 40 caràcters");
+  ok((await falla("insert into bn_priv.xat_msg(k, nom, frase, company) values ('a', 'a', 22, repeat('x', 131))")) !== null, "el company no pot passar de 130 caràcters");
   ok((await falla("insert into bn_priv.xat_msg(k, nom, frase, peca, company) values ('a', 'a', 1, 1, 'Bet')")) !== null, "un missatge porta peça o company, mai totes dues coses");
   const args = await q(`select p.proname f, a.n, format_type(a.t, null) t from pg_proc p join pg_namespace s on s.oid = p.pronamespace,
                         unnest(p.proargnames, p.proargtypes::oid[]) a(n, t) where s.nspname = 'public' and p.proname like 'bn_xat_%'`);
@@ -171,7 +172,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok([64, 65, 66].every(id => ea.peces.includes(id)) && ea.acabats.includes("angles"), "angles amb 25 ⭐ desbloqueja les peces 64, 65 i 66");
   await q("delete from public.bn_log where nom = 'Èric' and assig = 'angles'");
   const o = await estat("Ona");
-  ok(o.nivell === 1 && igual(o.frases, [1, 2, 3, 4, 11, 12, 14, 17, 18, 22, 23]), "Ona (4 ⭐): només les frases de nivell 1 actives");
+  ok(o.nivell === 1 && igual(o.frases, [1, 2, 3, 4, 11, 12, 14, 17, 18, 22, 23, 27, 28, 29, 35, 36]), "Ona (4 ⭐): només les frases de nivell 1 actives");
   const r = await envia("Èric", 7, 25);
   ok(r.codi === "ok", "Èric pot dir «Pista: repassa els nombres primers» (Savi + Mates acabat): " + JSON.stringify(r)) }
 
@@ -229,7 +230,12 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok(r.codi === "ok" && (await val("select company from bn_priv.xat_msg where id = $1", [r.id])) === "Bet", "company: es desa el nom tal com surt al rànquing («Bet»)");
   await q("update bn_priv.xat_msg set ts = ts - interval '11 seconds' where k = 'martina'");
   ok((await envia("Martina", 22, null, "Gina")).codi === "ok", "company: un nen que només té temps al rànquing també");
-  ok((await val("select count(*)::int from bn_priv.xat_msg where company is not null and bn_priv.xat_al_ranquing(lower(company)) is null")) === 0, "tots els companys desats són noms del rànquing") }
+  await q("update bn_priv.xat_msg set ts = ts - interval '11 seconds' where k = 'martina'");
+  r = await envia("Martina", 35, null, " bet | Gina | Pau ");
+  ok(r.codi === "ok" && (await val("select company from bn_priv.xat_msg where id = $1", [r.id])) === "Bet|Gina|Pau", "company: multi-menció de fins a 3 companys («Bet|Gina|Pau»)");
+  for (const [c, txt] of [["Bet|Bet", "duplicat"], ["Bet|Martina", "inclou el propi nom"], ["Bet|Gina|Pau|Laia", "més de 3 companys"], ["Bet|Hugo", "un dels companys amagat"]]) {
+   const x = await envia("Martina", 35, null, c); ok(igual(x, { codi: "company" }), "company multi: " + txt + (x.codi === "company" ? "" : " → " + JSON.stringify(x))) }
+  ok((await val("select count(*)::int from bn_priv.xat_msg m, unnest(string_to_array(m.company, '|')) c where m.company is not null and bn_priv.xat_al_ranquing(lower(c)) is null")) === 0, "tots els companys desats són noms del rànquing") }
 
  console.log("6) bn_xat_vota");
  { const laia = await val("select max(id) from bn_priv.xat_msg where k = 'laia'"), bet = await msg("bet", "Bet", 22, null, "Laia", AVUI_FA);
@@ -323,7 +329,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok((await cfg(null)).max_dia === 3, "config: un valor dolent no desa res");
   await cfg({ max_dia: 5, espera_s: 10 });
   const ct = await adm("bn_admin_xat_cataleg");
-  ok(ct.frases.length === 26 && ct.peces.length === NPECES + 1 && ct.frases.find(f => f.id === 13).actiu === false && igual(Object.keys(ct.peces[0]).sort(), ["actiu", "id", "mon", "nivell", "text", "tipus"]), "cataleg: tot, també el desactivat");
+  ok(ct.frases.length === NFRASES && ct.peces.length === NPECES + 1 && ct.frases.find(f => f.id === 13).actiu === false && igual(Object.keys(ct.peces[0]).sort(), ["actiu", "id", "mon", "nivell", "text", "tipus"]), "cataleg: tot, també el desactivat");
   ok((await adm("bn_admin_xat_actiu", ["frase", 2, false])) === 1 && (await llegeix()).off.f.includes(2) && (await adm("bn_admin_xat_actiu", ["frase", 2, true])) === 1, "actiu: desactiva i torna a activar");
   ok((await adm("bn_admin_xat_actiu", ["peca", 9999, true])) === 0 && /taula no valida/.test(await falla("select public.bn_admin_xat_actiu($1, $2, 'msg', 1, true)", ADM) || ""), "actiu: id que no hi és → 0 · taula que no existeix → error");
   ok((await adm("bn_admin_xat_peca_nova", ["e", " el timbre nou ", null, "Socials"])) === 1002, "peca_nova: la següent és la 1002 (tipus i món en minúscules o majúscules)");

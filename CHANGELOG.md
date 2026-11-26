@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.75.0 · 2026-11-26
+
+### Afegit
+- **Xat de la Colla 2.0 Interactiu (`index.html`, `supabase/bn_xat.sql`, `admin/index.html` · `n3002`):**
+  - **Nova categoria `🙋 Jo (+1000)`:** 8 frases noves en primera persona encapçalades per **«Avui estic +1000 d'aura ___»** i variants (`+10000`, `mode pro`, `en ratxa`, `carregat/da de piles`, `al 100%`, `imparable`, `no hi ha qui m'aturi`), amb 9 peces positives pròpies (`id 501–509`).
+  - **Multi-menció de fins a 3 companys (`🤝 Colla`):** ara es poden triar **d'1 a 3 companys** del rànquing en un sol missatge (formatat automàticament com «Pol, Jana i Marc», amb 3 ranures visuals `#xRanures` i validació estricta al servidor a `bn_xat_envia`) i 5 frases noves pensades per a equip (`id 35–39`).
+  - **Banner destacat `🟢 XAT OBERT` / `🔴 XAT TANCAT`:** estat del xat gran i impossible de passar per alt a la capçalera, amb comptador de crèdits integrat.
+  - **Explicació plegable (`<details class="xinfo-det">`):** «ℹ️ Com funciona el xat?» comença plegat i allibera ~240 px verticals perquè les bombolles i el compositor llueixin des del primer cop d'ull.
+  - **Més interactiu i viu:** avatars clicables dins les bombolles (obren la Targeta Ràpida d'Heroi), títol del jugador dins la bombolla, destacat `✨ T'han esmentat!` quan algú t'etiqueta, botó `👍 Ben dit` amb bot elàstic, previsualització en forma de bombolla real amb el teu avatar i botó `🎲 Idea` per muntar frases a l'atzar.
+
 ## 2.74.0 · 2026-11-26
 
 ### Afegit

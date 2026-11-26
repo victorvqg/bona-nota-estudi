@@ -196,14 +196,20 @@ function servidorXat(o = {}) {
   await p.click('.x-cat[data-xcat="colla"]'); await p.click('#xFr .x-xip[data-xf="22"]'); await p.waitForTimeout(100);
   const noms = await p.$$eval("#xPc .x-xip", es => es.map(x => x.textContent.trim()));
   ok(JSON.stringify(noms) === JSON.stringify(["Pau", "Jana", "Nora", "Hugo", "Ona"]), "noms del rànquing sense «Prova»: " + noms.join(", "));
-  ok(/TRIA UN COMPANY/.test(await txt(p, "#xPas")), "pas 2: «TRIA UN COMPANY»");
+  ok(/TRIA D'1 A 3 COMPANYS/.test(await txt(p, "#xPas")), "pas 2: «TRIA D'1 A 3 COMPANYS»");
   await p.click('#xPc .x-xip[data-xp="c:Nora"]'); ok((await txt(p, "#xPrevi")) === "Bona, Nora!", "previsualització «Bona, Nora!»");
+  await p.click('#xPc .x-xip[data-xp="c:Pau"]'); ok((await txt(p, "#xPrevi")) === "Bona, Nora i Pau!", "multi-menció 2 companys: «Bona, Nora i Pau!»");
+  await p.click('#xPc .x-xip[data-xp="c:Jana"]'); ok((await txt(p, "#xPrevi")) === "Bona, Nora, Pau i Jana!", "multi-menció 3 companys: «Bona, Nora, Pau i Jana!»");
+  await p.click('#xRanures [data-xrm="Pau"]'); ok((await txt(p, "#xPrevi")) === "Bona, Nora i Jana!", "treure un company des de la ranura");
   ok((await p.$$('#xFr .x-xip.tancat[data-xf="26"]')).length === 1 && /Campió/.test(await txt(p, '#xFr .x-xip[data-xf="26"]')), "«Respecte per a …» bloquejada amb cadenat (Campió)");
   await p.click('#xFr .x-xip[data-xf="26"]'); ok(/nivell 7 \(Campió\)/.test(await toast(p)), "en tocar-la, l'avís diu com aconseguir-la");
   await p.click('.x-cat[data-xcat="aura"]'); await p.waitForTimeout(100);
   ok((await p.$$('#xFr .x-xip.sel[data-xf="11"]')).length === 1 && (await p.$$('#xPc .x-xip[data-xp="c:Pau"]')).length === 1, "Aura: «+1000 d'aura per a …» amb els companys");
   await p.click('#xFr .x-xip[data-xf="13"]'); await p.waitForTimeout(100);
   ok(/COSA DE CLASSE/.test(await txt(p, "#xPas")) && (await p.$$('#xPc .x-xip[data-xp^="c:"]')).length === 0, "«___: -1000 d'aura» només amb coses de classe, mai amb un company");
+  await p.click('.x-cat[data-xcat="jo"]'); await p.waitForTimeout(100);
+  ok((await p.$$('#xFr .x-xip[data-xf="27"]')).length === 1 && /Avui estic \+1000 d'aura/.test(await txt(p, '#xFr .x-xip[data-xf="27"]')), "categoria «Jo (+1000)»: «Avui estic +1000 d'aura» present");
+  ok(/XAT OBERT/.test(await txt(p, "#xEstatBanner")), "banner destacat «XAT OBERT» visible");
   sense(e); await e.ctx.close() }
 
  console.log("6) contraccions i majúscules (el text es compon al navegador)");
@@ -338,7 +344,7 @@ function servidorXat(o = {}) {
   ok((await p.getAttribute('.hs-tab[data-t="xat"]', "aria-selected")) === "true" && await p.evaluate(() => document.activeElement.dataset.t === "xat"), "fletxa dreta des de Remuntada → Xat");
   ok(await p.isHidden("#xatNou") && (await p.evaluate(() => localStorage.getItem("bn_xat_vist"))) === "5", "en obrir el xat, el comptador s'amaga i es desa l'últim vist");
   ok((await p.evaluate(() => [localStorage.getItem("bn_hs_prev_punts"), localStorage.getItem("bn_hs_prev_xat")])).join("|") === '{"sentinella":1}|', "la pestanya Xat no desa bn_hs_prev_xat ni trepitja bn_hs_prev_punts");
-  ok((await p.$$("#hs .a-taula, #hs .a-premis, #hs .a-peek")).length === 0 && /COM ES GUANYA PARLAR/.test(await txt(p, "#hs .a-xinfo")), "vista Xat: sense classificació ni premis, amb «Com es guanya parlar»");
+  ok((await p.$$("#hs .a-taula, #hs .a-premis, #hs .a-peek")).length === 0 && /Com funciona/i.test(await txt(p, "#hs .a-xinfo")) && (await p.$$("#hs .xinfo-det:not([open])")).length === 1, "vista Xat: sense classificació ni premis, amb explicació plegable «Com funciona»");
   await p.keyboard.press("Home"); await p.waitForTimeout(300); ok((await p.getAttribute('.hs-tab[data-t="punts"]', "aria-selected")) === "true", "Home → Estrelles");
   await p.keyboard.press("End"); await p.waitForTimeout(300); ok((await p.getAttribute('.hs-tab[data-t="xat"]', "aria-selected")) === "true", "End → Xat");
   await p.click('.hs-tab[data-t="punts"]'); await p.waitForTimeout(300);

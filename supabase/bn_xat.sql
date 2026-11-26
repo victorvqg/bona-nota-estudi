@@ -23,12 +23,14 @@
 -- ---------- taules (esquema privat) ----------
 create table if not exists bn_priv.xat_frases(
   id int primary key,
-  cat text not null check (cat in ('repte', 'aura', 'classe', 'colla')),
+  cat text not null check (cat in ('repte', 'aura', 'classe', 'colla', 'jo')),
   text text not null check (char_length(text) between 4 and 80 and char_length(text) - char_length(replace(text, '___', '')) = 3),
   slot char(1) not null check (slot in ('P', 'E', 'J', 'C')),
   nivell smallint not null check (nivell between 1 and 10),
   actiu boolean not null default true
 );
+alter table bn_priv.xat_frases drop constraint if exists xat_frases_cat_check;
+alter table bn_priv.xat_frases add constraint xat_frases_cat_check check (cat in ('repte', 'aura', 'classe', 'colla', 'jo'));
 create table if not exists bn_priv.xat_peces(
   id int primary key,
   tipus char(1) not null check (tipus in ('P', 'E', 'J')),
@@ -45,11 +47,13 @@ create table if not exists bn_priv.xat_msg(
   nom text not null check (char_length(nom) between 1 and 40),
   frase int not null references bn_priv.xat_frases(id),
   peca int references bn_priv.xat_peces(id),
-  company text check (char_length(company) between 1 and 40),
+  company text check (char_length(company) between 1 and 130),
   ts timestamptz not null default now(),
   esborrat boolean not null default false,
   check ((peca is null) <> (company is null))
 );
+alter table bn_priv.xat_msg drop constraint if exists xat_msg_company_check;
+alter table bn_priv.xat_msg add constraint xat_msg_company_check check (char_length(company) between 1 and 130);
 create index if not exists xat_msg_k_ts on bn_priv.xat_msg(k, ts desc);
 create index if not exists xat_msg_ts on bn_priv.xat_msg(ts desc);
 create table if not exists bn_priv.xat_vots(
@@ -105,7 +109,20 @@ insert into bn_priv.xat_frases(id, cat, text, slot, nivell) values
   (23, 'colla', 'Compte, ___, que vinc!', 'C', 1),
   (24, 'colla', 'GG, ___!', 'C', 2),
   (25, 'colla', '___, et toca moure fitxa!', 'C', 4),
-  (26, 'colla', 'Respecte per a ___', 'C', 7)
+  (26, 'colla', 'Respecte per a ___', 'C', 7),
+  (27, 'jo', 'Avui estic +1000 d''aura: ___!', 'J', 1),
+  (28, 'jo', 'Pujada d''aura (+500): ___!', 'J', 1),
+  (29, 'jo', 'Objectiu d''avui: ___', 'J', 1),
+  (30, 'jo', 'Avui tinc aura infinita: ___!', 'J', 2),
+  (31, 'jo', 'Energia al 100%: ___!', 'J', 2),
+  (32, 'jo', 'Avui estic imparable: ___!', 'J', 3),
+  (33, 'jo', 'M''he superat: ___!', 'J', 3),
+  (34, 'jo', 'Mode llegenda (+1000 d''aura): ___!', 'J', 4),
+  (35, 'colla', 'Equipàs amb ___!', 'C', 1),
+  (36, 'colla', 'Ànims per a l''examen, ___!', 'C', 1),
+  (37, 'colla', 'Quina remuntada, ___!', 'C', 2),
+  (38, 'colla', 'Aplaudiment per a ___!', 'C', 2),
+  (39, 'colla', 'Avui brillen ___!', 'C', 3)
 on conflict (id) do update set cat = excluded.cat, text = excluded.text, slot = excluded.slot, nivell = excluded.nivell;
 
 insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
@@ -153,7 +170,16 @@ insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
   (60, 'J', 'he fallat la pregunta més fàcil', 2, null),
   (61, 'J', 'm''he menjat l''esmorzar a primera hora', 3, null),
   (62, 'J', 'he anat a l''aula equivocada', 4, null),
-  (63, 'J', 'he dit «present» quan no em cridaven', 5, null)
+  (63, 'J', 'he dit «present» quan no em cridaven', 5, null),
+  (501, 'J', 'he pujat de nivell', 1, null),
+  (502, 'J', 'm''estic preparant l''examen de debò', 1, null),
+  (503, 'J', 'he estudiat 20 minuts i ara toca descans', 1, null),
+  (504, 'J', 'he fet un combo brutal', 2, null),
+  (505, 'J', 'he netejat tot el repàs d''errors', 2, null),
+  (506, 'J', 'he vençut un Cap Final', 3, null),
+  (507, 'J', 'he completat un Laboratori visual', 3, null),
+  (508, 'J', 'vaig a per la pròxima superestrella', 4, null),
+  (509, 'J', 'avui no m''atura ningú', 5, null)
 on conflict (id) do update set tipus = excluded.tipus, text = excluded.text, nivell = excluded.nivell, mon = excluded.mon;
 
 -- XAT-MONS:inici (generat per motor/tot.py des de motor/mons.json, no editar a mà)
@@ -349,8 +375,10 @@ create or replace function bn_priv.xat_vis(p_k text, p_nom text, p_company text,
 language sql stable set search_path = '' as $$
   select not p_esborrat
      and not bn_priv.xat_ocult(p_k, p_nom) and bn_priv.xat_existeix(p_k)
-     and (p_company is null or (not bn_priv.xat_ocult(lower(trim(p_company)), p_company)
-                                and bn_priv.xat_existeix(lower(trim(p_company)))))
+     and (p_company is null or not exists (
+       select 1 from unnest(string_to_array(p_company, '|')) as c
+       where bn_priv.xat_ocult(lower(trim(c)), c) or not bn_priv.xat_existeix(lower(trim(c)))
+     ))
 $$;
 
 -- missatge del dia d'ahir: el missatge visible més votat escrit ahir (en hora de Catalunya, amb com a mínim 1 vot; empat: el primer).
@@ -481,11 +509,23 @@ begin
       return jsonb_build_object('codi', 'bloquejada');
     end if;
   end if;
-  -- company: qualsevol nom del rànquing menys un mateix (sense amagats ni prohibits); es desa tal com surt al rànquing
+  -- company: d'1 a 3 noms del rànquing separats per '|' (sense repetir, mai un mateix, sense amagats ni prohibits)
   if fr.slot = 'C' then
-    if comp is null or lower(comp) = kk then return jsonb_build_object('codi', 'company'); end if;
-    nom_c := bn_priv.xat_al_ranquing(lower(comp));
-    if nom_c is null then return jsonb_build_object('codi', 'company'); end if;
+    if comp is null then return jsonb_build_object('codi', 'company'); end if;
+    declare parts text[] := string_to_array(comp, '|'); noms_ok text[] := '{}'; part text; un_nom text;
+    begin
+      if array_length(parts, 1) is null or array_length(parts, 1) < 1 or array_length(parts, 1) > 3 then
+        return jsonb_build_object('codi', 'company');
+      end if;
+      foreach part in array parts loop
+        part := trim(part);
+        if part = '' or lower(part) = kk then return jsonb_build_object('codi', 'company'); end if;
+        un_nom := bn_priv.xat_al_ranquing(lower(part));
+        if un_nom is null or un_nom = any(noms_ok) then return jsonb_build_object('codi', 'company'); end if;
+        noms_ok := array_append(noms_ok, un_nom);
+      end loop;
+      nom_c := array_to_string(noms_ok, '|');
+    end;
   end if;
   if r.enviats >= (c->>'max_dia')::int + (case when r.premi_ahir then 1 else 0 end) then return jsonb_build_object('codi', 'max_dia'); end if;
   if r.queden <= 0 then return jsonb_build_object('codi', 'sense_credit', 'falten', r.falten); end if;
