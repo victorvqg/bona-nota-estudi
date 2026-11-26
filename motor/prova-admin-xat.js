@@ -170,7 +170,7 @@ function respon(st, f, cos) {
   const nColsCat = await p.$$eval("#xkTaula thead th", ths => ths.length);
   ok(nColsCat === 5, `taula del catàleg compactada a 5 columnes (obtingut: ${nColsCat})`);
   await p.click('#xkTab [data-t="peces"]'); await p.waitForTimeout(100);
-  ok((await p.$$("#xkTaula tbody tr")).length === 10 && (await p.$$("#xkTaula tr.xoff")).length === 1, "el catàleg de mostra (peces) es pot mirar, amb la desactivada marcada");
+  ok((await p.$$("#xkTaula tbody tr")).length === 12 && (await p.$$("#xkTaula tr.xoff")).length === 1, "el catàleg de mostra (peces) es pot mirar, amb la desactivada marcada");
   await p.click("#btNovaPeca"); await p.waitForSelector("#panell:not([hidden]) #xnBt");
   const activesCat = await p.$$eval("#xCat button.sw, #xnBt", bs => bs.filter(b => !b.disabled).length);
   ok(activesCat === 0, "interruptors del catàleg i #xnBt al drawer desactivats en demo");

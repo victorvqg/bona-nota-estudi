@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.76.1 · 2026-11-26
+
+### Afegit
+- **Novetats del Xat 3.0 dins `/admin/` → Xat i Catàleg (`admin/index.html`, `supabase/bn_xat.sql` · `n3004`):**
+  - La taula de missatges de moderació mostra ara les **rematades (`· però me n'he sortit 💪`, etc.)**, les **respostes en fil (`↩️ En resposta a …`)**, les **reaccions ràpides (`🔥 😂 💪 👑`)** i la **multi-menció d'1 a 3 companys** («Laia, Pau i Nora»).
+  - **Configuració → Catàleg** i el formulari **«Afegeix una peça»** admeten ara també el tipus **Resposta ràpida (`R`)** i les noves categories `Jo (+1000)`, `Opino` i `Resposta` (també al servidor `bn_admin_xat_peca_nova` i `bn_admin_xat_msgs`).
+  - **Mode demo (`/admin/?demo=1&v=xat`)** actualitzat amb exemples reals de `+1000 d'aura`, multi-menció de 3 companys, rematades, respostes en fil i reaccions.
+
 ## 2.76.0 · 2026-11-26
 
 ### Afegit
