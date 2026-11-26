@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1df3eda37b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="28b6d18508",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -672,16 +672,18 @@ h1 span{display:inline-block}
 .x-reac i{font-style:normal;font-size:11px;color:#cbd5e1}.x-reac.on i{color:#fef08a}
 .x-rep-bt{margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;min-height:28px;border-radius:99px;background:#0f172a88;border:1px solid #38bdf866;color:#7dd3fc;font:800 11.5px/1 Nunito,system-ui,sans-serif;cursor:pointer}
 .x-rep-bt:hover{background:#0c4a6e;border-color:#38bdf8;color:#fff}
-.x-rep-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 11px;border-radius:12px;background:linear-gradient(90deg,#0c4a6e,#1e1b4b);border:1.5px solid #38bdf8;color:#e0f2fe;font-size:12.5px;font-weight:800}
+.x-rep-bar{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:12px;background:linear-gradient(110deg,#0c4a6e,#0284c7 52%,#1e3a8a);border:2px solid #38bdf8;color:#f0f9ff;font-size:13px;font-weight:900;text-shadow:0 1px 2px #0007;box-shadow:0 0 16px #38bdf866,inset 0 1px 0 #ffffff44;animation:xRepPols 1.5s ease-in-out infinite}
+.x-rep-bar::after{content:"";position:absolute;inset:-20% -60%;background:linear-gradient(105deg,transparent 35%,#ffffff40 50%,transparent 65%);transform:translateX(-100%);pointer-events:none;animation:xPreviBrill 2.4s ease-in-out infinite}
+@keyframes xRepPols{0%,100%{border-color:#38bdf8;box-shadow:0 0 12px #38bdf855,inset 0 1px 0 #ffffff44}50%{border-color:#fef08a;box-shadow:0 0 24px #38bdf8cc,0 0 10px #fde04788,inset 0 1px 0 #ffffff88}}
 .x-rep-bar span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.x-rep-bar button{flex:none;background:#ffffff1a;border:0;color:#fff;border-radius:99px;padding:3px 9px;font-weight:900;cursor:pointer}
+.x-rep-bar button{position:relative;z-index:1;flex:none;background:#0f172a88;border:1px solid #ffffff55;color:#fff;border-radius:99px;padding:3px 9px;font-weight:900;cursor:pointer}
 .x-rem-bt{flex:none;min-height:44px;padding:8px 11px;border-radius:12px;background:#1e1b4b;border:1.5px solid #4ade8088;color:#bbf7d0;font:900 12px/1 Nunito,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
 .x-rem-bt.on{background:#14532d;border-color:#4ade80;color:#fff}
 .x-rem-box{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-radius:12px;background:#0f172acc;border:1.5px solid #4ade8055}
 .x-rem-box .x-xip{font-size:12.5px;padding:5px 10px}
 .x-mt .pc-r,.x-previ .pc-r{color:#fff}
 .x-mt .pc-rem,.x-previ .pc-rem{color:#fde68a;font-weight:900}
-@media(prefers-reduced-motion:reduce){.x-estat-ban .xe-dot,.x-vot.pop,.x-previ.pop,.x-previ:not(.buida),.x-previ:not(.buida)::after,.x-envia:not(:disabled){animation:none!important}}
+@media(prefers-reduced-motion:reduce){.x-estat-ban .xe-dot,.x-vot.pop,.x-previ.pop,.x-previ:not(.buida),.x-previ:not(.buida)::after,.x-rep-bar,.x-rep-bar::after,.x-envia:not(:disabled){animation:none!important}}
 .xinfo ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:14px;line-height:1.45;color:#d1fae5}
 .xinfo ul b{color:#fff}
 .xinfo .regles-cred{color:#e0e7ff}.xinfo .regles-cred b{color:#fde68a}
@@ -1056,7 +1058,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.76.3</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.76.4</small></footer>
 
 <script src="sprites.js?v=70733852"></script>
 <script>
@@ -2044,10 +2046,11 @@ function xatHtml(){if(!XAT.ok)return `<div class="xat xat-aviat"><div class="hs-
  const c=xatCfg();
  return `<div class="xat">${xatBannerHtml()}
  <details class="x-mdd" id="xMdd"></details><div class="x-feed" id="xFeed" role="group" aria-label="Missatges de la colla" tabindex="0"></div>
- <div class="x-compo"><div id="xCred"></div><div id="xLock"></div><div id="xRepBar"></div><div class="x-cats" role="group" aria-label="Tipus de frase">${XAT_CATS.map(([k,t,col])=>`<button class="x-cat" type="button" aria-pressed="false" data-xcat="${k}" style="--cc:${col}">${t}</button>`).join("")}</div>
+ <div class="x-compo"><div id="xCred"></div><div id="xLock"></div><div class="x-cats" role="group" aria-label="Tipus de frase">${XAT_CATS.map(([k,t,col])=>`<button class="x-cat" type="button" aria-pressed="false" data-xcat="${k}" style="--cc:${col}">${t}</button>`).join("")}</div>
  <div class="x-pas">1 · TRIA LA FRASE <span id="xNfr"></span></div><div class="x-xips" id="xFr"></div>
  <div class="x-pas" id="xPas"></div><div id="xRanures"></div><div class="x-xips x-peces" id="xPc"></div>
  <div id="xRemBox"></div>
+ <div id="xRepBar"></div>
  <div class="x-env"><div class="x-previ-wrap"><div class="x-previ buida" id="xPrevi" aria-live="polite"></div><button class="x-rem-bt" id="xRemBt" type="button" title="Afegeix una rematada opcional al final">+ Rematada</button><button class="x-idea" id="xIdea" type="button" title="Proposa una idea divertida">🎲 Idea</button></div><button class="x-envia" id="xEnvia" type="button" disabled><span id="xEnvTx">ENVIA</span><span class="cool" id="xCool"></span></button></div>
  <div class="x-lim"><span id="xAvui"></span><span>${+c.espera_s>0?`1 missatge cada ${c.espera_s} segons`:"Sense espera entre missatges"}</span></div></div></div>`}
 function xatInfoHtml(){const c=xatCfg(),E=xatEstOk()?XAT.est:null,mx=xatMaxEf(c,E),n=xatNiv(),jo=xatJo().nom,m=jo?xatUltim(jo):null,tf=xatFrases(),tp=xatPeces();
