@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.76.4 · 2026-11-26
+
+### Canviat
+- **Combos polits als tests (colors, moviment i zero duplicats · `motor/plantilla-estudi-interactiu.html` · `n3006`):**
+  - El rètol flotant gran (`.combo`) ara surt només a les **fites reals (`×3`, `×5`, `×10`…)** i passa per la **cua `horaRetol()`**, evitant que es repeteixi a cada encert (×4, ×6, ×7…) o es solapi amb `⚡ SUPER COMBO` i `🎯 MISSIÓ FETA!`.
+  - L'avatar ja no duplica el mateix text a les fites (`⚡ En ratxa! Segueix així!` a les fites i `🔥 Ratxa ×4! Imparable!` als passos intermedis).
+  - Nou estil de **pastilla arcade d'alt contrast** (`#1e1b4b` translúcid + vora daurada/verda + ombra suau) i animació d'entrada elàstica neta (respectant Mode suau i `prefers-reduced-motion`).
+- **Barra «↩️ Responent a…» sobre la línia del missatge i amb pampallugues (`index.html` · `n3008`):** moguda just a sobre de la previsualització prèvia a enviar (`.x-env`), amb degradat blau cel viu, pampallugues al contorn i reflex diagonal animat (respectant `prefers-reduced-motion`).
+
 ## 2.76.3 · 2026-11-26
 
 ### Canviat
