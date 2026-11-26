@@ -23,24 +23,30 @@
 -- ---------- taules (esquema privat) ----------
 create table if not exists bn_priv.xat_frases(
   id int primary key,
-  cat text not null check (cat in ('repte', 'aura', 'classe', 'colla', 'jo')),
-  text text not null check (char_length(text) between 4 and 80 and char_length(text) - char_length(replace(text, '___', '')) = 3),
-  slot char(1) not null check (slot in ('P', 'E', 'J', 'C')),
+  cat text not null check (cat in ('repte', 'aura', 'classe', 'colla', 'jo', 'opino', 'respon')),
+  text text not null check (char_length(text) between 3 and 80 and char_length(text) - char_length(replace(text, '___', '')) = 3),
+  slot char(1) not null check (slot in ('P', 'E', 'J', 'C', 'R')),
   nivell smallint not null check (nivell between 1 and 10),
   actiu boolean not null default true
 );
 alter table bn_priv.xat_frases drop constraint if exists xat_frases_cat_check;
-alter table bn_priv.xat_frases add constraint xat_frases_cat_check check (cat in ('repte', 'aura', 'classe', 'colla', 'jo'));
+alter table bn_priv.xat_frases add constraint xat_frases_cat_check check (cat in ('repte', 'aura', 'classe', 'colla', 'jo', 'opino', 'respon'));
+alter table bn_priv.xat_frases drop constraint if exists xat_frases_text_check;
+alter table bn_priv.xat_frases add constraint xat_frases_text_check check (char_length(text) between 3 and 80 and char_length(text) - char_length(replace(text, '___', '')) = 3);
+alter table bn_priv.xat_frases drop constraint if exists xat_frases_slot_check;
+alter table bn_priv.xat_frases add constraint xat_frases_slot_check check (slot in ('P', 'E', 'J', 'C', 'R'));
 create table if not exists bn_priv.xat_peces(
   id int primary key,
-  tipus char(1) not null check (tipus in ('P', 'E', 'J')),
+  tipus char(1) not null check (tipus in ('P', 'E', 'J', 'R')),
   text text not null check (char_length(text) between 1 and 60),
   nivell smallint check (nivell between 1 and 10),
   mon text check (mon ~ '^[a-z0-9_-]{1,40}$'),
   actiu boolean not null default true,
   check ((nivell is null) <> (mon is null))
 );
--- un missatge és {qui, frase, peça o company}: cap columna per a text lliure
+alter table bn_priv.xat_peces drop constraint if exists xat_peces_tipus_check;
+alter table bn_priv.xat_peces add constraint xat_peces_tipus_check check (tipus in ('P', 'E', 'J', 'R'));
+-- un missatge és {qui, frase, peça o company, rematada opcional, resposta opcional}: cap columna per a text lliure
 create table if not exists bn_priv.xat_msg(
   id bigint generated always as identity primary key,
   k text not null check (char_length(k) between 1 and 40),
@@ -48,12 +54,16 @@ create table if not exists bn_priv.xat_msg(
   frase int not null references bn_priv.xat_frases(id),
   peca int references bn_priv.xat_peces(id),
   company text check (char_length(company) between 1 and 130),
+  rematada smallint check (rematada between 1 and 16),
+  reply_to bigint references bn_priv.xat_msg(id) on delete set null,
   ts timestamptz not null default now(),
   esborrat boolean not null default false,
   check ((peca is null) <> (company is null))
 );
 alter table bn_priv.xat_msg drop constraint if exists xat_msg_company_check;
 alter table bn_priv.xat_msg add constraint xat_msg_company_check check (char_length(company) between 1 and 130);
+alter table bn_priv.xat_msg add column if not exists rematada smallint check (rematada between 1 and 16);
+alter table bn_priv.xat_msg add column if not exists reply_to bigint references bn_priv.xat_msg(id) on delete set null;
 create index if not exists xat_msg_k_ts on bn_priv.xat_msg(k, ts desc);
 create index if not exists xat_msg_ts on bn_priv.xat_msg(ts desc);
 create table if not exists bn_priv.xat_vots(
@@ -63,6 +73,14 @@ create table if not exists bn_priv.xat_vots(
   primary key (msg, k)
 );
 create index if not exists xat_vots_k on bn_priv.xat_vots(k, msg);
+create table if not exists bn_priv.xat_reac(
+  msg bigint not null references bn_priv.xat_msg(id) on delete cascade,
+  k text not null check (char_length(k) between 1 and 40),
+  e text not null check (e in ('fire', 'laugh', 'muscle', 'crown')),
+  ts timestamptz not null default now(),
+  primary key (msg, k, e)
+);
+create index if not exists xat_reac_k on bn_priv.xat_reac(k, msg);
 create table if not exists bn_priv.xat_silenci(
   k text primary key check (char_length(k) between 1 and 40),
   fins timestamptz not null,
@@ -74,12 +92,13 @@ alter table bn_priv.xat_frases enable row level security;
 alter table bn_priv.xat_peces enable row level security;
 alter table bn_priv.xat_msg enable row level security;
 alter table bn_priv.xat_vots enable row level security;
+alter table bn_priv.xat_reac enable row level security;
 alter table bn_priv.xat_silenci enable row level security;
-revoke all on bn_priv.xat_frases, bn_priv.xat_peces, bn_priv.xat_msg, bn_priv.xat_vots, bn_priv.xat_silenci from public, anon, authenticated;
+revoke all on bn_priv.xat_frases, bn_priv.xat_peces, bn_priv.xat_msg, bn_priv.xat_vots, bn_priv.xat_reac, bn_priv.xat_silenci from public, anon, authenticated;
 revoke all on sequence bn_priv.xat_msg_id_seq from public, anon, authenticated;
 
--- configuració inicial (si ja hi és, la deixa com l'hagi posada l'admin)
-insert into bn_priv.config(clau, valor) values ('xat', '{"est_credit":10,"max_dia":5,"espera_s":10,"actiu":true}')
+-- configuració inicial (si ja hi és, la deixa com l'hagi posada l'admin): 5 ⭐ per frase, fins a 10 frases/dia
+insert into bn_priv.config(clau, valor) values ('xat', '{"est_credit":5,"max_dia":10,"espera_s":10,"actiu":true}')
   on conflict (clau) do nothing;
 
 -- catàleg (el mateix que el bloc XAT-CATALEG d'index.html): tot menys «actiu», que és de l'admin
@@ -122,7 +141,14 @@ insert into bn_priv.xat_frases(id, cat, text, slot, nivell) values
   (36, 'colla', 'Ànims per a l''examen, ___!', 'C', 1),
   (37, 'colla', 'Quina remuntada, ___!', 'C', 2),
   (38, 'colla', 'Aplaudiment per a ___!', 'C', 2),
-  (39, 'colla', 'Avui brillen ___!', 'C', 3)
+  (39, 'colla', 'Avui brillen ___!', 'C', 3),
+  (40, 'opino', 'El millor tema fins ara és ___', 'P', 1),
+  (41, 'opino', 'El que més costa és ___', 'P', 1),
+  (42, 'opino', 'Consell: no deixis ___ per a l''últim dia!', 'P', 1),
+  (43, 'opino', 'Ja domino ___ al 100 %!', 'P', 2),
+  (44, 'opino', 'Em falta repassar ___ abans de l''examen', 'P', 2),
+  (45, 'opino', 'He trobat el truc de ___!', 'P', 3),
+  (46, 'respon', '___', 'R', 1)
 on conflict (id) do update set cat = excluded.cat, text = excluded.text, slot = excluded.slot, nivell = excluded.nivell;
 
 insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
@@ -179,7 +205,19 @@ insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
   (506, 'J', 'he vençut un Cap Final', 3, null),
   (507, 'J', 'he completat un Laboratori visual', 3, null),
   (508, 'J', 'vaig a per la pròxima superestrella', 4, null),
-  (509, 'J', 'avui no m''atura ningú', 5, null)
+  (509, 'J', 'avui no m''atura ningú', 5, null),
+  (521, 'R', 'Jo t''ajudo! 🤝', 1, null),
+  (522, 'R', 'A mi també m''ha costat 😅', 1, null),
+  (523, 'R', 'Repte acceptat! ⚔️', 1, null),
+  (524, 'R', 'Totalment d''acord! 💯', 1, null),
+  (525, 'R', 'Bona aquesta 😂', 1, null),
+  (526, 'R', 'Ànims, tu pots! 💪', 1, null),
+  (527, 'R', '+1000 d''aura per això! ⚡', 1, null),
+  (528, 'R', 'Gràcies! 🙌', 1, null),
+  (529, 'R', 'Ho provo ara mateix! 🚀', 1, null),
+  (530, 'R', 'Ens veiem al podi! 🏆', 1, null),
+  (531, 'R', 'Quin crack! 👑', 1, null),
+  (532, 'R', 'Fet! ✅', 1, null)
 on conflict (id) do update set tipus = excluded.tipus, text = excluded.text, nivell = excluded.nivell, mon = excluded.mon;
 
 -- XAT-MONS:inici (generat per motor/tot.py des de motor/mons.json, no editar a mà)
@@ -224,8 +262,8 @@ begin
   begin j := t::jsonb; exception when others then j := null; end;
   if jsonb_typeof(j) is distinct from 'object' then j := '{}'::jsonb; end if;
   return jsonb_build_object(
-    'est_credit', case when j->>'est_credit' ~ '^[0-9]{1,6}$' then least(greatest((j->>'est_credit')::int, 1), 100) else 10 end,
-    'max_dia',    case when j->>'max_dia'    ~ '^[0-9]{1,6}$' then least(greatest((j->>'max_dia')::int, 1), 20) else 5 end,
+    'est_credit', case when j->>'est_credit' ~ '^[0-9]{1,6}$' then least(greatest((j->>'est_credit')::int, 1), 100) else 5 end,
+    'max_dia',    case when j->>'max_dia'    ~ '^[0-9]{1,6}$' then least(greatest((j->>'max_dia')::int, 1), 20) else 10 end,
     'espera_s',   case when j->>'espera_s'   ~ '^[0-9]{1,6}$' then least((j->>'espera_s')::int, 600) else 10 end,
     'actiu',      case when j->>'actiu' in ('true', 'false') then (j->>'actiu')::boolean else true end);
 end $$;
@@ -421,9 +459,10 @@ begin
 end $$;
 
 -- els 60 missatges visibles més nous (el que porta bn_xat_llegeix)
-create or replace function bn_priv.xat_ultims60() returns table(id bigint, k text, nom text, frase int, peca int, company text, ts timestamptz)
+drop function if exists bn_priv.xat_ultims60();
+create or replace function bn_priv.xat_ultims60() returns table(id bigint, k text, nom text, frase int, peca int, company text, rematada smallint, reply_to bigint, ts timestamptz)
 language sql stable set search_path = '' as $$
-  select m.id, m.k, m.nom, m.frase, m.peca, m.company, m.ts
+  select m.id, m.k, m.nom, m.frase, m.peca, m.company, m.rematada, m.reply_to, m.ts
   from bn_priv.xat_msg m
   where bn_priv.xat_vis(m.k, m.nom, m.company, m.esborrat)
   order by m.id desc limit 60
@@ -472,6 +511,11 @@ begin
     'meus', coalesce((select jsonb_agg(v.msg order by v.msg) from bn_priv.xat_vots v join bn_priv.xat_msg m on m.id = v.msg
                        where v.k = kk and (m.ts > now() - interval '2 days'
                                            or m.id >= (select coalesce(min(u.id), 0) from bn_priv.xat_ultims60() u))), '[]'::jsonb),
+    'meves_reacs', coalesce((select jsonb_object_agg(x.msg::text, x.es) from (
+                       select r2.msg, jsonb_agg(r2.e order by r2.e) es from bn_priv.xat_reac r2 join bn_priv.xat_msg m on m.id = r2.msg
+                       where r2.k = kk and (m.ts > now() - interval '2 days'
+                                            or m.id >= (select coalesce(min(u.id), 0) from bn_priv.xat_ultims60() u))
+                       group by r2.msg) x), '{}'::jsonb),
     'cfg', c || jsonb_build_object('actiu', bn_priv.xat_obert_ara(c)),
     'espera_fins', case when ef > now() then bn_priv.xat_ms(ef) end,
     'silenci', case when bn_priv.xat_ocult(kk, p_nom) then jsonb_build_object('fins', null)
@@ -481,10 +525,11 @@ revoke all on function public.bn_xat_estat(text, text) from public;
 grant execute on function public.bn_xat_estat(text, text) to anon, authenticated;
 
 -- ---------- 2) enviar un missatge (amb PIN) ----------
-create or replace function public.bn_xat_envia(p_nom text, p_pin text, p_frase int, p_peca int default null, p_company text default null)
+drop function if exists public.bn_xat_envia(text, text, int, int, text);
+create or replace function public.bn_xat_envia(p_nom text, p_pin text, p_frase int, p_peca int default null, p_company text default null, p_rematada int default null, p_reply_to bigint default null)
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare kk text := lower(trim(coalesce(p_nom, ''))); comp text := nullif(trim(coalesce(p_company, '')), '');
-  c jsonb; r record; fr bn_priv.xat_frases; pc bn_priv.xat_peces; s timestamptz; ef timestamptz; nom_c text; nm text; nou bigint;
+  c jsonb; r record; fr bn_priv.xat_frases; pc bn_priv.xat_peces; s timestamptz; ef timestamptz; nom_c text; nm text; nou bigint; rep bigint := null;
 begin
   if not bn_priv.pin_ok(p_nom, p_pin) then return jsonb_build_object('codi', 'pin'); end if;
   -- un enviament alhora per nen: dos clics seguits no poden gastar el mateix crèdit
@@ -499,6 +544,7 @@ begin
   -- frase activa i desbloquejada; el forat, omplert amb el que demana (peça del seu tipus o company, mai totes dues coses)
   select * into fr from bn_priv.xat_frases x where x.id = p_frase;
   if fr.id is null or not fr.actiu or fr.nivell > r.nivell then return jsonb_build_object('codi', 'bloquejada'); end if;
+  if p_rematada is not null and (p_rematada < 1 or p_rematada > 16) then return jsonb_build_object('codi', 'bloquejada'); end if;
   if fr.slot = 'C' then
     if p_peca is not null then return jsonb_build_object('codi', 'bloquejada'); end if;
   else
@@ -527,20 +573,23 @@ begin
       nom_c := array_to_string(noms_ok, '|');
     end;
   end if;
+  if p_reply_to is not null then
+    select m.id into rep from bn_priv.xat_msg m where m.id = p_reply_to and bn_priv.xat_vis(m.k, m.nom, m.company, m.esborrat);
+  end if;
   if r.enviats >= (c->>'max_dia')::int + (case when r.premi_ahir then 1 else 0 end) then return jsonb_build_object('codi', 'max_dia'); end if;
   if r.queden <= 0 then return jsonb_build_object('codi', 'sense_credit', 'falten', r.falten); end if;
   ef := r.ultim + make_interval(secs => (c->>'espera_s')::int);
   if ef > now() then return jsonb_build_object('codi', 'espera', 'ms', ceil(extract(epoch from ef - now()) * 1000)::bigint); end if;
   select x.nom into nm from bn_priv.perfils x where x.k = kk;
-  insert into bn_priv.xat_msg(k, nom, frase, peca, company)
-    values (kk, coalesce(nullif(trim(nm), ''), trim(p_nom)), fr.id, pc.id, nom_c)
+  insert into bn_priv.xat_msg(k, nom, frase, peca, company, rematada, reply_to)
+    values (kk, coalesce(nullif(trim(nm), ''), trim(p_nom)), fr.id, pc.id, nom_c, p_rematada::smallint, rep)
     returning id into nou;
   ef := now() + make_interval(secs => (c->>'espera_s')::int);
   return jsonb_build_object('codi', 'ok', 'id', nou, 'queden', r.queden - 1, 'enviats', r.enviats + 1,
                             'espera_fins', case when ef > now() then bn_priv.xat_ms(ef) end);
 end $$;
-revoke all on function public.bn_xat_envia(text, text, int, int, text) from public;
-grant execute on function public.bn_xat_envia(text, text, int, int, text) to anon, authenticated;
+revoke all on function public.bn_xat_envia(text, text, int, int, text, int, bigint) from public;
+grant execute on function public.bn_xat_envia(text, text, int, int, text, int, bigint) to anon, authenticated;
 
 -- ---------- 3) llegir el xat (sense PIN, com el rànquing; es crida cada 10 s amb la pestanya Xat oberta) ----------
 -- msgs: els 60 més nous visibles (amb p_des_de, només els d'id més gran) · vots: comptador de cadascun dels 60
@@ -550,6 +599,9 @@ create or replace function public.bn_xat_llegeix(p_des_de bigint default null) r
 language sql stable security definer set search_path = '' as $$
   with ult as (select * from bn_priv.xat_ultims60()),
   vc as (select v.msg, count(*)::int n from bn_priv.xat_vots v where v.msg in (select u.id from ult u) group by v.msg),
+  rc as (select r2.msg, jsonb_object_agg(r2.e, r2.n) j from (
+           select e2.msg, e2.e, count(*)::int n from bn_priv.xat_reac e2 where e2.msg in (select u.id from ult u) group by e2.msg, e2.e
+         ) r2 group by r2.msg),
   u24 as (
     select distinct on (m.k) m.id, m.nom, m.frase, m.peca, m.company, m.ts
     from bn_priv.xat_msg m
@@ -566,9 +618,13 @@ language sql stable security definer set search_path = '' as $$
     'ara', bn_priv.xat_ms(now()),
     'actiu', bn_priv.xat_obert_ara(),
     'msgs', coalesce((select jsonb_agg(jsonb_build_object('id', u.id, 'nom', u.nom, 'f', u.frase, 'p', u.peca, 'c', u.company,
-                                                          'ts', bn_priv.xat_ms(u.ts), 'v', coalesce(vc.n, 0)) order by u.id)
+                                                          'ts', bn_priv.xat_ms(u.ts), 'v', coalesce(vc.n, 0))
+                                       || case when u.rematada is not null then jsonb_build_object('r', u.rematada) else '{}'::jsonb end
+                                       || case when u.reply_to is not null then jsonb_build_object('re', u.reply_to) else '{}'::jsonb end
+                                       order by u.id)
                       from ult u left join vc on vc.msg = u.id where p_des_de is null or u.id > p_des_de), '[]'::jsonb),
     'vots', coalesce((select jsonb_object_agg(u.id::text, coalesce(vc.n, 0)) from ult u left join vc on vc.msg = u.id), '{}'::jsonb),
+    'reacs', coalesce((select jsonb_object_agg(rc.msg::text, rc.j) from rc), '{}'::jsonb),
     'ultims', coalesce((select jsonb_agg(jsonb_build_object('id', u.id, 'nom', u.nom, 'f', u.frase, 'p', u.peca, 'c', u.company,
                                                             'ts', bn_priv.xat_ms(u.ts),
                                                             'v', (select count(*)::int from bn_priv.xat_vots v where v.msg = u.id)) order by u.id)
@@ -611,6 +667,31 @@ begin
 end $$;
 revoke all on function public.bn_xat_vota(text, text, bigint) from public;
 grant execute on function public.bn_xat_vota(text, text, bigint) to anon, authenticated;
+
+-- ---------- 4b) reaccions ràpides (🔥 😂 💪 👑 · amb PIN): no gasten crèdit de frase, cal el 1r crèdit d'avui ----------
+create or replace function public.bn_xat_reacciona(p_nom text, p_pin text, p_msg bigint, p_emoji text) returns jsonb
+language plpgsql security definer set search_path = '' as $$
+declare kk text := lower(trim(coalesce(p_nom, ''))); em text := lower(trim(coalesce(p_emoji, ''))); c jsonb; r record; s timestamptz; autor text; posat boolean; reacs jsonb;
+begin
+  if not bn_priv.pin_ok(p_nom, p_pin) then return jsonb_build_object('codi', 'pin'); end if;
+  if bn_priv.xat_ocult(kk, p_nom) then return jsonb_build_object('codi', 'silenci', 'fins', null); end if;
+  select x.fins into s from bn_priv.xat_silenci x where x.k = kk and x.fins > now();
+  if s is not null then return jsonb_build_object('codi', 'silenci', 'fins', bn_priv.xat_ms(s)); end if;
+  c := bn_priv.xat_cfg();
+  if not bn_priv.xat_obert_ara(c) then return jsonb_build_object('codi', 'tancat'); end if;
+  if em not in ('fire', 'laugh', 'muscle', 'crown') then return jsonb_build_object('codi', 'bloquejada'); end if;
+  select m.k into autor from bn_priv.xat_msg m where m.id = p_msg and bn_priv.xat_vis(m.k, m.nom, m.company, m.esborrat);
+  if autor is null then return jsonb_build_object('codi', 'no_existeix'); end if;
+  select * into r from bn_priv.xat_nen(kk, c);
+  if r.est_avui < (c->>'est_credit')::int then return jsonb_build_object('codi', 'sense_credit', 'falten', (c->>'est_credit')::int - r.est_avui); end if;
+  delete from bn_priv.xat_reac v where v.msg = p_msg and v.k = kk and v.e = em;
+  posat := not found;
+  if posat then insert into bn_priv.xat_reac(msg, k, e) values (p_msg, kk, em) on conflict do nothing; end if;
+  select coalesce(jsonb_object_agg(x.e, x.n), '{}'::jsonb) into reacs from (select v.e, count(*)::int n from bn_priv.xat_reac v where v.msg = p_msg group by v.e) x;
+  return jsonb_build_object('codi', 'ok', 'on', posat, 'reacs', reacs);
+end $$;
+revoke all on function public.bn_xat_reacciona(text, text, bigint, text) from public;
+grant execute on function public.bn_xat_reacciona(text, text, bigint, text) to anon, authenticated;
 
 -- ---------- 5) admin (correu + contrasenya, com la resta del tauler) ----------
 -- missatges dels últims p_dies dies, també els esborrats, del més nou al més vell (fins a 500).

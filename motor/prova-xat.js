@@ -156,11 +156,12 @@ function servidorXat(o = {}) {
   ok(c && JSON.stringify(c.cos) === JSON.stringify({ p_nom: "Prova", p_pin: "1234A", p_frase: 1, p_peca: 1, p_company: null }), "la crida porta només números (frase 1, peça 1), cap text: " + JSON.stringify(c && c.cos));
   ok((await p.$$(".xmon.gastada")).length === 1 && (await p.$$(".xmon.plena")).length === 0, "la moneda queda grisa (gastada)");
   ok((await txt(p, "#xFeed .x-msg.jo:last-child .x-mt")) === "Vaig a pel teu lloc!", "el missatge surt al xat, a la dreta (propi)");
-  ok((await txt(p, '#hs .pd:has(.pd-nom[title="Prova"]) .xbaf')) === "Vaig a pel teu lloc!", "i a la bafarada del podi");
   ok(await p.isDisabled("#xEnvia") && (await txt(p, "#xLock .xl-t")) === "SENSE CRÈDITS", "sense més crèdits: SENSE CRÈDITS");
   ok(/Guanya 10 .*més i tindràs una altra frase/.test(await txt(p, "#xLock p")), "«Guanya 10 ⭐ més i tindràs una altra frase»");
   ok(e.n("bn_xat_estat") > estat0, "després d'enviar es torna a demanar l'estat");
   ok(e.X.S.env === 1 && e.X.S.msgs.some(m => m.id === 101 && m.nom === "Prova"), "el servidor l'ha desat");
+  await p.click('.hs-tab[data-t="punts"]'); await p.waitForTimeout(250);
+  ok((await txt(p, '#hs .pd:has(.pd-nom[title="Prova"]) .xbaf')) === "Vaig a pel teu lloc!", "i a la bafarada del podi");
   sense(e); await e.ctx.close() }
 
  console.log("3) després de 5 frases surt TORNA DEMÀ, encara que tingui més estrelles");
@@ -238,13 +239,12 @@ function servidorXat(o = {}) {
   ok(c && c.cos.p_frase === 23 && c.cos.p_company === "Jana" && c.cos.p_peca === null, "s'envia frase 23 amb el company «Jana»");
   sense(e); await e.ctx.close() }
 
- console.log("8) a 390 px el xat va sota el podi i el botó ENVIA es veu sencer");
+ console.log("8) a 390 px el xat ocupa tota l'amplada (sense podi) i el botó ENVIA es veu sencer");
  { const e = await obre({ xat: { est: 10 }, viewport: { width: 390, height: 844 } }), { p } = e; await e.xat();
   const r = await p.evaluate(() => { const b = s => document.querySelector(s).getBoundingClientRect(), dins = document.querySelector(".hs-caixa").getBoundingClientRect().right - 4;
-   // tot el que hi ha dins del xat i de «Com es guanya parlar» cap dins de la caixa (les capes d'efectes del podi no compten: la caixa les retalla)
    const fora = [...document.querySelectorAll("#hs .a-xat *, #hs .a-xinfo *")].filter(e => { const q = e.getBoundingClientRect(); return q.width && q.right > dins + .5 }).map(e => e.className.baseVal ?? e.className);
-   return { podi: b("#hs .a-podi"), xat: b("#hs .a-xat"), info: b("#hs .a-xinfo"), fora, ample: Math.max(...[...document.querySelectorAll("#hs .xat, #hs .x-compo, #hs .xinfo, #hs .x-env, #hs .x-xips")].map(e => e.scrollWidth - e.clientWidth)) } });
-  ok(r.xat.top >= r.podi.bottom - 1 && r.info.top >= r.xat.bottom - 1, "ordre: podi → xat → «Com es guanya parlar»");
+   return { sensePodi: !document.querySelector("#hs .a-podi"), xat: b("#hs .a-xat"), info: b("#hs .a-xinfo"), fora, ample: Math.max(...[...document.querySelectorAll("#hs .xat, #hs .x-compo, #hs .xinfo, #hs .x-env, #hs .x-xips")].map(e => e.scrollWidth - e.clientWidth)) } });
+  ok(r.sensePodi && r.info.top >= r.xat.bottom - 1, "sense podi a la pestanya Xat; ordre: xat → «Com funciona»");
   ok(r.ample <= 0 && r.fora.length === 0, "res del xat surt per la dreta del rànquing" + (r.fora.length ? ": " + r.fora.slice(0, 5).join(", ") : ""));
   await peca(p, 1); await p.$eval("#xEnvia", b => b.scrollIntoView({ block: "center" })); await p.waitForTimeout(150);
   const v = await p.evaluate(() => { const b = document.getElementById("xEnvia"), r = b.getBoundingClientRect(), el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return { r: { l: r.left, r: r.right, t: r.top, b: r.bottom }, tapat: !(el && b.contains(el)), w: innerWidth, h: innerHeight } });
@@ -282,7 +282,7 @@ function servidorXat(o = {}) {
   ok(!(await p.evaluate(() => [...document.querySelectorAll("#hsTicker .tk-it")].some(x => x.querySelector("svg") && /«/.test(x.textContent)))), "la cinta no porta missatges");
   await e.xat();
   ok(/EL XAT ARRIBA AVIAT/.test(await txt(p, "#hs .a-xat")) && (await p.$$("#hs .a-xinfo, #hs .x-compo")).length === 0, "la pestanya Xat diu «El xat arriba aviat»");
-  ok((await p.$$("#hs .a-taula, #hs .a-premis")).length === 0 && (await p.$$("#hs .podi .pd")).length === 3, "amb el podi d'Estrelles i sense classificació");
+  ok((await p.$$("#hs .a-taula, #hs .a-premis, #hs .a-podi")).length === 0, "sense podi ni classificació a la pestanya Xat");
   await p.click('.hs-tab[data-t="punts"]'); await p.waitForTimeout(300);
   ok((await p.$$("#hs .a-taula .ht-fila")).length > 3, "en tornar a Estrelles, la classificació hi és");
   sense(e); await e.ctx.close() }
