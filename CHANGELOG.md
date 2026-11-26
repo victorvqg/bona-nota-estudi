@@ -13,6 +13,9 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
   - **Configuració → Catàleg** i el formulari **«Afegeix una peça»** admeten ara també el tipus **Resposta ràpida (`R`)** i les noves categories `Jo (+1000)`, `Opino` i `Resposta` (també al servidor `bn_admin_xat_peca_nova` i `bn_admin_xat_msgs`).
   - **Mode demo (`/admin/?demo=1&v=xat`)** actualitzat amb exemples reals de `+1000 d'aura`, multi-menció de 3 companys, rematades, respostes en fil i reaccions.
 
+### Corregit
+- **Compatibilitat en enviar al Xat (`index.html` · `n3004`):** si el servidor encara té una versió anterior de `bn_xat_envia` (5 paràmetres) i s'envia amb rematada o resposta en fil, reintenta automàticament sense aquests camps en lloc de mostrar «no hi ha connexió».
+
 ## 2.76.0 · 2026-11-26
 
 ### Afegit

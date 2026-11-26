@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="c0060b3420",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="3d463ef623",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -2190,7 +2190,9 @@ async function xatEnvia(){const f=xatFr(XAT.selF),sp=XAT.selP;if(!f||sp==null||X
  if(XAT.selRem)cos.p_rematada=XAT.selRem;
  if(XAT.replyTo)cos.p_reply_to=XAT.replyTo;
  XAT.enviant=true;xatCompo();let r=null;
- try{r=await xatRpc("bn_xat_envia",cos)}catch(e){xatToast(e==="bloc"?"Massa intents de PIN. Espera 15 minuts.":"No s'ha pogut enviar: no hi ha connexió. Torna-ho a provar.")}
+ try{r=await xatRpc("bn_xat_envia",cos)}catch(e){
+  if(e==="xarxa"&&(cos.p_rematada||cos.p_reply_to)){const c5={p_nom:cos.p_nom,p_pin:cos.p_pin,p_frase:cos.p_frase,p_peca:cos.p_peca,p_company:cos.p_company};try{r=await xatRpc("bn_xat_envia",c5)}catch(e2){e=e2}}
+  if(!r)xatToast(e==="bloc"?"Massa intents de PIN. Espera 15 minuts.":"No s'ha pogut enviar: no hi ha connexió. Torna-ho a provar.")}
  XAT.enviant=false;const k=r&&r.codi,E=xatEstOk()?XAT.est:null;
  if(k==="ok"){xatMoneda();const me=xatFila(),m={id:+r.id,nom:me?me.nom:j.nom,f:f.id,p:cos.p_peca,c:cos.p_company,r:XAT.selRem||null,re:XAT.replyTo||null,ts:xatAra(),v:0};
   if(m.id>0&&!XAT.msgs.some(x=>x.id===m.id)){XAT.msgs.push(m);if(XAT.msgs.length>60)XAT.msgs.shift()}
