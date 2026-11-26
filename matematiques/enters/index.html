@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="c0060b3420",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5e737fc623",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -275,7 +275,7 @@ ul.pts li::before{content:"";position:absolute;left:6px;top:15px;width:10px;heig
 .mi-ic{font-size:22px;flex:none}.mi-t{flex:1;font-weight:800;font-size:15px;line-height:1.25}.mi-p{font-weight:900;font-size:13.5px;color:var(--suau);flex:none}
 .mi-b{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#60a5fa,#2563eb);border-radius:0 4px 4px 0;transition:width .4s}
 .mi.fet{background:var(--verd-cl);border-color:#86efac}.mi.fet .mi-p{color:#15803d}.mi.fet .mi-t{color:#166534}.mi.fet .mi-b{background:#22c55e}
-.combo.missio{color:#4ade80;text-shadow:3px 3px 0 #14532d,0 0 18px #86efac}
+.combo.missio{color:#86efac;border-color:#4ade80;box-shadow:0 12px 32px #0f172a66,0 0 24px #4ade8055;text-shadow:0 2px 0 #14532d}
 /* 👾 boss del món */
 .boss-carta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px;padding:12px 14px;border-radius:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1e1b4b,#4c1d95 60%,#831843);border:3px solid #a78bfa;box-shadow:0 0 18px #a78bfa55}
 .boss-carta.tancat{cursor:default;filter:saturate(.35);border-color:#64748b;box-shadow:none}
@@ -611,13 +611,13 @@ body.tremola main{animation:tremola .4s}
 .espurna{position:fixed;z-index:89;pointer-events:none;width:6px;height:6px;background:#facc15;box-shadow:0 0 6px #fde047;transition:transform .5s ease-out,opacity .5s ease-out}
 #punts.boing{animation:boing .45s cubic-bezier(.3,1.8,.5,1)}
 @keyframes boing{30%{transform:scale(1.35) rotate(-6deg);background:#facc15;color:#422006}}
-.combo{position:fixed;left:50%;top:22%;z-index:91;pointer-events:none;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:clamp(20px,6vw,34px);color:#fb923c;text-shadow:3px 3px 0 #7c2d12,0 0 18px #fdba74;text-align:center;animation:combo 1.3s ease-out forwards;line-height:1.4}
-.combo small{display:block;font-size:.42em;color:#fde68a}
+.combo{position:fixed;left:50%;top:20%;z-index:91;pointer-events:none;transform:translateX(-50%);padding:12px 22px;border-radius:18px;background:linear-gradient(135deg,#1e1b4bf2,#312e81f2);border:2.5px solid #facc15;box-shadow:0 12px 32px #0f172a66,0 0 24px #facc1555;font-family:'Press Start 2P',monospace;font-size:clamp(16px,4.8vw,26px);color:#fde047;text-shadow:0 2px 0 #78350f;text-align:center;animation:combo 1.45s cubic-bezier(.22,1.28,.36,1) forwards;line-height:1.45;max-width:min(92vw,420px)}
+.combo small{display:block;margin-top:4px;font-size:.5em;color:#f8fafc;text-shadow:none;letter-spacing:.04em}
 .ratxa{display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-weight:800;color:#c2410c;white-space:nowrap}
 .ratxa i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e2e8f0}
 .ratxa i.on{background:#f97316}
 .dif{display:inline-block;margin-left:8px;padding:0 7px;border-radius:999px;background:#fef3c7;color:#b45309;font-weight:800;font-size:.9em;white-space:nowrap}
-@keyframes combo{0%{transform:translateX(-50%) scale(.3);opacity:0}15%{transform:translateX(-50%) scale(1.15);opacity:1}30%{transform:translateX(-50%) scale(1)}80%{opacity:1}100%{transform:translateX(-50%) translateY(-40px);opacity:0}}
+@keyframes combo{0%{transform:translateX(-50%) translateY(14px) scale(.55);opacity:0}18%{transform:translateX(-50%) translateY(-4px) scale(1.06);opacity:1}32%{transform:translateX(-50%) translateY(0) scale(1);opacity:1}78%{transform:translateX(-50%) translateY(-4px) scale(1);opacity:1}100%{transform:translateX(-50%) translateY(-30px) scale(.96);opacity:0}}
 .estrelles{margin-top:14px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:16px;padding:12px 16px;cursor:pointer}
 .estrelles h4{margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;font-size:16px}
 .estrelles h4 small{color:var(--suau);font-weight:700;font-size:12.5px}
@@ -848,7 +848,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versió 2.76.1</small></div>
+<div class="peu-pag"><small class="bn-versio">versió 2.76.2</small></div>
 
 <script src="../../sprites.js?v=70733852"></script>
 <script src="../../assets/bonanota-visuals.js?v=0b523622"></script>
@@ -1290,11 +1290,13 @@ function volaEstrella(n){try{
  setTimeout(()=>{d.classList.remove("puja");d.style.transform=`translate(${dest.left+dest.width/2-x0}px,${dest.top+dest.height/2-y0+14}px) scale(.55)`;d.style.opacity=".2"},380);
  setTimeout(()=>{d.remove();const pl=document.getElementById("punts");pl.classList.remove("boing");void pl.offsetWidth;pl.classList.add("boing");so("coin")},1130);
 }catch(e){}}
-// ratxa d'encerts seguits als tests: COMBO ×3, ×5 (+1 ⭐ de regal), ×10 (+2 ⭐)…
-function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);if(COMBO<3)return;
+// ratxa d'encerts seguits als tests: rètol flotant només a les fites (×3, ×5, ×10…) i en cua (horaRetol) per no solapar-se ni repetir-se
+function ratxa(ok){if(!ok){COMBO=0;return}COMBO++;missio("combo",COMBO);
  const premi=MODE_TAST?0:(COMBO%10===0?2:COMBO%5===0?1:0);
- const d=document.createElement("div");d.className="combo";d.innerHTML=`COMBO ×${COMBO}!${premi?`<small>+${premi} ⭐ DE REGAL</small>`:COMBO===3?`<small>3 SEGUIDES! CONTINUA…</small>`:""}`;
- document.body.appendChild(d);setTimeout(()=>d.remove(),1350);if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
+ if(COMBO!==3&&COMBO%5!==0)return;
+ const sub=premi?`+${premi} ⭐ DE REGAL`:"3 SEGUIDES! CONTINUA…",ret=horaRetol(0);
+ setTimeout(()=>{const d=document.createElement("div");d.className="combo";d.innerHTML=`🔥 COMBO ×${COMBO}!${sub?`<small>${sub}</small>`:""}`;document.body.appendChild(d);setTimeout(()=>d.remove(),1500)},ret);
+ if(premi){so("super");setTimeout(()=>{const f=FONT;FONT=["combo"];suma(premi);FONT=f},500)}}
 // com es guanyen les estrelles (una sola llista per a les dues targetes; issue #13)
 const COM_GUANYAR=[["✅","test +1"],["🎮","joc +1"],["✍️","idea +1"],["✍️","triple combo ×3 +3 · ×6 +5 · resposta de 10 +1"],["🔥","combo ×5 +1 · ×10 +2"],["⚡","super combo: 3 difícils seguides +3 · 5 seguides +5"],["🏅","rècord +2"],["🔁","error corregit +1 · après +2"],["🎯","missió +3 · les 3 +5"],["👾","boss +20 · +1 per cor"]];
 // barra de ratxa del test: 5 caselles fins al proper regal del combo
@@ -1889,7 +1891,7 @@ function test(ordre,k,bones,clau,pool,cb){
   const comboAbans=COMBO;
   if(ok){const nova=(REPAS||pista)?0:estPregunta((tidR||clau)+"|"+q[0]);suma(nova);const nota=MODE_TAST?"":pista?"amb pista · sense ⭐":!nova&&!REPAS?"ja encertada avui · sense ⭐":REPAS&&rp?`+${rp} ⭐ error corregit`:"";if(nota)document.querySelector(".opt.ok")?.insertAdjacentHTML("beforeend",`<small style="margin-left:auto;color:#64748b;font-weight:700">${nota}</small>`);so("ok");if(!pista){if(nova>0)ratxa(true);missio("enc")}ratxaDif(true,q,nova>0&&!pista)}else{ratxa(false);ratxaDif(false,q,false);so("ko");b.classList.add("ko");if(tidR){const e=ET(tidR);e.fallades[q[0]]=(e.fallades[q[0]]||0)+1;desa()}}
   const avR=document.getElementById("avReac");
-  if(avR){avR.className="av-reac "+(ok?(COMBO>=3?"combo":"ok"):"ko");avR.innerHTML=ok?(COMBO>=3?`<span>😎</span><span>Combo ×${COMBO}! Imparable!</span>`:`<span>🎉</span><span>Molt bé!</span>`):`<span>💪</span><span>Cap problema, ara la sabem!</span>`}
+  if(avR){const fita=COMBO===3||COMBO%5===0;avR.className="av-reac "+(ok?(COMBO>=3?"combo":"ok"):"ko");avR.innerHTML=ok?(COMBO>=3?(fita?`<span>⚡</span><span>En ratxa! Segueix així!</span>`:`<span>🔥</span><span>Ratxa ×${COMBO}! Imparable!</span>`):`<span>🎉</span><span>Molt bé!</span>`):`<span>💪</span><span>Cap problema, ara la sabem!</span>`}
   if(ok&&clau==="repas"){const rb=document.getElementById("rescatBar");if(rb){const nRes=bones+1;rb.querySelector("b").textContent=`❄️ Rescat: ${nRes}/${ordre.length}`;const cels=rb.querySelectorAll(".rescat-cel");if(cels[bones]){cels[bones].classList.add("ok");cels[bones].textContent="⭐"}}}
   document.getElementById("fb").innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?"✅ <b>Molt bé!</b>":"💡 <b>Gairebé!</b>"} ${q[3]}${!ok&&comboAbans>=2?`<div style="margin-top:6px;font-size:14px;color:#9a3412;font-weight:700">💛 Tranquil, ${MODE_TAST?"llegint l'explicació":"l'error va al repàs: així"} és com s'aprèn!</div>`:""}</div>${dubteHtml(q,ok)}<div id="escutZ"></div><div class="fila"><button class="btn" id="seg">${k<ordre.length-1?"Següent →":"Veure resultat"}</button></div>`;
   if(!ok&&ajuda&&th&&comboAbans>=3)escutCombo(th,ordre.map(i=>llista[i][0]),Math.floor(comboAbans/2),tidR);
