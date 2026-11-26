@@ -246,7 +246,18 @@ function servidorXat(o = {}) {
    return { sensePodi: !document.querySelector("#hs .a-podi"), xat: b("#hs .a-xat"), info: b("#hs .a-xinfo"), fora, ample: Math.max(...[...document.querySelectorAll("#hs .xat, #hs .x-compo, #hs .xinfo, #hs .x-env, #hs .x-xips")].map(e => e.scrollWidth - e.clientWidth)) } });
   ok(r.sensePodi && r.info.top >= r.xat.bottom - 1, "sense podi a la pestanya Xat; ordre: xat → «Com funciona»");
   ok(r.ample <= 0 && r.fora.length === 0, "res del xat surt per la dreta del rànquing" + (r.fora.length ? ": " + r.fora.slice(0, 5).join(", ") : ""));
-  await peca(p, 1); await p.$eval("#xEnvia", b => b.scrollIntoView({ block: "center" })); await p.waitForTimeout(150);
+  await peca(p, 1); await p.click("#xRemBt"); await p.waitForTimeout(100); await p.click('#xRemBox [data-xrem="1"]'); await p.$eval("#xEnvia", b => b.scrollIntoView({ block: "center" })); await p.waitForTimeout(150);
+  const geom = await p.evaluate(() => {
+   const r = id => { const q = document.getElementById(id).getBoundingClientRect(); return { l: q.left, r: q.right, t: q.top, b: q.bottom, w: q.width, h: q.height } };
+   const els = ["xPrevi", "xRemBt", "xIdea", "xEnvia"].map(id => [id, r(id)]);
+   const solap = [];
+   for (let i = 0; i < els.length; i++) for (let j = i + 1; j < els.length; j++) {
+    const [a, ra] = els[i], [b, rb] = els[j];
+    if (Math.min(ra.r, rb.r) - Math.max(ra.l, rb.l) > 1 && Math.min(ra.b, rb.b) - Math.max(ra.t, rb.t) > 1) solap.push(a + "×" + b);
+   }
+   return { pw: r("xPrevi").w, ph: r("xPrevi").h, solap };
+  });
+  ok(geom.pw >= 260 && geom.ph <= 140 && geom.solap.length === 0, "390 px: .x-previ ampla (" + Math.round(geom.pw) + "×" + Math.round(geom.ph) + " px) i 0 solapaments" + (geom.solap.length ? " (" + geom.solap.join(", ") + ")" : ""));
   const v = await p.evaluate(() => { const b = document.getElementById("xEnvia"), r = b.getBoundingClientRect(), el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return { r: { l: r.left, r: r.right, t: r.top, b: r.bottom }, tapat: !(el && b.contains(el)), w: innerWidth, h: innerHeight } });
   ok(v.r.l >= 0 && v.r.r <= v.w && v.r.t >= 0 && v.r.b <= v.h && !v.tapat, "ENVIA sencer i sense res a sobre: " + JSON.stringify(v.r));
   await p.click("#xEnvia"); await p.waitForTimeout(600);
