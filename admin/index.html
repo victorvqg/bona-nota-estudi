@@ -770,7 +770,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.74.0";
+const VERSIO_ADMIN="2.75.0";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -4811,7 +4811,7 @@ function demoCopiesRpc(f){if(f!=="bn_admin_copies")throw "demo";const n=DEMO_L.l
 // ====================== XAT DE LA COLLA (supabase/bn_xat.sql) ======================
 // Moderació del xat a Rànquing → Xat; configuració d'horaris/crèdits i catàleg a Configuració.
 let XNIV=["Aprenent","Explorador","Investigador","Savi","Expert","Mestre","Campió","Heroi","Llegenda","Llegenda d'or"];
-const XCAT={repte:["Repte","ev-oberta"],aura:["Aura","ev-test"],classe:["Classe","ev-joc"],colla:["Colla","ev-targetes"]};
+const XCAT={repte:["Repte","ev-oberta"],aura:["Aura","ev-test"],jo:["Jo (+1000)","ev-test"],classe:["Classe","ev-joc"],colla:["Colla","ev-targetes"]};
 const XSLOT={P:"Paraula d'estudi",E:"Cosa de classe",J:"Cosa teva",C:"Company"};
 const XMARCA={frase_off:"Frase desactivada",peca_off:"Peça desactivada",peca_falta:"La peça ja no existeix",frase_falta:"La frase no existeix"};
 const XCFG0={est_credit:10,max_dia:5,espera_s:10,actiu:true};
@@ -4823,7 +4823,7 @@ function xatCompon(m,FR,PC){const e=s=>String(s??"").replace(/[&<>"']/g,c=>({"&"
  const f=FR[m.f],marques=[];if(!f)return {html:`<b class="xt falta">…</b>`,text:"…",marques:["frase_falta"]};
  if(f.actiu===false)marques.push("frase_off");
  let [a,b=""]=String(f.text).split("___"),txt,cls;
- if(m.c!=null&&m.c!==""){txt=String(m.c);cls="C"}
+ if(m.c!=null&&m.c!==""){const L=String(m.c).split("|").map(s=>s.trim()).filter(Boolean);txt=L.length<=1?(L[0]||""):L.slice(0,-1).join(", ")+" i "+L[L.length-1];cls="C"}
  else{const p=PC[m.p];
   if(!p){txt="…";cls="falta";marques.push("peca_falta")}
   else{txt=String(p.text);cls=String(p.tipus||"P");if(p.actiu===false){cls+=" off";marques.push("peca_off")}
