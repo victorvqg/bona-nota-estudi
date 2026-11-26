@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.76.3 · 2026-11-26
+
+### Canviat
+- **Continguts explicatius del Xat 3.0 actualitzats (`index.html`, `admin/index.html` · `n3007`):**
+  - Actualitzat el desplegable **«❓ Com funciona i Regla d'Or»** del xat amb totes les novetats (🙋 Jo +1000, 💭 Opino, multi-menció d'1 a 3 companys, + Rematada, ↩️ Respon en fil, reaccions ràpides 🔥 😂 💪 👑 i recompte de respostes ràpides a l'àlbum).
+  - Actualitzada la targeta informativa del Xat dins `/admin/` (**Què veu el nen**) amb les regles del Xat 3.0 sense text lliure.
+
 ## 2.76.1 · 2026-11-26
 
 ### Afegit

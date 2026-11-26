@@ -770,7 +770,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.76.1";
+const VERSIO_ADMIN="2.76.3";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -3211,10 +3211,10 @@ async function vistaMissatgesNen(cos,tok){
    prev:`✏️ Aquí no es pot enganxar: escriu-ho amb les teves paraules.<br><small>Altres avisos: «Escriu una mica més: com a mínim N paraules» · «Aquest text és una còpia de la resposta. Escriu-ho amb les teves paraules» · «🔒 Ja has vist la resposta d'aquesta pregunta. Pots practicar, però fins al DD/MM no puntua.»</small>`,
    quan:`Quan intenta fer <b>copiar i enganxar / arrossegar text</b> a una pregunta oberta, escriu tecles a l'atzar, copia l'enunciat o ja ha mirat la resposta model aquell dia.`,
    perque:`Garantir que practica l'expressió escrita real amb les seves paraules (sense penalitzar-lo: pot practicar tants cops com vulgui).`},
-  {cat:"xat",on:"Xat de la colla",ef:"bloqueja",tit:"💬 Crèdits d'estudi, topall diari i xat tancat / en pausa",cls:"p-xat",
-   prev:`<b>INSERT COIN</b> · Per parlar, guanya <b>${estCred} ⭐ avui</b>.<br><b>TORNA DEMÀ</b> · Ja has dit les <b>${maxDia} frases d'avui</b>. Pots continuar llegint i votant «Ben dit».<br><b>XAT TANCAT</b> · Ara el xat està tancat. Pots llegir, però no escriure ni votar.`,
+  {cat:"xat",on:"Xat de la colla",ef:"bloqueja",tit:"💬 Crèdits d'estudi, topall diari i xat 3.0 segur",cls:"p-xat",
+   prev:`<b>INSERT COIN</b> · Per parlar, guanya <b>${estCred} ⭐ avui</b>.<br><b>TORNA DEMÀ</b> · Ja has dit les <b>${maxDia} frases d'avui</b>. Pots continuar llegint, votant «Ben dit» i reaccionant (🔥 😂 💪 👑).<br><b>XAT TANCAT</b> · Ara el xat està tancat. Pots llegir, però no escriure ni votar.`,
    quan:`Quan encara no ha guanyat <b>${estCred} ⭐</b> avui per desbloquejar crèdit, quan arriba al màxim de <b>${maxDia} frases diàries</b>, quan el xat és fora d'horari (<b>${esc(tH)}–${esc(oH)}</b>) o si té un silenci temporal actiu.`,
-   perque:`Fer que el xat sigui una petita recompensa lligada a haver estudiat abans, amb frases tancades segures i un sostre diari clar.`},
+   perque:`Fer que el xat sigui una recompensa expressiva i segura lligada a estudiar: <b>zero text lliure</b>, frases modulars (Jo +1000, Opino, multi-menció d'1 a 3 companys només en positiu, respostes en fil ↩️, 16 rematades opcionals i 4 reaccions ràpides).`},
   {cat:"anims",on:"Perfil arcade (/perfil/)",ef:"acompanya",tit:"🔓 Camí d'evolució i peces bloquejades sense atzar",cls:"p-anim",
    prev:`🔒 <b>Ninja:</b> et falten <b>45 ⭐</b> (calen 120 ⭐ entre tots els mons)`,
    quan:`Quan un alumne toca un animal, perfil arcade o estil de color que requereix més estrelles (escala determinista 0 → 140 ⭐; 0 atzar i ningú perd el que ja tenia triat).`,
