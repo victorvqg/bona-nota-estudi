@@ -770,7 +770,7 @@ tr.ll-off td:first-child,tr.ll-off .ll-nums{opacity:.55}
 <script>
 // ====================== CONFIGURACIÓ ======================
 const DEMO=/[?&]demo\b/.test(location.search);
-const VERSIO_ADMIN="2.76.0";
+const VERSIO_ADMIN="2.76.1";
 window.addEventListener("error",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+(e.message||e)+(e.lineno?" · línia "+e.lineno:"")}});
 window.addEventListener("unhandledrejection",e=>{const b=document.getElementById("errG");if(b){b.style.display="flex";b.textContent="⚠ Error del tauler (envia-ho a Claude): "+((e.reason&&e.reason.message)||e.reason)}});
 // a localhost, fora el service worker d'abans (si n'hi havia un de vell, podia deixar /admin en blanc)
@@ -4819,6 +4819,8 @@ const XCFG0={est_credit:5,max_dia:10,espera_s:10,actiu:true};
 // «a», «de» o «per» davant d'una peça que comença per «el» o «els» es contrauen (al, als, del, dels, pel, pels); si la frase
 // comença pel forat, la peça va amb majúscula. L'admin veu també el que està desactivat (marcat); una peça que no existeix surt com «…».
 const XCONTR={"a el":"al","a els":"als","de el":"del","de els":"dels","per el":"pel","per els":"pels"};
+const XREM=["però me n'he sortit 💪","qui s'hi apunta? 🔥","ajuda si us plau 🙏","fàcil 😎","ens veiem al podi 🏆","+1000 d'aura ✨","per a demà 📅","després de sopar 🌙","al primer intent 🎯","sense fallar ni una 💎","a tope! 🚀","bones vibracions ☀️","ja era hora 😂","m'encanta! 🤩","a pel 10! 💯","qui ve amb mi? 🤝"];
+const XREAC_EM={fire:"🔥",laugh:"😂",muscle:"💪",crown:"👑"};
 function xatCompon(m,FR,PC){const e=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const f=FR[m.f],marques=[];if(!f)return {html:`<b class="xt falta">…</b>`,text:"…",marques:["frase_falta"]};
  if(f.actiu===false)marques.push("frase_off");
@@ -4830,7 +4832,8 @@ function xatCompon(m,FR,PC){const e=s=>String(s??"").replace(/[&<>"']/g,c=>({"&"
    const x=a.match(/(^|\s)(a|de|per)\s$/),y=txt.match(/^(els?)\s(.*)$/);
    if(x&&y){a=a.slice(0,a.length-x[2].length-1);txt=XCONTR[x[2]+" "+y[1]]+" "+y[2]}}}
  if(a==="")txt=txt.charAt(0).toUpperCase()+txt.slice(1);
- return {html:e(a)+`<b class="xt ${e(cls)}">${e(txt)}</b>`+e(b),text:a+txt+b,marques}}
+ const rm=m.r&&XREM[+m.r-1]?XREM[+m.r-1]:"";
+ return {html:e(a)+`<b class="xt ${e(cls)}">${e(txt)}</b>`+e(b)+(rm?` <span class="muted">· ${e(rm)}</span>`:""),text:a+txt+b+(rm?" · "+rm:""),marques}}
 // [/xat-pures]
 let X=null,XTOK=0,XF="tots",XCT="frases",XTP="";
 const tsMs=t=>typeof t==="number"?t:/^\d+$/.test(String(t))?+t:Date.parse(t);
@@ -4866,7 +4869,7 @@ function pintaXatModeracio(c){
  c.innerHTML=`${DEMO?`<div class="avis" style="margin-bottom:12px">${ic("info")}<div><p style="margin:0"><b>Mode demo:</b> missatges i silencis de mostra. Les accions d'escriptura estan desactivades.</p></div></div>`:""}
  <div id="xRes"></div>
  <div class="pila">
-  ${card("xmCard","c-12","xat","Missatges","Del servidor només arriben números: el text es compon amb el catàleg. Pots filtrar tots, visibles o esborrats, i cercar per nom o paraula.",
+  ${card("xmCard","c-12","xat","Missatges","Del servidor només arriben números (i noms del rànquing per a mencions d'1 a 3 companys): el text, les rematades i les respostes en fil es componen amb el catàleg. Pots filtrar tots, visibles o esborrats, i cercar per nom o paraula.",
    `<div class="eines-t"><div class="seg" id="xFil" role="group" aria-label="Quins missatges es veuen"></div><span class="esp"></span><span class="muted" id="xN"></span></div><div id="xMsgs"></div>`,
    `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="sw" type="button" role="switch" id="xatModSw" aria-checked="${obert}" aria-label="Xat obert"${nd}><i></i><span>${obert?"Xat obert":"Xat tancat"}</span></button><button class="btn sec petit" type="button" data-go-cfg="cataleg">${ic("cataleg")}<span>Catàleg</span></button><button class="btn sec petit" type="button" data-go-cfg="horaris">${ic("ajust")}<span>Horaris</span></button></div>`)}
   ${card("xsCard","c-12","silenci","Silenciats","Un nom silenciat pot llegir el xat, però no escriure ni votar. El silenci s'acaba sol quan passen els dies.",`<div id="xSil"></div>`)}
@@ -4900,15 +4903,19 @@ function pintaXMsgs(){const el=$("#xMsgs");if(!el||!X)return;const nd=xND(),FR=x
  if(!ms.length){el.innerHTML=buit("xat",tots.length?"Cap missatge amb aquest filtre.":"Encara no hi ha cap missatge en aquest període.",tots.length?"":"Prova amb un període més llarg, a dalt.");return}
  const avui=diaL(ara),ahir=diaL(ara-864e5),hiNen=new Set([...Object.keys(NOMS_TOTS),...LOGS.map(clauNen)]);
  const fmtHoraX=ts=>{const d=diaL(ts);return d===avui?`Avui ${hora(ts)}`:d===ahir?`Ahir ${hora(ts)}`:dataC(ts)};
+ const byId=xMapa(tots);
  const rows=ms.map(m=>{const comp=xatCompon(m,FR,PC),nom=String(m.nom||"?").trim(),k=kNom(nom),s=sil[k]||null,ts=tsMs(m.ts),vis=xVis(m),esb=!!m.esborrat;
   const estatOrd=esb?3:!vis?2:s?1:0,estatCsv=esb?"Esborrat":!vis?"No surt a la portada":s?"Silenciat":"Visible";
-  return {id:m.id,nom,k,ts,v:+m.v||0,esborrat:esb,vis,sil:s,comp,estatOrd,estatCsv}});
+  const rep=m.re?byId[m.re]:null;
+  return {id:m.id,nom,k,ts,v:+m.v||0,reacs:m.reacs||null,re:m.re||null,repNom:rep?rep.nom:null,esborrat:esb,vis,sil:s,comp,estatOrd,estatCsv}});
  // 5 columnes (§4.5): Hora, Nen, Text, Estat, Silenciar
  const cols=[
   {k:"ts",t:"Hora",cls:"nw xm-td-h",v:r=>r.ts*1000+((+r.id||0)%1000),csv:r=>dataC(r.ts),h:r=>`<time title="${esc(dataC(r.ts))}">${esc(fmtHoraX(r.ts))}</time>`},
   {k:"nom",t:"Nen",cls:"nw xm-td-n",v:r=>r.nom,csv:r=>r.nom,h:r=>hiNen.has(r.k)?`<button type="button" class="nen-b" data-obre-nen="${esc(r.k)}">${avatar(r.nom,"p")}<span>${esc(r.nom)}</span></button>`:nenH(r.nom)},
   {k:"txt",t:"Text",cls:"cur xm-td-t",v:r=>r.comp.text,csv:r=>r.comp.text,q:r=>`${r.comp.text} ${r.comp.marques.map(x=>XMARCA[x]||x).join(" ")}`,
-   h:r=>`<div class="xm-tx"><p class="xm-t">${r.comp.html}</p><span class="xm-v" title="Vots «Ben dit»">${ic("polze")}<span class="sr">Vots «Ben dit»:</span>${r.v}</span></div>${r.comp.marques.length?`<div class="xm-m">${r.comp.marques.map(x=>`<span class="pill neutre">${esc(XMARCA[x]||x)}</span>`).join("")}</div>`:""}`},
+   h:r=>{const rc=r.reacs?Object.entries(r.reacs).filter(([,n])=>+n>0).map(([k,n])=>`<span class="pill neutre" style="font-size:11px;padding:1px 6px">${XREAC_EM[k]||k} ${+n}</span>`).join(" "):"";
+    const repH=r.re?`<div style="font-size:11.5px;color:var(--muted);margin-bottom:2px">↩️ En resposta a ${r.repNom?`<b>${esc(r.repNom)}</b>`:`#${esc(r.re)}`}</div>`:"";
+    return `${repH}<div class="xm-tx"><p class="xm-t">${r.comp.html}</p><span class="xm-v" title="Vots «Ben dit»">${ic("polze")}<span class="sr">Vots «Ben dit»:</span>${r.v}</span></div>${rc?`<div class="xm-m" style="margin-top:4px">${rc}</div>`:""}${r.comp.marques.length?`<div class="xm-m">${r.comp.marques.map(x=>`<span class="pill neutre">${esc(XMARCA[x]||x)}</span>`).join("")}</div>`:""}`}},
   {k:"estat",t:"Estat",cls:"nw xm-td-e",v:r=>r.estatOrd,csv:r=>r.estatCsv,q:r=>`${r.estatCsv} ${r.sil?r.sil.motiu||"":""}`,
    h:r=>`<span class="xm-e">${r.esborrat?`<span class="pill bad">Esborrat</span>`:r.vis?pillEstat("be","Visible"):`<span class="pill info" title="Nom amagat, prohibit o nen esborrat (l'autor o el company)">No surt a la portada</span>`}${r.sil?`<span class="pill warn" title="${esc(r.sil.motiu||"Silenciat")}">Silenciat fins ${esc(dataC(tsMs(r.sil.fins)))}</span>`:""}</span>`},
   {k:"acc",t:"Silenciar",ord:false,cls:"nw xm-td-a",csv:()=>"",
@@ -4955,7 +4962,7 @@ function pintaXCfg(){const el=$("#xCfg");if(!el||!X)return;const nd=xND(),cf=X.c
   catch(x){toast(errX(x,"desar la configuració"),"err");const y=$("#xcDesa");if(y)y.disabled=false}}}
 function pintaXCat(){const el=$("#xCat");if(!el||!X)return;const F=X.cat.frases,P=X.cat.peces,fr=XCT==="frases",L=fr?F:P.filter(p=>!XTP||p.tipus===XTP),nOff=L.filter(x=>x.actiu===false).length;
  el.innerHTML=`<div class="eines-t"><div class="seg" id="xkTab" role="group" aria-label="Què es veu"><button type="button" data-t="frases" aria-pressed="${fr}">Frases <span class="muted">${F.length}</span></button><button type="button" data-t="peces" aria-pressed="${!fr}">Peces <span class="muted">${P.length}</span></button></div>
-  ${fr?"":`<label class="sr" for="xkTipus">Tipus de peça</label><select id="xkTipus"><option value="">Tots els tipus</option>${["P","E","J"].map(t=>`<option value="${t}"${XTP===t?" selected":""}>${XSLOT[t]}</option>`).join("")}</select>`}
+  ${fr?"":`<label class="sr" for="xkTipus">Tipus de peça</label><select id="xkTipus"><option value="">Tots els tipus</option>${["P","E","J","R"].map(t=>`<option value="${t}"${XTP===t?" selected":""}>${XSLOT[t]}</option>`).join("")}</select>`}
   <span class="esp"></span><span class="muted">${nOff?pl(nOff,"desactivada","desactivades"):"Totes actives"}</span></div><div id="xkTaula"></div>`;
  const sw=(r,t)=>`<button class="sw" type="button" role="switch" aria-checked="${r.actiu!==false}" data-xsw="${t}" data-id="${esc(r.id)}"${xND()} aria-label="${t==="frase"?"Frase":"Peça"} «${esc(r.text)}»"><i></i><span>${r.actiu!==false?"Sí":"No"}</span></button>`;
  const id=fr?"tXFr":"tXPc",prev=TAULES[id],fila=r=>r.actiu===false?' class="xoff"':"";
@@ -4971,7 +4978,7 @@ function pintaXCat(){const el=$("#xCat");if(!el||!X)return;const F=X.cat.frases,
 function pintaXNova(){const el=$("#xNova");if(!el||!X)return;const nd=xND();let q="n";
  el.innerHTML=`<form class="xn" id="xnF" novalidate>
   <label for="xnText">Text</label><input id="xnText" maxlength="60" autocomplete="off" placeholder="Per exemple: el volcà">
-  <label for="xnTipus">Tipus</label><select id="xnTipus">${["P","E","J"].map(t=>`<option value="${t}">${XSLOT[t]}</option>`).join("")}</select>
+  <label for="xnTipus">Tipus</label><select id="xnTipus">${["P","E","J","R"].map(t=>`<option value="${t}">${XSLOT[t]}</option>`).join("")}</select>
   <fieldset><legend>Es desbloqueja</legend><div class="seg" id="xnQue" role="group" aria-label="Com es desbloqueja"><button type="button" data-q="n" aria-pressed="true">Per nivell</button><button type="button" data-q="m" aria-pressed="false">En acabar un món</button></div>
    <label class="sr" for="xnNiv">Nivell</label><select id="xnNiv">${XNIV.map((_,i)=>`<option value="${i+1}">${esc(xNiv(i+1))}</option>`).join("")}</select>
    <label class="sr" for="xnMon">Món</label><select id="xnMon" hidden>${(X.mons||[]).map(m=>`<option value="${esc(m.id)}">Acabar ${esc(XMON[m.id]||m.nom)}</option>`).join("")}</select></fieldset>
@@ -5021,12 +5028,12 @@ async function xActiu(t,id){if(DEMO){toast("No disponible en demo","avis");retur
 // demo: un xat inventat amb un catàleg de mostra petit (ids i textos del de veritat) i cap crida al núvol
 let DEMO_X=null;
 function demoXatRpc(f){if(!DEMO_X){const ara=Date.now(),fa=min=>ara-min*6e4,F=(id,cat,text,slot,nivell)=>({id,cat,text,slot,nivell,actiu:true}),P=(id,tipus,text,nivell,mon)=>({id,tipus,text,nivell:nivell||null,mon:mon||null,actiu:true});
-  const cat={frases:[F(1,"repte","Vaig a per ___!","P",1),F(3,"repte","___? Bufar i fer ampolles!","P",1),F(6,"repte","Ningú m'atura a ___","P",3),F(11,"aura","+1000 d'aura per a ___","C",1),F(13,"aura","___: -1000 d'aura","E",1),F(14,"aura","-100 d'aura per a mi: ___","J",1),F(17,"classe","Quin dia: ___","E",1),F(23,"colla","Compte, ___, que vinc!","C",1),F(26,"colla","Respecte per a ___","C",7)],
-   peces:[P(1,"P","el teu lloc",1),P(2,"P","el test",1),P(4,"P","els jocs",1),P(11,"P","la corona",4),P(25,"P","els nombres primers",0,"divisibilitat"),P(28,"P","la tramuntana",0,"socials"),P(43,"E","el wifi de l'institut",1),P(45,"E","la campana a mitja frase",1),P(47,"E","la calculadora sense piles",2),P(58,"J","m'he deixat els deures a casa",1)]};
+  const cat={frases:[F(1,"repte","Vaig a per ___!","P",1),F(3,"repte","___? Bufar i fer ampolles!","P",1),F(6,"repte","Ningú m'atura a ___","P",3),F(11,"aura","+1000 d'aura per a ___","C",1),F(13,"aura","___: -1000 d'aura","E",1),F(14,"aura","-100 d'aura per a mi: ___","J",1),F(17,"classe","Quin dia: ___","E",1),F(23,"colla","Compte, ___, que vinc!","C",1),F(26,"colla","Respecte per a ___","C",7),F(27,"jo","Avui estic +1000 d'aura: ___!","J",1),F(35,"colla","Equipàs amb ___!","C",1),F(40,"opino","El millor tema fins ara és ___","P",1),F(46,"respon","___","R",1)],
+   peces:[P(1,"P","el teu lloc",1),P(2,"P","el test",1),P(4,"P","els jocs",1),P(11,"P","la corona",4),P(25,"P","els nombres primers",0,"divisibilitat"),P(28,"P","la tramuntana",0,"socials"),P(43,"E","el wifi de l'institut",1),P(45,"E","la campana a mitja frase",1),P(47,"E","la calculadora sense piles",2),P(58,"J","m'he deixat els deures a casa",1),P(506,"J","he vençut un Cap Final",3),P(521,"R","Jo t'ajudo! 🤝",1)]};
   cat.peces.find(p=>p.id===47).actiu=false;
-  const M=(id,nom,f,p,c,min,v,esb,ocult)=>({id,nom,f,p:p||null,c:c||null,ts:fa(min),esborrat:!!esb,v,vis:!esb&&!ocult});
+  const M=(id,nom,f,p,c,min,v,esb,ocult,ex)=>Object.assign({id,nom,f,p:p||null,c:c||null,ts:fa(min),esborrat:!!esb,v,vis:!esb&&!ocult},ex||{});
   DEMO_X={cat,cfg:Object.assign({},XCFG0),sil:[{k:"hugo",fins:fa(-2*24*60-300),motiu:"Ha repetit el mateix missatge moltes vegades"}],
-   msgs:[M(13,"Martí",17,45,null,2,0,0,1),M(12,"Laia",1,1,null,4,2),M(11,"Pau",23,0,"Laia",9,1),M(10,"Jana",17,43,null,16,3),M(9,"Àlex",3,2,null,23,4),M(8,"Nora",14,58,null,41,5),M(7,"Hugo",13,47,null,68,0),M(6,"Hugo",13,45,null,70,0,1),M(5,"Hugo",13,45,null,71,0,1),
+   msgs:[M(13,"Martí",17,45,null,2,0,0,1),M(12,"Laia",1,1,null,4,2),M(11,"Pau",23,0,"Laia",9,1,0,0,{re:12,reacs:{fire:2}}),M(10,"Jana",35,0,"Laia|Pau|Nora",16,3,0,0,{r:5,reacs:{fire:1,crown:1}}),M(9,"Àlex",27,506,null,23,4,0,0,{r:6}),M(8,"Nora",14,58,null,41,5),M(7,"Hugo",13,47,null,68,0),M(6,"Hugo",13,45,null,70,0,1),M(5,"Hugo",13,45,null,71,0,1),
     M(4,"Ona",6,4,null,26*60,2),M(3,"Jana",26,0,"Àlex",27*60,6),M(2,"Pau",1,25,null,28*60,2),M(1,"Àlex",1,1001,null,50*60,1)]}}
  const D=JSON.parse(JSON.stringify(DEMO_X)),mit=new Date();mit.setHours(0,0,0,0);
  if(f==="bn_admin_xat_resum"){const a=D.msgs.filter(m=>m.ts>=mit.getTime()),q={};a.forEach(m=>{q[m.nom]=(q[m.nom]||0)+1});return {parlat:Object.keys(q).length,frases:a.length,al_maxim:Object.values(q).filter(n=>n>=D.cfg.max_dia).length,vots:a.reduce((s,m)=>s+m.v,0)}}

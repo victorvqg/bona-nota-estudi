@@ -700,9 +700,16 @@ create or replace function public.bn_admin_xat_msgs(p_email text, p_pass text, p
 language plpgsql security definer set search_path = '' as $$
 begin
   perform bn_priv.admin_ok(p_email, p_pass);
-  return coalesce((select jsonb_agg(to_jsonb(x) order by x.ts desc, x.id desc) from (
-    select m.id, m.nom, m.frase f, m.peca p, m.company c, bn_priv.xat_ms(m.ts) ts, m.esborrat,
-           (select count(*)::int from bn_priv.xat_vots v where v.msg = m.id) v, bn_priv.xat_vis(m.k, m.nom, m.company, m.esborrat) vis
+  return coalesce((select jsonb_agg(
+    jsonb_build_object('id', x.id, 'nom', x.nom, 'f', x.f, 'p', x.p, 'c', x.c, 'ts', x.ts, 'esborrat', x.esborrat, 'v', x.v, 'vis', x.vis)
+    || case when x.r is not null then jsonb_build_object('r', x.r) else '{}'::jsonb end
+    || case when x.re is not null then jsonb_build_object('re', x.re) else '{}'::jsonb end
+    || case when x.reacs is not null then jsonb_build_object('reacs', x.reacs) else '{}'::jsonb end
+    order by x.ts desc, x.id desc) from (
+    select m.id, m.nom, m.frase f, m.peca p, m.company c, m.rematada r, m.reply_to re, bn_priv.xat_ms(m.ts) ts, m.esborrat,
+           (select count(*)::int from bn_priv.xat_vots v where v.msg = m.id) v,
+           (select jsonb_object_agg(z.e, z.n) from (select e2.e, count(*)::int n from bn_priv.xat_reac e2 where e2.msg = m.id group by e2.e) z) reacs,
+           bn_priv.xat_vis(m.k, m.nom, m.company, m.esborrat) vis
     from bn_priv.xat_msg m
     where m.ts > now() - make_interval(days => least(greatest(coalesce(p_dies, 7), 1), 365))
     order by m.ts desc, m.id desc limit 500) x), '[]'::jsonb);
@@ -822,7 +829,7 @@ declare t text := upper(trim(coalesce(p_tipus, ''))); tx text := trim(coalesce(p
   mn text := nullif(lower(trim(coalesce(p_mon, ''))), ''); nou int;
 begin
   perform bn_priv.admin_ok(p_email, p_pass);
-  if t not in ('P', 'E', 'J') then raise exception 'tipus no valid (P, E o J)' using errcode = '22023'; end if;
+  if t not in ('P', 'E', 'J', 'R') then raise exception 'tipus no valid (P, E, J o R)' using errcode = '22023'; end if;
   if char_length(tx) not between 1 and 60 or tx ~ '[[:cntrl:]]' then
     raise exception 'el text ha de tenir de 1 a 60 caracters' using errcode = '22023';
   end if;
