@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5510918548",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="669920f82b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -337,13 +337,24 @@ h1 span{display:inline-block}
 /* taula */
 /* La taula no s'estreny mai: cada món té una columna de 42 px i el nom com a mínim 170 px. Si no hi cap, es desplaça de costat
    (.ht-scroll) i el bloc posició + moviment + avatar i nom (.ht-fix) queda enganxat a l'esquerra, amb el fons opac de la fila. */
-.ht-scroll{overflow-x:auto;overflow-y:visible;padding:8px 6px 14px;scrollbar-color:#6366f1 #ffffff10}
+.ht-scroll{overflow-x:auto;overflow-y:visible;padding:12px 6px 16px;scrollbar-color:#6366f1 #ffffff10}
 .hs-taula{display:flex;flex-direction:column;gap:8px}
 @media(min-width:641px){.hs-taula{min-width:calc(430px + var(--nw) * 48px)}}
 .ht-fila{--fbg:#171a38;position:relative;display:grid;grid-template-columns:30px 34px minmax(210px,1fr) repeat(var(--nw),42px) 58px 66px;align-items:center;gap:6px;padding:9px 10px;border-radius:14px;
  background:var(--fbg);border:1px solid #ffffff14;animation:filaPuja .4s cubic-bezier(.2,1.3,.4,1) both;transition:transform .22s cubic-bezier(.3,1.5,.5,1),border-color .2s,box-shadow .2s}
+.ht-fila[data-rk-nom],.pd[data-rk-nom]{cursor:pointer}
 .ht-fila .av,.pd-av{transition:transform .24s cubic-bezier(.3,1.6,.5,1)}
 .ht-fila .av-sk,.ht-fila .av-cmp,.pd-av .av-sk,.pd-av .av-cmp{transition:transform .22s cubic-bezier(.3,1.6,.5,1)}
+/* Vida suau automàtica al Podi i a la teva fila (visible a mòbil, tablet i escriptori) */
+.pd:not(.lliure) .pd-av{animation:pdPop .5s cubic-bezier(.3,1.8,.5,1) both,rkRespira 3.2s ease-in-out 1s infinite}
+.ht-fila.jo .av{animation:rkRespira 3s ease-in-out infinite}
+@keyframes rkRespira{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+/* Estat actiu per toc (mòbil/tablet/escriptori) + hover en escriptori */
+.ht-fila.rk-act{transform:translateY(-2px) scale(1.018);z-index:5;border-color:#facc15cc;box-shadow:0 10px 26px #000a,0 0 18px #facc1544}
+.ht-fila.rk-act .av{transform:scale(1.28);z-index:6;animation:rkBota .55s cubic-bezier(.3,1.6,.5,1) both}
+.ht-fila.rk-act .av-sk{transform:scale(1.18) rotate(-8deg)}
+.ht-fila.rk-act .av-cmp{transform:translateY(-3px) scale(1.22) rotate(10deg)}
+.pd.rk-act .pd-av{transform:scale(1.14);animation:rkPodiBota .55s cubic-bezier(.3,1.6,.5,1) both}
 @media(hover:hover){
  .ht-fila:not(.ht-cap):not(.ht-mat):hover{transform:translateY(-2px) scale(1.018);z-index:5;border-color:#facc15aa;box-shadow:0 10px 26px #000a,0 0 18px #facc1533}
  .ht-fila:not(.ht-cap):not(.ht-mat):hover .av{transform:scale(1.28);z-index:6;animation:rkBota .55s cubic-bezier(.3,1.6,.5,1) both}
@@ -353,6 +364,23 @@ h1 span{display:inline-block}
 }
 @keyframes rkBota{0%{transform:scale(1.06) translateY(0) rotate(0)}38%{transform:scale(1.34) translateY(-5px) rotate(-6deg)}72%{transform:scale(1.26) translateY(0) rotate(4deg)}100%{transform:scale(1.28) translateY(0) rotate(0)}}
 @keyframes rkPodiBota{0%{transform:scale(1.02) translateY(0)}40%{transform:scale(1.18) translateY(-7px) rotate(-4deg)}75%{transform:scale(1.13) translateY(0) rotate(3deg)}100%{transform:scale(1.14) translateY(0)}}
+/* Targeta Ràpida d'Heroi (en tocar qualsevol jugador a mòbil, tablet o escriptori) */
+.rk-card-ov{position:fixed;inset:0;z-index:90;background:#040615de;display:flex;align-items:center;justify-content:center;padding:16px}
+.rk-card-ov[hidden]{display:none}
+.rk-card{position:relative;width:min(380px,100%);border-radius:24px;padding:22px 18px 18px;text-align:center;background:radial-gradient(circle at 50% 18%,#312e81f2,#0b1033fa 72%);border:3px solid var(--groc);box-shadow:0 20px 54px #000c;color:#fff;animation:rkCardIn .25s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes rkCardIn{from{opacity:0;transform:scale(.88) translateY(10px)}to{opacity:1;transform:none}}
+.rk-card-x{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:12px;border:1.5px solid #ffffff30;background:#0b1033cc;color:#e2e8f0;font-weight:900;font-size:18px;cursor:pointer;display:grid;place-items:center}
+.rk-card-top{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:900;color:#fef08a;margin-bottom:10px}
+.rk-card-av{position:relative;display:inline-block;width:96px;height:96px;border-radius:50%;background:var(--av,#312e81);border:4px solid #fff;box-shadow:0 0 0 3px #1d1631,0 10px 26px #000b;margin:4px auto 12px;animation:rkPodiBota .55s cubic-bezier(.3,1.6,.5,1) both}
+.rk-card-av .av-cl .spr{width:80px;height:80px}
+.rk-card-av .av-sk{width:34px;height:34px;right:-8px;bottom:-6px;border-radius:10px;border-width:2px}
+.rk-card-av .av-sk .spr{width:24px;height:24px}
+.rk-card-av .av-cmp{width:28px;height:28px;font-size:16px;top:-8px;left:-6px}
+.rk-card-nom{font-size:24px;font-weight:900;margin:0 0 6px;line-height:1.15}
+.rk-card-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:12px}
+.rk-card-mons{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:10px 0 6px;padding-top:10px;border-top:1px solid #ffffff1c}
+.rk-card-mons span{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff1e;font-size:12.5px;font-weight:900;color:#e0e7ff}
+.rk-card-bt{display:inline-block;margin-top:10px;padding:11px 16px;min-height:44px;border-radius:12px;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:13px;text-decoration:none;box-shadow:0 3px 0 #b45309}
 .rk-det{grid-column:2;display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;min-width:0}
 .rk-ttl,.rk-cmp,.rk-sk{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:900;line-height:1.25;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .rk-ttl{background:#312e81cc;border:1px solid #a5b4fc88;color:#e0e7ff}
@@ -391,18 +419,17 @@ h1 span{display:inline-block}
 .ht-salt{text-align:center;color:#64748b;font-weight:900;letter-spacing:4px}
 /* mòbil: la taula es plega (mons dins del nom; només la columna activa) */
 @media(max-width:640px){
- .ht-fila{grid-template-columns:30px 34px minmax(0,1fr) 66px;gap:6px;padding:8px}
+ .ht-fila{grid-template-columns:28px 32px minmax(0,1fr) 62px;gap:6px;padding:9px 8px}
  .ht-fila .w,.ht-fila .num{display:none}
  .act-punts .c-punts,.act-setmana .c-x,.act-dies .c-x,.act-remuntada .c-x,.act-nivell .c-punts{display:block}
  .ht-fila .mw{display:flex;flex-wrap:wrap;gap:3px;grid-column:2;margin-top:3px}
- .ht-fila .nom{grid-template-rows:auto auto auto}
- .ht-fila .av{grid-row:1/4;width:34px;height:34px}
- .ht-fila .nom{grid-template-columns:34px minmax(0,1fr);column-gap:8px}
- .ht-fila .nm{font-size:15px}
+ .ht-fila .nom{grid-template-columns:44px minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:9px}
+ .ht-fila .av{grid-row:1/-1;width:44px;height:44px}
+ .ht-fila .nm{font-size:15.5px}
  .ht-fila.top .pos .spr{width:26px}
  .hs-caixeta .g{gap:8px}
 }
-@media(prefers-reduced-motion:reduce){.tk-it.quiet{animation:none}.pd.p1::before,.hs-tu::after,.premi .ic,.mov.up,.mov.nou{animation:none}.hs-fila,.premi,.ht-fila,.ht-fila .av,.pd-av{animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){.tk-it.quiet{animation:none}.pd.p1::before,.hs-tu::after,.premi .ic,.mov.up,.mov.nou{animation:none}.hs-fila,.premi,.ht-fila,.ht-fila .av,.pd-av,.rk-card,.rk-card-av{animation:none!important;transition:none!important}}
 /* ===== sprites de pixel art del rànquing (sprites.js) ===== */
 .spr{display:inline-block;width:1.15em;height:auto;vertical-align:-.2em;shape-rendering:crispEdges}
 .spr-tile{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--mc);border:2px solid #1d1631;box-shadow:inset 0 -3px 0 #0003,inset 0 2px 0 #fff4;vertical-align:middle}
@@ -963,7 +990,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.73.1</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.74.0</small></footer>
 
 <script src="sprites.js?v=70733852"></script>
 <script>
@@ -1556,7 +1583,7 @@ function pintaHs(){
  const vPodi=r=>TB==="punts"?`<span class="cnt" data-n="${r.punts}">${r.punts}</span> ${ST()}`:TB==="setmana"?`+<span class="cnt" data-n="${r.setmana}">${r.setmana}</span> ${ST()}`:TB==="remuntada"?`<span class="cnt" data-n="${r.apr}">${r.apr}</span> ${BR()}<small>${r.apr===1?"error recuperat":"errors recuperats"}</small>`:TB==="dies"?`<span class="cnt" data-n="${r.dies}">${r.dies}</span><small>${r.dies===1?"dia d'estudi":"dies d'estudi"}</small>`:(()=>{const n=niv(r.punts_max);return `${nivIc(n)} ${n+1}<small>${NIV[n][1]}</small>`})();
  const pd=(r,pos)=>{if(!r)return `<div class="pd p${pos} lliure"><span class="pd-av" style="--av:#1e1b4b"><span class="av-cl">${spr("ghost")}</span></span><span class="pd-nom">Lliure</span><span class="pd-val"><small>Pot ser teu!</small></span><div class="pd-bloc">${pos}</div></div>`;
   const avP=avatar(r.nom),ttlP=bnTitolHtml(avP.titol,"pd-ttl");
-  return `<div class="pd p${pos} ${esJo(r)?"jo":""}">${avHtml(r.nom,"pd-av",pos===1?`<span class="corona">${spr("crown")}</span>`:"")}<span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span>${ttlP}<span class="pd-val">${vPodi(r)}</span><span class="pd-mv">${movHtml(mov(r,pos))}</span><div class="pd-bloc">${pos}</div></div>`};
+  return `<div class="pd p${pos} ${esJo(r)?"jo":""}" data-rk-nom="${esc(r.nom)}" data-rk-pos="${pos}">${avHtml(r.nom,"pd-av",pos===1?`<span class="corona">${spr("crown")}</span>`:"")}<span class="pd-nom" title="${esc(r.nom)}">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span>${ttlP}<span class="pd-val">${vPodi(r)}</span><span class="pd-mv">${movHtml(mov(r,pos))}</span><div class="pd-bloc">${pos}</div></div>`};
  // ---- 2) taula de classificació: columnes alineades, la de la pestanya activa ressaltada ----
  const MED=[spr("medal1"),spr("medal2"),spr("medal3")],nw=MONS_IC.length;
  // fila d'assignatures damunt de la capçalera: nom curt amb el seu color i una ratlla a sota que abraça les seves columnes (42 px cada món).
@@ -1572,7 +1599,7 @@ function pintaHs(){
   if(av.comp&&BN_COMP_META[av.comp])detParts.push(`<span class="rk-cmp">${BN_COMP_META[av.comp][0]} ${esc(BN_COMP_META[av.comp][1])}</span>`);
   if(av.sk&&BN_SKILL_INFO[av.sk])detParts.push(`<span class="rk-sk">⚔️ ${esc(BN_SKILL_INFO[av.sk].n)} · ${esc(BN_SKILL_ESTILS[av.v])}</span>`);
   const detH=detParts.length?`<span class="rk-det">${detParts.join("")}</span>`:"";
-  return `<div class="ht-fila ${pos<=3?"top":""} ${esJo(r)?"jo":""} ${extra||""}" role="row" style="animation-delay:${(.8+i*.06).toFixed(2)}s">
+  return `<div class="ht-fila ${pos<=3?"top":""} ${esJo(r)?"jo":""} ${extra||""}" role="row" data-rk-nom="${esc(r.nom)}" data-rk-pos="${pos}" style="animation-delay:${(.8+i*.06).toFixed(2)}s">
   <span class="ht-fix"><span class="pos"${pos<=3?tt(`${ordinal(pos)} lloc`):""}>${pos<=3?MED[pos-1]:pos}</span><span class="mv">${movHtml(mov(r,pos))}</span>
   <span class="nom">${avHtml(r.nom,"av")}<span class="nm">${esc(r.nom)}${esJo(r)?`<span class="tu">TU</span>`:""}</span><span class="tags"><i class="nv"${tt(`Nivell ${n+1}: ${NIV[n][1]}`)}>${nivIc(n)} ${n+1}</i>${sup?`<i class="su"${tt(`Superestrelles (1 cada ${SUPER} ⭐)`)}>${spr("superstar")} ${sup}</i>`:""}</span>${detH}
    <span class="mw">${MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<i>${ic} ${m[id]}</i>`).join("")}</span></span></span>
@@ -1627,6 +1654,43 @@ function pintaHs(){
  if(rows.length&&!matchMedia("(prefers-reduced-motion:reduce)").matches)confetiHs();
  xatLectura();xatFlash();
 }
+// ---- Targeta Ràpida d'Heroi + toc animat al rànquing (mòbil, tablet i escriptori · n3001) ----
+function obreCartaHeroi(nom,pos){
+ const r=(HSD||[]).find(x=>x.nom.trim().toLowerCase()===String(nom||"").trim().toLowerCase());if(!r)return;
+ let ov=document.getElementById("rkCardOv");
+ if(!ov){ov=document.createElement("div");ov.id="rkCardOv";ov.className="rk-card-ov";ov.hidden=true;ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");
+  ov.onclick=e=>{if(e.target===ov)tancaCartaHeroi()};document.body.appendChild(ov)}
+ const av=avatar(r.nom),n=niv(r.punts_max||0),sup=Math.floor((r.punts||0)/SUPER),m=r.mons||{};
+ const meu=DEMO?"laia":tastActiu()?"":((document.querySelector("#hola em")||{}).textContent||"").trim().toLowerCase();
+ const esJo=meu&&r.nom.trim().toLowerCase()===meu;
+ const bd=[];
+ if(av.titol)bd.push(bnTitolHtml(av.titol,"rk-ttl"));
+ if(av.comp&&BN_COMP_META[av.comp])bd.push(`<span class="rk-cmp">${BN_COMP_META[av.comp][0]} ${esc(BN_COMP_META[av.comp][1])}</span>`);
+ if(av.sk&&BN_SKILL_INFO[av.sk])bd.push(`<span class="rk-sk">⚔️ ${esc(BN_SKILL_INFO[av.sk].n)} · ${esc(BN_SKILL_ESTILS[av.v])}</span>`);
+ const monsH=MONS_IC.filter(([id])=>m[id]>0).map(([id,ic])=>`<span>${ic} ${m[id]}</span>`).join("");
+ ov.innerHTML=`<div class="rk-card">
+  <button class="rk-card-x" type="button" aria-label="Tanca" onclick="tancaCartaHeroi()">✕</button>
+  <div class="rk-card-top"><span>#${pos||"·"}</span><span>·</span><span>${nivIc(n)} Nivell ${n+1} (${NIV[n][1]})</span><span>·</span><span>⭐ ${r.punts||0}</span></div>
+  ${avHtml(r.nom,"rk-card-av")}
+  <h3 class="rk-card-nom">${esc(r.nom)}${esJo?` <span class="tu">TU</span>`:""}</h3>
+  ${bd.length?`<div class="rk-card-badges">${bd.join("")}</div>`:""}
+  ${sup?`<div style="font-size:12px;font-weight:900;color:#fde047;margin-bottom:4px">${spr("superstar")} ${sup} superestrell${sup===1?"a":"es"}</div>`:""}
+  ${monsH?`<div class="rk-card-mons">${monsH}</div>`:""}
+  ${esJo?`<a class="rk-card-bt" href="perfil/">✏️ Personalitza el meu perfil →</a>`:""}
+ </div>`;
+ ov.hidden=false;
+}
+function tancaCartaHeroi(){const ov=document.getElementById("rkCardOv");if(ov)ov.hidden=true;document.querySelectorAll("#hs .rk-act").forEach(e=>e.classList.remove("rk-act"))}
+(function(){const hs=document.getElementById("hs");if(!hs)return;
+ hs.addEventListener("click",e=>{
+  if(e.target.closest("button,a,.xbaf"))return;
+  const el=e.target.closest("[data-rk-nom]");if(!el)return;
+  hs.querySelectorAll(".rk-act").forEach(x=>{if(x!==el)x.classList.remove("rk-act")});
+  el.classList.remove("rk-act");void el.offsetWidth;el.classList.add("rk-act");
+  obreCartaHeroi(el.dataset.rkNom,+el.dataset.rkPos||0);
+ });
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")tancaCartaHeroi()});
+})();
 // ---- 📰 CINTA DE NOTÍCIES (n2490) ----
 // Cada notícia és una peça petita que creua la cinta de dreta a esquerra (Web Animations) i, quan la cua ha deixat
 // prou lloc, n'entra la següent; quan s'acaben, tornen a començar. Abans era UNA sola tira enorme (l'amplada de la
