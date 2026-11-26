@@ -5,13 +5,12 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
-## 2.76.2 · 2026-11-26
+## 2.76.3 · 2026-11-26
 
 ### Canviat
-- **Combos polits als tests (colors, moviment i zero duplicats · `motor/plantilla-estudi-interactiu.html` · `n3006`):**
-  - El rètol flotant gran (`.combo`) ara surt només a les **fites reals (`×3`, `×5`, `×10`…)** i passa per la **cua `horaRetol()`**, evitant que es repeteixi a cada pregunta (×4, ×6, ×7…) o es solapi amb `⚡ SUPER COMBO` i `🎯 MISSIÓ FETA!`.
-  - L'avatar ja no duplica el mateix text a les fites (mostra `⚡ En ratxa! Segueix així!` a les fites i `🔥 Ratxa ×4! Imparable!` als passos intermedis).
-  - Nou estil de **pastilla arcade d'alt contrast** (`#1e1b4b` translúcid + vora daurada/verda + ombra suau) i animació d'entrada elàstica més neta (respectant Mode suau i `prefers-reduced-motion`).
+- **Continguts explicatius del Xat 3.0 actualitzats (`index.html`, `admin/index.html` · `n3007`):**
+  - Actualitzat el desplegable **«❓ Com funciona i Regla d'Or»** del xat amb totes les novetats (🙋 Jo +1000, 💭 Opino, multi-menció d'1 a 3 companys, + Rematada, ↩️ Respon en fil, reaccions ràpides 🔥 😂 💪 👑 i recompte de respostes ràpides a l'àlbum).
+  - Actualitzada la targeta informativa del Xat dins `/admin/` (**Què veu el nen**) amb les regles del Xat 3.0 sense text lliure.
 
 ## 2.76.1 · 2026-11-26
 

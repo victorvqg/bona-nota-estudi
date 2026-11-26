@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="e48928307d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="1df3eda37b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -1056,7 +1056,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.76.2</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.76.3</small></footer>
 
 <script src="sprites.js?v=70733852"></script>
 <script>
@@ -2056,12 +2056,13 @@ function xatInfoHtml(){const c=xatCfg(),E=xatEstOk()?XAT.est:null,mx=xatMaxEf(c,
  return `<details class="xinfo-det"><summary><span class="xi-resum">${res}</span><span class="xi-bt">❓ Com funciona i Regla d'Or ▾</span></summary><div class="xinfo-cos xinfo">
  <ul class="regles-cred"><li><b>Cada ${c.est_credit} ${ST()} que guanyes avui = 1 crèdit = 1 frase.</b> Uns ${Math.max(1,Math.round(c.est_credit/2))} minuts d'estudi per frase.</li>
  <li><b>Màxim ${c.max_dia} frases al dia</b> (+1 extra si vas tenir el missatge d'ahir).</li>
+ <li><b>Expressa't al màxim:</b> pots parlar de tu (<b>🙋 Jo +1000</b>), opinar sobre els temes (<b>💭 Opino</b>), esmentar <b>d'1 a 3 companys</b> alhora, afegir una <b>+ Rematada</b> al final o prémer <b>↩️ Respon</b> per contestar en fil.</li>
+ <li><b>Llegir és gratis.</b> Amb el primer crèdit d'avui (${c.est_credit} ${ST()}) pots votar <b>👍 Ben dit</b> i posar reaccions ràpides (<b>🔥 😂 💪 👑</b>) sense gastar crèdits.</li>
  <li><b>👑 Missatge del dia:</b> el més votat s'endú l'endemà la corona «👑 Ahir» i <b>+1 crèdit extra</b> per parlar.</li>
- <li><b>Llegir és gratis.</b> Per votar «Ben dit» cal haver guanyat ${c.est_credit} ${ST()} avui.</li>
  <li><b>Els crèdits no es guarden:</b> a mitjanit tornen a zero. Les estrelles no es gasten mai.</li></ul>
- ${jo?`<p class="niv">Àlbum: <b>${tf.filter(xatTeF).length}/${tf.length}</b> frases · <b>${cnt(["P"])}</b> estudi · <b>${cnt(["E","J"])}</b> classe i jo. Nivell ${n} (${nivNom(n)}).</p>
+ ${jo?`<p class="niv">Àlbum: <b>${tf.filter(xatTeF).length}/${tf.length}</b> frases · <b>${cnt(["P"])}</b> estudi · <b>${cnt(["E","J"])}</b> classe i jo · <b>${cnt(["R"])}</b> respostes ràpides. Nivell ${n} (${nivNom(n)}).</p>
  <p class="niv">La teva bafarada: ${m?`<b>«${esc(xatTxt(m).text)}»</b>`:E&&+E.queden>0?"encara no has dit res. Tens crèdit: prova-ho!":"encara no has dit res."}</p>`:""}
- <div class="regla"><h4>REGLA D'OR</h4><ul><li>El nom d'un company (fins a 3 alhora) <b>només surt en frases bones</b>: felicitar, donar aura o reptar.</li><li>Per riure o celebrar, <b>només coses de classe o tu mateix</b>. Cap peça nomena un profe ni un nen.</li></ul></div></div></details>`}
+ <div class="regla"><h4>REGLA D'OR</h4><ul><li><b>Zero text lliure:</b> totes les frases, peces, rematades, respostes en fil i reaccions són segures i verificades al servidor.</li><li>El nom d'un company (fins a 3 alhora) <b>només surt en frases positives</b>: felicitar, animar, donar aura o reptar.</li><li>Per riure, opinar o celebrar, <b>només temes d'estudi, coses de classe o tu mateix</b>. Cap peça nomena un profe ni un nen.</li></ul></div></div></details>`}
 // pinta la columna dreta (xat) i «Com es guanya parlar»; si el xat no respon, «El xat arriba aviat» i prou
 function xatPintaVista(){const cos=document.querySelector("#hs .hs-cos.xat-on"),x=cos&&cos.querySelector(".a-xat");if(!x)return;x.innerHTML=xatHtml();let i=cos.querySelector(".a-xinfo");
  if(!XAT.ok){if(i)i.remove();return}
