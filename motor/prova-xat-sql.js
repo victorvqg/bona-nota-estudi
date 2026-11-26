@@ -68,7 +68,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
  { const sql = fitxer("supabase/bn_xat.sql");
   let e = await executa(sql); ok(e === null, "primera execució sense errors" + (e ? ": " + e : ""));
   ok((await val("select count(*)::int from bn_priv.xat_frases")) === NFRASES && (await val("select count(*)::int from bn_priv.xat_peces")) === NPECES, `${NFRASES} frases i ${NPECES} peces`);
-  ok(igual(await cfg(null), { est_credit: 10, max_dia: 5, espera_s: 10, actiu: true }), "configuració inicial 10 ⭐ · 5 al dia · 10 s · obert");
+  ok(igual(await cfg(null), { est_credit: 5, max_dia: 10, espera_s: 10, actiu: true }), "configuració inicial 5 ⭐ · 10 al dia · 10 s · obert");
   ok((await adm("bn_admin_xat_actiu", ["frase", 13, false])) === 1 && (await adm("bn_admin_xat_actiu", ["peca", 44, false])) === 1, "l'admin desactiva la frase 13 i la peça 44");
   ok((await cfg({ est_credit: 12 })).est_credit === 12, "l'admin canvia les estrelles per crèdit a 12");
   ok((await adm("bn_admin_xat_peca_nova", ["P", "la paraula de la setmana", 1, null])) === 1001, "peça nova de l'admin: id 1001");
@@ -78,7 +78,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok((await cfg(null)).est_credit === 12 && JSON.parse(await val("select valor from bn_priv.config where clau = 'xat'")).est_credit === 12, "la configuració de l'admin sobreviu");
   ok((await val("select text from bn_priv.xat_peces where id = 1001")) === "la paraula de la setmana" && (await val("select count(*)::int from bn_priv.xat_peces")) === NPECES + 1, "la peça nova de l'admin sobreviu");
   ok((await val("select text from bn_priv.xat_frases where id = 1")) === "Vaig a per ___!", "el text del catàleg torna a ser el del fitxer");
-  await cfg({ est_credit: 10 }) }
+  await cfg({ est_credit: 10, max_dia: 5 }) }
 
  console.log("2) catàleg igual que el bloc XAT-CATALEG d'index.html, i xat_msg sense text lliure");
  { const html = fitxer("index.html"), a = html.indexOf("/* XAT-CATALEG:inici"), b = html.indexOf("/* XAT-CATALEG:fi */");
@@ -91,12 +91,12 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok(pcJ.length === NPECES && igual(pc, pcJ), "les peces de XAT-CATALEG són idèntiques (text, tipus i nivell o món)" + (igual(pc, pcJ) ? "" : ": " + JSON.stringify(pc.find((x, i) => !igual(x, pcJ[i])))));
   ok(XAT_FR.every(f => f.s !== "C" || ["aura", "colla"].includes(f.c)) && XAT_FR.filter(f => f.s === "C").every(f => !/-\d/.test(f.t)), "regla d'or: el nom d'un company només va en frases d'aura o de colla, cap de negativa");
   const cols = (await q("select column_name c, data_type t from information_schema.columns where table_schema = 'bn_priv' and table_name = 'xat_msg' order by ordinal_position")).map(r => r.c + ":" + r.t);
-  ok(igual(cols, ["id:bigint", "k:text", "nom:text", "frase:integer", "peca:integer", "company:text", "ts:timestamp with time zone", "esborrat:boolean"]), "xat_msg només té ids, el nom del nen, el company, l'hora i «esborrat»: " + cols.join(" "));
+  ok(igual(cols, ["id:bigint", "k:text", "nom:text", "frase:integer", "peca:integer", "company:text", "rematada:smallint", "reply_to:bigint", "ts:timestamp with time zone", "esborrat:boolean"]), "xat_msg només té ids, el nom del nen, el company, rematada, reply_to, l'hora i «esborrat»: " + cols.join(" "));
   ok((await falla("insert into bn_priv.xat_msg(k, nom, frase, company) values ('a', 'a', 22, repeat('x', 131))")) !== null, "el company no pot passar de 130 caràcters");
   ok((await falla("insert into bn_priv.xat_msg(k, nom, frase, peca, company) values ('a', 'a', 1, 1, 'Bet')")) !== null, "un missatge porta peça o company, mai totes dues coses");
   const args = await q(`select p.proname f, a.n, format_type(a.t, null) t from pg_proc p join pg_namespace s on s.oid = p.pronamespace,
                         unnest(p.proargnames, p.proargtypes::oid[]) a(n, t) where s.nspname = 'public' and p.proname like 'bn_xat_%'`);
-  ok(args.length > 0 && args.filter(r => r.t === "text").every(r => ["p_nom", "p_pin", "p_company"].includes(r.n)), "les funcions dels nens no accepten cap text més que el nom, el PIN i el nom del company") }
+  ok(args.length > 0 && args.filter(r => r.t === "text").every(r => ["p_nom", "p_pin", "p_company", "p_emoji"].includes(r.n)), "les funcions dels nens no accepten cap text més que el nom, el PIN, el company i el codi d'emoji") }
 
  // ---------- la colla de prova ----------
  const passat = await val(`select now() > ${M} + interval '1 minute'`); // la fila de «mitjanit + 1 minut» només si ja ha passat
@@ -172,7 +172,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok([64, 65, 66].every(id => ea.peces.includes(id)) && ea.acabats.includes("angles"), "angles amb 25 ⭐ desbloqueja les peces 64, 65 i 66");
   await q("delete from public.bn_log where nom = 'Èric' and assig = 'angles'");
   const o = await estat("Ona");
-  ok(o.nivell === 1 && igual(o.frases, [1, 2, 3, 4, 11, 12, 14, 17, 18, 22, 23, 27, 28, 29, 35, 36]), "Ona (4 ⭐): només les frases de nivell 1 actives");
+  ok(o.nivell === 1 && igual(o.frases, [1, 2, 3, 4, 11, 12, 14, 17, 18, 22, 23, 27, 28, 29, 35, 36, 40, 41, 42, 46]), "Ona (4 ⭐): només les frases de nivell 1 actives");
   const r = await envia("Èric", 7, 25);
   ok(r.codi === "ok", "Èric pot dir «Pista: repassa els nombres primers» (Savi + Mates acabat): " + JSON.stringify(r)) }
 
@@ -258,7 +258,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
   ok(igual(await vota("Pau", hugo), { codi: "no_existeix" }), "no_existeix: l'autor està amagat") }
 
  console.log("7) bn_xat_llegeix: visibilitat, 60 últims, vots, missatge del dia i bafarades");
- { await db.exec("truncate bn_priv.xat_vots, bn_priv.xat_msg restart identity");
+ { await db.exec("truncate bn_priv.xat_reac, bn_priv.xat_vots, bn_priv.xat_msg restart identity");
   const vell = await msg("bet", "Bet", 12, 7, null, "now() - interval '3 days'");
   const ahir = await msg("bet", "Bet", 1, 2, null, "now() - interval '25 hours'");
   const m23 = await msg("bet", "Bet", 22, null, "Laia", "now() - interval '23 hours'");
@@ -340,7 +340,7 @@ const AVUI_FA = `greatest(${M}, now() - interval '1 hour')`; // avui però fa un
    ok((await falla("select public.bn_admin_xat_peca_nova($1, $2, $3, $4, $5, $6)", [...ADM, ...a])) !== null, "peca_nova: rebutja " + t);
   ok((await adm("bn_admin_xat_actiu", ["peca", 1002, false])) === 1 && !(await llegeix()).noves.some(p => p.id === 1002) && (await llegeix()).off.p.includes(1002), "una peça nova desactivada no surt a noves (i sí a off)");
   // resum d'un dia controlat: Laia 2 frases, Max 5 (al màxim), Bet 1 d'ahir; 3 vots avui i 1 d'ahir
-  await db.exec("truncate bn_priv.xat_vots, bn_priv.xat_msg restart identity");
+  await db.exec("truncate bn_priv.xat_reac, bn_priv.xat_vots, bn_priv.xat_msg restart identity");
   const l1 = await msg("laia", "Laia", 1, 1, null, AVUI_FA); await msg("laia", "Laia", 1, 2, null, AVUI_FA, true);
   for (let i = 0; i < 5; i++) await msg("max", "Max", 1, 1, null, AVUI_FA);
   const b1 = await msg("bet", "Bet", 1, 1, null, `${M} - interval '1 minute'`);

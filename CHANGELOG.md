@@ -5,6 +5,19 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.76.0 · 2026-11-26
+
+### Afegit
+- **Xat de la Colla 3.0 Expressiu (`index.html`, `supabase/bn_xat.sql`, `admin/index.html` · `n3003`):**
+  - **`↩️ Respon` en fil:** cada bombolla té el botó «Respon», que cita el missatge original i ofereix 12 respostes ràpides de conversa (`id 521–532`) o qualsevol altra frase del catàleg.
+  - **Rematades opcionals (2n bloc · >15.000 combinacions):** botó `+ Rematada` amb 16 tancaments positius (`rematada` 1–16) que es poden afegir al final de qualsevol frase.
+  - **4 Reaccions ràpides (`🔥 😂 💪 👑`):** nova taula `bn_priv.xat_reac` i funció `bn_xat_reacciona` per reaccionar a qualsevol bombolla sense gastar crèdit de frase.
+  - **Nova pestanya `💭 OPINO`:** 6 frases d'opinió i estudi (`id 40–45`).
+
+### Canviat
+- **Més capacitat de xat estudiant:** configuració inicial actualitzada a **`5 ⭐` per crèdit i fins a `10 frases al dia`** (+1 extra amb el missatge d'ahir), mantenint sempre l'exigència de guanyar estrelles estudiant.
+- **Vista del Xat neta i més viva:** eliminat el podi dins la pestanya Xat (ara el xat ocupa el 100 % de l'amplada), **Missatge del dia** convertit en desplegable compacte (`<details id="xMdd">`), desplegable **«❓ Com funciona i Regla d'Or»** a amplada completa, més altura per al fil de missatges (`.x-feed`), línia de previsualització prèvia a enviar amb **pampallugues lluminoses i reflex animat**, i `?demo=1` amb tot obert (20 crèdits, 0 s d'espera i botó «Prova Tancat/Obert»).
+
 ## 2.75.0 · 2026-11-26
 
 ### Afegit
