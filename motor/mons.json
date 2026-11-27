@@ -424,5 +424,44 @@
    "pamusu",
    "err-enters"
   ]
+ },
+ {
+  "dades": "prehistoria",
+  "carpeta": "sociales/prehistoria",
+  "mon": "10",
+  "trimestre": 2,
+  "neix": "2026-11-27",
+  "materia": "Ciències socials",
+  "titol": "La Prehistòria",
+  "desc": "Els primers humans, el paleolític, l'art rupestre, el neolític, els metalls, la Península i Catalunya.",
+  "colors": [
+   "#451a03",
+   "#b45309",
+   "#f59e0b"
+  ],
+  "ic": "🔥",
+  "curt": "Socials (prehistòria)",
+  "spr": "fire",
+  "xat": [
+   [
+    73,
+    "l'Abric Romaní"
+   ],
+   [
+    74,
+    "la revolució neolítica"
+   ],
+   [
+    75,
+    "el dolmen"
+   ]
+  ],
+  "xmon": "Socials · Prehistòria",
+  "demo_jocs": [
+   "hominids",
+   "etapes",
+   "pal-neo-met",
+   "err-prehistoria"
+  ]
  }
 ]
