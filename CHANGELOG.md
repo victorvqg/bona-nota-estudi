@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.77.1 · 2026-11-27
+
+### Afegit
+- **Caràtula animada per a La Prehistòria (`motor/ilu/prehistoria.svg` · `n3011`):** il·lustració SVG pròpia a la portada amb fogar prehistòric de flames vives, guspires pujant, fum, halo càlid, pintura rupestre i dolmen (respectant `prefers-reduced-motion`).
+
 ## 2.77.0 · 2026-11-27
 
 ### Afegit
