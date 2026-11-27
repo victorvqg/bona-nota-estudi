@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.79.3 · 2026-11-27
+
+### Canviat
+- **Bústia privada de contacte (`suggeriments/index.html` · `n3016`):** en triar la categoria *Privacitat o perfil*, s'afegeix un avís de verificació per a reinicis de PIN (demanant nom d'usuari, dispositiu habitual i últim món treballat) i el correu electrònic del pare, mare o tutor/a passa a ser obligatori (conservant-lo sempre al servidor).
+
 ## 2.79.2 · 2026-11-27
 
 ### Corregit
