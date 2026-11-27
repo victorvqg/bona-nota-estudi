@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.79.1 · 2026-11-27
+
+### Canviat
+- **Guia per a les famílies actualitzada (`pares/index.html` · `n3014`):** incorporats els Laboratoris Visuals interactius (`+10 ⭐` únic), el quadre transparent de com es guanyen les estrelles i els 10 nivells, les millores del rànquing (finestra de 120 dies i *Premis setmanals de la colla*), les xifres reals del Xat 3.0 (`46` frases, `96` peces, `5 ⭐` per crèdit, màx. `10`/dia) i enllaços directes a la Bústia privada de contacte.
+
 ## 2.79.0 · 2026-11-27
 
 ### Afegit
