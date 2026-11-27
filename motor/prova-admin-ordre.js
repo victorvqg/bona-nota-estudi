@@ -87,7 +87,7 @@ function respon(st, f) {
    const { ctx, p, errors } = await obre("/admin/");
    await p.waitForSelector("#tAlertes table");
    const menu = await p.$$eval("#nav .nav-b", b => b.map(x => x.textContent.trim()).join(" · "));
-   ok(menu === "Inici · Control ràpid · Nens · Mons · Activitat · Rànquing · Xat", `menú: ${menu}`);
+   ok(menu === "Inici · Control ràpid · Nens · Mons · Activitat · Rànquing · Xat · Bústia", `menú: ${menu}`);
    const ordre = await p.$$eval("#contingut .graella > section, #contingut .graella > div", s => s.map(x => x.id).filter(Boolean));
    ok(ordre.indexOf("alertes") > -1 && !ordre.includes("control"), `Alertes a Inici i Control ràpid fora d'Inici (${ordre.join(", ")})`);
    await p.click('#nav [data-v="control"]');
@@ -123,12 +123,12 @@ function respon(st, f) {
    ok(p.url().includes("v=xat") && !p.url().includes("tab=xat"), "?v=ranquing&tab=xat porta a la secció Xat (?v=xat)");
    await ctx.close();
   }
-  console.log("4) Mòbil: barra inferior amb 7 botons");
+  console.log("4) Mòbil: barra inferior amb 8 botons");
   for (const w of [360, 390]) {
    const { ctx, p, errors } = await obre("/admin/", { viewport: { width: w, height: 760 } });
    await p.waitForSelector("#navInf button");
    const n = await p.$$eval("#navInf button", b => b.filter(x => x.offsetParent).length);
-   ok(n === 7 && await p.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), `${w} px: 7 botons a la barra de baix i cap scroll horitzontal`);
+   ok(n === 8 && await p.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), `${w} px: 8 botons a la barra de baix i cap scroll horitzontal`);
    ok(errors.length === 0, "cap error de JS");
    await ctx.close();
   }
