@@ -5,6 +5,11 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.79.2 · 2026-11-27
+
+### Corregit
+- **Guia per a les famílies (`pares/index.html` · `n3015`):** eliminades les referències obsoletes a les fotos de la llibreta (funció ja retirada) i substituïda la targeta de privadesa per «Zero càmera i zero micròfon».
+
 ## 2.79.1 · 2026-11-27
 
 ### Canviat
