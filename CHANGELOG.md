@@ -5,6 +5,14 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.79.0 · 2026-11-27
+
+### Afegit
+- **Bústia privada de Contacte i Suggeriments (`/suggeriments/` · `n3013`):**
+  - Nova pàgina pública [suggeriments/index.html](suggeriments/index.html) amb 4 categories (`Error`, `Idea`, `Família/Docent`, `Privacitat`), selector de món pre-omplert per URL (`?tipus=error&mon=<id>`), protecció automàtica de privacitat per a menors, anti-spam sense CAPTCHA (honeypot, temps mínim, rate-limit 3/hora) i enllaços des de la portada, `/pares/` i el peu de cada món.
+  - Esquema SQL privat (`supabase/bn_suggeriments.sql`) + prova automatitzada a PGlite (`motor/prova-suggeriments-sql.js`) + nova vista **Bústia** integrada dins `/admin/` (KPIs, filtres, detall lateral, canvi d'estat, nota interna i `mailto:`).
+  - Edge Function de notificació per correu (`supabase/functions/avisa-suggeriment/index.ts`) preparada per a Resend i Cloudflare Email Routing.
+
 ## 2.78.0 · 2026-11-27
 
 ### Canviat

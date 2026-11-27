@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="3d4c99fe12",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f325c06a73",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -848,7 +848,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><small class="bn-versio">versión 2.78.0</small></div>
+<div class="peu-pag"><a id="lkSugMon" href="../../suggeriments/?tipus=error" style="color:var(--gris);text-decoration:none;font-weight:700;font-size:12.5px;margin-right:10px">🐛 Has trobat un error?</a><small class="bn-versio">versión 2.79.0</small></div>
 
 <script src="../../sprites.js?v=90af40be"></script>
 <script>
@@ -4491,6 +4491,7 @@ function demoRescatVista(){
  // el nen ja era l'actiu d'aquest món: baixa i fusiona el núvol igualment (un altre aparell pot haver avançat) (n2522)
  if(!directe&&S.nom)sincronitzaEntrada();
  carregaPuntsMons();
+ const lkSug=document.getElementById("lkSugMon");if(lkSug&&ASSIG&&ASSIG.id){lkSug.href=`../../suggeriments/?tipus=error&mon=${encodeURIComponent(ASSIG.id)}`;if(ASSIG.llengua==="es")lkSug.textContent="🐛 ¿Has encontrado un error?"}
  if(dbP){demoBossVista();return}
  if(dcP){demoCombatVista();return}
  if(drP){demoRescatVista();return}

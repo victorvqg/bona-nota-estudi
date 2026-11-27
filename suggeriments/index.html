@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contacte i suggeriments · Bona Nota</title>
+<meta name="description" content="Envia suggeriments, reporta errors en preguntes o jocs, o fes una consulta sobre Bona Nota.">
+<meta name="theme-color" content="#0b1033">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icones/icona-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bona Nota">
+<script>
+window.BN_ACT={arrel:"../",tornaAuto:true};
+/* ACTUALITZA:inici (copiat de motor/eines/actualitza.js per motor/tot.py, no editar a mà) */
+// ===== ACTUALITZACIÓ AUTOMÀTICA (motor/eines/actualitza.js · el mateix codi a la portada i als mons; tot.py el copia a index.html) =====
+// Cada pàgina porta escrita la versió amb què es va generar (VER: la hi posa motor/tot.py). En obrir la pàgina es pregunta
+// al servidor quina versió hi ha publicada (versio.json, sense passar per cap memòria cau). Si no coincideixen, el que es veu
+// és una còpia vella (memòria cau del navegador o del service worker). Llavors: s'esborren les còpies guardades de l'app
+// (memòria cau «bn-…»), es demana al service worker que s'actualitzi i es torna a carregar la pàgina, UN sol cop per versió.
+// MAI s'esborra el progrés, el nom ni el PIN (són a localStorage i no es toquen). Sense connexió, o obrint el fitxer a
+// l'ordinador (file://), no fa res.
+// En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
+// estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
+(function(){
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f325c06a73",KR="bn_act_recarrega",DEU=6e5;
+ if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
+ let fet=0,amagat=0;
+ const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
+ // esborra la memòria cau de l'app i fa que el service worker es descarregui de nou (màxim 3 s)
+ const neteja=()=>Promise.race([Promise.all([
+   window.caches?caches.keys().then(ks=>Promise.all(ks.filter(k=>k.indexOf("bn-")===0).map(k=>caches.delete(k)))).catch(()=>{}):0,
+   navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.update().catch(()=>{})))).catch(()=>{}):0]),
+  new Promise(r=>setTimeout(r,3000))]);
+ function avis(txt,boto){quan(()=>{let a=document.getElementById("bnAct");
+  if(!a){a=document.createElement("div");a.id="bnAct";a.setAttribute("role","status");
+   a.style.cssText="position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:calc(100% - 24px);padding:10px 14px;border-radius:14px;background:#0b1033f2;border:2px solid #facc15;color:#fff;font:800 14px/1.3 Nunito,system-ui,sans-serif;box-shadow:0 8px 24px #0009";
+   document.body.appendChild(a)}
+  a.innerHTML="";const t=document.createElement("span");t.textContent=txt;a.appendChild(t);
+  if(boto){const b=document.createElement("button");b.type="button";b.textContent="Actualitza";
+   b.style.cssText="font:900 13px Nunito,system-ui,sans-serif;color:#1e1b4b;background:#facc15;border:0;border-radius:999px;padding:8px 12px;cursor:pointer";
+   b.onclick=()=>recarrega(boto,true);a.appendChild(b)}})}
+ // l'adreça sense el «v=…» (la resta de paràmetres, com ?demo, es queden tal qual)
+ const senseV=q=>q.replace(/([?&])v=[^&]*(&|$)/,(m,a,b)=>b?a:"").replace(/^\?$/,"");
+ function recarrega(v,aMa){
+  // una sola vegada per versió (si el servidor encara no serveix la nova, no entra en bucle); amb el botó, sempre
+  if(!aMa){if(new RegExp("[?&]v="+v+"(&|$)").test(location.search))return;try{if(sessionStorage.getItem(KR)===v)return;sessionStorage.setItem(KR,v)}catch(e){}}
+  avis("🔄 Versió nova de Bona Nota! Actualitzant…");
+  const q=senseV(location.search);neteja().then(()=>location.replace(location.pathname+q+(q?"&":"?")+"v="+v+location.hash))}
+ // un cop és la versió bona, treu el «?v=…» de l'adreça
+ function netejaAdreca(){try{const q=senseV(location.search);if(q!==location.search)history.replaceState(history.state,"",location.pathname+q+location.hash)}catch(e){}}
+ function comprova(auto){fet=Date.now();
+  fetch(ARREL+"versio.json?t="+fet,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(!d||!d.v)return;
+   if(d.v===VER){netejaAdreca();return}
+   if(auto)recarrega(d.v);else avis("✨ Hi ha una versió nova de Bona Nota.",d.v)}).catch(()=>{})}
+ comprova(true);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){amagat=Date.now();return}
+  if(amagat&&Date.now()-amagat>DEU&&Date.now()-fet>DEU)comprova(!!C.tornaAuto)});
+ window.bnActualitza=()=>comprova(true); // per provar-ho a mà des de la consola
+})();
+/* ACTUALITZA:fi */
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+ --groc:#facc15;--groc-suau:#fef08a;--vermell:#b91c1c;--fons:#0b1033;--fons2:#131b4d;
+ --caixa:#101742;--caixa2:#162058;--vora:#ffffff26;--txt:#f1f5f9;--txt2:#cbd5e1;
+ --cian:#22d3ee;--verd:#4ade80;--coral:#fb7185;--lila:#c084fc
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+ font-family:Nunito,system-ui,-apple-system,Arial,sans-serif;
+ font-size:17px;line-height:1.58;color:var(--txt);
+ background:radial-gradient(1100px 620px at 50% -8%,#35267e 0%,#181654 38%,var(--fons) 72%) fixed,var(--fons);
+ overflow-x:clip
+}
+a,button,input,select,textarea{-webkit-tap-highlight-color:transparent;font-family:inherit}
+:is(a,button,input,select,textarea):focus-visible{outline:3px solid var(--cian);outline-offset:2px}
+.cel{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.42;
+ background-image:
+  radial-gradient(2px 2px at 14% 18%,#fff,transparent),
+  radial-gradient(2px 2px at 78% 12%,#fde047,transparent),
+  radial-gradient(1.5px 1.5px at 36% 42%,#fff,transparent),
+  radial-gradient(2px 2px at 88% 54%,#bae6fd,transparent),
+  radial-gradient(1.5px 1.5px at 22% 76%,#fff,transparent),
+  radial-gradient(2px 2px at 64% 82%,#fde047,transparent)}
+.barra-sup{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:16px 16px 0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.torna{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 16px;border-radius:999px;background:#ffffff14;border:1.5px solid #ffffff33;color:#fff;font-weight:900;font-size:15px;text-decoration:none;transition:transform .12s,border-color .12s}
+.torna:hover{transform:translateY(-1px);border-color:var(--groc)}
+.etiqueta-sup{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:#facc151f;border:1.5px solid #facc1566;color:var(--groc-suau);font-weight:900;font-size:13.5px}
+.demo-pill{display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:#22d3ee22;border:1.5px solid #22d3ee77;color:#a5f3fc;font-weight:900;font-size:12.5px}
+.demo-pill.on{display:inline-flex}
+header.hero{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 16px 14px;text-align:center}
+.hero h1{font-family:'Press Start 2P',monospace;font-size:clamp(17px,4.2vw,28px);line-height:1.45;margin:8px 0 14px;color:var(--groc);text-shadow:3px 3px 0 var(--vermell),0 6px 22px #0009}
+.hero .resum{max-width:660px;margin:0 auto;font-size:clamp(16px,2.2vw,18.5px);font-weight:700;color:#e2e8f0}
+main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:10px 16px 40px}
+.card{background:linear-gradient(180deg,var(--caixa2),var(--caixa));border:1.5px solid var(--vora);border-radius:22px;padding:22px;box-shadow:0 16px 40px #0007}
+.sec-lbl{display:block;font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--groc-suau);margin:0 0 10px}
+.cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.cat-bt{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border-radius:16px;background:#ffffff0a;border:2px solid #ffffff1f;transition:transform .12s,border-color .15s,background .15s}
+.cat-bt:hover{background:#ffffff14;border-color:#ffffff44;transform:translateY(-1px)}
+.cat-bt[aria-pressed="true"]{background:#facc151c;border-color:var(--groc);box-shadow:0 0 0 2px #facc1533}
+.cat-ic{font-size:24px;line-height:1.1;flex:none}
+.cat-bt b{display:block;font-size:15.5px;font-weight:900;color:#fff;line-height:1.25}
+.cat-bt small{display:block;font-size:13px;font-weight:700;color:var(--txt2);margin-top:2px;line-height:1.35}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.camp{margin-bottom:16px}
+.camp label{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14.5px;font-weight:900;color:#fff;margin-bottom:6px}
+.camp label .opt{font-size:12.5px;font-weight:700;color:var(--txt2)}
+.ctrl{width:100%;min-height:46px;padding:10px 14px;border-radius:13px;border:1.5px solid #ffffff30;background:#0b1033cc;color:#fff;font-size:16px;font-weight:700}
+.ctrl::placeholder{color:#94a3b8;font-weight:600}
+textarea.ctrl{min-height:132px;resize:vertical;line-height:1.5}
+.rols{display:flex;flex-wrap:wrap;gap:8px}
+.rol-bt{all:unset;box-sizing:border-box;cursor:pointer;min-height:42px;padding:7px 14px;border-radius:999px;background:#ffffff0d;border:1.5px solid #ffffff28;color:#e2e8f0;font-size:14.5px;font-weight:800;display:inline-flex;align-items:center;gap:6px;transition:border-color .15s,background .15s}
+.rol-bt[aria-pressed="true"]{background:#22d3ee22;border-color:var(--cian);color:#fff}
+.avis-menor{display:none;margin:10px 0 0;padding:11px 14px;border-radius:13px;background:#22d3ee14;border:1.5px solid #22d3ee55;color:#cffafe;font-size:14px;font-weight:700}
+.avis-menor.on{display:block}
+.compta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;font-size:13px;font-weight:700;color:var(--txt2)}
+.compta .ok{color:var(--verd)}.compta .err{color:var(--coral)}
+.trap{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+.err-box{display:none;margin:0 0 14px;padding:11px 14px;border-radius:13px;background:#fb71851f;border:1.5px solid #fb718577;color:#fecdd3;font-size:14.5px;font-weight:800}
+.err-box.on{display:block}
+.acc{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid #ffffff1c}
+.priv-nota{font-size:13px;font-weight:700;color:var(--txt2);max-width:460px}
+.btn-env{cursor:pointer;min-height:48px;padding:11px 24px;border:0;border-radius:14px;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:16px;box-shadow:0 4px 0 var(--vermell);transition:transform .1s,opacity .15s}
+.btn-env:hover{transform:translateY(-1px)}
+.btn-env:active{transform:translateY(2px);box-shadow:0 2px 0 var(--vermell)}
+.btn-env:disabled{opacity:.55;cursor:wait;transform:none}
+.fet-box{display:none;text-align:center;padding:18px 8px}
+.fet-box.on{display:block}
+.fet-ic{font-size:48px;margin-bottom:8px}
+.fet-box h2{margin:0 0 8px;font-size:24px;font-weight:900;color:var(--verd)}
+.fet-ref{display:inline-block;margin:4px 0 14px;padding:5px 14px;border-radius:999px;background:#4ade801f;border:1.5px solid #4ade8077;color:#bbf7d0;font-weight:900;font-size:14px;letter-spacing:.05em}
+.fet-box p{max-width:520px;margin:0 auto 20px;color:#e2e8f0;font-weight:700}
+.fet-acc{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.btn-sec{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 18px;border-radius:13px;background:#ffffff14;border:1.5px solid #ffffff33;color:#fff;font-weight:900;font-size:15px;text-decoration:none;cursor:pointer}
+.btn-sec:hover{border-color:var(--groc)}
+.info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+.info-c{background:#ffffff08;border:1px solid #ffffff1a;border-radius:16px;padding:14px}
+.info-c b{display:block;font-size:14.5px;font-weight:900;color:var(--groc-suau);margin-bottom:4px}
+.info-c p{margin:0;font-size:13.5px;color:var(--txt2);font-weight:700}
+footer{position:relative;z-index:1;text-align:center;padding:18px 16px 34px;color:var(--txt2);font-size:13.5px;font-weight:700}
+footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
+@media (max-width:720px){
+ .cats,.grid2,.info-grid{grid-template-columns:1fr}
+ .card{padding:16px}
+ .btn-env{width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="cel" aria-hidden="true"></div>
+
+<nav class="barra-sup" aria-label="Navegació">
+ <a class="torna" href="../">← Torna a Bona Nota</a>
+ <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+  <span class="demo-pill" id="demoPill">🧪 Mode demo local</span>
+  <span class="etiqueta-sup">✉️ Bústia privada</span>
+ </div>
+</nav>
+
+<header class="hero">
+ <h1>Contacte i suggeriments</h1>
+ <p class="resum">Has trobat un error en una pregunta o un joc, tens una idea per millorar Bona Nota o vols fer una consulta com a família o docent? Escriu-nos aquí.</p>
+</header>
+
+<main>
+ <section class="card" aria-label="Formulari de contacte i suggeriments">
+  <form id="fSug" novalidate>
+   <span class="sec-lbl">1 · De què es tracta?</span>
+   <div class="cats" role="group" aria-label="Categoria del missatge">
+    <button type="button" class="cat-bt" data-cat="error" aria-pressed="true">
+     <span class="cat-ic" aria-hidden="true">🐛</span>
+     <span><b>Error en una pregunta o joc</b><small>Falta d'ortografia, resposta dubtosa o error visual</small></span>
+    </button>
+    <button type="button" class="cat-bt" data-cat="idea" aria-pressed="false">
+     <span class="cat-ic" aria-hidden="true">💡</span>
+     <span><b>Idea o nou món</b><small>Proposa un tema nou de 1r d'ESO o una millora</small></span>
+    </button>
+    <button type="button" class="cat-bt" data-cat="familia" aria-pressed="false">
+     <span class="cat-ic" aria-hidden="true">👨‍👩‍👧</span>
+     <span><b>Consulta de família o docent</b><small>Dubtes sobre l'ús, el descans o el seguiment</small></span>
+    </button>
+    <button type="button" class="cat-bt" data-cat="privacitat" aria-pressed="false">
+     <span class="cat-ic" aria-hidden="true">🔒</span>
+     <span><b>Privacitat o perfil</b><small>Amagar/esborrar un nom o recuperar un PIN</small></span>
+    </button>
+   </div>
+
+   <div class="grid2">
+    <div class="camp" style="margin:0">
+     <label for="sMon">2 · Món relacionat <span class="opt">(opcional)</span></label>
+     <select id="sMon" class="ctrl">
+      <option value="">General / Tota la web</option>
+     </select>
+    </div>
+    <div class="camp" style="margin:0">
+     <label>3 · Qui escriu? <span class="opt">(opcional)</span></label>
+     <div class="rols" role="group" aria-label="Qui escriu">
+      <button type="button" class="rol-bt" data-rol="familia" aria-pressed="false">👨‍👩‍👧 Família</button>
+      <button type="button" class="rol-bt" data-rol="docent" aria-pressed="false">🎓 Docent</button>
+      <button type="button" class="rol-bt" data-rol="alumne" aria-pressed="false">🎒 Alumne/a</button>
+     </div>
+    </div>
+   </div>
+
+   <div class="avis-menor" id="avisMenor" role="note">
+    🛡️ <b>Consell de privacitat:</b> Si ets alumne/a, no escriguis el teu nom complet, cognoms ni telèfon. Si necessites resposta, demana a un adult que escrigui des del seu correu.
+   </div>
+
+   <div class="camp" style="margin-top:16px">
+    <label for="sMsg">4 · El teu missatge <span class="opt">(obligatori)</span></label>
+    <textarea id="sMsg" class="ctrl" maxlength="1500" required placeholder="Explica'ns què has trobat o què proposes amb el màxim de detall possible (per exemple, el tema o la pregunta concreta)…"></textarea>
+    <div class="compta">
+     <span id="sHint">Mínim 10 caràcters</span>
+     <span id="sLen">0 / 1.500</span>
+    </div>
+   </div>
+
+   <div class="camp" id="campEmail">
+    <label for="sMail">5 · Correu per rebre resposta <span class="opt">(opcional)</span></label>
+    <input id="sMail" type="email" class="ctrl" maxlength="160" autocomplete="email" placeholder="nom@exemple.cat (només si vols que et contestem)">
+   </div>
+
+   <!-- Camp honeypot anti-bots -->
+   <div class="trap" aria-hidden="true">
+    <label for="sWeb">Web</label>
+    <input id="sWeb" type="text" tabindex="-1" autocomplete="off">
+   </div>
+
+   <div class="err-box" id="errBox" role="alert"></div>
+
+   <div class="acc">
+    <span class="priv-nota">🔒 Els missatges són <b>privats</b>: no es publiquen enlloc i només els llegeix l'administració de Bona Nota.</span>
+    <button type="submit" class="btn-env" id="btEnvia">Envia el missatge ▶</button>
+   </div>
+  </form>
+
+  <div class="fet-box" id="fetBox" role="status">
+   <div class="fet-ic" aria-hidden="true">✅</div>
+   <h2>Missatge rebut! Moltes gràcies</h2>
+   <div class="fet-ref" id="fetRef">SUG-001</div>
+   <p id="fetTxt">Hem desat el teu suggeriment a la bústia privada de Bona Nota. El revisarem ben aviat.</p>
+   <div class="fet-acc">
+    <a class="btn-env" style="text-decoration:none;display:inline-flex;align-items:center" href="../">Torna a la portada ▶</a>
+    <button type="button" class="btn-sec" id="btUnAltre">Envia un altre missatge</button>
+   </div>
+  </div>
+ </section>
+
+ <section class="info-grid" aria-label="Com funciona la bústia">
+  <div class="info-c">
+   <b>🔒 Bústia 100 % privada</b>
+   <p>Cap missatge ni correu surt en públic. Només hi té accés l'equip que manté Bona Nota.</p>
+  </div>
+  <div class="info-c">
+   <b>⚡ Sense registre ni CAPTCHAs</b>
+   <p>Pots escriure directament en segons, fins i tot de manera anònima, sense crear cap compte.</p>
+  </div>
+  <div class="info-c">
+   <b>👨‍👩‍👧 Dubtes habituals?</b>
+   <p>També pots consultar la <a href="../pares/" style="color:var(--groc);font-weight:900">Guia per a les famílies</a> per veure com funciona tot.</p>
+  </div>
+ </section>
+</main>
+
+<footer>
+ <b>★</b> Bona Nota · contacte i suggeriments <b>★</b>
+ <small class="bn-versio">versió 2.79.0</small>
+</footer>
+
+<script>
+(function(){
+ const API="https://agippwtqvhpxdockuigl.supabase.co/rest/v1/rpc/bn_suggeriment_envia";
+ const KEY="sb_publishable_e0JKwY8VUWCagsm2OzzKpg_9pU_M94p";
+ const P=new URLSearchParams(location.search);
+ const DEMO=P.has("demo")||location.protocol==="file:";
+ if(DEMO)document.getElementById("demoPill").classList.add("on");
+
+ const T0=Date.now();
+ let CAT="error",ROL="";
+
+ const form=document.getElementById("fSug"),fetBox=document.getElementById("fetBox"),errBox=document.getElementById("errBox");
+ const sMon=document.getElementById("sMon"),sMsg=document.getElementById("sMsg"),sMail=document.getElementById("sMail"),sWeb=document.getElementById("sWeb");
+ const sLen=document.getElementById("sLen"),sHint=document.getElementById("sHint"),btEnvia=document.getElementById("btEnvia");
+ const avisMenor=document.getElementById("avisMenor"),campEmail=document.getElementById("campEmail");
+
+ function setCat(c){
+  if(!["error","idea","familia","privacitat"].includes(c))return;
+  CAT=c;
+  document.querySelectorAll(".cat-bt").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.cat===CAT)));
+ }
+ function setRol(r){
+  ROL=(ROL===r)?"":r;
+  document.querySelectorAll(".rol-bt").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.rol===ROL)));
+  const esAl=ROL==="alumne";
+  avisMenor.classList.toggle("on",esAl);
+  campEmail.hidden=esAl;
+  if(esAl)sMail.value="";
+ }
+ document.querySelectorAll(".cat-bt").forEach(b=>b.onclick=()=>setCat(b.dataset.cat));
+ document.querySelectorAll(".rol-bt").forEach(b=>b.onclick=()=>setRol(b.dataset.rol));
+
+ // Pre-selecció per paràmetres URL (?tipus=error&mon=prehistoria)
+ if(P.get("tipus"))setCat(P.get("tipus").toLowerCase());
+ const monParam=(P.get("mon")||"").toLowerCase().replace(/[^a-z0-9_-]/g,"");
+
+ // Carrega la llista de mons des de motor/mons.json
+ fetch("../motor/mons.json",{cache:"no-cache"}).then(r=>r.ok?r.json():[]).then(ll=>{
+  if(!Array.isArray(ll))return;
+  ll.slice().reverse().forEach(m=>{
+   const op=document.createElement("option");
+   op.value=m.dades;
+   op.textContent=`${m.ic||"📘"} ${m.titol} (${m.materia})`;
+   if(monParam&&m.dades===monParam)op.selected=true;
+   sMon.appendChild(op);
+  });
+ }).catch(()=>{});
+
+ function actualitzaLen(){
+  const n=sMsg.value.trim().length;
+  sLen.textContent=`${n.toLocaleString("ca-ES")} / 1.500`;
+  if(n===0){sHint.textContent="Mínim 10 caràcters";sHint.className=""}
+  else if(n<10){sHint.textContent=`Et falten ${10-n} caràcters`;sHint.className="err"}
+  else{sHint.textContent="✓ Llargada correcta";sHint.className="ok"}
+ }
+ sMsg.addEventListener("input",actualitzaLen);actualitzaLen();
+
+ function mostraErr(t){errBox.textContent=t;errBox.classList.toggle("on",!!t)}
+
+ function origenHash(){
+  try{
+   let k=localStorage.getItem("bn_sug_h");
+   if(!k){k="h"+Math.random().toString(36).slice(2,10)+Date.now().toString(36);localStorage.setItem("bn_sug_h",k)}
+   return k;
+  }catch(e){return "h_sessio"}
+ }
+
+ form.addEventListener("submit",async e=>{
+  e.preventDefault();mostraErr("");
+  const msg=sMsg.value.trim(),mail=ROL==="alumne"?"":sMail.value.trim();
+  if(msg.length<10){mostraErr("Escriu almenys 10 caràcters perquè puguem entendre bé el missatge.");sMsg.focus();return}
+  if(msg.length>1500){mostraErr("El missatge no pot superar els 1.500 caràcters.");sMsg.focus();return}
+  if(mail&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){mostraErr("Aquest correu electrònic no sembla vàlid. Revisa'l o deixa el camp buit.");sMail.focus();return}
+  if(!DEMO&&Date.now()-T0<1800){mostraErr("Espera un segon abans d'enviar el missatge.");return}
+
+  btEnvia.disabled=true;btEnvia.textContent="Enviant…";
+  try{
+   let res;
+   if(DEMO){
+    await new Promise(r=>setTimeout(r,260));
+    res={ok:true,ref:"SUG-DEMO"};
+   }else{
+    const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({
+     p_categoria:CAT,p_mon:sMon.value||null,p_rol:ROL||null,p_missatge:msg,p_email:mail||null,
+     p_origen_url:(document.referrer||location.pathname).slice(0,200),p_origen_hash:origenHash(),p_trap:sWeb.value||""
+    })});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    res=await r.json();
+   }
+   if(res&&res.ok){
+    form.hidden=true;
+    document.getElementById("fetRef").textContent=res.ref||"SUG-OK";
+    document.getElementById("fetTxt").textContent=mail
+     ?`Hem desat el teu missatge a la bústia privada. Si cal, et respondrem a ${mail}.`
+     :"Hem desat el teu missatge a la bústia privada de Bona Nota. El revisarem ben aviat.";
+    fetBox.classList.add("on");
+   }else{
+    const cod=res&&res.codi;
+    mostraErr(cod==="massa_rapid"?"Ja has enviat 3 missatges aquesta hora. Prova-ho una mica més tard."
+     :cod==="duplicat"?"Aquest missatge ja l'acabes d'enviar."
+     :cod==="email"?"El correu electrònic no sembla vàlid."
+     :"No s'ha pogut enviar ara mateix. Torna-ho a provar en uns segons.");
+   }
+  }catch(err){
+   mostraErr("No hem pogut connectar amb el servidor. Comprova la connexió i torna-ho a provar.");
+  }finally{
+   btEnvia.disabled=false;btEnvia.textContent="Envia el missatge ▶";
+  }
+ });
+
+ document.getElementById("btUnAltre").onclick=()=>{
+  sMsg.value="";sMail.value="";actualitzaLen();mostraErr("");
+  fetBox.classList.remove("on");form.hidden=false;sMsg.focus();
+ };
+})();
+</script>
+</body>
+</html>
