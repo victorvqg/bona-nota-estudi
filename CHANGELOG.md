@@ -5,6 +5,16 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.77.0 · 2026-11-27
+
+### Afegit
+- **Nou món: Ciències socials · La Prehistòria (1r ESO, 2n trimestre · Món 10 · `n3010`):**
+  - 8 fitxes en 4 blocs (orígens humans, paleolític, art rupestre cantàbric i llevantí, neolític, metalls, Península Ibèrica i Catalunya), 71 preguntes de test, 10 jocs interactius, 6 preguntes obertes, boss propi (*El Mamut de Pedra*) i 3 peces noves del Xat (`73–75`).
+  - **Laboratori Visual integrat (`visuals/prehistoria.html`):** 6 fitxes interactives (alliberament de la mà, Abric Romaní, Altamira vs. Ulldecona, revolució neolítica, estratigrafia/temps aC i fosa dels metalls) incrustades inline i en modal amb premi únic `+10 ⭐`.
+
+### Canviat
+- **Portada sempre amb 6 mons en gran (`index.html` · `n3010`):** la vista per defecte arrenca a «🗂️ Tots» (`TRIM_SEL = 0`) per mostrar sempre els 6 mons més recents independentment del trimestre, mantenint les pestanyes de filtre per trimestre.
+
 ## 2.76.5 · 2026-11-26
 
 ### Corregit

@@ -248,7 +248,10 @@ insert into bn_priv.xat_peces(id, tipus, text, nivell, mon) values
   (69, 'P', 'l''escala de Mohs', null, 'geosfera'),
   (70, 'P', 'els nombres negatius', null, 'enters'),
   (71, 'P', 'la regla dels signes', null, 'enters'),
-  (72, 'P', 'el valor absolut', null, 'enters')
+  (72, 'P', 'el valor absolut', null, 'enters'),
+  (73, 'P', 'l''Abric Romaní', null, 'prehistoria'),
+  (74, 'P', 'la revolució neolítica', null, 'prehistoria'),
+  (75, 'P', 'el dolmen', null, 'prehistoria')
 on conflict (id) do update set tipus = excluded.tipus, text = excluded.text, nivell = excluded.nivell, mon = excluded.mon;
 -- XAT-MONS:fi
 
