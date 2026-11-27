@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f325c06a73",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="4e4ebd5670",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -187,6 +187,12 @@ section.bloc h2{margin:0;font-size:clamp(20px,3.4vw,25px);font-weight:900;line-h
 .faq-cos{padding:0 16px 15px;font-size:15.5px;color:var(--txt2);line-height:1.56;border-top:1px solid #ffffff14;padding-top:12px}
 .faq-cos b{color:#fff}
 
+.punts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.punt-it{background:var(--caixa2);border:1.5px solid #ffffff1c;border-radius:14px;padding:12px 14px;font-size:15px;color:var(--txt2)}
+.punt-it b{display:block;color:#fff;font-size:15.5px;margin-bottom:3px}
+.punt-it em{font-style:normal;color:var(--groc-suau);font-weight:900}
+@media(max-width:760px){.punts-grid{grid-template-columns:1fr}}
+
 /* tancament i peu */
 .tancament{text-align:center;padding:8px 8px 4px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 .cta-portada{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:13px 22px;border-radius:16px;background:var(--groc);color:#1e1b4b;font-weight:900;font-size:16.5px;text-decoration:none;box-shadow:0 5px 0 var(--vermell),0 10px 24px #0008;transition:transform .12s;max-width:100%;text-align:center}
@@ -258,12 +264,12 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
  <section class="bloc" id="que-fa" aria-labelledby="t-quefa">
   <div class="sec-cap"><span class="sec-ic" aria-hidden="true">🧭</span><h2 id="t-quefa">Què fa el teu fill o filla quan hi entra?</h2></div>
-  <p class="sec-intro">Cada assignatura és un «món» dividit en temes curts. Dins de cada món, l'estudi segueix sempre sis passos pensats perquè primer entengui i després comprovi el que sap:</p>
+  <p class="sec-intro">Cada assignatura és un «món» organitzat per <b>trimestres</b> (1r T, 2n T…) i dividit en temes curts; a la portada sempre hi destaquen els <b>6 mons més recents</b>. Dins de cada món, l'estudi segueix sempre sis passos pensats perquè primer entengui i després comprovi el que sap:</p>
   <div class="passos">
    <article class="pas">
-    <div class="pas-cap"><span class="pas-num">1</span><h3>Fitxes clares i targetes giratòries</h3></div>
-    <p>Llegeix el resum ordenat del tema i gira targetes de pregunta i resposta per comprovar si ho ha entès abans de començar a puntuar.</p>
-    <div class="exemple">💡 Ideal per als primers 5 minuts d'estudi.</div>
+    <div class="pas-cap"><span class="pas-num">1</span><h3>Fitxes clares, targetes i Laboratoris Visuals</h3></div>
+    <p>Llegeix el resum ordenat del tema, gira targetes de pregunta i resposta i, als mons visuals (com Clima, Geosfera, Nombres enters o Prehistòria), experimenta amb un <b>🧪 Laboratori Visual de 6 fitxes interactives</b> abans de començar a puntuar.</p>
+    <div class="exemple">💡 Ideal per als primers 5–10 minuts d'estudi.</div>
    </article>
    <article class="pas">
     <div class="pas-cap"><span class="pas-num">2</span><h3>Tests amb un llistó exigent (cal un 70 %)</h3></div>
@@ -304,6 +310,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
      <li>Tornar un altre dia a corregir els errors pendents fins a deixar-los apresos.</li>
      <li>Redactar respostes obertes ben explicades amb frases completes.</li>
      <li>Superar preguntes especialment difícils i millorar la pròpia nota d'un tema.</li>
+     <li>Completar les 6 fitxes d'un <b>Laboratori Visual</b> (premi únic de <b>+10 ⭐</b> per món).</li>
     </ul>
    </div>
    <div class="col-caixa col-no">
@@ -312,13 +319,25 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
      <li>Repetir el mateix test deu vegades seguides per inflar el marcador (té límit diari).</li>
      <li>Estar molta estona amb la pantalla oberta: els minuts no donen cap estrella.</li>
      <li>Respondre de pressa i a l'atzar sense llegir els enunciats.</li>
-     <li>Copiar i enganxar textos a les preguntes obertes.</li>
+     <li>Copiar i enganxar textos a les preguntes obertes o repetir un Laboratori Visual ja fet.</li>
     </ul>
+   </div>
+  </div>
+  <div class="mirades" style="margin-bottom:14px">
+   <h3>Com es guanyen les estrelles ⭐ (de forma transparent)</h3>
+   <p>Cada estrella surt d'una fita d'aprenentatge concreta, amb topalls diaris per jugar net. Hi ha <b>10 nivells</b> progressius, des d'<i>Aprenent</i> (0 ⭐) fins a <i>Llegenda d'or</i> (330 ⭐):</p>
+   <div class="punts-grid">
+    <div class="punt-it"><b>✅ Tests i 🎮 jocs</b>Encertar una pregunta nova avui sense pista dona <em>+1 ⭐</em>.</div>
+    <div class="punt-it"><b>🔁 Repàs d'errors</b><em>+1 ⭐</em> per error corregit i <em>+2 ⭐</em> quan queda «Error après» (3 dies diferents; màx. 10 ⭐/dia).</div>
+    <div class="punt-it"><b>✍️ Preguntes obertes</b><em>+1 ⭐</em> per idea ben explicada, <b>Triple combo</b> (×3 <em>+3 ⭐</em> · ×6 <em>+5 ⭐</em>) i <em>+1 ⭐</em> per resposta de 10.</div>
+    <div class="punt-it"><b>🔥 Combos de precisió</b>Ratxa sense fallar (×5 <em>+1 ⭐</em> · ×10 <em>+2 ⭐</em>) i <b>Super combo de difícils</b> (3 seguides <em>+3 ⭐</em> · 5 <em>+5 ⭐</em>; màx. 10 ⭐/dia).</div>
+    <div class="punt-it"><b>🎯 Missions, 🏅 rècords i 🧪 Laboratori</b>3 missions diàries (<em>+3 ⭐</em> cadascuna · <em>+5 ⭐</em> totes 3), rècord millorat (<em>+2 ⭐</em>) i Laboratori Visual complet (<em>+10 ⭐</em> un sol cop).</div>
+    <div class="punt-it"><b>👾 Boss final del món</b>Superar el repte final del món dona <em>+20 ⭐</em> (més <em>+1 ⭐</em> per cada cor conservat).</div>
    </div>
   </div>
   <div class="mirades">
    <h3>Un rànquing pensat per motivar també qui va darrere</h3>
-   <p>En comptes d'una llista única on sempre surten els mateixos o on es mesura qui hi dedica més hores, les hores i els minuts <b>no es mostren mai en públic</b>. El rànquing té 5 pestanyes perquè tothom tingui un espai on veure reconegut el seu avenç:</p>
+   <p>Les hores i els minuts <b>no es mostren mai en públic</b>, només compten els mons dels <b>últims 120 dies</b> i les estrelles tenen límit diari per jugar net. A més, el rànquing té <b>5 mirades</b> i reconeixements setmanals (<b>🏆 Premis de la colla</b>: <i>Constància</i>, <i>Remuntada</i>, <i>Explorador</i> i <i>Companyia</i>) perquè tothom pugui veure reconegut el seu esforç:</p>
    <div class="xips-ranquing">
     <span class="xip-r"><b>Estrelles:</b> feina acumulada</span>
     <span class="xip-r"><b>Dies:</b> constància en dies diferents</span>
@@ -370,9 +389,9 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
    <div class="baf"><small>Humor de classe</small><q>Quin dia: la calculadora sense piles</q><span>Per riure una mica, sempre sobre coses quotidianes o d'un mateix.</span></div>
   </div>
   <ul class="llista-neta">
-   <li><b>Catàleg 100 % tancat:</b> només es poden combinar 26 frases fixes amb 66 peces predefinides. Ni lletres lliures, ni emojis lliures, ni fotos, ni missatges privats.</li>
+   <li><b>Catàleg 100 % tancat:</b> només es poden combinar <b>46 frases fixes</b> amb <b>96 peces</b> d'estudi (3 per cada món), <b>12 respostes ràpides</b>, <b>16 rematades</b> opcionals i <b>4 reaccions positives</b> (🔥 😂 💪 👑). Ni teclat lliure, ni fotos, ni missatges privats, ni podi dins la pestanya del xat.</li>
    <li><b>La regla d'or contra les burles:</b> les frases estan construïdes de manera que el nom d'un altre alumne només es pot posar en missatges de felicitació, d'ànim o de repte sa. És impossible insultar o ridiculitzar ningú.</li>
-   <li><b>Parlar es guanya estudiant:</b> cada <b>10 ⭐ fetes avui</b> donen dret a dir 1 frase, amb un màxim de <b>5 frases al dia</b> (sense gastar mai les estrelles guanyades), i a la nit es tanca automàticament.</li>
+   <li><b>Parlar es guanya estudiant:</b> cada <b>5 ⭐ fetes avui</b> donen dret a dir 1 frase, amb un màxim de <b>10 frases al dia</b> (sense gastar mai les estrelles guanyades), i a la nit es tanca automàticament.</li>
   </ul>
  </section>
 
@@ -398,6 +417,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
    </div>
   </div>
   <div class="destacat" style="margin-top:14px">👀 <b>Mode tast anònim per a famílies i curiosos:</b> podeu entrar a qualsevol assignatura sense escriure cap nom ni codi PIN per provar el primer tema, el primer joc i veure una pregunta d'examen per dins. En aquest mode <b>no es guarda res a l'aparell, no s'esborra la sessió de cap germà i mai no surt cap nom ni estrella al rànquing</b>.</div>
+  <div class="destacat" style="margin-top:12px">✉️ <b>Bústia privada de contacte:</b> si voleu fer una consulta, demanar que s'amagui un nom o avisar d'un error, podeu escriure a la <a href="../suggeriments/?tipus=familia" style="color:var(--groc);font-weight:900">Bústia privada de suggeriments →</a> sense registrar-vos. Els missatges <b>mai no es publiquen</b> i, si hi escriu un alumne, no se li demana cap correu ni dada personal.</div>
  </section>
 
  <section class="bloc" id="a-casa" aria-labelledby="t-casa">
@@ -435,8 +455,12 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
     <div class="faq-cos">Perquè en un test curt de 3 opcions és fàcil encertar alguna pregunta per descart. Demanar un <b>70 % (5 encerts de 6)</b> garanteix que quan un tema surt com a aprovat, l'alumne el domina de debò. Sempre el pot tornar a intentar amb preguntes noves i sense perdre res.</div>
    </details>
    <details>
+    <summary>Què són els Laboratoris Visuals que surten en alguns mons?</summary>
+    <div class="faq-cos">Són <b>6 fitxes manipulatives i interactives</b> integrades dins del temari (per exemple, les capes de la Terra, la recta dels nombres enters, el clima o la Prehistòria) perquè puguin tocar i comprovar com funcionen els conceptes abans de fer el test. Completar totes 6 fitxes atorga un <b>premi únic de +10 ⭐</b> per món (no repetible).</div>
+   </details>
+   <details>
     <summary>Què passa si oblida el seu codi PIN?</summary>
-    <div class="faq-cos">No perd mai les seves estrelles ni el progrés guardat. L'administrador li pot reiniciar només el PIN perquè, el pròxim cop que entri amb el seu nom, en triï un de nou (us recomanem apuntar-lo junts en un lloc segur de casa).</div>
+    <div class="faq-cos">No perd mai les seves estrelles ni el progrés guardat. Podeu demanar que li reiniciem només el PIN des de la <a href="../suggeriments/?tipus=privacitat" style="color:var(--groc);font-weight:900">Bústia privada de contacte</a> perquè, el pròxim cop que entri amb el seu nom, en triï un de nou (us recomanem apuntar-lo junts en un lloc segur de casa).</div>
    </details>
    <details>
     <summary>Pot començar a la tauleta i continuar després al mòbil o a l'ordinador?</summary>
@@ -469,6 +493,6 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
 </main>
 
-<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.79.0</small></footer>
+<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.79.1</small></footer>
 </body>
 </html>
