@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5bcaf2af13",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="93ffad4a6b",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -208,7 +208,11 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
    </div>
 
    <div class="avis-menor" id="avisMenor" role="note">
-    🛡️ <b>Consell de privacitat:</b> Si ets alumne/a, no escriguis el teu nom complet, cognoms ni telèfon. Si necessites resposta, demana a un adult que escrigui des del seu correu.
+    🛡️ <b>Consell de privacitat:</b> Si ets alumne/a, no escriguis el teu nom complet, cognoms ni telèfon. Si necessites resposta o reiniciar un PIN, demana al teu pare, mare o tutor/a que escrigui des del seu correu.
+   </div>
+
+   <div class="avis-menor" id="avisPriv" role="note" style="background:#facc1516;border-color:#facc1566;color:#fef9c3">
+    🔒 <b>Verificació de seguretat:</b> Si demanes reiniciar un PIN o gestionar un perfil, indica el <b>nom d'usuari</b>, el <b>dispositiu habitual</b> i l'<b>últim món</b> que ha treballat perquè puguem comprovar que ets tu, i escriu el <b>correu electrònic del pare, mare o tutor/a</b>.
    </div>
 
    <div class="camp" style="margin-top:16px">
@@ -221,7 +225,7 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
    </div>
 
    <div class="camp" id="campEmail">
-    <label for="sMail">5 · Correu per rebre resposta <span class="opt">(opcional)</span></label>
+    <label for="sMail" id="lblMail">5 · Correu per rebre resposta <span class="opt">(opcional)</span></label>
     <input id="sMail" type="email" class="ctrl" maxlength="160" autocomplete="email" placeholder="nom@exemple.cat (només si vols que et contestem)">
    </div>
 
@@ -269,7 +273,7 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
 
 <footer>
  <b>★</b> Bona Nota · contacte i suggeriments <b>★</b>
- <small class="bn-versio">versió 2.79.2</small>
+ <small class="bn-versio">versió 2.79.3</small>
 </footer>
 
 <script>
@@ -286,20 +290,32 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
  const form=document.getElementById("fSug"),fetBox=document.getElementById("fetBox"),errBox=document.getElementById("errBox");
  const sMon=document.getElementById("sMon"),sMsg=document.getElementById("sMsg"),sMail=document.getElementById("sMail"),sWeb=document.getElementById("sWeb");
  const sLen=document.getElementById("sLen"),sHint=document.getElementById("sHint"),btEnvia=document.getElementById("btEnvia");
- const avisMenor=document.getElementById("avisMenor"),campEmail=document.getElementById("campEmail");
+ const avisMenor=document.getElementById("avisMenor"),avisPriv=document.getElementById("avisPriv"),campEmail=document.getElementById("campEmail"),lblMail=document.getElementById("lblMail");
 
+ function actualitzaVisibilitat(){
+  const esPriv=CAT==="privacitat",esAl=ROL==="alumne";
+  avisPriv.classList.toggle("on",esPriv);
+  avisMenor.classList.toggle("on",esAl);
+  campEmail.hidden=esAl&&!esPriv;
+  if(esAl&&!esPriv)sMail.value="";
+  if(esPriv){
+   lblMail.innerHTML='5 · Correu del pare, mare o tutor/a <span class="opt" style="color:var(--groc-suau)">(obligatori)</span>';
+   sMail.placeholder="correu.familia@exemple.cat (obligatori per verificar el PIN o perfil)";
+  }else{
+   lblMail.innerHTML='5 · Correu per rebre resposta <span class="opt">(opcional)</span>';
+   sMail.placeholder="nom@exemple.cat (només si vols que et contestem)";
+  }
+ }
  function setCat(c){
   if(!["error","idea","familia","privacitat"].includes(c))return;
   CAT=c;
   document.querySelectorAll(".cat-bt").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.cat===CAT)));
+  actualitzaVisibilitat();
  }
  function setRol(r){
   ROL=(ROL===r)?"":r;
   document.querySelectorAll(".rol-bt").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.rol===ROL)));
-  const esAl=ROL==="alumne";
-  avisMenor.classList.toggle("on",esAl);
-  campEmail.hidden=esAl;
-  if(esAl)sMail.value="";
+  actualitzaVisibilitat();
  }
  document.querySelectorAll(".cat-bt").forEach(b=>b.onclick=()=>setCat(b.dataset.cat));
  document.querySelectorAll(".rol-bt").forEach(b=>b.onclick=()=>setRol(b.dataset.rol));
@@ -341,9 +357,11 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
 
  form.addEventListener("submit",async e=>{
   e.preventDefault();mostraErr("");
-  const msg=sMsg.value.trim(),mail=ROL==="alumne"?"":sMail.value.trim();
+  const esPriv=CAT==="privacitat";
+  const msg=sMsg.value.trim(),mail=(ROL==="alumne"&&!esPriv)?"":sMail.value.trim();
   if(msg.length<10){mostraErr("Escriu almenys 10 caràcters perquè puguem entendre bé el missatge.");sMsg.focus();return}
   if(msg.length>1500){mostraErr("El missatge no pot superar els 1.500 caràcters.");sMsg.focus();return}
+  if(esPriv&&!mail){mostraErr("Per reiniciar un PIN o gestionar un perfil cal indicar el correu electrònic del pare, mare o tutor/a.");sMail.focus();return}
   if(mail&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){mostraErr("Aquest correu electrònic no sembla vàlid. Revisa'l o deixa el camp buit.");sMail.focus();return}
   if(!DEMO&&Date.now()-T0<1800){mostraErr("Espera un segon abans d'enviar el missatge.");return}
 
@@ -355,7 +373,7 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
     res={ok:true,ref:"SUG-DEMO"};
    }else{
     const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({
-     p_categoria:CAT,p_mon:sMon.value||null,p_rol:ROL||null,p_missatge:msg,p_email:mail||null,
+     p_categoria:CAT,p_mon:sMon.value||null,p_rol:(esPriv&&ROL==="alumne")?"familia":(ROL||null),p_missatge:msg,p_email:mail||null,
      p_origen_url:(document.referrer||location.pathname).slice(0,200),p_origen_hash:origenHash(),p_trap:sWeb.value||""
     })});
     if(!r.ok)throw new Error("HTTP "+r.status);
