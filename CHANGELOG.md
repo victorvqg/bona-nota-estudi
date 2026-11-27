@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.78.0 · 2026-11-27
+
+### Canviat
+- **Nova pàgina Activitat → Gràfics 2.0 al tauler `/admin/` (`admin/index.html` · `n3012`):**
+  - Barra de filtres globals: Trimestre (`Tots · 1r T · 2n T`), Món, comparativa d'1 a 5 alumnes amb xips, granularitat (`Per dia · Per setmana`), exclusió de comptes ocults/prova (`Amaga ocults`) i franja de 4 KPIs resum.
+  - **Activitat d'estudi:** barres totals + línia d'alumnes actius (sense llegenda de 40 noms) i toggle `Totals + actius` / `Top 5 + Altres`.
+  - **Evolució de les notes:** banda estadística `P25–P75` + mediana de la classe (fi del *spaghetti chart*) i línies individuals nítides en comparar 1–5 alumnes.
+  - **Quan estudien, Constància i Orígens:** mapa de calor sense talls amb badge `🔥 Pic`, mini-distribució de notes, constància accionable (`Top 10 / Tots / A vigilar` + cerca + clic per filtrar), i evolució d'estrelles amb `Top 5 + Altres`, escala `%`, tooltip polit i barres clicables.
+
 ## 2.77.1 · 2026-11-27
 
 ### Afegit
