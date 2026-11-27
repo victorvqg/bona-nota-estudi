@@ -4096,7 +4096,7 @@ function pintaEvo(id){const st=EVO_STAT[id],box=$("#"+id+"Box");if(!st||!box)ret
  const esBanda=noms.length>5&&!(Array.isArray(st.sel)&&st.sel.length>0&&st.sel.length<=5);
  const apPc=ll.length?Math.round(ll.filter(e=>+e.pc>=70).length*100/ll.length):0;
  box.innerHTML=`<div class="evo-bar"><div class="evo-filts" role="group" aria-label="Filtra per nota">${EVO_FILTS.map(x=>`<button type="button" class="evo-f" data-ef="${x.k}" aria-pressed="${x.k===f.k}">${esc(x.t)}</button>`).join("")}</div>
-  <span class="evo-res">${ll.length?`${pl(noms.length,"alumne","alumnes")} · ${pl(ll.length,"nota","notes")} · ${apPc}% aprovats${esBanda?" · banda P25–P75":""}`:"Cap nota en aquest filtre"}</span></div>
+  <span class="evo-res">${ll.length?`${pl(noms.length,"nen","nens")} · ${pl(ll.length,"nota","notes")}${esBanda?` · ${apPc}% aprovats · banda P25–P75`:""}`:"Cap nota en aquest filtre"}</span></div>
   <div class="cv cv-evo"${ll.length?"":" hidden"}><canvas id="${esc(id)}" aria-label="Gràfic de l'evolució de les notes" role="img"></canvas></div>
   <div class="evo-buit"${ll.length?" hidden":""}>${buit("puja",`Cap nota compleix el filtre «${f.t}».`)}</div>`;
  box.querySelectorAll("[data-ef]").forEach(b=>{b.onclick=()=>{const nf=b.dataset.ef;st.filtre=nf;pintaEvo(id);

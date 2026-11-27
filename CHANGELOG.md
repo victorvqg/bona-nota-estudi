@@ -7,7 +7,7 @@ Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir d
 
 ## 2.78.0 · 2026-11-27
 
-### Millorat
+### Canviat
 - **Nova pàgina Activitat → Gràfics 2.0 al tauler `/admin/` (`admin/index.html` · `n3012`):**
   - Barra de filtres globals: Trimestre (`Tots · 1r T · 2n T`), Món, comparativa d'1 a 5 alumnes amb xips, granularitat (`Per dia · Per setmana`), exclusió de comptes ocults/prova (`Amaga ocults`) i franja de 4 KPIs resum.
   - **Activitat d'estudi:** barres totals + línia d'alumnes actius (sense llegenda de 40 noms) i toggle `Totals + actius` / `Top 5 + Altres`.
