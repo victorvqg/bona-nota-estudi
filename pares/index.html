@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="4e4ebd5670",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5bcaf2af13",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -283,7 +283,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
    </article>
    <article class="pas">
     <div class="pas-cap"><span class="pas-num">4</span><h3>Explicar-ho amb les seves paraules (i en paper)</h3></div>
-    <p>A les preguntes obertes ha d'escriure frases amb sentit: no es deixa copiar i enganxar ni posar llistes de paraules soltes. A matemàtiques, fins i tot pot fer l'exercici <b>a la llibreta de paper</b> i fer-ne una foto perquè l'app li digui quina és la primera línia equivocada, sense donar-li el resultat fet.</p>
+    <p>A les preguntes obertes ha d'escriure frases amb sentit: no es deixa copiar i enganxar ni posar llistes de paraules soltes. A matemàtiques, pot practicar cada pas al taller guiat mentre fa les operacions <b>a la llibreta de paper</b> del costat.</p>
     <div class="exemple">✍️ Combina pantalla i escriptura real a la llibreta.</div>
    </article>
    <article class="pas">
@@ -408,8 +408,8 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
     <p>No es pugen fotos de perfil: cadascú tria un animalet i una insígnia. El progrés es protegeix amb un codi PIN de <b>4 números i 1 lletra</b> (amb bloqueig temporal si algú intenta endevinar-lo).</p>
    </div>
    <div class="item-p">
-    <h3>Les fotos de la llibreta no es desen</h3>
-    <p>Quan es fa una foto d'un exercici de matemàtiques per revisar els passos, la imatge s'analitza al moment i <b>no queda desada enlloc</b>.</p>
+    <h3>Zero càmera i zero micròfon</h3>
+    <p>L'aplicació <b>no demana mai accés a la càmera ni al micròfon</b> del dispositiu, ni puja cap fotografia ni fitxer dels alumnes.</p>
    </div>
    <div class="item-p">
     <h3>Sense anuncis ni tercers comercials</h3>
@@ -493,6 +493,6 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
 </main>
 
-<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.79.1</small></footer>
+<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.79.2</small></footer>
 </body>
 </html>
