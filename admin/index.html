@@ -242,6 +242,14 @@ dialog::backdrop{background:rgba(15,23,42,.55)}
 .dlg-c input,.dlg-c select{width:100%}
 .dlg-p{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding:12px 24px;border-top:1px solid var(--border);background:var(--card2);border-radius:0 0 var(--r2) var(--r2)}
 .dlg-c .irreversible{display:flex;gap:8px;align-items:center;color:var(--bad);font-weight:600;font-size:13px;margin:12px 0 0}
+.dlg-c h2.dlg-ok .ic{color:var(--primary)}
+.pin-codi{font:800 28px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:6px;text-align:center;padding:14px 18px;border-radius:var(--r1);background:var(--card2);border:2px dashed var(--primary);color:var(--text);margin:10px 0 12px;user-select:all}
+.pin-row{display:flex;gap:8px;align-items:stretch}
+.pin-row input{flex:1;min-width:0;font:700 18px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:4px;text-transform:uppercase}
+.pin-chk{display:flex!important;gap:8px;align-items:flex-start;cursor:pointer;font-weight:600;font-size:13.5px;margin:12px 0 8px!important}
+.pin-chk input[type="checkbox"]{width:auto!important;margin-top:2px;flex:none}
+.pin-acc{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pin-bustia{padding:12px 14px;border-radius:var(--r1);background:var(--card2);border:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
 /* fitxa del nen */
 .fitxa-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 12px}
 .fitxa-sel{display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:100%}
@@ -1421,10 +1429,12 @@ function nens(ls){ls=ls||LOGS;const m={};ls.forEach(l=>{const k=clauNen(l);const
  afegeixFonts(n.fonts,l)});
  return Object.entries(m).map(([k,n])=>({k,...n,dies:n.diesSet.size,ratxa:ratxaDeDies(n.diesSet)})).sort((a,b)=>b.ult.localeCompare(a.ult))}
 const mitj=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
-// estat de cada nen (amagat, PIN, PIN nou) amb la mateixa crida que la fitxa (bn_admin_usuari 'estat'); es guarda fins a tornar a carregar
+// estat de cada nen (amagat, PIN, PIN nou, PIN temporal, bloquejat) amb la mateixa crida que la fitxa (bn_admin_usuari 'estat'); es guarda fins a tornar a carregar
 function estatDe(nom){const k=nom.trim().toLowerCase();if(!(k in ESTATS))ESTATS[k]=rpcU(nom,"estat").catch(()=>null);return ESTATS[k]}
-const txtPin=v=>v==null?"—":v&2?(v&4?"PIN nou":"PIN antic"):"Sense PIN";
-const pillPin=v=>v==null?`<span class="muted">…</span>`:v&2?(v&4?`<span class="pill ok">${ic("escut")}PIN nou</span>`:`<span class="pill warn" title="Encara té el PIN antic de 4 números: se li demanarà canviar-lo quan entri">PIN antic</span>`):`<span class="pill neutre">Sense PIN</span>`;
+const txtPin=v=>v==null?"—":(v&2?(v&8?"PIN temporal":(v&4?"PIN nou":"PIN antic")):"Sense PIN")+(v&16?" · Bloquejat":"");
+const pillPin=v=>{if(v==null)return `<span class="muted">…</span>`;
+ const base=v&2?(v&8?`<span class="pill warn" title="PIN temporal assignat per l'admin: el nen haurà de triar el seu PIN personal en entrar">${ic("clau")}PIN temporal</span>`:v&4?`<span class="pill ok">${ic("escut")}PIN nou</span>`:`<span class="pill warn" title="Encara té el PIN antic de 4 números: se li demanarà canviar-lo quan entri">PIN antic</span>`):`<span class="pill neutre">Sense PIN</span>`;
+ return base+(v&16?` <span class="pill bad" title="Bloquejat 15 minuts per 5 intents fallits">🔒 Bloquejat</span>`:"")};
 
 // ====================== COMPONENT ÚNIC DE TAULA (màx 8 columnes, ~36 px, ordenació, cerca local i CSV) ======================
 const TAULES={};
@@ -1626,7 +1636,7 @@ function detall(k,manté){k=String(k||"").trim().toLowerCase();
   <section class="perill-z" aria-labelledby="zpT"><h2 id="zpT">${ic("alerta")}Gestió del compte</h2><p>Aquests canvis afecten la base de dades de veritat. Les accions que esborren demanen confirmació i fan còpia prèvia.</p>
    <div class="pz-fila"><div><b>Canviar el nom</b><p>Canvia el nom al registre i al rànquing. Si poses el nom d'un altre nen, s'ajunten.</p></div><div><button class="btn sec" type="button" id="canvia"${nd}>${ic("llapis")}Canvia el nom</button>${ndTxt}</div></div>
    <div class="pz-fila"><div><b>Rànquing</b><p id="amagaTxt">Mostrar-lo o amagar-lo del rànquing de la portada.</p></div><div><button class="btn sec" type="button" id="amaga"${nd}>${ic("ullno")}<span>Amaga del rànquing</span></button>${ndTxt}</div></div>
-   <div class="pz-fila"><div><b>Treure el PIN</b><p>El progrés al núvol es manté; el nen podrà posar-se un PIN nou des del seu dispositiu.</p></div><div><button class="btn perill-sec" type="button" id="treupin" disabled title="${DEMO?"No disponible en demo":"Comprovant si té PIN…"}">${ic("clau")}Treu el PIN</button>${ndTxt}</div></div>
+   <div class="pz-fila"><div><b>Generar o canviar el PIN</b><p id="pinGestTxt">Assigna un PIN temporal o definitiu sense perdre el progrés al núvol, l'ID ni l'avatar arcade. També aixeca qualsevol bloqueig d'intents.</p></div><div class="pin-acc"><button class="btn sec" type="button" id="generapin">${ic("clau")}Genera PIN nou</button><button class="btn sec" type="button" id="desbloqpin" hidden>${ic("escut")}Desbloqueja intents</button></div></div>
    <div class="pz-fila"><div><b>Esborrar el progrés</b><p>Esborra les estrelles, els tests, els jocs i el temps d'un món o de tots. El nen es queda amb el nom i el PIN.</p></div><div><button class="btn perill-sec" type="button" id="reinicia"${nd}>${ic("reinicia")}Esborra el progrés</button>${ndTxt}</div></div>
    <div class="pz-fila"><div><b>Esborrar el nen del tot</b><p>Treu el nen sencer: registre d'activitat, PIN i progrés de tots els mons.</p></div><div><button class="btn perill" type="button" id="esborra"${nd}>${ic("paperera")}Esborra el nen</button>${ndTxt}</div></div>
    <div id="gest" aria-live="polite"></div></section></div></section>`;
@@ -1648,9 +1658,16 @@ function detall(k,manté){k=String(k||"").trim().toLowerCase();
   else $("#amagaTxt").textContent="Ara surt al rànquing de la portada.";
   const xp=$("#xPin");if(xp)xp.innerHTML=pillPin(v);
   const xa=$("#xAmagat");if(xa)xa.innerHTML=v&1?`<span class="pill warn">${ic("ullno")}Amagat del rànquing</span>`:"";
-  const tp=$("#treupin");if(tp){if(v&2&&!DEMO){tp.disabled=false;tp.title=""}else if(!(v&2)){tp.title=DEMO?"No disponible en demo":"No té PIN";const p=tp.closest(".pz-fila").querySelector("p");if(p&&!DEMO)p.textContent="No té PIN: no hi ha res a treure."}}}).catch(()=>{});
- if(DEMO)return; // en demo no es pot fer cap acció de gestió
- $("#treupin").onclick=async()=>{if(await dialeg({titol:`Treure el PIN de ${n.nom}?`,ok:"Sí, treu-lo",icona:"clau",cos:`<p>S'esborrarà el PIN de <b>${esc(n.nom)}</b>.</p><ul><li>El progrés al núvol es manté.</li><li>El nen podrà posar-se un PIN nou des del seu dispositiu.</li></ul>`}))usuari(n.nom,"treupin")};
+  const gpTxt=$("#pinGestTxt"),db=$("#desbloqpin");
+  if(db)db.hidden=!(v&16);
+  if(gpTxt){
+   if(v&16)gpTxt.textContent="Ara està bloquejat per 5 intents fallits. Pots desbloquejar-lo o generar-li un PIN nou.";
+   else if(v&8)gpTxt.textContent="Té un PIN temporal pendent que el nen triï el seu PIN personal en entrar. Pots generar-ne un altre si cal.";
+   else if(!(v&2))gpTxt.textContent="Encara no té PIN. Pots assignar-li un PIN temporal o definitiu directament des d'aquí.";
+  }}).catch(()=>{});
+ $("#generapin").onclick=()=>obreModalPin(n.nom,{onDone:()=>{delete ESTATS[k];NUV=null;detall(k,true)}});
+ $("#desbloqpin").onclick=()=>desbloquejaIntents(n.nom,()=>{delete ESTATS[k];detall(k,true)});
+ if(DEMO)return; // en demo la resta d'accions destructives no s'executen
  $("#amaga").onclick=()=>usuari(n.nom,$("#amaga").dataset.a||"amaga");
  $("#canvia").onclick=async()=>{const d=$("#dlg");d.innerHTML=`<form method="dialog" id="fc"><div class="dlg-c"><h2 id="dlgT">${ic("llapis")}Canviar el nom de ${esc(n.nom)}</h2><label for="nou">Nom nou</label><input id="nou" maxlength="40" value="${esc(n.nom)}" required><p style="margin-top:10px">Canvia el nom al registre i al rànquing. Si poses el nom d'un altre nen, s'ajunten.</p></div><div class="dlg-p"><button class="btn sec" value="no" type="submit" formnovalidate>Cancel·la</button><button class="btn" value="si" type="submit">Desa</button></div></form>`;
   d.onclose=async()=>{if(d.returnValue!=="si")return;const nou=(d.querySelector("#nou").value||"").trim().replace(/\s+/g," ");if(!nou||nou===n.nom)return;await usuari(n.nom,"canvia",nou)};d.returnValue="";d.showModal();const i=d.querySelector("#nou");i.focus();i.select()};
@@ -1855,7 +1872,7 @@ async function recullInformeNen(n,ls){
  const nuvErr=nuvRes&&nuvRes.__err?String(nuvRes.__err):null,nuv=!nuvErr?oB(nuvRes):null;
  const pf=nuv&&nuv.perfil&&typeof nuv.perfil==="object"&&!Array.isArray(nuv.perfil)?nuv.perfil:null;
  const idNum=IDS[n.k]??nN(pf&&pf.id);
- const pinTxt=pf?(nN(pf.pin_v)===2?"PIN nou (4 números i 1 lletra)":"PIN antic (4 números)"):txtPin(estBit);
+ const pinTxt=pf?(pf.pin_temp?"PIN temporal (pendent de canvi)":(nN(pf.pin_v)===2?"PIN nou (4 números i 1 lletra)":"PIN antic (4 números)")):txtPin(estBit);
  const amagat=!!((nuv&&nuv.amagat===true)||(estBit!=null&&(estBit&1)));
  const altaTxt=pf?(msS(pf.creat)||"d'abans"):"—",pinDataTxt=pf&&msS(pf.pin_ts)?msL(pf.pin_ts):null;
  const asp=ASPECTES[n.k]||{};
@@ -2513,7 +2530,7 @@ let NUV_PL=null;
 function htmlNuvol(d){d=oB(d);NUV_PL=null;const pf=d.perfil&&typeof d.perfil==="object"&&!Array.isArray(d.perfil)?d.perfil:null,mons=aR(d.mons).filter(m=>m&&typeof m==="object"&&!Array.isArray(m));
  const xi=(t,v,tt)=>`<span class="xip"${tt?` title="${esc(tt)}"`:""}>${t}${v!=null?` <b>${v}</b>`:""}</span>`;
  const id=nN(pf&&pf.id),pv=nN(pf&&pf.pin_v),estMax=mons.length?Math.max(0,...mons.map(m=>nN(m.punts)||0)):null;
- const cap=`<div class="nv-perfil">${pf?[id!=null?xi(`#${id}`,null,"Número d'identificació"):"",pv===2?`<span class="pill ok">${ic("escut")}PIN nou</span>`:`<span class="pill warn" title="PIN antic de 4 números">PIN antic</span>`,
+ const cap=`<div class="nv-perfil">${pf?[id!=null?xi(`#${id}`,null,"Número d'identificació"):"",pf.pin_temp?`<span class="pill warn" title="PIN temporal assignat per l'admin: pendent que el nen triï el seu">${ic("clau")}PIN temporal</span>`:pv===2?`<span class="pill ok">${ic("escut")}PIN nou</span>`:`<span class="pill warn" title="PIN antic de 4 números">PIN antic</span>`,
    xi("Alta:",nN(pf.creat)>0?dataExacta(nN(pf.creat)):"d'abans","Quan va crear el perfil amb el PIN (els perfils d'abans de la 2.12.0 no ho tenen)"),msS(pf.pin_ts)?xi("PIN:",msS(pf.pin_ts),"Quan va posar o canviar el PIN · "+msL(pf.pin_ts)):"",
    xi("Perfil triat:",msS(pf.aspecte_ts)||"encara no","Quan va triar el perfil arcade a /perfil/")].join(""):`<span class="pill neutre">Sense PIN</span>`}${estMax!=null?pillNivell(estMax):""}${d.amagat===true?`<span class="pill warn">${ic("ullno")}Amagat del rànquing</span>`:""}</div>`;
  if(!mons.length)return cap+(pf?buit("copies","Té PIN, però encara no ha desat res al núvol.","Quan jugui amb el PIN posat, aquí sortirà el que porta a cada món."):buit("clau","No té PIN: només hi ha el registre (pestanyes anteriors).","Sense PIN, el progrés es queda només al seu dispositiu."));
@@ -2684,6 +2701,225 @@ async function usuari(nom,accio,nou){if(DEMO){toast("No disponible en demo","avi
   if(accio==="esborra")navega("nens");
   toast(accio==="esborra"?`${nom} esborrat (${n} registres)`:accio==="amaga"?`${nom} ja no surt al rànquing`:accio==="mostra"?`${nom} torna a sortir al rànquing`:accio==="treupin"?`PIN de ${nom} esborrat`:`${nom} → ${nou} (${n} registres)`);
  }catch(e){$("#gest").innerHTML=avisErr("No hi ha connexió.")}}
+
+// ====================== GESTIÓ I RECUPERACIÓ DE PINS (g41 · supabase/bn_pin_reset.sql) ======================
+const PIN_LLETRES="ABCDEFGHJKMNPQRSTUVWXYZ",PIN_NOU_RE=/^[0-9]{4}[A-Z]$/,PIN_EX_PROH="4587R";
+const PINS_F={estat:""};
+function netPinAdmin(v){let o="";for(const c of String(v||"").toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
+function generaPinAleatori(){
+ const rand=max=>{if(window.crypto&&crypto.getRandomValues){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%max}return Math.floor(Math.random()*max)};
+ for(let i=0;i<20;i++){let p="";for(let j=0;j<4;j++)p+=String(rand(10));p+=PIN_LLETRES[rand(PIN_LLETRES.length)];if(p!==PIN_EX_PROH)return p}
+ return "7392K";
+}
+function textMissatgePin(nom,pin,esTemp){
+ return [
+  `Hola! Aquí tens el nou PIN ${esTemp?"temporal ":""}per a l'usuari «${nom}» a Bona Nota (https://bonanota.net):`,
+  ``,
+  `🔑 PIN: ${pin}`,
+  ``,
+  `Què ha de fer:`,
+  `1. Entrar a https://bonanota.net (si ja té la sessió oberta i veu el seu nom a dalt, prémer primer «No ets tu?»).`,
+  `2. Escriure el nom «${nom}» i aquest PIN (${pin}), i prémer «Entra ▶».`,
+  esTemp?`3. Tot seguit li demanarà que s'inventi el seu PIN personal nou (4 números i 1 lletra al final) i l'apunteu junts.`:`3. Ja entrarà directament amb tot el seu progrés al núvol intacte.`,
+  ``,
+  `Si jugava en algun altre dispositiu, allà també caldrà prémer «No ets tu?» i entrar amb el PIN nou.`
+ ].join("\n");
+}
+async function copiaText(txt,okMsg){
+ try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(txt);toast(okMsg||"Copiat");return true}}catch(e){}
+ try{const ta=document.createElement("textarea");ta.value=txt;ta.style.cssText="position:fixed;left:-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();toast(okMsg||"Copiat");return true}catch(e){}
+ toast("No s'ha pogut copiar automàticament","avis");return false;
+}
+async function rpcPins(){
+ if(DEMO)return demoPins();
+ const r=await fetch(API.replace("bn_admin_logs","bn_admin_pins"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p})});
+ if(r.status===404)throw "falta";
+ if(!r.ok)throw r.status;
+ return r.json();
+}
+async function desbloquejaIntents(nom,onDone){
+ const k=String(nom||"").trim().toLowerCase();
+ if(!k)return;
+ if(DEMO){
+  DEMO_PINS_MOD[k]=Object.assign({},DEMO_PINS_MOD[k]||{},{intents_n:0,bloquejat_fins:null});
+  delete ESTATS[k];
+  toast(`Intents de ${nom} desbloquejats (demo)`);
+  if(onDone)onDone();
+  return;
+ }
+ try{
+  const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:"desbloqueja"})});
+  if(r.status===404){toast("Falta executar supabase/bn_pin_reset.sql","err");return}
+  if(!r.ok){const t=await r.text().catch(()=>"");toast(/accio desconeguda/i.test(t)?"Falta executar supabase/bn_pin_reset.sql a Supabase":`No s'ha pogut desbloquejar (${r.status})`,"err");return}
+  delete ESTATS[k];
+  toast(`Intents fallits de ${nom} desbloquejats`);
+  if(onDone)onDone();
+ }catch(e){toast("No hi ha connexió.","err")}
+}
+function obreModalPin(nomInicial,opts){
+ opts=opts||{};
+ const d=$("#dlg"),nomsOpc=llistaNensFitxa();
+ const teNom=!!String(nomInicial||"").trim();
+ const nomSelHtml=teNom
+  ?`<input id="mpNom" type="hidden" value="${esc(String(nomInicial).trim())}">`
+  :`<label for="mpNomSel">Alumne</label><select id="mpNomSel"><option value="">— Tria un nen o escriu-lo a sota —</option>${nomsOpc.map(([ck,cn])=>`<option value="${esc(cn)}">${esc(cn)}${IDS[ck]?` (#${IDS[ck]})`:""}</option>`).join("")}</select><label for="mpNom" style="margin-top:8px">Nom exacte</label><input id="mpNom" maxlength="40" placeholder="Ex.: Rachita" required>`;
+ const demoNota=DEMO?`<p><span class="pill info">Mode demo</span> Simulat en memòria (no modifica Supabase).</p>`:"";
+ d.innerHTML=`<form id="fPinNou" autocomplete="off"><div class="dlg-c">
+  <h2 id="dlgT" class="dlg-ok">${ic("clau")}${teNom?`Generar PIN nou per a ${esc(nomInicial)}`:"Assignar PIN nou"}</h2>
+  ${demoNota}
+  ${nomSelHtml}
+  <label for="mpPin">PIN nou (4 números i 1 lletra al final)</label>
+  <div class="pin-row"><input id="mpPin" maxlength="5" value="${generaPinAleatori()}" autocapitalize="characters" spellcheck="false" required aria-label="PIN nou (4 números i 1 lletra)"><button type="button" class="btn sec" id="mpGen" title="Genera un PIN aleatori nou">🎲 Genera</button></div>
+  <label class="pin-chk"><input type="checkbox" id="mpTemp" checked><span><b>PIN temporal</b> · Obligar el nen a triar el seu PIN personal la pròxima vegada que entri (recomanat)</span></label>
+  <p style="font-size:13px">Conserva intacte el progrés al núvol, l'ID i l'avatar arcade, i aixeca qualsevol bloqueig d'intents. <b>El PIN només es mostrarà ara un sol cop.</b></p>
+  <div id="mpErr" aria-live="polite"></div>
+ </div><div class="dlg-p"><button class="btn sec" type="button" id="mpCancel">Cancel·la</button><button class="btn" type="submit" id="mpDesa">${ic("clau")}Desa el PIN nou</button></div></form>`;
+ d.onclose=null;d.returnValue="";d.showModal();
+ const iNom=d.querySelector("#mpNom"),sNom=d.querySelector("#mpNomSel"),iPin=d.querySelector("#mpPin"),cTemp=d.querySelector("#mpTemp"),eBox=d.querySelector("#mpErr"),bDesa=d.querySelector("#mpDesa");
+ if(sNom)sNom.onchange=()=>{if(sNom.value)iNom.value=sNom.value};
+ iPin.oninput=()=>{iPin.value=netPinAdmin(iPin.value);eBox.innerHTML=""};
+ d.querySelector("#mpGen").onclick=()=>{iPin.value=generaPinAleatori();eBox.innerHTML="";iPin.focus()};
+ d.querySelector("#mpCancel").onclick=()=>d.close("no");
+ (teNom?iPin:iNom).focus();
+ d.querySelector("#fPinNou").onsubmit=async ev=>{
+  ev.preventDefault();eBox.innerHTML="";
+  const nom=String(iNom.value||"").trim().replace(/\s+/g," "),pin=netPinAdmin(iPin.value),esTemp=!!cTemp.checked;
+  if(!nom||nom.length>40){eBox.innerHTML=avisErr("Escriu el nom de l'alumne (entre 1 i 40 caràcters).");iNom.focus();return}
+  if(!PIN_NOU_RE.test(pin)){eBox.innerHTML=avisErr("El PIN ha de tenir 4 números i 1 lletra majúscula al final (ex. 7392K).");iPin.focus();return}
+  if(pin===PIN_EX_PROH){eBox.innerHTML=avisErr("No facis servir 4587R (és el PIN d'exemple). Prem «Genera» per crear-ne un altre.");iPin.focus();return}
+  bDesa.disabled=true;bDesa.textContent="Desant…";
+  const accio=esTemp?"posapin":"posapin_fix",k=nom.toLowerCase();
+  try{
+   if(DEMO){
+    DEMO_PINS_MOD[k]=Object.assign({},DEMO_PINS_MOD[k]||{},{nom,te_pin:true,pin_v:2,pin_temp:esTemp,pin_ts:Date.now(),intents_n:0,bloquejat_fins:null});
+   }else{
+    const r=await fetch(API.replace("bn_admin_logs","bn_admin_usuari"),{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_email:CRED.e,p_pass:CRED.p,p_nom:nom,p_accio:accio,p_nou:pin})});
+    if(r.status===404){eBox.innerHTML=avisSQL("supabase/bn_pin_reset.sql","Falta aplicar el SQL de recuperació de PIN a Supabase.");bDesa.disabled=false;bDesa.innerHTML=`${ic("clau")}Desa el PIN nou`;return}
+    if(!r.ok){
+     const tx=await r.text().catch(()=>"");
+     if(/accio desconeguda/i.test(tx))eBox.innerHTML=avisSQL("supabase/bn_pin_reset.sql","L'acció «posapin» encara no està aplicada a Supabase.");
+     else if(/nom no permes/i.test(tx))eBox.innerHTML=avisErr("Aquest nom no està permès al sistema.");
+     else eBox.innerHTML=avisErr(`No s'ha pogut desar el PIN (${r.status}).`);
+     bDesa.disabled=false;bDesa.innerHTML=`${ic("clau")}Desa el PIN nou`;return;
+    }
+   }
+   delete ESTATS[k];NUV=null;
+   const msgFam=textMissatgePin(nom,pin,esTemp);
+   const mailValid=opts.email&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(opts.email);
+   const mailHref=mailValid?`mailto:${encodeURIComponent(opts.email)}?subject=${encodeURIComponent(`[Bona Nota${opts.ref?` · ${opts.ref}`:""}] Nou PIN ${esTemp?"temporal ":""}per a ${nom}`)}&body=${encodeURIComponent(msgFam)}`:"";
+   let fetDone=false;
+   const doneOnce=()=>{if(fetDone)return;fetDone=true;d.onclose=null;if(opts.onDone)opts.onDone()};
+   const tancaDespres=()=>{d.close("ok");doneOnce()};
+   d.innerHTML=`<div class="dlg-c">
+    <h2 id="dlgT" class="dlg-ok">${ic("escut")}PIN ${esTemp?"temporal ":""}desat per a ${esc(nom)}</h2>
+    ${demoNota}
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+     <span class="pill ${esTemp?"warn":"ok"}">${esTemp?"⏳ PIN temporal (haurà de canviar-lo en entrar)":"✓ PIN definitiu"}</span>
+    </div>
+    <div class="pin-codi" id="mpCodi" aria-label="PIN generat">${esc(pin)}</div>
+    <div class="pin-acc" style="margin-bottom:12px">
+     <button type="button" class="btn petit" id="mpCopiaPin">${ic("copies")}Copia el PIN</button>
+     <button type="button" class="btn sec petit" id="mpCopiaMsg">${ic("correu")}Copia missatge per a la família</button>
+     ${mailHref?`<a class="btn sec petit" id="mpMail" href="${mailHref}">${ic("correu")}Obre correu preomplert</a>`:""}
+    </div>
+    ${opts.sugId?`<div style="margin-bottom:10px"><button type="button" class="btn sec petit" id="mpTancaSug">✓ Marca el tiquet ${esc(opts.ref||"")} com a Fet (sense desar el PIN a la nota)</button></div>`:""}
+    <p style="font-size:12.5px;margin-bottom:0">🔒 <b>Recordatori:</b> un cop tanquis aquesta finestra, el PIN no es podrà tornar a consultar (queda xifrat amb <code>bcrypt</code>).</p>
+   </div><div class="dlg-p"><button type="button" class="btn" id="mpFet">Tanca</button></div>`;
+   d.querySelector("#mpCopiaPin").onclick=()=>copiaText(pin,`PIN ${pin} copiat al porta-retalls`);
+   d.querySelector("#mpCopiaMsg").onclick=()=>copiaText(msgFam,"Missatge per a la família copiat");
+   const btSug=d.querySelector("#mpTancaSug");
+   if(btSug)btSug.onclick=async()=>{
+    btSug.disabled=true;btSug.textContent="Actualitzant tiquet…";
+    try{
+     const notaBase=String(opts.notaActual||"").trim();
+     const linia=`PIN ${esTemp?"temporal":"definitiu"} assignat a ${nom} (${diaL(Date.now())})`;
+     const notaNova=notaBase?(notaBase+"\n"+linia):linia;
+     await rpcBustia("bn_admin_suggeriment_estat",{p_id:opts.sugId,p_estat:"fet",p_nota:notaNova.slice(0,1000)});
+     btSug.textContent="✓ Tiquet marcat com a Fet";
+     toast(`${opts.ref||"Tiquet"} marcat com a Fet`);
+    }catch(er){btSug.disabled=false;btSug.textContent="✓ Marca el tiquet com a Fet";toast(`No s'ha pogut actualitzar el tiquet (${er})`,"err")}
+   };
+   d.querySelector("#mpFet").onclick=tancaDespres;
+   d.onclose=doneOnce;
+   toast(`PIN ${esTemp?"temporal ":""}desat per a ${nom}`);
+  }catch(err){
+   eBox.innerHTML=avisErr("No hi ha connexió amb el servidor.");
+   bDesa.disabled=false;bDesa.innerHTML=`${ic("clau")}Desa el PIN nou`;
+  }
+ };
+}
+async function vistaNensPins(cos,tok){
+ if(!cos)return;
+ cos.innerHTML=`<div class="pila">${esqKpis(4)}${esqTaula()}</div>`;
+ let rows;
+ try{rows=await rpcPins()}
+ catch(e){
+  if(tok!==TOK||VISTA!=="nens"||TAB!=="pins")return;
+  cos.innerHTML=e==="falta"?avisSQL("supabase/bn_pin_reset.sql","La gestió centralitzada de PINs encara no està activada a la base de dades."):avisErr(`No s'han pogut carregar els PINs (${e}).`);
+  return;
+ }
+ if(tok!==TOK||VISTA!=="nens"||TAB!=="pins")return;
+ const llista=Array.isArray(rows)?rows:[];
+ const ara=Date.now();
+ const esBloq=r=>!!(r.bloquejat_fins&&r.bloquejat_fins>ara);
+ const cNou=llista.filter(r=>r.te_pin&&!r.pin_temp&&nN(r.pin_v)===2).length;
+ const cTemp=llista.filter(r=>r.te_pin&&r.pin_temp).length;
+ const cSense=llista.filter(r=>!r.te_pin||nN(r.pin_v)<2).length;
+ const cBloq=llista.filter(esBloq).length;
+ const pinta=()=>{
+  const f=PINS_F.estat;
+  const filt=llista.filter(r=>{
+   if(f==="temp")return r.te_pin&&r.pin_temp;
+   if(f==="sense")return !r.te_pin;
+   if(f==="antic")return r.te_pin&&nN(r.pin_v)<2;
+   if(f==="bloq")return esBloq(r);
+   return true;
+  });
+  const kpis=filaKpis([
+   {t:"Amb PIN nou",v:cNou,p:`<span class="pill ok">4 xifres + lletra</span>`},
+   {t:"PIN temporal",v:cTemp,p:cTemp?`<span class="pill warn">Pendent de canvi</span>`:`<span class="pill neutre">Cap pendent</span>`},
+   {t:"Sense PIN / antic",v:cSense,p:`<span class="pill neutre">${llista.filter(r=>!r.te_pin).length} sense · ${llista.filter(r=>r.te_pin&&nN(r.pin_v)<2).length} antic</span>`},
+   {t:"Bloquejats ara",v:cBloq,p:cBloq?`<span class="pill bad">≥ 5 intents</span>`:`<span class="pill ok">Cap bloquejat</span>`}
+  ],4);
+  const bar=`<div class="ag-bar" role="region" aria-label="Filtres de PINs">
+   <div class="ag-grp"><span class="ag-lbl">Estat</span><div class="ag-seg" role="group">
+    <button type="button" data-pf="" aria-pressed="${f===""}">Tots (${llista.length})</button>
+    <button type="button" data-pf="temp" aria-pressed="${f==="temp"}">PIN temporal (${cTemp})</button>
+    <button type="button" data-pf="sense" aria-pressed="${f==="sense"}">Sense PIN (${llista.filter(r=>!r.te_pin).length})</button>
+    <button type="button" data-pf="antic" aria-pressed="${f==="antic"}">PIN antic (${llista.filter(r=>r.te_pin&&nN(r.pin_v)<2).length})</button>
+    <button type="button" data-pf="bloq" aria-pressed="${f==="bloq"}">Bloquejats (${cBloq})</button>
+   </div></div>
+   <span class="esp"></span>
+   <button type="button" class="btn petit" id="btPinAssignaNou">${ic("clau")}Assigna PIN a un nom</button>
+  </div>`;
+  const pillEstatPin=r=>{
+   const b=esBloq(r)?` <span class="pill bad" title="Bloquejat per 5 intents fallits">🔒 Fins ${hora(r.bloquejat_fins)}</span>`:"";
+   if(!r.te_pin)return `<span class="pill neutre">Sense PIN</span>${b}`;
+   if(r.pin_temp)return `<span class="pill warn">${ic("clau")}PIN temporal</span>${b}`;
+   if(nN(r.pin_v)===2)return `<span class="pill ok">${ic("escut")}PIN nou</span>${b}`;
+   return `<span class="pill warn">PIN antic (4 xifres)</span>${b}`;
+  };
+  const ordEst=r=>esBloq(r)?4:r.pin_temp?3:!r.te_pin?2:nN(r.pin_v)<2?1:0;
+  const cols=[
+   {k:"nom",t:"Nen",cls:"nw",q:r=>`${r.nom} ${r.id?"#"+r.id:""}`,h:r=>`${nenH(r.nom)}${r.id!=null?` <span class="muted" style="font-size:12px">#${r.id}</span>`:""}${r.amagat?` <span class="pill neutre">Amagat</span>`:""}`},
+   {k:"est",t:"Estat del PIN",cls:"nw",v:ordEst,q:r=>`${!r.te_pin?"sense pin":r.pin_temp?"pin temporal":nN(r.pin_v)===2?"pin nou":"pin antic"} ${esBloq(r)?"bloquejat":""}`,h:pillEstatPin},
+   {k:"pin_ts",t:"Últim canvi",cls:"nw",v:r=>r.pin_ts||0,h:r=>r.pin_ts?`<span title="${esc(dataExacta(r.pin_ts))}">${esc(dataC(r.pin_ts))}</span>`:`<span class="muted">—</span>`},
+   {k:"ult_log",t:"Última activitat",cls:"nw",v:r=>r.ult_log||0,h:r=>r.ult_log?esc(dataC(r.ult_log)):`<span class="muted">Encara no ha jugat</span>`},
+   {k:"acc",t:"Accions",ord:false,cls:"nw",h:r=>`<div class="pin-acc"><button type="button" class="btn sec petit" data-pin-nou="${esc(r.nom)}">${ic("clau")}Nou PIN</button>${esBloq(r)?`<button type="button" class="btn sec petit" data-pin-desb="${esc(r.nom)}">${ic("escut")}Desbloqueja</button>`:""}</div>`}
+  ];
+  const cosT=filt.length?taula("tPins",cols,filt,{k:"est",desc:true,manteQ:true,etiqueta:"Gestió de PINs",csvNom:"bona-nota-pins"}):buit("clau","Cap nen en aquest filtre.");
+  cos.innerHTML=`<div class="pila">${kpis}${bar}${card("pinsCard","c-12","clau","Gestió de PINs i accessos","Genera PINs temporals o definitius directament des d'aquí (sense passar per la portada ni perdre el progrés, l'ID ni l'avatar arcade) i aixeca bloquejos de 5 intents fallits.",cosT)}</div>`;
+  cos.querySelectorAll("[data-pf]").forEach(b=>b.onclick=()=>{PINS_F.estat=b.dataset.pf;pinta()});
+  $("#btPinAssignaNou").onclick=()=>obreModalPin("",{onDone:()=>vistaNensPins(cos,tok)});
+  cos.onclick=e=>{
+   const bNou=e.target.closest("[data-pin-nou]");
+   if(bNou){obreModalPin(bNou.dataset.pinNou,{onDone:()=>vistaNensPins(cos,tok)});return}
+   const bDes=e.target.closest("[data-pin-desb]");
+   if(bDes){desbloquejaIntents(bDes.dataset.pinDesb,()=>vistaNensPins(cos,tok));return}
+  };
+ };
+ pinta();
+}
 
 // ====================== SESSIONS I REGISTRE (amb detall en panell lateral) ======================
 function baixaCSV(nom,files){const cel=v=>`"${String(v??"").replace(/"/g,'""')}"`;const t=files.map(r=>r.map(cel).join(";")).join("\n");
@@ -3195,11 +3431,12 @@ function pintaAlertesTaula(){
 }
 // ====================== SECCIONS DE NENS, MONS, SESSIONS I RÀNQUING (sota demanda) ======================
 async function vistaNensSeccio(c){
- const tok=++TOK,ll=[["llista","Llista"],["benestar","Benestar"],["missatges","Missatges al nen"]],tab=ll.some(x=>x[0]===TAB)?TAB:"llista";
+ const tok=++TOK,ll=[["llista","Llista"],["benestar","Benestar"],["pins","PINs"],["missatges","Missatges al nen"]],tab=ll.some(x=>x[0]===TAB)?TAB:"llista";
  TAB=tab;escriuUrl(false);
- c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Nens")+`<div id="nensCos">${tab!=="missatges"&&LOGS_DIES===DIES?"":esqTaula()}</div>`;
+ c.innerHTML=htmlPestanyes(ll,tab,"Seccions de Nens")+`<div id="nensCos">${tab!=="missatges"&&tab!=="pins"&&LOGS_DIES===DIES?"":esqTaula()}</div>`;
  lligaPestanyes(c,ll);
  if(tab==="missatges"){await vistaMissatgesNen($("#nensCos"),tok);return}
+ if(tab==="pins"){await vistaNensPins($("#nensCos"),tok);return}
  if(tab==="llista"){
   let res=null;
   try{res=await nensResumDe(DIES)}catch(e){res=null}
@@ -5377,7 +5614,24 @@ function demoInit(){if(DEMO_L)return;const R=rndD(20261105),tria=a=>a[Math.floor
 const demoLogsDies=d=>{const des=Date.now()-d*864e5;return DEMO_L.filter(l=>Date.parse(l.ts)>=des).slice().reverse()};
 const demoIds=()=>({"àlex":1,"jana":2,"pau":3,"laia":4,"nora":5,"gina":6});
 const demoNoms=()=>{const m={gina:"Gina"};DEMO_L.forEach(l=>{const k=clauNen(l);if(k&&k!=="_alta")m[k]=l.nom});return m};
-const demoEstat=nom=>({"àlex":6,"jana":6,"pau":2,"laia":6,"nora":6,"ona":1}[nom.trim().toLowerCase()]||0);
+const DEMO_PINS_MOD={};
+const demoEstat=nom=>{const k=nom.trim().toLowerCase(),m=DEMO_PINS_MOD[k];
+ let v=({"àlex":6,"jana":6,"pau":2,"laia":6,"nora":6,"ona":1}[k]||0);
+ if(m){if(m.te_pin)v=(v&1)|2|(m.pin_v===2?4:0)|(m.pin_temp?8:0);if(m.bloquejat_fins&&m.bloquejat_fins>Date.now())v|=16;else v&=~16}
+ return v};
+function demoPins(){
+ demoInit();const ara=Date.now(),m={};
+ DEMO_L.forEach(l=>{const k=clauNen(l);if(!k||k==="_alta")return;const ts=Date.parse(l.ts);m[k]=m[k]||{k,nom:l.nom,ult_log:0};if(ts>m[k].ult_log)m[k].ult_log=ts});
+ m.gina=m.gina||{k:"gina",nom:"Gina",ult_log:null};
+ Object.keys(DEMO_PINS_MOD).forEach(k=>{if(!m[k])m[k]={k,nom:DEMO_PINS_MOD[k].nom||k,ult_log:null}});
+ return Object.values(m).map(x=>{
+  const pf=demoPerfil(x.k,x.ult_log),mod=DEMO_PINS_MOD[x.k];
+  const base={k:x.k,nom:x.nom,id:pf?pf.id:null,te_pin:!!pf,pin_v:pf?pf.pin_v:null,pin_ts:pf?pf.pin_ts:null,
+   pin_temp:x.k==="nora",intents_n:x.k==="pau"?5:0,bloquejat_fins:x.k==="pau"?ara+11*60e3:null,
+   amagat:!!(demoEstat(x.k)&1),ult_log:x.ult_log||null};
+  return mod?Object.assign(base,mod):base;
+ }).sort((a,b)=>(!!b.bloquejat_fins-!!a.bloquejat_fins)||(!!b.pin_temp-!!a.pin_temp)||(!!a.te_pin-!!b.te_pin)||a.k.localeCompare(b.k,"ca"));
+}
 // demo de «Al núvol» i «Nens nous»: surten del mateix registre inventat (DEMO_L), perquè quadrin amb la resta del panell.
 // Àlex: perfil d'abans i dos mons · Pau: PIN antic però res desat · Hugo i Ona: sense PIN · Laia i Nora: PIN fet fa pocs dies · Gina: perfil d'avui, encara no ha jugat
 const DEMO_PERF={"àlex":{id:1,pin_v:2,vell:1,asp:1,mons:2},"jana":{id:2,pin_v:2,vell:1,asp:1},"pau":{id:3,pin_v:1,vell:1,res:1},"laia":{id:4,pin_v:2,nou:3},"nora":{id:5,pin_v:2,nou:5,asp:1},"gina":{id:6,pin_v:2,avui:1,asp:1}};
@@ -5656,6 +5910,18 @@ async function vistaBustia(c){
     </div>
     <div style="padding:12px 14px;border-radius:var(--r1);background:var(--card2);border:1px solid var(--border);white-space:pre-wrap;line-height:1.55">${esc(r.missatge)}</div>
     ${mailHref?`<div><a class="btn sec petit" href="${mailHref}">${ic("correu")}Respon per correu</a></div>`:""}
+    ${(r.categoria==="privacitat"||/\bpin\b/i.test(r.missatge||""))?(()=>{
+     const llN=llistaNensFitxa(),msgLow=String(r.missatge||"").toLowerCase();
+     const det=llN.find(([,cn])=>cn.length>=3&&msgLow.includes(cn.toLowerCase()));
+     const opc=llN.map(([ck,cn])=>`<option value="${esc(cn)}"${det&&det[0]===ck?" selected":""}>${esc(cn)}${IDS[ck]?` (#${IDS[ck]})`:""}</option>`).join("");
+     return `<div class="pin-bustia" id="busPinBox">
+      <div style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:13.5px">${ic("clau")}Resolució ràpida de PIN</div>
+      <p class="muted" style="margin:0;font-size:12.5px">Assigna un PIN temporal directament i prepara la resposta per a la família.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+       <select id="busPinNen" aria-label="Selecciona l'alumne per generar PIN" style="flex:1 1 150px;min-width:140px;padding:7px 10px;border-radius:var(--r1);border:1px solid var(--border);background:var(--card);color:var(--text);font:inherit"><option value="">— Tria l'alumne —</option>${opc}</select>
+       <button type="button" class="btn petit" id="btBusPin">${ic("clau")}Genera PIN temporal</button>
+      </div>
+     </div>`})():""}
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid var(--border)">
      <label class="ag-lbl" for="sugEstSel">Estat del missatge</label>
      <select id="sugEstSel" style="padding:8px 10px;border-radius:var(--r1);border:1px solid var(--border);background:var(--card2);color:var(--text);font:inherit">
@@ -5671,6 +5937,11 @@ async function vistaBustia(c){
      </div>
     </div>
    </div>`});
+   const btBusPin=$("#btBusPin");
+   if(btBusPin)btBusPin.onclick=()=>{
+    const sel=$("#busPinNen"),nomT=(sel&&sel.value)||"";
+    obreModalPin(nomT,{email:r.email,ref:r.ref,sugId:r.id,notaActual:r.nota_admin,onDone:()=>{tancaPanell();vistaBustia(c)}});
+   };
    $("#btSugDesa").onclick=async()=>{
     const b=$("#btSugDesa"),nouEst=$("#sugEstSel").value,nota=$("#sugNota").value.trim();
     b.disabled=true;b.textContent="Desant…";

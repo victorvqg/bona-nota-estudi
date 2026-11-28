@@ -79,6 +79,8 @@ jobs:
         run: node motor/prova-control-sql.js
       - name: Prova del comptador d'intents de PIN (issue #33)
         run: node motor/prova-pin-intents-sql.js
+      - name: Prova de la gestió i recuperació de PIN perdut (supabase/bn_pin_reset.sql)
+        run: node motor/prova-pin-reset-sql.js
       - name: Prova del permís i límit de fotos del quadern (supabase/bn_fotos.sql)
         run: node motor/prova-fotos-sql.js
       - name: Prova de la dificultat calculada amb dades (supabase/bn_admin_dificultat.sql, issue #16)
@@ -140,6 +142,8 @@ jobs:
         run: node motor/prova-admin-pagines.js
       - name: Prova de l'ordre del menú del tauler
         run: node motor/prova-admin-ordre.js
+      - name: Prova de la gestió de PINs a l'admin
+        run: node motor/prova-admin-pin.js
 
   mons:
     name: Món (${{ matrix.mon }})
