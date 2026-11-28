@@ -5,6 +5,13 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.82.0 · 2026-11-28
+
+### Canviat
+- **Correu de recuperació de PIN amb format de joc arcade (`admin/index.html` · `g44`):**
+  - Nou botó **«✨ Copia correu arcade»** al modal de confirmació de PIN (utilitza `ClipboardItem` amb `text/html` + `text/plain`): en enganxar a Gmail, Apple Mail o Outlook surt la targeta visual fosca de Bona Nota («🔑 CLAU D'ACCÉS DESBLOQUEJADA», franja de tranquil·litat, caixa daurada del PIN, 3 passos numerats i botó `ENTRAR A BONA NOTA ▶`, sense imatges externes); en enganxar a WhatsApp o obrir `mailto:` surt la versió text pla polida amb estètica de joc.
+  - Previsualització plegable **«👀 Previsualitza el correu arcade»** dins el mateix modal d'`/admin/` i comprovacions ampliades a `motor/prova-admin-pin.js`.
+
 ## 2.81.0 · 2026-11-28
 
 ### Afegit

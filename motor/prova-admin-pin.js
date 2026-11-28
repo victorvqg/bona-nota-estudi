@@ -126,7 +126,10 @@ function dadesMock() {
    ok(await p.isChecked("#mpTemp"), "checkbox PIN temporal marcat per defecte");
    await p.click("#mpDesa");
    await p.waitForSelector("#dlg[open] #mpCodi");
-   ok((await txt(p, "#mpCodi")) === pin2 && (await p.$("#mpCopiaPin")) !== null && (await p.$("#mpCopiaMsg")) !== null, "pantalla de confirmació mostra el PIN i els botons de còpia");
+   ok((await txt(p, "#mpCodi")) === pin2 && (await p.$("#mpCopiaPin")) !== null && (await p.$("#mpCopiaMsg")) !== null && (await p.$("#mpPrevWrap")) !== null, "pantalla de confirmació mostra el PIN, «Copia correu arcade» i la previsualització");
+   await p.click("#mpPrevWrap summary");
+   const prevTxt = await txt(p, "#mpPrev");
+   ok(prevTxt.includes("CLAU D'ACCÉS DESBLOQUEJADA") && prevTxt.includes("Hugo") && prevTxt.includes("ENTRAR A BONA NOTA") && prevTxt.includes(pin2), "la previsualització HTML arcade inclou el títol, el nom, el PIN i el botó d'entrada");
    await p.click("#mpFet");
    await p.waitForSelector("#tPins table");
    await p.click('[data-pf="temp"]');
@@ -157,7 +160,7 @@ function dadesMock() {
    await p.click("#mpDesa");
    await p.waitForSelector("#dlg[open] #mpMail");
    const href = await p.getAttribute("#mpMail", "href");
-   ok(href && href.startsWith("mailto:familia.garcia%40exemple.cat") && href.includes(pinGen), "des de Bústia genera el botó mailto preomplert amb el correu i el PIN");
+   ok(href && href.startsWith("mailto:familia.garcia%40exemple.cat") && href.includes(pinGen) && decodeURIComponent(href).includes("CLAU D'ACCÉS DESBLOQUEJADA"), "des de Bústia genera el botó mailto preomplert amb el format de joc, el correu i el PIN");
    await p.click("#mpTancaSug");
    await p.waitForTimeout(150);
    await p.click("#mpFet");
