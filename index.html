@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="93ffad4a6b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f5bfcccb0d",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -764,6 +764,9 @@ main.en-tast .prog.on{display:none}
 .avis-nit-portada[hidden]{display:none}
 .avis-nit-portada b{color:#fde68a}
 .avis-nit-portada .anp-ic{font-size:26px;line-height:1;flex-shrink:0}
+.avis-pin-portada{border-color:#facc15;background:linear-gradient(135deg,#2e1065f0,#1e1b4bf0);flex-wrap:wrap}
+.avis-pin-portada .ap-bt{margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:#facc15;color:#1e1b4b;font:900 13.5px/1.2 Nunito,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.avis-pin-portada .ap-bt:hover{filter:brightness(1.06)}
 @keyframes triaBota{50%{transform:translateY(6px)}}
 main.bloc .as{filter:grayscale(.5) brightness(.75)}
 main.ilumina .as{opacity:1;animation:ilumina 1.2s ease-out 2}
@@ -927,6 +930,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
   <button class="en-tast" id="btTastPortada" type="button">👀 Fes un tast sense compte (anònim)</button>
   <p class="en-peu">El PIN són <b>4 números i 1 lletra al final</b> (per exemple 4587R). El primer cop, inventa-te'n un i recorda'l: amb el PIN continues des de qualsevol aparell.</p>
  </form>
+ <div class="avis-nit-portada avis-pin-portada" id="avisPinCaducat" hidden role="status"></div>
  <div class="avis-nit-portada" id="avisNitPortada" hidden role="status"></div>
  <div class="tria" id="tria" hidden>👇 Ara tria el teu món 👇</div>
 </header>
@@ -1065,10 +1069,10 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
 
 <div class="np-pop" id="npPop" hidden role="dialog" aria-modal="true" aria-labelledby="npTit">
  <form class="entrada" id="npForm" autocomplete="off">
-  <div class="np-ic">🛡️</div>
+  <div class="np-ic" id="npIc">🛡️</div>
   <h2 id="npTit">ACTUALITZACIÓ DE SEGURETAT</h2>
-  <p>Hola, <b id="npNom"></b>! Per protegir millor el teu progrés, ara els PIN són més segurs: <b>4 números i 1 lletra al final</b>, per exemple <b class="np-ex">4587R</b>.</p>
-  <p>Tria el teu PIN nou i recorda'l (apunta'l amb papa o mama). Des d'ara, el PIN antic ja no servirà.</p>
+  <p id="npTxt1">Hola, <b id="npNom"></b>! Per protegir millor el teu progrés, ara els PIN són més segurs: <b>4 números i 1 lletra al final</b>, per exemple <b class="np-ex">4587R</b>.</p>
+  <p id="npTxt2">Tria el teu PIN nou i recorda'l (apunta'l amb papa o mama). Des d'ara, el PIN antic ja no servirà.</p>
   <input id="npP1" class="pin-in" maxlength="5" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="PIN nou" aria-label="PIN nou (4 números i 1 lletra)">
   <input id="npP2" class="pin-in" maxlength="5" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="Repeteix el PIN nou" aria-label="Repeteix el PIN nou">
   <div class="en-avis" id="npAvis" role="status"></div>
@@ -1086,7 +1090,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="pares-lk" href="suggeriments/">✉️ suggeriments</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.79.3</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="pares-lk" href="suggeriments/">✉️ suggeriments</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.80.0</small></footer>
 
 <script src="sprites.js?v=90af40be"></script>
 <script>
@@ -1365,29 +1369,60 @@ function iniciEntrada(){
   if(ex===null){const pl=pinsP()[n.toLowerCase()];if(local&&(!pl||pl===p)){if(!pl)desaPinP(n,p);return dins(n)}
    return err(pl?'❌ PIN incorrecte.':'📡 Cal connexió a internet per entrar amb un nom nou.',pl?iP:iN)}
   const primer=(document.querySelector('.as[data-id]')||{dataset:{}}).dataset.id||'socials';
-  if(ex){try{await rpcP('bn_progres_llegeix',{p_nom:n,p_pin:p,p_assig:primer});desaPinP(n,p);if(PIN_VELL.test(p))return demanaNouPin(n,()=>dins(n));dins(n)}
+  if(ex){try{const rr=await rpcP('bn_progres_llegeix',{p_nom:n,p_pin:p,p_assig:primer});desaPinP(n,p);
+    const ab=document.getElementById('avisPinCaducat');if(ab){ab.hidden=true;ab.innerHTML=''}
+    if(rr&&rr.pin_temp)return demanaNouPin(n,()=>dins(n),{motiu:'temp'});
+    if(PIN_VELL.test(p))return demanaNouPin(n,()=>dins(n),{motiu:'vell'});
+    dins(n)}
    catch(m){err(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar.':m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':'📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
   if(!PIN_NOU.test(p))return err(`🔤 Al final del PIN hi va una lletra. Per exemple: ${PIN_EX}. Inventa't el teu!`,iP);
   if(p===PIN_EX)return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",iP);
   try{const r=await rpcP('bn_perfil_crea',{p_nom:n,p_pin:p});if(r==='existeix')return err('Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.',iP);desaPinP(n,p);dins(n)}
   catch(m){err(m==='nom'?'🙅 Aquest nom no es pot fer servir. Escriu el teu nom o un àlies.':m==='pinfmt'?`🔤 El PIN són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió. Prova-ho més tard.',m==='pinfmt'?iP:iN)}};
- // 🛡️ actualització de seguretat: qui té el PIN antic (4 xifres) en tria un de nou (4 xifres + 1 lletra)
- function demanaNouPin(n,despres){const pop=document.getElementById('npPop'),fm=document.getElementById('npForm'),p1=document.getElementById('npP1'),p2=document.getElementById('npP2'),na=document.getElementById('npAvis'),ara=document.getElementById('npAra');
-  document.getElementById('npNom').textContent=n;p1.value=p2.value='';na.className='en-avis';na.textContent='';ara.hidden=true;pop.hidden=false;setTimeout(()=>p1.focus(),50);
+ // 🔐 avís no destructiu quan un dispositiu té sessió oberta però el PIN s'ha canviat (des de l'admin o un altre aparell)
+ function mostraAvisPinCaducat(n){
+  const el=document.getElementById('avisPinCaducat');if(!el)return;
+  const x=pinsP();delete x[n.toLowerCase()];try{localStorage.setItem('bn_pins',JSON.stringify(x))}catch(e){}
+  el.innerHTML=`<span class="anp-ic" aria-hidden="true">🔐</span><span>El teu PIN ha canviat, <b>${n.replace(/[<>&]/g,'')}</b>. Entra amb el PIN nou per continuar guardant el progrés al núvol.</span><button type="button" class="ap-bt" id="btPinCaducat">🔑 Escriu el PIN nou</button>`;
+  el.hidden=false;
+  const bt=document.getElementById('btPinCaducat');
+  if(bt)bt.onclick=()=>{el.hidden=true;MOSTRA_FORM=true;pintaHola();iN.value=n;iP.value='';av.className='en-avis';av.textContent='🔐 Escriu el teu PIN nou per tornar a connectar el núvol.';iP.focus()};
+ }
+ // 🛡️ actualització de seguretat (PIN antic de 4 xifres) o 🔑 PIN temporal assignat per l'admin
+ function demanaNouPin(n,despres,opts){const esTemp=!!(opts&&opts.motiu==='temp');
+  const pop=document.getElementById('npPop'),fm=document.getElementById('npForm'),p1=document.getElementById('npP1'),p2=document.getElementById('npP2'),na=document.getElementById('npAvis'),ara=document.getElementById('npAra');
+  const icEl=document.getElementById('npIc'),titEl=document.getElementById('npTit'),t1=document.getElementById('npTxt1'),t2=document.getElementById('npTxt2');
+  const nomEsc=n.replace(/[<>&]/g,'');
+  if(icEl)icEl.textContent=esTemp?'🔑':'🛡️';
+  if(titEl)titEl.textContent=esTemp?'TRIA EL TEU PIN NOU':'ACTUALITZACIÓ DE SEGURETAT';
+  if(t1)t1.innerHTML=esTemp?`Hola, <b id="npNom">${nomEsc}</b>! Has entrat amb un <b>PIN temporal</b>. Inventa't ara el teu PIN personal: <b>4 números i 1 lletra al final</b>, per exemple <b class="np-ex">4587R</b>.`:`Hola, <b id="npNom">${nomEsc}</b>! Per protegir millor el teu progrés, ara els PIN són més segurs: <b>4 números i 1 lletra al final</b>, per exemple <b class="np-ex">4587R</b>.`;
+  if(t2)t2.textContent=esTemp?"Apunta'l amb papa o mama perquè no s'oblidi. Des d'ara, el PIN temporal deixarà de servir.":"Tria el teu PIN nou i recorda'l (apunta'l amb papa o mama). Des d'ara, el PIN antic ja no servirà.";
+  p1.value=p2.value='';na.className='en-avis';na.textContent='';ara.hidden=true;pop.hidden=false;setTimeout(()=>p1.focus(),50);
   const ko=(m,el)=>{na.className='en-avis';na.textContent=m;fm.classList.remove('tremola');void fm.offsetWidth;fm.classList.add('tremola');(el||p1).focus()};
   p1.oninput=()=>{p1.value=netPin(p1.value);na.textContent='';if(p1.value.length===5)p2.focus()};p2.oninput=()=>{p2.value=netPin(p2.value);na.textContent=''};
   ara.onclick=()=>{try{sessionStorage.setItem('bn_pin_ajorna','1')}catch(e){}pop.hidden=true;despres()};
   fm.onsubmit=async e=>{e.preventDefault();const a=netPin(p1.value),b=netPin(p2.value),vell=pinsP()[n.toLowerCase()];
    if(!PIN_NOU.test(a))return ko(`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,p1);
    if(a===PIN_EX)return ko("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",p1);
+   if(esTemp&&vell&&a===vell)return ko("🙃 Tria un PIN nou diferent del PIN temporal!",p1);
    if(a!==b)return ko("Els dos PIN no són iguals. Torna'ls a escriure.",p2);
    na.className='en-avis ok';na.textContent='Un moment…';
-   try{await rpcP('bn_perfil_canvia_pin',{p_nom:n,p_pin:vell,p_nou:a});desaPinP(n,a);na.textContent='🛡️ PIN actualitzat! Recorda\'l bé.';setTimeout(()=>{pop.hidden=true;despres()},900)}
+   try{const res=await rpcP('bn_perfil_canvia_pin',{p_nom:n,p_pin:vell,p_nou:a});
+    if(res==='mateix')return ko("🙃 Tria un PIN nou diferent del PIN temporal!",p1);
+    if(res==='exemple')return ko("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",p1);
+    desaPinP(n,a);na.textContent=esTemp?"🔑 PIN personal desat! Recorda'l bé.":"🛡️ PIN actualitzat! Recorda'l bé.";setTimeout(()=>{pop.hidden=true;despres()},900)}
    catch(m){if(m==='pin'){ // el PIN guardat ja no serveix (potser ja l'ha canviat en un altre aparell): que torni a entrar
      const x=pinsP();delete x[n.toLowerCase()];try{localStorage.setItem('bn_pins',JSON.stringify(x));localStorage.removeItem('bn_jugador')}catch(er){}
      pop.hidden=true;pintaHola();iN.value=n;iP.value='';av.className='en-avis';av.textContent='🔐 Sembla que ja havies canviat el PIN en un altre aparell. Entra amb el PIN nou.';iP.focus();return}
-    ko(m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':m==='pinfmt'?`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió i ara no es pot canviar el PIN.');if(m==='xarxa')ara.hidden=false}}}
- setTimeout(()=>{if(tastActiu())return;const G=jugador(),pg=G&&pinsP()[G.toLowerCase()];let aj=false;try{aj=sessionStorage.getItem('bn_pin_ajorna')==='1'}catch(e){}if(G&&PIN_VELL.test(pg||'')&&!aj)demanaNouPin(G,()=>{})},0);
+    ko(m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':m==='pinfmt'?`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`:'📡 No hi ha connexió i ara no es pot canviar el PIN.');if(m==='xarxa'&&!esTemp)ara.hidden=false}}}
+ setTimeout(()=>{if(tastActiu())return;const G=jugador(),pg=G&&pinsP()[G.toLowerCase()];let aj=false;try{aj=sessionStorage.getItem('bn_pin_ajorna')==='1'}catch(e){}
+  if(G&&PIN_VELL.test(pg||'')&&!aj){demanaNouPin(G,()=>{},{motiu:'vell'});return}
+  if(G&&pg&&/^https?:/.test(location.protocol)&&!/[?&]demo\b/.test(location.search)){
+   const primer=(document.querySelector('.as[data-id]')||{dataset:{}}).dataset.id||'socials';
+   rpcP('bn_progres_llegeix',{p_nom:G,p_pin:pg,p_assig:primer}).then(rr=>{
+    if(rr&&rr.pin_temp&&jugador()===G)demanaNouPin(G,()=>{},{motiu:'temp'});
+   }).catch(m=>{if(m==='pin'&&jugador()===G)mostraAvisPinCaducat(G)});
+  }},0);
  // mons tancats des de l'admin (bn_estat_web) i avís si un nen hi fa clic; el rànquing conserva totes les estrelles
  let tToast=null;
  const avisMonTancat=msg=>{let el=document.getElementById('monTancatToast');if(!el){el=document.createElement('div');el.id='monTancatToast';el.className='mon-tancat-toast';el.setAttribute('role','status');document.body.appendChild(el)}

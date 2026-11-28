@@ -5,6 +5,19 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.80.0 · 2026-11-28
+
+### Afegit
+- **Gestió i recuperació de PIN perdut des de `/admin/` (`g41`–`g42`):**
+  - Nova pestanya **Nens → PINs** (`?v=nens&tab=pins`) amb 4 KPIs, filtres (`PIN temporal`, `Sense PIN`, `PIN antic`, `Bloquejats`), generador criptogràfic de PIN nou (4 números + 1 lletra majúscula sense `I/L/O` ni `4587R`), pantalla de confirmació d'un sol ús amb còpia del PIN i del missatge per a la família, i botó **Desbloqueja** per a bloquejos de 5 intents fallits.
+  - Drecera **Resolució ràpida de PIN** dins el panell lateral de **Bústia** (amb pre-detecció d'alumne, `mailto:` preomplert i tancament del tiquet sense desar mai el PIN a la nota interna).
+  - SQL idempotent [supabase/bn_pin_reset.sql](supabase/bn_pin_reset.sql) (`bn_priv.perfils.pin_temp`, `bn_admin_usuari` amb `posapin`/`posapin_fix`/`desbloqueja`, `bn_admin_pins` i suport de `pin_temp` a `bn_progres_llegeix`, `bn_perfil_canvia_pin` i `bn_admin_fitxa`) sense esborrar mai l'`id`, la data `creat` ni l'avatar arcade (`aspecte`).
+  - Proves automatitzades `motor/prova-pin-reset-sql.js`, `motor/prova-admin-pin.js` i `motor/prova-pin-reset.js`.
+
+### Canviat
+- **PIN temporal obligatori i avís de sessió caducada (`index.html`, `motor/plantilla-estudi-interactiu.html`):** en entrar amb un PIN temporal, la portada i els mons obren automàticament el diàleg obligatori per triar un PIN personal nou; als dispositius amb sessió oberta i PIN antic caducat surt un avís amable per posar el PIN nou sense perdre el progrés local.
+- **Fitxa del nen → Núvol i gestió (`admin/index.html`):** «Treu el PIN» se substitueix per **«Genera PIN nou»** (i **«Desbloqueja intents»** quan escau) per evitar perdre dades del perfil i eliminar la finestra d'usurpació.
+
 ## 2.79.3 · 2026-11-27
 
 ### Canviat

@@ -144,6 +144,8 @@ jobs:
         run: node motor/prova-admin-ordre.js
       - name: Prova de la gestió de PINs a l'admin
         run: node motor/prova-admin-pin.js
+      - name: Prova del flux de PIN temporal i sessió caducada (portada i mons)
+        run: node motor/prova-pin-reset.js
 
   mons:
     name: Món (${{ matrix.mon }})

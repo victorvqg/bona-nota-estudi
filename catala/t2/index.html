@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="93ffad4a6b",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f5bfcccb0d",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -848,7 +848,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><a id="lkSugMon" href="../../suggeriments/?tipus=error" style="color:var(--gris);text-decoration:none;font-weight:700;font-size:12.5px;margin-right:10px">🐛 Has trobat un error?</a><small class="bn-versio">versió 2.79.3</small></div>
+<div class="peu-pag"><a id="lkSugMon" href="../../suggeriments/?tipus=error" style="color:var(--gris);text-decoration:none;font-weight:700;font-size:12.5px;margin-right:10px">🐛 Has trobat un error?</a><small class="bn-versio">versió 2.80.0</small></div>
 
 <script src="../../sprites.js?v=90af40be"></script>
 <script>
@@ -1710,8 +1710,8 @@ function pantallaMonTancat(){if(typeof tancaBossFesta==="function")tancaBossFest
   ?`<div class="box benv" id="monTancatBox"><div style="font-size:56px;line-height:1">🌙</div><h2 style="margin:8px 0 4px">Hora de descansar!</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p><p class="prog">Tots els mons estan apagats de <b>${hm.tanca}</b> a <b>${hm.obre}</b> perquè puguis descansar. Les teves estrelles estan ben guardades i a les <b>${hm.obre}</b> tornen a obrir sols!</p><a class="btn verd" href="${dest}" style="display:inline-block;text-decoration:none;width:100%;max-width:320px;padding:14px;font-size:18px;margin-top:8px">🏠 Torna a l'inici</a></div>`
   :`<div class="box benv" id="monTancatBox"><div style="font-size:56px;line-height:1">🔒</div><h2 style="margin:8px 0 4px">Aquest món està tancat ara mateix</h2><p class="tema">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</p><p class="prog">Les teves estrelles continuen guardades al rànquing! Tria un altre món a la portada.</p><a class="btn verd" href="${dest}" style="display:inline-block;text-decoration:none;width:100%;max-width:320px;padding:14px;font-size:18px;margin-top:8px">🚪 Tots els mons</a></div>`}
 function marcaNav(v){document.querySelectorAll("#nav button").forEach(b=>{const on=b.dataset.v===v;b.classList.toggle("on",on);if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")})}
-function vista(v){if(typeof tancaBossFesta==="function")tancaBossFesta();if(typeof bossAturaCombat==="function")bossAturaCombat();if(MON_TANCAT){pantallaMonTancat();return}tancaConvidaPin();tancaActivitat();REPAS=false;if(!MODE_TAST&&S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&v!=="benvinguda"){benvinguda(S.nom);return}
- if(!MODE_TAST&&S.nom&&!SENSE_NUVOL()&&pinVell(S.nom)&&!PIN_AJORNA&&v!=="benvinguda"){pantallaNouPin();return}calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){pintaAvisNit();benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]();aplicaSuau();comprovaAvisNit()}
+function vista(v){if(typeof tancaBossFesta==="function")tancaBossFesta();if(typeof bossAturaCombat==="function")bossAturaCombat();if(MON_TANCAT){pantallaMonTancat();return}tancaConvidaPin();tancaActivitat();REPAS=false;if(!MODE_TAST&&S.nom&&!SENSE_NUVOL()&&!pinDe(S.nom)&&!PIN_CADUCAT&&v!=="benvinguda"){benvinguda(S.nom);return}
+ if(!MODE_TAST&&S.nom&&!SENSE_NUVOL()&&v!=="benvinguda"){if(PIN_TEMP_PEND){pantallaNouPin({motiu:"temp"});return}if(pinVell(S.nom)&&!PIN_AJORNA){pantallaNouPin();return}}calla();aturaSeg();if(EXR&&EXR.t)clearInterval(EXR.t);EXR=null;window.scrollTo(0,0);if(!S.nom&&v!=="benvinguda"){pintaAvisNit();benvinguda();return}marcaNav(v);({inici,temes:pintaTemes,jocs:pintaJocs,obertes:()=>obertes(primeraOberta()),analitica})[v]();aplicaSuau();comprovaAvisNit()}
 
 
 // ====================== ICONES I MASCOTA (SVG propis, mateix traç a tot arreu) ======================
@@ -1975,7 +1975,7 @@ function benvinguda(nomPre){
    const pl=pinDe(n);if((local||aparell)&&(!pl||pl===p)){if(!pl)desaPin(n,p);return entra(n)}
    return err(pl?"❌ PIN incorrecte.":"📡 Cal connexió a internet per crear un nom nou o entrar per primera vegada en aquest dispositiu.",pl?pi:i)}
   if(ex){ // el nom ja existeix: comprova el PIN i recupera el progrés
-   try{await rpc("bn_progres_llegeix",{p_nom:n,p_pin:p,p_assig:ASSIG.id});desaPin(n,p);so("coin");
+   try{const rr=await rpc("bn_progres_llegeix",{p_nom:n,p_pin:p,p_assig:ASSIG.id});desaPin(n,p);PIN_CADUCAT=false;if(rr&&rr.pin_temp)PIN_TEMP_PEND=true;so("coin");
     entra(n)} // entra() ja baixa el progrés del núvol si és més nou que el d'aquest dispositiu
    catch(m){err(m==="pin"?"❌ PIN incorrecte. Torna-ho a provar.":m==="bloc"?"⏳ Massa intents. Espera 15 minuts i torna-ho a provar.":"📡 No hi ha connexió. Prova-ho més tard.",pi)}
    return}
@@ -2040,7 +2040,7 @@ function inici(){
  const tastBar=MODE_TAST?`<div class="tast-bar" id="tastBanner"><div class="tast-txt"><b>👀 Estàs en mode tast anònim</b> · Cap estrella ni nom es guarda ni surt al rànquing. Tens obert el <b>Tema 1</b>, el <b>primer joc</b> i la <b>1a pregunta oberta</b>.</div><div class="tast-acc"><button class="btn verd btn-petit" type="button" id="btTastLogin" onclick="surtTast(false)">🔐 Entra amb nom i PIN</button><a class="btn sec btn-petit" href="../../?tast=1#mons" style="text-decoration:none">🚪 Altres mons</a></div></div>`:"";
  const pinTag=(!MODE_TAST&&S.nom&&!/^file:/.test(location.protocol)&&!window.BN_NO_LOG&&pinDe(S.nom))?`<span class="hero-pin" title="Progrés sincronitzat al núvol amb PIN">☁️ PIN</span>`:"";
  const heroNiv=MODE_TAST?"":`<div class="hero-niv" role="button" tabindex="0" onclick="vista('analitica')" title="Veure tots els nivells"><b>${nv.ic} Nivell ${nv.n} · ${nv.nom}</b><div class="barra"><i style="width:${nv.pc}%"></i></div><small>${nv.seg?`Falten ${nv.falten} ⭐ → ${nv.seg[2]} ${nv.seg[1]}`:"Nivell màxim 🌟"}</small>${pinTag}</div>`;
- let h=`${bannerTempsHtml()}${tastBar}<div class="hero">${heroAv()}<div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>${MODE_TAST?"Mode tast!":`Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}`}</h1>${heroAsp()}<p>${MODE_TAST?`Prova com funciona per dins: fitxa, targetes, ${NTEST_TAST} preguntes de test i el primer joc.`:aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
+ let h=`${bannerTempsHtml()}${tastBar}${avisPinCaducatHtml()}<div class="hero">${heroAv()}<div><div class="prog">${ASSIG.ic} ${ASSIG.nom}${ASSIG.tema?" — "+ASSIG.tema:""}</div><h1>${MODE_TAST?"Mode tast!":`Hola, ${S.nom}!${S.id?` <small class="nid" style="font-size:15px;color:var(--suau)">#${S.id}</small>`:""}`}</h1>${heroAsp()}<p>${MODE_TAST?`Prova com funciona per dins: fitxa, targetes, ${NTEST_TAST} preguntes de test i el primer joc.`:aprov===0?"Comencem pel primer tema?":aprov===T.length?"Has aprovat tots els temes! Ara a per l'examen 🏆":`Portes ${aprov} de ${T.length} temes aprovats. Endavant!`}</p></div>
  ${MODE_TAST?"":`<div class="stats"><div class="mini"><b>⭐ ${S.punts}</b><small>estrelles</small></div><div class="mini"><b>${aprov}/${T.length}</b><small>temes</small></div><div class="mini"><b>${res.encert===null?"—":res.encert+"%"}</b><small>encerts</small></div></div>`}${heroNiv}</div>`;
  h+=cartaPlaDia();
  // 1 sola acció principal destacada (Continua o joc destacat)
@@ -2359,7 +2359,9 @@ const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
 function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
 const ATR_PIN=`class="pin-in" maxlength="5" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"`;
 const pinVell=n=>PIN_VELL.test(pinDe(n)||"");
-let PIN_AJORNA=false;try{PIN_AJORNA=sessionStorage.getItem("bn_pin_ajorna")==="1"}catch(e){}
+let PIN_AJORNA=false,PIN_TEMP_PEND=false,PIN_CADUCAT=false;try{PIN_AJORNA=sessionStorage.getItem("bn_pin_ajorna")==="1"}catch(e){}
+function marcaPinCaducat(nom){const k=(nom||S.nom||"").trim().toLowerCase();if(k){const x=pins();delete x[k];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}
+ PIN_CADUCAT=true;if(document.querySelector(".hero"))vista("inici")}
 function pins(){try{return JSON.parse(localStorage.getItem("bn_pins")||"{}")||{}}catch(e){return {}}}
 function pinDe(n){return pins()[(n||"").trim().toLowerCase()]||null}
 function desaPin(n,p){const x=pins();x[n.trim().toLowerCase()]=p;try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}
@@ -2374,7 +2376,7 @@ function nuvolPuja(keep,reintent){if(MODE_TAST)return Promise.resolve();const p=
   // -2 = el núvol té més estrelles que aquest aparell (un altre hi ha avançat): no s'ha desat; es baixa, es fusiona i es torna a pujar, un sol cop
   if(x===-2){if(reintent||keep)return;return nuvolBaixa(S.nom,p).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");return nuvolPuja(false,true)})}
   // -1 = l'admin ha esborrat el progrés i aquest dispositiu encara no ho sabia: no s'ha desat; es baixa el núvol, que buida el d'aquí
-  if(x===-1)return nuvolBaixa(S.nom,p).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici")});NUV_OK=Date.now()}).catch(()=>{})}
+  if(x===-1)return nuvolBaixa(S.nom,p).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici")});NUV_OK=Date.now()}).catch(m=>{if(m==="pin")marcaPinCaducat(S.nom)})}
 addEventListener("pagehide",()=>{if(NUV_T)nuvolPuja(true)});
 // FUSIONA dos progressos (dispositiu i núvol) sense perdre mai res: números → el més alt, llistes → la més llarga
 // (dies: unió), sí/no → sí si algun és sí, textos → del més recent. Així un dispositiu nou (buit) no esborra el progrés d'un altre.
@@ -2403,7 +2405,9 @@ function fusionaNuvol(r){const n=S.nom,reini=aplicaReinici(r);
  S.nom=n;return reini}
 // baixa el progrés del núvol i el fusiona amb el d'aquest dispositiu
 function nuvolBaixa(nom,pin){if(MODE_TAST)return Promise.resolve(false);return rpc("bn_progres_llegeix",{p_nom:nom,p_pin:pin,p_assig:ASSIG.id}).then(r=>{
- if(!r)return false;const abans=JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps]);
+ if(!r)return false;PIN_CADUCAT=false;
+ if(r.pin_temp){PIN_TEMP_PEND=true;setTimeout(()=>{if(PIN_TEMP_PEND&&S.nom&&document.querySelector(".hero"))pantallaNouPin({motiu:"temp"})},50)}
+ const abans=JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps]);
  const reini=fusionaNuvol(r);if(!reini&&!r.estat&&!r.log)return false;
  S.mod=Date.now();guarda();pintaCap();
  return reini||JSON.stringify([S.punts,S.temes,S.ob,S.jocs,S.temps])!==abans})}
@@ -2426,15 +2430,18 @@ function pantallaPin(nom,mode,despres){marcaNav("usuari");
   if(mode==="entra"?!(PIN_NOU.test(p)||PIN_VELL.test(p)):!PIN_NOU.test(p))return err(`El PIN són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`);
   if(mode!=="entra"&&p===PIN_EX)return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.");
   av.innerHTML=`<p class="prog">Un moment…</p>`;
-  if(mode==="entra")rpc("bn_progres_llegeix",{p_nom:nom,p_pin:p,p_assig:ASSIG.id}).then(r=>{desaPin(nom,p);so("coin");despres(true,r)})
+  if(mode==="entra")rpc("bn_progres_llegeix",{p_nom:nom,p_pin:p,p_assig:ASSIG.id}).then(r=>{desaPin(nom,p);PIN_CADUCAT=false;if(r&&r.pin_temp)PIN_TEMP_PEND=true;so("coin");despres(true,r)})
    .catch(m=>err(m==="pin"?"❌ PIN incorrecte. Torna-ho a provar.":m==="bloc"?"⏳ Massa intents. Espera 15 minuts i torna-ho a provar.":"📡 No hi ha connexió. Prova-ho més tard."));
   else rpc("bn_perfil_crea",{p_nom:nom,p_pin:p}).then(r=>{if(r==="existeix")return pantallaPin(nom,"entra",despres);desaPin(nom,p);so("coin");despres(true,null)})
    .catch(m=>err(m==="nom"?"🙅 Aquest nom no es pot fer servir.":"📡 No hi ha connexió. Pots continuar sense PIN i posar-lo més tard."))}}
-// 🛡️ ACTUALITZACIÓ DE SEGURETAT: qui encara té el PIN antic (4 xifres) n'ha de triar un de nou (4 xifres + 1 lletra)
-function pantallaNouPin(){marcaNav("usuari");calla();aturaSeg();const nom=S.nom;
- app.innerHTML=`<div class="box benv"><div class="gran">🛡️</div><h2 style="margin:8px 0 6px">Actualització de seguretat</h2>
- <p class="prog">Hola, <b>${nom}</b>! Per protegir millor el teu progrés, ara els PIN són més segurs: <b>4 números i 1 lletra al final</b>, per exemple <b style="letter-spacing:2px">${PIN_EX}</b>.</p>
- <p class="prog">Tria el teu PIN nou i recorda'l (apunta'l amb papa o mama). Des d'ara, el PIN antic ja no servirà.</p>
+// 🛡️ ACTUALITZACIÓ DE SEGURETAT (PIN antic de 4 xifres) o 🔑 PIN temporal assignat per l'admin
+function pantallaNouPin(opts){marcaNav("usuari");calla();aturaSeg();const nom=S.nom,esTemp=!!(opts&&opts.motiu==="temp");
+ const icT=esTemp?"🔑":"🛡️",titT=esTemp?"Tria el teu PIN nou":"Actualització de seguretat";
+ const p1T=esTemp?`Hola, <b>${nom}</b>! Has entrat amb un <b>PIN temporal</b>. Inventa't ara el teu PIN personal: <b>4 números i 1 lletra al final</b>, per exemple <b style="letter-spacing:2px">${PIN_EX}</b>.`:`Hola, <b>${nom}</b>! Per protegir millor el teu progrés, ara els PIN són més segurs: <b>4 números i 1 lletra al final</b>, per exemple <b style="letter-spacing:2px">${PIN_EX}</b>.`;
+ const p2T=esTemp?"Apunta'l amb papa o mama perquè no s'oblidi. Des d'ara, el PIN temporal deixarà de servir.":"Tria el teu PIN nou i recorda'l (apunta'l amb papa o mama). Des d'ara, el PIN antic ja no servirà.";
+ app.innerHTML=`<div class="box benv"><div class="gran">${icT}</div><h2 style="margin:8px 0 6px">${titT}</h2>
+ <p class="prog">${p1T}</p>
+ <p class="prog">${p2T}</p>
  <form id="fnp"><input id="pinN1" ${ATR_PIN} placeholder="PIN nou"><input id="pinN2" ${ATR_PIN} placeholder="Repeteix el PIN nou">
  <div id="pinAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Desa el PIN nou 🔑</button></form>
  <div class="fila" id="pinAra" style="display:none"><button class="btn sec" id="pinAraBt">Ara no, ho faré la pròxima vegada</button></div></div>`;
@@ -2442,20 +2449,24 @@ function pantallaNouPin(){marcaNav("usuari");calla();aturaSeg();const nom=S.nom;
  const err=(m,el)=>{so("ko");sacseja(el||i1);av.innerHTML=`<div class="fb ko">${m}</div>`};
  i1.oninput=()=>{i1.value=netPin(i1.value);av.innerHTML="";if(i1.value.length===5)i2.focus()};i2.oninput=()=>{i2.value=netPin(i2.value);av.innerHTML=""};
  document.getElementById("pinAraBt").onclick=()=>{PIN_AJORNA=true;try{sessionStorage.setItem("bn_pin_ajorna","1")}catch(e){}vista("inici")};
- document.getElementById("fnp").onsubmit=e=>{e.preventDefault();const p1=netPin(i1.value),p2=netPin(i2.value);
+ document.getElementById("fnp").onsubmit=e=>{e.preventDefault();const p1=netPin(i1.value),p2=netPin(i2.value),vell=pinDe(nom);
   if(!PIN_NOU.test(p1))return err(`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,i1);
   if(p1===PIN_EX)return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",i1);
+  if(esTemp&&vell&&p1===vell)return err("🙃 Tria un PIN nou diferent del PIN temporal!",i1);
   if(p1!==p2)return err("Els dos PIN no són iguals. Torna'ls a escriure.",i2);
-  if(!pinDe(nom))return vista("inici"); // el PIN guardat s'ha esborrat mentrestant: torna a entrar
+  if(!vell)return vista("inici"); // el PIN guardat s'ha esborrat mentrestant: torna a entrar
   av.innerHTML=`<p class="prog">Un moment…</p>`;
-  rpc("bn_perfil_canvia_pin",{p_nom:nom,p_pin:pinDe(nom),p_nou:p1}).then(()=>{desaPin(nom,p1);so("coin");vista("inici");
-   const d=document.createElement("div");d.className="combo";d.innerHTML=`🛡️ PIN ACTUALITZAT!<small>RECORDA'L BÉ</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)})
+  rpc("bn_perfil_canvia_pin",{p_nom:nom,p_pin:vell,p_nou:p1}).then(res=>{
+   if(res==="mateix")return err("🙃 Tria un PIN nou diferent del PIN temporal!",i1);
+   if(res==="exemple")return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",i1);
+   PIN_TEMP_PEND=false;PIN_CADUCAT=false;desaPin(nom,p1);so("coin");vista("inici");
+   const d=document.createElement("div");d.className="combo";d.innerHTML=esTemp?`🔑 PIN PERSONAL DESAT!<small>RECORDA'L BÉ</small>`:`🛡️ PIN ACTUALITZAT!<small>RECORDA'L BÉ</small>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)})
   .catch(m=>{if(m==="pin"){ // el PIN guardat ja no serveix (potser ja l'ha canviat en un altre aparell): que entri amb el PIN nou
-    const x=pins();delete x[nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}benvinguda(nom);
+    PIN_TEMP_PEND=false;const x=pins();delete x[nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}benvinguda(nom);
     const a=document.getElementById("nomAvis");if(a)a.innerHTML=`<div class="fb" style="text-align:left">🔐 Sembla que ja havies canviat el PIN en un altre aparell. Entra amb el PIN nou (4 números i 1 lletra).</div>`;return}
    if(m==="bloc")return err("⏳ Massa intents. Espera 15 minuts i torna-ho a provar.");
    if(m==="pinfmt")return err(`El PIN nou són 4 números i 1 lletra al final (per exemple ${PIN_EX}).`,i1);
-   err("📡 No hi ha connexió i ara no es pot canviar el PIN.");document.getElementById("pinAra").style.display=""})}}
+   err("📡 No hi ha connexió i ara no es pot canviar el PIN.");if(!esTemp)document.getElementById("pinAra").style.display=""})}}
 // nom nou escrit a la pantalla d'entrada: si ja existeix al núvol, demana el PIN; si no, en proposa un
 function nouNom(n){if(!potNouNom(n)){const a=app.querySelector("#nomAvis");if(a){a.innerHTML=avisMassaNoms();so("ko")}return}if(/^file:/.test(location.protocol)||window.BN_NO_LOG)return entra(n);
  app.querySelector("#nomAvis").innerHTML=`<p class="prog">Un moment…</p>`;
@@ -2463,8 +2474,11 @@ function nouNom(n){if(!potNouNom(n)){const a=app.querySelector("#nomAvis");if(a)
   if(ex)pantallaPin(n,"entra",(ok,r)=>entra(n));
   else pantallaPin(n,"crea",()=>entra(n))}).catch(()=>entra(n))}
 // perfil d'aquest dispositiu: si té PIN, sincronitza; si no, carta per posar-n'hi
-function sincronitzaEntrada(modAbans){if(MODE_TAST)return;const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;rpc("bn_perfil_id",{p_nom:S.nom}).then(id=>{if(id&&S.id!==id){S.id=id;guarda();pintaCap();const h=document.querySelector(".hero h1");if(h&&!h.querySelector(".nid"))h.insertAdjacentHTML("beforeend",` <small class="nid" style="font-size:15px;color:var(--suau)">#${id}</small>`)}}).catch(()=>{});const nm=S.nom;nuvolBaixa(S.nom,p).then(nou=>{if(S.nom===nm)NUV_LLEST=true;return nou}).catch(m=>{if(m==="pin")throw m;return false}).then(nou=>rpc("bn_punts_maxim",{p_nom:S.nom,p_assig:ASSIG.id}).then(mx=>{if(mx>S.punts){S.punts=mx;S.mod=Date.now();guarda();pintaCap();return true}return nou}).catch(()=>nou)).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");nuvolPuja()}).catch(m=>{if(m==="pin"){const x=pins();delete x[S.nom.toLowerCase()];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}})}
+function sincronitzaEntrada(modAbans){if(MODE_TAST)return;const p=pinDe(S.nom);if(!p||/^file:/.test(location.protocol))return;rpc("bn_perfil_id",{p_nom:S.nom}).then(id=>{if(id&&S.id!==id){S.id=id;guarda();pintaCap();const h=document.querySelector(".hero h1");if(h&&!h.querySelector(".nid"))h.insertAdjacentHTML("beforeend",` <small class="nid" style="font-size:15px;color:var(--suau)">#${id}</small>`)}}).catch(()=>{});const nm=S.nom;nuvolBaixa(S.nom,p).then(nou=>{if(S.nom===nm)NUV_LLEST=true;return nou}).catch(m=>{if(m==="pin")throw m;return false}).then(nou=>rpc("bn_punts_maxim",{p_nom:S.nom,p_assig:ASSIG.id}).then(mx=>{if(mx>S.punts){S.punts=mx;S.mod=Date.now();guarda();pintaCap();return true}return nou}).catch(()=>nou)).then(nou=>{if(nou&&document.querySelector(".hero"))vista("inici");nuvolPuja()}).catch(m=>{if(m==="pin")marcaPinCaducat(nm)})}
+function avisPinCaducatHtml(){if(MODE_TAST||!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG||!PIN_CADUCAT||pinDe(S.nom))return "";
+ return `<div class="continua" id="avisPinCaducatMon" role="status" style="background:#fef9c3;border-color:#facc15;color:#1e1b4b;margin:0 0 12px"><span style="font-size:26px">🔐</span><span><b>El teu PIN ha canviat.</b> Entra amb el PIN nou per continuar guardant el progrés al núvol.</span><button type="button" class="btn" id="btPinCaducatMon" onclick="posaPin()">🔑 Escriu el PIN nou</button></div>`}
 function cartaPin(){if(MODE_TAST||!S.nom||/^file:/.test(location.protocol)||window.BN_NO_LOG)return "";
+ if(PIN_CADUCAT&&!pinDe(S.nom))return avisPinCaducatHtml();
  if(!pinDe(S.nom))return "";
  if(pinDe(S.nom))return `<p class="prog" style="text-align:center;margin:10px 0 0">☁️ Progrés guardat al núvol amb PIN${NUV_OK?" · desat fa un moment":""}</p>`;
  return `<div class="continua" role="button" tabindex="0" style="background:#eef2ff;border-color:#a5b4fc" onclick="posaPin()"><span style="font-size:28px">🔐</span><b>Posa't un PIN i no perdràs mai el progrés (també en un altre dispositiu)</b><span class="btn">Posa'l →</span></div>`}
