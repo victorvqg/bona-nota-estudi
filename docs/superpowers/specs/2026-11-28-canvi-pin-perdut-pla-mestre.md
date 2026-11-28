@@ -2,7 +2,7 @@
 
 28/11/2026 · Versió actual 2.79.3 · Especificació de millora per a `admin/index.html`, `supabase/`, `index.html`, `motor/plantilla-estudi-interactiu.html` i `perfil/index.html`.
 
-**Estat:** decisions preses el 28/11/2026: les 5 recomanacions de la secció 5 aprovades. En execució: PR 1 (`g41`, Fases 1 + 2: SQL i `/admin/`) i PR 2 (`g42`, Fases 3 + 4: portada, mons i docs `2.80.0`).
+**Estat:** decisions preses el 28/11/2026: les 5 recomanacions de la secció 5 aprovades. **Pla tancat.** PR 1 (`g41`, `#165`, Fases 1 + 2: `supabase/bn_pin_reset.sql` aplicat a Supabase i `/admin/`) fusionat el 28/11/2026; PR 2 (`g42`, Fases 3 + 4: portada, mons, prova E2E i versió `2.80.0`) completat el 28/11/2026.
 
 **En poques línies.** Avui, quan un nen oblida el seu PIN, l'única eina a `/admin/` és **«Treu el PIN»** (`bn_admin_usuari(..., 'treupin')`), que esborra la fila de `bn_priv.perfils` i obliga el nen (o l'admin) a crear-ne un de nou des de la portada. Això té cinc problemes reals:
 1. **Xoca amb el límit de 2 noms per aparell** (`index.html:1361`, `supabase/bn_max_2_noms.sql`): si s'intenta posar un PIN nou des del PC de l'admin o d'un aparell familiar on ja hi ha 2 comptes locals, la portada ho bloqueja.
