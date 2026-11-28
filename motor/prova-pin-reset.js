@@ -140,12 +140,12 @@ function servidor() {
    await p.click("#btPinCaducatMon");
    await p.waitForSelector("#fp #pin");
    await p.fill("#pin", "7392K");
-   await p.click('#fp button[type="submit"]');
+   await p.click("#fp button");
    await p.waitForSelector("#fnp #pinN1");
    ok((await p.textContent("#app h2")).includes("Tria el teu PIN nou"), "en posar el PIN temporal dins del món, obre pantallaNouPin");
    await p.fill("#pinN1", "9123P");
    await p.fill("#pinN2", "9123P");
-   await p.click('#fnp button[type="submit"]');
+   await p.click("#fnp button");
    await p.waitForSelector(".hero");
    const pins = await p.evaluate(() => JSON.parse(localStorage.getItem("bn_pins") || "{}"));
    ok(pins.rachita === "9123P", "desa el nou PIN personal 9123P i torna a l'inici del món");
