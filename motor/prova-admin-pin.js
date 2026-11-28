@@ -126,10 +126,10 @@ function dadesMock() {
    ok(await p.isChecked("#mpTemp"), "checkbox PIN temporal marcat per defecte");
    await p.click("#mpDesa");
    await p.waitForSelector("#dlg[open] #mpCodi");
-   ok((await txt(p, "#mpCodi")) === pin2 && (await p.$("#mpCopiaPin")) !== null && (await p.$("#mpCopiaMsg")) !== null && (await p.$("#mpPrevWrap")) !== null, "pantalla de confirmació mostra el PIN, «Copia correu arcade» i la previsualització");
+   ok((await txt(p, "#mpCodi")) === pin2 && (await p.$("#mpEml")) !== null && (await p.$("#mpMail")) !== null && (await p.$("#mpCopiaPin")) !== null && (await p.$("#mpCopiaMsg")) !== null && (await p.$("#mpPrevWrap")) !== null, "pantalla de confirmació mostra el PIN, «Correu arcade (.eml)», «Correu text», «Copia correu arcade» i la previsualització");
    await p.click("#mpPrevWrap summary");
    const prevTxt = await txt(p, "#mpPrev");
-   ok(prevTxt.includes("CLAU D'ACCÉS DESBLOQUEJADA") && prevTxt.includes("Hugo") && prevTxt.includes("ENTRAR A BONA NOTA") && prevTxt.includes(pin2), "la previsualització HTML arcade inclou el títol, el nom, el PIN i el botó d'entrada");
+   ok(prevTxt.includes("CLAU D'ACCÉS DESBLOQUEJADA") && prevTxt.includes("Hugo") && prevTxt.includes("QUÈ HA DE FER") && prevTxt.includes("ENTRAR A BONA NOTA") && prevTxt.includes(pin2), "la previsualització HTML arcade inclou el títol, el nom, els 3 passos en 3a persona, el PIN i el botó d'entrada");
    await p.click("#mpFet");
    await p.waitForSelector("#tPins table");
    await p.click('[data-pf="temp"]');
@@ -160,7 +160,11 @@ function dadesMock() {
    await p.click("#mpDesa");
    await p.waitForSelector("#dlg[open] #mpMail");
    const href = await p.getAttribute("#mpMail", "href");
-   ok(href && href.startsWith("mailto:familia.garcia%40exemple.cat") && href.includes(pinGen) && decodeURIComponent(href).includes("CLAU D'ACCÉS DESBLOQUEJADA"), "des de Bústia genera el botó mailto preomplert amb el format de joc, el correu i el PIN");
+   ok(href && href.startsWith("mailto:familia.garcia%40exemple.cat") && href.includes(pinGen) && decodeURIComponent(href).includes("CLAU D'ACCÉS DESBLOQUEJADA") && decodeURIComponent(href).includes("Què ha de fer"), "des de Bústia genera el botó mailto preomplert amb el format de joc en 3a persona, el correu i el PIN");
+   const [dl] = await Promise.all([p.waitForEvent("download"), p.click("#mpEml")]);
+   const emlPath = await dl.path();
+   const emlRaw = emlPath ? fs.readFileSync(emlPath, "utf8") : "";
+   ok(dl.suggestedFilename() === "bonanota-pin-laia.eml" && emlRaw.includes("X-Uniform-Type-Identifier: com.apple.mail-draft") && emlRaw.includes("X-Unsent: 1") && emlRaw.includes("To: familia.garcia@exemple.cat") && emlRaw.includes("multipart/alternative") && emlRaw.includes("text/html; charset=UTF-8"), "el botó «Correu arcade (.eml)» descarrega l'esborrany HTML+text preomplert per a Apple Mail i Outlook");
    await p.click("#mpTancaSug");
    await p.waitForTimeout(150);
    await p.click("#mpFet");
