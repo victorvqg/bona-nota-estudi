@@ -2,7 +2,7 @@
 
 28/11/2026 · Versió actual 2.81.0 · Especificació de disseny i implementació per al missatge i correu HTML de lliurament de PIN generat des de `/admin/` (`admin/index.html`) i opcionalment enviat via Resend (`supabase/functions/`).
 
-**Estat:** decisions preses el 28/11/2026 (Fase 1 aprovada; Fase 2 de Resend reservada per quan s'activi `RESEND_API_KEY`). **Fase 1 completada** al PR `g44` (`v2.82.0`).
+**Estat:** decisions preses el 28/11/2026 (Fase 1 aprovada; Fase 2 de Resend reservada per quan s'activi `RESEND_API_KEY`). **Fase 1 completada** a `g44` (`v2.82.0`) i ampliada a `g45` (`v2.83.0`) amb esborrany `.eml` preomplert (`com.apple.mail-draft` + `X-Unsent: 1`) i redacció unificada en 3a persona.
 
 **En poques línies.** El flux de recuperació de PIN (`v2.80.0` + `v2.81.0`) ja funciona de cap a cap, però el missatge que es copia o s'obre al correu (`textMissatgePin()` a `admin/index.html`) és un text pla funcional sense identitat visual de Bona Nota. Per donar-li **format de joc (estètica arcade neta per a 12–13 anys, coherent amb `docs/guia-disseny-bona-nota.md`)** cal tenir en compte una limitació real del correu electrònic:
 - Els enllaços `mailto:?body=...` **només admeten text pla** (cap client de correu renderitza HTML dins d'un `mailto:`).

@@ -5,6 +5,15 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.83.0 · 2026-11-28
+
+### Afegit
+- **Esborrany de correu arcade preomplert (`.eml`) a `/admin/` (`g45`):**
+  - Nou botó **«🎨 Correu arcade (.eml)»** al modal de confirmació de PIN al costat de **«✉️ Correu text»** (`mailto:`): descarrega un fitxer `bonanota-pin-<nom>.eml` `multipart/alternative` (`text/html` + `text/plain` en UTF-8 base64, assumpte RFC 2047, destinatari preomplert des de la Bústia) amb les capçaleres `X-Uniform-Type-Identifier: com.apple.mail-draft` (Apple Mail) i `X-Unsent: 1` (Outlook/Thunderbird) perquè s'obri directament com a esborrany visual llest per enviar.
+
+### Canviat
+- **Redacció del correu de recuperació de PIN (`admin/index.html`):** unificat tot el missatge (targeta HTML i text pla) en 3a persona dirigit a la família (*«Què ha de fer (3 passos): Entrar… Escriure… li demanarà…»*) i substituït «perfil arcade» per «perfil de joc».
+
 ## 2.82.0 · 2026-11-28
 
 ### Canviat
