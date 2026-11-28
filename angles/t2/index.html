@@ -22,7 +22,7 @@ window.BN_ACT={arrel:"../../"};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f5bfcccb0d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5298302ab7",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -848,7 +848,7 @@ body.suau svg .fgL{animation:none!important;stroke-dashoffset:0}
 </header>
 <div id="avisNitWrap" class="avis-global-wrap"></div>
 <main id="app"></main>
-<div class="peu-pag"><a id="lkSugMon" href="../../suggeriments/?tipus=error" style="color:var(--gris);text-decoration:none;font-weight:700;font-size:12.5px;margin-right:10px">🐛 Has trobat un error?</a><small class="bn-versio">versió 2.80.0</small></div>
+<div class="peu-pag"><a id="lkSugMon" href="../../suggeriments/?tipus=error" style="color:var(--gris);text-decoration:none;font-weight:700;font-size:12.5px;margin-right:10px">🐛 Has trobat un error?</a><small class="bn-versio">versió 2.81.0</small></div>
 
 <script src="../../sprites.js?v=90af40be"></script>
 <script>
@@ -1732,13 +1732,14 @@ function benvinguda(nomPre){
  ${SENSE_NUVOL()?"":`<input id="pinL" ${ATR_PIN} placeholder="PIN (4 números + 1 lletra)">`}
  <div id="nomAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">Entra ▶</button></form>
  <button class="btn sec bt-tast" type="button" id="btTastMon" onclick="activaTast()">👀 Tasta aquest món sense compte (anònim)</button>
+ ${SENSE_NUVOL()?"":`<p class="prog" style="margin:10px 0 0"><a id="lkOblidatMon" href="${urlPinPerdut(nomPre||"")}" style="color:var(--pri);font-weight:800">${ASSIG.llengua==="es"?"🔑 ¿Has olvidado el PIN?":"🔑 Has oblidat el PIN?"}</a></p>`}
  ${pot?"":`<p class="prog" style="margin-top:10px">📵 En aquest dispositiu ja hi ha ${MAX_NOMS} noms: només pots entrar amb un d'aquests.</p>`}
  <a class="surt-gran" href="../../">🚪 Tornar al menú de tots els mons</a></div>`;
  const i=document.getElementById("nom"),pi=document.getElementById("pinL"),av=document.getElementById("nomAvis");
  const err=(m,el)=>{so("ko");sacseja(el||i);av.innerHTML=`<div class="fb ko" style="text-align:left">${m}</div>`};
- app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>{i.value=b.dataset.n;app.querySelectorAll(".perfil").forEach(x=>x.classList.toggle("on",x===b));if(pi){pi.value="";pi.focus()}else document.getElementById("fn").requestSubmit()});
+ app.querySelectorAll(".perfil").forEach(b=>b.onclick=()=>{i.value=b.dataset.n;const lk=document.getElementById("lkOblidatMon");if(lk)lk.href=urlPinPerdut(b.dataset.n);app.querySelectorAll(".perfil").forEach(x=>x.classList.toggle("on",x===b));if(pi){pi.value="";pi.focus()}else document.getElementById("fn").requestSubmit()});
  if(pi)pi.oninput=()=>{pi.value=netPin(pi.value);av.innerHTML="";if(pi.value.length===5&&i.value.trim())document.getElementById("fn").requestSubmit()};
- i.oninput=()=>{i.style.borderColor="";av.innerHTML=""};
+ i.oninput=()=>{i.style.borderColor="";av.innerHTML="";const lk=document.getElementById("lkOblidatMon");if(lk)lk.href=urlPinPerdut(i.value)};
  if(nomPre){i.value=nomPre;app.querySelectorAll(".perfil").forEach(x=>x.classList.toggle("on",x.dataset.n===nomPre));av.innerHTML=`<div class="fb" style="text-align:left">🔐 Ara s'entra amb <b>nom + PIN</b>. Escriu el teu PIN (si encara no en tens, tria'n un de 4 números i 1 lletra al final, per exemple ${PIN_EX}) i el teu progrés quedarà guardat.</div>`;if(pi)pi.focus()}
  else if(!noms.length&&!altres.length)i.focus();
  document.getElementById("fn").onsubmit=async e=>{e.preventDefault();let n=i.value.trim().replace(/\s+/g," ");if(!n)return err("Escriu el teu nom.");
@@ -1756,7 +1757,7 @@ function benvinguda(nomPre){
   if(ex){ // el nom ja existeix: comprova el PIN i recupera el progrés
    try{const rr=await rpc("bn_progres_llegeix",{p_nom:n,p_pin:p,p_assig:ASSIG.id});desaPin(n,p);PIN_CADUCAT=false;if(rr&&rr.pin_temp)PIN_TEMP_PEND=true;so("coin");
     entra(n)} // entra() ja baixa el progrés del núvol si és més nou que el d'aquest dispositiu
-   catch(m){err(m==="pin"?"❌ PIN incorrecte. Torna-ho a provar.":m==="bloc"?"⏳ Massa intents. Espera 15 minuts i torna-ho a provar.":"📡 No hi ha connexió. Prova-ho més tard.",pi)}
+   catch(m){err(m==="pin"?`❌ PIN incorrecte. Torna-ho a provar — <a href="${urlPinPerdut(n)}" style="color:inherit;font-weight:900">🔑 Has oblidat el PIN?</a>`:m==="bloc"?`⏳ Massa intents. Espera 15 minuts — <a href="${urlPinPerdut(n)}" style="color:inherit;font-weight:900">🔑 Demana un PIN temporal</a>`:"📡 No hi ha connexió. Prova-ho més tard.",pi)}
    return}
   // nom nou (o nom antic d'aquest dispositiu que encara no tenia PIN): es crea amb aquest PIN (ha de ser del format nou)
   if(!PIN_NOU.test(p))return err(`🔤 Al final del PIN hi va una lletra. Per exemple: ${PIN_EX}. Inventa't el teu!`,pi);
@@ -2138,6 +2139,7 @@ const PIN_NOU=/^\d{4}[A-Z]$/,PIN_VELL=/^\d{4}$/,PIN_EX="4587R";
 function netPin(v){let o="";for(const c of String(v).toUpperCase()){if(o.length<4){if(/\d/.test(c))o+=c}else if(/[A-Z]/.test(c)){o+=c;break}}return o}
 const ATR_PIN=`class="pin-in" maxlength="5" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"`;
 const pinVell=n=>PIN_VELL.test(pinDe(n)||"");
+function urlPinPerdut(nom){const q=["tipus=pin"];if(ASSIG&&ASSIG.id)q.push("mon="+encodeURIComponent(ASSIG.id));const nm=String(nom||"").trim();if(nm)q.push("nom="+encodeURIComponent(nm));return "../../suggeriments/?"+q.join("&")}
 let PIN_AJORNA=false,PIN_TEMP_PEND=false,PIN_CADUCAT=false;try{PIN_AJORNA=sessionStorage.getItem("bn_pin_ajorna")==="1"}catch(e){}
 function marcaPinCaducat(nom){const k=(nom||S.nom||"").trim().toLowerCase();if(k){const x=pins();delete x[k];try{localStorage.setItem("bn_pins",JSON.stringify(x))}catch(e){}}
  PIN_CADUCAT=true;if(document.querySelector(".hero"))vista("inici")}
@@ -2199,7 +2201,7 @@ function pantallaPin(nom,mode,despres){marcaNav("usuari");
  app.innerHTML=`<div class="box benv"><div class="gran">🔐</div><h2 style="margin:8px 0 6px">${tit}</h2><p class="prog">${txt}</p>
  <form id="fp"><input id="pin" ${ATR_PIN} style="letter-spacing:10px;font-size:28px" placeholder="• • • • •">
  <div id="pinAvis"></div><button class="btn verd" style="width:100%;padding:14px;font-size:18px">${mode==="entra"?"Entra amb el PIN":"Desa el PIN"} 🔑</button></form>
- <div class="fila">${mode==="entra"?`<button class="btn sec" id="pinEnrere">← Tria un altre nom</button>`:`<button class="btn sec" id="pinNo">Ara no (només en aquest dispositiu)</button>`}</div></div>`;
+ <div class="fila">${mode==="entra"?`<button class="btn sec" id="pinEnrere">← Tria un altre nom</button><a class="btn sec" href="${urlPinPerdut(nom)}" style="text-decoration:none">${ASSIG.llengua==="es"?"🔑 ¿Has olvidado el PIN?":"🔑 Has oblidat el PIN?"}</a>`:`<button class="btn sec" id="pinNo">Ara no (només en aquest dispositiu)</button>`}</div></div>`;
  const i=document.getElementById("pin"),av=document.getElementById("pinAvis");i.focus();
  const err=m=>{so("ko");sacseja(i);av.innerHTML=`<div class="fb ko">${m}</div>`};
  i.oninput=()=>{i.value=netPin(i.value);av.innerHTML=""};

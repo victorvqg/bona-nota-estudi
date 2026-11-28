@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"./",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f5bfcccb0d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5298302ab7",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -767,6 +767,8 @@ main.en-tast .prog.on{display:none}
 .avis-pin-portada{border-color:#facc15;background:linear-gradient(135deg,#2e1065f0,#1e1b4bf0);flex-wrap:wrap}
 .avis-pin-portada .ap-bt{margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:#facc15;color:#1e1b4b;font:900 13.5px/1.2 Nunito,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
 .avis-pin-portada .ap-bt:hover{filter:brightness(1.06)}
+.en-oblidat{display:inline-block;margin:8px 0 0;font-size:13.5px;font-weight:800;color:#fde68a;text-decoration:underline;text-underline-offset:3px}
+.en-oblidat:hover{color:#fff}
 @keyframes triaBota{50%{transform:translateY(6px)}}
 main.bloc .as{filter:grayscale(.5) brightness(.75)}
 main.ilumina .as{opacity:1;animation:ilumina 1.2s ease-out 2}
@@ -928,6 +930,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
   <div class="en-avis" id="enAvis" role="status"></div>
   <button class="en-bt" type="submit">Entra ▶</button>
   <button class="en-tast" id="btTastPortada" type="button">👀 Fes un tast sense compte (anònim)</button>
+  <a class="en-oblidat" id="lkOblidatPin" href="suggeriments/?tipus=pin">🔑 Has oblidat el PIN?</a>
   <p class="en-peu">El PIN són <b>4 números i 1 lletra al final</b> (per exemple 4587R). El primer cop, inventa-te'n un i recorda'l: amb el PIN continues des de qualsevol aparell.</p>
  </form>
  <div class="avis-nit-portada avis-pin-portada" id="avisPinCaducat" hidden role="status"></div>
@@ -1090,7 +1093,7 @@ footer small{display:block;margin-top:12px;font-size:12px;font-weight:600}
  </div>
 </div>
 
-<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="pares-lk" href="suggeriments/">✉️ suggeriments</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.80.0</small></footer>
+<footer><b>★</b> Bona Nota · el progrés de cada nen es guarda amb el seu nom i PIN <b>★</b><br><a class="pares-lk" href="pares/">👨‍👩‍👧 famílies</a><a class="pares-lk" href="suggeriments/">✉️ suggeriments</a><a class="admin" href="admin/">🔐 admin</a><small class="bn-versio">versió 2.81.0</small></footer>
 
 <script src="sprites.js?v=90af40be"></script>
 <script>
@@ -1351,7 +1354,11 @@ function iniciEntrada(){
  ns.querySelectorAll('button').forEach(b=>b.onclick=()=>{iN.value=b.dataset.n;ns.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));iP.value='';iP.focus()});
  const err=(m,el)=>{av.className='en-avis';av.textContent=m;f.classList.remove('tremola');void f.offsetWidth;f.classList.add('tremola');(el||iN).focus()};
  const errTast=()=>{av.className='en-avis';av.innerHTML=`👆 Primer escriu el teu nom i el PIN — o <button type="button" class="en-avis-lk" id="enAvisTast">fes un tast anònim 👀</button>.`;document.getElementById('enAvisTast').onclick=()=>{av.textContent='';activaTastPortada(true)};f.classList.remove('tremola');void f.offsetWidth;f.classList.add('tremola');iN.focus()};
- iP.oninput=()=>{iP.value=netPin(iP.value);av.textContent=''};iN.oninput=()=>{av.textContent=''};
+ iP.oninput=()=>{iP.value=netPin(iP.value);av.textContent=''};
+ const urlOblidat=nom=>{const nm=String(nom||'').trim();return nm?`suggeriments/?tipus=pin&nom=${encodeURIComponent(nm)}`:'suggeriments/?tipus=pin'};
+ const actualitzaLkOblidat=()=>{const lk=document.getElementById('lkOblidatPin');if(lk)lk.href=urlOblidat(iN.value)};
+ iN.oninput=()=>{av.textContent='';actualitzaLkOblidat()};
+ ns.querySelectorAll('button').forEach(b=>b.addEventListener('click',actualitzaLkOblidat));
  const dins=n=>{TAST_ACTIU=false;MOSTRA_FORM=false;try{sessionStorage.removeItem('bn_tast')}catch(e){}fixaUrlTast(false);
   try{localStorage.setItem('bn_jugador',n);const l=JSON.parse(localStorage.getItem('bn_noms_aparell')||'[]')||[];if(!l.some(x=>x.toLowerCase()===n.toLowerCase())){l.push(n);localStorage.setItem('bn_noms_aparell',JSON.stringify(l))}}catch(e){}
   pintaHola();const m=document.querySelector('main');m.classList.remove('ilumina');void m.offsetWidth;m.classList.add('ilumina');
@@ -1374,7 +1381,7 @@ function iniciEntrada(){
     if(rr&&rr.pin_temp)return demanaNouPin(n,()=>dins(n),{motiu:'temp'});
     if(PIN_VELL.test(p))return demanaNouPin(n,()=>dins(n),{motiu:'vell'});
     dins(n)}
-   catch(m){err(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar.':m==='bloc'?'⏳ Massa intents. Espera 15 minuts.':'📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
+   catch(m){if(m==='pin'||m==='bloc'){av.className='en-avis';av.innerHTML=(m==='pin'?'❌ PIN incorrecte. Torna-ho a provar — ':'⏳ Massa intents. Espera 15 minuts — ')+`<a class="en-avis-lk" href="${urlOblidat(n)}">🔑 Demana un PIN temporal</a>.`;f.classList.remove('tremola');void f.offsetWidth;f.classList.add('tremola');iP.focus()}else err('📡 No hi ha connexió. Prova-ho més tard.',iP)}return}
   if(!PIN_NOU.test(p))return err(`🔤 Al final del PIN hi va una lletra. Per exemple: ${PIN_EX}. Inventa't el teu!`,iP);
   if(p===PIN_EX)return err("🙃 Aquest és el PIN d'exemple! Inventa't el teu.",iP);
   try{const r=await rpcP('bn_perfil_crea',{p_nom:n,p_pin:p});if(r==='existeix')return err('Aquest nom ja existeix. Escriu-ne el PIN o tria un altre nom.',iP);desaPinP(n,p);dins(n)}

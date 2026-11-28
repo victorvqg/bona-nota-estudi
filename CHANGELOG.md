@@ -5,6 +5,17 @@ Com es numeren i com es puja una versió: apartat «Versions» del [README](READ
 
 Les versions fins a la 2.3.0 es van numerar després de publicar-les, a partir de l'historial de commits.
 
+## 2.81.0 · 2026-11-28
+
+### Afegit
+- **Guia i flux dedicat de recuperació de PIN a la Bústia (`/suggeriments/?tipus=pin` · `g43`):**
+  - Nova opció destacada **«🔑 He oblidat el PIN (o compte bloquejat)»** amb targeta de tranquil·litat (*no perds estrelles, `#ID` ni perfil arcade*), guia visual en 3 passos del PIN temporal i camps guiats (*Nom d'usuari*, *Dispositiu habitual*, *Últim món*, *Motiu* i *Correu obligatori de pare/mare/tutor*) que generen un missatge estructurat `[RECUPERACIÓ DE PIN]` (0 canvis d'SQL) perquè `/admin/ → Bústia` pre-detecti automàticament l'alumne.
+  - Enllaços directes **«🔑 Has oblidat el PIN?»** a la portada (`index.html`), als 10 mons (`motor/plantilla-estudi-interactiu.html`) i dins dels avisos de PIN incorrecte / bloqueig de 15 minuts, pre-omplint automàticament el nom i el món a la URL.
+  - Nova prova automatitzada `motor/prova-suggeriments.js` a la CI.
+
+### Canviat
+- **Guia per a les famílies (`pares/index.html`):** actualitzada la pregunta freqüent sobre el PIN oblidat al flux real de PIN temporal (`v2.80.0`) amb enllaç directe a `/suggeriments/?tipus=pin`.
+
 ## 2.80.0 · 2026-11-28
 
 ### Afegit

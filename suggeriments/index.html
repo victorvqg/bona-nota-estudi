@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f5bfcccb0d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5298302ab7",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -105,6 +105,19 @@ main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:10px 16px
 .cat-ic{font-size:24px;line-height:1.1;flex:none}
 .cat-bt b{display:block;font-size:15.5px;font-weight:900;color:#fff;line-height:1.25}
 .cat-bt small{display:block;font-size:13px;font-weight:700;color:var(--txt2);margin-top:2px;line-height:1.35}
+.cat-pin{grid-column:1/-1;background:#facc1512;border-color:#facc1555}
+.cat-pin[aria-pressed="true"]{background:#facc1526;border-color:var(--groc)}
+.pin-guia{display:none;margin:0 0 18px;padding:16px;border-radius:16px;background:#0b1033b8;border:1.5px solid #facc1555}
+.pin-guia.on{display:block}
+.pin-tranq{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border-radius:12px;background:#4ade8018;border:1px solid #4ade8055;color:#dcfce7;font-size:14px;font-weight:700;margin-bottom:12px}
+.pin-passos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:10px}
+.pin-pas{background:#ffffff08;border:1px solid #ffffff1a;border-radius:12px;padding:11px 12px}
+.pin-pas b{display:block;font-size:14px;font-weight:900;color:var(--groc-suau);margin-bottom:4px}
+.pin-pas p{margin:0;font-size:13px;line-height:1.45;color:var(--txt2);font-weight:700}
+.pin-nota-sess{margin:0;font-size:13px;color:#cbd5e1;font-weight:700}
+.pin-nota-sess b{color:#fff}
+.pin-camps{display:none;margin-bottom:16px;padding:14px;border-radius:14px;background:#ffffff07;border:1px solid #ffffff1c}
+.pin-camps.on{display:block}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:16px}
 .camp{margin-bottom:16px}
 .camp label{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14.5px;font-weight:900;color:#fff;margin-bottom:6px}
@@ -144,7 +157,7 @@ textarea.ctrl{min-height:132px;resize:vertical;line-height:1.5}
 footer{position:relative;z-index:1;text-align:center;padding:18px 16px 34px;color:var(--txt2);font-size:13.5px;font-weight:700}
 footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
 @media (max-width:720px){
- .cats,.grid2,.info-grid{grid-template-columns:1fr}
+ .cats,.grid2,.info-grid,.pin-passos{grid-template-columns:1fr}
  .card{padding:16px}
  .btn-env{width:100%}
 }
@@ -186,18 +199,69 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
     </button>
     <button type="button" class="cat-bt" data-cat="privacitat" aria-pressed="false">
      <span class="cat-ic" aria-hidden="true">🔒</span>
-     <span><b>Privacitat o perfil</b><small>Amagar/esborrar un nom o recuperar un PIN</small></span>
+     <span><b>Privacitat o perfil</b><small>Amagar/esborrar un nom o canviar-lo</small></span>
     </button>
+    <button type="button" class="cat-bt cat-pin" data-cat="pin" aria-pressed="false">
+     <span class="cat-ic" aria-hidden="true">🔑</span>
+     <span><b>He oblidat el PIN (o compte bloquejat)</b><small>Demana un PIN temporal per correu sense perdre cap estrella, ni l'#ID ni el perfil arcade</small></span>
+    </button>
+   </div>
+
+   <section class="pin-guia" id="pinGuia" aria-label="Com recuperem el teu PIN">
+    <div class="pin-tranq">
+     <span aria-hidden="true">🛡️</span>
+     <span><b>No perds res!</b> Totes les estrelles, els temes aprovats, el número <b>#ID</b> i l'avatar arcade estan guardats al núvol i es mantenen intactes.</span>
+    </div>
+    <div class="pin-passos">
+     <div class="pin-pas">
+      <b>1 · Petició de la família</b>
+      <p>El pare, mare o tutor/a indica el nom d'usuari, el dispositiu habitual i l'últim món per comprovar que el compte és vostre.</p>
+     </div>
+     <div class="pin-pas">
+      <b>2 · PIN temporal per correu</b>
+      <p>Els PINs estan xifrats i ningú pot llegir l'antic. Et generem un <b>PIN temporal d'un sol ús</b> (4 números + 1 lletra) i te l'enviem al correu.</p>
+     </div>
+     <div class="pin-pas">
+      <b>3 · Tries el teu PIN nou</b>
+      <p>L'alumne entra a <b>bonanota.net</b> amb el PIN temporal i el web li demana triar el seu PIN personal nou. Apunteu-lo junts!</p>
+     </div>
+    </div>
+    <p class="pin-nota-sess">💡 <b>Consell:</b> si en obrir Bona Nota ja surt el nom a dalt, prem primer <b>«No ets tu?»</b> (o el botó groc <b>«🔑 Escriu el PIN nou»</b>) per posar el PIN temporal. Si ets alumne/a, demana a papa, mama o tutor/a que ompli aquesta petició.</p>
+   </section>
+
+   <div class="pin-camps" id="pinCamps">
+    <div class="grid2" style="margin-bottom:14px">
+     <div class="camp" style="margin:0">
+      <label for="sPinNom">Nom d'usuari a Bona Nota <span class="opt" style="color:var(--groc-suau)">(obligatori)</span></label>
+      <input id="sPinNom" type="text" class="ctrl" maxlength="40" autocomplete="off" placeholder="Ex.: Rachita (tal com surt a la portada, sense cognoms)">
+     </div>
+     <div class="camp" style="margin:0">
+      <label>Què ha passat? <span class="opt">(tria una opció)</span></label>
+      <div class="rols" role="group" aria-label="Motiu de la petició de PIN">
+       <button type="button" class="rol-bt" data-pm="He oblidat el PIN" aria-pressed="true">🔑 He oblidat el PIN</button>
+       <button type="button" class="rol-bt" data-pm="Compte bloquejat (5 intents)" aria-pressed="false">⏳ Bloquejat (5 intents)</button>
+      </div>
+     </div>
+    </div>
+    <div class="camp" style="margin:0">
+     <label>Dispositiu habitual <span class="opt" style="color:var(--groc-suau)">(obligatori · verificació)</span></label>
+     <div class="rols" role="group" aria-label="Dispositiu habitual">
+      <button type="button" class="rol-bt" data-pd="Mòbil" aria-pressed="false">📱 Mòbil</button>
+      <button type="button" class="rol-bt" data-pd="Tauleta" aria-pressed="false">📲 Tauleta</button>
+      <button type="button" class="rol-bt" data-pd="Ordinador" aria-pressed="false">💻 Ordinador</button>
+      <button type="button" class="rol-bt" data-pd="Diversos dispositius" aria-pressed="false">🔄 Diversos</button>
+     </div>
+    </div>
    </div>
 
    <div class="grid2">
     <div class="camp" style="margin:0">
-     <label for="sMon">2 · Món relacionat <span class="opt">(opcional)</span></label>
+     <label for="sMon" id="lblMon">2 · Món relacionat <span class="opt">(opcional)</span></label>
      <select id="sMon" class="ctrl">
       <option value="">General / Tota la web</option>
      </select>
     </div>
-    <div class="camp" style="margin:0">
+    <div class="camp" id="campRol" style="margin:0">
      <label>3 · Qui escriu? <span class="opt">(opcional)</span></label>
      <div class="rols" role="group" aria-label="Qui escriu">
       <button type="button" class="rol-bt" data-rol="familia" aria-pressed="false">👨‍👩‍👧 Família</button>
@@ -208,15 +272,15 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
    </div>
 
    <div class="avis-menor" id="avisMenor" role="note">
-    🛡️ <b>Consell de privacitat:</b> Si ets alumne/a, no escriguis el teu nom complet, cognoms ni telèfon. Si necessites resposta o reiniciar un PIN, demana al teu pare, mare o tutor/a que escrigui des del seu correu.
+    🛡️ <b>Consell de privacitat:</b> Si ets alumne/a, no escriguis el teu nom complet, cognoms ni telèfon. Si necessites resposta o recuperar un PIN, demana al teu pare, mare o tutor/a que escrigui des del seu correu.
    </div>
 
    <div class="avis-menor" id="avisPriv" role="note" style="background:#facc1516;border-color:#facc1566;color:#fef9c3">
-    🔒 <b>Verificació de seguretat:</b> Si demanes reiniciar un PIN o gestionar un perfil, indica el <b>nom d'usuari</b>, el <b>dispositiu habitual</b> i l'<b>últim món</b> que ha treballat perquè puguem comprovar que ets tu, i escriu el <b>correu electrònic del pare, mare o tutor/a</b>.
+    🔒 <b>Verificació de seguretat:</b> Si demanes gestionar un perfil, indica el <b>nom d'usuari</b>, el <b>dispositiu habitual</b> i l'<b>últim món</b> que ha treballat perquè puguem comprovar que ets tu, i escriu el <b>correu electrònic del pare, mare o tutor/a</b>.
    </div>
 
    <div class="camp" style="margin-top:16px">
-    <label for="sMsg">4 · El teu missatge <span class="opt">(obligatori)</span></label>
+    <label for="sMsg" id="lblMsg">4 · El teu missatge <span class="opt">(obligatori)</span></label>
     <textarea id="sMsg" class="ctrl" maxlength="1500" required placeholder="Explica'ns què has trobat o què proposes amb el màxim de detall possible (per exemple, el tema o la pregunta concreta)…"></textarea>
     <div class="compta">
      <span id="sHint">Mínim 10 caràcters</span>
@@ -273,7 +337,7 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
 
 <footer>
  <b>★</b> Bona Nota · contacte i suggeriments <b>★</b>
- <small class="bn-versio">versió 2.80.0</small>
+ <small class="bn-versio">versió 2.81.0</small>
 </footer>
 
 <script>
@@ -285,42 +349,62 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
  if(DEMO)document.getElementById("demoPill").classList.add("on");
 
  const T0=Date.now();
- let CAT="error",ROL="";
+ let CAT="error",ROL="",PIN_DISP="",PIN_MOTIU="He oblidat el PIN";
 
  const form=document.getElementById("fSug"),fetBox=document.getElementById("fetBox"),errBox=document.getElementById("errBox");
  const sMon=document.getElementById("sMon"),sMsg=document.getElementById("sMsg"),sMail=document.getElementById("sMail"),sWeb=document.getElementById("sWeb");
  const sLen=document.getElementById("sLen"),sHint=document.getElementById("sHint"),btEnvia=document.getElementById("btEnvia");
  const avisMenor=document.getElementById("avisMenor"),avisPriv=document.getElementById("avisPriv"),campEmail=document.getElementById("campEmail"),lblMail=document.getElementById("lblMail");
+ const pinGuia=document.getElementById("pinGuia"),pinCamps=document.getElementById("pinCamps"),sPinNom=document.getElementById("sPinNom"),campRol=document.getElementById("campRol"),lblMon=document.getElementById("lblMon"),lblMsg=document.getElementById("lblMsg");
 
  function actualitzaVisibilitat(){
-  const esPriv=CAT==="privacitat",esAl=ROL==="alumne";
-  avisPriv.classList.toggle("on",esPriv);
+  const esPin=CAT==="pin",esPriv=CAT==="privacitat"||esPin,esAl=ROL==="alumne"&&!esPin;
+  pinGuia.classList.toggle("on",esPin);
+  pinCamps.classList.toggle("on",esPin);
+  avisPriv.classList.toggle("on",CAT==="privacitat");
   avisMenor.classList.toggle("on",esAl);
+  campRol.hidden=esPin;
   campEmail.hidden=esAl&&!esPriv;
   if(esAl&&!esPriv)sMail.value="";
+  lblMon.innerHTML=esPin?'Últim món treballat <span class="opt">(ajuda a verificar)</span>':'2 · Món relacionat <span class="opt">(opcional)</span>';
+  lblMsg.innerHTML=esPin?'Comentari addicional <span class="opt">(opcional)</span>':'4 · El teu missatge <span class="opt">(obligatori)</span>';
+  sMsg.required=!esPin;
+  sMsg.placeholder=esPin?"Opcional: explica qualsevol detall útil (p. ex. ha canviat de tauleta)…":"Explica'ns què has trobat o què proposes amb el màxim de detall possible (per exemple, el tema o la pregunta concreta)…";
+  btEnvia.textContent=esPin?"Demana un PIN temporal ▶":"Envia el missatge ▶";
   if(esPriv){
-   lblMail.innerHTML='5 · Correu del pare, mare o tutor/a <span class="opt" style="color:var(--groc-suau)">(obligatori)</span>';
-   sMail.placeholder="correu.familia@exemple.cat (obligatori per verificar el PIN o perfil)";
+   lblMail.innerHTML=esPin?'Correu del pare, mare o tutor/a <span class="opt" style="color:var(--groc-suau)">(obligatori · hi enviarem el PIN temporal)</span>':'5 · Correu del pare, mare o tutor/a <span class="opt" style="color:var(--groc-suau)">(obligatori)</span>';
+   sMail.placeholder="correu.familia@exemple.cat (obligatori per rebre el PIN temporal)";
   }else{
    lblMail.innerHTML='5 · Correu per rebre resposta <span class="opt">(opcional)</span>';
    sMail.placeholder="nom@exemple.cat (només si vols que et contestem)";
   }
+  actualitzaLen();
  }
  function setCat(c){
-  if(!["error","idea","familia","privacitat"].includes(c))return;
+  if(!["error","idea","familia","privacitat","pin"].includes(c))return;
   CAT=c;
   document.querySelectorAll(".cat-bt").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.cat===CAT)));
   actualitzaVisibilitat();
  }
  function setRol(r){
   ROL=(ROL===r)?"":r;
-  document.querySelectorAll(".rol-bt").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.rol===ROL)));
+  document.querySelectorAll(".rol-bt[data-rol]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.rol===ROL)));
   actualitzaVisibilitat();
  }
  document.querySelectorAll(".cat-bt").forEach(b=>b.onclick=()=>setCat(b.dataset.cat));
- document.querySelectorAll(".rol-bt").forEach(b=>b.onclick=()=>setRol(b.dataset.rol));
+ document.querySelectorAll(".rol-bt[data-rol]").forEach(b=>b.onclick=()=>setRol(b.dataset.rol));
+ document.querySelectorAll(".rol-bt[data-pd]").forEach(b=>b.onclick=()=>{
+  PIN_DISP=b.dataset.pd;
+  document.querySelectorAll(".rol-bt[data-pd]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+ });
+ document.querySelectorAll(".rol-bt[data-pm]").forEach(b=>b.onclick=()=>{
+  PIN_MOTIU=b.dataset.pm;
+  document.querySelectorAll(".rol-bt[data-pm]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+ });
 
- // Pre-selecció per paràmetres URL (?tipus=error&mon=prehistoria)
+ // Pre-selecció per paràmetres URL (?tipus=pin&nom=Rachita&mon=prehistoria)
+ const nomParam=(P.get("nom")||"").trim().slice(0,40);
+ if(nomParam)sPinNom.value=nomParam;
  if(P.get("tipus"))setCat(P.get("tipus").toLowerCase());
  const monParam=(P.get("mon")||"").toLowerCase().replace(/[^a-z0-9_-]/g,"");
 
@@ -337,9 +421,10 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
  }).catch(()=>{});
 
  function actualitzaLen(){
-  const n=sMsg.value.trim().length;
+  const n=sMsg.value.trim().length,esPin=CAT==="pin";
   sLen.textContent=`${n.toLocaleString("ca-ES")} / 1.500`;
-  if(n===0){sHint.textContent="Mínim 10 caràcters";sHint.className=""}
+  if(esPin){sHint.textContent=n?"✓ Comentari afegit":"Opcional (les dades de dalt ja són suficients)";sHint.className=n?"ok":""}
+  else if(n===0){sHint.textContent="Mínim 10 caràcters";sHint.className=""}
   else if(n<10){sHint.textContent=`Et falten ${10-n} caràcters`;sHint.className="err"}
   else{sHint.textContent="✓ Llargada correcta";sHint.className="ok"}
  }
@@ -357,11 +442,28 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
 
  form.addEventListener("submit",async e=>{
   e.preventDefault();mostraErr("");
-  const esPriv=CAT==="privacitat";
-  const msg=sMsg.value.trim(),mail=(ROL==="alumne"&&!esPriv)?"":sMail.value.trim();
-  if(msg.length<10){mostraErr("Escriu almenys 10 caràcters perquè puguem entendre bé el missatge.");sMsg.focus();return}
-  if(msg.length>1500){mostraErr("El missatge no pot superar els 1.500 caràcters.");sMsg.focus();return}
-  if(esPriv&&!mail){mostraErr("Per reiniciar un PIN o gestionar un perfil cal indicar el correu electrònic del pare, mare o tutor/a.");sMail.focus();return}
+  const esPin=CAT==="pin",esPriv=CAT==="privacitat"||esPin;
+  const mail=(ROL==="alumne"&&!esPriv)?"":sMail.value.trim();
+  const pinNom=sPinNom.value.trim().replace(/\s+/g," ");
+  let msg=sMsg.value.trim();
+  if(esPin){
+   if(!pinNom||pinNom.length<2){mostraErr("Escriu el nom d'usuari de l'alumne a Bona Nota (tal com surt a la portada).");sPinNom.focus();return}
+   if(!PIN_DISP){mostraErr("Tria el dispositiu habitual (Mòbil, Tauleta, Ordinador o Diversos) per verificar el compte.");return}
+   const monLbl=sMon.value?(sMon.options[sMon.selectedIndex]?.textContent||sMon.value):"No indicat";
+   const linies=[
+    "[RECUPERACIÓ DE PIN]",
+    `• Nom d'usuari: ${pinNom}`,
+    `• Motiu: ${PIN_MOTIU}`,
+    `• Dispositiu habitual: ${PIN_DISP}`,
+    `• Últim món treballat: ${monLbl}`
+   ];
+   if(msg)linies.push(`• Comentari: ${msg}`);
+   msg=linies.join("\n").slice(0,1500);
+  }else{
+   if(msg.length<10){mostraErr("Escriu almenys 10 caràcters perquè puguem entendre bé el missatge.");sMsg.focus();return}
+   if(msg.length>1500){mostraErr("El missatge no pot superar els 1.500 caràcters.");sMsg.focus();return}
+  }
+  if(esPriv&&!mail){mostraErr("Per recuperar un PIN o gestionar un perfil cal indicar el correu electrònic del pare, mare o tutor/a.");sMail.focus();return}
   if(mail&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){mostraErr("Aquest correu electrònic no sembla vàlid. Revisa'l o deixa el camp buit.");sMail.focus();return}
   if(!DEMO&&Date.now()-T0<1800){mostraErr("Espera un segon abans d'enviar el missatge.");return}
 
@@ -373,7 +475,7 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
     res={ok:true,ref:"SUG-DEMO"};
    }else{
     const r=await fetch(API,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({
-     p_categoria:CAT,p_mon:sMon.value||null,p_rol:(esPriv&&ROL==="alumne")?"familia":(ROL||null),p_missatge:msg,p_email:mail||null,
+     p_categoria:esPin?"privacitat":CAT,p_mon:sMon.value||null,p_rol:esPin?"familia":((esPriv&&ROL==="alumne")?"familia":(ROL||null)),p_missatge:msg,p_email:mail||null,
      p_origen_url:(document.referrer||location.pathname).slice(0,200),p_origen_hash:origenHash(),p_trap:sWeb.value||""
     })});
     if(!r.ok)throw new Error("HTTP "+r.status);
@@ -382,9 +484,11 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
    if(res&&res.ok){
     form.hidden=true;
     document.getElementById("fetRef").textContent=res.ref||"SUG-OK";
-    document.getElementById("fetTxt").textContent=mail
-     ?`Hem desat el teu missatge a la bústia privada. Si cal, et respondrem a ${mail}.`
-     :"Hem desat el teu missatge a la bústia privada de Bona Nota. El revisarem ben aviat.";
+    document.getElementById("fetTxt").textContent=esPin
+     ?`Hem rebut la petició de PIN per a «${pinNom}». Quan comprovem les dades, enviarem un PIN temporal d'un sol ús a ${mail}. No es perd cap estrella ni el progrés!`
+     :mail
+      ?`Hem desat el teu missatge a la bústia privada. Si cal, et respondrem a ${mail}.`
+      :"Hem desat el teu missatge a la bústia privada de Bona Nota. El revisarem ben aviat.";
     fetBox.classList.add("on");
    }else{
     const cod=res&&res.codi;
@@ -396,13 +500,13 @@ footer .bn-versio{display:block;margin-top:6px;opacity:.7;font-size:12px}
   }catch(err){
    mostraErr("No hem pogut connectar amb el servidor. Comprova la connexió i torna-ho a provar.");
   }finally{
-   btEnvia.disabled=false;btEnvia.textContent="Envia el missatge ▶";
+   btEnvia.disabled=false;btEnvia.textContent=CAT==="pin"?"Demana un PIN temporal ▶":"Envia el missatge ▶";
   }
  });
 
  document.getElementById("btUnAltre").onclick=()=>{
   sMsg.value="";sMail.value="";actualitzaLen();mostraErr("");
-  fetBox.classList.remove("on");form.hidden=false;sMsg.focus();
+  fetBox.classList.remove("on");form.hidden=false;(CAT==="pin"?sPinNom:sMsg).focus();
  };
 })();
 </script>

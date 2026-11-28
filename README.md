@@ -1,6 +1,6 @@
 # ⭐ Bona Nota · Estudia jugant (1r ESO)
 
-**Web:** https://bonanota.net · **Versió:** 2.80.0 ([historial de canvis](CHANGELOG.md))
+**Web:** https://bonanota.net · **Versió:** 2.81.0 ([historial de canvis](CHANGELOG.md))
 
 Bona Nota és una web per **repassar els temes de 1r d'ESO jugant**. Cada tema és un «món» amb fitxes, targetes, tests, jocs i preguntes d'examen.
 Els nens hi guanyen estrelles, pugen de nivell i competeixen en un rànquing.
@@ -851,7 +851,7 @@ Els tres jobs amb navegador tenen Chromium en memòria cau. El ruleset «main pr
 | 5 | `motor/prova-perfil.js` | La pàgina de perfil: tries amb clic i teclat, desat al núvol, sense connexió i amb PIN incorrecte, Sorpresa i «Efectes suaus» |
 | 6 | `motor/prova-admin-fonts.js` | Els orígens d'estrelles del tauler (funcions pures) |
 | 7 | `motor/prova-xat-sql.js`, `prova-xat.js`, `prova-admin-xat.js` | El xat de la colla: el SQL, la portada i la pestanya de l'admin (detall a sota) |
-| 8 | `motor/prova-suggeriments-sql.js` | Bústia de contacte i suggeriments (`supabase/bn_suggeriments.sql`): validacions, honeypot, rate-limit, privacitat de menors i admin |
+| 8 | `motor/prova-suggeriments-sql.js`, `prova-suggeriments.js` | Bústia de contacte i suggeriments (`supabase/bn_suggeriments.sql`, guia i recuperació de PIN `?tipus=pin`, camps guiats, enllaços «Has oblidat el PIN?» a portada/mons i mòbil) |
 | 8 | `motor/prova-admin-fitxa-sql.js`, `prova-admin-fitxa.js` | La fitxa «Al núvol» i les altes: el SQL i el tauler |
 | 9 | `motor/prova-admin-benestar-sql.js`, `prova-bon-us-sql.js`, `prova-admin-benestar.js` | El benestar, les fases del món (`bn_vigilia`) i l'apartat del tauler |
 | 10 | `motor/prova-admin-fonts-rep-sql.js`, `prova-admin-fonts-rep.js` | «Combos i repàs» i «Errors pendents de la colla»: el SQL i el tauler |

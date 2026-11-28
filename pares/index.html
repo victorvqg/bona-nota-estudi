@@ -23,7 +23,7 @@ window.BN_ACT={arrel:"../",tornaAuto:true};
 // En tornar a l'app després de més de 10 minuts amagada: a la portada recarrega sola; dins d'un món, com que el nen pot
 // estar a mig test, només surt un avís amb un botó per actualitzar quan vulgui.
 (function(){
- const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="f5bfcccb0d",KR="bn_act_recarrega",DEU=6e5;
+ const C=window.BN_ACT||{},ARREL=C.arrel||"./",VER="5298302ab7",KR="bn_act_recarrega",DEU=6e5;
  if(location.protocol==="file:"||VER.indexOf("__")===0||!window.fetch)return;
  let fet=0,amagat=0;
  const quan=f=>document.body?f():document.addEventListener("DOMContentLoaded",f);
@@ -460,7 +460,7 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
    </details>
    <details>
     <summary>Què passa si oblida el seu codi PIN?</summary>
-    <div class="faq-cos">No perd mai les seves estrelles ni el progrés guardat. Podeu demanar que li reiniciem només el PIN des de la <a href="../suggeriments/?tipus=privacitat" style="color:var(--groc);font-weight:900">Bústia privada de contacte</a> perquè, el pròxim cop que entri amb el seu nom, en triï un de nou (us recomanem apuntar-lo junts en un lloc segur de casa).</div>
+    <div class="faq-cos">No perd mai cap estrella, ni el progrés guardat, ni el seu número <b>#ID</b> ni el perfil arcade. Com que els PINs estan xifrats i ningú pot consultar l'antic, podeu demanar un <b>PIN temporal d'un sol ús</b> des de la <a href="../suggeriments/?tipus=pin" style="color:var(--groc);font-weight:900">recuperació de PIN a la Bústia privada →</a>: us l'enviarem al correu de la família i, en entrar a Bona Nota, l'app li demanarà automàticament triar el seu PIN personal nou.</div>
    </details>
    <details>
     <summary>Pot començar a la tauleta i continuar després al mòbil o a l'ordinador?</summary>
@@ -493,6 +493,6 @@ footer .bn-versio{display:inline-block;margin-left:8px;color:#64748b;font-size:1
 
 </main>
 
-<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.80.0</small></footer>
+<footer><b>★</b> Bona Nota · guia oberta per a les famílies <b>★</b><small class="bn-versio">versió 2.81.0</small></footer>
 </body>
 </html>
