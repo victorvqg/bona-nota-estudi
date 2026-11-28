@@ -862,6 +862,7 @@ Els tres jobs amb navegador tenen Chromium en memòria cau. El ruleset «main pr
 | 12d | `motor/prova-admin-pagines.js` | La paginació del tauler: taules de 25 en 25 (o 50/100), cerca, ordenació i CSV amb totes les files, log per dia sense tall i alertes de 10 en 10 |
 | 12e | `motor/prova-admin-ordre.js` | L'ordre del tauler: menú amb Activitat i Xat, alertes a dalt d'Inici, Rànquing sense Xat, adreça vella del xat i barra del mòbil amb 6 botons |
 | 12f | `motor/prova-admin-logs-sql.js` | La baixada incremental del registre: `bn_admin_logs(…, p_des_id)` torna només les files noves i substitueix la versió vella de 3 paràmetres |
+| 12g | `motor/prova-pin-reset-sql.js`, `prova-admin-pin.js` | Gestió i recuperació de PIN perdut (`supabase/bn_pin_reset.sql`, pestanya Nens → PINs, modal de PIN temporal, desbloqueig d'intents i drecera des de Bústia) |
 | 13 | `motor/prova.js` (un cop per món, amb `ESTRICTE=1`) | Cada món sencer: tests, jocs, exàmens, repàs, obertes, estrelles, superestrelles i capçalera |
 | 14 | `motor/prova-visual.js` (un cop per món) | A 360, 390 i 430 px no hi ha scroll horitzontal i cap text d'un SVG surt del dibuix ni del seu requadre |
 
